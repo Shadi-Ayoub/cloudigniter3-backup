@@ -1,0 +1,46 @@
+README.md
+examples/
+  registry-example.ts
+  service-example.ts
+packages/
+  next/
+    package.json.example
+    src/
+      common/
+        index.ts
+      index.ts
+      server/
+        index.ts
+      settings/
+        client/
+          ci-settings-provider.tsx
+          index.ts
+          types.ts
+          use-setting-value.ts
+          use-settings.ts
+        common/
+          ci-define-settings-registry.ts
+          ci-get-settings-value-at-path.ts
+          ci-merge-settings.ts
+          ci-set-settings-value-at-path.ts
+          constants.ts
+          index.ts
+          types.ts
+        index.ts
+        internal/
+          ci-clone-settings-value.ts
+          ci-get-required-settings-definition.ts
+          ci-merge-settings-with-control.ts
+          ci-resolve-scoped-settings-scope.ts
+          ci-validate-resolved-settings.ts
+          index.ts
+        server/
+          ci-build-settings-keys.ts
+          ci-create-settings-service.ts
+          ci-create-settings-store.ts
+          ci-delete-settings.ts
+          ci-get-settings.ts
+          ci-set-settings.ts
+          index.ts
+          types.ts
+    tsup.config.example.ts

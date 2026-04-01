@@ -1,0 +1,37 @@
+{
+  "name": "@cloudigniter/core",
+  "version": "0.0.1",
+  "private": false,
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck:tools": "tsc -p tsconfig.tools.json --noEmit",
+    "check": "pnpm run typecheck && pnpm run typecheck:tools",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@cloudigniter/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@cloudigniter/config-ts": "workspace:*",
+    "@types/node": "^25.5.0",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.5.0",
+    "typescript": "^6.0.2"
+  }
+}

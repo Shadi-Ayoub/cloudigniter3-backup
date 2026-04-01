@@ -1,0 +1,29 @@
+{
+  "name": "@cloudigniter/template",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "typecheck:tools": "echo \"No tools typecheck for app\"",
+    "check": "pnpm run typecheck",
+    "lint": "next lint",
+    "clean": "rimraf .next"
+  },
+  "dependencies": {
+    "@cloudigniter/next": "workspace:*",
+    "next": "^16.2.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@cloudigniter/config-ts": "workspace:*",
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "rimraf": "^6.0.1",
+    "typescript": "^6.0.2"
+  }
+}

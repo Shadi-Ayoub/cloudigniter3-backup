@@ -1,0 +1,77 @@
+.changeset/
+  README.md
+  config.json
+.github/
+  workflows/
+    release.yml
+.gitignore
+.npmrc
+README.md
+apps/
+  template/
+    app/
+      layout.tsx
+      page.tsx
+    next-env.d.ts
+    next.config.ts
+    package.json
+    tsconfig.json
+package.json
+packages/
+  aws/
+    package.json
+    src/
+      index.ts
+    tsconfig.build.json
+    tsconfig.json
+    tsconfig.tools.json
+    tsup.config.ts
+  config-ts/
+    base.json
+    library.json
+    next.json
+    node.json
+    package.json
+    react.json
+  core/
+    package.json
+    src/
+      index.ts
+    tsconfig.build.json
+    tsconfig.json
+    tsconfig.tools.json
+    tsup.config.ts
+  next/
+    package.json
+    src/
+      backend/
+        README.md
+      client/
+        index.ts
+      common/
+        index.ts
+      index.ts
+      server/
+        index.ts
+      settings/
+        index.ts
+        server/
+          index.ts
+      ui/
+        components/
+          README.md
+    tsconfig.build.json
+    tsconfig.json
+    tsconfig.tools.json
+    tsup.config.ts
+  types/
+    package.json
+    src/
+      index.ts
+    tsconfig.build.json
+    tsconfig.json
+    tsconfig.tools.json
+    tsup.config.ts
+pnpm-workspace.yaml
+tsconfig.base.json
+turbo.json
