@@ -1,27 +1,40 @@
-import type { CiBuildSettingsKeysInput, CiSettingsKeys } from './types';
+import type { CiBuildSettingsKeysInput } from "./types/CiBuildSettingsKeysInput";
+import type { CiSettingsKeys } from "./types/CiSettingsKeys";
 
 /**
- * Build deterministic settings keys for the persistence layer.
+ * Build deterministic storage keys for settings records.
+ *
+ * Key format:
+ *
+ * - PK: `SETTING#{settingsId}`
+ * - SK:
+ *   - non-user: `SCOPE#{scope}#TENANT#{owner}`
+ *   - user: `SCOPE#{scope}#TENANT#{owner}#USER#{userId}`
+ *
+ * Owner rules:
+ * - `system` -> `system`
+ * - `global` -> `global`
+ * - `tenant` -> resolved tenant id or `default`
  *
  * @param input - Key generation input.
- * @returns Partition and sort key pair.
+ * @returns Deterministic PK/SK pair.
  */
-export function ciBuildSettingsKeys(input: CiBuildSettingsKeysInput): CiSettingsKeys {
+export function ciBuildSettingsKeys(
+  input: CiBuildSettingsKeysInput,
+): CiSettingsKeys {
   const { settingsId, scope, targetTenantScope, tenantId, userId } = input;
 
   const owner =
-    targetTenantScope === 'tenant'
-      ? tenantId ?? 'default'
-      : targetTenantScope;
+    targetTenantScope === "tenant" ? tenantId ?? "default" : targetTenantScope;
 
-  if (scope === 'user' && !userId) {
-    throw new Error('userId is required when building keys for user settings.');
+  if (scope === "user" && !userId) {
+    throw new Error("userId is required when building keys for user settings.");
   }
 
   return {
     PK: `SETTING#${settingsId}`,
     SK:
-      scope === 'user'
+      scope === "user"
         ? `SCOPE#${scope}#TENANT#${owner}#USER#${userId}`
         : `SCOPE#${scope}#TENANT#${owner}`,
   };

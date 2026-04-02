@@ -1,11 +1,11 @@
-import type { CiSettings, CiSettingsDefinition } from '../common/types';
+import type { CiSettings } from "../common/types/CiSettings";
+import type { CiSettingsDefinition } from "../common/types/CiSettingsDefinition";
 
 /**
- * Validate a resolved settings object against its definition schema, when one
- * is registered.
+ * Validate a fully resolved settings object against its schema, when present.
  *
  * @param definition - Settings definition.
- * @param value - Resolved settings value.
+ * @param value - Final resolved settings value.
  * @returns Validated settings value.
  */
 export function ciValidateResolvedSettings<TSettings extends CiSettings>(

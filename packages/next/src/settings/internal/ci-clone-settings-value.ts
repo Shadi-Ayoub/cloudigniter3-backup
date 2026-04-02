@@ -1,22 +1,26 @@
-import type { CiSettingsValue } from '../common/types';
+import type { CiSettingsValue } from "../common/types/CiSettingsValue";
 
 /**
- * Deep-clone a settings value using JSON-compatible recursion.
+ * Deep-clone a settings value.
  *
  * @param value - Value to clone.
- * @returns Cloned value.
+ * @returns Cloned value with the same static type.
  */
-export function ciCloneSettingsValue<TValue extends CiSettingsValue>(value: TValue): TValue {
+export function ciCloneSettingsValue<TValue extends CiSettingsValue>(
+  value: TValue,
+): TValue {
   if (Array.isArray(value)) {
     return value.map((item) => ciCloneSettingsValue(item)) as TValue;
   }
 
-  if (value && typeof value === 'object') {
-    const output: Record<string, CiSettingsValue> = {};
+  if (value && typeof value === "object") {
+    const ciOutput: Record<string, CiSettingsValue> = {};
+
     for (const [key, item] of Object.entries(value)) {
-      output[key] = ciCloneSettingsValue(item);
+      ciOutput[key] = ciCloneSettingsValue(item);
     }
-    return output as TValue;
+
+    return ciOutput as TValue;
   }
 
   return value;

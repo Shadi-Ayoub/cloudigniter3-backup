@@ -1,24 +1,28 @@
-import type { CiSettings, CiSettingsRecord } from '../common/types';
-import { ciBuildSettingsKeys } from './ci-build-settings-keys';
-import type {
-  CiDeleteSettingsInput,
-  CiGetSettingsRecordInput,
-  CiSetSettingsInput,
-  CiSettingsStore,
-} from './types';
+import type { CiSettings } from "../common/types/CiSettings";
+import type { CiSettingsRecord } from "../common/types/CiSettingsRecord";
+import { ciBuildSettingsKeys } from "./ci-build-settings-keys";
+import type { CiDeleteSettingsInput } from "./types/CiDeleteSettingsInput";
+import type { CiGetSettingsRecordInput } from "./types/CiGetSettingsRecordInput";
+import type { CiSettingsStore } from "./types/CiSettingsStore";
+import type { CiSetSettingsInput } from "./types/CiSetSettingsInput";
 
 /**
  * Create an in-memory settings store.
  *
- * This reference implementation is useful for local development, tests, and as
- * the baseline contract for future database-backed store implementations.
+ * This is the reference implementation for:
+ * - local development
+ * - unit tests
+ * - API contract stabilization
+ *
+ * Later, a DynamoDB-backed implementation can replace this
+ * without changing the surrounding service interface.
  *
  * @returns In-memory settings store.
  */
 export function ciCreateSettingsStore(): CiSettingsStore {
   const records = new Map<string, CiSettingsRecord>();
 
-  const buildMapKey = (input: CiGetSettingsRecordInput): string => {
+  const ciBuildMapKey = (input: CiGetSettingsRecordInput): string => {
     const keys = ciBuildSettingsKeys(input);
     return `${keys.PK}::${keys.SK}`;
   };
@@ -27,14 +31,22 @@ export function ciCreateSettingsStore(): CiSettingsStore {
     async getRecord<TSettings extends CiSettings = CiSettings>(
       input: CiGetSettingsRecordInput,
     ): Promise<CiSettingsRecord<TSettings> | null> {
-      const hit = records.get(buildMapKey(input));
-      return (hit ? ({ ...hit, value: { ...hit.value } } as CiSettingsRecord<TSettings>) : null);
+      const hit = records.get(ciBuildMapKey(input));
+
+      if (!hit) {
+        return null;
+      }
+
+      return {
+        ...hit,
+        value: { ...hit.value },
+      } as CiSettingsRecord<TSettings>;
     },
 
     async setRecord<TSettings extends CiSettings = CiSettings>(
       input: CiSetSettingsInput<TSettings>,
     ): Promise<CiSettingsRecord<TSettings>> {
-      const existing = records.get(buildMapKey(input));
+      const existing = records.get(ciBuildMapKey(input));
       const now = new Date().toISOString();
 
       const record: CiSettingsRecord<TSettings> = {
@@ -48,12 +60,16 @@ export function ciCreateSettingsStore(): CiSettingsStore {
         updatedAt: now,
       };
 
-      records.set(buildMapKey(input), record as CiSettingsRecord);
-      return { ...record, value: { ...record.value } };
+      records.set(ciBuildMapKey(input), record as CiSettingsRecord);
+
+      return {
+        ...record,
+        value: { ...record.value },
+      };
     },
 
     async deleteRecord(input: CiDeleteSettingsInput): Promise<boolean> {
-      return records.delete(buildMapKey(input));
+      return records.delete(ciBuildMapKey(input));
     },
   };
 }

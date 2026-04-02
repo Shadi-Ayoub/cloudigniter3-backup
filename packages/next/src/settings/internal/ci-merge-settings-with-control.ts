@@ -1,21 +1,19 @@
-import type {
-  CiCanOverrideSettingsValue,
-  CiSettings,
-  CiSettingsLayerName,
-  CiSettingsValue,
-} from '../common/types';
-import { ciCloneSettingsValue } from './ci-clone-settings-value';
+import type { CiCanOverrideSettingsValue } from "../common/types/CiCanOverrideSettingsValue";
+import type { CiSettings } from "../common/types/CiSettings";
+import type { CiSettingsLayerName } from "../common/types/CiSettingsLayerName";
+import type { CiSettingsValue } from "../common/types/CiSettingsValue";
+import { ciCloneSettingsValue } from "./ci-clone-settings-value";
 
 /**
- * Merge settings with an optional override control policy.
- *
- * The incoming layer is traversed recursively. When a path already has a value,
- * the policy callback can veto the overwrite.
+ * Merge a candidate layer into a base settings object while consulting an
+ * optional override policy.
  *
  * @param input - Merge input.
  * @returns Updated merged settings object.
  */
-export async function ciMergeSettingsWithControl<TSettings extends CiSettings>(input: {
+export async function ciMergeSettingsWithControl<
+  TSettings extends CiSettings,
+>(input: {
   settingsId: string;
   baseValue: TSettings;
   incomingValue?: Partial<TSettings>;
@@ -40,55 +38,55 @@ export async function ciMergeSettingsWithControl<TSettings extends CiSettings>(i
     return baseValue;
   }
 
-  const mergeObject = async (
+  const ciMergeObject = async (
     current: Record<string, CiSettingsValue>,
     incoming: Record<string, CiSettingsValue>,
-    parentPath = '',
+    parentPath = "",
   ): Promise<Record<string, CiSettingsValue>> => {
-    const output: Record<string, CiSettingsValue> = { ...current };
+    const ciOutput: Record<string, CiSettingsValue> = { ...current };
 
     for (const [key, nextValue] of Object.entries(incoming)) {
-      const path = parentPath ? `${parentPath}.${key}` : key;
-      const currentValue = output[key];
+      const ciPath = parentPath ? `${parentPath}.${key}` : key;
+      const ciCurrentValue = ciOutput[key];
 
       if (
-        currentValue &&
+        ciCurrentValue &&
         nextValue &&
-        typeof currentValue === 'object' &&
-        typeof nextValue === 'object' &&
-        !Array.isArray(currentValue) &&
+        typeof ciCurrentValue === "object" &&
+        typeof nextValue === "object" &&
+        !Array.isArray(ciCurrentValue) &&
         !Array.isArray(nextValue)
       ) {
-        output[key] = await mergeObject(
-          currentValue as Record<string, CiSettingsValue>,
+        ciOutput[key] = await ciMergeObject(
+          ciCurrentValue as Record<string, CiSettingsValue>,
           nextValue as Record<string, CiSettingsValue>,
-          path,
+          ciPath,
         );
         continue;
       }
 
-      const allowed = canOverride
+      const ciAllowed = canOverride
         ? await canOverride({
             settingsId,
-            path,
+            path: ciPath,
             fromLayer,
             toLayer,
             tenantId,
             userId,
-            currentValue,
+            currentValue: ciCurrentValue,
             nextValue,
           })
         : true;
 
-      if (allowed) {
-        output[key] = ciCloneSettingsValue(nextValue);
+      if (ciAllowed) {
+        ciOutput[key] = ciCloneSettingsValue(nextValue);
       }
     }
 
-    return output;
+    return ciOutput;
   };
 
-  return (await mergeObject(
+  return (await ciMergeObject(
     baseValue as Record<string, CiSettingsValue>,
     incomingValue as Record<string, CiSettingsValue>,
   )) as TSettings;

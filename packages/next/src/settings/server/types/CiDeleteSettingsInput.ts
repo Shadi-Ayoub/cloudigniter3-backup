@@ -1,6 +1,6 @@
-import type { CiGetSettingsRecordInput } from './CiGetSettingsRecordInput';
+import type { CiGetSettingsRecordInput } from "./CiGetSettingsRecordInput";
 
 /**
- * Input for persisted record deletion.
+ * Input used to delete one persisted settings record.
  */
 export type CiDeleteSettingsInput = CiGetSettingsRecordInput;

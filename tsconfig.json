@@ -1,0 +1,11 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/config-ts" },
+    { "path": "./packages/types" },
+    { "path": "./packages/core" },
+    { "path": "./packages/aws" },
+    { "path": "./packages/next" },
+    { "path": "./apps/template" }
+  ]
+}

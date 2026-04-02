@@ -1,17 +1,20 @@
-import type { CiScopedSettingsScope, CiSettingsScope } from '../common/types';
+import type { CiScopedSettingsScope } from "../common/types/CiScopedSettingsScope";
+import type { CiSettingsScope } from "../common/types/CiSettingsScope";
 
 /**
- * Resolve the persistence-supported scope for a requested settings scope.
+ * Resolve the persistence-supported scope for a requested domain scope.
  *
- * Route settings are a domain-level concept, but low-level persistence remains
- * limited to `public`, `private`, and `user`.
+ * Route settings remain a domain-level concept. For persistence in v1,
+ * route resolution falls back to public-scoped storage.
  *
  * @param scope - Requested domain scope.
  * @returns Persistence-supported scope.
  */
-export function ciResolveScopedSettingsScope(scope: CiSettingsScope): CiScopedSettingsScope {
-  if (scope === 'route') {
-    return 'public';
+export function ciResolveScopedSettingsScope(
+  scope: CiSettingsScope,
+): CiScopedSettingsScope {
+  if (scope === "route") {
+    return "public";
   }
 
   return scope;

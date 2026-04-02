@@ -13,6 +13,8 @@
     "version-packages": "changeset version",
     "release": "pnpm build && changeset publish",
     "backup": "./scripts/backup.sh ./",
+    "build:core": "pnpm --filter @cloudigniter/core build",
+    "build:aws": "pnpm --filter @cloudigniter/aws build",
     "clean:macos": "find . -type f -name '._*' -print -delete"
   },
   "devDependencies": {

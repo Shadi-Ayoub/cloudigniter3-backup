@@ -1,9 +1,28 @@
-import type { CiResult } from '@cloudigniter/types';
+export {
+  //error
+  ciSerializeUnknownError,
 
-export function ciOk200<TData>(data: TData): CiResult<TData> {
-  return { ok: true, statusCode: 200, data };
-}
+  // result
+  ciErrorResult,
+  ciError400,
+  ciError401,
+  ciError403,
+  ciError404,
+  ciError500,
+  ciIsErrorResult,
+  ciIsOkResult,
+  ciOkResult,
+  ciOk200,
+} from "./common";
 
-export function ciError500(error: string, raw?: unknown): CiResult<never> {
-  return { ok: false, statusCode: 500, error, raw };
-}
+export type {
+  // result
+  CiErrorBody,
+  CiErrorPayload,
+  CiErrorSeverity,
+  CiErrorStatus,
+  CiJsonPrimitive,
+  CiJsonValue,
+  CiOkStatus,
+  CiResult,
+} from "./common";

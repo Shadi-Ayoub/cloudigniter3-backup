@@ -11,6 +11,18 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./client": {
+      "types": "./dist/client/index.d.ts",
+      "import": "./dist/client/index.js"
+    },
+    "./server": {
+      "types": "./dist/server/index.d.ts",
+      "import": "./dist/server/index.js"
+    },
+    "./common": {
+      "types": "./dist/common/index.d.ts",
+      "import": "./dist/common/index.js"
     }
   },
   "files": [
@@ -25,11 +37,18 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1022.0",
+    "@aws-sdk/lib-dynamodb": "^3.1022.0",
     "@cloudigniter/core": "workspace:*",
-    "@cloudigniter/types": "workspace:*"
+    "@cloudigniter/types": "workspace:*",
+    "aws-amplify": "^6.16.3",
+    "aws-lambda": "^1.0.7"
   },
   "devDependencies": {
     "@cloudigniter/config-ts": "workspace:*",
+    "@cloudigniter/core": "workspace:*",
+    "@smithy/types": "^4.13.1",
+    "@types/aws-lambda": "^8.10.161",
     "@types/node": "^25.5.0",
     "rimraf": "^6.0.1",
     "tsup": "^8.5.0",
