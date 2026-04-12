@@ -1,0 +1,1 @@
+export { CiAmplifyClientConfigurer } from "./components";

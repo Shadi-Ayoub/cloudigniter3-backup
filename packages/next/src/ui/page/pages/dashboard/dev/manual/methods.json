@@ -1,0 +1,57 @@
+[
+  {
+    "id": "strlen",
+    "label": "strlen",
+    "brief": "Returns the length of a string.",
+    "description": "The strlen function returns the number of characters in a string.",
+    "signature": "function strlen(input: string): number",
+    "parameters": [
+      {
+        "name": "input",
+        "type": "string",
+        "description": "The string whose length is to be measured."
+      }
+    ],
+    "returns": {
+      "type": "number",
+      "description": "The length of the provided string."
+    },
+    "examples": ["console.log(strlen('Hello')); // Outputs: 5"],
+    "notes": "This function counts all characters, including spaces and special characters.",
+    "seeAlso": [
+      { "label": "mb_strlen", "link": "https://www.php.net/mb_strlen" },
+      { "label": "substr", "link": "https://www.php.net/substr" }
+    ]
+  },
+  {
+    "id": "array_push",
+    "label": "array_push",
+    "brief": "Pushes one or more elements onto the end of an array.",
+    "description": "The array_push function appends elements to the end of an array and returns the new length of the array.",
+    "signature": "function array_push<T>(array: T[], ...elements: T[]): number",
+    "parameters": [
+      {
+        "name": "array",
+        "type": "array",
+        "description": "The array to which elements will be added."
+      },
+      {
+        "name": "elements",
+        "type": "T[]",
+        "description": "One or more elements to add to the array."
+      }
+    ],
+    "returns": {
+      "type": "number",
+      "description": "The new length of the array after elements have been added."
+    },
+    "examples": [
+      "let arr = [1, 2];\nconsole.log(array_push(arr, 3, 4)); // Outputs: 4"
+    ],
+    "notes": "This function modifies the original array.",
+    "seeAlso": [
+      { "label": "array_pop", "link": "https://www.php.net/array_pop" },
+      { "label": "array_shift", "link": "https://www.php.net/array_shift" }
+    ]
+  }
+]

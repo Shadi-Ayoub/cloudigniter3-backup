@@ -1,0 +1,59 @@
+@layer components {
+  /**************************/
+  /* HEADER CONTENT         */
+  /**************************/
+  .ci-header-menu-button-rounded {
+    @apply hover:bg-muted-100 dark:hover:bg-muted-800/80 dark:bg-muted-900 dark:text-secondary-400 inline-flex h-12 w-12 items-center justify-center rounded-full bg-gray-50 outline-0 transition-colors focus:ring-0 focus:outline-0;
+  }
+
+  .ci-round-button-fallback {
+    @apply bg-muted-50 dark:bg-muted-900 relative flex h-[50px] w-[50px] items-center justify-center rounded-full border-none p-0;
+  }
+
+  .ci-tabs-list {
+    @apply text-gray-500;
+  }
+
+  .ci-main-header-dashboard-button {
+    @apply hover:bg-primary-800 focus:ring-primary-400 dark:bg-muted-900 dark:ring-primary-400 dark:hover:bg-muted-800 dark:hover:ring-primary-400 dark:focus:ring-primary-500 bg-primary-600 dark:text-primary-400 rounded-lg px-4 py-2 text-sm font-medium text-white shadow-md focus:ring-2 focus:ring-offset-2 focus:outline-none ltr:ml-8 rtl:mr-8 dark:ring-1;
+  }
+
+  .ci-main-header-user-box {
+    @apply flex items-center space-x-4 ltr:mr-8 rtl:ml-8;
+  }
+
+  .ci-main-header-user-box-inner {
+    @apply hidden flex-wrap gap-2 md:flex;
+  }
+
+  .ci-main-header-user-box-inner-mobile {
+    @apply flex md:hidden;
+  }
+
+  .ci-main-header-navigation-box-inner-mobile {
+    @apply flex md:hidden;
+  }
+
+  .ci-main-header-navigation-box {
+    @apply flex items-center space-x-4 ltr:ml-4 rtl:mr-4;
+  }
+
+  /**************************/
+  /* HEADER LOGO            */
+  /**************************/
+  .ci-header-logo-main {
+    @apply relative inline-flex cursor-pointer items-center text-3xl font-bold ltr:ml-1;
+  }
+
+  .ci-header-logo-cloud {
+    @apply bg-gradient-to-r from-sky-500 to-orange-500 bg-clip-text text-transparent text-shadow-sm dark:from-orange-500 dark:to-sky-500;
+  }
+
+  .ci-header-logo-igniter {
+    @apply bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent text-shadow-md dark:from-pink-500 dark:to-orange-500;
+  }
+
+  .ci-header-logo-flame {
+    @apply animate-flicker relative top-[-1] ml-1 h-3 w-3 -translate-y-1/2 rounded-full bg-gradient-to-br from-yellow-400 to-red-500;
+  }
+}

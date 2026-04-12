@@ -1,3 +1,13 @@
 export type { CiBatchWriteItemsBody } from "./CiBatchWriteItemsBody";
-export type { CiBatchWriteRequest } from "./CiBatchWriteRequest";
 export type { CiBatchWriteItemsResult } from "./CiBatchWriteItemsResult";
+export type { CiBatchWriteRequest } from "./CiBatchWriteRequest";
+export type { CiDeleteItemOptions } from "./CiDeleteItemOptions";
+export type { CiDynamoDeleteReturnValues } from "./CiDynamoDeleteReturnValues";
+export type { CiDynamoExistenceMode } from "./CiDynamoExistenceMode";
+export type { CiDynamoMetricsOption } from "./CiDynamoMetricsOption";
+export type { CiDynamoWriteMode } from "./CiDynamoWriteMode";
+export type { CiDynamoWriteReturnValues } from "./CiDynamoWriteReturnValues";
+export type { CiTransactWriteOp } from "./CiTransactWriteOp";
+export type { CiTransactWriteOptions } from "./CiTransactWriteOptions";
+export type { CiTransactWriteResult } from "./CiTransactWriteResult";
+export type { CiTransactWriteBody } from "./CiTransactWriteBody";

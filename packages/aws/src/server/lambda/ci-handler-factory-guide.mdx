@@ -1,0 +1,236 @@
+---
+title: Which Handler Factory Should I Use?
+sidebar_position: 2
+description: Guide to choosing the correct CloudIgniter handler factory with examples.
+---
+
+# Which handler factory should I use?
+
+CloudIgniter provides three handler factories. Choose the one that matches the shape of your backend operation.
+
+---
+
+## 1) `ciCreateDirectHandler`
+
+Use this when the handler is a **thin pass-through** to a service that already accepts the final input and returns `Promise<CiResponse>`.
+
+### Best for
+
+- Cognito handlers
+- Auth / account operations
+- Non-table backend services
+- Simple “input → service(input)” handlers
+
+### Use it when
+
+- No table env var is needed
+- No dependency building is required
+- No orchestration is needed
+- No custom transform is needed
+
+### Example
+
+```ts
+import { getCognitoUser } from '@CI/server';
+import { ciCreateDirectHandler } from '../ci-create-direct-handler';
+
+/**
+ * Get a Cognito user.
+ */
+export const getCognitoUserHandler = ciCreateDirectHandler({
+  moduleUrl: import.meta.url,
+  service: getCognitoUser,
+});
+```
+
+---
+
+## 2) `ciCreateTableServiceHandler`
+
+Use this when the handler wraps a **single-table service**.
+
+### Best for
+
+- System table reads/writes
+- CiTenant / role / seed set lookups
+- DynamoDB-backed handlers with one table
+
+### Use it when
+
+- One table env var is required
+- The handler passes `tableName + input` to a service
+- Orchestration is minimal
+
+### Example
+
+```ts
+import { getTenant } from '@CI/server';
+import { ciCreateTableServiceHandler } from '../ci-create-table-service-handler';
+
+/**
+ * Get a tenant from the CloudIgniter system table.
+ */
+export const ciGetTenantHandler = ciCreateTableServiceHandler({
+  moduleUrl: import.meta.url,
+  tableEnvVar: 'CI_SYSTEM_TABLE_NAME',
+  service: getTenant,
+});
+```
+
+---
+
+## 3) `ciCreateLambdaHandler`
+
+Use this when the handler needs **full control**.
+
+### Best for
+
+- Custom validation
+- Input transformation
+- Multiple environment variables
+- Dependency building
+- Service orchestration
+
+### Use it when
+
+- The handler is not just `service(input)`
+- The handler is not a simple one-table wrapper
+- You need `validate`, `transformInput`, `env`, or `clientConfig`
+
+### Example
+
+```ts
+import { ciBuildSettingsServiceDeps, ciGetSettingsService } from '@CI/server/services/settings';
+import type { CiGetSettingsHandlerInput } from '@CI/types';
+
+import { ciCreateLambdaHandler } from '../ci-create-lambda-handler';
+import { ciInferHandlerName } from '../ci-infer-handler-name';
+
+/**
+ * Resolve CloudIgniter settings across all scopes.
+ */
+export const ciGetSettingsHandler = ciCreateLambdaHandler<
+  CiGetSettingsHandlerInput,
+  readonly [
+    'CI_PUBLIC_SETTINGS_TABLE_NAME',
+    'CI_PRIVATE_SETTINGS_TABLE_NAME',
+    'CI_USER_SETTINGS_TABLE_NAME',
+    'CI_REGION',
+    'CI_ENV_MODE',
+  ],
+  CiGetSettingsHandlerInput
+>({
+  handlerName: ciInferHandlerName(import.meta.url),
+
+  ciEnvVars: [
+    'CI_PUBLIC_SETTINGS_TABLE_NAME',
+    'CI_PRIVATE_SETTINGS_TABLE_NAME',
+    'CI_USER_SETTINGS_TABLE_NAME',
+    'CI_REGION',
+    'CI_ENV_MODE',
+  ] as const,
+
+  validate: async ({ input, ciValidationError }) => {
+    if (!input || typeof input !== 'object') {
+      return ciValidationError('input is required.');
+    }
+
+    if (!input.registry) {
+      return ciValidationError('registry is required.');
+    }
+  },
+
+  run: async ({ input, env }) => {
+    const deps = ciBuildSettingsServiceDeps({
+      registry: input.registry,
+      dynamoDbClientConfig: {
+        region: env.CI_REGION,
+      },
+      publicTableName: env.CI_PUBLIC_SETTINGS_TABLE_NAME,
+      privateTableName: env.CI_PRIVATE_SETTINGS_TABLE_NAME,
+      userTableName: env.CI_USER_SETTINGS_TABLE_NAME,
+    });
+
+    if (!deps.ok) return deps;
+
+    return ciGetSettingsService({
+      settingsServiceDeps: deps.body,
+      tenantId: input.tenantId,
+      userId: input.userId,
+      publicSettingIds: input.publicSettingIds,
+      privateSettingIds: input.privateSettingIds,
+      userSettingIds: input.userSettingIds,
+      pathname: input.pathname,
+      routeSettingIds: input.routeSettingIds,
+    });
+  },
+});
+```
+
+---
+
+## Quick decision rule
+
+Use this mental model:
+
+### If your handler is:
+
+```ts
+service(input);
+```
+
+➡️ Use:
+
+```ts
+ciCreateDirectHandler;
+```
+
+---
+
+### If your handler is:
+
+```ts
+service({ tableName, input });
+```
+
+➡️ Use:
+
+```ts
+ciCreateTableServiceHandler;
+```
+
+---
+
+### If your handler is:
+
+```ts
+validate → build deps → call service
+```
+
+➡️ Use:
+
+```ts
+ciCreateLambdaHandler;
+```
+
+---
+
+## Summary
+
+| Factory                       | Purpose                      | Example                |
+| ----------------------------- | ---------------------------- | ---------------------- |
+| `ciCreateDirectHandler`       | Direct service wrapper       | Cognito handlers       |
+| `ciCreateTableServiceHandler` | Single-table service wrapper | `ciGetTenantHandler`   |
+| `ciCreateLambdaHandler`       | Full-control handler         | `ciGetSettingsHandler` |
+
+---
+
+## Recommended mental model
+
+- **Direct handler** → direct service call
+- **Table service handler** → single-table wrapper
+- **Lambda handler** → full orchestration
+
+---
+
+This structure keeps handler authoring consistent and ensures every CloudIgniter developer can quickly choose the correct abstraction.

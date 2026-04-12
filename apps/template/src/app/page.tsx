@@ -1,13 +1,26 @@
-// import { ciCreateServerRuntime } from '@cloudigniter/next/server';
+import Layout from '@cloudigniter/next/ui/layout/app-standard';
+import { Page } from '@cloudigniter/next/ui/layout';
+import { AboutBorderBeam } from '@cloudigniter/next/ui/components';
 
-export default function HomePage() {
-  // const runtime = ciCreateServerRuntime();
+import { ciBootstrap } from '@/kernel/server';
+
+export default async function HomePage() {
+  const config = await ciBootstrap();
 
   return (
-    <main>
-      <h1>CloudIgniter Template</h1>
-      <p>Next.js 16 starter wired to @cloudigniter/next.</p>
-      {/* <pre>{JSON.stringify(runtime, null, 2)}</pre> */}
-    </main>
+    <>
+      <Layout config={config} protect={false}>
+        <Page
+          name={'homepage'}
+          setup={{ showPageHeader: false }}
+          config={config}
+        >
+          <AboutBorderBeam
+            config={config}
+            options={{ duration: 8, size: 200 }}
+          />
+        </Page>
+      </Layout>
+    </>
   );
 }

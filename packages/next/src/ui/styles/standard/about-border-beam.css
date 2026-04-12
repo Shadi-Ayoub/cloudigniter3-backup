@@ -1,0 +1,19 @@
+.ci-about-border-beam {
+  @apply fixed inset-0 flex items-center justify-center;
+}
+
+.ci-about-border-beam-box {
+  @apply bg-muted-100 dark:bg-muted-800 relative m-auto flex h-[500px] w-[700px] flex-col items-center justify-center overflow-hidden rounded-lg border-0 md:shadow-xl;
+}
+
+.ci-about-border-beam-title {
+  @apply to-muted-300 dark:from-muted-100 pointer-events-none bg-gradient-to-b from-black bg-clip-text text-center text-8xl leading-normal font-semibold whitespace-pre-wrap text-transparent dark:to-white;
+}
+
+.ci-about-border-beam-primary-text {
+  @apply pointer-events-none bg-clip-text text-center text-2xl leading-normal font-semibold whitespace-pre-wrap dark:text-white;
+}
+
+.ci-about-border-beam-secondary-text {
+  @apply dark:to-muted-900/10 pointer-events-none mt-12 w-[650px] bg-gradient-to-b bg-clip-text text-justify text-xl whitespace-pre-wrap dark:from-white;
+}

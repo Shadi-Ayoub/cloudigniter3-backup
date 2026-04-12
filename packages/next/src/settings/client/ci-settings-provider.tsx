@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from "react";
 
 /**
  * Placeholder provider component for future settings context expansion.
@@ -6,6 +6,6 @@ import type { PropsWithChildren } from 'react';
  * @param props - Component props.
  * @returns Child tree unchanged.
  */
-export function CiSettingsProvider(props: PropsWithChildren) {
+export function ciSettingsProvider(props: PropsWithChildren) {
   return props.children;
 }

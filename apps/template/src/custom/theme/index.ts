@@ -1,0 +1,1 @@
+export { themeProviderProps } from './customTheme';

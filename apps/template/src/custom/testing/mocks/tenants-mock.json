@@ -1,0 +1,422 @@
+[
+  {
+    "id": "TENANT#school-abu-dhabi",
+    "type": "TENANT",
+    "status": "active",
+    "tenantId": "school-abu-dhabi",
+    "name": "School Abu Dhabi",
+    "description": "Mock tenant for Abu Dhabi campus",
+    "slug": "abu-dhabi",
+    "meta": {
+      "orgUnitsCount": 12,
+      "region": "AD",
+      "cluster": "north",
+      "enabled": true,
+      "type": "secondary",
+      "capacity": 1800,
+      "timezone": "Asia/Dubai",
+      "country": "AE",
+      "tags": ["urban", "flagship"],
+      "createdAt": "2024-01-15T08:30:00.000Z"
+    }
+  },
+  {
+    "id": "TENANT#school-dubai",
+    "type": "TENANT",
+    "status": "active",
+    "tenantId": "school-dubai",
+    "name": "School Dubai",
+    "description": "Mock tenant for Dubai campus",
+    "slug": "dubai",
+    "meta": {
+      "orgUnitsCount": 10,
+      "region": "DXB",
+      "cluster": "central",
+      "enabled": true,
+      "type": "secondary",
+      "capacity": 2200,
+      "timezone": "Asia/Dubai",
+      "country": "AE",
+      "tags": ["metro"],
+      "createdAt": "2024-01-20T09:10:00.000Z"
+    }
+  },
+  {
+    "id": "TENANT#school-al-ain",
+    "type": "TENANT",
+    "status": "active",
+    "tenantId": "school-al-ain",
+    "name": "School Al Ain",
+    "description": "Mock tenant for Al Ain campus",
+    "slug": "al-ain",
+    "meta": {
+      "orgUnitsCount": 9,
+      "region": "AD",
+      "cluster": "east",
+      "enabled": true,
+      "type": "secondary",
+      "capacity": 1400,
+      "timezone": "Asia/Dubai",
+      "country": "AE",
+      "tags": ["inland"],
+      "createdAt": "2024-02-01T07:45:00.000Z"
+    }
+  },
+  {
+    "id": "TENANT#school-sharjah",
+    "type": "TENANT",
+    "status": "active",
+    "tenantId": "school-sharjah",
+    "name": "School Sharjah",
+    "description": "Mock tenant for Sharjah campus",
+    "slug": "sharjah",
+    "meta": {
+      "orgUnitsCount": 8,
+      "region": "SHJ",
+      "cluster": "north",
+      "enabled": true,
+      "type": "secondary",
+      "capacity": 1600,
+      "timezone": "Asia/Dubai",
+      "country": "AE",
+      "tags": ["urban"],
+      "createdAt": "2024-02-05T10:00:00.000Z"
+    }
+  },
+  {
+    "id": "TENANT#school-ajman",
+    "type": "TENANT",
+    "status": "active",
+    "tenantId": "school-ajman",
+    "name": "School Ajman",
+    "description": "Mock tenant for Ajman campus",
+    "slug": "ajman",
+    "meta": {
+      "orgUnitsCount": 6,
+      "region": "AJM",
+      "cluster": "north",
+      "enabled": true,
+      "type": "primary",
+      "capacity": 1100,
+      "timezone": "Asia/Dubai",
+      "country": "AE",
+      "tags": ["compact"],
+      "createdAt": "2024-02-10T08:20:00.000Z"
+    }
+  },
+  {
+    "id": "TENANT#school-umm-al-quwain",
+    "type": "TENANT",
+    "status": "active",
+    "tenantId": "school-umm-al-quwain",
+    "name": "School Umm Al Quwain",
+    "description": "Mock tenant for Umm Al Quwain campus",
+    "slug": "umm-al-quwain",
+    "meta": {
+      "orgUnitsCount": 5,
+      "region": "UAQ",
+      "cluster": "north",
+      "enabled": true,
+      "type": "primary",
+      "capacity": 900,
+      "timezone": "Asia/Dubai",
+      "country": "AE",
+      "tags": ["coastal"],
+      "createdAt": "2024-02-12T08:00:00.000Z"
+    }
+  },
+  {
+    "id": "TENANT#school-ras-al-khaimah",
+    "type": "TENANT",
+    "status": "active",
+    "tenantId": "school-ras-al-khaimah",
+    "name": "School Ras Al Khaimah",
+    "description": "Mock tenant for Ras Al Khaimah campus",
+    "slug": "ras-al-khaimah",
+    "meta": {
+      "orgUnitsCount": 7,
+      "region": "RAK",
+      "cluster": "north",
+      "enabled": true,
+      "type": "secondary",
+      "capacity": 1500,
+      "timezone": "Asia/Dubai",
+      "country": "AE",
+      "tags": ["mountain"],
+      "createdAt": "2024-02-15T09:30:00.000Z"
+    }
+  },
+  {
+    "id": "TENANT#school-fujairah",
+    "type": "TENANT",
+    "status": "active",
+    "tenantId": "school-fujairah",
+    "name": "School Fujairah",
+    "description": "Mock tenant for Fujairah campus",
+    "slug": "fujairah",
+    "meta": {
+      "orgUnitsCount": 6,
+      "region": "FUJ",
+      "cluster": "east",
+      "enabled": true,
+      "type": "secondary",
+      "capacity": 1300,
+      "timezone": "Asia/Dubai",
+      "country": "AE",
+      "tags": ["coastal"],
+      "createdAt": "2024-02-18T07:50:00.000Z"
+    }
+  },
+  {
+    "id": "TENANT#school-madinat-zayed",
+    "type": "TENANT",
+    "status": "active",
+    "tenantId": "school-madinat-zayed",
+    "name": "School Madinat Zayed",
+    "description": "Mock tenant for Madinat Zayed campus",
+    "slug": "madinat-zayed",
+    "meta": {
+      "orgUnitsCount": 4,
+      "region": "AD",
+      "cluster": "west",
+      "enabled": true,
+      "type": "primary",
+      "capacity": 800,
+      "timezone": "Asia/Dubai",
+      "country": "AE",
+      "tags": ["desert"],
+      "createdAt": "2024-02-20T08:10:00.000Z"
+    }
+  },
+  {
+    "id": "TENANT#school-ruwais",
+    "type": "TENANT",
+    "status": "active",
+    "tenantId": "school-ruwais",
+    "name": "School Ruwais",
+    "description": "Mock tenant for Ruwais campus",
+    "slug": "ruwais",
+    "meta": {
+      "orgUnitsCount": 4,
+      "region": "AD",
+      "cluster": "west",
+      "enabled": true,
+      "type": "technical",
+      "capacity": 700,
+      "timezone": "Asia/Dubai",
+      "country": "AE",
+      "tags": ["industrial"],
+      "createdAt": "2024-02-22T09:00:00.000Z"
+    }
+  },
+  {
+    "id": "TENANT#school-khalifa-city",
+    "type": "TENANT",
+    "status": "active",
+    "tenantId": "school-khalifa-city",
+    "name": "School Khalifa City",
+    "description": "Mock tenant for Khalifa City campus",
+    "slug": "khalifa-city",
+    "meta": {
+      "orgUnitsCount": 9,
+      "region": "AD",
+      "cluster": "central",
+      "enabled": true,
+      "type": "secondary",
+      "capacity": 1700,
+      "timezone": "Asia/Dubai",
+      "country": "AE",
+      "tags": ["suburban"],
+      "createdAt": "2024-02-25T10:15:00.000Z"
+    }
+  },
+  {
+    "id": "TENANT#school-mbz-city",
+    "type": "TENANT",
+    "status": "active",
+    "tenantId": "school-mbz-city",
+    "name": "School Mohammed Bin Zayed City",
+    "description": "Mock tenant for MBZ City campus",
+    "slug": "mbz-city",
+    "meta": {
+      "orgUnitsCount": 8,
+      "region": "AD",
+      "cluster": "central",
+      "enabled": true,
+      "type": "secondary",
+      "capacity": 1650,
+      "timezone": "Asia/Dubai",
+      "country": "AE",
+      "tags": ["suburban"],
+      "createdAt": "2024-02-28T08:40:00.000Z"
+    }
+  },
+  {
+    "id": "TENANT#school-al-warqa",
+    "type": "TENANT",
+    "status": "active",
+    "tenantId": "school-al-warqa",
+    "name": "School Al Warqa",
+    "description": "Mock tenant for Al Warqa campus",
+    "slug": "al-warqa",
+    "meta": {
+      "orgUnitsCount": 6,
+      "region": "DXB",
+      "cluster": "east",
+      "enabled": true,
+      "type": "primary",
+      "capacity": 1200,
+      "timezone": "Asia/Dubai",
+      "country": "AE",
+      "tags": ["residential"],
+      "createdAt": "2024-03-02T07:30:00.000Z"
+    }
+  },
+  {
+    "id": "TENANT#school-al-qusais",
+    "type": "TENANT",
+    "status": "active",
+    "tenantId": "school-al-qusais",
+    "name": "School Al Qusais",
+    "description": "Mock tenant for Al Qusais campus",
+    "slug": "al-qusais",
+    "meta": {
+      "orgUnitsCount": 7,
+      "region": "DXB",
+      "cluster": "north",
+      "enabled": true,
+      "type": "secondary",
+      "capacity": 1550,
+      "timezone": "Asia/Dubai",
+      "country": "AE",
+      "tags": ["urban"],
+      "createdAt": "2024-03-05T09:20:00.000Z"
+    }
+  },
+  {
+    "id": "TENANT#school-jebel-ali",
+    "type": "TENANT",
+    "status": "active",
+    "tenantId": "school-jebel-ali",
+    "name": "School Jebel Ali",
+    "description": "Mock tenant for Jebel Ali campus",
+    "slug": "jebel-ali",
+    "meta": {
+      "orgUnitsCount": 5,
+      "region": "DXB",
+      "cluster": "south",
+      "enabled": true,
+      "type": "technical",
+      "capacity": 1000,
+      "timezone": "Asia/Dubai",
+      "country": "AE",
+      "tags": ["industrial"],
+      "createdAt": "2024-03-08T08:55:00.000Z"
+    }
+  },
+  {
+    "id": "TENANT#school-al-barsha",
+    "type": "TENANT",
+    "status": "active",
+    "tenantId": "school-al-barsha",
+    "name": "School Al Barsha",
+    "description": "Mock tenant for Al Barsha campus",
+    "slug": "al-barsha",
+    "meta": {
+      "orgUnitsCount": 9,
+      "region": "DXB",
+      "cluster": "central",
+      "enabled": true,
+      "type": "secondary",
+      "capacity": 1900,
+      "timezone": "Asia/Dubai",
+      "country": "AE",
+      "tags": ["metro"],
+      "createdAt": "2024-03-10T10:05:00.000Z"
+    }
+  },
+  {
+    "id": "TENANT#school-al-nahda",
+    "type": "TENANT",
+    "status": "active",
+    "tenantId": "school-al-nahda",
+    "name": "School Al Nahda",
+    "description": "Mock tenant for Al Nahda campus",
+    "slug": "al-nahda",
+    "meta": {
+      "orgUnitsCount": 7,
+      "region": "SHJ",
+      "cluster": "central",
+      "enabled": true,
+      "type": "primary",
+      "capacity": 1250,
+      "timezone": "Asia/Dubai",
+      "country": "AE",
+      "tags": ["border"],
+      "createdAt": "2024-03-12T07:35:00.000Z"
+    }
+  },
+  {
+    "id": "TENANT#school-al-dhaid",
+    "type": "TENANT",
+    "status": "active",
+    "tenantId": "school-al-dhaid",
+    "name": "School Al Dhaid",
+    "description": "Mock tenant for Al Dhaid campus",
+    "slug": "al-dhaid",
+    "meta": {
+      "orgUnitsCount": 4,
+      "region": "SHJ",
+      "cluster": "east",
+      "enabled": true,
+      "type": "primary",
+      "capacity": 850,
+      "timezone": "Asia/Dubai",
+      "country": "AE",
+      "tags": ["rural"],
+      "createdAt": "2024-03-15T08:10:00.000Z"
+    }
+  },
+  {
+    "id": "TENANT#school-dibba",
+    "type": "TENANT",
+    "status": "active",
+    "tenantId": "school-dibba",
+    "name": "School Dibba",
+    "description": "Mock tenant for Dibba campus",
+    "slug": "dibba",
+    "meta": {
+      "orgUnitsCount": 4,
+      "region": "FUJ",
+      "cluster": "north",
+      "enabled": true,
+      "type": "primary",
+      "capacity": 780,
+      "timezone": "Asia/Dubai",
+      "country": "AE",
+      "tags": ["coastal"],
+      "createdAt": "2024-03-18T07:55:00.000Z"
+    }
+  },
+  {
+    "id": "TENANT#school-khor-fakkan",
+    "type": "TENANT",
+    "status": "active",
+    "tenantId": "school-khor-fakkan",
+    "name": "School Khor Fakkan",
+    "description": "Mock tenant for Khor Fakkan campus",
+    "slug": "khor-fakkan",
+    "meta": {
+      "orgUnitsCount": 6,
+      "region": "SHJ",
+      "cluster": "coastal",
+      "enabled": true,
+      "type": "secondary",
+      "capacity": 1350,
+      "timezone": "Asia/Dubai",
+      "country": "AE",
+      "tags": ["coastal"],
+      "createdAt": "2024-03-20T09:00:00.000Z"
+    }
+  }
+]

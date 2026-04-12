@@ -1,0 +1,9 @@
+@layer components {
+  .ci-settings-form-container {
+    @apply text-left rtl:text-right;
+  }
+
+  .ci-settings-form-main {
+    @apply mx-auto flex max-w-7xl flex-row gap-6 px-6 py-10 rtl:flex-row-reverse;
+  }
+}

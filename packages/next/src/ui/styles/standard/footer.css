@@ -1,0 +1,17 @@
+@layer components {
+  .ci-main-footer-left {
+    @apply flex-1 ltr:text-left rtl:text-right;
+  }
+
+  .ci-main-footer-center {
+    @apply flex-1 text-center;
+  }
+
+  .ci-main-footer-right {
+    @apply flex-1 ltr:text-right rtl:text-left;
+  }
+
+  .ci-main-footer-env-text {
+    @apply text-primary-900 dark:text-primary-500;
+  }
+}

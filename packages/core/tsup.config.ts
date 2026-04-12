@@ -1,12 +1,18 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ["src/index.ts", "src/server/index.ts"],
-  format: ["esm"],
-  dts: true,
-  sourcemap: true,
-  clean: true,
+  entry: {
+    index: "src/index.ts",
+    "server/index": "src/server/index.ts",
+  },
+  format: ["esm", "cjs"],
+  outDir: "dist",
+  dts: false,
+  sourcemap: false,
+  clean: false,
   splitting: false,
+  minify: false,
   treeshake: true,
   target: "es2022",
+  external: ["react", "react-dom", "next"],
 });

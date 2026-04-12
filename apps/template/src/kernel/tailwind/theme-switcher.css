@@ -1,0 +1,19 @@
+@import 'tailwindcss';
+
+@layer components {
+  .theme-switcher-icon {
+    @apply h-1 w-1;
+  }
+
+  .theme-switcher-button-icon-sun {
+    @apply theme-switcher-icon scale-100 rotate-0 border-0 bg-amber-400 ring-0 transition-all focus:ring-0 focus:outline-0 dark:scale-0 dark:-rotate-90;
+  }
+
+  .theme-switcher-button-icon-moon {
+    @apply theme-switcher-icon absolute scale-0 rotate-90 border-0 ring-0 transition-all focus:ring-0 focus:outline-0 dark:scale-100 dark:rotate-0;
+  }
+
+  .theme-switcher-menu-item {
+    @apply focus:hover:bg-muted-200 focus:hover:dark:bg-muted-950 focus:hover:dark:text-accent-700;
+  }
+}

@@ -1,0 +1,17 @@
+@layer components {
+  .menu-trigger {
+    @apply border-0 ring-0 outline-0 focus:border-0 focus:ring-0 focus:outline-none;
+  }
+
+  .menu-item {
+    @apply bg-muted-50 text-muted-950 focus:hover:bg-muted-200 data-[state=open]:bg-muted-200 dark:bg-muted-950 dark:text-muted-50 focus:hover:dark:bg-accent! cursor-pointer;
+  }
+
+  .menu-content {
+    @apply bg-muted-50 text-muted-950 dark:bg-muted-950 dark:text-muted-50;
+  }
+
+  .menu-item-check-icon {
+    @apply text-muted-950 dark:text-muted-50 ltr:ml-auto rtl:mr-auto;
+  }
+}

@@ -1,0 +1,55 @@
+@layer components {
+  .engraved-bottom-border {
+    @apply relative after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-[4px] after:rounded-sm after:bg-gradient-to-t after:from-[rgba(0,0,0,0.25)] after:to-transparent after:[box-shadow:inset_0_2px_6px_rgba(255,255,255,0.15),inset_0_-3px_8px_rgba(0,0,0,0.35)] after:content-[''];
+  }
+
+  .ci-dt-container {
+    @apply bg-muted-50 overflow-auto rounded-lg shadow-md;
+  }
+
+  .ci-dt-table {
+    @apply min-w-full border-collapse;
+  }
+
+  .ci-dt-header {
+    @apply bg-muted-400 dark:bg-muted-950 z-raised sticky top-0 backdrop-blur-md;
+  }
+
+  .ci-dt-tbody {
+    @apply border-muted-100 dark:border-muted-700 divide-y;
+  }
+
+  .ci-dt-th {
+    @apply cursor-pointer px-6 py-3 text-left text-xs font-bold tracking-wider uppercase select-none;
+  }
+
+  .ci-dt-cell {
+    @apply border-b border-gray-100 px-6 py-4 text-sm whitespace-nowrap dark:border-gray-500;
+    @apply bg-transparent;
+  }
+
+  .ci-dt-row {
+    @apply hover:bg-secondary-200 dark:bg-muted-700 dark:hover:bg-muted-500 bg-white transition-colors duration-150;
+    @apply data-[state=selected]:bg-secondary-400;
+  }
+
+  .ci-dt-new-row {
+    @apply animate-pulse bg-yellow-100;
+  }
+
+  .ci-dt-pagination-button {
+    @apply bg-muted-100/40 rounded border-[1px] text-sm font-medium;
+  }
+
+  .ci-dt-pagination-button.active {
+    @apply bg-muted-900 text-muted-50;
+  }
+
+  .ci-dt-sort-indicator-active {
+    @apply bg-secondary-600;
+  }
+
+  .ci-dt-muted {
+    @apply text-muted-500;
+  }
+}

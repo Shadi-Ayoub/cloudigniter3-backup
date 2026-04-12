@@ -11,15 +11,12 @@ import {
 
 import { ciSerializeUnknownError, type CiResult } from "@cloudigniter/core";
 
-type ReturnValuesAny = "NONE" | "ALL_OLD";
-type ExistenceMode = "any" | "deleteOnly";
-
-export type MetricsOption =
-  | boolean
-  | {
-      returnConsumedCapacity?: "NONE" | "TOTAL" | "INDEXES";
-      returnItemCollectionMetrics?: "NONE" | "SIZE";
-    };
+import type { CiDynamoDeleteReturnValues } from "../types/CiDynamoDeleteReturnValues";
+import type { CiDynamoExistenceMode } from "../types/CiDynamoExistenceMode";
+import type { CiDynamoMetricsOption } from "../types/CiDynamoMetricsOption";
+import { ciBuildDynamoExistenceCondition } from "../helpers/ci-build-dynamo-existence-condition";
+import { ciMapDynamoErrorStatus } from "../helpers/ci-map-dynamo-error-status";
+import { ciNormalizeDynamoMetrics } from "../helpers/ci-normalize-dynamo-metrics";
 
 /**
  * Success body for delete operations.
@@ -39,18 +36,19 @@ export type CiDeleteItemResult<T = Record<string, any>> = CiResult<
   CiDeleteItemBody<T>
 >;
 
-const ciNormalizeMetrics = (m?: MetricsOption) => {
-  if (!m) return { rcc: "NONE" as const, ricm: "NONE" as const };
-  if (m === true) return { rcc: "TOTAL" as const, ricm: "SIZE" as const };
-
-  return {
-    rcc: m.returnConsumedCapacity ?? ("NONE" as const),
-    ricm: m.returnItemCollectionMetrics ?? ("NONE" as const),
-  };
-};
+/**
+ * Input for `deleteItem`.
+ */
+export interface CiDeleteItemOptions<K extends Record<string, any>> {
+  tableName: string;
+  key: K;
+  existence?: Extract<CiDynamoExistenceMode, "any" | "deleteOnly">;
+  returnValues?: CiDynamoDeleteReturnValues;
+  metrics?: CiDynamoMetricsOption;
+}
 
 /**
- * Deletes a single item using DynamoDB `DeleteItem`.
+ * Deletes a single item using DynamoDB DeleteItem.
  *
  * Generic order:
  * - `T` = deleted item shape returned in `body.attributes`
@@ -66,13 +64,7 @@ export async function deleteItem<
   K extends Record<string, any>,
 >(
   doc: DynamoDBDocumentClient,
-  opts: {
-    tableName: string;
-    key: K;
-    existence?: ExistenceMode;
-    returnValues?: ReturnValuesAny;
-    metrics?: MetricsOption;
-  },
+  opts: CiDeleteItemOptions<K>,
 ): Promise<CiDeleteItemResult<T>> {
   const {
     tableName,
@@ -82,34 +74,26 @@ export async function deleteItem<
     metrics,
   } = opts;
 
-  const { rcc, ricm } = ciNormalizeMetrics(metrics);
+  const { returnConsumedCapacity, returnItemCollectionMetrics } =
+    ciNormalizeDynamoMetrics(metrics);
 
-  const condition =
-    existence === "deleteOnly"
-      ? Object.keys(key)
-          .map((_, i) => `attribute_exists(#k${i})`)
-          .join(" AND ")
-      : undefined;
-
-  const names =
-    existence === "deleteOnly"
-      ? Object.keys(key).reduce<Record<string, string>>((acc, k, i) => {
-          acc[`#k${i}`] = k;
-          return acc;
-        }, {})
-      : undefined;
+  const { expression: conditionExpression, names: expressionAttributeNames } =
+    ciBuildDynamoExistenceCondition(key, existence);
 
   try {
     const res = await doc.send(
       new DeleteCommand({
         TableName: tableName,
         Key: key,
-        ConditionExpression: condition,
+        ConditionExpression: conditionExpression,
         ExpressionAttributeNames:
-          names && Object.keys(names).length ? names : undefined,
+          expressionAttributeNames &&
+          Object.keys(expressionAttributeNames).length
+            ? expressionAttributeNames
+            : undefined,
         ReturnValues: returnValues as DeleteCommandInput["ReturnValues"],
-        ReturnConsumedCapacity: rcc,
-        ReturnItemCollectionMetrics: ricm,
+        ReturnConsumedCapacity: returnConsumedCapacity,
+        ReturnItemCollectionMetrics: returnItemCollectionMetrics,
       }),
     );
 
@@ -123,22 +107,14 @@ export async function deleteItem<
         metadata: res.$metadata,
       },
     };
-  } catch (error: any) {
-    const statusCode =
-      error?.name === "ConditionalCheckFailedException"
-        ? 400
-        : error?.$metadata?.httpStatusCode === 401 ||
-          error?.$metadata?.httpStatusCode === 403 ||
-          error?.$metadata?.httpStatusCode === 404 ||
-          error?.$metadata?.httpStatusCode === 409
-        ? error.$metadata.httpStatusCode
-        : 500;
-
+  } catch (error) {
     return {
       ok: false,
-      statusCode,
+      statusCode: ciMapDynamoErrorStatus(error, [
+        "ConditionalCheckFailedException",
+      ]),
       body: {
-        error: error?.message ?? String(error),
+        error: error instanceof Error ? error.message : String(error),
         details: ciSerializeUnknownError(error),
       },
     };

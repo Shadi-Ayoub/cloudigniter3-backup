@@ -4,7 +4,7 @@
   "private": false,
   "type": "module",
   "sideEffects": false,
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -21,21 +21,27 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
+    "clean": "rimraf dist .tsbuildinfo",
+    "build:js": "tsup --config tsup.config.ts",
+    "build:types": "tsc -p tsconfig.build.json",
+    "build:assets": "pnpm -v",
+    "obfuscate": "node ../../scripts/ci-obfuscate-package.mjs",
+    "build": "pnpm run clean && pnpm run build:js && pnpm run build:types && pnpm run build:assets && pnpm run obfuscate",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "check:package": "npm pack --dry-run",
+    "dev": "tsup --watch",
     "typecheck:tools": "tsc -p tsconfig.tools.json --noEmit",
-    "check": "pnpm run typecheck && pnpm run typecheck:tools",
-    "clean": "rimraf dist"
-  },
-  "dependencies": {
-    "@cloudigniter/types": "workspace:*"
+    "check": "pnpm run typecheck && pnpm run typecheck:tools"
   },
   "devDependencies": {
     "@cloudigniter/config-ts": "workspace:*",
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^25.5.0",
     "rimraf": "^6.0.1",
     "tsup": "^8.5.0",
     "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "js-cookie": "^3.0.5"
   }
 }

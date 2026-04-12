@@ -1,0 +1,17 @@
+@layer components {
+  .theme-switcher-icon {
+    @apply h-5 w-5;
+  }
+
+  .theme-switcher-button-icon-sun {
+    @apply theme-switcher-icon rotate-0 scale-100 border-0 ring-0 transition-all focus:outline-0 focus:ring-0 dark:-rotate-90 dark:scale-0;
+  }
+
+  .theme-switcher-button-icon-moon {
+    @apply theme-switcher-icon absolute rotate-90 scale-0 border-0 ring-0 transition-all focus:outline-0 focus:ring-0 dark:rotate-0 dark:scale-100;
+  }
+
+  .theme-switcher-menu-item {
+    @apply focus:hover:bg-muted-200 focus:hover:dark:bg-muted-950 focus:hover:dark:text-accent-700;
+  }
+}

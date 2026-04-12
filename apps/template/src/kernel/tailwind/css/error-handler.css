@@ -1,0 +1,105 @@
+@layer components {
+  .notification-card {
+    @apply fixed bottom-10 left-4 flex cursor-pointer flex-col items-center space-x-4 rounded-lg border p-6 shadow-lg;
+  }
+
+  .notification-card-container {
+    @apply flex items-center space-x-2;
+  }
+
+  .notification-card-label {
+    @apply text-lg font-semibold ltr:ml-2 rtl:mr-2!;
+  }
+
+  .notification-card-warning {
+    @apply bg-warning-light text-warning-foreground-light border-warning-dark;
+  }
+
+  .notification-card-warning-icon {
+    @apply text-warning-foreground;
+  }
+
+  .notification-card-info {
+    @apply bg-info-light text-info-foreground-light border-info-dark;
+  }
+
+  .notification-card-info-icon {
+    @apply text-info-foreground;
+  }
+
+  .notification-card-error {
+    @apply bg-error-light text-error-foreground-light border-error-dark;
+  }
+
+  .notification-card-error-icon {
+    @apply text-error-foreground-light;
+  }
+
+  .notification-dialog-content {
+    @apply rounded-lg border p-6 shadow-xl;
+  }
+
+  .notification-dialog-content-warning {
+    @apply bg-warning-light text-warning-foreground-light border-warning-dark;
+  }
+
+  .notification-dialog-content-info {
+    @apply bg-info-light text-info-foreground-light border-info-dark;
+  }
+
+  .notification-dialog-content-error {
+    @apply bg-error-light text-error-foreground-light border-error-dark;
+  }
+
+  .dialog-title {
+    @apply mb-0 flex items-center;
+  }
+
+  .dialog-title-icon {
+    @apply ltr:mr-3 rtl:ml-3;
+  }
+
+  .dialog-title-icon-warning {
+    @apply text-warning-foreground!;
+  }
+
+  .dialog-title-icon-info {
+    @apply text-info-foreground;
+  }
+
+  .dialog-title-icon-error {
+    @apply text-error-foreground-light;
+  }
+
+  .dialog-title-text {
+    @apply text-xl font-bold;
+  }
+
+  .dialog-close-btn-warning {
+    @apply bg-warning-light text-warning-foreground-light border-warning-foreground-light hover:bg-warning-foreground-light hover:text-warning-foreground-dark hover:border-warning-foreground-dark hover:ring-warning-foreground-dark dark:border-warning-foreground-light dark:bg-warning-light dark:hover:text-warning-foreground dark:hover:bg-warning!;
+  }
+
+  .dialog-close-btn-info {
+    @apply bg-info-light text-info-foreground-light border-info-foreground-light hover:bg-info-foreground-light hover:text-info-foreground-dark hover:border-info-foreground-dark hover:ring-info-foreground-dark dark:border-info-foreground-light dark:bg-info-light dark:hover:text-info-foreground dark:hover:bg-info!;
+  }
+
+  .dialog-close-btn-error {
+    @apply bg-error-light text-error-foreground-light border-error-foreground-light hover:bg-error-foreground-light hover:text-error-foreground-dark hover:border-error-foreground-dark hover:ring-error-foreground-dark dark:border-error-foreground-light dark:bg-error-light dark:hover:text-error-foreground dark:hover:bg-error!;
+  }
+
+  .critical-backdrop {
+    @apply bg-error-light text-error-foreground-light fixed inset-0 z-[9999] flex flex-col items-center justify-center!;
+  }
+
+  .critical-backdrop-title-icon {
+    @apply mb-12 flex items-center;
+  }
+
+  .critical-backdrop-title-text {
+    @apply text-5xl font-bold ltr:ml-4 rtl:mr-4;
+  }
+
+  .critical-backdrop-message {
+    @apply border-error-foreground-light w-[50%] border p-4 text-2xl;
+  }
+}

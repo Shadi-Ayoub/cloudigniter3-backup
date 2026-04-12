@@ -1,0 +1,17 @@
+/* ── Override default border color ── */
+@utility border-gray-300 {
+  /* matches colors.gray[300] → hsl(210 17% 81%) */
+  --tw-border-opacity: 1;
+  border-color: hsl(210 17% 81%);
+}
+
+/* ── Custom border-radius utilities ── */
+@utility rounded-lg {
+  border-radius: var(--radius);
+}
+@utility rounded-md {
+  border-radius: calc(var(--radius) - 2px);
+}
+@utility rounded-sm {
+  border-radius: calc(var(--radius) - 4px);
+}

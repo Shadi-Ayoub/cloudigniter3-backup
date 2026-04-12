@@ -1,4 +1,4 @@
-import type { CiSettingsValue } from '../../common/types/CiSettingsValue';
+import type { CiSettingsValue } from "@cloudigniter/core";
 
 /**
  * Result returned by the `useSettingValue` hook.

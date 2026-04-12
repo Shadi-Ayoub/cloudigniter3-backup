@@ -1,12 +1,19 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
-    "build": { "dependsOn": ["^build"], "outputs": ["dist/**", ".next/**", "!.next/cache/**"] },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+    },
     "dev": { "cache": false, "persistent": true },
     "typecheck": { "dependsOn": ["^typecheck"], "outputs": [] },
     "typecheck:tools": { "dependsOn": ["^typecheck:tools"], "outputs": [] },
     "check": { "dependsOn": ["^check"], "outputs": [] },
     "lint": { "dependsOn": ["^lint"], "outputs": [] },
-    "clean": { "cache": false }
+    "clean": { "cache": false },
+    "check:package": {
+      "dependsOn": ["build"],
+      "outputs": []
+    }
   }
 }

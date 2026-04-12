@@ -1,0 +1,15 @@
+body {
+  background-color: var(--color-white);
+}
+
+.ci-page-container {
+  @apply flex h-screen flex-col;
+}
+
+.ci-screen-reader-only {
+  @apply sr-only;
+}
+
+.rotate-90 {
+  @apply rotate-90;
+}

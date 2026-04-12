@@ -1,4 +1,4 @@
-import type { CiSettings } from '../../common/types/CiSettings';
+import type { CiSettings } from "@cloudigniter/core";
 
 /**
  * Options for the `useSettings` hook.

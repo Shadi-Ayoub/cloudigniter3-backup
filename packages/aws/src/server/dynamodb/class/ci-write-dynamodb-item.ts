@@ -12,15 +12,10 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 
 import { ciSerializeUnknownError, type CiResult } from "@cloudigniter/core";
-
-type ExistenceMode = "any" | "insertOnly" | "updateOnly";
-type WriteMode = "auto" | "put" | "update";
-type ReturnValuesAny =
-  | "NONE"
-  | "ALL_OLD"
-  | "ALL_NEW"
-  | "UPDATED_NEW"
-  | "UPDATED_OLD";
+import type { CiDynamoExistenceMode } from "../types/CiDynamoExistenceMode";
+import type { CiDynamoWriteMode } from "../types/CiDynamoWriteMode";
+import type { CiDynamoWriteReturnValues } from "../types/CiDynamoWriteReturnValues";
+import type { CiDynamoMetricsOption } from "../types/CiDynamoMetricsOption";
 
 type TimestampOptions = {
   enabled?: boolean;
@@ -29,13 +24,6 @@ type TimestampOptions = {
   numeric?: boolean;
   nowFactory?: () => string | number;
 };
-
-export type MetricsOption =
-  | boolean
-  | {
-      returnConsumedCapacity?: "NONE" | "TOTAL" | "INDEXES";
-      returnItemCollectionMetrics?: "NONE" | "SIZE";
-    };
 
 export interface UpdateShape {
   set?: Record<string, any>;
@@ -62,12 +50,12 @@ export interface WriteItemOptions<
   key: K;
   item?: I;
   update?: UpdateShape;
-  mode?: WriteMode;
-  existence?: ExistenceMode;
+  mode?: CiDynamoWriteMode;
+  existence?: CiDynamoExistenceMode;
   timestamps?: TimestampOptions | boolean;
   optimisticLock?: OptimisticLock;
-  returnValues?: ReturnValuesAny;
-  metrics?: MetricsOption;
+  returnValues?: CiDynamoWriteReturnValues;
+  metrics?: CiDynamoMetricsOption;
 }
 
 /**
@@ -90,7 +78,7 @@ export type WriteItemResult<T = Record<string, any>> = CiResult<
 
 const buildExistenceCondition = (
   key: Record<string, any>,
-  mode: ExistenceMode,
+  mode: CiDynamoExistenceMode,
 ) => {
   if (mode === "any") return { expr: "", names: {} as Record<string, string> };
 
@@ -143,7 +131,7 @@ function normalizeTimestamps(
   };
 }
 
-const normalizeMetrics = (m?: MetricsOption) => {
+const normalizeMetrics = (m?: CiDynamoMetricsOption) => {
   if (!m) return { rcc: "NONE" as const, ricm: "NONE" as const };
   if (m === true) return { rcc: "TOTAL" as const, ricm: "SIZE" as const };
 
@@ -261,7 +249,7 @@ export async function writeItem<
   const { rcc, ricm } = normalizeMetrics(metrics);
   const warnings: string[] = [];
 
-  const chosen: WriteMode =
+  const chosen: CiDynamoWriteMode =
     mode === "auto" ? (update ? "update" : "put") : mode;
   const { expr: existenceExpr, names: existenceNames } =
     buildExistenceCondition(key, existence);

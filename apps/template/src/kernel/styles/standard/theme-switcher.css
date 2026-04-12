@@ -1,0 +1,13 @@
+@import './utilities/colors.css';
+
+@layer components {
+  .theme-switcher-button-icon-sun {
+    @apply h-1 w-1 scale-100 rotate-0 border-0 text-amber-400 ring-0 transition-all focus:ring-0 focus:outline-none dark:scale-0 dark:-rotate-90;
+  }
+  .theme-switcher-button-icon-moon {
+    @apply absolute h-1 w-1 scale-0 rotate-90 border-0 ring-0 transition-all focus:ring-0 focus:outline-none dark:scale-100 dark:rotate-0;
+  }
+  .theme-switcher-menu-item {
+    @apply hover:bg-primary-50 dark:hover:bg-muted-950 dark:hover:text-accent-700;
+  }
+}

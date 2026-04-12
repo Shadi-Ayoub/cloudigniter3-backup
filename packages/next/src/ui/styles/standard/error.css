@@ -1,0 +1,125 @@
+@layer components {
+  .notification-card {
+    @apply fixed bottom-10 left-4 flex cursor-pointer flex-col items-center space-x-4 rounded-lg border p-6 shadow-lg;
+  }
+
+  .notification-card-container {
+    @apply flex items-center space-x-2;
+  }
+
+  .notification-card-label {
+    @apply text-lg font-semibold ltr:ml-2 rtl:mr-2;
+  }
+
+  .notification-card-warning {
+    @apply bg-warning-background text-warning-foreground border-warning-foreground;
+  }
+
+  .notification-card-warning-icon {
+    @apply text-warning-foreground;
+  }
+
+  .notification-card-info {
+    @apply bg-info-background text-info-foreground border-info-foreground-dark;
+  }
+
+  .notification-card-info-icon {
+    @apply text-info-foreground;
+  }
+
+  .notification-card-error {
+    @apply bg-danger-background text-danger-foreground border-danger-foreground-dark;
+  }
+
+  .notification-card-error-icon {
+    @apply text-danger-foreground;
+  }
+
+  .notification-dialog-content {
+    @apply rounded-lg border p-6 shadow-xl;
+  }
+
+  .notification-dialog-content-warning {
+    @apply bg-warning-background text-warning-foreground border-warning-foreground-dark;
+  }
+
+  .notification-dialog-content-info {
+    @apply bg-info-background text-info-foreground border-info-foreground-dark;
+  }
+
+  .notification-dialog-content-error {
+    @apply bg-danger-background text-danger-foreground border-danger-foreground-dark;
+  }
+
+  .dialog-title {
+    @apply mb-0 flex items-center;
+  }
+
+  .dialog-title-icon {
+    @apply ltr:mr-3 rtl:ml-3;
+  }
+
+  .dialog-title-icon-warning {
+    @apply text-warning-foreground;
+  }
+
+  .dialog-title-icon-info {
+    @apply text-info-foreground;
+  }
+
+  .dialog-title-icon-error {
+    @apply text-danger-foreground;
+  }
+
+  .dialog-title-text {
+    @apply text-xl font-bold;
+  }
+
+  .dialog-close-btn-warning {
+    @apply bg-warning-background text-warning-foreground border-warning-foreground hover:bg-warning-foreground hover:text-warning-foreground-dark hover:border-warning-foreground-dark hover:ring-warning-foreground-dark dark:border-warning-foreground dark:bg-warning-background dark:hover:text-warning-foreground dark:hover:bg-warning-background-dark;
+  }
+
+  .dialog-close-btn-info {
+    @apply bg-info-background text-info-foreground border-info-foreground hover:bg-info-foreground hover:text-info-foreground-dark hover:border-info-foreground-dark hover:ring-info-foreground-dark dark:border-info-foreground dark:bg-info-background dark:hover:text-info-foreground dark:hover:bg-info-background-dark;
+  }
+
+  .dialog-close-btn-error {
+    @apply bg-danger-background text-danger-foreground border-danger-foreground hover:bg-danger-foreground hover:text-danger-foreground-dark hover:border-danger-foreground-dark hover:ring-danger-foreground-dark dark:border-danger-foreground dark:bg-danger-background dark:hover:text-danger-foreground dark:hover:bg-danger-background-dark;
+  }
+
+  .critical-backdrop {
+    @apply bg-danger-background text-danger-foreground z-toast fixed inset-0 flex flex-col items-center justify-center;
+  }
+
+  .critical-backdrop-title-icon {
+    @apply mb-12 flex items-center;
+  }
+
+  .critical-backdrop-title-text {
+    @apply text-5xl font-bold ltr:ml-4 rtl:mr-4;
+  }
+
+  .critical-backdrop-message {
+    @apply border-danger-foreground w-[50%] border p-4 text-2xl;
+  }
+
+  .ci-error-page-icon-critical {
+    @apply mb-4 text-red-500;
+  }
+
+  .ci-error-page-icon-warning {
+    @apply mb-4 text-yellow-500;
+  }
+
+  .ci-error-page-title {
+    @apply mb-2 text-2xl font-semibold text-gray-800;
+  }
+
+  .ci-error-page-message {
+    @apply mb-4 max-w-lg text-gray-600;
+  }
+
+  .ci-error-page-retry-button {
+    @apply flex items-center gap-2 rounded bg-gray-800 px-4 py-2 text-white transition hover:bg-gray-700;
+  }
+}

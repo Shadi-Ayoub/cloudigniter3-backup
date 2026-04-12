@@ -1,7 +1,3 @@
-/**
- * Client settings exports.
- */
-export * from './types';
-export * from './use-settings';
-export * from './use-setting-value';
-export * from './ci-settings-provider';
+export { ciSettingsProvider } from "./ci-settings-provider";
+export { useCiSettings } from "./ci-use-settings";
+export { useCiSettingValue } from "./ci-use-setting-value";

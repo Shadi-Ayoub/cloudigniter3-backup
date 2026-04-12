@@ -1,0 +1,18 @@
+/* @import './css/error-handler.css';
+@import './css/dashboard.css';
+@import './css/dropdown-menu.css';
+@import './css/theme-switcher.css';
+
+@layer components {
+  .header-menu-button-rounded {
+    @apply inline-flex h-12 w-12 items-center justify-center rounded-full bg-background text-foreground outline-0 transition-colors hover:bg-muted-100 focus:outline-0 focus:ring-0 dark:bg-muted-950 dark:text-accent-500;
+  }
+
+  .round-button-fallback {
+    @apply relative flex h-[50px] w-[50px] items-center justify-center rounded-full border-none bg-muted-50 p-0 dark:bg-muted-950;
+  }
+
+  .tabs-list {
+    @apply text-muted-500;
+  }
+} */

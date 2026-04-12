@@ -8,10 +8,14 @@ import {
 
 import { ciSerializeUnknownError, type CiResult } from "@cloudigniter/core";
 
+import type { CiDynamoExistenceMode } from "../types/CiDynamoExistenceMode";
+import { ciBuildDynamoExistenceCondition } from "../helpers/ci-build-dynamo-existence-condition";
+import { ciMapDynamoErrorStatus } from "../helpers/ci-map-dynamo-error-status";
+
 /**
  * Success body for transaction writes.
  */
-export type TransactWriteBody = {
+export type CiTransactWriteBody = {
   consumedCapacity?: ConsumedCapacity[];
   metadata: MetadataBearer["$metadata"];
   warnings?: string[];
@@ -20,74 +24,54 @@ export type TransactWriteBody = {
 /**
  * Union result for `transactWrite`.
  */
-export type TransactWriteResult = CiResult<TransactWriteBody>;
+export type CiTransactWriteResult = CiResult<CiTransactWriteBody>;
 
-type Key = Record<string, any>;
-type AnyItem = Record<string, any>;
+type CiKey = Record<string, any>;
+type CiAnyItem = Record<string, any>;
 
-type ExistenceMode = "any" | "insertOnly" | "updateOnly" | "deleteOnly";
-
-type PutOp = {
+type CiPutTransactWriteOp = {
   mode: "put";
-  key: Key;
-  item: AnyItem;
-  existence?: ExistenceMode;
+  key: CiKey;
+  item: CiAnyItem;
+  existence?: Extract<CiDynamoExistenceMode, "any" | "insertOnly">;
 };
 
-type UpdateOp = {
+type CiUpdateTransactWriteOp = {
   mode: "update";
-  key: Key;
+  key: CiKey;
   update: {
     set?: Record<string, any>;
   };
-  existence?: ExistenceMode;
+  existence?: Extract<CiDynamoExistenceMode, "any" | "updateOnly">;
 };
 
-type DeleteOp = {
+type CiDeleteTransactWriteOp = {
   mode: "delete";
-  key: Key;
-  existence?: ExistenceMode;
+  key: CiKey;
+  existence?: Extract<CiDynamoExistenceMode, "any" | "deleteOnly">;
 };
 
-export type TransactWriteOp = PutOp | UpdateOp | DeleteOp;
+export type CiTransactWriteOp =
+  | CiPutTransactWriteOp
+  | CiUpdateTransactWriteOp
+  | CiDeleteTransactWriteOp;
 
-function buildExistenceCondition(key: Key, mode?: ExistenceMode) {
-  if (!mode || mode === "any") return undefined;
-
-  const keys = Object.keys(key);
-  const names: Record<string, string> = {};
-  const checks = keys.map((k, i) => {
-    const ph = `#k${i}`;
-    names[ph] = k;
-    const fn =
-      mode === "insertOnly"
-        ? "attribute_not_exists"
-        : mode === "updateOnly" || mode === "deleteOnly"
-        ? "attribute_exists"
-        : "";
-    return `${fn}(${ph})`;
-  });
-
-  return {
-    expr: checks.join(" AND "),
-    names,
-  };
-}
-
-function buildUpdateExpression(set?: Record<string, any>) {
+function ciBuildUpdateExpression(set?: Record<string, any>) {
   const names: Record<string, string> = {};
   const values: Record<string, any> = {};
   const parts: string[] = [];
 
   if (set) {
-    let i = 0;
-    for (const [k, v] of Object.entries(set)) {
-      const n = `#n${i}`;
-      const pv = `:v${i}`;
-      names[n] = k;
-      values[pv] = v;
-      parts.push(`${n} = ${pv}`);
-      i++;
+    let index = 0;
+
+    for (const [key, value] of Object.entries(set)) {
+      const namePlaceholder = `#n${index}`;
+      const valuePlaceholder = `:v${index}`;
+
+      names[namePlaceholder] = key;
+      values[valuePlaceholder] = value;
+      parts.push(`${namePlaceholder} = ${valuePlaceholder}`);
+      index++;
     }
   }
 
@@ -110,78 +94,82 @@ export async function transactWrite(
   doc: DynamoDBDocumentClient,
   opts: {
     tableName: string;
-    items: TransactWriteOp[];
+    items: CiTransactWriteOp[];
     returnConsumedCapacity?: "NONE" | "TOTAL" | "INDEXES";
   },
-): Promise<TransactWriteResult> {
+): Promise<CiTransactWriteResult> {
   const { tableName, items, returnConsumedCapacity = "NONE" } = opts;
 
   try {
-    const txItems: NonNullable<TransactWriteCommandInput["TransactItems"]> =
-      items.map((op) => {
-        if (op.mode === "put") {
-          const cond = buildExistenceCondition(
-            op.key,
-            op.existence === "insertOnly" ? "insertOnly" : undefined,
-          );
-          return {
-            Put: {
-              TableName: tableName,
-              Item: { ...op.item, ...op.key },
-              ConditionExpression: cond?.expr,
-              ExpressionAttributeNames:
-                cond?.names && Object.keys(cond.names).length
-                  ? cond.names
-                  : undefined,
-            },
-          };
-        }
-
-        if (op.mode === "delete") {
-          const cond = buildExistenceCondition(
-            op.key,
-            op.existence === "deleteOnly" ? "deleteOnly" : undefined,
-          );
-          return {
-            Delete: {
-              TableName: tableName,
-              Key: op.key,
-              ConditionExpression: cond?.expr,
-              ExpressionAttributeNames:
-                cond?.names && Object.keys(cond.names).length
-                  ? cond.names
-                  : undefined,
-            },
-          };
-        }
-
-        const u = buildUpdateExpression(op.update?.set);
-        const cond = buildExistenceCondition(
-          op.key,
-          op.existence === "updateOnly" ? "updateOnly" : undefined,
+    const transactItems: NonNullable<
+      TransactWriteCommandInput["TransactItems"]
+    > = items.map((item) => {
+      if (item.mode === "put") {
+        const existence = ciBuildDynamoExistenceCondition(
+          item.key,
+          item.existence ?? "any",
         );
-        const names = {
-          ...(u.ExpressionAttributeNames ?? {}),
-          ...(cond?.names ?? {}),
-        };
 
         return {
-          Update: {
+          Put: {
             TableName: tableName,
-            Key: op.key,
-            UpdateExpression: u.UpdateExpression,
-            ExpressionAttributeNames: Object.keys(names).length
-              ? names
-              : undefined,
-            ExpressionAttributeValues: u.ExpressionAttributeValues,
-            ConditionExpression: cond?.expr,
+            Item: { ...item.item, ...item.key },
+            ConditionExpression: existence.expression,
+            ExpressionAttributeNames:
+              existence.names && Object.keys(existence.names).length
+                ? existence.names
+                : undefined,
           },
         };
-      });
+      }
+
+      if (item.mode === "delete") {
+        const existence = ciBuildDynamoExistenceCondition(
+          item.key,
+          item.existence ?? "any",
+        );
+
+        return {
+          Delete: {
+            TableName: tableName,
+            Key: item.key,
+            ConditionExpression: existence.expression,
+            ExpressionAttributeNames:
+              existence.names && Object.keys(existence.names).length
+                ? existence.names
+                : undefined,
+          },
+        };
+      }
+
+      const update = ciBuildUpdateExpression(item.update?.set);
+      const existence = ciBuildDynamoExistenceCondition(
+        item.key,
+        item.existence ?? "any",
+      );
+
+      const names = {
+        ...(update.ExpressionAttributeNames ?? {}),
+        ...(existence.names ?? {}),
+      };
+
+      return {
+        Update: {
+          TableName: tableName,
+          Key: item.key,
+          UpdateExpression: update.UpdateExpression,
+          ExpressionAttributeNames: Object.keys(names).length
+            ? names
+            : undefined,
+          ExpressionAttributeValues: update.ExpressionAttributeValues,
+          ConditionExpression: existence.expression,
+        },
+      };
+    });
 
     const res = await doc.send(
       new TransactWriteCommand({
-        TransactItems: txItems,
+        TransactItems: transactItems,
         ReturnConsumedCapacity: returnConsumedCapacity,
       }),
     );
@@ -194,24 +182,15 @@ export async function transactWrite(
         metadata: res.$metadata,
       },
     };
-  } catch (error: any) {
-    const name = error?.name ?? "";
-    const statusCode =
-      name === "TransactionCanceledException" ||
-      name === "ConditionalCheckFailedException"
-        ? 400
-        : error?.$metadata?.httpStatusCode === 401 ||
-          error?.$metadata?.httpStatusCode === 403 ||
-          error?.$metadata?.httpStatusCode === 404 ||
-          error?.$metadata?.httpStatusCode === 409
-        ? error.$metadata.httpStatusCode
-        : 500;
-
+  } catch (error) {
     return {
       ok: false,
-      statusCode,
+      statusCode: ciMapDynamoErrorStatus(error, [
+        "TransactionCanceledException",
+        "ConditionalCheckFailedException",
+      ]),
       body: {
-        error: error?.message ?? String(error),
+        error: error instanceof Error ? error.message : String(error),
         details: ciSerializeUnknownError(error),
       },
     };

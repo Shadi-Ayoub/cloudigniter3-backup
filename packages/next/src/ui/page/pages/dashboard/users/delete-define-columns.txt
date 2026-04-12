@@ -1,0 +1,71 @@
+import { getUserStatus, renderStatusBadge } from '@CI/user';
+import type { ColumnDef } from '@tanstack/react-table';
+import { EyeOutlined, EditOutlined, StopOutlined, DeleteOutlined } from '@ant-design/icons';
+
+import { Button } from '@CI/ui/components/shadcn/button';
+
+import type { UserRecord } from '@CI/types';
+
+// export interface UserRecordExtended extends UserRecord {
+//   name: string;
+// }
+
+const DEFAULT_INACTIVE_THRESHOLD_DAYS = 24;
+
+const viewUser = (id: string) => console.log('View', id);
+const editUser = (id: string) => console.log('Edit', id);
+const toggleUser = (id: string) => console.log('Toggle', id);
+const deleteUser = (id: string) => console.log('Delete', id);
+
+// Column definitions including actions
+export const columns: ColumnDef<UserRecord, any>[] = [
+  {
+    accessorKey: 'name',
+    header: 'Name',
+    cell: (info) => {
+      const user = info.row.original;
+      return (
+        <div className='flex items-center space-x-2 truncate'>
+          <div className='truncate'>{user.name}</div>
+        </div>
+      );
+    },
+  },
+  { accessorKey: 'email', header: 'Email' },
+  { accessorKey: 'groups', header: 'groups' },
+  {
+    accessorKey: 'createdAt',
+    header: 'Created At',
+    cell: (info) => new Date(info.getValue() as string).toLocaleString(),
+  },
+  {
+    accessorKey: 'status',
+    header: 'Status',
+    cell: (info) => {
+      const user = info.row.original;
+      const inactiveThresholdDays = DEFAULT_INACTIVE_THRESHOLD_DAYS;
+      const computed = getUserStatus(user, inactiveThresholdDays);
+      return renderStatusBadge(computed, user.createdAt);
+    },
+  },
+  {
+    id: 'actions',
+    header: 'Actions',
+    cell: ({ row }) => (
+      <div className='flex space-x-2'>
+        <Button variant='ghost' size='icon' onClick={() => viewUser(row.original.id)}>
+          <EyeOutlined />
+        </Button>
+        <Button variant='ghost' size='icon' onClick={() => editUser(row.original.id)}>
+          <EditOutlined />
+        </Button>
+        <Button variant='ghost' size='icon' onClick={() => toggleUser(row.original.id)}>
+          <StopOutlined />
+        </Button>
+        <Button variant='ghost' size='icon' onClick={() => deleteUser(row.original.id)}>
+          <DeleteOutlined />
+        </Button>
+      </div>
+    ),
+  },
+];

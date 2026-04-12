@@ -1,0 +1,15 @@
+export {
+  CiErrorPage,
+  CiPage,
+  CiPageHeader,
+  CiPageHeaderActionButton,
+  CiPageLoader,
+  CiBreadcrumbs,
+  ciBuildBreadcrumbsFromConfig,
+  type CiBreadcrumbItem,
+  type CiCollapsiblePageHeaderProps,
+  type CiErrorPageProps,
+  type CiPageProps,
+  type CiPageSetup,
+  type CiResolvedPageConfig,
+} from "@/page";

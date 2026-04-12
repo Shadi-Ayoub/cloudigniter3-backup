@@ -1,0 +1,60 @@
+@layer components {
+  .ci-page-icon {
+    @apply text-foreground dark:text-muted-50;
+  }
+
+  .ci-page-content {
+    /* @apply h-0 min-h-0 flex-auto overflow-y-auto overscroll-contain; */
+    @apply z-base min-h-0 flex-1 basis-0 overflow-y-auto overscroll-contain;
+  }
+
+  /* .ci-page-content > .ci-page-content-inner {
+    @apply m-0 h-auto min-h-0 px-4 pt-4 pb-8;
+  } */
+
+  .ci-page-content > .ci-page-content-inner {
+    padding-top: calc(
+      var(--spacing-primary-header-height, 70px) + var(--spacing-breadcrumb-height, 40px) +
+        var(--spacing-page-header-height, 24px)
+    );
+    @apply m-0 h-auto min-h-0 px-4 pt-4 pb-8;
+  }
+
+  .ci-page-content:not(.has-breadcrumbs) > .ci-page-content-inner {
+    padding-top: calc(
+      var(--spacing-primary-header-height, 70px) + /* no breadcrumb */ var(--spacing-page-header-height, 24px)
+    );
+  }
+
+  .ci-page-content-inner > :first-child {
+    @apply mt-0;
+  }
+  .ci-page-content-inner > :last-child {
+    @apply mt-0;
+  }
+
+  .ci-login-page-content {
+    /* @apply h-0 min-h-0 flex-auto overflow-y-auto overscroll-contain; */
+    @apply z-base min-h-0 flex-1 basis-0 overflow-y-auto overscroll-contain;
+  }
+
+  /* .ci-login-page-content > .ci-login-page-content-inner {
+    @apply m-0 h-auto min-h-0 px-4 pt-4 pb-0;
+  } */
+
+  .ci-login-page-content > .ci-login-page-content-inner {
+    padding-top: calc(
+      var(--spacing-primary-header-height, 70px) + var(--spacing-breadcrumb-height, 40px) +
+        var(--spacing-page-header-height, 24px)
+    );
+    @apply m-0 h-auto min-h-0 px-4 pt-4 pb-8;
+  }
+
+  .ci-login-page-content-inner > :first-child {
+    @apply mt-0;
+  }
+
+  .ci-login-page-content-inner > :last-child {
+    @apply mt-0;
+  }
+}

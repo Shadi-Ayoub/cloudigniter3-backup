@@ -1,0 +1,1 @@
+export { ciAuthResourceModule } from './module';

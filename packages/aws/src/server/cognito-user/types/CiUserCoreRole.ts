@@ -1,0 +1,1 @@
+export type CiUserCoreRole = 'USER' | 'DEVELOPER' | 'ADMIN' | 'SUPER_ADMIN' | 'SYSTEM_ADMIN' | 'SYSTEM_SUPER_ADMIN';
