@@ -1,2 +1,2 @@
-export { default as Footer } from './Footer';
-export { Copyright } from './Copyright';
+export { CiFooter } from "./CiFooter";
+export { CiCopyright } from "./CiCopyright";

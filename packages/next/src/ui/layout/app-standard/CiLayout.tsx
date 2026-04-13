@@ -1,27 +1,34 @@
-import React from 'react';
+import React from "react";
 
-import { HeaderDashboardButton } from '@CI/ui/components';
-import { MainHeaderUserBox } from '@CI/ui/components';
-import { CloudIgniterPageWrapper } from '@CI/provider';
-import { startTrace } from '@CI/trace';
-import type { CiPageConfig } from '@CI/types';
+import { CiDashboardHeaderButton, CiMainHeaderUserBox } from "@/ui";
+import { CiPageWrapper } from "@/provider";
+import { startTrace } from "@CI/trace";
+import type { CiPageConfig } from "@CI/types";
 
-import { Header } from './Header';
-import { Container } from './Container';
-import { Copyright, Footer } from './Footer';
+import { Header } from "./Header";
+import { Container } from "./Container";
+import { Copyright, Footer } from "./Footer";
 
-interface LayoutProps {
+interface CiLayoutProps {
   config: CiPageConfig;
   protect: boolean;
   children: React.ReactNode;
 }
 
-const Layout: React.FC<LayoutProps> = ({ config, protect, children }: LayoutProps) => {
+const CiLayout: React.FC<CiLayoutProps> = ({
+  config,
+  protect,
+  children,
+}: CiLayoutProps) => {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
-  const { logger } = startTrace(config.ciConfig.traceLog, { source: 'server', prettyWave: true }, { name: '<Layout>' });
+  const { logger } = startTrace(
+    config.ciConfig.traceLog,
+    { source: "server", prettyWave: true },
+    { name: "<Layout>" },
+  );
 
   logger.log({
-    scope: 'layout',
+    scope: "layout",
     event: `Rendering the <Layout> component`,
   });
   //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,4 +48,4 @@ const Layout: React.FC<LayoutProps> = ({ config, protect, children }: LayoutProp
   );
 };
 
-export default Layout;
+export default CiLayout;

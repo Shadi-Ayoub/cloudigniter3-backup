@@ -80,6 +80,23 @@ export {
   // round button fallback
   CiRoundButtonFallback,
 
+  // smart form
+  CiSmartCheckboxField,
+  CiSmartFormControl,
+  CiSmartFormDescription,
+  CiSmartFormField,
+  CiSmartFormFieldContext,
+  CiSmartFormItem,
+  CiSmartFormItemContext,
+  CiSmartFormLabel,
+  CiSmartFormMessage,
+  CiSmartInputField,
+  CiSmartJsonEditorField,
+  CiSmartTextareaField,
+  useCiFormikErrors,
+  useCiMonacoTheme,
+  useCiSmartFormField,
+
   // theme switcher
   CiThemeSwitcher,
   type CiThemeSwitcherProps,
