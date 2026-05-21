@@ -1,5 +1,5 @@
 import type { DynamoDBClientConfig } from "@aws-sdk/client-dynamodb";
-import type { CiResponse } from "@cloudigniter/core";
+import type { CiResponse } from "@cloudigniter/core/types";
 
 import { ciCreateLambdaHandler } from "./ci-create-lambda-handler";
 import { ciInferHandlerName } from "./ci-infer-handler-name";

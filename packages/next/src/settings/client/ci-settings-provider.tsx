@@ -1,11 +1,35 @@
-import type { PropsWithChildren } from "react";
+"use client";
 
-/**
- * Placeholder provider component for future settings context expansion.
- *
- * @param props - Component props.
- * @returns Child tree unchanged.
- */
-export function ciSettingsProvider(props: PropsWithChildren) {
-  return props.children;
+import { createContext, useContext } from "react";
+import type {
+  CiSettings,
+  CiSettingsContextValue,
+  CiSettingsProviderProps,
+} from "@cloudigniter/core/types";
+
+const CiSettingsContext = createContext<CiSettingsContextValue | null>(null);
+
+export function CiSettingsProvider({
+  settings,
+  children,
+}: CiSettingsProviderProps) {
+  return (
+    <CiSettingsContext.Provider value={{ settings }}>
+      {children}
+    </CiSettingsContext.Provider>
+  );
+}
+
+export function ciUseSettingsContext<
+  TSettings extends CiSettings = CiSettings,
+>() {
+  const context = useContext(CiSettingsContext);
+
+  if (!context) {
+    throw new Error(
+      "ciUseSettingsContext must be used inside CiSettingsProvider.",
+    );
+  }
+
+  return context as { settings: TSettings };
 }

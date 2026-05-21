@@ -1,4 +1,4 @@
-import type { CiResponse } from "@cloudigniter/core";
+import type { CiResponse } from "@cloudigniter/core/types";
 /**
  * Standard CloudIgniter direct-input service function shape.
  */

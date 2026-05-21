@@ -1,0 +1,163 @@
+---
+title: Proxy Decision Pipeline Contract
+description: Canonical execution order and decision precedence for CloudIgniter proxy.
+---
+
+# Proxy Decision Pipeline Contract (CloudIgniter)
+
+## Purpose
+
+Define the canonical execution order and decision precedence for CloudIgniter proxy.  
+This contract prevents subtle regressions such as:
+
+- Rewrite loops
+- Broken redirects
+- Incorrect tenant scoping
+- Accidental route exposure
+
+by enforcing a deterministic proxy sequence.
+
+---
+
+## Design Principles
+
+1. **Deterministic precedence**  
+   Redirects, rewrites, and bypass behavior must not depend on incidental ordering or partial state.
+
+2. **Purity of resolvers**  
+   Pure functions produce _decisions_; proxy applies side-effects.
+
+3. **Fail-safe defaults**  
+   When classification is unknown, default to safer behavior (typically **protected + fail-closed**).
+
+4. **Idempotency**  
+   Multiple proxy passes must yield stable outcomes:
+   - no path growth
+   - no repeated rewrites
+   - no recursion
+
+---
+
+## Pipeline Stages (MUST be executed in order)
+
+---
+
+### Stage 0 — Normalize
+
+**Input**
+
+- `request.nextUrl.pathname`
+
+**Actions**
+
+- Normalize pathname using `normalizePathname()`:
+  - ensure leading slash
+  - collapse duplicate slashes
+  - remove trailing slash (except `/`)
+
+**Output**
+
+- `pathnameNormalized`
+
+**Rationale**
+
+- Ensures all downstream comparisons rely on canonical string equality.
+
+---
+
+### Stage 1 — Bypass Classification
+
+**Input**
+
+- `pathnameNormalized`
+
+**Actions**
+
+- Compute:
+  - `isInternal = isInternalPath(pathnameNormalized)`
+  - `isStaticFile = isStaticFile(pathnameNormalized)`
+- If either is true → return `NextResponse.next()`
+
+**Output**
+
+- `bypass: boolean`
+
+**Rationale**
+
+- Internal/framework/static routes must never trigger tenant resolution or auth logic.
+
+---
+
+### Stage 2 — Route Classification
+
+**Input**
+
+- `pathnameNormalized`
+
+**Actions**
+
+- Determine route category via `classifyRoute()`:
+  - `api`
+  - `public`
+  - `protected`
+  - `tenant_scoped` (optional)
+
+**Output**
+
+- `routeCategory`
+
+**Rationale**
+
+- Centralizes route semantics and avoids scattered conditionals.
+
+---
+
+### Stage 3 — Tenant Resolution (Pure)
+
+**Preconditions**
+
+- `bypass === false`
+
+**Input**
+
+- `pathnameNormalized`
+- `host`
+- optional tenant header
+
+**Actions**
+
+- Call `resolveTenant()` to compute:
+  - `tenantId`
+  - `scope` (`tenant | global`)
+  - `source` (`header | slug | subdomain | ...`)
+  - `rewritePathname?`
+  - `pathnameWithoutTenant?`
+
+**Output**
+
+- `tenantResolutionResult`
+
+**Rationale**
+
+- Centralizes tenant precedence and resolution rules.
+
+---
+
+### Stage 4 — Apply Rewrite
+
+**Preconditions**
+
+- `bypass === false`
+
+**Input**
+
+- `tenantResolutionResult.rewritePathname`
+
+**Actions**
+
+- If rewrite exists:
+  ```ts
+  const url = request.nextUrl.clone();
+  url.pathname = rewritePathname;
+  return NextResponse.rewrite(url);
+  ```

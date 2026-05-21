@@ -1,35 +1,18 @@
-import { useMemo } from "react";
-import { ciGetSettingsValueAtPath, type CiSettings } from "@cloudigniter/core";
+"use client";
+
+import { ciGetSettingsValueAtPath } from "@cloudigniter/core";
+import {
+  type CiSettings,
+  type CiUseSettingValueResult,
+} from "@cloudigniter/core/types";
 import { useCiSettings } from "./ci-use-settings";
-import type {
-  CiUseSettingValueOptions,
-  CiUseSettingValueResult,
-} from "./types";
 
-/**
- * Read one nested value from resolved settings.
- *
- * @param options - Hook options.
- * @returns Hook state for the selected nested value.
- */
-export function useCiSettingValue(
-  options: CiUseSettingValueOptions,
-): CiUseSettingValueResult {
-  const { settingsId, path, fallback, enabled } = options;
-  const settings = useCiSettings<CiSettings>({
-    settingsId,
-    enabled,
-  });
+export function useCiSettingValue<TValue = unknown>(
+  path: string,
+): CiUseSettingValueResult<TValue> {
+  const { settings } = useCiSettings<CiSettings>();
 
-  return useMemo(
-    () => ({
-      data: settings.data
-        ? ciGetSettingsValueAtPath(settings.data, path) ?? fallback
-        : fallback,
-      isLoading: settings.isLoading,
-      error: settings.error,
-      refresh: settings.refresh,
-    }),
-    [fallback, path, settings],
-  );
+  return {
+    value: ciGetSettingsValueAtPath<TValue>(settings, path),
+  };
 }

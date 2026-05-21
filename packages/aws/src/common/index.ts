@@ -1,1 +1,1 @@
-export type { CiAwsResolvedConfig, CiAwsProviderResolvedConfig } from "./types";
+export type { CiAwsProviderConfig, CiAwsProviderResolvedConfig } from "./types";

@@ -7,14 +7,19 @@ import path from "node:path";
 const cwd = process.cwd();
 const srcStylesDir = path.join(cwd, "src/ui/styles");
 const distStylesDir = path.join(cwd, "dist/styles");
-const srcLocaleDir = path.join(cwd, "src/locale");
+const srcLocaleDir = path.join(cwd, "src/i18n/locale");
 const distLocaleDir = path.join(cwd, "dist/locale");
 
 async function ciBuildStyles() {
+  console.log("ℹ️ Building the default styles folder.");
+
   if (!fs.existsSync(srcStylesDir)) {
     console.log("ℹ️ No styles folder found.");
     return;
   }
+
+  console.log("ℹ️ Styles source path:", srcStylesDir);
+  console.log("ℹ️ Styles destination path:", distStylesDir);
 
   await rm(distStylesDir, { recursive: true, force: true });
   await mkdir(distStylesDir, { recursive: true });
@@ -25,10 +30,10 @@ async function ciBuildStyles() {
     .map((entry) => entry.name);
 
   for (const theme of themes) {
-    const inputCssFile = path.join(srcStylesDir, `${theme}.css`);
-    const outputCssFile = path.join(distStylesDir, `${theme}.css`);
     const themeSrcDir = path.join(srcStylesDir, theme);
     const outputThemeDir = path.join(distStylesDir, theme);
+    const inputCssFile = path.join(themeSrcDir, "style.css");
+    const outputCssFile = path.join(outputThemeDir, "style.css");
     const srcThemeCss = path.join(themeSrcDir, "theme.css");
     const destThemeCss = path.join(outputThemeDir, "theme.css");
 
@@ -41,10 +46,12 @@ async function ciBuildStyles() {
       },
     );
 
-    await mkdir(outputThemeDir, { recursive: true });
+    // await mkdir(outputThemeDir, { recursive: true });
 
     if (fs.existsSync(srcThemeCss)) {
       await copyFile(srcThemeCss, destThemeCss);
+    } else {
+      console.log("ℹ️ No styles folder found.");
     }
 
     console.log(`✅ Built theme: ${theme}`);
@@ -52,6 +59,8 @@ async function ciBuildStyles() {
 }
 
 async function ciCopyLocales() {
+  console.log("ℹ️ Copying the default locale folder.");
+
   if (!fs.existsSync(srcLocaleDir)) {
     console.log("ℹ️ No locale folder found.");
     return;

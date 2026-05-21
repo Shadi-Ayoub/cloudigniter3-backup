@@ -1,6 +1,6 @@
 import { type ReactNode } from "react";
-import type { CiResolvedPageConfig } from "./CiResolvedPageConfig";
-import type { CiPageSetup } from "./CiPageSetup";
+import type { CiNextPageConfig } from "./CiNextPageConfig";
+import type { CiNextPageSetup } from "./CiNextPageSetup";
 
 /**
  * Props accepted by the CloudIgniter Page component.
@@ -10,13 +10,13 @@ import type { CiPageSetup } from "./CiPageSetup";
  */
 export interface CiPageProps {
   /** Full CloudIgniter page/runtime configuration (locale, direction, trace, etc.) */
-  config?: CiResolvedPageConfig;
+  config?: CiNextPageConfig;
 
   /** Optional logical page name, mainly used for tracing and debugging */
   name?: string;
 
   /** Page-level setup controlling header, breadcrumbs, layout participation, etc. */
-  setup?: CiPageSetup;
+  setup?: CiNextPageSetup;
 
   /**
    * Indicates whether this page is a login/auth page.

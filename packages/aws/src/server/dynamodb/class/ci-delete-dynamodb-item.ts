@@ -9,8 +9,8 @@ import {
   type DeleteCommandInput,
 } from "@aws-sdk/lib-dynamodb";
 
-import { ciSerializeUnknownError, type CiResult } from "@cloudigniter/core";
-
+import { ciSerializeUnknownError } from "@cloudigniter/core";
+import type { CiResult } from "@cloudigniter/core/types";
 import type { CiDynamoDeleteReturnValues } from "../types/CiDynamoDeleteReturnValues";
 import type { CiDynamoExistenceMode } from "../types/CiDynamoExistenceMode";
 import type { CiDynamoMetricsOption } from "../types/CiDynamoMetricsOption";

@@ -1,6 +1,5 @@
 import { ciFinalizeResponse } from "./ci-finalize-response";
-import type { CiResponse, CiResponseMeta } from "../../";
-
+import type { CiResponse, CiResponseMeta } from "@/types";
 /**
  * Canonical async success response factory.
  *

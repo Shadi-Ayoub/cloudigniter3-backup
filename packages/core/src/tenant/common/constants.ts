@@ -2,7 +2,7 @@ import type {
   CiTenantRoutingMode,
   CiTenantScope,
   CiTenantUrlStrategy,
-} from "./";
+} from "@/types";
 
 export const CI_DEFAULT_TENANT_ID_HEADER_NAME: string = "x-ci-tenant-id";
 export const CI_DEFAULT_TENANT_SCOPE_HEADER_NAME: string = "x-ci-tenant-scope";

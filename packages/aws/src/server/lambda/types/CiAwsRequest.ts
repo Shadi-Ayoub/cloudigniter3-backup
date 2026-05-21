@@ -1,4 +1,4 @@
-import type { CiRequest } from "@cloudigniter/core";
+import type { CiRequest } from "@cloudigniter/core/types";
 import type { CiAwsAuthMode } from "./CiAwsAuthMode";
 import type { CiAwsRequestOptions } from "./CiAwsRequestOptions";
 

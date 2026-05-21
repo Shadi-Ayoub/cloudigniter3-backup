@@ -2,8 +2,12 @@ import {
   CloudWatchClient,
   GetMetricStatisticsCommand,
 } from "@aws-sdk/client-cloudwatch";
-
-import { ciError500, ciOk200, type CiResult } from "@cloudigniter/core";
+import {
+  ciError500,
+  ciOk200,
+  ciSerializeUnknownError,
+} from "@cloudigniter/core";
+import { type CiResult } from "@cloudigniter/core/types";
 import { ciNormalizeThrownError } from "@cloudigniter/core/server";
 
 const ciCloudWatchClient = new CloudWatchClient({});

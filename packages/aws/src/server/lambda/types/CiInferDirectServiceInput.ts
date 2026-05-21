@@ -1,4 +1,4 @@
-import type { CiResponse } from "@cloudigniter/core";
+import type { CiResponse } from "@cloudigniter/core/types";
 
 /**
  * Infer the input type from a direct-input service function.

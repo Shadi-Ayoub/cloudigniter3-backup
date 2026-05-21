@@ -1,4 +1,5 @@
 import { defineConfig } from "tsup";
+import { preserveDirectivesPlugin } from "esbuild-plugin-preserve-directives";
 
 export default defineConfig({
   entry: {
@@ -16,4 +17,17 @@ export default defineConfig({
   treeshake: true,
   target: "es2022",
   external: ["react", "react-dom", "next"],
+  esbuildPlugins: [
+    preserveDirectivesPlugin({
+      directives: ["use client", "use strict", "use server"],
+      include: /\.(js|ts|jsx|tsx)$/,
+      exclude: /node_modules/,
+    }),
+  ],
+  esbuildOptions(opts) {
+    opts.treeShaking = true;
+    // opts.plugins = [];
+    opts.chunkNames = "chunks/[name]-[hash]";
+    opts.jsx = "automatic";
+  },
 });

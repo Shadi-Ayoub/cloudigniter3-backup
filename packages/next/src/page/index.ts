@@ -1,18 +1,3 @@
-export {
-  CiErrorPage,
-  CiPage,
-  CiPageHeader,
-  CiPageHeaderActionButton,
-  CiPageLoader,
-  CiBreadcrumbs,
-  ciBuildBreadcrumbsFromConfig,
-} from "./components";
+export { CiPage, CiBreadcrumbs } from "./components";
 
-export type {
-  CiBreadcrumbItem,
-  CiCollapsiblePageHeaderProps,
-  CiErrorPageProps,
-  CiPageProps,
-  CiPageSetup,
-  CiResolvedPageConfig,
-} from "./types";
+export type { CiNextPageSetup, CiPageProps, CiNextPageConfig } from "./types";

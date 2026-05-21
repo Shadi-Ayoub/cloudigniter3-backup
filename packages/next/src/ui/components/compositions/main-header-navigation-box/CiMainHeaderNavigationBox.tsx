@@ -1,11 +1,12 @@
 import dynamic from "next/dynamic";
-
-import { CiRoundButtonFallback, type CiMainMenuItem } from "@/ui";
-import { ciStartTrace, type CiSettings } from "@cloudigniter/core";
-import type { CiResolvedPageConfig } from "@/.";
+import { ciStartTrace } from "@cloudigniter/core";
+import { type CiMainMenuItem } from "@cloudigniter/core/client";
+import { type CiSettings } from "@cloudigniter/core/types";
+import { CiRoundButtonFallback } from "@/ui";
+import type { CiNextPageConfig } from "@/page";
 
 interface MainHeaderUserBoxInterface {
-  config: CiResolvedPageConfig;
+  config: CiNextPageConfig;
 }
 export function CiMainHeaderNavigationBox({
   config,

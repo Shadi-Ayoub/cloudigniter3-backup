@@ -1,25 +1,52 @@
 // ─────────────────────────────────────────────────────────────
+// auth
+// ─────────────────────────────────────────────────────────────
+export {
+  CiLogin,
+  CiLogout,
+  CiAwsLoginInternal,
+  CiAwsLogoutButton,
+  ciResolveAuthProvider,
+  type CiAuthenticatorConfig,
+  type CiAwsLoginViewProps,
+  type CiAwsLogoutButtonProps,
+  type CiLoginProps,
+  type CiLogoutProps,
+} from "./auth";
+
+// ─────────────────────────────────────────────────────────────
 // config
 // ─────────────────────────────────────────────────────────────
-export { type CiNextResolvedConfig } from "./config";
+export { type CiNextConfig, type CiNextResolvedConfig } from "./config";
+
+// ─────────────────────────────────────────────────────────────
+// i18n
+// ─────────────────────────────────────────────────────────────
+export { CiNextLocaleSwitcher, type CiNextLocaleSwitcherProps } from "./i18n";
+
+// ─────────────────────────────────────────────────────────────
+// layout
+// ─────────────────────────────────────────────────────────────
+// Direct import access since it is dynamic!!!!!
+
+// ─────────────────────────────────────────────────────────────
+// navigation
+// ─────────────────────────────────────────────────────────────
+export {
+  ciIsExternalHref,
+  CiNavigateWithLoader,
+  type CiNavigateWithLoaderProps,
+} from "./navigation";
 
 // ─────────────────────────────────────────────────────────────
 // page
 // ─────────────────────────────────────────────────────────────
 export {
-  CiErrorPage,
   CiPage,
-  CiPageHeader,
-  CiPageHeaderActionButton,
-  CiPageLoader,
   CiBreadcrumbs,
-  ciBuildBreadcrumbsFromConfig,
-  type CiBreadcrumbItem,
-  type CiCollapsiblePageHeaderProps,
-  type CiErrorPageProps,
+  type CiNextPageSetup,
   type CiPageProps,
-  type CiPageSetup,
-  type CiResolvedPageConfig,
+  type CiNextPageConfig,
 } from "./page";
 
 // ─────────────────────────────────────────────────────────────
@@ -49,8 +76,3 @@ export {
   type CiNextThemeConfig,
   type CiThemeProviderProps,
 } from "./theme";
-
-// ─────────────────────────────────────────────────────────────
-// trace
-// ─────────────────────────────────────────────────────────────
-export { ciStartTrace } from "./trace";

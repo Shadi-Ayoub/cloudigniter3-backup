@@ -3,7 +3,7 @@ import type {
   CiErrorStatus,
   CiResponse,
   CiResponseMeta,
-} from "@cloudigniter/core";
+} from "@cloudigniter/core/types";
 
 import type { CiAppSyncResolverEvent, CiAwsResponseDebug } from "./types";
 import { ciGetLambdaCloudwatchLog } from "./ci-get-lambda-cloudwatch-log";

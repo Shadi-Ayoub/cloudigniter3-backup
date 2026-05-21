@@ -1,10 +1,10 @@
 import { Spin } from "antd";
 
 import { ciStartTrace } from "@cloudigniter/core";
-import type { CiResolvedPageConfig } from "@/.";
+import type { CiNextPageConfig } from "@/page";
 
 interface RoundButtonFallbackInterface {
-  config: CiResolvedPageConfig;
+  config: CiNextPageConfig;
 }
 
 export const CiRoundButtonFallback = ({

@@ -1,0 +1,43 @@
+{
+  "common": {
+    "cancel": "إلغاء",
+    "close": "إغلاق",
+    "Coming Soon": "قريباً",
+    "dashboard": "لوحة التحكم",
+    "hello": "مرحبا",
+    "home": "الرئيسية",
+    "submit": "إرسال",
+    "welcome": "أهلا بك"
+  },
+  "error": {
+    "criticalError": "خطأ حرج",
+    "error": "خطأ",
+    "info": "معلومة",
+    "warning": "تنبيه"
+  },
+  "errorTheme": {
+    "criticalThemeNotExist": "اسم السمة ''{theme}'' غير معروف! النظام يمكنه قبول اسم سمة فقط من القائمة {themeList}."
+  },
+  "errorRoute": {
+    "criticalRouteNotRegistered": "مسار هذه الصفحة غير مسجل!"
+  },
+  "form": {
+    "invalidEmail": "عنوان البريد الإلكتروني غير صالح.",
+    "required": "هذا الحقل مطلوب."
+  },
+  "localeSwitcher": {
+    "arabic": "العربية",
+    "english": "الانجليزية"
+  },
+  "mainFooter": {
+    "all rights reserved": ".جميع الحقوق محفوظة",
+    "copyright": "",
+    "development": "قيد التطوير",
+    "environment": "بيئة التطبيق"
+  },
+  "themeSwitcher": {
+    "dark": "داكن",
+    "light": "فاتح",
+    "system": "النظام"
+  }
+}

@@ -1,8 +1,5 @@
-import {
-  ciErrorResult,
-  type CiErrorStatus,
-  type CiResult,
-} from "@cloudigniter/core";
+import { ciErrorResult } from "@cloudigniter/core";
+import type { CiErrorStatus, CiResult } from "@cloudigniter/core/types";
 
 type CiCognitoErrorStatus = Extract<
   CiErrorStatus,

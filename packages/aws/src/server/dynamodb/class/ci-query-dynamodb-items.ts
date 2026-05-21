@@ -4,12 +4,8 @@ import type {
   QueryCommandInput,
   QueryCommandOutput,
 } from "@aws-sdk/lib-dynamodb";
-
-import {
-  ciSerializeUnknownError,
-  type CiErrorStatus,
-  type CiResult,
-} from "@cloudigniter/core";
+import { ciSerializeUnknownError } from "@cloudigniter/core";
+import type { CiErrorStatus, CiResult } from "@cloudigniter/core/types";
 import { ciNormalizeThrownError } from "@cloudigniter/core/server";
 
 /**

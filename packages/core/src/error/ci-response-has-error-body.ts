@@ -1,4 +1,4 @@
-import type { CiResponse } from "@cloudigniter/core";
+import type { CiResponse } from "@/types";
 
 export function ciResponseHasErrorBody(
   r: CiResponse,

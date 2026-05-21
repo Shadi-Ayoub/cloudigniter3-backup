@@ -1,0 +1,43 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "close": "close",
+    "Coming Soon": "Coming Soonxxx",
+    "dashboard": "Dashboard",
+    "hello": "Hello",
+    "home": "Home",
+    "submit": "Submit",
+    "welcome": "Welcome"
+  },
+  "error": {
+    "criticalError": "critical error",
+    "error": "error",
+    "info": "info",
+    "warning": "warning"
+  },
+  "errorTheme": {
+    "criticalThemeNotExist": "Unknown theme name ''{theme}''! The system can only accept a theme name from the list {themeList}."
+  },
+  "errorRoute": {
+    "criticalRouteNotRegistered": "The page route ''{route}'' is not registered!"
+  },
+  "form": {
+    "invalidEmail": "Invalid email address.",
+    "required": "This field is required."
+  },
+  "localeSwitcher": {
+    "arabic": "Arabic",
+    "english": "English"
+  },
+  "mainFooter": {
+    "all rights reserved": "all rights reserved.",
+    "copyright": "",
+    "development": "development",
+    "environment": "environment"
+  },
+  "themeSwitcher": {
+    "dark": "Dark",
+    "light": "Light",
+    "system": "System"
+  }
+}

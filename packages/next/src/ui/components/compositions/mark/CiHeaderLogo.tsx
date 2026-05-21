@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ciStartTrace } from "@cloudigniter/core";
-import { useCiPageLoaderStore } from "@/ui";
+import { useCiPageLoaderStore } from "@cloudigniter/core/client";
 import type { CiHeaderLogoProps } from "./types";
 
 export function CiHeaderLogo({ config }: CiHeaderLogoProps) {

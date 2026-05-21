@@ -1,6 +1,5 @@
-import { Card } from "@/ui/components";
+import { Card, type CiDashboardCardProps } from "@cloudigniter/core/client";
 import { CiNavigateWithLoader } from "@/navigation";
-import type { CiDashboardCardProps } from "../types";
 
 export function CiDashboardCard({
   id,

@@ -1,0 +1,11 @@
+{
+  "dev": {
+    "sandbox": {
+      "title": "Sandbox"
+    },
+    "seeder": {
+      "title": "Seeder"
+    },
+    "title": "Development Tools"
+  }
+}

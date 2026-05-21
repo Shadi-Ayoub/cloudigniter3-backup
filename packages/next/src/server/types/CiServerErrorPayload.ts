@@ -1,4 +1,4 @@
-import type { CiErrorSeverity } from "@cloudigniter/core";
+import type { CiErrorSeverity } from "@cloudigniter/core/types";
 
 // Server-thrown error payloads (App Router → error.tsx)
 export type CiServerErrorPayload = {

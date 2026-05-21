@@ -1,4 +1,5 @@
-import { ciOk200, type CiResult } from "@cloudigniter/core";
+import { ciOk200 } from "@cloudigniter/core";
+import type { CiResult } from "@cloudigniter/core/types";
 import { ciBuildCognitoError, ciCreateCognitoClient } from "./helpers";
 import type { CiDeleteCognitoUserInterface } from "../";
 

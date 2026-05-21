@@ -11,9 +11,8 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
-
-import { ciGetLocalStorageItem, ciStartTrace } from "@cloudigniter/core";
-import { useCiFeedbackStore } from "@/ui";
+import { ciStartTrace } from "@cloudigniter/core";
+import { ciGetLocalStorageItem } from "@cloudigniter/core/client";
 import {
   Button,
   DropdownMenu,
@@ -23,7 +22,8 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/ui";
+  useCiFeedbackStore,
+} from "@cloudigniter/core/client";
 import type { CiThemeSwitcherProps } from "../types";
 
 export function CiThemeSwitcher({ dir, config }: CiThemeSwitcherProps) {

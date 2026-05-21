@@ -1,6 +1,6 @@
 import type { Context } from "aws-lambda";
 
-import type { CiResponseWithMeta } from "@cloudigniter/core";
+import type { CiResponseWithMeta } from "@cloudigniter/core/types";
 import type { CiAppSyncResolverEvent } from "./types";
 
 /**

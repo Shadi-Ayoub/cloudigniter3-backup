@@ -4,11 +4,10 @@ import type {
   CiErrorBody,
   CiErrorPayload,
   CiErrorStatus,
-  CiJsonValue,
   CiResponse,
   CiResponseErrorOptions,
   CiResponseMeta,
-} from "../../";
+} from "@/types";
 
 /**
  * Canonical async error response factory.

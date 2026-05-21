@@ -13,7 +13,7 @@ import type {
   CiErrorStatus,
   CiJsonValue,
   CiResult,
-} from "@cloudigniter/core";
+} from "@cloudigniter/core/types";
 
 import {
   readItem as ciReadItemFn,

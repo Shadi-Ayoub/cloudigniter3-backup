@@ -5,9 +5,8 @@ import {
   GetCommand,
   type GetCommandInput,
 } from "@aws-sdk/lib-dynamodb";
-
-import { ciSerializeUnknownError, type CiResult } from "@cloudigniter/core";
-
+import { ciSerializeUnknownError } from "@cloudigniter/core";
+import type { CiResult } from "@cloudigniter/core/types";
 /**
  * Metrics option for read operations (GetItem).
  *

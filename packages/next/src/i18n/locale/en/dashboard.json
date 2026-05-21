@@ -1,0 +1,16 @@
+{
+  "dashboard": {
+    "admins": "admins",
+    "install": "install",
+    "languages": "languages",
+    "overview": "Overview",
+    "sandbox": "sandbox",
+    "security": "security",
+    "settings": "settings",
+    "tenants": "tenants",
+    "theme": "theme",
+    "devtools": "devtools",
+    "title": "Dashboard",
+    "users": "users"
+  }
+}

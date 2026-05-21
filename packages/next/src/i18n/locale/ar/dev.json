@@ -1,0 +1,11 @@
+{
+  "dev": {
+    "sandbox": {
+      "title": "بيئة الإختبار"
+    },
+    "seeder": {
+      "title": "Seeder"
+    },
+    "title": "أدوات المبرمج"
+  }
+}

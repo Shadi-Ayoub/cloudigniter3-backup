@@ -1,12 +1,12 @@
 import type { DynamoDBClientConfig } from "@aws-sdk/client-dynamodb";
 import type { Context } from "aws-lambda";
 
-import { type CiResponse, type CiRequest } from "@cloudigniter/core";
+import type { CiResponse, CiRequest } from "@cloudigniter/core/types";
 import {
   ciNormalizeThrownError,
   ciSafeParseRequest,
 } from "@cloudigniter/core/server";
-import type { CiAppSyncResolverEvent } from "../";
+import type { CiAppSyncResolverEvent } from "../lambda";
 
 import {
   ciResolveRequiredEnv,

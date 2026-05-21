@@ -1,6 +1,6 @@
-import type { CiResolvedPageConfig } from "@/.";
+import type { CiNextPageConfig } from "@/page";
 
 export interface CiThemeSwitcherProps {
   dir: "ltr" | "rtl";
-  config: CiResolvedPageConfig;
+  config: CiNextPageConfig;
 }

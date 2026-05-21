@@ -1,6 +1,2 @@
-export { CiErrorPage } from "./CiErrorPage";
+export { CiBreadcrumbs } from "./CiBreadcrumbs";
 export { CiPage } from "./CiPage";
-export { CiPageHeader } from "./CiPageHeader";
-export { CiPageHeaderActionButton } from "./CiPageHeaderActionButton";
-export { CiPageLoader } from "./CiPageLoader";
-export { CiBreadcrumbs, ciBuildBreadcrumbsFromConfig } from "./breadcrumbs";

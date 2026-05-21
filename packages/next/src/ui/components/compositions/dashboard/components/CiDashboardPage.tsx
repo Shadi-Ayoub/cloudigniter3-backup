@@ -2,16 +2,21 @@ import "server-only";
 
 import { getTranslations } from "next-intl/server";
 import { ciStartTrace } from "@cloudigniter/core";
-import type { CiDashboardPageProps } from "../types";
-import { ciResolveDashboardCardViewModels } from "../utils/ci-resolve-dashboard-card-view-models";
+import {
+  ciResolveDashboardCardViewModels,
+  type CiDashboardPageProps,
+} from "@cloudigniter/core/client";
 import { CiDashboardCard } from "./CiDashboardCard";
 import { CiDashboardGrid } from "./CiDashboardGrid";
 
-export async function CiDashboardPage({ config, setup }: CiDashboardPageProps) {
+export async function CiDashboardPage({
+  traceConfig,
+  setup,
+}: CiDashboardPageProps) {
   const t = await getTranslations("dashboard");
 
   const { logger } = ciStartTrace(
-    config.ciConfig.traceLog,
+    traceConfig,
     { source: "server", prettyWave: true },
     { name: "<CiDashboardPage>" },
   );

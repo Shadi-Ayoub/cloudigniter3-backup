@@ -10,8 +10,8 @@ import {
   type PutCommandInput,
   type UpdateCommandInput,
 } from "@aws-sdk/lib-dynamodb";
-
-import { ciSerializeUnknownError, type CiResult } from "@cloudigniter/core";
+import { ciSerializeUnknownError } from "@cloudigniter/core";
+import type { CiResult } from "@cloudigniter/core/types";
 import type { CiDynamoExistenceMode } from "../types/CiDynamoExistenceMode";
 import type { CiDynamoWriteMode } from "../types/CiDynamoWriteMode";
 import type { CiDynamoWriteReturnValues } from "../types/CiDynamoWriteReturnValues";

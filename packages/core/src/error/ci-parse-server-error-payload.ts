@@ -1,4 +1,4 @@
-import type { CiErrorSeverity, CiServerErrorPayload } from "@cloudigniter/core";
+import type { CiErrorSeverity, CiServerErrorPayload } from "@/types";
 
 /**
  * Robust parser that accepts:

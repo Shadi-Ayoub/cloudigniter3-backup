@@ -1,4 +1,4 @@
-import type { CiThemeConfig } from "@cloudigniter/core";
+import type { CiThemeConfig } from "@cloudigniter/core/types";
 import type { ThemeProviderProps } from "next-themes";
 
 /**

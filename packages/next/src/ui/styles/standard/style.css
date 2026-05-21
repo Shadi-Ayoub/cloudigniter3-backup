@@ -1,0 +1,27 @@
+/* 🚀 cloudigniter-standard.css*/
+@plugin "tailwindcss-animate";
+
+@import "tailwindcss" important;
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@import "./theme.css";
+@import "./base.css";
+@import "./main.css";
+
+@import "./about-border-beam.css";
+@import "./data-table.css";
+@import "./dashboard.css";
+@import "./dev-beacon.css";
+@import "./dropdown-menu.css";
+@import "./error.css";
+@import "./footer.css";
+@import "./header.css";
+@import "./layout.css";
+@import "./main-menu.css";
+@import "./page.css";
+@import "./page-header.css";
+@import "./settings.css";
+@import "./spinner.css";
+@import "./theme-switcher.css";
+@import "./tooltip.css";

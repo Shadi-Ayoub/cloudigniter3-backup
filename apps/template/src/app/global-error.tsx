@@ -1,23 +1,23 @@
 "use client";
 
 import { useEffect } from "react";
-import { ciParseServerErrorPayload } from "@cloudigniter/core";
-import { ErrorPage, PageLoader } from "@cloudigniter/next/ui/layout";
+import { ciGetLangDir, ciParseServerErrorPayload } from "@cloudigniter/core";
+import {
+  CiErrorPage,
+  ciGetCookie,
+  CiPageLoader,
+  useCiPageLoaderStore,
+} from "@cloudigniter/core/client";
 import { Inter } from "next/font/google";
+import type { CiNextAwsConfig } from "@/kernel";
+import "@cloudigniter/next/styles/standard/style.css";
 
-import { getLangDir } from "@cloudigniter/next/utility";
-import { getCookie } from "@cloudigniter/next/utility/client";
-import { usePageLoader } from "@CI/store/page-loader";
-import type { Config } from "@cloudigniter/next/types";
-
-import "@cloudigniter/next/styles/standard.css";
-
-import ciConfig from "@/../cloudigniter.config";
+import ciConfig from "@/cloudigniter.config";
 
 // import Kernel from '@/kernel';
 import "./globals.css"; // Always after importing Kernel
 
-const config = ciConfig as Config;
+const config = ciConfig as CiNextAwsConfig;
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,7 +28,7 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  const { setLoading } = usePageLoader();
+  const { setLoading } = useCiPageLoaderStore();
 
   useEffect(() => {
     // Hook up to your logger/Sentry/etc.
@@ -41,22 +41,22 @@ export default function GlobalError({
 
   const parsed = ciParseServerErrorPayload(error);
   const cookieName = config.i18n.cookieName ?? "ci-locale";
-  const locale = getCookie(cookieName) ?? "en";
-  const direction = getLangDir(locale);
+  const locale = ciGetCookie(cookieName) ?? "en";
+  const direction = ciGetLangDir(locale);
 
   return (
     <html lang={locale} dir={direction} suppressHydrationWarning>
       <body className={`ci-body ${inter.className}`}>
         <main className="ci-viewport-center">
           {/* <Kernel /> */}
-          <ErrorPage
+          <CiErrorPage
             title={parsed.title}
             message={parsed.message}
             severity={parsed.severity}
             showRetry={parsed.showRetry}
             onRetry={reset} // soft retry via Next.js
           />
-          <PageLoader />
+          <CiPageLoader />
         </main>
       </body>
     </html>

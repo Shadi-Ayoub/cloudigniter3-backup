@@ -1,1 +1,1 @@
-export type { CiNextResolvedConfig } from "./types";
+export type { CiNextConfig, CiNextResolvedConfig } from "./types";

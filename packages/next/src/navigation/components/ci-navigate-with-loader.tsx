@@ -1,12 +1,10 @@
 "use client";
 
 import type { MouseEvent } from "react";
-
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
+import { useCiPageLoaderStore } from "@cloudigniter/core/client";
 import type { CiNavigateWithLoaderProps } from "../types";
-import { useCiPageLoaderStore } from "@/ui";
 
 /**
  * Detect whether a URL is external.

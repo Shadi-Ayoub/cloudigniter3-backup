@@ -5,8 +5,8 @@ import {
   TransactWriteCommand,
   type TransactWriteCommandInput,
 } from "@aws-sdk/lib-dynamodb";
-
-import { ciSerializeUnknownError, type CiResult } from "@cloudigniter/core";
+import { ciSerializeUnknownError } from "@cloudigniter/core";
+import type { CiResult } from "@cloudigniter/core/types";
 
 import type { CiDynamoExistenceMode } from "../types/CiDynamoExistenceMode";
 import { ciBuildDynamoExistenceCondition } from "../helpers/ci-build-dynamo-existence-condition";

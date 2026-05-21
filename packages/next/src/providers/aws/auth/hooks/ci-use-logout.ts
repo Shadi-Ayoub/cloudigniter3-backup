@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ciAwsSignOut } from "@cloudigniter/aws";
-import { useCiPageLoaderStore } from "@/ui";
+import { useCiPageLoaderStore } from "@cloudigniter/core/client";
 import type { CiUseLogoutOptions, CiUseLogoutResult } from "../types";
 
 /**

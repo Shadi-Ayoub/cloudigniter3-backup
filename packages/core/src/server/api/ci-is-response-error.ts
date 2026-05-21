@@ -1,4 +1,4 @@
-import type { CiResponse, CiErrorBody, CiErrorStatus } from "../../";
+import type { CiErrorBody, CiErrorStatus, CiResponse } from "@/types";
 
 export function ciIsResponseError<Ok>(
   r: CiResponse<Ok, CiErrorBody, 200, CiErrorStatus>,

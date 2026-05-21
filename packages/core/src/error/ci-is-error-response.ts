@@ -1,4 +1,4 @@
-import type { CiResponse } from "@cloudigniter/core";
+import type { CiResponse } from "@/types";
 
 // Generic “is error response” guard.
 // Works as long as your ok() uses 2xx and err() uses 4xx/5xx.

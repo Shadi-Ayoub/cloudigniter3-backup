@@ -1,5 +1,6 @@
 import type { UserType as CognitoUserType } from "@aws-sdk/client-cognito-identity-provider";
-import { ciOk200, type CiResult } from "@cloudigniter/core";
+import { ciOk200 } from "@cloudigniter/core";
+import type { CiResult } from "@cloudigniter/core/types";
 import { ciBuildCognitoError, ciCreateCognitoClient } from "./helpers";
 import type { CiUpdateCognitoUserInterface } from "../";
 

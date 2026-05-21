@@ -1,9 +1,9 @@
-import {
-  ciErrorResult,
-  type CiErrorBody,
-  type CiErrorStatus,
-  type CiResult,
-} from "@cloudigniter/core";
+import { ciErrorResult } from "@cloudigniter/core";
+import type {
+  CiErrorBody,
+  CiErrorStatus,
+  CiResult,
+} from "@cloudigniter/core/types";
 import { ciNormalizeThrownError } from "@cloudigniter/core/server";
 import { Dynamodb } from "./";
 

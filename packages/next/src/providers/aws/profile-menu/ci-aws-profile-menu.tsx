@@ -2,25 +2,26 @@
 
 import { useEffect, useMemo } from "react";
 
-import type { CiAmplifyOutputs } from "@cloudigniter/aws";
+// import type { CiAmplifyOutputs } from "@cloudigniter/aws";
 import { ciStartTrace } from "@cloudigniter/core";
 
-import type { CiResolvedPageConfig } from "@/.";
-import { useCiLogout, CiAmplifyClientConfigurer } from "../";
+import type { CiNextPageConfig } from "@/page";
+import { useCiLogout } from "../";
+// import { useCiLogout, CiAmplifyClientConfigurer } from "../";
 import { CiProfileMenuBase } from "@/ui";
 import {} from "../";
 
 export type CiAwsProfileMenuProps = {
-  config: CiResolvedPageConfig;
+  config: CiNextPageConfig;
   dir: "ltr" | "rtl";
-  amplifyOutputs: CiAmplifyOutputs;
+  // amplifyOutputs: CiAmplifyOutputs;
 };
 
 export function CiAwsProfileMenu({
   config,
   dir,
-  amplifyOutputs,
-}: CiAwsProfileMenuProps) {
+}: // amplifyOutputs,
+CiAwsProfileMenuProps) {
   const { ciLogout } = useCiLogout({ redirectTo: "/login" });
 
   const { logger, done } = ciStartTrace(
@@ -55,7 +56,7 @@ export function CiAwsProfileMenu({
 
   return (
     <>
-      <CiAmplifyClientConfigurer amplifyOutputs={amplifyOutputs} />
+      {/* <CiAmplifyClientConfigurer amplifyOutputs={amplifyOutputs} /> */}
 
       <CiProfileMenuBase
         dir={dir}

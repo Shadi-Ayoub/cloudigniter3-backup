@@ -1,4 +1,4 @@
-import type { CiJsonValue } from "@cloudigniter/core";
+import type { CiJsonValue } from "@/types";
 /**
  * Converts an unknown thrown value into a JSON-safe payload
  * that can be placed inside `body.details`.

@@ -1,9 +1,7 @@
+// defaults
 export {
-  type CiAuthConfig,
-  type CiConfig,
-  type CiResolvedConfig,
-  type CiDataConfig,
-  type CiRouteRuntimeConfig,
-  type CiSystemItemType,
-  type CiSystemTableItem,
-} from "./common";
+  CI_DEFAULT_GLOBAL_SEGMENT,
+  CI_DEFAULT_PUBLIC_CORE_SETTINGS_ID,
+  CI_DEFAULT_PRIVATE_CORE_SETTINGS_ID,
+  CI_DEFAULT_USER_CORE_SETTINGS_ID,
+} from "./defaults";

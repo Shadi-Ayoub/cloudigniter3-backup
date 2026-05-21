@@ -2,14 +2,14 @@ import type {
   AdminCreateUserCommandOutput,
   UserType as CognitoUserType,
 } from "@aws-sdk/client-cognito-identity-provider";
-
-import { ciError400, ciOk200, type CiResult } from "@cloudigniter/core";
+import { ciError400, ciOk200 } from "@cloudigniter/core";
+import type { CiResult } from "@cloudigniter/core/types";
 import {
   ciBuildCognitoError,
   ciCreateCognitoClient,
   ciIsCognitoUserNotFoundError,
-  type CiCreateCognitoUserInterface,
-} from "../";
+} from "../services/helpers";
+import { type CiCreateCognitoUserInterface } from "../types";
 
 /**
  * Successful result returned by `ciCreateCognitoUser`.

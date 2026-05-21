@@ -5,9 +5,10 @@ import { useRouter, usePathname } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import Link from "next/link";
-
-import type { CiMainMenuItem } from "./types";
-import { useCiPageLoaderStore } from "@/ui";
+import {
+  useCiPageLoaderStore,
+  type CiMainMenuItem,
+} from "@cloudigniter/core/client";
 
 const iconMap = LucideIcons as unknown as Record<string, React.ElementType>;
 

@@ -1,14 +1,24 @@
 {
   "extends": "@cloudigniter/config-ts/library.json",
   "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+
     "rootDir": "src",
     "outDir": "dist",
+    "types": ["node"],
     "tsBuildInfoFile": "node_modules/.cache/tsconfig.typecheck.tsbuildinfo",
     "jsx": "react-jsx",
+    "forceConsistentCasingInFileNames": true,
     "paths": {
       "@/*": ["./src/*"]
     },
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["dist", "node_modules"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "__tests__/**/*.ts", "__tests__/**/*.tsx", "vitest.d.ts"],
+  "exclude": ["dist", "node_modules", "build", "scripts", ".*/**/*","**/*.mjs", "**/*.cjs", "coverage"]
 }

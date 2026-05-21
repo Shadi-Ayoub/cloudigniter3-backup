@@ -1,4 +1,4 @@
-import type { CiErrorPayload } from "../../";
+import type { CiErrorPayload } from "@/types";
 
 /**
  * Normalize any thrown value into a consistent CiErrorPayload structure.

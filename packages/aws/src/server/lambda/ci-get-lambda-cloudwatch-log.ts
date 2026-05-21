@@ -8,8 +8,8 @@ import {
   ciError500,
   ciOk200,
   ciSerializeUnknownError,
-  type CiResult,
 } from "@cloudigniter/core";
+import { type CiResult } from "@cloudigniter/core/types";
 import { ciNormalizeThrownError } from "@cloudigniter/core/server";
 import type { CiLambdaReportLog } from "./";
 

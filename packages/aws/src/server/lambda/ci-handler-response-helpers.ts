@@ -1,6 +1,6 @@
 import type { Context } from "aws-lambda";
 
-import { type CiErrorStatus, type CiResponse } from "@cloudigniter/core";
+import type { CiErrorStatus, CiResponse } from "@cloudigniter/core/types";
 import { ciResponseError, ciResponseOk } from "@cloudigniter/core/server";
 import { ciAttachAwsResponseDebug } from "./ci-attach-aws-response-debug";
 import { type CiAppSyncResolverEvent } from "./types";

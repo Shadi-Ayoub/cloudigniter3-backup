@@ -1,0 +1,75 @@
+{
+  "systemSettings": {
+    "settings": "الإعدادات",
+    "form": {
+      "buttons": {
+        "save": "حفظ"
+      },
+      "tabs": {
+        "ariaLabel": "إعدادات النظام"
+      },
+      "fields": {
+        "cognito": "Cognito",
+        "dynamodb": "Dynamodb",
+        "email": "Email",
+        "general": "General",
+        "i18n": "i18n",
+        "mainMenu": "Main Menu",
+        "routes": "Routes",
+        "security": "Security",
+        "theme": "Theme"
+      },
+      "errors": {
+        "containsErrors": "هناك بعض الأخطاء!",
+        "heading": "ملخص الأخطاء"
+      }
+    },
+    "tabs": {
+      "aws": "خدمات امازون",
+      "email": "البريد الإلكتروني",
+      "general": "عام",
+      "i18n": "التدويل",
+      "mainMenu": "القائمة الرئيسية",
+      "routes": "المسارات",
+      "security": "الأمان",
+      "theme": "السِمة"
+    },
+    "sections": {
+      "general": {
+        "title": "الإعدادات العامة",
+        "description": "تعريف الإعدادات العامة للنظام بصيغة كائن جيسون."
+      },
+      "aws": {
+        "title": "إعدادات خدمات أمازون",
+        "cognito": {
+          "clientConfig": {
+            "title": "إعدادات عميل كوجنيتو",
+            "description": "تعريف الإعدادات الإفتراضية لعميل كوجنيتو بصيغة كائن جيسون."
+          }
+        },
+        "dynamodb": {
+          "clientConfig": {
+            "title": "إعدادات عميل دايناموديبي",
+            "description": "تعريف الإعدادات الإفتراضية لعميل دايناموديبي بصيغة كائن جيسون."
+          }
+        }
+      },
+      "i18n": {
+        "title": "إعدادات لغة النظام",
+        "description": "تعريف إعدادات لغة النظام بصيغة كائن جيسون."
+      },
+      "mainMenu": {
+        "title": "إعدادات القائمة الرئيسية",
+        "description": "تعريف إعدادات قائمة النظام الرئيسية بصيغة كائن جيسون."
+      },
+      "routes": {
+        "title": "إعدادات مسارات النظام",
+        "description": "تعريف إعدادات مسارات النظام بصيغة كائن جيسون."
+      },
+      "theme": {
+        "title": "إعدادات سِمة النظام",
+        "description": "تعريف إعدادات سِمة النظام بصيغة كائن جيسون."
+      }
+    }
+  }
+}

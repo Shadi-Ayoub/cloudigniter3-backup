@@ -1,4 +1,4 @@
-import type { CiResult } from "@cloudigniter/core";
+import type { CiResult } from "@cloudigniter/core/types";
 import type { CiTransactWriteBody } from "./CiTransactWriteBody";
 /**
  * Union result for `transactWrite`.

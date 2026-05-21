@@ -1,0 +1,75 @@
+{
+  "systemSettings": {
+    "settings": "Settings",
+    "form": {
+      "buttons": {
+        "save": "Save"
+      },
+      "tabs": {
+        "ariaLabel": "Settings Tabs"
+      },
+      "fields": {
+        "cognito": "Cognito",
+        "dynamodb": "Dynamodb",
+        "email": "Email",
+        "general": "General",
+        "i18n": "i18n",
+        "mainMenu": "Main Menu",
+        "routes": "Routes",
+        "security": "Security",
+        "theme": "Theme"
+      },
+      "errors": {
+        "containsErrors": "The form has errors!",
+        "heading": "Error Summary"
+      }
+    },
+    "tabs": {
+      "aws": "AWS Services",
+      "email": "Email",
+      "general": "General",
+      "i18n": "i18n",
+      "mainMenu": "Main Menu",
+      "routes": "Routes",
+      "security": "Security",
+      "theme": "Theme"
+    },
+    "sections": {
+      "general": {
+        "title": "General Settings",
+        "description": "Define the application's general settings as a JSON object."
+      },
+      "aws": {
+        "title": "AWS Services Settings",
+        "cognito": {
+          "clientConfig": {
+            "title": "Cognito Client Settings",
+            "description": "Define the default AWS Cognito client settings as a JSON object."
+          }
+        },
+        "dynamodb": {
+          "clientConfig": {
+            "title": "Dynamodb Client Settings",
+            "description": "Define the default AWS Dynamodb client settings as a JSON object."
+          }
+        }
+      },
+      "i18n": {
+        "title": "Language Settings",
+        "description": "Define the application's language settings as a JSON object."
+      },
+      "mainMenu": {
+        "title": "Main Menu Settings",
+        "description": "Define your application's navigation structure as a JSON array."
+      },
+      "routes": {
+        "title": "Routes Settings",
+        "description": "Define your application's registered routes as a JSON object."
+      },
+      "theme": {
+        "title": "Theme Settings",
+        "description": "Define your application's Theme settings as a JSON object."
+      }
+    }
+  }
+}

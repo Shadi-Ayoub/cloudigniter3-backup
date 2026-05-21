@@ -1,0 +1,1 @@
+export { CiSettingsPage } from "@/settings";

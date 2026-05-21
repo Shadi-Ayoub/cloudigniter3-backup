@@ -1,1 +1,1 @@
-export { getEnvMode } from './ci-get-env-mode';
+export { ciGetEnvMode } from "./ci-get-env-mode";

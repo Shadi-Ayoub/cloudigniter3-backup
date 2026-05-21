@@ -1,4 +1,4 @@
-import type { CiResponse } from "../../";
+import type { CiResponse } from "@/types";
 
 /**
  * Final response normalization/enrichment hook.

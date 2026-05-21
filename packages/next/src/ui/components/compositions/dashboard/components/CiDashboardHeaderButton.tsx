@@ -2,15 +2,15 @@
 
 import { useEffect } from "react";
 import { ciStartTrace } from "@cloudigniter/core";
+import { type CiDashboardHeaderButtonProps } from "@cloudigniter/core/client";
 import { CiNavigateWithLoader } from "@/navigation";
-import type { CiDashboardHeaderButtonProps } from "../types";
 
 export function CiDashboardHeaderButton({
-  config,
+  traceConfig,
 }: CiDashboardHeaderButtonProps) {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger, done } = ciStartTrace(
-    config.ciConfig.traceLog,
+    traceConfig,
     { source: "client", tag: `HeaderDashboardButton` },
     { name: `<HeaderDashboardButton />` },
   );

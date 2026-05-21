@@ -1,8 +1,8 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@import '../../node_modules/@cloudigniter/next/dist/styles/standard/theme.css';
+@import "../../node_modules/@cloudigniter/next/dist/styles/standard/theme.css";
 
 @source '../../node_modules/@cloudigniter/next/';
 

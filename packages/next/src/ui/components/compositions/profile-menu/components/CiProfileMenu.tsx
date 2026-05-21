@@ -16,19 +16,19 @@ export function CiProfileMenu({ config, dir, provider }: CiProfileMenuProps) {
        * Here we assume the resolved config exposes a provider section.
        * If not, inject it from a higher AWS-aware wrapper instead.
        */
-      const ciAwsConfig = config.providers?.aws;
+      // const ciAwsConfig = config.providers?.aws;
 
-      if (!ciAwsConfig?.amplifyOutputs) {
-        throw new Error(
-          'CiProfileMenu requires providers.aws.amplifyOutputs when provider="aws".',
-        );
-      }
+      // if (!ciAwsConfig?.amplifyOutputs) {
+      //   throw new Error(
+      //     'CiProfileMenu requires providers.aws.amplifyOutputs when provider="aws".',
+      //   );
+      // }
 
       return (
         <CiAwsProfileMenu
           config={config}
           dir={dir}
-          amplifyOutputs={ciAwsConfig.amplifyOutputs}
+          // amplifyOutputs={ciAwsConfig.amplifyOutputs}
         />
       );
     }

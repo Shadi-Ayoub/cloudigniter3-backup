@@ -31,7 +31,7 @@ export function CiMainHeaderUserBox({ config }: CiMainHeaderUserBoxProps) {
   );
 
   const LocaleSwitcher = dynamic(
-    () => import("@/i18n").then((mod) => mod.CiLocaleSwitcher),
+    () => import("@/i18n").then((mod) => mod.CiNextLocaleSwitcher),
     {
       ssr: true,
       loading: () => <CiRoundButtonFallback config={config} />,
@@ -50,7 +50,10 @@ export function CiMainHeaderUserBox({ config }: CiMainHeaderUserBoxProps) {
     <nav aria-label="User Navigation" className="ci-main-header-user-box">
       <div className="ci-main-header-user-box-inner">
         <ThemeSwitcher config={config} dir={config.ciConfig.direction} />
-        <LocaleSwitcher config={config} dir={config.ciConfig.direction} />
+        <LocaleSwitcher
+          config={config.ciConfig.i18n}
+          traceConfig={config.ciConfig.traceLog}
+        />
         <ProfileMenu config={config} dir={config.ciConfig.direction} />
       </div>
       <div className="ci-main-header-user-box-inner-mobile">

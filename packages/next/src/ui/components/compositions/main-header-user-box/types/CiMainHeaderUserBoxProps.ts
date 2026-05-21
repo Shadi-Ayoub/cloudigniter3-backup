@@ -1,5 +1,5 @@
-import type { CiResolvedPageConfig } from "@/.";
+import type { CiNextPageConfig } from "@/page";
 
 export interface CiMainHeaderUserBoxProps {
-  config: CiResolvedPageConfig;
+  config: CiNextPageConfig;
 }

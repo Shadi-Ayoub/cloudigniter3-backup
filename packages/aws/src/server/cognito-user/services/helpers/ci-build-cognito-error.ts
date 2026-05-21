@@ -1,4 +1,5 @@
-import { ciError400, type CiResult } from "@cloudigniter/core";
+import { ciError400 } from "@cloudigniter/core";
+import type { CiResult } from "@cloudigniter/core/types";
 import { ciNormalizeThrownError } from "@cloudigniter/core/server";
 
 /**

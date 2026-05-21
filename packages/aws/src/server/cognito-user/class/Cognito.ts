@@ -9,11 +9,8 @@ import {
   type ListUsersCommandInput,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { fetchAuthSession } from "aws-amplify/auth";
-
-import {
-  ciOk200,
-  ciGeneratePassword as generateCognitoUserPassword,
-} from "@cloudigniter/core";
+import { ciOk200 } from "@cloudigniter/core";
+import { ciGeneratePassword as generateCognitoUserPassword } from "@cloudigniter/core/helpers";
 import {
   ciMapCognitoError,
   type CiCognitoCreateUserResult,

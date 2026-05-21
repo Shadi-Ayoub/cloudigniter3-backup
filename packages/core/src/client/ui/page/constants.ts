@@ -1,0 +1,1 @@
+export const CI_PAGE_HEADER_SCROLL_THRESHOLD = 90;

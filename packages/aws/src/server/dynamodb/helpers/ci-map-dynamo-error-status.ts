@@ -1,4 +1,4 @@
-import type { CiErrorStatus } from "@cloudigniter/core";
+import type { CiErrorStatus } from "@cloudigniter/core/types";
 
 /**
  * Map Dynamo/AWS command errors to a CloudIgniter error status.

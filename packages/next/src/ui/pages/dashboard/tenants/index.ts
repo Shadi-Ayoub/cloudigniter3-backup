@@ -1,0 +1,1 @@
+export { CiTenantsPage } from "./CiTenantsPage";
