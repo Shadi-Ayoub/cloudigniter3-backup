@@ -10,7 +10,7 @@ export {
   // CiDevBeaconTraceTab,
   CI_DEV_BEACON_DEFAULT_POSITION_CLASSES,
   CI_DEV_BEACON_LOGO,
-
+  CiDevBeacon,
   // type CiDevBeaconTraceLogViewerTextProps,
 } from "./dev-beacon";
 

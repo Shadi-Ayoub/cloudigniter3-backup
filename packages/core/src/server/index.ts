@@ -1,4 +1,6 @@
+// ─────────────────────────────────────────────────────────────
 // api
+// ─────────────────────────────────────────────────────────────
 export {
   ciFinalizeResponse,
   ciIsResponseError,
@@ -8,15 +10,51 @@ export {
   ciSafeParseRequest,
 } from "./api";
 
-// components
-export { CiDevBeacon } from "./components";
-
-// error
-export { ciNormalizeThrownError } from "./error";
-
+// ─────────────────────────────────────────────────────────────
+// dev
+// ─────────────────────────────────────────────────────────────
 export {
+  CI_DEV_BEACON_DEFAULT_POSITION_CLASSES,
+  CI_DEV_BEACON_LOGO,
+  CiDevBeacon,
+  // trace
+  ciStartTrace,
+  // type CiBuildCanonicalInput,
+  // type CiCanonicalRecord,
+  // type CiLogEntryType,
+  // type CiMetricConfig,
+  // type CiTimerRecord,
+  // type CiTraceConfig,
+  // type CiTraceLoggerOptions,
+} from "./dev";
+
+// ─────────────────────────────────────────────────────────────
+// error
+// ─────────────────────────────────────────────────────────────
+export {
+  ciIsErrorResponse,
+  ciNormalizeThrownError,
+  ciParseServerErrorPayload,
+  ciResponseHasErrorBody,
+  ciSerializeUnknownError,
+} from "./error";
+
+// ─────────────────────────────────────────────────────────────
+// route
+// ─────────────────────────────────────────────────────────────
+export {
+  // defaults
+  CI_DEFAULT_ROUTE_NAMESPACE_COOKIE_NAME,
+  CI_DEFAULT_ROUTE_NAMESPACE_HEADER_NAME,
+  CI_DEFAULT_ROUTE_PATHNAME_HEADER_NAME,
+  CI_DEFAULT_ROUTE_PATHNAME_COOKIE_NAME,
+
+  // constants
+  ciCoreRoutes,
+
   // helpers
   ciCompileRoutes,
+  ciGetRoutes,
   ciGetRoutesMatcher,
   ciGetRouteNamespace,
   ciIsProtectedPath,

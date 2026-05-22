@@ -12,4 +12,5 @@ export {
   CI_DEV_BEACON_LOGO,
 } from "./ci-devbeacon-presets";
 
+export { CiDevBeacon } from "./CiDevBeacon"; // server orchestrator
 // export type { CiDevBeaconTraceLogViewerTextProps } from "./types";

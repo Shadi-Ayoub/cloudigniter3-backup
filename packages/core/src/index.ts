@@ -53,23 +53,23 @@
 //   ciSetLocalStorageItem,
 // } from "./client";
 
-// ─────────────────────────────────────────────────────────────
-// dev
-// ─────────────────────────────────────────────────────────────
-export {
-  CI_DEV_BEACON_DEFAULT_POSITION_CLASSES,
-  CI_DEV_BEACON_LOGO,
+// // ─────────────────────────────────────────────────────────────
+// // dev
+// // ─────────────────────────────────────────────────────────────
+// export {
+//   CI_DEV_BEACON_DEFAULT_POSITION_CLASSES,
+//   CI_DEV_BEACON_LOGO,
 
-  // trace
-  ciStartTrace,
-  // type CiBuildCanonicalInput,
-  // type CiCanonicalRecord,
-  // type CiLogEntryType,
-  // type CiMetricConfig,
-  // type CiTimerRecord,
-  // type CiTraceConfig,
-  // type CiTraceLoggerOptions,
-} from "./dev";
+//   // trace
+//   ciStartTrace,
+//   // type CiBuildCanonicalInput,
+//   // type CiCanonicalRecord,
+//   // type CiLogEntryType,
+//   // type CiMetricConfig,
+//   // type CiTimerRecord,
+//   // type CiTraceConfig,
+//   // type CiTraceLoggerOptions,
+// } from "./dev";
 
 // ─────────────────────────────────────────────────────────────
 // email
@@ -81,17 +81,17 @@ export {
 // ─────────────────────────────────────────────────────────────
 // export { type CiDevEnv, type CiEnvMode, type CiSeedEnvMode } from "./env";
 
-// ─────────────────────────────────────────────────────────────
-// error
-// ─────────────────────────────────────────────────────────────
-export {
-  ciIsErrorResponse,
-  ciParseServerErrorPayload,
-  ciResponseHasErrorBody,
-  ciSerializeUnknownError,
-  // type CiClientErrorPayload,
-  // type CiServerErrorPayload,
-} from "./error";
+// // ─────────────────────────────────────────────────────────────
+// // error
+// // ─────────────────────────────────────────────────────────────
+// export {
+//   ciIsErrorResponse,
+//   ciParseServerErrorPayload,
+//   ciResponseHasErrorBody,
+//   ciSerializeUnknownError,
+//   // type CiClientErrorPayload,
+//   // type CiServerErrorPayload,
+// } from "./error";
 
 // ─────────────────────────────────────────────────────────────
 // Graphql
@@ -183,27 +183,27 @@ export {
 // ─────────────────────────────────────────────────────────────
 // route
 // ─────────────────────────────────────────────────────────────
-export {
-  // defaults
-  CI_DEFAULT_ROUTE_NAMESPACE_COOKIE_NAME,
-  CI_DEFAULT_ROUTE_NAMESPACE_HEADER_NAME,
-  CI_DEFAULT_ROUTE_PATHNAME_HEADER_NAME,
-  CI_DEFAULT_ROUTE_PATHNAME_COOKIE_NAME,
+// export {
+//   // defaults
+//   CI_DEFAULT_ROUTE_NAMESPACE_COOKIE_NAME,
+//   CI_DEFAULT_ROUTE_NAMESPACE_HEADER_NAME,
+//   CI_DEFAULT_ROUTE_PATHNAME_HEADER_NAME,
+//   CI_DEFAULT_ROUTE_PATHNAME_COOKIE_NAME,
 
-  // helpers
-  ciCoreRoutes,
-  ciGetRoutes,
+//   // helpers
+//   ciCoreRoutes,
+//   ciGetRoutes,
 
-  // path
-  ciGetRequestPath,
+//   // path
+//   ciGetRequestPath,
 
-  // types
-  // type CiRoute,
-  // type CiRouteInfoPageReason,
-  // type CiRouteRuntimeConfig,
-  // type CiMatchedRoute,
-  // type CiRoutesMap,
-} from "./route";
+//   // types
+//   // type CiRoute,
+//   // type CiRouteInfoPageReason,
+//   // type CiRouteRuntimeConfig,
+//   // type CiMatchedRoute,
+//   // type CiRoutesMap,
+// } from "./route";
 
 // ─────────────────────────────────────────────────────────────
 // security
