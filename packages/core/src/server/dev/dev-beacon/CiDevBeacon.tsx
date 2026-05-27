@@ -3,8 +3,8 @@ import type {
   CiDevBeaconTenantInfo,
   CiEnvMode,
   CiTenantScope,
-} from "@/types";
-import { CiDevBeaconWrapper } from "@/client"; // Client boundary: DOM measurement + UI rendering
+} from "@ci-core/types";
+import { CiDevBeaconWrapper } from "@ci-core/client"; // Client boundary: DOM measurement + UI rendering
 /**
  * Resolve a normalized DevEnv value for gating DevBeacon visibility.
  *
@@ -19,16 +19,16 @@ import { CiDevBeaconWrapper } from "@/client"; // Client boundary: DOM measureme
 function resolveEnv(input?: CiEnvMode): CiEnvMode {
   if (input) return input;
 
-  const raw = (
-    process.env.NEXT_PUBLIC_RUNTIME_ENV ??
-    process.env.NODE_ENV ??
-    "prod"
-  ).toLowerCase();
+  // const raw = (
+  //   process.env.NEXT_PUBLIC_RUNTIME_ENV ??
+  //   process.env.NODE_ENV ??
+  //   "prod"
+  // ).toLowerCase();
 
-  if (raw === "dev" || raw === "development") return "sandbox";
-  if (raw === "stage" || raw === "staging" || raw === "test") return "test";
+  // if (raw === "dev" || raw === "development") return "sandbox";
+  // if (raw === "stage" || raw === "staging" || raw === "test") return "test";
 
-  return "prod";
+  return "production";
 }
 
 /**
@@ -66,7 +66,7 @@ export async function CiDevBeacon({
   corePageConfig,
   dir = "ltr",
   position = "bottom-right",
-  visibleWhenEnv = "sandbox",
+  visibleWhenEnv = "development",
   env,
   defaultTab = "status",
   logo = { kind: "default" },

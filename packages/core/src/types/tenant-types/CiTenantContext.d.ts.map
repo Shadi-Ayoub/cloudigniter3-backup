@@ -1,0 +1,1 @@
+{"version":3,"file":"CiTenantContext.d.ts","sourceRoot":"","sources":["CiTenantContext.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,mBAAmB,EAAE,aAAa,EAAE,MAAM,IAAI,CAAC;AAE7D,MAAM,MAAM,eAAe,GAAG;IAC5B,QAAQ,EAAE,MAAM,CAAC;IACjB,UAAU,CAAC,EAAE,MAAM,CAAC;IACpB,WAAW,EAAE,aAAa,CAAC;IAC3B,UAAU,EAAE,mBAAmB,CAAC;CACjC,CAAC"}

@@ -3,9 +3,9 @@
 import * as React from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Loader2 } from "lucide-react";
-import type { CiEnvMode } from "@/types";
-import { cn } from "@/client";
-import type { CiDevBeaconExtraTab, CiDevBeaconTabValue } from "@/types";
+import type { CiEnvMode } from "@ci-core/types";
+import { cn } from "@ci-core/client";
+import type { CiDevBeaconExtraTab, CiDevBeaconTabValue } from "@ci-core/types";
 
 type CiSideTabsListProps = {
   loaded: boolean;
@@ -60,13 +60,10 @@ export function CiDevBeaconModal({
     let classByEnv: string;
 
     switch (env) {
-      case "local":
-      case "dev":
-      case "sandbox":
+      case "development":
         classByEnv = "bg-emerald-500/10 text-emerald-600";
         break;
       case "test":
-      case "preview":
       case "staging":
         classByEnv = "bg-amber-500/10 text-amber-700";
         break;

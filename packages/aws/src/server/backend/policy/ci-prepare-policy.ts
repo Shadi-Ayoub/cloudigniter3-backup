@@ -7,7 +7,6 @@ import type { CiTableGrantSpec } from "../core-types/tables";
 
 import type {
   CiNormalizedPolicyBundle,
-  CiPolicyDocument,
   CiPolicyFragment,
   CiInlinePolicySpec,
   CiPolicyStatement,

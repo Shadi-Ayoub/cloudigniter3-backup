@@ -6,7 +6,7 @@ import Editor from "@monaco-editor/react";
 import { useField, useFormikContext } from "formik";
 import { AlertCircle, Sparkles, Pencil, X } from "lucide-react";
 import { useCiMonacoTheme } from "../hooks/useCiMonacoTheme";
-import { Button } from "@/client";
+import { Button } from "@ci-core/client";
 
 interface SmartJsonEditorFieldProps {
   name: string;

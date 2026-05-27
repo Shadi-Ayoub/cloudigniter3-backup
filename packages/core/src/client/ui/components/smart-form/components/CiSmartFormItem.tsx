@@ -2,7 +2,7 @@
 
 import { forwardRef, useId } from "react";
 import { CiSmartFormItemContext } from "./CiSmartFormItemContext";
-import { cn } from "@/client";
+import { cn } from "@ci-core/client";
 
 const CiSmartFormItem = forwardRef<
   HTMLDivElement,

@@ -1,5 +1,5 @@
 import { type ColumnDef } from "@tanstack/react-table";
-import type { CiLocaleDirection } from "@/types";
+import type { CiLocaleDirection } from "@ci-core/types";
 
 import type { CiDataTableCursorDataSource } from "./CiDataTableCursorDataSource";
 import type { CiDataTableAction } from "./CiDataTableAction";

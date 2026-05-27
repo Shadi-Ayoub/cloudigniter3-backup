@@ -12,11 +12,11 @@ export const TMP_TYPES_DIR = "dist/.types-tmp";
  * - srcRoot: root of the source subtree (used to compute names & guard scope)
  */
 export const BARRELS = [
-  {
-    barrel: "src/ui/components/index.ts",
-    outPrefix: "ui/components",
-    srcRoot: "src/ui/components",
-  },
+  // {
+  //   barrel: "src/ui/components/index.ts",
+  //   outPrefix: "ui/components",
+  //   srcRoot: "src/ui/components",
+  // },
   // add more:
   // { barrel: "src/ui/layout/index.ts", outPrefix: "ui/layout", srcRoot: "src/ui/layout" },
 ];
@@ -26,11 +26,18 @@ export const BARRELS = [
  * No globs here. Let the barrels above control what gets emitted.
  */
 export const STATIC_ENTRY_PATHS = [
-  "src/index.ts",
+  // "src/index.ts",
   "src/server/index.ts",
+  "src/server/proxy/index.ts",
+  "src/client/index.ts",
+  "src/ui/index.ts",
+  "src/ui/server/index.ts",
+  "src/ui/client/index.ts",
+  "src/lib/index.ts",
   "src/layout/login-standard/index.ts",
   "src/layout/app-standard/index.ts",
   "src/layout/cp-standard/index.ts",
+  "src/locales/index.ts",
   // 'src/locale/index.ts',
   // 'src/middleware/index.ts',
   // "src/providers/index.ts",

@@ -2,14 +2,14 @@
 
 import { useField } from "formik";
 import { AlertCircle } from "lucide-react";
-import { Input } from "@/client";
+import { Input } from "@ci-core/client";
 import { CiSmartFormField } from "./CiSmartFormField";
 import { CiSmartFormItem } from "./CiSmartFormItem";
 import { CiSmartFormLabel } from "./CiSmartFormLabel";
 import { CiSmartFormControl } from "./CiSmartFormControl";
 import { CiSmartFormMessage } from "./CiSmartFormMessage";
-import { cn, Tooltip, TooltipTrigger, TooltipContent } from "@/client";
-import type { CiFormFieldProps } from "@/client";
+import { cn, Tooltip, TooltipTrigger, TooltipContent } from "@ci-core/client";
+import type { CiFormFieldProps } from "@ci-core/client";
 
 export function CiSmartInputField(props: CiFormFieldProps) {
   const {

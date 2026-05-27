@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { ciNormalizePath } from "@cloudigniter/core/helpers";
+import { ciNormalizePath } from "@cloudigniter/core/lib";
 import type { CiNextProxyResponseInterface } from "./types";
 import { ciGetBypassFlag } from "./helpers";
 import { ciHandleRouteLogic } from "./ci-handle-route-logic";

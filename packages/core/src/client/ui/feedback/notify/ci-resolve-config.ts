@@ -1,7 +1,7 @@
 import type {
   CiFeedbackSonnerConfig,
   CiFeedbackSonnerConfigResolved,
-} from "@/client";
+} from "@ci-core/client";
 import { CI_DEFAULT_FEEDBACK_CONFIG } from "./ci-defaults";
 
 export function ciResolveFeedbackConfig(

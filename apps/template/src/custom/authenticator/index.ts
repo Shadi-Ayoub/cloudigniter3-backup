@@ -1,2 +1,2 @@
-export { authenticatorCustomProps } from './authenticator-custom-props';
-export { buildCustomAuthenticatorThemeFromTokens } from './build-custom-authenticator-theme-from-tokens';
+export { amplifyAuthenticatorCustomProps } from "./amplify-authenticator-custom-props";
+export { buildCustomAmplifyAuthenticatorThemeOverride } from "./build-custom-amplify-authenticator-theme-from-tokens";

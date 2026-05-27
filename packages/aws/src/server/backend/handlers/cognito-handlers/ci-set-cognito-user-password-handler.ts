@@ -1,4 +1,4 @@
-import { ciSetCognitoUserPassword, ciCreateDirectHandler } from "../../../";
+import { ciSetCognitoUserPassword, ciCreateDirectHandler } from "@ci-aws/lib";
 
 /**
  * Set a Cognito user password.

@@ -1,4 +1,4 @@
-import { type CiResponse } from "@/types";
+import { type CiResponse } from "@ci-core/types";
 
 export type CiSandboxCallbackFunction =
   | ((inputString: string) => Promise<CiResponse>)

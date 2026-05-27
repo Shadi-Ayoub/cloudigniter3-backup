@@ -1,4 +1,4 @@
-import type { CiErrorSeverity } from "@/types";
+import type { CiErrorSeverity } from "@ci-core/types";
 
 export interface CiErrorPageProps {
   message: string;

@@ -1,5 +1,5 @@
 import { createServerRunner } from "@aws-amplify/adapter-nextjs";
-import { type CiAmplifyOutputs } from "@cloudigniter/aws";
+import { type CiAmplifyOutputs } from "@cloudigniter/aws/types";
 
 /**
  * Create a reusable AWS Amplify server runner for Next.js.

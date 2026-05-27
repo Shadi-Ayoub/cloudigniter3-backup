@@ -12,7 +12,7 @@
 //   type CiSystemStatus,
 //   type CiSystemStatusItem,
 // } from "@cloudigniter/core";
-// import type { CiSystemStatusCheckList } from "@/status";
+// import type { CiSystemStatusCheckList } from "@ci-next/status";
 
 // // type ViewMode = 'amplifyConfig' | 'systemSettings' | null;
 

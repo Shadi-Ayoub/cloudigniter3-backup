@@ -4,8 +4,8 @@ import * as React from "react";
 import Editor from "@monaco-editor/react";
 import type * as monacoNS from "monaco-editor";
 import { RefreshCw, Trash2, ListTree } from "lucide-react";
-import { Button, useCiMonacoTheme } from "@/client";
-import type { CiDevBeaconTraceLogViewerTextProps } from "@/types";
+import { Button, useCiMonacoTheme } from "@ci-core/client";
+import type { CiDevBeaconTraceLogViewerTextProps } from "@ci-core/types";
 
 const safeFetchText = async (url: string, init?: RequestInit) => {
   const res = await fetch(url, { cache: "no-store", ...init });

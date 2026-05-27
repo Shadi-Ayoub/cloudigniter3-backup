@@ -1,4 +1,4 @@
-import type { CiEnvMode } from "@/types";
+import type { CiEnvMode } from "@ci-core/types";
 import type { CiDevBeaconPosition, CiDevBeaconSize } from "./";
 
 export interface CiDevBeaconButtonProps

@@ -1,4 +1,9 @@
 // ─────────────────────────────────────────────────────────────
+// debug probe
+// ─────────────────────────────────────────────────────────────
+export { CiDebugProbe } from "./debug-probe";
+
+// ─────────────────────────────────────────────────────────────
 // devbeacon
 // ─────────────────────────────────────────────────────────────
 export {
@@ -8,11 +13,19 @@ export {
   // ciDevBeaconGetTraceLogTextTab,
   // CiDevBeaconTraceLogViewerText,
   // CiDevBeaconTraceTab,
-  CI_DEV_BEACON_DEFAULT_POSITION_CLASSES,
-  CI_DEV_BEACON_LOGO,
   CiDevBeacon,
   // type CiDevBeaconTraceLogViewerTextProps,
 } from "./dev-beacon";
+
+// ─────────────────────────────────────────────────────────────
+// seeder
+// ─────────────────────────────────────────────────────────────
+export { ciReadMocksForItem } from "./seeder";
+
+// ─────────────────────────────────────────────────────────────
+// trace
+// ─────────────────────────────────────────────────────────────
+export { ciStartTraceServer, CiTraceLoggerServer } from "./trace";
 
 // ─────────────────────────────────────────────────────────────
 // sandbox
@@ -40,17 +53,3 @@ export {
 //   CiSeedMarkerDdbItem,
 //   CiSeederResponseBody,
 // } from "./seeder";
-
-// ─────────────────────────────────────────────────────────────
-// trace
-// ─────────────────────────────────────────────────────────────
-export {
-  ciStartTrace,
-  // type CiBuildCanonicalInput,
-  // type CiCanonicalRecord,
-  // type CiLogEntryType,
-  // type CiMetricConfig,
-  // type CiTimerRecord,
-  // type CiTraceConfig,
-  // type CiTraceLoggerOptions,
-} from "./trace";

@@ -12,9 +12,22 @@ export {
 } from "./cookie";
 
 // ─────────────────────────────────────────────────────────────
-// env
+// dev
 // ─────────────────────────────────────────────────────────────
-export { ciGetEnvMode } from "./env";
+export {
+  // debug probe
+  CiDebugProbeClient,
+  CiDebugProbeProvider,
+
+  // trace
+  ciStartTraceClient,
+  CiTraceLoggerClient,
+} from "./dev";
+
+// ─────────────────────────────────────────────────────────────
+// graphql
+// ─────────────────────────────────────────────────────────────
+export { ciCall } from "./graphql";
 
 // ─────────────────────────────────────────────────────────────
 // local storage

@@ -6,7 +6,7 @@ import React, {
   type ReactNode,
 } from "react";
 import { MoreHorizontal } from "lucide-react";
-import type { CiPageHeaderActionButtonProps } from "@/client";
+import type { CiPageHeaderActionButtonProps } from "@ci-core/client";
 
 export function CiPageHeaderActionButton({
   icon,

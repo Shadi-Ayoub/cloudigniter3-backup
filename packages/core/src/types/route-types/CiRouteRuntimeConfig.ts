@@ -1,4 +1,4 @@
-import type { CiInfoPageStrategy } from "@/client";
+import type { CiInfoPageStrategy } from "@ci-core/client";
 
 /**
  * Runtime config used by route and middleware helpers.

@@ -4,9 +4,9 @@ import {
   CI_DEFAULT_ROUTE_NAMESPACE_HEADER_NAME,
   CI_DEFAULT_ROUTE_PATHNAME_COOKIE_NAME,
   CI_DEFAULT_ROUTE_PATHNAME_HEADER_NAME,
-} from "@cloudigniter/core";
-import { ciGetRoutesMatcher } from "@cloudigniter/core/server";
-import { type CiCoreConfig, type CiRoutesMap } from "@cloudigniter/core/types";
+  ciGetRoutesMatcher,
+} from "@cloudigniter/core/lib";
+import type { CiCoreConfig, CiRoutesMap } from "@cloudigniter/core/types";
 import { ciRewriteToRouteInfoPage } from "./helpers";
 
 interface handlePathLogicInterface {

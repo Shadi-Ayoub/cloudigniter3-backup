@@ -1,4 +1,4 @@
-import type { CiSettings } from "@/types";
+import type { CiSettings } from "@ci-core/types";
 
 export type CiPageCoreConfig = {
   settings?: CiSettings;

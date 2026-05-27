@@ -8,7 +8,7 @@
  * next export: Exports the project for static serving.
  */
 
-import type { CiConsolePrintInterface } from "@/client";
+import type { CiConsolePrintInterface } from "@ci-core/client";
 
 export function ciPrintToConsole({
   label = "*",

@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { ciGetLangDir, ciParseServerErrorPayload } from "@cloudigniter/core";
+import {
+  ciGetLangDir,
+  ciParseServerErrorPayload,
+} from "@cloudigniter/core/lib";
 import {
   CiErrorPage,
   ciGetCookie,
@@ -9,15 +12,17 @@ import {
   useCiPageLoaderStore,
 } from "@cloudigniter/core/client";
 import { Inter } from "next/font/google";
-import type { CiNextAwsConfig } from "@/kernel";
+import { getConfig } from "@/kernel/lib";
 import "@cloudigniter/next/styles/standard/style.css";
 
-import ciConfig from "@/cloudigniter.config";
+// import ciConfig from "../../cloudigniter.config";
 
 // import Kernel from '@/kernel';
 import "./globals.css"; // Always after importing Kernel
 
-const config = ciConfig as CiNextAwsConfig;
+// const config = ciConfig as CiNextAwsCoreConfig;
+
+const config = getConfig();
 
 const inter = Inter({ subsets: ["latin"] });
 

@@ -1,33 +1,35 @@
 import { defineConfig } from "tsup";
-import { preserveDirectivesPlugin } from "esbuild-plugin-preserve-directives";
+// import { preserveDirectivesPlugin } from "esbuild-plugin-preserve-directives";
+import { getAllEntries } from "./scripts/entries.mjs";
+
+const isProduction = process.env.NODE_ENV === "production";
+
+const { allEntries } = getAllEntries();
 
 export default defineConfig({
-  entry: {
-    index: "src/index.ts",
-    "server/index": "src/server/index.ts",
-    "server/backend/index": "src/server/backend/index.ts",
-  },
-  format: ["esm", "cjs"],
+  entry: allEntries,
+  format: ["esm"],
+  bundle: false,
   outDir: "dist",
   dts: false,
-  sourcemap: false,
+  sourcemap: !isProduction,
+  minify: isProduction, // Minify output only in production
   clean: false,
   splitting: false,
-  minify: false,
   treeshake: true,
   target: "es2022",
-  external: ["react", "react-dom", "next"],
-  esbuildPlugins: [
-    preserveDirectivesPlugin({
-      directives: ["use client", "use strict", "use server"],
-      include: /\.(js|ts|jsx|tsx)$/,
-      exclude: /node_modules/,
-    }),
-  ],
+  external: ["react", "react-dom"],
+  // esbuildPlugins: [
+  //   preserveDirectivesPlugin({
+  //     directives: ["use client", "use strict", "use server"],
+  //     include: /\.(js|ts|jsx|tsx)$/,
+  //     exclude: /node_modules/,
+  //   }),
+  // ],
   esbuildOptions(opts) {
-    opts.treeShaking = true;
+    // opts.treeShaking = true;
     // opts.plugins = [];
-    opts.chunkNames = "chunks/[name]-[hash]";
+    // opts.chunkNames = "chunks/[name]-[hash]";
     opts.jsx = "automatic";
   },
 });

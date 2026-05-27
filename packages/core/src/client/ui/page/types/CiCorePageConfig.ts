@@ -1,4 +1,4 @@
-import type { CiLocaleDirection, CiSettings } from "@/types";
+import type { CiLocaleDirection, CiSettings } from "@ci-core/types";
 
 export type CiCorePageConfig = {
   settings?: CiSettings;

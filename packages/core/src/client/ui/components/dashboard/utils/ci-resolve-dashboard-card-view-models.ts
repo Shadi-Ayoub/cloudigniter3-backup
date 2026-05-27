@@ -1,5 +1,8 @@
-import { ciCapitalizeFirstLetter } from "@/helpers";
-import type { CiDashboardCardConfig, CiDashboardCardViewModel } from "@/client";
+import { ciCapitalizeFirstLetter } from "@ci-core/lib";
+import type {
+  CiDashboardCardConfig,
+  CiDashboardCardViewModel,
+} from "@ci-core/client";
 import { ciResolveDashboardIcon } from "./ci-resolve-dashboard-icon";
 
 /**

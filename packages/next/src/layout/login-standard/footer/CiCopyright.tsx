@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import { ciCapitalizeFirstLetter } from "@cloudigniter/core/helpers";
+import { ciCapitalizeFirstLetter } from "@cloudigniter/core/lib";
 
 export const CiCopyright = () => {
   const t = useTranslations("mainFooter");

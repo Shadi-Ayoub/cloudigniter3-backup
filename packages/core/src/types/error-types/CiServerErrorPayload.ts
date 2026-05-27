@@ -1,4 +1,4 @@
-import type { CiErrorSeverity } from "@/types";
+import type { CiErrorSeverity } from "@ci-core/types";
 
 // Server-thrown error payloads (App Router → error.tsx)
 export type CiServerErrorPayload = {

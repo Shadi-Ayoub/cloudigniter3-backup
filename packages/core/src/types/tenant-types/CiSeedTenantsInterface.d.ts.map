@@ -1,0 +1,1 @@
+{"version":3,"file":"CiSeedTenantsInterface.d.ts","sourceRoot":"","sources":["CiSeedTenantsInterface.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,gBAAgB,EAAE,MAAM,oBAAoB,CAAC;AAE3D,MAAM,WAAW,sBAAsB;IACrC,OAAO,EAAE,gBAAgB,EAAE,CAAC;IAE5B;;;OAGG;IACH,SAAS,CAAC,EAAE,MAAM,CAAC;IAEnB;;OAEG;IACH,QAAQ,CAAC,EAAE,MAAM,CAAC;CAGnB"}

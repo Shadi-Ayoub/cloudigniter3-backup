@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      // "@/*": ["../src/*"],
+      "$amplify/*": ["../.amplify/generated/*"]
+      // "amplify-schema": ["./data/resource.ts"],
+      // "@cloudigniter/next/*": ["../next/src/*"]
+    },
+    "moduleResolution": "bundler",
+    "module": "ESNext",           // or "esnext" / "nodenext"
+    "esModuleInterop": true,      // if you need default‐import interop
+    "skipLibCheck": true          // optional, speeds up resolution
+  },
+  "exclude": [
+    "../amplify/**/*"
+  ]
+}

@@ -1,14 +1,14 @@
 import { getMessages } from "next-intl/server";
 import { getLocale } from "next-intl/server";
 
-import type { CiAmplifyOutputs } from "@cloudigniter/aws";
+import type { CiAmplifyOutputs } from "@cloudigniter/aws/types";
 
 import type { CiNextAwsResolvedConfig } from "./types";
 
 // import { authenticatorProps } from '@/custom/authenticator/authenticator-props';
 // import authenticatorStyleTheme from '@/custom/authenticator/authenticatorStyleTheme';
 import { themeProviderProps } from "@/custom/theme";
-import { getLangDir } from "@cloudigniter/next/utility";
+import { ciGetLangDir } from "@cloudigniter/core/lib";
 import outputs from "@/../amplify_outputs.json";
 import config from "@/../cloudigniter.config";
 
@@ -30,7 +30,7 @@ const amplifyOutputs = outputs as CiAmplifyOutputs;
 export const ciGetSystemConfig = async () => {
   const messages = await getMessages(); // see /i18n/request.ts
   const locale = await getLocale();
-  const direction = getLangDir(locale);
+  const direction = ciGetLangDir(locale);
 
   const extendedConfig = {
     ...config,

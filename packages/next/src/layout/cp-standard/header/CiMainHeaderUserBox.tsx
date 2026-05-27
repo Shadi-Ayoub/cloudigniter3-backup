@@ -1,26 +1,7 @@
 import dynamic from "next/dynamic";
-import {
-  ciStartTrace,
-  // type CiI18nConfig,
-  // type CiThemeConfig,
-} from "@cloudigniter/core";
-import { CiRoundButtonFallback } from "@/ui";
-import type { CiNextPageConfig } from "@/page";
-// import { CiTraceLogger } from "../../../../../core/dist/dev/trace/trace-logger";
-
-// const LocaleSwitcher = dynamic(
-//   () => import('../../../i18n').then((mod) => mod.LocaleSwitcher),
-//   {
-//     ssr: false,
-//     loading: () => <RoundButtonFallback />,
-//   }
-// );
-
-// interface Props {
-//   direction: 'ltr' | 'rtl';
-//   themeConfig: ThemeConfig;
-//   localeConfig: I18nConfig;
-// }
+import { ciStartTraceServer } from "@cloudigniter/core/server";
+import { CiRoundButtonFallback } from "@ci-next/ui";
+import type { CiNextPageConfig } from "@ci-next/types";
 
 interface MainHeaderUserBoxInterface {
   config: CiNextPageConfig;
@@ -28,7 +9,7 @@ interface MainHeaderUserBoxInterface {
 
 export function MainHeaderUserBox({ config }: MainHeaderUserBoxInterface) {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
-  const { logger } = ciStartTrace(
+  const { logger } = ciStartTraceServer(
     config.ciConfig.traceLog,
     { source: "server", prettyWave: true },
     { name: "<MainHeaderUserBox>" },
@@ -41,26 +22,26 @@ export function MainHeaderUserBox({ config }: MainHeaderUserBoxInterface) {
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
   const ThemeSwitcher = dynamic(
-    () => import("@/ui").then((mod) => mod.CiThemeSwitcher),
+    () => import("@ci-next/client").then((mod) => mod.CiThemeSwitcher),
     {
       ssr: true,
-      loading: () => <CiRoundButtonFallback config={config} />,
+      loading: () => <CiRoundButtonFallback />,
     },
   );
 
   const LocaleSwitcher = dynamic(
-    () => import("@/ui").then((mod) => mod.CiNextLocaleSwitcher),
+    () => import("@ci-next/client").then((mod) => mod.CiNextLocaleSwitcher),
     {
       ssr: true,
-      loading: () => <CiRoundButtonFallback config={config} />,
+      loading: () => <CiRoundButtonFallback />,
     },
   );
 
   const ProfileMenu = dynamic(
-    () => import("@/ui").then((mod) => mod.CiProfileMenu),
+    () => import("@ci-next/ui/client").then((mod) => mod.CiProfileMenu),
     {
       ssr: true,
-      loading: () => <CiRoundButtonFallback config={config} />,
+      loading: () => <CiRoundButtonFallback />,
     },
   );
 

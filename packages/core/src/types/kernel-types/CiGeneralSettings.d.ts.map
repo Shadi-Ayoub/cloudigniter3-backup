@@ -1,0 +1,1 @@
+{"version":3,"file":"CiGeneralSettings.d.ts","sourceRoot":"","sources":["CiGeneralSettings.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,eAAe,EAAE,MAAM,gBAAgB,CAAC;AAEtD,MAAM,MAAM,iBAAiB,GAAG;IAC9B,eAAe,EAAE,MAAM,CAAC;IACxB,CAAC,GAAG,EAAE,MAAM,GAAG,eAAe,CAAC;CAChC,CAAC"}

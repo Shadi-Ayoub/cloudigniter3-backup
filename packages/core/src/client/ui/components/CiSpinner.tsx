@@ -1,6 +1,6 @@
 "use client";
 
-import type { CiPageSpinnerProps } from "@/client";
+import type { CiPageSpinnerProps } from "@ci-core/client";
 
 export const CiSpinner = ({ text = "" }: CiPageSpinnerProps) => {
   return (

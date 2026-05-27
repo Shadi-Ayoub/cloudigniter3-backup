@@ -1,23 +1,26 @@
 import type { NextRequest } from "next/server";
 import type { CiCoreConfig } from "@cloudigniter/core/types";
-import type { CiAwsProviderConfig } from "@cloudigniter/aws";
-import type { CiNextConfig } from "@cloudigniter/next";
+import type { CiAwsProviderConfig } from "@cloudigniter/aws/types";
+import type { CiNextConfig } from "@cloudigniter/next/types";
+import { getConfig } from "@/kernel";
 
-import ciConfig from "./cloudigniter.config";
+// import ciConfig from "../cloudigniter.config";
 
 import {
   // ciNextProxyMatcher,
   ciNextProxyResponse,
-} from "@cloudigniter/next/server";
+} from "@cloudigniter/next/server/proxy";
 
-const conf = ciConfig as CiCoreConfig & CiAwsProviderConfig & CiNextConfig;
+// const conf = ciConfig as CiCoreConfig & CiAwsProviderConfig & CiNextConfig;
 
 // const ciConf = ciConfig as CiConfig;
+
+const conf = getConfig();
 
 export async function proxy(request: NextRequest) {
   const res = await ciNextProxyResponse({
     request,
-    ciConfig,
+    ciConfig: conf,
     routes: conf.routes,
   });
 

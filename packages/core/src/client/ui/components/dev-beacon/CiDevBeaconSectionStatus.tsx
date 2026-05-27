@@ -1,6 +1,6 @@
 "use client";
 
-import type { CiDevBeaconSectionStatusProps } from "@/types";
+import type { CiDevBeaconSectionStatusProps } from "@ci-core/types";
 
 export function CiDevBeaconSectionStatus({
   tenant,

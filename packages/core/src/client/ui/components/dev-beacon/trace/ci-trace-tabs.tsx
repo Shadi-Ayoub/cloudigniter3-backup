@@ -2,7 +2,7 @@ import { ListTree } from "lucide-react";
 import type {
   CiDevBeaconExtraTab,
   CiDevBeaconTraceLogViewerTextProps,
-} from "@/types";
+} from "@ci-core/types";
 import { CiDevBeaconTraceLogViewerText } from "./CiDevBeaconTraceLogViewerText";
 
 /**

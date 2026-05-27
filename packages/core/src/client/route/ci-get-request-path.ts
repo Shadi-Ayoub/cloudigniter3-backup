@@ -1,5 +1,5 @@
-import { ciGetCookie } from "@/client";
-import { ciNormalizePath } from "@/helpers";
+import { ciGetCookie } from "@ci-core/client";
+import { ciNormalizePath } from "@ci-core/lib";
 
 export function ciGetRequestPath(opts?: {
   cookieName?: string; // default: 'ci-request-path'

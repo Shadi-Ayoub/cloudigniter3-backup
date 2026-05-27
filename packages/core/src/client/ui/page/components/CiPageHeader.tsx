@@ -7,7 +7,7 @@ import {
   useState,
   type ReactElement,
 } from "react";
-import type { CiCollapsiblePageHeaderProps } from "@/client";
+import type { CiCollapsiblePageHeaderProps } from "@ci-core/client";
 
 export function CiPageHeader({
   title,

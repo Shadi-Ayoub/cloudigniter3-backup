@@ -1,4 +1,4 @@
-import { CI_DEFAULT_GLOBAL_SEGMENT } from "@cloudigniter/core";
+import { CI_DEFAULT_GLOBAL_SEGMENT } from "@cloudigniter/core/lib";
 import type { CiTenantSlugResult } from "@cloudigniter/core/types";
 
 /**

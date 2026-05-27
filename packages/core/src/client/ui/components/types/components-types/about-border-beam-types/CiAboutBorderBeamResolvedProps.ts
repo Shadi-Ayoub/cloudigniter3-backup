@@ -1,4 +1,4 @@
-import type { BorderBeamProps } from "@/client";
+import type { BorderBeamProps } from "@ci-core/client";
 
 export type CiAboutBorderBeamResolvedProps = {
   title?: string;

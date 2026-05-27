@@ -3,7 +3,7 @@
 import { forwardRef } from "react";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { useCiSmartFormField } from "../hooks/useCiSmartFormField";
-import { cn, Label } from "@/client";
+import { cn, Label } from "@ci-core/client";
 
 export const CiSmartFormLabel = forwardRef<
   React.ComponentRef<typeof LabelPrimitive.Root>,

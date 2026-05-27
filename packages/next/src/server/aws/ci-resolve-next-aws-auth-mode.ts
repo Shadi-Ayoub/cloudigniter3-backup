@@ -1,8 +1,6 @@
 import { cookies } from "next/headers";
-import {
-  ciResolveAwsAuthMode,
-  type CiAwsAuthMode,
-} from "@cloudigniter/aws/server";
+import { ciResolveAwsAuthMode } from "@cloudigniter/aws/lib";
+import { type CiAwsAuthMode } from "@cloudigniter/aws/types";
 import { ciGetNextAmplifyServerRunner } from "./ci-get-next-amplify-server-runner";
 
 /**

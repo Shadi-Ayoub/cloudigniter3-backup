@@ -2,11 +2,11 @@
 
 import { useEffect, useMemo } from "react";
 import { Toaster, type ToasterProps } from "sonner";
-import { useCiFeedbackStore } from "@/client";
+import { useCiFeedbackStore } from "@ci-core/client";
 import type {
   CiFeedbackSonnerConfig,
   CiFeedbackRuntimeOverrides,
-} from "@/client";
+} from "@ci-core/client";
 
 /**
  * Deep-merge only:

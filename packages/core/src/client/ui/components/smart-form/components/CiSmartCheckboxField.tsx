@@ -8,8 +8,8 @@ import {
   TooltipTrigger,
   TooltipContent,
   cn,
-} from "@/client";
-import type { CiSmartCheckboxFieldProps } from "@/client";
+} from "@ci-core/client";
+import type { CiSmartCheckboxFieldProps } from "@ci-core/client";
 
 export const CiSmartCheckboxField = ({
   name,

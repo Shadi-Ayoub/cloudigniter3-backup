@@ -31,7 +31,7 @@ import { CiSmartInputField } from "./CiSmartInputField";
 import { CiSmartTextareaField } from "./CiSmartTextareaField";
 import { CiSmartCheckboxField } from "./CiSmartCheckboxField";
 import { CiSmartJsonEditorField } from "./CiSmartJsonEditorField";
-import type { CiFormFieldProps } from "@/client";
+import type { CiFormFieldProps } from "@ci-core/client";
 
 export function CiSmartFormField(props: CiFormFieldProps) {
   const { type = "input" } = props;

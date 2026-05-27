@@ -7,7 +7,7 @@ import type {
   CiDevBeaconExtraTabSpec,
   CiDevBeaconLogoSpec,
   CiDevBeaconWrapperProps,
-} from "@/types";
+} from "@ci-core/types";
 import { CiDevBeaconClient } from "./CiDevBeaconClient";
 import { CiDevBeaconTraceLogViewerText, CiDevBeaconTraceTab } from "./trace";
 

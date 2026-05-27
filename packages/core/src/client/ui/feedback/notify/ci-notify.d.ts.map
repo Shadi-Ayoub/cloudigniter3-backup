@@ -1,0 +1,1 @@
+{"version":3,"file":"ci-notify.d.ts","sourceRoot":"","sources":["ci-notify.ts"],"names":[],"mappings":"AAMA,OAAO,KAAK,EAAE,eAAe,EAAE,eAAe,EAAE,MAAM,iBAAiB,CAAC;AAExE,KAAK,MAAM,GAAG,KAAK,CAAC,SAAS,GAAG,CAAC,MAAM,KAAK,CAAC,SAAS,CAAC,CAAC;AA4BxD,wBAAgB,QAAQ,CACtB,KAAK,EAAE,eAAe,EACtB,OAAO,EAAE,MAAM,EACf,OAAO,CAAC,EAAE,eAAe,+BAsE1B"}

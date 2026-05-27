@@ -1,12 +1,13 @@
 import type {
   CiAuthConfig,
+  CiDevConfig,
   CiI18nConfig,
   CiRoute,
   CiRouteRuntimeConfig,
   CiTenantRoutingOptions,
   CiThemeConfig,
-  CiTraceConfig,
-} from "@/types";
+  // CiTraceConfig,
+} from "@ci-core/types";
 
 import type { CiDataConfig } from "./CiDataConfig";
 
@@ -28,7 +29,7 @@ export type CiCoreConfig = {
 
   data: CiDataConfig;
 
-  traceLog: CiTraceConfig;
+  // traceLog: CiTraceConfig;
 
   route?: CiRouteRuntimeConfig;
 
@@ -39,6 +40,8 @@ export type CiCoreConfig = {
   tenant: CiTenantRoutingOptions;
 
   routes: Record<string, CiRoute>;
+
+  dev: CiDevConfig;
 
   // platform?: TPlatformConfig;
 

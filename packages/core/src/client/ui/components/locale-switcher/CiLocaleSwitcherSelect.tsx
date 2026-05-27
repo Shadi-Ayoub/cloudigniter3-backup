@@ -14,9 +14,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
   useCiPageLoaderStore,
-} from "@/client";
-import { CI_DEFAULT_LOCALE_COOKIE_NAME } from "@/i18n";
-import type { CiLocaleSwitcherSelectProps } from "@/types";
+} from "@ci-core/client";
+import { CI_DEFAULT_LOCALE_COOKIE_NAME } from "@ci-core/lib";
+import type { CiLocaleSwitcherSelectProps } from "@ci-core/types";
 
 const LocaleSwitcherSelect = ({
   dir,

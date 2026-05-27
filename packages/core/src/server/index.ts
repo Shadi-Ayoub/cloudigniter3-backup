@@ -1,24 +1,20 @@
 // ─────────────────────────────────────────────────────────────
-// api
-// ─────────────────────────────────────────────────────────────
-export {
-  ciFinalizeResponse,
-  ciIsResponseError,
-  ciIsResponseOk,
-  ciResponseError,
-  ciResponseOk,
-  ciSafeParseRequest,
-} from "./api";
-
-// ─────────────────────────────────────────────────────────────
 // dev
 // ─────────────────────────────────────────────────────────────
 export {
-  CI_DEV_BEACON_DEFAULT_POSITION_CLASSES,
-  CI_DEV_BEACON_LOGO,
+  // debug probe
+  CiDebugProbe,
+
+  // dev beacon
   CiDevBeacon,
+
+  // seeder
+  ciReadMocksForItem,
+
   // trace
-  ciStartTrace,
+  ciStartTraceServer,
+  CiTraceLoggerServer,
+  // trace
   // type CiBuildCanonicalInput,
   // type CiCanonicalRecord,
   // type CiLogEntryType,
@@ -28,40 +24,29 @@ export {
   // type CiTraceLoggerOptions,
 } from "./dev";
 
-// ─────────────────────────────────────────────────────────────
-// error
-// ─────────────────────────────────────────────────────────────
-export {
-  ciIsErrorResponse,
-  ciNormalizeThrownError,
-  ciParseServerErrorPayload,
-  ciResponseHasErrorBody,
-  ciSerializeUnknownError,
-} from "./error";
+// // ─────────────────────────────────────────────────────────────
+// // route
+// // ─────────────────────────────────────────────────────────────
+// export {
+//   // defaults
+//   CI_DEFAULT_ROUTE_NAMESPACE_COOKIE_NAME,
+//   CI_DEFAULT_ROUTE_NAMESPACE_HEADER_NAME,
+//   CI_DEFAULT_ROUTE_PATHNAME_HEADER_NAME,
+//   CI_DEFAULT_ROUTE_PATHNAME_COOKIE_NAME,
 
-// ─────────────────────────────────────────────────────────────
-// route
-// ─────────────────────────────────────────────────────────────
-export {
-  // defaults
-  CI_DEFAULT_ROUTE_NAMESPACE_COOKIE_NAME,
-  CI_DEFAULT_ROUTE_NAMESPACE_HEADER_NAME,
-  CI_DEFAULT_ROUTE_PATHNAME_HEADER_NAME,
-  CI_DEFAULT_ROUTE_PATHNAME_COOKIE_NAME,
+//   // constants
+//   ciCoreRoutes,
 
-  // constants
-  ciCoreRoutes,
-
-  // helpers
-  ciCompileRoutes,
-  ciGetRoutes,
-  ciGetRoutesMatcher,
-  ciGetRouteNamespace,
-  ciIsProtectedPath,
-  ciIsRegisteredPath,
-  ciMatchRoute,
-  ciResolveRoute,
-} from "./route";
+//   // helpers
+//   ciCompileRoutes,
+//   ciGetRoutes,
+//   ciGetRoutesMatcher,
+//   ciGetRouteNamespace,
+//   ciIsProtectedPath,
+//   ciIsRegisteredPath,
+//   ciMatchRoute,
+//   ciResolveRoute,
+// } from "./route";
 
 // settings
 // export {

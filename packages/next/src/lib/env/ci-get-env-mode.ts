@@ -1,0 +1,7 @@
+import type { CiEnvMode } from "@ci-core/types";
+
+export function ciGetEnvMode(): CiEnvMode | undefined {
+  const envMode = process.env.NEXT_PUBLIC_CI_ENV_MODE as CiEnvMode | undefined;
+
+  return envMode;
+}

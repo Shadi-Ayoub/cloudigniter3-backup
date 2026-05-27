@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { ciStartTrace } from "@/dev";
+import { ciStartTraceClient } from "@ci-core/client";
 // import type { CiI18nConfig } from "../../common";
 import LocaleSwitcherSelect from "./CiLocaleSwitcherSelect";
-import { type CiLocaleSwitcherProps } from "@/types";
+import { type CiLocaleSwitcherProps } from "@ci-core/types";
 
 export function CiLocaleSwitcher({
   traceConfig,
@@ -13,7 +13,7 @@ export function CiLocaleSwitcher({
   config,
 }: CiLocaleSwitcherProps) {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
-  const { logger, done } = ciStartTrace(
+  const { logger, done } = ciStartTraceClient(
     traceConfig,
     // { source: 'client', tag: `LocaleSwitcher`, defaults: { component: 'LocaleSwitcher' } },
     { source: "client", tag: `LocaleSwitcher` },

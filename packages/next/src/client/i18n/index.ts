@@ -1,0 +1,1 @@
+export { CiNextLocaleSwitcher } from "./CiNextLocaleSwitcher";

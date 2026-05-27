@@ -1,19 +1,21 @@
-import type { CiEnvMode, CiRequest } from '@CI/types';
+import "server-only";
+import { ciGetEnvMode } from "@cloudigniter/core/lib";
+import type { CiRequest } from "@cloudigniter/core/types";
 
-import ciConfig from '@/../cloudigniter.config';
+import ciConfig from "@/../cloudigniter.config";
 
-export function prepareApiRequest<T = unknown>(
-  request: CiRequest<T>
+export function ciPrepareApiRequest<T = unknown>(
+  request: CiRequest<T>,
 ): CiRequest<T> {
-  const cognitoClientConfig = ciConfig.cognito.client;
-  const dynamodbClientConfig = ciConfig.dynamodb.clientConfig;
+  const cognitoClientConfig = ciConfig.providers.aws.cognito.client;
+  const dynamodbClientConfig = ciConfig.providers.aws.dynamodb.clientConfig;
 
-  const envMode = (process.env.NEXT_PUBLIC_CI_ENV_MODE ?? 'test') as CiEnvMode;
+  const envMode = ciGetEnvMode();
 
-  const apiRequest = {
+  return {
     ...request,
     envMode: request.envMode ?? envMode,
-    authMode: request.authMode ?? 'userPool', // <- 'userPool' for signed-in, 'apikey' for guests);
+    authMode: request.authMode ?? "userPool",
     options: {
       CognitoClientConfig:
         request.options?.CognitoClientConfig ?? cognitoClientConfig,
@@ -22,6 +24,4 @@ export function prepareApiRequest<T = unknown>(
     },
     critical: request.critical ?? false,
   };
-
-  return apiRequest;
 }

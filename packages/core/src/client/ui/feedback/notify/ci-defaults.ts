@@ -1,4 +1,4 @@
-import type { CiFeedbackSonnerConfig } from "@/client";
+import type { CiFeedbackSonnerConfig } from "@ci-core/client";
 
 export const CI_DEFAULT_FEEDBACK_CONFIG: Required<CiFeedbackSonnerConfig> = {
   enabled: true,

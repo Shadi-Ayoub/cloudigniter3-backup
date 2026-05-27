@@ -1,7 +1,7 @@
 "use client";
 
-import { BorderBeam, Card } from "@/client";
-import type { CiAboutBorderBeamViewProps } from "@/client";
+import { BorderBeam, Card } from "@ci-core/client";
+import type { CiAboutBorderBeamViewProps } from "@ci-core/client";
 
 export function CiAboutBorderBeamView({
   title,

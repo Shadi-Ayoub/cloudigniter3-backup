@@ -1,4 +1,4 @@
-import type { CiErrorSeverity } from "@/types";
+import type { CiErrorSeverity } from "@ci-core/types";
 
 // Client-side tracked error payloads (e.g. store, notifications)
 export type CiClientErrorPayload = {

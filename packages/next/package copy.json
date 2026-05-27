@@ -1,0 +1,125 @@
+{
+  "name": "@cloudigniter/next",
+  "version": "0.0.1",
+  "private": false,
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./locales": {
+      "types": "./src/locales/index.d.ts",
+      "import": "./src/locales/index.js"
+    },
+    "./server": {
+      "types": "./dist/server/index.d.ts",
+      "import": "./dist/server/index.js"
+    },
+    "./server/proxy": {
+      "types": "./dist/server/proxy/index.d.ts",
+      "import": "./dist/server/proxy/index.js"
+    },
+    "./client": {
+      "types": "./dist/client/index.d.ts",
+      "import": "./dist/client/index.js"
+    },
+    "./lib": {
+      "types": "./dist/lib/index.d.ts",
+      "import": "./dist/lib/index.js"
+    },
+    "./ui": {
+      "types": "./dist/ui/index.d.ts",
+      "import": "./dist/ui/index.js"
+    },
+    "./ui/server": {
+      "types": "./dist/ui/server/index.d.ts",
+      "import": "./dist/ui/server/index.js"
+    },
+    "./ui/client": {
+      "types": "./dist/ui/client/index.d.ts",
+      "import": "./dist/ui/client/index.js"
+    },
+    "./layout/app-standard": {
+      "types": "./dist/layout/app-standard/index.d.ts",
+      "import": "./dist/layout/app-standard/index.js"
+    },
+    "./layout/cp-standard": {
+      "types": "./dist/layout/cp-standard/index.d.ts",
+      "import": "./dist/layout/cp-standard/index.js"
+    },
+    "./layout/login-standard": {
+      "types": "./dist/layout/login-standard/index.d.ts",
+      "import": "./dist/layout/login-standard/index.js"
+    },
+    "./types": {
+      "import": "./dist/types/index.d.ts"
+    },
+    "./styles/standard/style.css": "./dist/styles/standard/style.css",
+    "./styles/standard/theme.css": "./dist/styles/standard/theme.css"
+  },
+  "scripts": {
+    "switch:src": "node ./scripts/switch-sources.mjs src",
+    "switch:dist": "node ./scripts/switch-sources.mjs dist",
+    "clean": "rimraf dist .tsbuildinfo",
+    "clean:maps": "rimraf dist/*.map dist/**/*.map",
+    "build": "pnpm run build:dev",
+    "build:dev": "NODE_ENV=development pnpm run switch:src && pnpm run clean && pnpm run build:js && pnpm run build:types && pnpm run build:assets",
+    "build:prod": "NODE_ENV=production pnpm run switch:dist && pnpm run clean && pnpm run build:js && pnpm run build:types && pnpm run build:assets && pnpm run obfuscate && pnpm run clean:maps",
+    "build:js": "tsup --config tsup.config.ts",
+    "build:types": "tsc -p tsconfig.build.json",
+    "build:assets": "node ./scripts/build-assets.mjs && pnpm -v",
+    "obfuscate": "node ../../scripts/ci-obfuscate-package.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "check:package": "npm pack --dry-run",
+    "dev": "tsup --watch",
+    "typecheck:tools": "tsc -p tsconfig.tools.json --noEmit",
+    "check": "pnpm run typecheck && pnpm run typecheck:tools"
+  },
+  "dependencies": {
+    "@ant-design/nextjs-registry": "^1.3.0",
+    "@aws-amplify/adapter-nextjs": "^1.7.2",
+    "@aws-amplify/ui-react": "^6.15.3",
+    "@cloudigniter/aws": "workspace:*",
+    "@cloudigniter/core": "workspace:*",
+    "@headlessui/react": "^2.2.10",
+    "@tanstack/react-table": "^8.21.3",
+    "antd": "^6.3.5",
+    "aws-amplify": "^6.16.3",
+    "formik": "^2.4.9",
+    "highlight.js": "^11.11.1",
+    "lucide-react": "^1.8.0",
+    "next-intl": "^4.9.0",
+    "next-themes": "^0.4.6",
+    "react-hook-form": "^7.72.1",
+    "react-icons": "^5.6.0",
+    "server-only": "^0.0.1",
+    "sonner": "^2.0.7",
+    "tailwindcss": "^4.3.0",
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^4.3.6",
+    "zod-formik-adapter": "^2.0.0"
+  },
+  "peerDependencies": {
+    "next": "^16.2.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@cloudigniter/config-ts": "workspace:*",
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "esbuild-plugin-preserve-directives": "^0.0.11",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.5.0",
+    "typescript": "^6.0.2"
+  }
+}

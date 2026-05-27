@@ -1,8 +1,8 @@
 "use client";
 
 import { Activity, Loader2, Settings, Wrench } from "lucide-react";
-import { cn, Tabs, TabsContent, TabsList, TabsTrigger } from "@/client";
-import type { CiDevBeaconSideTabsListProps } from "@/types";
+import { cn, Tabs, TabsContent, TabsList, TabsTrigger } from "@ci-core/client";
+import type { CiDevBeaconSideTabsListProps } from "@ci-core/types";
 
 export function CiDevBeaconSideTabsList({
   loaded,

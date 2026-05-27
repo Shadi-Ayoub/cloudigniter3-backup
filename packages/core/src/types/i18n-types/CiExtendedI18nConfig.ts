@@ -1,4 +1,4 @@
-import type { CiSettingsValue } from "@/types";
+import type { CiSettingsValue } from "@ci-core/types";
 import type { CiLocale } from "./CiLocale";
 import type { CiI18nConfig } from "./CiI18nConfig";
 

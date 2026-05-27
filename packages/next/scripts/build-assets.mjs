@@ -5,10 +5,10 @@ import fs from "node:fs";
 import path from "node:path";
 
 const cwd = process.cwd();
-const srcStylesDir = path.join(cwd, "src/ui/styles");
-const distStylesDir = path.join(cwd, "dist/styles");
-const srcLocaleDir = path.join(cwd, "src/i18n/locale");
-const distLocaleDir = path.join(cwd, "dist/locale");
+const srcStylesDir = path.join(cwd, "src/styles");
+const destStylesDir = path.join(cwd, "dist/styles");
+const srcLocaleDir = path.join(cwd, "src/locales");
+const destLocaleDir = path.join(cwd, "dist/locales");
 
 async function ciBuildStyles() {
   console.log("ℹ️ Building the default styles folder.");
@@ -19,10 +19,10 @@ async function ciBuildStyles() {
   }
 
   console.log("ℹ️ Styles source path:", srcStylesDir);
-  console.log("ℹ️ Styles destination path:", distStylesDir);
+  console.log("ℹ️ Styles destination path:", destStylesDir);
 
-  await rm(distStylesDir, { recursive: true, force: true });
-  await mkdir(distStylesDir, { recursive: true });
+  await rm(destStylesDir, { recursive: true, force: true });
+  await mkdir(destStylesDir, { recursive: true });
 
   const entries = await readdir(srcStylesDir, { withFileTypes: true });
   const themes = entries
@@ -31,7 +31,7 @@ async function ciBuildStyles() {
 
   for (const theme of themes) {
     const themeSrcDir = path.join(srcStylesDir, theme);
-    const outputThemeDir = path.join(distStylesDir, theme);
+    const outputThemeDir = path.join(destStylesDir, theme);
     const inputCssFile = path.join(themeSrcDir, "style.css");
     const outputCssFile = path.join(outputThemeDir, "style.css");
     const srcThemeCss = path.join(themeSrcDir, "theme.css");
@@ -66,10 +66,55 @@ async function ciCopyLocales() {
     return;
   }
 
-  await rm(distLocaleDir, { recursive: true, force: true });
-  await mkdir(distLocaleDir, { recursive: true });
+  // Ensure destination exists first.
+  if (!fs.existsSync(destLocaleDir)) {
+    fs.mkdirSync(destLocaleDir, { recursive: true });
+  }
 
-  fs.cpSync(srcLocaleDir, distLocaleDir, {
+  // else {
+  //   // Remove everything inside destination, but keep the folder
+  //   for (const entry of fs.readdirSync(destLocaleDir)) {
+  //     fs.rmSync(path.join(destLocaleDir, entry), {
+  //       recursive: true,
+  //       force: true,
+  //     });
+  //   }
+  // }
+
+  // fs.cpSync(srcLocaleDir, destLocaleDir, {
+  //   recursive: true,
+  //   filter: (source) => {
+  //     return (
+  //       fs.statSync(source).isDirectory() ||
+  //       source.endsWith(".json") ||
+  //       source.endsWith(".d.ts")
+  //     );
+  //   },
+  // });
+
+  if (fs.existsSync(destLocaleDir)) {
+    for (const entry of fs.readdirSync(destLocaleDir)) {
+      const fullPath = path.join(destLocaleDir, entry);
+      const stat = fs.statSync(fullPath);
+
+      // Keep only root-level build files
+      if (
+        stat.isFile() &&
+        (entry.endsWith(".ts") ||
+          entry.endsWith(".js") ||
+          entry.endsWith(".map"))
+      ) {
+        continue;
+      }
+
+      fs.rmSync(fullPath, {
+        recursive: true,
+        force: true,
+      });
+    }
+  }
+
+  fs.cpSync(srcLocaleDir, destLocaleDir, {
     recursive: true,
     filter: (source) => {
       return (

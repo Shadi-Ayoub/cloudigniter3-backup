@@ -6,7 +6,7 @@ import type {
   CiDevBeaconTenantInfo,
   CiEnvMode,
   CiLocaleDirection,
-} from "@/types";
+} from "@ci-core/types";
 
 export interface CiDevBeaconClientProps {
   dir?: CiLocaleDirection;

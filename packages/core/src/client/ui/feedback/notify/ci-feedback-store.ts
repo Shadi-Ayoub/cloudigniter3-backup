@@ -7,7 +7,7 @@ import {
   type CiFeedbackSonnerConfigResolved,
   type CiClientFeedbackPayload,
   type CiDeliveryChannel,
-} from "@/client";
+} from "@ci-core/client";
 
 export type PushOptions = {
   isSticky?: boolean;

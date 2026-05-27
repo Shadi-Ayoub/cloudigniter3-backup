@@ -2,11 +2,9 @@ import type { Context } from "aws-lambda";
 
 import type { CiErrorStatus, CiResponse } from "@cloudigniter/core/types";
 // TBD
-import type { CiErrorResponse } from "../../lambda/ci-create-lambda-handler";
-import { ciResponseError, ciResponseOk } from "@cloudigniter/core/server";
-import { ciAttachAwsResponseDebug, type CiAppSyncResolverEvent } from "../../";
-
-import type {} from "../../";
+import type { CiAppSyncResolverEvent, CiErrorResponse } from "@ci-aws/types";
+import { ciResponseError, ciResponseOk } from "@cloudigniter/core/lib";
+import { ciAttachAwsResponseDebug } from "@ci-aws/lib";
 
 /**
  * Bound validation helper injected into handler runtime.

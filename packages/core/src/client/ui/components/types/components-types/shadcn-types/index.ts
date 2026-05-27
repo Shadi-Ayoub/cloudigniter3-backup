@@ -1,1 +1,1 @@
-export type { BorderBeamProps } from "@/client/ui/components/shadcn/border-beam";
+export type { BorderBeamProps } from "@ci-core/client/ui/components/shadcn/border-beam";

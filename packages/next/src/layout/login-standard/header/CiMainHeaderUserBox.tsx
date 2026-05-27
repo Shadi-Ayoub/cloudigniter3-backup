@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
-import { CiRoundButtonFallback } from "@/ui";
-import type { CiNextPageConfig } from "@/page";
+import { CiRoundButtonFallback } from "@ci-next/ui";
+import type { CiNextPageConfig } from "@ci-next/types";
 // import { LocaleSwitcher } from '@CI/ui/components';
 
 // const LocaleSwitcher = dynamic(
@@ -23,26 +23,26 @@ interface MainHeaderUserBoxInterface {
 
 export function MainHeaderUserBox({ config }: MainHeaderUserBoxInterface) {
   const ThemeSwitcher = dynamic(
-    () => import("@/ui").then((mod) => mod.CiThemeSwitcher),
+    () => import("@ci-next/client").then((mod) => mod.CiThemeSwitcher),
     {
       ssr: true,
-      loading: () => <CiRoundButtonFallback config={config} />,
+      loading: () => <CiRoundButtonFallback />,
     },
   );
 
   const LocaleSwitcher = dynamic(
-    () => import("@/ui").then((mod) => mod.CiNextLocaleSwitcher),
+    () => import("@ci-next/client").then((mod) => mod.CiNextLocaleSwitcher),
     {
       ssr: true,
-      loading: () => <CiRoundButtonFallback config={config} />,
+      loading: () => <CiRoundButtonFallback />,
     },
   );
 
   const ProfileMenu = dynamic(
-    () => import("@/ui").then((mod) => mod.CiProfileMenu),
+    () => import("@ci-next/ui/client").then((mod) => mod.CiProfileMenu),
     {
       ssr: true,
-      loading: () => <CiRoundButtonFallback config={config} />,
+      loading: () => <CiRoundButtonFallback />,
     },
   );
 

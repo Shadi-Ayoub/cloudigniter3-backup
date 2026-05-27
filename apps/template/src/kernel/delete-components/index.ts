@@ -1,1 +1,0 @@
-export { ConfigureAmplifyClientSide } from './ConfigureAmplify';

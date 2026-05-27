@@ -1,8 +1,8 @@
 import { useTranslations } from "next-intl";
 
-import { ciStartTrace } from "@cloudigniter/core";
-import { ciCapitalizeFirstLetter } from "@cloudigniter/core/helpers";
-import type { CiNextPageConfig } from "@/page";
+import { ciStartTraceServer } from "@cloudigniter/core/server";
+import { ciCapitalizeFirstLetter } from "@cloudigniter/core/lib";
+import type { CiNextPageConfig } from "@ci-next/types";
 
 interface CopyrightInterface {
   config: CiNextPageConfig;
@@ -10,7 +10,7 @@ interface CopyrightInterface {
 
 export const CiCopyright = ({ config }: CopyrightInterface) => {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
-  const { logger } = ciStartTrace(
+  const { logger } = ciStartTraceServer(
     config.ciConfig.traceLog,
     { source: "server", prettyWave: true },
     { name: "<Copyright>" },

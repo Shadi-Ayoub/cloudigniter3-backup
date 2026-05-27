@@ -3,7 +3,7 @@ import type {
   CiEnvMode,
   CiRequestOptions,
   CiSeedEnvMode,
-} from "@/types";
+} from "@ci-core/types";
 
 /**
  * Provider-neutral request envelope used by CloudIgniter service clients.

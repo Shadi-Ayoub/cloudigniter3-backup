@@ -1,4 +1,4 @@
-import type { CiJsonValue } from "@/types";
+import type { CiJsonValue } from "@ci-core/types";
 import type { CiGraphQLError } from "./CiGraphQLError";
 import type { CiNullable } from "./CiNullable";
 

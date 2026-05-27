@@ -3,6 +3,8 @@
   "compilerOptions": {
     "noEmit": false,
     "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationMap": false,
     "tsBuildInfoFile": "node_modules/.cache/tsconfig.build.tsbuildinfo"
   }
 }

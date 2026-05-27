@@ -3,7 +3,18 @@
   "compilerOptions": {
     "jsx": "preserve",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@ci-next/*": [
+        "../../packages/next/src/*"
+      ],
+      "@ci-aws/*": [
+        "../../packages/aws/src/*"
+      ],
+      "@ci-core/*": [
+        "../../packages/core/src/*"
+      ]
     },
     "plugins": [
       {
@@ -15,7 +26,10 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "cloudigniter.config.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

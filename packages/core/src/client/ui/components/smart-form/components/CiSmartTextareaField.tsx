@@ -13,7 +13,7 @@ import {
   TooltipTrigger,
   TooltipContent,
   Textarea,
-} from "@/client";
+} from "@ci-core/client";
 
 interface SmartTextareaFieldProps {
   name: string;

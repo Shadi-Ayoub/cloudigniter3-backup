@@ -1,0 +1,1 @@
+{"version":3,"file":"CiUpdateTenantInterface.d.ts","sourceRoot":"","sources":["CiUpdateTenantInterface.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,uBAAuB;IACtC,QAAQ,EAAE,MAAM,CAAC;IACjB,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,WAAW,CAAC,EAAE,MAAM,CAAC;IACrB,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,IAAI,CAAC,EAAE,MAAM,CAAC,MAAM,EAAE,OAAO,CAAC,CAAC;CAChC"}

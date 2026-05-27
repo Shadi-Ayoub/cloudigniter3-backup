@@ -1,4 +1,5 @@
-export type { CiNextAwsConfig } from "./CiNextAwsConfig";
+export type { CiNextAwsPageConfig } from "./CiNexAwsPageConfig";
+export type { CiNextAwsCoreConfig } from "./CiNextAwsCoreConfig";
 export type { CiNextAwsResolvedConfig } from "./CiNextAwsResolvedConfig";
 export type { CiSystemStatus } from "./CiSystemStatus";
 export type { CiSystemStatusItem } from "./CiSystemStatusItem";

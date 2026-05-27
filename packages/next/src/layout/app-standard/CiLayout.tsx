@@ -1,9 +1,10 @@
 import React from "react";
 
-import { CiDashboardHeaderButton, CiMainHeaderUserBox } from "@/ui";
-import { CiPageWrapper } from "@/wrapper/server";
-import { ciStartTrace } from "@cloudigniter/core";
-import type { CiNextPageConfig } from "../../";
+import { CiPageWrapper } from "@ci-next/server";
+import { CiMainHeaderUserBox } from "@ci-next/ui/server";
+import { CiDashboardHeaderButton } from "@ci-next/ui/client";
+import { ciStartTraceServer } from "@cloudigniter/core/server";
+import type { CiNextPageConfig } from "@ci-next/types";
 
 import { CiHeader } from "./header";
 import { CiContainer } from "./container";
@@ -21,7 +22,7 @@ const CiLayout: React.FC<CiLayoutProps> = ({
   children,
 }: CiLayoutProps) => {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
-  const { logger } = ciStartTrace(
+  const { logger } = ciStartTraceServer(
     config.ciConfig.traceLog,
     { source: "server", prettyWave: true },
     { name: "<Layout>" },

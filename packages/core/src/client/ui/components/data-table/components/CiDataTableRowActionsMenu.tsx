@@ -8,8 +8,8 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/client";
-import type { CiDataTableRowActionsMenuProps } from "@/client";
+} from "@ci-core/client";
+import type { CiDataTableRowActionsMenuProps } from "@ci-core/client";
 
 export function CiDataTableRowActionsMenu<TData>({
   row,

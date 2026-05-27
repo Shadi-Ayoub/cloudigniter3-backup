@@ -1,7 +1,7 @@
 "use client";
 
 import { FiAlertTriangle, FiRefreshCw, FiXCircle } from "react-icons/fi";
-import type { CiErrorPageProps } from "@/client";
+import type { CiErrorPageProps } from "@ci-core/client";
 
 export function CiErrorPage({
   message,

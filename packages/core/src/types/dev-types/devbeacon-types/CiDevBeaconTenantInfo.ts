@@ -1,4 +1,4 @@
-import type { CiTenantScope } from "@/types";
+import type { CiTenantScope } from "@ci-core/types";
 
 export type CiDevBeaconTenantInfo = {
   /** CiTenant internal identifier (if available) */

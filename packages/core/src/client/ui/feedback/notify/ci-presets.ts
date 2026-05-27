@@ -1,5 +1,5 @@
 import type { ExternalToast } from "sonner";
-import type { CiFeedbackLevel } from "@/client";
+import type { CiFeedbackLevel } from "@ci-core/client";
 
 export function ciPresets(level: CiFeedbackLevel): Partial<ExternalToast> {
   // CI opinionated presets (can be kept minimal)

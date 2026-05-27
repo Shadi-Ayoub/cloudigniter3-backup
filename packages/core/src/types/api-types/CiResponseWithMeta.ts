@@ -1,4 +1,4 @@
-import type { CiErrorBody, CiErrorStatus, CiOkStatus } from "@/types";
+import type { CiErrorBody, CiErrorStatus, CiOkStatus } from "@ci-core/types";
 import type { CiResponse } from "./CiResponse";
 import type { CiResponseMeta } from "./CiResponseMeta";
 

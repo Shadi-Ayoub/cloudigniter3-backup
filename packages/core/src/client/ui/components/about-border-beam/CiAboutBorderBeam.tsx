@@ -1,8 +1,8 @@
 "use client";
 
-import { ciStartTrace } from "@/dev";
+import { ciStartTraceClient } from "@ci-core/client";
 import { CiAboutBorderBeamView } from "./CiAboutBorderBeamView";
-import type { CiAboutBorderBeamProps } from "@/client";
+import type { CiAboutBorderBeamProps } from "@ci-core/client";
 
 export function CiAboutBorderBeam({
   traceConfig,
@@ -11,7 +11,7 @@ export function CiAboutBorderBeam({
   secondaryText,
   options,
 }: CiAboutBorderBeamProps) {
-  const { logger } = ciStartTrace(
+  const { logger } = ciStartTraceClient(
     traceConfig,
     { source: "server", prettyWave: true },
     { name: "<CiAboutBorderBeam>" },

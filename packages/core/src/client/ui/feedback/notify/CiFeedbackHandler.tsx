@@ -7,7 +7,7 @@ import {
   FiInfo,
   FiXCircle,
 } from "react-icons/fi";
-import { ciCapitalizeFirstLetter } from "@/helpers";
+import { ciCapitalizeFirstLetter } from "@ci-core/lib";
 import {
   Button,
   Card,
@@ -17,9 +17,9 @@ import {
   DialogContent,
   DialogTitle,
   DialogDescription,
-} from "@/client";
-import { useCiFeedbackStore } from "@/client";
-import type { CiFeedbackHandlerProps } from "@/client";
+} from "@ci-core/client";
+import { useCiFeedbackStore } from "@ci-core/client";
+import type { CiFeedbackHandlerProps } from "@ci-core/client";
 
 export const CiFeedbackHandler: React.FC<CiFeedbackHandlerProps> = ({
   direction,

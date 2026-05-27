@@ -1,0 +1,1 @@
+{"version":3,"file":"CiDashboardPageProps.d.ts","sourceRoot":"","sources":["CiDashboardPageProps.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,aAAa,EAAE,MAAM,gBAAgB,CAAC;AACpD,OAAO,KAAK,EAAE,qBAAqB,EAAE,MAAM,yBAAyB,CAAC;AAErE,MAAM,MAAM,oBAAoB,GAAG;IACjC,WAAW,EAAE,aAAa,CAAC;IAC3B,KAAK,EAAE,qBAAqB,EAAE,CAAC;CAChC,CAAC"}

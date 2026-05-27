@@ -1,0 +1,1 @@
+{"version":3,"file":"CiGetTenantBySlugApiInterface.d.ts","sourceRoot":"","sources":["CiGetTenantBySlugApiInterface.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,0BAA0B,EAAE,MAAM,8BAA8B,CAAC;AAC/E,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,gBAAgB,CAAC;AAEjD,MAAM,WAAW,6BACf,SAAQ,0BAA0B;IAClC,QAAQ,EAAE,UAAU,CAAC;CACtB"}

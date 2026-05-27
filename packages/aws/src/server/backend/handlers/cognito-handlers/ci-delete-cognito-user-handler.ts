@@ -1,4 +1,4 @@
-import { ciDeleteCognitoUser, ciCreateDirectHandler } from "../../../";
+import { ciDeleteCognitoUser, ciCreateDirectHandler } from "@ci-aws/lib";
 
 /**
  * Delete a Cognito user.

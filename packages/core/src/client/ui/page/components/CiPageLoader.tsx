@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { ciSleep } from "@/helpers";
-import { CiSpinner } from "@/client";
+import { ciSleep } from "@ci-core/lib";
+import { CiSpinner } from "@ci-core/client";
 import { useCiPageLoaderStore } from "../utils";
 
 export function CiPageLoader() {

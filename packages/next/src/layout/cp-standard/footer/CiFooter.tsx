@@ -1,11 +1,9 @@
 import React from "react";
 import { useTranslations } from "next-intl";
-
-import { ciStartTrace } from "@cloudigniter/core";
-import { ciCapitalizeFirstLetter } from "@cloudigniter/core/helpers";
-// import { CiSystemStatusDialog } from "./CiSystemStatusDialog";
-import type { CiNextPageConfig } from "../../../page";
-import type { CiSystemStatusCheckList } from "../../../status";
+import { ciCapitalizeFirstLetter } from "@cloudigniter/core/lib";
+import { ciStartTraceServer } from "@cloudigniter/core/server";
+import type { CiNextPageConfig } from "@ci-next/types";
+import type { CiSystemStatusCheckList } from "@ci-next/types";
 
 interface FooterInterface {
   config: CiNextPageConfig;
@@ -17,7 +15,7 @@ export const CiFooter = ({ config, children }: FooterInterface) => {
   const t = useTranslations("mainFooter");
 
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
-  const { logger } = ciStartTrace(
+  const { logger } = ciStartTraceServer(
     config.ciConfig.traceLog,
     { source: "server", prettyWave: true },
     { name: "<Footer>" },

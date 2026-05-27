@@ -2,7 +2,7 @@
 
 import { forwardRef } from "react";
 import { useCiSmartFormField } from "../hooks/useCiSmartFormField";
-import { cn } from "@/client";
+import { cn } from "@ci-core/client";
 
 const CiSmartFormMessage = forwardRef<
   HTMLParagraphElement,

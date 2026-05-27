@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   CI_DEFAULT_TENANT_COOKIES,
   CI_DEFAULT_TENANT_HEADERS,
-} from "@cloudigniter/core";
+} from "@cloudigniter/core/lib";
 
 import type {
   CiCoreConfig,

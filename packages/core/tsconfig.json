@@ -1,13 +1,13 @@
 {
   "extends": "@cloudigniter/config-ts/library.json",
   "compilerOptions": {
+    "strict": true,
     "types": ["node"],
     "rootDir": "src",
-    "outDir": "dist",
     "tsBuildInfoFile": "node_modules/.cache/tsconfig.typecheck.tsbuildinfo",
     "jsx": "react-jsx",
     "paths": {
-      "@/*": ["./src/*"]
+      "@ci-core/*": ["./src/*"]
     },
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],

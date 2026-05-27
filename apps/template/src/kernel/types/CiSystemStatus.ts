@@ -1,7 +1,7 @@
-import type { CiSystemStatusItem } from './';
+import type { CiSystemStatusItem } from "./CiSystemStatusItem";
 
 export type CiSystemStatus = {
-  overall?: 'success' | 'error';
+  overall?: "success" | "error";
   amplifyConfig?: CiSystemStatusItem;
   amplifySchema?: CiSystemStatusItem;
   systemSettings?: CiSystemStatusItem;

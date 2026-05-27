@@ -1,7 +1,7 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import type { CiPageShellProps } from "@/client";
+import type { CiPageShellProps } from "@ci-core/client";
 
 export function CiPageShell({
   children,

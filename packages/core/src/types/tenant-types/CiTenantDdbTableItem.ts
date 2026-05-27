@@ -1,4 +1,4 @@
-import type { CiSystemItemType, CiTenantStatus } from "@/types";
+import type { CiSystemItemType, CiTenantStatus } from "@ci-core/types";
 
 export type CiTenantDdbTableItem = {
   PK: string; // "TENANT"

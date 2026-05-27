@@ -1,11 +1,2 @@
-export { ciStartTrace } from "./start-trace";
-
-// export type {
-//   CiBuildCanonicalInput,
-//   CiCanonicalRecord,
-//   CiLogEntryType,
-//   CiMetricConfig,
-//   CiTimerRecord,
-//   CiTraceConfig,
-//   CiTraceLoggerOptions,
-// } from "./types";
+export { ciStartTraceServer } from "./ci-start-trace-server";
+export { CiTraceLoggerServer } from "./ci-trace-logger-server";

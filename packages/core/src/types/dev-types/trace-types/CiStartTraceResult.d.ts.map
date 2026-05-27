@@ -1,0 +1,1 @@
+{"version":3,"file":"CiStartTraceResult.d.ts","sourceRoot":"","sources":["CiStartTraceResult.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,iBAAiB,EAAE,MAAM,qBAAqB,CAAC;AAE7D,MAAM,MAAM,kBAAkB,GAAG;IAC/B,MAAM,EAAE,iBAAiB,CAAC;IAC1B,IAAI,EAAE,CAAC,KAAK,CAAC,EAAE,MAAM,CAAC,MAAM,EAAE,OAAO,CAAC,KAAK,IAAI,CAAC;CACjD,CAAC"}

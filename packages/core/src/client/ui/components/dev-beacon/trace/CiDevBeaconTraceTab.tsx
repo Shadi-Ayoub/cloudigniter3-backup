@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { ListTree, RefreshCw, Trash2 } from "lucide-react";
-import type { CiDevBeaconTraceTabProps } from "@/types";
+import type { CiDevBeaconTraceTabProps } from "@ci-core/types";
 
 type Event = {
   ts: number;

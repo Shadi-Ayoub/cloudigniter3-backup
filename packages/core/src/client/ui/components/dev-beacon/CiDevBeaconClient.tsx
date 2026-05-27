@@ -7,12 +7,12 @@ import { CiDevBeaconSideTabsList } from "./CiDevBeaconSideTabsList";
 import { CiDevBeaconSectionStatus } from "./CiDevBeaconSectionStatus";
 import { CiDevBeaconSectionConfig } from "./CiDevBeaconSectionConfig";
 import { CiDevBeaconSectionTools } from "./CiDevBeaconSectionTools";
-import type { CiDevBeaconClientProps } from "@/types";
+import type { CiDevBeaconClientProps } from "@ci-core/types";
 
 export function CiDevBeaconClient({
   dir = "ltr",
   position = "bottom-right",
-  env = "prod",
+  env = "production",
   logo,
   defaultTab = "status",
   isContentLoaded,

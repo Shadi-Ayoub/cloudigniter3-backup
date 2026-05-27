@@ -1,4 +1,4 @@
-import type { CiPublicAuthMode } from "@/types";
+import type { CiPublicAuthMode } from "@ci-core/types";
 
 /**
  * Data-layer runtime config.

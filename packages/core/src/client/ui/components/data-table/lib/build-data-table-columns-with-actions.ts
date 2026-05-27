@@ -1,5 +1,5 @@
 import type { ColumnDef, CellContext } from "@tanstack/react-table";
-import type { CiDataTableAction } from "@/client";
+import type { CiDataTableAction } from "@ci-core/client";
 
 export function buildDataTableColumnsWithActions<TData, TValue>(args: {
   columns: ColumnDef<TData, TValue>[];

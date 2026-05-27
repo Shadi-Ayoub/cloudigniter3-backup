@@ -1,17 +1,13 @@
-import { cache } from 'react';
-
-import { ciNormalizeThrownError } from '@cloudigniter/next/utility';
-import { ciMergeSettings } from '@cloudigniter/next/settings';
-import type {
-  CiSettings,
-  CiSettingsRegistry,
-} from '@cloudigniter/next/settings';
+import { cache } from "react";
 
 import {
   CI_DEFAULT_PRIVATE_CORE_SETTINGS_ID,
   CI_DEFAULT_PUBLIC_CORE_SETTINGS_ID,
   CI_DEFAULT_USER_CORE_SETTINGS_ID,
-} from '@cloudigniter/next/constants';
+  ciMergeSettings,
+  ciNormalizeThrownError,
+} from "@cloudigniter/core/lib";
+import type { CiSettings, CiSettingsRegistry } from "@cloudigniter/core/types";
 
 import type {
   CiGetSettingsApiInterface,
@@ -20,12 +16,12 @@ import type {
   CiGraphQLResponse,
   CiRequest,
   CiServerErrorPayload,
-} from '@cloudigniter/next/types';
+} from "@cloudigniter/core/types";
 
-import { client } from '@/kernel/api/server';
-import { ciBuildSettingsRegistry } from '@/custom/settings/ci-settings-registry';
+import { client } from "@/kernel/api/server";
+import { ciBuildSettingsRegistry } from "@/custom/settings/ci-settings-registry";
 
-type CiPersistedSettingsScope = 'public' | 'private' | 'user';
+type CiPersistedSettingsScope = "public" | "private" | "user";
 
 export type CiSettingsId = string;
 
@@ -54,7 +50,7 @@ export const ciGetSettings = cache(
 
       const apiResponse: CiGraphQLResponse = await client.queries.getSettings(
         { inputString: JSON.stringify(request) },
-        { authMode: params.authMode }
+        { authMode: params.authMode },
       );
 
       const handlerOutput = ciUnwrapGetSettingsHandlerResponse(apiResponse);
@@ -65,35 +61,35 @@ export const ciGetSettings = cache(
 
       throw new Error(
         JSON.stringify({
-          title: '[Kernel:API:ciGetSettings()] Settings fetch failed',
+          title: "[Kernel:API:ciGetSettings()] Settings fetch failed",
           message: `Failed to get the settings! ${errorObj.message}`,
-          severity: 'critical',
+          severity: "critical",
           showRetry: true,
-        } satisfies CiServerErrorPayload)
+        } satisfies CiServerErrorPayload),
       );
     }
-  }
+  },
 );
 
 function ciResolveScopeIds(
   params: CiGetSettingsApiInterface,
-  registry: CiSettingsRegistry
+  registry: CiSettingsRegistry,
 ) {
   const requestedPublicIds = params.publicSettingIds ?? [];
   const requestedPrivateIds = params.privateSettingIds ?? [];
   const requestedUserIds = params.userSettingIds ?? [];
 
   const publicSettingIds =
-    params.include?.includes('public') === false
+    params.include?.includes("public") === false
       ? []
       : ciCollectScopeSettingIds({
           registry,
-          scope: 'public',
+          scope: "public",
           coreId: CI_DEFAULT_PUBLIC_CORE_SETTINGS_ID,
           requestedIds: requestedPublicIds,
         });
 
-  if (params.authMode !== 'userPool') {
+  if (params.authMode !== "userPool") {
     return {
       publicSettingIds,
       privateSettingIds: [] as CiSettingsId[],
@@ -102,21 +98,21 @@ function ciResolveScopeIds(
   }
 
   const privateSettingIds =
-    params.include?.includes('private') === false
+    params.include?.includes("private") === false
       ? []
       : ciCollectScopeSettingIds({
           registry,
-          scope: 'private',
+          scope: "private",
           coreId: CI_DEFAULT_PRIVATE_CORE_SETTINGS_ID,
           requestedIds: requestedPrivateIds,
         });
 
   const userSettingIds =
-    params.include?.includes('user') === false
+    params.include?.includes("user") === false
       ? []
       : ciCollectScopeSettingIds({
           registry,
-          scope: 'user',
+          scope: "user",
           coreId: CI_DEFAULT_USER_CORE_SETTINGS_ID,
           requestedIds: requestedUserIds,
         });
@@ -141,7 +137,7 @@ function ciCollectScopeSettingIds(input: {
   for (const [settingsId, entry] of Object.entries(registry)) {
     if (settingsId === coreId) continue;
     if (entry.scope !== scope) continue;
-    if ('mergeWithCore' in entry && entry.mergeWithCore === false) continue;
+    if ("mergeWithCore" in entry && entry.mergeWithCore === false) continue;
 
     autoMergedIds.push(settingsId as CiSettingsId);
   }
@@ -152,7 +148,7 @@ function ciCollectScopeSettingIds(input: {
   });
 
   return ciUniqueIds([coreId, ...safeRequestedIds, ...autoMergedIds]).filter(
-    (settingsId) => !!registry[settingsId]
+    (settingsId) => !!registry[settingsId],
   );
 }
 
@@ -161,18 +157,18 @@ function ciUniqueIds(ids: CiSettingsId[]): CiSettingsId[] {
 }
 
 function ciUnwrapGetSettingsHandlerResponse(
-  apiResponse: CiGraphQLResponse
+  apiResponse: CiGraphQLResponse,
 ): CiGetSettingsHandlerOutput {
   const rawBody =
     (apiResponse as { data?: { getSettings?: { body?: unknown } } }).data
       ?.getSettings?.body ?? (apiResponse as { body?: unknown }).body;
 
   if (!rawBody) {
-    throw new Error('Settings response body is missing.');
+    throw new Error("Settings response body is missing.");
   }
 
   const parsedBody =
-    typeof rawBody === 'string'
+    typeof rawBody === "string"
       ? (JSON.parse(rawBody) as CiGetSettingsHandlerOutput)
       : (rawBody as CiGetSettingsHandlerOutput);
 
@@ -180,7 +176,7 @@ function ciUnwrapGetSettingsHandlerResponse(
 }
 
 function ciBuildMergedSettingsFromHandlerOutput(
-  input: CiGetSettingsHandlerOutput
+  input: CiGetSettingsHandlerOutput,
 ): CiSettings {
   let output: CiSettings = {};
 

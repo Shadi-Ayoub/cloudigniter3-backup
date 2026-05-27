@@ -1,4 +1,4 @@
-import { ciCreateCognitoUser, ciCreateDirectHandler } from "../../../";
+import { ciCreateCognitoUser, ciCreateDirectHandler } from "@ci-aws/lib";
 
 /**
  * Create a Cognito user.

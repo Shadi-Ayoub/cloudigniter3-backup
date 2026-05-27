@@ -1,45 +1,46 @@
-'use client';
+"use client";
 
-import { useTheme } from '@aws-amplify/ui-react';
-
-import { Page } from '@cloudigniter/next/ui/layout';
-import { LoginPage } from '@cloudigniter/next/ui/pages';
 import {
-  buildAuthenticatorProps,
-  useAuthenticatorTheme,
-} from '@cloudigniter/next/utility/client';
-import type { CiAmplifyOutputs, CiPageConfig } from '@cloudigniter/next/types';
+  CiPage,
+  useCiNextAwsAuthenticatorTheme,
+} from "@cloudigniter/next/client";
+import { CiNextAwsLoginPage } from "@cloudigniter/next/ui/client";
+import { ciBuildAuthenticatorProps } from "@cloudigniter/aws/client";
+import type { CiAmplifyOutputs } from "@cloudigniter/aws/types";
+import type { CiNextAwsPageConfig } from "@/kernel";
 
 // import { getConfig } from '@/kernel';
 import {
-  authenticatorCustomProps,
-  buildCustomAuthenticatorThemeFromTokens,
-} from '@/custom/authenticator';
-import outputs from '@/../amplify_outputs.json';
+  amplifyAuthenticatorCustomProps,
+  buildCustomAmplifyAuthenticatorThemeOverride,
+} from "@/custom/authenticator";
+import outputs from "@/../amplify_outputs.json";
 
 const amplifyOutputs = outputs as CiAmplifyOutputs;
 
 interface LoginPageClientWrapperInterface {
-  config: CiPageConfig;
+  config: CiNextAwsPageConfig;
 }
 
 export function LoginPageClientWrapper({
   config,
 }: LoginPageClientWrapperInterface) {
-  const { tokens } = useTheme();
-
-  const authenticatorCustomTheme =
-    buildCustomAuthenticatorThemeFromTokens(tokens);
+  // const { tokens } = useTheme();
+  const authenticatorThemeOverride =
+    buildCustomAmplifyAuthenticatorThemeOverride();
 
   // const ciConfig = getConfig();
   const merge = config.ciConfig.authenticator.custom.merge;
+  const theme = useCiNextAwsAuthenticatorTheme(
+    authenticatorThemeOverride,
+    merge,
+  );
 
-  const theme = useAuthenticatorTheme(authenticatorCustomTheme, merge);
-  const props = buildAuthenticatorProps(authenticatorCustomProps);
+  const props = ciBuildAuthenticatorProps(amplifyAuthenticatorCustomProps);
 
   return (
-    <Page
-      name={'dashboard-homepage'}
+    <CiPage
+      name={"dashboard-homepage"}
       setup={{
         showPageHeader: false,
         layoutHasHeader: false,
@@ -48,12 +49,12 @@ export function LoginPageClientWrapper({
       config={config}
       login={true}
     >
-      <LoginPage
+      <CiNextAwsLoginPage
         outputs={amplifyOutputs}
         authenticatorProps={props}
         authenticatorStyleTheme={theme}
         authenticatorConfig={config.ciConfig.authenticator}
       />
-    </Page>
+    </CiPage>
   );
 }

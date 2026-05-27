@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Button } from "@/client";
-import type { CiDevBeaconSectionToolsProps } from "@/types";
+import { Button } from "@ci-core/client";
+import type { CiDevBeaconSectionToolsProps } from "@ci-core/types";
 
 export function CiDevBeaconSectionTools({
   onMarkLoaded,

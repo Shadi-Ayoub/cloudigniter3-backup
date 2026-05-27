@@ -16,7 +16,7 @@ import {
   CI_DEFAULT_TENANT_URL_STRATEGY,
   CI_DEFAULT_VALIDATE_TENANT,
   CI_DEFAULT_WRITE_TENANT_COOKIE,
-} from "@cloudigniter/core";
+} from "@cloudigniter/core/lib";
 
 import type { CiTenantRoutingOptions } from "@cloudigniter/core/types";
 

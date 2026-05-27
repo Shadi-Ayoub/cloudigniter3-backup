@@ -1,5 +1,5 @@
 import type { CiScopedSettingsScope } from "./CiScopedSettingsScope";
-import type { CiTenantScope } from "@/types";
+import type { CiTenantScope } from "@ci-core/types";
 
 /**
  * Input used to build canonical settings record keys.

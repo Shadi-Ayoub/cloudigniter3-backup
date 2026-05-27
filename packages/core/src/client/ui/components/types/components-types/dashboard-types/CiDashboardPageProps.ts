@@ -1,4 +1,4 @@
-import type { CiTraceConfig } from "@/types";
+import type { CiTraceConfig } from "@ci-core/types";
 import type { CiDashboardCardConfig } from "./CiDashboardCardConfig";
 
 export type CiDashboardPageProps = {

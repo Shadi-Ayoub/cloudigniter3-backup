@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { CiDashboardIcon } from "@/client";
+import type { CiDashboardIcon } from "@ci-core/client";
 
 /**
  * Resolve a consumer-supplied icon into a renderable React node.

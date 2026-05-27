@@ -1,4 +1,4 @@
-import type { CiSettingsValue } from "@/types";
+import type { CiSettingsValue } from "@ci-core/types";
 
 export type CiEmailSettings = {
   emailSender: string;

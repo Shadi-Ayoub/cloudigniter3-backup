@@ -1,4 +1,4 @@
-import type { CiI18nConfig, CiLocale, CiTraceConfig } from "@/types";
+import type { CiI18nConfig, CiLocale, CiTraceConfig } from "@ci-core/types";
 
 export interface CiLocaleSwitcherProps {
   traceConfig?: CiTraceConfig;

@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import type { ExternalToast } from "sonner";
 import { useCiFeedbackStore } from "./ci-feedback-store"; // unified store
 import { ciPresets } from "./ci-presets";
-import type { CiFeedbackLevel, CiNotifyOptions } from "@/client";
+import type { CiFeedbackLevel, CiNotifyOptions } from "@ci-core/client";
 
 type TitleT = React.ReactNode | (() => React.ReactNode);
 

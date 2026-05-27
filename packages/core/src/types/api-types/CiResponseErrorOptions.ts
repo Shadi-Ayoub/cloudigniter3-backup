@@ -1,4 +1,4 @@
-import type { CiErrorPayload, CiJsonValue } from "@/types";
+import type { CiErrorPayload, CiJsonValue } from "@ci-core/types";
 import type { CiResponseMeta } from "./CiResponseMeta";
 
 export type CiResponseErrorOptions = {

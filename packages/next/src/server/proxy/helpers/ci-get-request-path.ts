@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
-import { ciNormalizePath } from "@cloudigniter/core/helpers";
-import { ciGetNextServerCookie } from "../../cookie";
+import { ciNormalizePath } from "@cloudigniter/core/lib";
+import { ciGetNextServerCookie } from "@ci-next/server";
 
 export async function ciGetRequestPath(opts?: {
   headerName?: string; // default: 'x-ci-request-path'

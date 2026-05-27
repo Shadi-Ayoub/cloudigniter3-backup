@@ -18,7 +18,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/client";
+} from "@ci-core/client";
 
 import { buildDataTableColumnsWithActions } from "../lib/build-data-table-columns-with-actions";
 import { CiDataTableRowActionsMenu } from "./CiDataTableRowActionsMenu";
@@ -28,7 +28,7 @@ import type {
   CiDataTableDataMode,
   CiDataTableInterface,
   CiDataTablePageCache,
-} from "@/client";
+} from "@ci-core/client";
 
 // Simple debounce hook
 function useDebouncedValue<T>(value: T, delayMs: number) {

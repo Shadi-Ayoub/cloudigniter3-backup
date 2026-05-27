@@ -1,5 +1,5 @@
 import type { CiGetTenantLookupBySlugInterface } from "./CiGetTenantLookupBySlugInterface";
-import type { CiAuthMode } from "@/types";
+import type { CiAuthMode } from "@ci-core/types";
 
 export interface CiGetTenantLookupBySlugApiInterface
   extends CiGetTenantLookupBySlugInterface {

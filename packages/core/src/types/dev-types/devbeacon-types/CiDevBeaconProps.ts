@@ -1,11 +1,11 @@
-import type { CiEnvMode, CiLocaleDirection } from "@/types";
-import type { CiCorePageConfig } from "@/client";
+import type { CiEnvMode, CiLocaleDirection } from "@ci-core/types";
+import type { CiCorePageConfig } from "@ci-core/client";
 import type {
   CiDevBeaconExtraTabSpec,
   CiDevBeaconLogoSpec,
   CiDevBeaconPosition,
   CiDevBeaconTabValue,
-} from "@/types";
+} from "@ci-core/types";
 
 /**
  * Server-side DevBeacon props.

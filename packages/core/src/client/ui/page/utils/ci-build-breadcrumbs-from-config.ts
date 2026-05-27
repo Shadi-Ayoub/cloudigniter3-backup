@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import type { CiBreadcrumbItem, CiPageSetup } from "@/client";
+import type { CiBreadcrumbItem, CiPageSetup } from "@ci-core/client";
 
 export type CiBuildBreadcrumbsFromConfigInput = Partial<
   Pick<

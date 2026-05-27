@@ -30,6 +30,16 @@ export type {
 } from "./auth-types";
 
 // ─────────────────────────────────────────────────────────────
+// cookie
+// ─────────────────────────────────────────────────────────────
+export type { CiCookieOptions, CiCookiePriority } from "./cookie-types";
+
+// ─────────────────────────────────────────────────────────────
+// debug prob
+// ─────────────────────────────────────────────────────────────
+export type { CiDebugProbeProps } from "./dev-types/debug-probe-types";
+
+// ─────────────────────────────────────────────────────────────
 // devbeacon
 // ─────────────────────────────────────────────────────────────
 export {
@@ -67,10 +77,25 @@ export type { CiDevEnv, CiEnvMode, CiSeedEnvMode } from "./env-types";
 export type { CiClientErrorPayload, CiServerErrorPayload } from "./error-types";
 
 // ─────────────────────────────────────────────────────────────
+// graphql
+// ─────────────────────────────────────────────────────────────
+export type {
+  CiApiRawPayload,
+  CiApiResultUnion,
+  CiCallErrorKind,
+  CiCallOk,
+  CiCallError,
+  CiCallOptions,
+  CiCallResult,
+  CiParseErrorResponse,
+} from "./graphql-types";
+
+// ─────────────────────────────────────────────────────────────
 // i18n
 // ─────────────────────────────────────────────────────────────
 export {
   type CiExtendedI18nConfig,
+  type CiGetServerLocaleInterface,
   type CiI18nConfig,
   type CiLocale,
   type CiLocaleDirection,
@@ -83,9 +108,10 @@ export {
 // ─────────────────────────────────────────────────────────────
 export type {
   CiCoreConfig,
+  CiDataConfig,
+  CiDevConfig,
   CiGeneralSettings,
   CiResolvedCoreConfig,
-  CiDataConfig,
   CiSystemItemType,
   CiSystemTableItem,
   CiSystemStatus,
@@ -217,6 +243,12 @@ export type {
   CiUseSettingValueResult,
   CiCoreSettingsFormValues,
   CiUserSettingsFormValues,
+
+  //
+  CiGetSettingsApiInterface,
+  CiGetSettingsHandlerInput,
+  CiGetSettingsHandlerOutput,
+  CiSettingsGroupResult,
 } from "./settings-types";
 
 // ─────────────────────────────────────────────────────────────
@@ -279,7 +311,11 @@ export type {
   CiCanonicalRecord,
   CiLogEntryType,
   CiMetricConfig,
+  CiStartTraceInit,
+  CiStartTraceResult,
   CiTimerRecord,
   CiTraceConfig,
+  CiTraceLoggerFactory,
+  CiTraceLoggerLike,
   CiTraceLoggerOptions,
 } from "./dev-types/trace-types";

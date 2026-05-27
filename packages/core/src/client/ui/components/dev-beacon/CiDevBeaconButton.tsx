@@ -2,14 +2,14 @@
 
 import * as React from "react";
 import { Spin } from "antd";
-import type { CiEnvMode } from "@/types";
-import { cn } from "@/client";
-import { CI_DEV_BEACON_DEFAULT_POSITION_CLASSES } from "@/dev/dev-beacon";
+import type { CiEnvMode } from "@ci-core/types";
+import { cn } from "@ci-core/client";
+import { CI_DEV_BEACON_DEFAULT_POSITION_CLASSES } from "@ci-core/lib";
 import type {
   CiDevBeaconButtonProps,
-  CiDevBeaconPosition,
+  // CiDevBeaconPosition,
   CiDevBeaconSize,
-} from "@/types";
+} from "@ci-core/types";
 
 const sizeMap: Record<CiDevBeaconSize, { btn: string; icon: string }> = {
   // sm: { btn: 'size-8', icon: 'size-5' },
@@ -27,13 +27,10 @@ const envPulseClass = (env?: CiEnvMode) => {
   let bgColor: string;
 
   switch (env) {
-    case "local":
-    case "dev":
-    case "sandbox":
+    case "development":
       bgColor = "bg-muted-500/35";
       break;
     case "test":
-    case "preview":
     case "staging":
       bgColor = "bg-amber-500/35";
       break;

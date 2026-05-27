@@ -1,8 +1,8 @@
-import type { CiResolvedPageConfig } from "@cloudigniter/next";
-import type { CiAmplifyOutputs } from "@cloudigniter/aws";
+import type { CiNextPageConfig } from "@cloudigniter/next/types";
+import type { CiAmplifyOutputs } from "@cloudigniter/aws/types";
 
-export type CiTemplatePageConfig = Omit<CiResolvedPageConfig, "ciConfig"> & {
-  ciConfig: CiResolvedPageConfig["ciConfig"] & {
+export type CiTemplatePageConfig = Omit<CiNextPageConfig, "ciConfig"> & {
+  ciConfig: CiNextPageConfig["ciConfig"] & {
     amplifyOutputs: CiAmplifyOutputs;
   };
 };
