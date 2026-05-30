@@ -1,8 +1,13 @@
 import type { NextRequest } from "next/server";
-import type { CiCoreConfig } from "@cloudigniter/core/types";
-import type { CiAwsProviderConfig } from "@cloudigniter/aws/types";
-import type { CiNextConfig } from "@cloudigniter/next/types";
-import { getConfig } from "@/kernel";
+import type {
+  CiCoreConfig,
+  CiRoute,
+  CiRouteRuntimeConfig,
+  CiTenantRoutingOptions,
+} from "@cloudigniter/core/types";
+// import type { CiAwsProviderConfig } from "@cloudigniter/aws/types";
+// import type { CiNextConfig } from "@cloudigniter/next/types";
+import { appGetServerAllConfig } from "@/kernel/server";
 
 // import ciConfig from "../cloudigniter.config";
 
@@ -15,13 +20,18 @@ import {
 
 // const ciConf = ciConfig as CiConfig;
 
-const conf = getConfig();
-
 export async function proxy(request: NextRequest) {
+  const conf = await appGetServerAllConfig();
+
+  const tenantRoutingConfig = conf.tenant as CiTenantRoutingOptions;
+  const routeConfig = conf.route as CiRouteRuntimeConfig;
+  const routes = conf.routes as Record<string, CiRoute>;
+
   const res = await ciNextProxyResponse({
     request,
-    ciConfig: conf,
-    routes: conf.routes,
+    routeConfig,
+    tenantRoutingConfig,
+    routes,
   });
 
   return res;

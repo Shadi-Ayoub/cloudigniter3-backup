@@ -4,11 +4,6 @@
 export { CiDashboardPage } from "./dashboard";
 
 // ─────────────────────────────────────────────────────────────
-// dev beacon
-// ─────────────────────────────────────────────────────────────
-export { CiNextAwsDevBeacon, type CiNexAwsDevBeaconProps } from "./dev-beacon";
-
-// ─────────────────────────────────────────────────────────────
 // main header navigation box
 // ─────────────────────────────────────────────────────────────
 export { CiMainHeaderNavigationBox } from "./main-header-navigation-box";

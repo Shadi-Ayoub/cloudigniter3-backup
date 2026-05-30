@@ -1,1 +1,1 @@
-export { dataClient } from "./data-client";
+export { appDataClient, type AppDataClient } from "./app-data-client";

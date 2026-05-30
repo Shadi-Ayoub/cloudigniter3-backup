@@ -16,7 +16,8 @@ import { ciHandleTenantLogic } from "./ci-handle-tenant-logic";
  */
 export async function ciNextProxyResponse({
   request,
-  ciConfig,
+  routeConfig,
+  tenantRoutingConfig,
   routes,
 }: CiNextProxyResponseInterface) {
   let response = NextResponse.next();
@@ -29,30 +30,32 @@ export async function ciNextProxyResponse({
     return response;
   }
 
-  // -----------------------------
+  // -------------------------------------------------------
   // Route validation step
-  // -----------------------------
+  // -------------------------------------------------------
   const resultPath = await ciHandleRouteLogic({
     request,
     response,
     pathnameNormalized,
-    ciConfig,
+    routeConfig,
     routes,
   });
+
   if (resultPath.exit) {
     return resultPath.response;
   }
-  const responseAfterPathCheck = resultPath.response;
-  // -----------------------------
 
-  // -----------------------------
+  const responseAfterPathCheck = resultPath.response;
+  // -------------------------------------------------------
+
+  // -------------------------------------------------------
   // CiTenant validation step
-  // -----------------------------
+  // -------------------------------------------------------
   const resultTenant = await ciHandleTenantLogic({
     request,
     response: responseAfterPathCheck,
     pathnameNormalized,
-    ciConfig,
+    tenantRoutingConfig,
   });
 
   if (resultTenant.exit) {
@@ -60,7 +63,7 @@ export async function ciNextProxyResponse({
   }
 
   const responseAfterTenantCheck = resultTenant.response;
-  // -----------------------------
+  // -------------------------------------------------------
 
   return responseAfterTenantCheck;
 }

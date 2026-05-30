@@ -1,18 +1,18 @@
-import type { CiInfoPageStrategy } from "@ci-core/client";
+import type { CiInfoPageStrategy } from "@ci-core/types";
 
 /**
  * Runtime config used by route and middleware helpers.
  */
-export type CiRouteRuntimeConfig = {
+export interface CiRouteRuntimeConfig {
   /**
    * Cookie name used to persist the resolved route namespace.
    */
-  namespaceCookieName: string;
+  namespaceCookieName?: string;
 
   /**
    * Header name used to expose the resolved route namespace.
    */
-  namespaceHeaderName: string;
+  namespaceHeaderName?: string;
 
   /**
    * Optional cookie name used to persist the resolved pathname.
@@ -28,4 +28,4 @@ export type CiRouteRuntimeConfig = {
    * Controls how info pages are resolved/rendered for route handling.
    */
   infoPageStrategy?: CiInfoPageStrategy;
-};
+}

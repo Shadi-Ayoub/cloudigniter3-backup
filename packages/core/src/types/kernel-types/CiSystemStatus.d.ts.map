@@ -1,1 +1,0 @@
-{"version":3,"file":"CiSystemStatus.d.ts","sourceRoot":"","sources":["CiSystemStatus.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,kBAAkB,EAAE,MAAM,IAAI,CAAC;AAE7C,MAAM,MAAM,cAAc,GAAG;IAC3B,OAAO,CAAC,EAAE,SAAS,GAAG,OAAO,CAAC;IAC9B,aAAa,CAAC,EAAE,kBAAkB,CAAC;IACnC,aAAa,CAAC,EAAE,kBAAkB,CAAC;IACnC,cAAc,CAAC,EAAE,kBAAkB,CAAC;CAErC,CAAC"}

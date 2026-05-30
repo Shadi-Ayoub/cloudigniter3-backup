@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────────
 // auth
 // ─────────────────────────────────────────────────────────────
-export { ciResolveAuthProvider } from "./auth";
+export { ciResolveAuthProvider } from "./auth/ci-resolve-auth-provider";
 
 // ─────────────────────────────────────────────────────────────
 // env

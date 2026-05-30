@@ -1,3 +1,3 @@
-import type { CiUserProfileBase, CiUserRegister } from './';
+import type { CiUserProfileBase, CiUserRegister } from "./index";
 
-export type CiUserProfile = CiUserProfileBase & CiUserRegister['Profile'];
+export type CiUserProfile = CiUserProfileBase & CiUserRegister["Profile"];

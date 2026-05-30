@@ -1,1 +1,0 @@
-{"version":3,"file":"CiConsolePrintInterface.d.ts","sourceRoot":"","sources":["CiConsolePrintInterface.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,mBAAmB,EAAE,MAAM,uBAAuB,CAAC;AAEjE,MAAM,WAAW,uBAAuB;IACtC,KAAK,EAAE,MAAM,CAAC;IACd,OAAO,EAAE,MAAM,GAAG,MAAM,CAAC;IACzB,OAAO,CAAC,EAAE,mBAAmB,CAAC;CAC/B"}

@@ -1,5 +1,6 @@
 import type {
   CiSettings,
+  CiSettingsRecord,
   CiSettingsScope,
   CiSettingsService,
   CiTargetTenantScope,
@@ -17,9 +18,23 @@ export type CiInitializeSettingsIfMissingInput<
   value: Partial<TSettings>;
 };
 
+export type CiInitializeSettingsIfMissingResult<
+  TSettings extends CiSettings = CiSettings,
+> =
+  | {
+      initialized: false;
+      record: CiSettingsRecord<TSettings>;
+    }
+  | {
+      initialized: true;
+      record: CiSettingsRecord<TSettings>;
+    };
+
 export async function ciInitializeSettingsIfMissing<
   TSettings extends CiSettings = CiSettings,
->(input: CiInitializeSettingsIfMissingInput<TSettings>) {
+>(
+  input: CiInitializeSettingsIfMissingInput<TSettings>,
+): Promise<CiInitializeSettingsIfMissingResult<TSettings>> {
   const existing = await input.service.get<TSettings>({
     settingsId: input.settingsId,
     tenantId: input.tenantId,

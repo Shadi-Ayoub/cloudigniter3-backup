@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { CiMainMenuItem } from "@ci-core/client/ui/components/types/components-types/main-menu-types/CiMainMenuItem";
+import type { CiMainMenuItem } from "@ci-core/types";
 import type {
   // CiSettings,
   CiSettingsValue,

@@ -12,6 +12,26 @@ export const TMP_TYPES_DIR = "dist/.types-tmp";
  * - srcRoot: root of the source subtree (used to compute names & guard scope)
  */
 export const BARRELS = [
+  {
+    barrel: "src/client/index.ts",
+    outPrefix: "client",
+    srcRoot: "src/client",
+  },
+  {
+    barrel: "src/server/index.ts",
+    outPrefix: "server",
+    srcRoot: "src/server",
+  },
+  {
+    barrel: "src/server/backend/index.ts",
+    outPrefix: "server/backend",
+    srcRoot: "src/server/backend",
+  },
+  {
+    barrel: "src/lib/index.ts",
+    outPrefix: "lib",
+    srcRoot: "src/lib",
+  },
   // {
   //   barrel: "src/ui/components/index.ts",
   //   outPrefix: "ui/components",

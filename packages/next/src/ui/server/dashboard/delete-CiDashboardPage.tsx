@@ -1,11 +1,11 @@
-import "server-only";
+// import "server-only";
 
 import { getTranslations } from "next-intl/server";
-import { ciStartTraceServer } from "@cloudigniter/core/server";
+import { ciStartTraceServer } from "@ci-next/server";
 import {
   ciResolveDashboardCardViewModels,
   type CiDashboardPageProps,
-} from "@cloudigniter/core/client";
+} from "@ci-next/ui/client";
 import { CiDashboardCard } from "./CiDashboardCard";
 import { CiDashboardGrid } from "./CiDashboardGrid";
 

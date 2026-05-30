@@ -34,7 +34,7 @@
   .ci-log-component,
   .ci-log-func,
   .ci-log-component-value {
-    color: #0047fb !important; /* orange */
+    color: #0047fb; /* orange */
     font-weight: 700;
   }
 

@@ -1,5 +1,5 @@
 import { CiSettingsFormSection } from "./CiSettingsFormSection";
-import { CiSmartFormField } from "@cloudigniter/core/client";
+import { CiSmartFormField } from "@ci-next/ui/client";
 
 export const CiSecuritySettingsSection = () => {
   return (

@@ -1,4 +1,5 @@
-import type { CiErrorPayload, CiJsonValue } from "./";
+import type { CiErrorPayload } from "./CiErrorPayload";
+import type { CiJsonValue } from "./CiJsonValue";
 
 export type CiErrorBody = {
   error: string;

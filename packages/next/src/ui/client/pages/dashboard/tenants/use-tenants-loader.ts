@@ -1,24 +1,28 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ciIsGraphqlResponse, ciSafeToString } from "@cloudigniter/core/lib";
-import { ciCall, ciGetEnvMode } from "@cloudigniter/core/client";
+import {
+  ciCall,
+  ciIsGraphqlResponse,
+  ciSafeToString,
+} from "@cloudigniter/core/lib";
 import {
   ciPrintToConsole,
   ciNormalizeClientThrownError,
   ciNotify,
-} from "@cloudigniter/core/client";
+} from "@ci-next/ui/client";
 import {
   type CiTenant,
   type CiRequest,
   type CiResponse,
 } from "@cloudigniter/core/types";
-
 import type {
   LoadTenantsInput,
   LoadTenantsOkBody,
   LoadTenantsErrorBody,
 } from "./types";
+
+import { ciGetEnvMode } from "@ci-next/lib";
 
 function isLoadTenantsOkBody(x: unknown): x is LoadTenantsOkBody {
   if (!x || typeof x !== "object") return false;

@@ -3,7 +3,7 @@ export type CiAuthenticatorConfig = {
     merge: boolean;
     signinSpinnereText: string;
   };
-  disappeared: {
+  visibility: {
     minHeightPx: number;
     debounceMs: number;
     initialMountSuppressMs: number;

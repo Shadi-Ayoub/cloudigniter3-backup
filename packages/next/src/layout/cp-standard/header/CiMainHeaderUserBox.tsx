@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { ciStartTraceServer } from "@cloudigniter/core/server";
+import { ciStartTraceServer } from "@ci-next/server";
 import { CiRoundButtonFallback } from "@ci-next/ui";
 import type { CiNextPageConfig } from "@ci-next/types";
 
@@ -10,7 +10,7 @@ interface MainHeaderUserBoxInterface {
 export function MainHeaderUserBox({ config }: MainHeaderUserBoxInterface) {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger } = ciStartTraceServer(
-    config.ciConfig.traceLog,
+    config.ciConfig.dev.traceLog,
     { source: "server", prettyWave: true },
     { name: "<MainHeaderUserBox>" },
   );
@@ -54,7 +54,7 @@ export function MainHeaderUserBox({ config }: MainHeaderUserBoxInterface) {
         <ThemeSwitcher dir={config.ciConfig.direction} config={config} />
         <LocaleSwitcher
           config={config.ciConfig.i18n}
-          traceConfig={config.ciConfig.traceLog}
+          traceConfig={config.ciConfig.dev.traceLog}
         />
         <ProfileMenu dir={config.ciConfig.direction} config={config} />
       </div>

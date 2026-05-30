@@ -1,1 +1,0 @@
-{"version":3,"file":"CiTenantsPageProps.d.ts","sourceRoot":"","sources":["CiTenantsPageProps.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,QAAQ,EAAE,MAAM,KAAK,CAAC;AAEpC,MAAM,MAAM,kBAAkB,GAAG;IAC/B,OAAO,EAAE,QAAQ,EAAE,CAAC;IACpB,SAAS,EAAE,KAAK,GAAG,KAAK,CAAC;CAC1B,CAAC"}

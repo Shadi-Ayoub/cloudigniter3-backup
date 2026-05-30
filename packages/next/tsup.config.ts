@@ -2,6 +2,7 @@
 import { defineConfig } from "tsup";
 import { preserveDirectivesPlugin } from "esbuild-plugin-preserve-directives";
 import { getAllEntries } from "./scripts/entries.mjs";
+import { ciInjectUseClient } from "../../scripts/ci-inject-use-client.mjs";
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -9,16 +10,17 @@ const { allEntries } = getAllEntries();
 
 export default defineConfig({
   entry: allEntries,
-  outDir: "dist", // Equivalent to `outDir` in `tsconfig.json`
   format: ["esm"],
-  bundle: false,
-  dts: false,
-  sourcemap: !isProduction,
-  minify: isProduction, // Minify output only in production
-  clean: true,
+  bundle: true,
   splitting: false,
+  sourcemap: !isProduction,
+  clean: false,
+  minify: isProduction, // Minify output only in production
   treeshake: true,
   target: "es2022",
+  dts: false,
+  outDir: "dist",
+
   tsconfig: "./tsconfig.build.json",
   // platform: 'browser',
   external: [
@@ -27,6 +29,13 @@ export default defineConfig({
     "next",
     "next/navigation",
     "next/server",
+    "next-intl",
+    "next-themes",
+    "js-cookie",
+    "lucide-react",
+    "motion",
+    "motion/react",
+    "@monaco-editor/react",
     "@aws-amplify/ui-react",
     "aws-amplify",
   ], // Mark `react` as external to avoid bundling it
@@ -47,5 +56,24 @@ export default defineConfig({
     // opts.plugins = [];
     // opts.chunkNames = "chunks/[name]-[hash]";
     opts.jsx = "automatic";
+  },
+  onSuccess: async () => {
+    await ciInjectUseClient([
+      "dist/client/index.js",
+      "dist/client/auth.js",
+      "dist/client/i18n.js",
+      "dist/client/navigation.js",
+      "dist/client/page.js",
+      "dist/client/providers.js",
+      "dist/client/settings.js",
+      "dist/client/theme.js",
+      "dist/client/wrapper.js",
+      "dist/ui/client/index.js",
+      "dist/ui/client/components.js",
+      "dist/ui/client/dev.js",
+      "dist/ui/client/feedback.js",
+      "dist/ui/client/page.js",
+      "dist/ui/client/pages.js",
+    ]);
   },
 });

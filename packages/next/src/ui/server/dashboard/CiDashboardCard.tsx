@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { Card } from "@cloudigniter/core/client";
+import { Card } from "@ci-next/ui/client";
 import { CiNavigateWithLoader } from "@ci-next/client";
 
 interface DashboardCardProps {

@@ -5,24 +5,24 @@ import {
   ciGetLangDir,
   ciParseServerErrorPayload,
 } from "@cloudigniter/core/lib";
+import { ciGetCookie } from "@cloudigniter/core/client";
 import {
   CiErrorPage,
-  ciGetCookie,
   CiPageLoader,
   useCiPageLoaderStore,
-} from "@cloudigniter/core/client";
+} from "@cloudigniter/next/ui/client";
 import { Inter } from "next/font/google";
-import { getConfig } from "@/kernel/lib";
+import type { CiNextAwsCoreConfig } from "@/kernel/types";
 import "@cloudigniter/next/styles/standard/style.css";
 
-// import ciConfig from "../../cloudigniter.config";
+import ciConfig from "@/../cloudigniter.config";
 
 // import Kernel from '@/kernel';
 import "./globals.css"; // Always after importing Kernel
 
 // const config = ciConfig as CiNextAwsCoreConfig;
 
-const config = getConfig();
+const config = ciConfig as CiNextAwsCoreConfig;
 
 const inter = Inter({ subsets: ["latin"] });
 

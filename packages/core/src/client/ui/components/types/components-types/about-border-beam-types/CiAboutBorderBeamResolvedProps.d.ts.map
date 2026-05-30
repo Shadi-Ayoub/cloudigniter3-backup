@@ -1,1 +1,0 @@
-{"version":3,"file":"CiAboutBorderBeamResolvedProps.d.ts","sourceRoot":"","sources":["CiAboutBorderBeamResolvedProps.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,eAAe,EAAE,MAAM,iBAAiB,CAAC;AAEvD,MAAM,MAAM,8BAA8B,GAAG;IAC3C,KAAK,CAAC,EAAE,MAAM,CAAC;IACf,WAAW,CAAC,EAAE,MAAM,CAAC;IACrB,aAAa,CAAC,EAAE,MAAM,CAAC;IAEvB,OAAO,CAAC,EAAE,eAAe,CAAC;CAC3B,CAAC"}

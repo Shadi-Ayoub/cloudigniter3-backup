@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
-import { ciStartTraceClient } from "@cloudigniter/core/client";
 import { ciGetLocalStorageItem } from "@cloudigniter/core/client";
 import {
   Button,
@@ -19,17 +18,18 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  ciStartTraceClient,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
   useCiFeedbackStore,
-} from "@cloudigniter/core/client";
+} from "@ci-next/ui/client";
 import type { CiThemeSwitcherProps } from "@ci-next/types";
 
 export function CiThemeSwitcher({ dir, config }: CiThemeSwitcherProps) {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger, done } = ciStartTraceClient(
-    config.ciConfig.traceLog,
+    config.ciConfig.dev.traceLog,
     { source: "client", tag: `ThemeSwitcher` },
     { name: `<ThemeSwitcher />` },
   );
@@ -94,11 +94,7 @@ export function CiThemeSwitcher({ dir, config }: CiThemeSwitcherProps) {
       <Tooltip>
         <TooltipTrigger asChild>
           <DropdownMenuTrigger className="ci-menu-trigger" asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="ci-header-menu-button-rounded"
-            >
+            <Button variant="ghost" className="ci-header-menu-button-rounded">
               <Sun size={32} className="ci-theme-switcher-button-icon-sun" />
               <Moon className="ci-theme-switcher-button-icon-moon" />
               <span className="ci-screen-reader-only">Toggle theme</span>

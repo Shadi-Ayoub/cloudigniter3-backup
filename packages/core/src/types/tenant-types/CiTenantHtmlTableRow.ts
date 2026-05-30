@@ -1,4 +1,4 @@
-import type { CiTenantStatus } from '../';
+import type { CiTenantStatus } from "./CiTenantStatus";
 
 export type CiTenantHtmlTableRow = {
   /**
@@ -24,7 +24,7 @@ export type CiTenantHtmlTableRow = {
   /**
    * Business / organizational classification
    */
-  type: 'school' | 'department' | 'organization';
+  type: "school" | "department" | "organization";
 
   /**
    * Region or jurisdiction

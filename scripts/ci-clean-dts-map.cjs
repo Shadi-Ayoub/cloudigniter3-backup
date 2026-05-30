@@ -11,7 +11,21 @@ const fs = require("fs");
 const path = require("path");
 
 const projectRoot = path.resolve(__dirname, "..");
-const distDir = path.join(projectRoot, "dist");
+const distDir = path.resolve(projectRoot, "dist");
+
+/**
+ * Check whether a path is inside the dist folder.
+ *
+ * @param {string} targetPath
+ * @returns {boolean}
+ */
+function isInsideDist(targetPath) {
+  const resolvedPath = path.resolve(targetPath);
+
+  return (
+    resolvedPath === distDir || resolvedPath.startsWith(distDir + path.sep)
+  );
+}
 
 /**
  * Recursively delete all *.d.ts and *.d.ts.map files
@@ -20,26 +34,26 @@ const distDir = path.join(projectRoot, "dist");
  * @param {string} dir
  */
 function deleteDtsFiles(dir) {
-  // Skip the dist folder completely
-  if (path.resolve(dir) === path.resolve(distDir)) {
+  // Skip dist completely
+  if (isInsideDist(dir)) {
     console.log(`⏭️ Skipping dist folder: ${dir}`);
     return;
   }
 
-  // Read directory entries with their types
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  const entries = fs.readdirSync(dir, {
+    withFileTypes: true,
+  });
 
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
 
-    // Skip node_modules for safety/performance
+    // Skip node_modules
     if (entry.isDirectory()) {
       if (entry.name === "node_modules") {
         console.log(`⏭️ Skipping node_modules: ${fullPath}`);
         continue;
       }
 
-      // Recurse into sub-folder
       deleteDtsFiles(fullPath);
       continue;
     }
@@ -56,11 +70,6 @@ function deleteDtsFiles(dir) {
       }
     }
   }
-}
-
-if (!fs.existsSync(projectRoot)) {
-  console.error(`❌ ERROR: Project root not found at ${projectRoot}`);
-  process.exit(1);
 }
 
 console.log(

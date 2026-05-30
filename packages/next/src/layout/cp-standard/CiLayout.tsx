@@ -1,7 +1,7 @@
-import { ciStartTraceServer } from "@cloudigniter/core/server";
+import { ciStartTraceServer } from "@ci-next/server";
 import { type CiSystemStatus } from "@cloudigniter/core/types";
 import type { CiNextPageConfig } from "@ci-next/types";
-import { CiPageWrapper } from "@ci-next/server";
+import { CiPageWrapper } from "@ci-next/wrapper";
 import {
   CiMainHeaderNavigationBox,
   CiMainHeaderUserBox,
@@ -26,7 +26,7 @@ export default function CiLayout({
 }: LayoutProps) {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger } = ciStartTraceServer(
-    config.ciConfig.traceLog,
+    config.ciConfig.dev.traceLog,
     { source: "server", prettyWave: true },
     { name: "Layout" },
   );

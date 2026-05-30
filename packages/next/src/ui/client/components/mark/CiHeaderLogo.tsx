@@ -3,8 +3,8 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ciStartTraceClient } from "@cloudigniter/core/client";
-import { useCiPageLoaderStore } from "@cloudigniter/core/client";
+import { ciStartTraceClient } from "@ci-next/ui/client";
+import { useCiPageLoaderStore } from "@ci-next/ui/client";
 import type { CiHeaderLogoProps } from "./types";
 
 export function CiHeaderLogo({ config }: CiHeaderLogoProps) {
@@ -18,7 +18,7 @@ export function CiHeaderLogo({ config }: CiHeaderLogoProps) {
 
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger, done } = ciStartTraceClient(
-    config.ciConfig.traceLog,
+    config.ciConfig.dev.traceLog,
     { source: "client" },
     { name: `HeaderLogo` },
   );

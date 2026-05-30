@@ -3,7 +3,7 @@
 import type { MouseEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCiPageLoaderStore } from "@cloudigniter/core/client";
+import { useCiPageLoaderStore } from "@ci-next/ui/client";
 import type { CiNavigateWithLoaderProps } from "@ci-next/types";
 
 /**

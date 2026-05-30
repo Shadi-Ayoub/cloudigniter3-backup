@@ -1,6 +1,11 @@
-import type { UserType as AwsCognitoUserType } from '@aws-sdk/client-cognito-identity-provider';
+import type { UserType as AwsCognitoUserType } from "@aws-sdk/client-cognito-identity-provider";
 
-import type { CiUserRole, CiUserProfile, CiCognitoAttributes, CiCognitoAttributesMap } from './';
+import type {
+  CiUserRole,
+  CiUserProfile,
+  CiCognitoAttributes,
+  CiCognitoAttributesMap,
+} from "./index";
 
 export type CiUser = AwsCognitoUserType & {
   roles: CiUserRole[];

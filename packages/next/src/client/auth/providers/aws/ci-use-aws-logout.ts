@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "aws-amplify/auth";
-import { useCiPageLoaderStore } from "@cloudigniter/core/client";
+import { useCiPageLoaderStore } from "@ci-next/ui/client";
 import type { CiUseLogoutOptions, CiUseLogoutResult } from "@ci-next/types";
 
 /**

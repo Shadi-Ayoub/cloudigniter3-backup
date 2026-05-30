@@ -1,6 +1,7 @@
 export default {
   packageName: "@cloudigniter/next",
 
+  // for template
   sourceAlias: {
     alias: "@ci-next/*",
     appPath: "../../packages/next/src/*",
@@ -11,6 +12,7 @@ export default {
     tsconfigPath: "../../apps/template/tsconfig.json",
   },
 
+  // for the package tsconfig.json path when source of these packages -is src
   currentPackageAliases: [
     {
       alias: "@ci-core/*",
@@ -27,10 +29,10 @@ export default {
       src: "./src/types/index.ts",
       dist: "./dist/types/index.d.ts",
     },
-    locales: {
-      src: "./src/locales/index.ts",
-      dist: "./dist/locales/index.d.ts",
-    },
+    // locales: {
+    //   src: "./src/locales/index.ts",
+    //   dist: "./dist/locales/index.js",
+    // },
   },
 
   css: {

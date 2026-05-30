@@ -6,8 +6,8 @@ import {
 } from "@cloudigniter/core/lib";
 
 import type {
-  CiCoreConfig,
   CiTenantResolutionOptions,
+  CiTenantResolutionResult,
   CiTenantRoutingOptions,
   CiTenantStatus,
 } from "@cloudigniter/core/types";
@@ -20,11 +20,24 @@ import {
   ciRewriteToTenantInfoPage,
 } from "./helpers";
 
-interface handleTenantLogicInterface {
+// interface handleTenantLogicInterface {
+//   request: NextRequest;
+//   response: NextResponse;
+//   pathnameNormalized: string;
+//   ciConfig: CiCoreConfig;
+// }
+
+interface CiHandleTenantLogicParams {
   request: NextRequest;
   response: NextResponse;
   pathnameNormalized: string;
-  ciConfig: CiCoreConfig;
+  tenantRoutingConfig: CiTenantRoutingOptions;
+}
+
+interface CiHandleTenantLogicResult {
+  tenant: CiTenantResolutionResult;
+  response: NextResponse;
+  exit: boolean;
 }
 
 /**
@@ -169,14 +182,14 @@ export async function ciHandleTenantLogic({
   request,
   response,
   pathnameNormalized,
-  ciConfig,
-}: handleTenantLogicInterface) {
+  tenantRoutingConfig,
+}: CiHandleTenantLogicParams): Promise<CiHandleTenantLogicResult> {
   let exit: boolean = false;
 
   // Merge tenant routing options (safe defaults first)
   const tOpts = {
     ...CI_DEFAULT_TENANT_ROUTING_OPTIONS,
-    ...(ciConfig?.tenant ?? {}),
+    ...(tenantRoutingConfig ?? {}),
   } as Required<CiTenantRoutingOptions>;
 
   const tenantResolveOptions: CiTenantResolutionOptions = {

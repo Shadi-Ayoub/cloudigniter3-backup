@@ -2,7 +2,8 @@
 
 import * as React from "react";
 
-import { useCiPageLoaderStore } from "@cloudigniter/core/client";
+import { useCiPageLoaderStore } from "@ci-next/ui/client";
+import type { CiAuthUiConfig } from "@cloudigniter/core/types";
 import type { CiAuthenticatorConfig } from "@ci-next/types";
 
 /**
@@ -90,7 +91,7 @@ export type UseDisappearLoaderOptions = {
 export function useShowLoaderWhenAuthenticatorDisappears(
   containerRef: React.RefObject<HTMLElement | null>,
   opts: UseDisappearLoaderOptions = {},
-  ciConfig: CiAuthenticatorConfig,
+  ciConfig: CiAuthUiConfig,
 ) {
   const {
     minHeightPx = 16,
@@ -173,7 +174,7 @@ export function useShowLoaderWhenAuthenticatorDisappears(
 
       const initialLoadText = "Loading...";
       const signingInText =
-        ciConfig.custom?.signinSpinnereText ?? "Signing you in. Please wait.";
+        ciConfig.custom?.loadingText ?? "Signing you in. Please wait.";
 
       const sinceMountMs = now - mountedAtRef.current;
       const visibleStableMs =

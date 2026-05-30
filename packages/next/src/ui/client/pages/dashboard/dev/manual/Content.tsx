@@ -10,7 +10,7 @@ import {
 import hljs from "highlight.js/lib/core";
 import typescript from "highlight.js/lib/languages/typescript";
 import "highlight.js/styles/atom-one-light.css"; // Light theme for better color contrast on white background
-import { CiSpinner } from "@cloudigniter/core/client";
+import { CiSpinner } from "@ci-next/ui/client";
 import { type ManualMethodDefinition } from "./types";
 
 hljs.registerLanguage("typescript", typescript);

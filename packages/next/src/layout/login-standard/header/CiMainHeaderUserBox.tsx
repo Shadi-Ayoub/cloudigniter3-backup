@@ -55,7 +55,7 @@ export function MainHeaderUserBox({ config }: MainHeaderUserBoxInterface) {
         <ThemeSwitcher dir={config.ciConfig.direction} config={config} />
         <LocaleSwitcher
           config={config.ciConfig.i18n}
-          traceConfig={config.ciConfig.traceLog}
+          traceConfig={config.ciConfig.dev.traceLog}
         />
         <ProfileMenu dir={config.ciConfig.direction} config={config} />
       </div>

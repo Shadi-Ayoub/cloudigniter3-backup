@@ -1,5 +1,5 @@
 import { Menu } from "lucide-react";
-import type { CiMainMenuItem } from "@cloudigniter/core/client";
+import type { CiMainMenuItem } from "@cloudigniter/core/types";
 import { CiNavigationMenu } from "@ci-next/ui/client";
 
 interface MenuButtonInterface {

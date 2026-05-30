@@ -1,1 +1,0 @@
-{"version":3,"file":"CiApiResultUnion.d.ts","sourceRoot":"","sources":["CiApiResultUnion.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,WAAW,EAAE,aAAa,EAAE,UAAU,EAAE,MAAM,gBAAgB,CAAC;AAC7E,OAAO,KAAK,EAAE,eAAe,EAAE,MAAM,mBAAmB,CAAC;AAEzD,MAAM,MAAM,gBAAgB,GAAG,UAAU,CACvC,eAAe,EACf,WAAW,EACX,GAAG,EACH,aAAa,CACd,CAAC"}

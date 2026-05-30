@@ -1,29 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// dev
-// ─────────────────────────────────────────────────────────────
-export {
-  // debug probe
-  CiDebugProbe,
-
-  // dev beacon
-  CiDevBeacon,
-
-  // seeder
-  ciReadMocksForItem,
-
-  // trace
-  ciStartTraceServer,
-  CiTraceLoggerServer,
-  // trace
-  // type CiBuildCanonicalInput,
-  // type CiCanonicalRecord,
-  // type CiLogEntryType,
-  // type CiMetricConfig,
-  // type CiTimerRecord,
-  // type CiTraceConfig,
-  // type CiTraceLoggerOptions,
-} from "./dev";
-
 // // ─────────────────────────────────────────────────────────────
 // // route
 // // ─────────────────────────────────────────────────────────────

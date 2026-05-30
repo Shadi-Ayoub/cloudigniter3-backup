@@ -18,7 +18,7 @@ import { Spin } from "antd";
 export const CiRoundButtonFallback = () => {
   // ///////////////////////////////////////////////////////////////////////////////////////// Log trace
   // const trace = ciStartTrace?.(
-  //   config.ciConfig.traceLog,
+  //   config.ciConfig.dev.traceLog,
   //   { prettyWave: true },
   //   { name: "<RoundButtonFallback>" },
   // );

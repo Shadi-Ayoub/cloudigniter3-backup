@@ -1,4 +1,4 @@
-import type { CiTenantStatus } from '../';
+import type { CiTenantStatus } from "./CiTenantStatus";
 
 export type CiTenantLookupBySlugOkBody = {
   exists: true;

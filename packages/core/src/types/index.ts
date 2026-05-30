@@ -119,6 +119,26 @@ export type {
 } from "./kernel-types";
 
 // ─────────────────────────────────────────────────────────────
+// main menu
+// ─────────────────────────────────────────────────────────────
+export type { CiMainMenuItem, CiMainMenuTarget } from "./main-menu-types";
+
+// ─────────────────────────────────────────────────────────────
+// page
+// ─────────────────────────────────────────────────────────────
+export type {
+  CiBreadcrumbItem,
+  CiCollapsiblePageHeaderProps,
+  CiCorePageConfig,
+  CiErrorPageProps,
+  CiInfoPageStrategy,
+  CiPageCoreConfig,
+  CiPageHeaderActionButtonProps,
+  CiPageSetup,
+  CiPageShellProps,
+} from "./page-types";
+
+// ─────────────────────────────────────────────────────────────
 // result
 // ─────────────────────────────────────────────────────────────
 export type {
@@ -210,12 +230,13 @@ export type {
   CiSettings,
   // CiSettingsClientMap,
   // CiSettingsContext,
-  // CiSettingsDefinition,
+  CiSettingsDefinition,
+  CiSettingsDefaults,
   // CiSettingsDefinitionMeta,
   CiSettingsId,
   CiSettingsKey,
   // CiSettingsLayerName,
-  // CiSettingsMeta,
+  CiSettingsMeta,
   CiSettingsPageExtendedTab,
   CiSettingsPageExtendedTabComponentProps,
   CiSettingsPageProps,

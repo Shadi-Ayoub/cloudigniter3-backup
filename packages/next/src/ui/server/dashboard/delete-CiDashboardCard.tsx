@@ -1,4 +1,4 @@
-import { Card, type CiDashboardCardProps } from "@cloudigniter/core/client";
+import { Card, type CiDashboardCardProps } from "@ci-next/ui/client";
 import { CiNavigateWithLoader } from "@ci-next/client";
 
 export function CiDashboardCard({

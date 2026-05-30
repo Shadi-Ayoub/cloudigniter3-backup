@@ -1,1 +1,0 @@
-{"version":3,"file":"CiConsoleLogOptions.d.ts","sourceRoot":"","sources":["CiConsoleLogOptions.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,mBAAmB,EAAE,MAAM,uBAAuB,CAAC;AACjE,OAAO,KAAK,EAAE,iBAAiB,EAAE,MAAM,qBAAqB,CAAC;AAE7D,MAAM,MAAM,mBAAmB,GAAG;IAChC,MAAM,CAAC,EAAE,mBAAmB,CAAC;IAC7B,OAAO,CAAC,EAAE,MAAM,CAAC;IACjB,WAAW,CAAC,EAAE,iBAAiB,CAAC;CACjC,CAAC"}

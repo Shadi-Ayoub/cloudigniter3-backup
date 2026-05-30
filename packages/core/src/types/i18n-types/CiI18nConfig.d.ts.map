@@ -1,1 +1,0 @@
-{"version":3,"file":"CiI18nConfig.d.ts","sourceRoot":"","sources":["CiI18nConfig.ts"],"names":[],"mappings":"AAAA,MAAM,MAAM,YAAY,GAAG;IACzB,OAAO,EAAE;QAAE,IAAI,EAAE,MAAM,CAAC;QAAC,IAAI,EAAE,MAAM,CAAA;KAAE,EAAE,CAAC;IAC1C,aAAa,EAAE,MAAM,CAAC;IACtB,UAAU,EAAE,MAAM,CAAC;CACpB,CAAC"}

@@ -1,4 +1,5 @@
-import type { CiTenantDdbTableItem, CiTenantStatus } from "./";
+import type { CiTenantDdbTableItem } from "./CiTenantDdbTableItem";
+import type { CiTenantStatus } from "./CiTenantStatus";
 
 /**
  * High-level CiTenant type used across CloudIgniter.

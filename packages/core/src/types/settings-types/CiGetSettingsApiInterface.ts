@@ -1,4 +1,5 @@
-import type { CiAuthMode, CiSettingsScope, CiSettingsId } from '../';
+import type { CiAuthMode } from "../auth-types";
+import type { CiSettingsScope, CiSettingsId } from "./index";
 
 export interface CiGetSettingsApiInterface {
   authMode: CiAuthMode;

@@ -20,7 +20,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@cloudigniter/core/client";
+} from "@ci-next/ui/client";
 
 import type { CiProfileMenuItem } from "@ci-next/types";
 

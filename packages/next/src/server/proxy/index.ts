@@ -1,4 +1,4 @@
-export {
+import {
   CI_DEFAULT_TENANT_ROUTING_OPTIONS,
   ciGetBypassFlag,
   ciGetHost,
@@ -13,6 +13,22 @@ export {
   ciResolveTenantFromSubdomain,
   ciRewriteToTenantInfoPage,
 } from "./helpers";
+
+export {
+  CI_DEFAULT_TENANT_ROUTING_OPTIONS,
+  ciGetBypassFlag,
+  ciGetHost,
+  ciIsInternalPath,
+  ciIsStaticFile,
+  ciGetRequestPath,
+  ciRewriteToRouteInfoPage,
+  ciBuildTenantRewritePath,
+  ciLookupTenant,
+  ciResolveTenant,
+  ciResolveTenantFromSlugPath,
+  ciResolveTenantFromSubdomain,
+  ciRewriteToTenantInfoPage,
+};
 
 export { ciHandleRouteLogic } from "./ci-handle-route-logic";
 export { ciHandleTenantLogic } from "./ci-handle-tenant-logic";

@@ -1,1 +1,0 @@
-{"version":3,"file":"CiDeleteTenantApiInterface.d.ts","sourceRoot":"","sources":["CiDeleteTenantApiInterface.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,uBAAuB,EAAE,MAAM,2BAA2B,CAAC;AACzE,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,gBAAgB,CAAC;AAEjD,MAAM,WAAW,0BAA2B,SAAQ,uBAAuB;IACzE,QAAQ,EAAE,UAAU,CAAC;CACtB"}

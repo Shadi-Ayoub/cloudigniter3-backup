@@ -1,4 +1,6 @@
-import type { CiTenantResolutionSource, CiTenantScope, CiTenantStatus } from '../';
+import type { CiTenantResolutionSource } from "./CiTenantResolutionSource";
+import type { CiTenantScope } from "./CiTenantScope";
+import type { CiTenantStatus } from "./CiTenantStatus";
 
 export type CiTenantResolutionResult = {
   id?: string;

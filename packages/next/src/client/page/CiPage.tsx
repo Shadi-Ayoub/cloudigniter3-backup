@@ -9,8 +9,8 @@ import {
   CiPageHeader,
   CiPageLoader,
   CiPageShell,
-} from "@cloudigniter/core/client";
-import { ciStartTraceClient } from "@cloudigniter/core/client";
+  ciStartTraceClient,
+} from "@ci-next/ui/client";
 import { CiBreadcrumbs } from "./CiBreadcrumbs";
 import type { CiPageProps } from "@ci-next/types";
 
@@ -55,7 +55,7 @@ export function CiPage({
   });
 
   const { logger, done } = ciStartTraceClient(
-    config?.ciConfig.traceLog,
+    config?.ciConfig.dev.traceLog,
     { source: "client", tag: `Page:${name}` },
     { name: "Page" },
   );

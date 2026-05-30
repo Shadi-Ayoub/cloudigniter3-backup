@@ -1,27 +1,27 @@
 import CiLayout from "@cloudigniter/next/layout/app-standard";
-import { CiPage } from "@cloudigniter/next";
-import { CiAboutBorderBeam } from "@cloudigniter/core/client";
+import { CiPage } from "@cloudigniter/next/client";
+import { CiAboutBorderBeam } from "@cloudigniter/next/ui/client";
 
-// import { ciBootstrap } from "@/kernel/server";
+import { appBootstrap } from "@/kernel/server";
 
 export default async function HomePage() {
-  // const config = await ciBootstrap();
+  const config = await appBootstrap();
 
   return (
     <>
       <p>Hello</p>
-      {/* <CiLayout config={config} protect={false}>
+      <CiLayout config={config} protect={false}>
         <CiPage
           name={"homepage"}
           setup={{ showPageHeader: false }}
           config={config}
         >
           <CiAboutBorderBeam
-            traceConfig={config}
+            traceConfig={config.ciConfig.dev.traceLog}
             options={{ duration: 8, size: 200 }}
           />
         </CiPage>
-      </CiLayout> */}
+      </CiLayout>
     </>
   );
 }

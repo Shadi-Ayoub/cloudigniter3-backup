@@ -1,0 +1,29 @@
+import { cache } from "react";
+
+import type {
+  CiGraphQLResponse,
+  CiRequest,
+  CiResponse,
+} from "@cloudigniter/core/types";
+
+import { appPrepareServerApiRequest, appServerClient } from "@/kernel/server";
+import { ciParseGraphqlResponse } from "@cloudigniter/core/lib";
+
+export const appGetTenantBySlug = cache(
+  async (request: CiRequest): Promise<CiResponse> => {
+    const apiRequest = appPrepareServerApiRequest(request);
+    const inputString = JSON.stringify(apiRequest);
+
+    const apiResponse: CiGraphQLResponse =
+      await appServerClient.queries.getTenantBySlug(
+        {
+          inputString,
+        },
+        { authMode: apiRequest.authMode }, // <- 'userPool' for signed-in, 'apikey' for guests
+      );
+
+    const ciResponse = ciParseGraphqlResponse(apiResponse, true);
+
+    return ciResponse;
+  },
+);

@@ -1,1 +1,0 @@
-{"version":3,"file":"CiUpdateTenantApiInterface.d.ts","sourceRoot":"","sources":["CiUpdateTenantApiInterface.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,UAAU,EAAE,uBAAuB,EAAE,MAAM,gBAAgB,CAAC;AAE1E,MAAM,WAAW,0BAA2B,SAAQ,uBAAuB;IACzE,QAAQ,EAAE,UAAU,CAAC;CACtB"}

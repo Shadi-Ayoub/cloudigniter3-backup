@@ -1,5 +1,6 @@
-import type { CiErrorBody, CiErrorStatus, CiOkStatus } from './';
-
+import type { CiOkStatus } from "./CiOkStatus";
+import type { CiErrorStatus } from "./CiErrorStatus";
+import type { CiErrorBody } from "./CiErrorBody";
 // “Internal function result” (same union, no meta by default)
 // * CiResult: internal/service layer, no meta, no metrics/logs side effects.
 // * CiResponse: handler/wire layer, optional CiResponseMeta, metrics/log enrichment.

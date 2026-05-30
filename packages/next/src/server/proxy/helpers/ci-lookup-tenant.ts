@@ -1,4 +1,4 @@
-import { ciCall } from "@cloudigniter/core/client";
+import { ciCall } from "@cloudigniter/core/lib";
 
 import type {
   CiEnvMode,

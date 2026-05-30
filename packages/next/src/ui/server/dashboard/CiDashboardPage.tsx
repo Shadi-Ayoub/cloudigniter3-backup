@@ -1,8 +1,8 @@
-import "server-only";
+// import "server-only";
 import { getTranslations } from "next-intl/server";
 import { ciCapitalizeFirstLetter } from "@cloudigniter/core/lib";
-import { ciStartTraceServer } from "@cloudigniter/core/server";
-import { type CiDashboardCardProps as CiDashboardCardType } from "@cloudigniter/core/client";
+import { ciStartTraceServer } from "@ci-next/server";
+import { type CiDashboardCardProps as CiDashboardCardType } from "@ci-next/ui/client";
 import type { CiNextPageConfig } from "@ci-next/types";
 import { CiDashboardCard } from "./CiDashboardCard";
 import { CiDashboardGrid } from "./CiDashboardGrid";
@@ -16,7 +16,7 @@ export async function CiDashboardPage({ config, setup }: CiDashboardPageProps) {
   const t = await getTranslations("dashboard");
 
   const { logger } = ciStartTraceServer(
-    config.ciConfig.traceLog,
+    config.ciConfig.dev.traceLog,
     { source: "server", prettyWave: true },
     { name: "<CiDashboardPage>" },
   );

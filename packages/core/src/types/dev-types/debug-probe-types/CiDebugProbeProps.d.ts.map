@@ -1,1 +1,0 @@
-{"version":3,"file":"CiDebugProbeProps.d.ts","sourceRoot":"","sources":["CiDebugProbeProps.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,WAAW,EAAE,MAAM,gBAAgB,CAAC;AAElD,MAAM,MAAM,iBAAiB,GAAG;IAC9B,EAAE,EAAE,MAAM,CAAC;IACX,KAAK,CAAC,EAAE,MAAM,CAAC;IACf,IAAI,CAAC,EAAE,WAAW,CAAC;IACnB,OAAO,CAAC,EAAE,OAAO,CAAC;CACnB,CAAC"}

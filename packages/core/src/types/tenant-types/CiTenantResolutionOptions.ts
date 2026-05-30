@@ -1,4 +1,4 @@
-import type { CiTenantRoutingMode } from '../';
+import type { CiTenantRoutingMode } from "./CiTenantRoutingMode";
 
 export type CiTenantResolutionOptions = {
   /**

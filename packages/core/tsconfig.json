@@ -1,15 +1,11 @@
 {
-  "extends": "@cloudigniter/config-ts/library.json",
+  "extends": "@cloudigniter/config-ts/ci-pkg-base.json",
   "compilerOptions": {
-    "strict": true,
-    "types": ["node"],
     "rootDir": "src",
-    "tsBuildInfoFile": "node_modules/.cache/tsconfig.typecheck.tsbuildinfo",
-    "jsx": "react-jsx",
     "paths": {
       "@ci-core/*": ["./src/*"]
     },
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["dist", "node_modules"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "__tests__/**/*.ts", "__tests__/**/*.tsx", "vitest.d.ts"],
+  "exclude": ["dist", "node_modules", "scripts", ".*/**/*", "**/*.mjs", "**/*.cjs", "coverage"]
 }

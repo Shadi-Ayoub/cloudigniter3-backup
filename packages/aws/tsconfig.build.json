@@ -3,6 +3,11 @@
   "compilerOptions": {
     "noEmit": false,
     "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "dist/.types",
     "tsBuildInfoFile": "node_modules/.cache/tsconfig.build.tsbuildinfo"
-  }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["dist", "node_modules"]
 }

@@ -4,17 +4,16 @@ import { useMemo, useState } from "react";
 import { NextIntlClientProvider, useLocale, useMessages } from "next-intl";
 import { SEED_ITEMS } from "./seed-items";
 import {
+  ciCall,
   ciIsGraphqlResponse,
   ciNormalizeThrownError,
   ciSafeToString,
 } from "@cloudigniter/core/lib";
-import { ciCall, ciGetEnvMode } from "@cloudigniter/core/client";
-
 import {
   ciPrintToConsole,
   ciNotify,
   useCiPageLoaderStore,
-} from "@cloudigniter/core/client";
+} from "@ci-next/ui/client";
 import type {
   CiRequest,
   CiResponse,
@@ -23,6 +22,8 @@ import type {
   CiSeederErrorBody,
   CiSeederItemKey,
 } from "@cloudigniter/core/types";
+
+import { ciGetEnvMode } from "@ci-next/lib";
 
 type LogLine = {
   ts: string;

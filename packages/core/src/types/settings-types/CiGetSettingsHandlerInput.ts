@@ -1,4 +1,4 @@
-import type { CiSettingsRegistry } from '../';
+import type { CiSettingsRegistry } from "./index";
 
 export type CiGetSettingsHandlerInput = {
   registry: CiSettingsRegistry;

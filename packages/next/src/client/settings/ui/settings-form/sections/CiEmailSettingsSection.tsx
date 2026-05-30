@@ -1,4 +1,4 @@
-import { CiSmartFormField } from "@cloudigniter/core/client";
+import { CiSmartFormField } from "@ci-next/ui/client";
 import { CiSettingsFormSection } from "./CiSettingsFormSection";
 
 export const CiEmailSettingsSection = () => {

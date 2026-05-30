@@ -1,5 +1,5 @@
 import type { CiEnvMode, CiLocaleDirection } from "@ci-core/types";
-import type { CiCorePageConfig } from "@ci-core/client";
+import type { CiCorePageConfig } from "@ci-core/types";
 import type {
   CiDevBeaconExtraTabSpec,
   CiDevBeaconLogoSpec,

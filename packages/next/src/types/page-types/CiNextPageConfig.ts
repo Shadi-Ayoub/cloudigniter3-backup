@@ -1,8 +1,6 @@
+import type { CiPageCoreConfig } from "@cloudigniter/core/types";
 import type {
   CiMainMenuItem,
-  CiPageCoreConfig,
-} from "@cloudigniter/core/client";
-import type {
   CiCoreConfig,
   CiResolvedCoreConfig,
 } from "@cloudigniter/core/types";

@@ -1,5 +1,6 @@
 import type { CiEnvMode } from "@ci-core/types";
-import type { CiDevBeaconPosition, CiDevBeaconSize } from "./";
+import type { CiDevBeaconPosition } from "./CiDevBeaconPosition";
+import type { CiDevBeaconSize } from "./CiDevBeaconSize";
 
 export interface CiDevBeaconButtonProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onClick"> {

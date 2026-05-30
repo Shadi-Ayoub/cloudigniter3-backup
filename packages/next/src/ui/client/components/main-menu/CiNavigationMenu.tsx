@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import type { CiMainMenuItem } from "@cloudigniter/core/client";
+import type { CiMainMenuItem } from "@cloudigniter/core/types";
 import { CiMenuItem } from "./CiMenuItem";
 
 interface CiNavigationMenuProps {

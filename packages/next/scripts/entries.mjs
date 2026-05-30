@@ -6,56 +6,147 @@ export const OUT_DIR = "dist";
 export const TMP_TYPES_DIR = "dist/.types-tmp";
 
 /**
+ * @typedef {"client" | "other"} EntryKind
+ */
+
+/**
  * Any area you want tree-shakable & flat. Add more barrels here.
+ *
+ * - kind: whether this barrel should be built with the client tsup config or the non-client config
  * - barrel: path to the barrel file that re-exports modules
- * - outDir: subpath under dist where flat files should be written
- * - srcRoot: root of the source subtree (used to compute names & guard scope)
+ * - outPrefix: subpath under dist where flat files should be written
+ * - srcRoot: root of the source subtree, used to compute names and guard scope
  */
 export const BARRELS = [
-  // {
-  //   barrel: "src/ui/components/index.ts",
-  //   outPrefix: "ui/components",
-  //   srcRoot: "src/ui/components",
-  // },
-  // add more:
-  // { barrel: "src/ui/layout/index.ts", outPrefix: "ui/layout", srcRoot: "src/ui/layout" },
+  {
+    kind: "client",
+    barrel: "src/client/index.ts",
+    outPrefix: "client",
+    srcRoot: "src/client",
+  },
+  {
+    kind: "client",
+    barrel: "src/ui/client/index.ts",
+    outPrefix: "ui/client",
+    srcRoot: "src/ui/client",
+  },
+  {
+    kind: "other",
+    barrel: "src/locales/index.ts",
+    outPrefix: "locales",
+    srcRoot: "src/locales",
+  },
+  {
+    kind: "other",
+    barrel: "src/server/index.ts",
+    outPrefix: "server",
+    srcRoot: "src/server",
+  },
+  {
+    kind: "other",
+    barrel: "src/server/proxy/index.ts",
+    outPrefix: "server/proxy",
+    srcRoot: "src/server/proxy",
+  },
+  {
+    kind: "other",
+    barrel: "src/lib/index.ts",
+    outPrefix: "lib",
+    srcRoot: "src/lib",
+  },
+  {
+    kind: "other",
+    barrel: "src/ui/index.ts",
+    outPrefix: "ui",
+    srcRoot: "src/ui",
+  },
+  {
+    kind: "other",
+    barrel: "src/ui/server/index.ts",
+    outPrefix: "ui/server",
+    srcRoot: "src/ui/server",
+  },
+  {
+    kind: "other",
+    barrel: "src/wrapper/index.ts",
+    outPrefix: "wrapper",
+    srcRoot: "src/wrapper",
+  },
+  {
+    kind: "other",
+    barrel: "src/layout/app-standard/index.ts",
+    outPrefix: "layout/app-standard",
+    srcRoot: "src/layout/app-standard",
+  },
+  {
+    kind: "other",
+    barrel: "src/layout/cp-standard/index.ts",
+    outPrefix: "layout/cp-standard",
+    srcRoot: "src/layout/cp-standard",
+  },
+  {
+    kind: "other",
+    barrel: "src/layout/login-standard/index.ts",
+    outPrefix: "layout/login-standard",
+    srcRoot: "src/layout/login-standard",
+  },
 ];
 
 /**
- * Keep your normal single-entry files (no globs here)
- * No globs here. Let the barrels above control what gets emitted.
+ * Keep your normal single-entry files.
+ *
+ * - kind: "client" entries receive the "use client" banner in tsup.
+ * - kind: "other" entries are server/lib/shared entries.
  */
 export const STATIC_ENTRY_PATHS = [
-  // "src/index.ts",
-  "src/server/index.ts",
-  "src/server/proxy/index.ts",
-  "src/client/index.ts",
-  "src/ui/index.ts",
-  "src/ui/server/index.ts",
-  "src/ui/client/index.ts",
-  "src/lib/index.ts",
-  "src/layout/login-standard/index.ts",
-  "src/layout/app-standard/index.ts",
-  "src/layout/cp-standard/index.ts",
-  "src/locales/index.ts",
-  // 'src/locale/index.ts',
-  // 'src/middleware/index.ts',
-  // "src/providers/index.ts",
-  // 'src/provider/server/index.ts',
-  // 'src/routing/index.ts',
-
-  // "src/settings/index.ts",
-  // 'src/shield/index.ts',
-  // 'src/shield/server/index.ts',
-  // 'src/store/index.ts',
-  // 'src/ui/components/index.ts',
-
-  // 'src/ui/layout/index.ts',
-  // 'src/ui/pages/index.ts',
-  // 'src/ui/pages/server/index.ts',
-  // 'src/utility/index.ts',
-  // 'src/utility/client/index.ts',
-  // 'src/utility/server/index.ts',
+  {
+    kind: "client",
+    path: "src/client/index.ts",
+  },
+  {
+    kind: "client",
+    path: "src/ui/client/index.ts",
+  },
+  {
+    kind: "other",
+    path: "src/locales/index.ts",
+  },
+  {
+    kind: "other",
+    path: "src/server/index.ts",
+  },
+  {
+    kind: "other",
+    path: "src/server/proxy/index.ts",
+  },
+  {
+    kind: "other",
+    path: "src/lib/index.ts",
+  },
+  {
+    kind: "other",
+    path: "src/ui/index.ts",
+  },
+  {
+    kind: "other",
+    path: "src/ui/server/index.ts",
+  },
+  {
+    kind: "other",
+    path: "src/wrapper/index.ts",
+  },
+  {
+    kind: "other",
+    path: "src/layout/app-standard/index.ts",
+  },
+  {
+    kind: "other",
+    path: "src/layout/cp-standard/index.ts",
+  },
+  {
+    kind: "other",
+    path: "src/layout/login-standard/index.ts",
+  },
 ];
 
 // ---------- helpers ----------
@@ -77,7 +168,11 @@ function resolveModule(baseNoExt) {
     path.join(baseNoExt, "index.jsx"),
     path.join(baseNoExt, "index.js"),
   ];
-  for (const t of tries) if (fs.existsSync(t)) return t;
+
+  for (const t of tries) {
+    if (fs.existsSync(t)) return t;
+  }
+
   return undefined;
 }
 
@@ -85,72 +180,120 @@ function parseBarrel(barrelPath) {
   const text = fs.readFileSync(barrelPath, "utf8");
   const re =
     /export\s+(?:type\s+)?(?:\*\s+from|{[^}]+}\s+from)\s+['"](.+?)['"]/g;
+
   const rels = new Set();
   let m;
+
   while ((m = re.exec(text))) {
     if (m[1].startsWith(".")) rels.add(m[1]);
   }
+
   return [...rels];
 }
 
 function deriveFlatName(absFile, srcRootAbs) {
   const rel = path.relative(srcRootAbs, absFile);
   const parsed = path.parse(rel);
+
   if (parsed.name.toLowerCase() === "index") {
     const parent = path.basename(parsed.dir);
     return parent || "index";
   }
+
   return parsed.name;
+}
+
+function addEntry(target, outKey, srcFile) {
+  if (target[outKey] && target[outKey] !== srcFile) {
+    throw new Error(
+      `Name collision for "${outKey}"\n - ${target[outKey]}\n - ${srcFile}`,
+    );
+  }
+
+  target[outKey] = srcFile;
 }
 
 // ---------- main export ----------
 export function getAllEntries() {
-  // static (kept as-is)
-  const staticEntries = Object.fromEntries(
-    STATIC_ENTRY_PATHS.map((p) => [toEntryKeyFromSrc(p), p]),
-  );
+  const staticClientEntries = {};
+  const staticOtherEntries = {};
 
-  // barrel-driven (flattened)
-  const barrelEntries = {};
-  for (const { barrel, outPrefix, srcRoot } of BARRELS) {
+  for (const entry of STATIC_ENTRY_PATHS) {
+    const outKey = toEntryKeyFromSrc(entry.path);
+
+    if (entry.kind === "client") {
+      addEntry(staticClientEntries, outKey, entry.path);
+    } else {
+      addEntry(staticOtherEntries, outKey, entry.path);
+    }
+  }
+
+  const barrelClientEntries = {};
+  const barrelOtherEntries = {};
+
+  for (const { kind, barrel, outPrefix, srcRoot } of BARRELS) {
     const baseDir = path.dirname(barrel);
     const srcRootAbs = path.resolve(srcRoot ?? baseDir);
+    const target = kind === "client" ? barrelClientEntries : barrelOtherEntries;
+
     for (const rel of parseBarrel(barrel)) {
       const absBase = path.resolve(baseDir, rel);
       const absFile = resolveModule(absBase);
+
       if (!absFile) continue;
-      if (!path.resolve(absFile).startsWith(srcRootAbs)) continue; // safety
+      if (!path.resolve(absFile).startsWith(srcRootAbs)) continue;
 
       const flat = deriveFlatName(absFile, srcRootAbs);
       const outKey = `${outPrefix}/${flat}`;
 
-      if (barrelEntries[outKey] && barrelEntries[outKey] !== absFile) {
-        throw new Error(
-          `Name collision for "${outKey}"\n - ${barrelEntries[outKey]}\n - ${absFile}`,
-        );
-      }
-      barrelEntries[outKey] = absFile;
+      addEntry(target, outKey, absFile);
     }
   }
 
-  const allEntries = { ...staticEntries, ...barrelEntries };
-  return { staticEntries, barrelEntries, allEntries };
+  const clientEntries = {
+    ...staticClientEntries,
+    ...barrelClientEntries,
+  };
+
+  const otherEntries = {
+    ...staticOtherEntries,
+    ...barrelOtherEntries,
+  };
+
+  const allEntries = {
+    ...clientEntries,
+    ...otherEntries,
+  };
+
+  return {
+    staticClientEntries,
+    staticOtherEntries,
+    barrelClientEntries,
+    barrelOtherEntries,
+    clientEntries,
+    otherEntries,
+    allEntries,
+  };
 }
 
 // For the d.ts step
 export function outKeyToJs(outKey) {
   return path.join(OUT_DIR, `${outKey}.js`);
 }
+
 export function outKeyToDts(outKey) {
   return path.join(OUT_DIR, `${outKey}.d.ts`);
 }
+
 export function srcFileToTmpDts(absSrc) {
   // tsc should compile with: rootDir="src", declarationDir="dist/.types-tmp"
   const relFromSrc = path.relative(path.resolve("src"), path.resolve(absSrc));
   const parsed = path.parse(relFromSrc);
+
   const file =
     parsed.name.toLowerCase() === "index"
       ? path.join(parsed.dir, "index.d.ts")
       : path.join(parsed.dir, `${parsed.name}.d.ts`);
+
   return path.join(TMP_TYPES_DIR, file);
 }

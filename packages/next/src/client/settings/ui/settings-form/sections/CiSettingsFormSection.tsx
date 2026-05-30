@@ -1,12 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@cloudigniter/core/client";
+import { Card, CardContent, CardHeader, CardTitle } from "@ci-next/ui/client";
 
 interface SettingsSectionProps {
   title: string;

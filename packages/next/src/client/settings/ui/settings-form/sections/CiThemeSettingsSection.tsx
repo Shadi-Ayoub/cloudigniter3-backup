@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import { CiThemeSettingsSchema } from "@cloudigniter/core/lib";
-import { CiSmartFormField } from "@cloudigniter/core/client";
+import { CiSmartFormField } from "@ci-next/ui/client";
 import { CiSettingsFormSection } from "./CiSettingsFormSection";
 
 interface CiThemeSettingsSectionProps {

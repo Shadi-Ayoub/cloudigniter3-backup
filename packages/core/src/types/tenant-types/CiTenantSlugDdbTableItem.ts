@@ -1,9 +1,9 @@
-import type { CiTenantStatus } from '../';
+import type { CiTenantStatus } from "./CiTenantStatus";
 
 export type CiTenantSlugDdbTableItem = {
   PK: string; // TENANT_SLUG
   SK: string; // TENANT_SLUG#<slug>
-  type: 'TENANT_SLUG';
+  type: "TENANT_SLUG";
 
   slug: string;
   tenantId: string;

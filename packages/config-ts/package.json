@@ -4,6 +4,7 @@
   "private": false,
   "type": "module",
   "files": [
+    "ci-pkg-base.json",
     "base.json",
     "library.json",
     "node.json",
@@ -14,6 +15,7 @@
     "README.md"
   ],
   "exports": {
+    "./ci-pkg-base.json": "./ci-pkg-base.json",
     "./base.json": "./base.json",
     "./library.json": "./library.json",
     "./node.json": "./node.json",

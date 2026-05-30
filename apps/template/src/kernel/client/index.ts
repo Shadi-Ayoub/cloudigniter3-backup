@@ -1,4 +1,17 @@
 // ─────────────────────────────────────────────────────────────
+// amplify
+// ─────────────────────────────────────────────────────────────
+export { AppAmplifyClientConfig } from "./amplify";
+
+// ─────────────────────────────────────────────────────────────
 // data
 // ─────────────────────────────────────────────────────────────
-export { dataClient } from "./data";
+export { appDataClient, type AppDataClient } from "./data";
+
+// ─────────────────────────────────────────────────────────────
+// auth
+// ─────────────────────────────────────────────────────────────
+export {
+  appDefaultAuthenticatorStyleTheme,
+  AppLoginPageClientWrapper,
+} from "./auth";

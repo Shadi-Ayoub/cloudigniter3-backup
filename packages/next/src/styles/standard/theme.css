@@ -83,22 +83,46 @@
   --color-success-background-dark: oklch(0.9215 0.0657 163.11);
   --color-success-foreground-dark: oklch(0.4708 0.0657 163.11);
 
-  --color-info-background: oklch(0.949 0.25 170.8); /* Default background color for info */
-  --color-info-foreground: oklch(0.2627 0.1828 211.2); /* Default text color for info */
-  --color-info-background-dark: oklch(0.949 0.25 170.8); /* Dark mode background color for info */
-  --color-info-foreground-dark: oklch(0.2627 0.1828 211.2); /* Dark mode text color for info */
+  --color-info-background: oklch(
+    0.949 0.25 170.8
+  ); /* Default background color for info */
+  --color-info-foreground: oklch(
+    0.2627 0.1828 211.2
+  ); /* Default text color for info */
+  --color-info-background-dark: oklch(
+    0.949 0.25 170.8
+  ); /* Dark mode background color for info */
+  --color-info-foreground-dark: oklch(
+    0.2627 0.1828 211.2
+  ); /* Dark mode text color for info */
 
-  --color-warning-background: oklch(0.932 0.071244 84.4205); /* Default background color for warning */
-  --color-warning-foreground: oklch(0.412 0.09 40); /* Default text color for warning */
-  --color-warning-background-dark: oklch(0.932 0.071244 84.4205); /* Dark mode background color for warning */
-  --color-warning-foreground-dark: oklch(0.412 0.09 40); /* Dark mode text color for warning */
+  --color-warning-background: oklch(
+    0.932 0.071244 84.4205
+  ); /* Default background color for warning */
+  --color-warning-foreground: oklch(
+    0.412 0.09 40
+  ); /* Default text color for warning */
+  --color-warning-background-dark: oklch(
+    0.932 0.071244 84.4205
+  ); /* Dark mode background color for warning */
+  --color-warning-foreground-dark: oklch(
+    0.412 0.09 40
+  ); /* Dark mode text color for warning */
 
-  --color-danger-background: oklch(0.861 0.0776 7.75 / 95%); /* Default background color for warning */
-  --color-danger-foreground: oklch(0.3132 0.1227 28.24); /* Default text color for warning */
-  --color-danger-background-dark: oklch(0.861 0.0776 7.75 / 95%); /* Dark mode background color for warning */
-  --color-danger-foreground-dark: oklch(0.3132 0.1227 28.24); /* Dark mode text color for warning */
+  --color-danger-background: oklch(
+    0.861 0.0776 7.75 / 95%
+  ); /* Default background color for warning */
+  --color-danger-foreground: oklch(
+    0.3132 0.1227 28.24
+  ); /* Default text color for warning */
+  --color-danger-background-dark: oklch(
+    0.861 0.0776 7.75 / 95%
+  ); /* Dark mode background color for warning */
+  --color-danger-foreground-dark: oklch(
+    0.3132 0.1227 28.24
+  ); /* Dark mode text color for warning */
 
-  --animate-gradiant-shift: gradiant-shift 3s ease infinite;
+  --animate-gradient-shift: gradient-shift 3s ease infinite;
   --animate-flicker: flicker 1.5s infinite;
   --animate-fade-in: fade-in 0.3s ease-out;
 

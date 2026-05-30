@@ -1,7 +1,7 @@
 /* 🚀 cloudigniter-standard.css*/
 @plugin "tailwindcss-animate";
 
-@import "tailwindcss" important;
+@import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 

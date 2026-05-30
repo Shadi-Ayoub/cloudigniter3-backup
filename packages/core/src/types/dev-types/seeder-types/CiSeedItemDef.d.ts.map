@@ -1,1 +1,0 @@
-{"version":3,"file":"CiSeedItemDef.d.ts","sourceRoot":"","sources":["CiSeedItemDef.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,eAAe,EAAE,MAAM,mBAAmB,CAAC;AAEzD,MAAM,MAAM,aAAa,GAAG;IAC1B,GAAG,EAAE,eAAe,CAAC;IACrB,KAAK,EAAE,MAAM,CAAC;IACd,WAAW,CAAC,EAAE,MAAM,CAAC;IAErB,YAAY,CAAC,EAAE,MAAM,CAAC;CACvB,CAAC"}

@@ -1,1 +1,0 @@
-{"version":3,"file":"CiErrorBody.d.ts","sourceRoot":"","sources":["CiErrorBody.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,cAAc,EAAE,WAAW,EAAE,MAAM,IAAI,CAAC;AAEtD,MAAM,MAAM,WAAW,GAAG;IACxB,KAAK,EAAE,MAAM,CAAC;IAEd,OAAO,CAAC,EAAE,WAAW,CAAC;IACtB,SAAS,CAAC,EAAE,cAAc,CAAC;CAC5B,CAAC"}

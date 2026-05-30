@@ -13,8 +13,10 @@ export { ciAuthResourceModule } from "./resources/auth";
 // ─────────────────────────────────────────────────────────────
 export {
   ciCreateCognitoUserHandler,
+  ciDeleteCognitoUserHandler,
   ciGetCognitoUserHandler,
   ciSetCognitoUserPasswordHandler,
+  ciUpdateCognitoUserHandler,
 } from "./handlers";
 
 // export { ciCreateOrgUnitHandler } from "./handlers/ou-handlers/create-ou-handler";

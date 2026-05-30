@@ -11,14 +11,14 @@
 
 import dynamic from "next/dynamic";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { ciRemoveCookie } from "@cloudigniter/core/client";
 import {
   CiConsolePrint,
   CiFeedbackHandler,
   CiFeedbackProvider,
-  ciRemoveCookie,
   CiSpinner,
   type CiFeedbackSonnerConfig,
-} from "@cloudigniter/core/client";
+} from "@ci-next/ui/client";
 
 import { CiThemeProvider } from "@ci-next/client";
 import type { CiClientWrapperProps } from "@ci-next/types";

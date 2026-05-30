@@ -4,47 +4,50 @@
   "private": false,
   "type": "module",
   "sideEffects": false,
-  "main": "./src/index.ts",
-  "module": "./src/index.ts",
-  "types": "./src/types/index.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "import": "./src/index.ts"
-    },
-    "./server": {
-      "types": "./src/server/index.ts",
-      "import": "./src/server/index.ts"
-    },
-    "./server/backend": {
-      "types": "./src/server/backend/index.ts",
-      "import": "./src/server/backend/index.ts"
+      "types": "./dist/index.d.d.d.ts",
+      "import": "./dist/index.js"
     },
     "./client": {
-      "types": "./src/client/index.ts",
-      "import": "./src/client/index.ts"
+      "types": "./dist/client/index.d.d.d.ts",
+      "import": "./dist/client/index.js"
+    },
+    "./server": {
+      "types": "./dist/server/index.d.d.d.ts",
+      "import": "./dist/server/index.js"
+    },
+    "./server/backend": {
+      "types": "./dist/server/backend/index.d.d.d.ts",
+      "import": "./dist/server/backend/index.js"
     },
     "./lib": {
-      "types": "./src/lib/index.ts",
-      "import": "./src/lib/index.ts"
+      "types": "./dist/lib/index.d.d.d.ts",
+      "import": "./dist/lib/index.js"
     },
     "./types": {
-      "import": "./src/types/index.ts"
+      "import": "./dist/types/index.d.ts"
     }
   },
   "files": [
-    "src"
+    "dist"
   ],
   "scripts": {
     "switch:src": "node ../../scripts/ci-switch-sources.mjs src",
     "switch:dist": "node ../../scripts/ci-switch-sources.mjs dist",
     "clean": "rimraf dist .tsbuildinfo",
     "clean:maps": "rimraf dist/*.map dist/**/*.map",
+    "clean:dts": "node ../../scripts/ci-clean-dts-map.cjs",
     "build": "pnpm run build:dev",
-    "build:dev": "NODE_ENV=development pnpm run switch:src && pnpm run clean && pnpm run build:js && pnpm run build:types && pnpm run build:assets",
-    "build:prod": "NODE_ENV=production pnpm run switch:dist && pnpm run clean && pnpm run build:js && pnpm run build:types && pnpm run build:assets && pnpm run obfuscate && pnpm run clean:maps",
+    "build:dev": "NODE_ENV=development pnpm run switch:src && pnpm run clean && pnpm run build:js && pnpm run build:types:raw && pnpm run build:types  && pnpm run build:assets",
+    "build:prod": "NODE_ENV=production pnpm run switch:dist && pnpm run clean && pnpm run build:js && pnpm run build:types:raw && pnpm run build:types && pnpm run build:types:clean && pnpm run build:assets && pnpm run obfuscate && pnpm run clean:maps",
     "build:js": "tsup --config tsup.config.ts",
-    "build:types": "tsc -p tsconfig.build.json",
+    "build:types:clean": "rm -rf dist/.types",
+    "build:types": "NODE_OPTIONS=--max-old-space-size=12288 rollup -c rollup.config.js",
+    "build:types:raw": "tsc -p tsconfig.build.json",
     "build:assets": "pnpm -v",
     "obfuscate": "node ../../scripts/ci-obfuscate-package.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -71,12 +74,15 @@
   },
   "devDependencies": {
     "@cloudigniter/config-ts": "workspace:*",
+    "@rollup/plugin-alias": "^6.0.0",
     "@smithy/types": "^4.13.1",
     "@types/aws-lambda": "^8.10.161",
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
     "esbuild-plugin-preserve-directives": "^0.0.11",
     "rimraf": "^6.0.1",
+    "rollup": "^4.60.4",
+    "rollup-plugin-dts": "^6.4.1",
     "tsup": "^8.5.0",
     "typescript": "^6.0.2"
   }

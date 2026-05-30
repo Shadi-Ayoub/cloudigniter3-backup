@@ -9,11 +9,7 @@ import {
   TabPanel,
 } from "@headlessui/react";
 import { useSearchParams, usePathname } from "next/navigation";
-import {
-  Button,
-  CiSpinner,
-  useCiFormikErrors,
-} from "@cloudigniter/core/client";
+import { Button, CiSpinner, useCiFormikErrors } from "@ci-next/ui/client";
 import { type CiSettingsPageExtendedTab } from "@cloudigniter/core/types";
 
 interface SettingsFormContentProps {

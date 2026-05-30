@@ -1,1 +1,0 @@
-{"version":3,"file":"ci-is-graphql-error.d.ts","sourceRoot":"","sources":["ci-is-graphql-error.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EACV,gBAAgB,EAChB,WAAW,EACX,aAAa,EACb,UAAU,EACX,MAAM,gBAAgB,CAAC;AAExB,wBAAgB,gBAAgB,CAC9B,MAAM,EAAE,gBAAgB,GACvB,MAAM,IAAI,UAAU,CAAC,KAAK,EAAE,WAAW,EAAE,GAAG,EAAE,aAAa,CAAC,GAAG;IAChE,EAAE,EAAE,KAAK,CAAC;CACX,CAEA"}

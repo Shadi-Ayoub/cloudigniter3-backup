@@ -3,7 +3,7 @@
   /* HEADER CONTENT         */
   /**************************/
   .ci-header-menu-button-rounded {
-    @apply hover:bg-muted-100 dark:hover:bg-muted-800/80 dark:bg-muted-900 dark:text-secondary-400 inline-flex h-12 w-12 items-center justify-center rounded-full bg-gray-50 outline-0 transition-colors focus:ring-0 focus:outline-0;
+    @apply hover:bg-muted-100 dark:hover:bg-muted-800/80 dark:bg-muted-900 dark:text-secondary-400 inline-flex !h-12 !w-12 items-center justify-center !rounded-full bg-gray-50 outline-0 transition-colors focus:ring-0 focus:outline-0;
   }
 
   .ci-round-button-fallback {

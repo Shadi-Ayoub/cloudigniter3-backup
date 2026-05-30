@@ -1,28 +1,26 @@
-import { z } from 'zod';
-
-import {
-  ciDefaultPrivateCoreSettings,
-  ciDefaultPublicCoreSettings,
-  ciDefaultUserCoreSettings,
-} from '@cloudigniter/next/settings';
-
-import type {
-  CiSettings,
-  CiSettingsDefinition,
-  CiSettingsRegistry,
-} from '@cloudigniter/next/settings';
+import { z } from "zod";
 
 import {
   CI_DEFAULT_PRIVATE_CORE_SETTINGS_ID,
   CI_DEFAULT_PUBLIC_CORE_SETTINGS_ID,
   CI_DEFAULT_USER_CORE_SETTINGS_ID,
-} from '@cloudigniter/next/constants';
-
-import {
+  ciDefaultPrivateCoreSettings,
+  ciDefaultPublicCoreSettings,
+  ciDefaultUserCoreSettings,
   CiPrivateCoreSettingsSchema,
   CiPublicCoreSettingsSchema,
   CiUserCoreSettingsSchema,
-} from '@cloudigniter/next/schemata';
+} from "@cloudigniter/core/lib";
+
+import type {
+  CiSettings,
+  CiSettingsDefinition,
+  CiSettingsRegistry,
+  CiSettingsScope,
+  CiSettingsId,
+  CiSettingsRegistryEntry,
+  CiSettingsRegistryMap,
+} from "@cloudigniter/core/lib";
 
 /* -------------------------------------------------------------------------- */
 /* Local template registry extensions                                         */
@@ -36,7 +34,7 @@ const NotificationsSettingsSchema = z.object({
 export type CiTemplateSettingsRegistryEntry = CiSettingsDefinition & {
   schema?: z.ZodTypeAny;
   mergeWithCore?: boolean;
-  source?: 'public' | 'private' | 'user';
+  source?: "public" | "private" | "user";
   routes?: string[];
 };
 
@@ -52,25 +50,25 @@ export type CiTemplateSettingsRegistry = Record<
 export function ciBuildSettingsRegistry(): CiTemplateSettingsRegistry {
   const registry: CiTemplateSettingsRegistry = {
     [CI_DEFAULT_PUBLIC_CORE_SETTINGS_ID]: {
-      scope: 'public',
+      scope: "public",
       defaults: ciDefaultPublicCoreSettings,
       schema: CiPublicCoreSettingsSchema,
     },
 
     [CI_DEFAULT_PRIVATE_CORE_SETTINGS_ID]: {
-      scope: 'private',
+      scope: "private",
       defaults: ciDefaultPrivateCoreSettings,
       schema: CiPrivateCoreSettingsSchema,
     },
 
     [CI_DEFAULT_USER_CORE_SETTINGS_ID]: {
-      scope: 'user',
+      scope: "user",
       defaults: ciDefaultUserCoreSettings,
       schema: CiUserCoreSettingsSchema,
     },
 
     notifications: {
-      scope: 'user',
+      scope: "user",
       defaults: {
         email: true,
         push: false,
@@ -113,15 +111,38 @@ export function ciBuildSettingsRegistry(): CiTemplateSettingsRegistry {
 
 export function ciBuildServiceSettingsRegistry(): CiSettingsRegistry {
   const templateRegistry = ciBuildSettingsRegistry();
-  const serviceRegistry: CiSettingsRegistry = {};
+
+  const entries: CiSettingsRegistryMap = {};
 
   for (const [settingsId, entry] of Object.entries(templateRegistry)) {
-    serviceRegistry[settingsId] = {
+    entries[settingsId] = {
       scope: entry.scope,
       defaults: entry.defaults,
       meta: entry.meta,
     };
   }
 
-  return serviceRegistry;
+  return {
+    entries,
+
+    get(settingsId: CiSettingsId): CiSettingsRegistryEntry {
+      const entry = entries[settingsId];
+
+      if (!entry) {
+        throw new Error(`Settings registry entry not found: ${settingsId}`);
+      }
+
+      return entry;
+    },
+
+    list(): CiSettingsRegistryMap {
+      return entries;
+    },
+
+    listByScope(scope: CiSettingsScope): CiSettingsRegistryMap {
+      return Object.fromEntries(
+        Object.entries(entries).filter(([, entry]) => entry.scope === scope),
+      ) as CiSettingsRegistryMap;
+    },
+  };
 }

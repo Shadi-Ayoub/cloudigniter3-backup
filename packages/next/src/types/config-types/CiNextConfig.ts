@@ -1,4 +1,4 @@
-import type { CiInfoPageStrategy } from "@cloudigniter/core/client";
+import type { CiInfoPageStrategy } from "@cloudigniter/core/types";
 
 export type CiNextConfig = {
   loginRoute?: string;

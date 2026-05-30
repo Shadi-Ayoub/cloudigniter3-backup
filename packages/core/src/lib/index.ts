@@ -50,6 +50,7 @@ export {
 // Graphql
 // ─────────────────────────────────────────────────────────────
 export {
+  ciCall,
   ciIsGraphqlError,
   ciIsGraphqlResponse,
   ciParseGraphqlResponseData,

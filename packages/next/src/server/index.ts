@@ -1,4 +1,10 @@
-export { ciResolveNextAwsAuthMode, ciGetNextAmplifyServerRunner } from "./aws";
+export {
+  ciAwsGetCurrentUser,
+  ciGetAmplifyServerContext,
+  ciGetNextAmplifyServerRunner,
+  ciGetServerStatus,
+  ciResolveNextAwsAuthMode,
+} from "./aws";
 
 export {
   ciGetCookies,
@@ -6,25 +12,37 @@ export {
   ciSetNextServerCookie,
 } from "./cookie";
 
-// export {
-//   CI_DEFAULT_TENANT_ROUTING_OPTIONS,
-//   ciGetBypassFlag,
-//   ciGetHost,
-//   ciIsInternalPath,
-//   ciIsStaticFile,
-//   ciGetRequestPath,
-//   ciHandleRouteLogic,
-//   ciHandleTenantLogic,
-//   ciRewriteToRouteInfoPage,
-//   ciBuildTenantRewritePath,
-//   ciLookupTenant,
-//   ciNextProxyMatcher,
-//   ciNextProxyResponse,
-//   ciResolveTenant,
-//   ciResolveTenantFromSlugPath,
-//   ciResolveTenantFromSubdomain,
-//   ciRewriteToTenantInfoPage,
-// } from "./proxy";
+// ─────────────────────────────────────────────────────────────
+// dev
+// ─────────────────────────────────────────────────────────────
+export {
+  // debug probe
+  CiDebugProbe,
+
+  // dev beacon
+  CiDevBeacon,
+  CiNextAwsDevBeacon,
+  type CiNexAwsDevBeaconProps,
+  // seeder
+  ciReadMocksForItem,
+
+  // trace
+  ciStartTraceServer,
+  CiTraceLoggerServer,
+  // trace
+  // type CiBuildCanonicalInput,
+  // type CiCanonicalRecord,
+  // type CiLogEntryType,
+  // type CiMetricConfig,
+  // type CiTimerRecord,
+  // type CiTraceConfig,
+  // type CiTraceLoggerOptions,
+} from "./dev";
+
+// ─────────────────────────────────────────────────────────────
+// header
+// ─────────────────────────────────────────────────────────────
+export { ciGetHeaders } from "./header";
 
 // ─────────────────────────────────────────────────────────────
 // i18n
@@ -41,32 +59,9 @@ export {
   ciInitializeSettingsIfMissing,
   ciSetSettings,
 } from "./settings";
-// export * from "../ui/server";
 ///////
 
-// // ─────────────────────────────────────────────────────────────
-// // ui
-// // ─────────────────────────────────────────────────────────────
-// export {
-//   // dashboard
-//   CiDashboardPage,
-
-//   // dev beacon
-//   CiNextAwsDevBeacon,
-//   type CiNexAwsDevBeaconProps,
-
-//   // main header navigation box
-//   CiMainHeaderNavigationBox,
-
-//   // main header user box
-//   CiMainHeaderUserBox,
-//   type CiMainHeaderUserBoxProps,
-
-//   // main menu
-//   CiMainMenu,
-// } from "./ui";
-
 // ─────────────────────────────────────────────────────────────
-// wrapper
+// tenant
 // ─────────────────────────────────────────────────────────────
-export { CiPageWrapper, CiNextRootWrapper } from "./wrapper";
+export { ciGetTenantContext, ciGetTenantId } from "./tenant";

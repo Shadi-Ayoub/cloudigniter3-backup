@@ -14,8 +14,8 @@
     flex-direction: column;
     min-height: 0;
     overflow: hidden;
-    padding: 0 !important;
-    margin: 0 !important;
+    padding: 0;
+    margin: 0;
   }
 
   .ci-main-header {
@@ -44,8 +44,8 @@
     /* top: var(--spacing-breadcrumb-height); */
     flex-direction: column;
     overflow: hidden;
-    padding: 0 !important;
-    margin: 0 !important;
+    padding: 0;
+    margin: 0;
   }
 
   .ci-main-footer {
@@ -66,8 +66,8 @@
     flex-direction: column;
     min-height: 0;
     overflow: hidden;
-    padding: 0 !important;
-    margin: 0 !important;
+    padding: 0;
+    margin: 0;
   }
 
   .ci-main-login-footer {

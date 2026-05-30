@@ -1,4 +1,4 @@
-import type { CiMainMenuItem } from "@cloudigniter/core/client";
+import type { CiMainMenuItem } from "@cloudigniter/core/types";
 import type {
   CiEmailSettings,
   CiGeneralSettings,

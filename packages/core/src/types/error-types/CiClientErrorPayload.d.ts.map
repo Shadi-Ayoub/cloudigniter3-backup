@@ -1,1 +1,0 @@
-{"version":3,"file":"CiClientErrorPayload.d.ts","sourceRoot":"","sources":["CiClientErrorPayload.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,eAAe,EAAE,MAAM,gBAAgB,CAAC;AAGtD,MAAM,MAAM,oBAAoB,GAAG;IACjC,EAAE,EAAE,MAAM,CAAC;IACX,OAAO,EAAE,MAAM,CAAC;IAChB,UAAU,EAAE,OAAO,CAAC;IACpB,QAAQ,EAAE,eAAe,CAAC;CAC3B,CAAC"}

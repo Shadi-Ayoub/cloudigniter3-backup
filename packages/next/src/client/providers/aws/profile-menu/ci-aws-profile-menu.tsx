@@ -3,7 +3,7 @@
 import { useEffect, useMemo } from "react";
 
 // import type { CiAmplifyOutputs } from "@cloudigniter/aws";
-import { ciStartTraceClient } from "@cloudigniter/core/client";
+import { ciStartTraceClient } from "@ci-next/ui/client";
 
 import { useCiAwsLogout } from "@ci-next/client";
 import type { CiNextProfileMenuProps } from "@ci-next/types";
@@ -14,7 +14,7 @@ export function CiAwsProfileMenu({ config, dir }: CiNextProfileMenuProps) {
   const { ciLogout } = useCiAwsLogout({ redirectTo: "/login" });
 
   const { logger, done } = ciStartTraceClient(
-    config.ciConfig.traceLog,
+    config.ciConfig.dev.traceLog,
     { source: "client", tag: "CiAwsProfileMenu" },
     { name: "<CiAwsProfileMenu />" },
   );

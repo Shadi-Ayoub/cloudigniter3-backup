@@ -1,17 +1,17 @@
-import { ciStartTraceServer } from "@cloudigniter/core/server";
-import { getConfig } from "@/kernel/server";
+// import { ciStartTraceServer } from "@cloudigniter/core/server";
+// import { getConfig } from "@/kernel/server";
 
 export const Kernel = () => {
-  const config = getConfig();
+  // const config = getConfig();
 
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
-  const { logger } = ciStartTraceServer(
-    config.dev.traceLog,
-    { source: "server", prettyWave: true },
-    { name: "Kernel: Boot" },
-  );
+  // const { logger } = ciStartTraceServer(
+  //   config.dev.traceLog,
+  //   { source: "server", prettyWave: true },
+  //   { name: "Kernel: Boot" },
+  // );
 
-  logger.log({ scope: "kernel", event: "Rendering the <Kernel> component" });
+  // logger.log({ scope: "kernel", event: "Rendering the <Kernel> component" });
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
   return null;

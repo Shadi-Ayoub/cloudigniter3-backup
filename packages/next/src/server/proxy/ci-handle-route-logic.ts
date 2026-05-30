@@ -6,14 +6,17 @@ import {
   CI_DEFAULT_ROUTE_PATHNAME_HEADER_NAME,
   ciGetRoutesMatcher,
 } from "@cloudigniter/core/lib";
-import type { CiCoreConfig, CiRoutesMap } from "@cloudigniter/core/types";
+import type {
+  CiRouteRuntimeConfig,
+  CiRoutesMap,
+} from "@cloudigniter/core/types";
 import { ciRewriteToRouteInfoPage } from "./helpers";
 
 interface handlePathLogicInterface {
   request: NextRequest;
   response: NextResponse;
   pathnameNormalized: string;
-  ciConfig: CiCoreConfig;
+  routeConfig: CiRouteRuntimeConfig;
   routes: CiRoutesMap;
 }
 
@@ -133,7 +136,7 @@ export async function ciHandleRouteLogic({
   request,
   response,
   pathnameNormalized,
-  ciConfig,
+  routeConfig,
   routes,
 }: handlePathLogicInterface) {
   let exit: boolean = false;
@@ -150,7 +153,7 @@ export async function ciHandleRouteLogic({
       },
       {
         infoPagePath: "/info/invalid-route",
-        infoPageStrategy: ciConfig?.route?.infoPageStrategy ?? "rewrite",
+        infoPageStrategy: routeConfig.infoPageStrategy ?? "rewrite",
       },
       response,
     );
@@ -160,19 +163,17 @@ export async function ciHandleRouteLogic({
 
   // Set headers
   const routeNamespaceHeaderName =
-    ciConfig.route?.namespaceHeaderName ??
-    CI_DEFAULT_ROUTE_NAMESPACE_HEADER_NAME;
+    routeConfig.namespaceHeaderName ?? CI_DEFAULT_ROUTE_NAMESPACE_HEADER_NAME;
   const routePathnameHeaderName =
-    ciConfig.route?.pathnameHeaderName ?? CI_DEFAULT_ROUTE_PATHNAME_HEADER_NAME;
+    routeConfig.pathnameHeaderName ?? CI_DEFAULT_ROUTE_PATHNAME_HEADER_NAME;
   response.headers.set(routeNamespaceHeaderName, pathnameNormalized);
   response.headers.set(routePathnameHeaderName, pathnameNormalized);
 
   // Set Cookies
   const routeNamespaceCookieName =
-    ciConfig.route?.namespaceCookieName ??
-    CI_DEFAULT_ROUTE_NAMESPACE_COOKIE_NAME;
+    routeConfig.namespaceCookieName ?? CI_DEFAULT_ROUTE_NAMESPACE_COOKIE_NAME;
   const routePathnameCookieName =
-    ciConfig.route?.pathnameCookieName ?? CI_DEFAULT_ROUTE_PATHNAME_COOKIE_NAME;
+    routeConfig.pathnameCookieName ?? CI_DEFAULT_ROUTE_PATHNAME_COOKIE_NAME;
   response.cookies.set(routeNamespaceCookieName, route.namespace, {
     path: "/",
     sameSite: "lax",

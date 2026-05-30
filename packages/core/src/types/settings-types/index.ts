@@ -15,6 +15,10 @@ export type { CiGetSettingsHandlerInput } from "./CiGetSettingsHandlerInput";
 export type { CiGetSettingsHandlerOutput } from "./CiGetSettingsHandlerOutput";
 export type { CiSettingsGroupResult } from "./CiSettingsGroupResult";
 
+export type { CiSettingsDefinition } from "./CiSettingsDefinition";
+export type { CiSettingsDefaults } from "./CiSettingsDefaults";
+export type { CiSettingsMeta } from "./CiSettingsMeta";
+
 export type CiSettingsValue =
   | string
   | number
@@ -49,7 +53,7 @@ export type CiSettingsRecord<TSettings extends CiSettings = CiSettings> = {
 export type CiSettingsRegistryEntry<TSettings extends CiSettings = CiSettings> =
   {
     scope: CiSettingsScope;
-    defaults: TSettings;
+    defaults?: TSettings;
     schema?: z.ZodType<TSettings>;
     allowClientRead?: boolean;
     allowClientWrite?: boolean;

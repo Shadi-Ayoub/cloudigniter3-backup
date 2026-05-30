@@ -1,4 +1,5 @@
-import type { CiTenantRoutingMode, CiTenantUrlStrategy } from '../';
+import type { CiTenantRoutingMode } from "./CiTenantRoutingMode";
+import type { CiTenantUrlStrategy } from "./CiTenantUrlStrategy";
 
 export interface CiTenantRoutingOptions {
   enabled?: boolean;

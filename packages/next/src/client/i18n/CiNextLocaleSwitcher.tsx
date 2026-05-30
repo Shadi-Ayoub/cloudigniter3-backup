@@ -7,7 +7,7 @@ import {
   CI_DEFAULT_LOCALES,
   ciGetLangDir,
 } from "@cloudigniter/core/lib";
-import { CiLocaleSwitcher } from "@cloudigniter/core/client";
+import { CiLocaleSwitcher } from "@ci-next/ui/client";
 import { type CiI18nConfig } from "@cloudigniter/core/types";
 import type { CiNextLocaleSwitcherProps } from "@ci-next/types";
 

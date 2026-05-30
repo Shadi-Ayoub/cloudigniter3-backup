@@ -11,17 +11,18 @@ import {
 } from "@aws-amplify/ui-react";
 import { Amplify } from "aws-amplify";
 
-import { CiConsolePrint } from "@cloudigniter/core/client";
+import { CiConsolePrint } from "@ci-next/ui/client";
+import type { CiAuthUiConfig } from "@cloudigniter/core/types";
 import type { CiAmplifyOutputs } from "@cloudigniter/aws/types";
 
 import { useShowLoaderWhenAuthenticatorDisappears } from "./use-show-loader-when-authenticator-disappears";
-import type { CiAuthenticatorConfig } from "@ci-next/types";
+// import type { CiAuthenticatorConfig } from "@ci-next/types";
 
 export interface LoginPageClientWrapperInterface {
   outputs: CiAmplifyOutputs;
   authenticatorProps: AuthenticatorProps;
   authenticatorStyleTheme?: Theme;
-  authenticatorConfig: CiAuthenticatorConfig;
+  authenticatorConfig: CiAuthUiConfig;
 }
 
 export function CiNextAwsLoginPage({
@@ -43,11 +44,11 @@ export function CiNextAwsLoginPage({
   useShowLoaderWhenAuthenticatorDisappears(
     authUiRef,
     {
-      minHeightPx: authenticatorConfig.disappeared.minHeightPx,
-      debounceMs: authenticatorConfig.disappeared.debounceMs,
+      minHeightPx: authenticatorConfig?.visibility?.minHeightPx,
+      debounceMs: authenticatorConfig?.visibility?.debounceMs,
       initialMountSuppressMs:
-        authenticatorConfig.disappeared.initialMountSuppressMs,
-      minVisibleStableMs: authenticatorConfig.disappeared.minVisibleStableMs,
+        authenticatorConfig?.visibility?.initialMountSuppressMs,
+      minVisibleStableMs: authenticatorConfig?.visibility?.minVisibleStableMs,
     },
     authenticatorConfig,
   );

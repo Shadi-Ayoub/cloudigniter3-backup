@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslations } from "next-intl";
 
-import { ciStartTraceServer } from "@cloudigniter/core/server";
+import { ciStartTraceServer } from "@ci-next/server";
 import { ciCapitalizeFirstLetter } from "@cloudigniter/core/lib";
 import type { CiNextPageConfig } from "@ci-next/types";
 
@@ -13,7 +13,7 @@ interface FooterProps {
 export const CiFooter: React.FC<FooterProps> = ({ config, children }) => {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger } = ciStartTraceServer(
-    config.ciConfig.traceLog,
+    config.ciConfig.dev.traceLog,
     { source: "server", prettyWave: true },
     { name: "<Footer>" },
   );

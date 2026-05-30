@@ -21,11 +21,19 @@ import config from "@/../cloudigniter.config";
 import { locales } from "@cloudigniter/next/locales";
 
 export default getRequestConfig(async () => {
+  // const ck = await cookies();
+  // const hdr = await headers();
+
   try {
     const loc = await ciGetServerLocale({
       cookieName: config.i18n.cookieName,
       defaultLocale: config.i18n.defaultLocale,
     });
+
+    // const loc =
+    //   ck.get(config.i18n.cookieName)?.value ??
+    //   config.i18n.defaultLocale ??
+    //   "ci-locale";
 
     if (!locales[loc]) {
       throw new Error(
@@ -87,8 +95,9 @@ export default getRequestConfig(async () => {
     try {
       commonMessages = locales[loc]["common"] ?? {};
 
-      customCommonMessages = (await import(`../../locales/${loc}/common.json`))
-        .default;
+      customCommonMessages = (
+        await import(`../../../locales/${loc}/common.json`)
+      ).default;
     } catch (error) {
       const errorObj = ciNormalizeThrownError(error);
       console.log(
@@ -103,7 +112,7 @@ export default getRequestConfig(async () => {
       try {
         namespaceMessages = locales[loc][nsKebab] ?? {};
         customNamespaceMessages = (
-          await import(`../../locales/${loc}/${nsKebab}.json`)
+          await import(`../../../locales/${loc}/${nsKebab}.json`)
         ).default;
       } catch (error) {
         const errorObj = ciNormalizeThrownError(error);

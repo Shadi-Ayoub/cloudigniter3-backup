@@ -6,30 +6,31 @@ import { Inter } from "next/font/google";
 import { getLocale } from "next-intl/server";
 
 import { ciGetLangDir } from "@cloudigniter/core/lib";
-import { ciStartTraceServer } from "@cloudigniter/core/server";
-import { CiNextRootWrapper } from "@cloudigniter/next/server";
+import { ciStartTraceServer } from "@cloudigniter/next/ui/server";
+import { CiNextRootWrapper } from "@cloudigniter/next/wrapper";
 
-import { CiDebugProbe } from "@cloudigniter/core/server";
-import { CiDebugProbeProvider } from "@cloudigniter/core/client";
+import { CiDebugProbe } from "@cloudigniter/next/ui/server";
 
-import { Kernel, getConfig } from "@/kernel/server";
+import { Kernel, appGetServerCoreConfig } from "@/kernel/server";
 
 import "./globals.css"; // Always after importing Kernel so you can overwrite pre-defined CSS.
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default async function RootLayout({ children }: PropsWithChildren) {
-  const config = getConfig();
+  const coreConfig = appGetServerCoreConfig();
 
-  const debugEnabled = config.dev.debug?.enabled === true;
+  const debugEnabled = coreConfig.dev.debug?.enabled === true;
 
-  /////////////////////////////////////////////////////////////////////////////////////////Log trace
+  // ─────────────────────────────────────────────────────────────
+  // Log trace
+  // ─────────────────────────────────────────────────────────────
   const { logger } = ciStartTraceServer(
-    config.dev.traceLog, // your config object (must include enabled: true to activate)
+    coreConfig.dev.traceLog, // your config object (must include enabled: true to activate)
     { source: "server", prettyWave: true }, // per-call overrides
     { name: "RootLayout" }, // optional timer name + base fields
   );
-  /////////////////////////////////////////////////////////////////////////////////////////
+  // ─────────────────────────────────────────────────────────────
 
   const locale = await getLocale();
   const direction = ciGetLangDir(locale);
@@ -49,24 +50,17 @@ export default async function RootLayout({ children }: PropsWithChildren) {
       <body className={`ci-body ${inter.className}`}>
         <CiDebugProbe
           id="root-layout"
-          title="Root Layout Debug"
+          title="Root Layout Debug Information"
           enabled={debugEnabled}
           data={{
             component: "RootLayout",
-            debugEnabled,
-            config: {
-              loginRoute: config.auth.loginRoute,
-              route: config.route,
-              data: config.data,
-              authenticator: config.auth.authUi,
-            },
+            lang: locale,
+            dir: direction,
+            bodyClassName: `ci-body ${inter.className}`,
+            coreConfig,
           }}
         />
-        <CiNextRootWrapper config={config}>
-          <p>lang={locale}</p>
-          <p>dir={direction}</p>
-          <p>className={`ci-body ${inter.className}`}</p>
-          <p>config={JSON.stringify(config)}</p>
+        <CiNextRootWrapper config={coreConfig}>
           <Kernel />
           {children}
         </CiNextRootWrapper>
