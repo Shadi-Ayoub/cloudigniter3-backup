@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { CiTraceLoggerServer } from "@cloudigniter/core/server";
+import { CiTraceLoggerServer } from "@cloudigniter/next/server";
 import type { CiNextAwsCoreConfig } from "@/kernel/types";
 import { appGetServerCoreConfig } from "@/kernel/server";
 

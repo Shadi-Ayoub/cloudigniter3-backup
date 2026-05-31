@@ -6,8 +6,8 @@ import { Inter } from "next/font/google";
 import { getLocale } from "next-intl/server";
 
 import { ciGetLangDir } from "@cloudigniter/core/lib";
-import { ciStartTraceServer } from "@cloudigniter/next/ui/server";
-import { CiNextRootWrapper } from "@cloudigniter/next/wrapper";
+import { ciStartTraceServer } from "@cloudigniter/next/server";
+import { CiNextRootWrapper } from "@cloudigniter/next/ui/server";
 
 import { CiDebugProbe } from "@cloudigniter/next/ui/server";
 

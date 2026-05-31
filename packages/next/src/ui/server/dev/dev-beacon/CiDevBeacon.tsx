@@ -4,7 +4,7 @@ import type {
   CiEnvMode,
   CiTenantScope,
 } from "@cloudigniter/core/types";
-import { CiDevBeaconWrapper } from "@ci-next/ui/client"; // Client boundary: DOM measurement + UI rendering
+import { CiDevBeaconWrapper } from "../../../client"; // Client boundary: DOM measurement + UI rendering
 /**
  * Resolve a normalized DevEnv value for gating DevBeacon visibility.
  *

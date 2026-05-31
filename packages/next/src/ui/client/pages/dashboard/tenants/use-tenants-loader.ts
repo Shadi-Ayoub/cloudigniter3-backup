@@ -6,11 +6,8 @@ import {
   ciIsGraphqlResponse,
   ciSafeToString,
 } from "@cloudigniter/core/lib";
-import {
-  ciPrintToConsole,
-  ciNormalizeClientThrownError,
-  ciNotify,
-} from "@ci-next/ui/client";
+import { ciPrintToConsole } from "@cloudigniter/core/client";
+import { ciNormalizeClientThrownError, ciNotify } from "@ci-next/ui/client";
 import {
   type CiTenant,
   type CiRequest,

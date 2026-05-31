@@ -35,7 +35,7 @@
     "switch:src": "node ../../scripts/ci-switch-sources.mjs src",
     "switch:dist": "node ../../scripts/ci-switch-sources.mjs dist",
     "clean": "rimraf dist .tsbuildinfo",
-    "clean:maps": "rimraf dist/*.map dist/**/*.map",
+    "clean:maps": "node ../../scripts/ci-clean-dist-maps.mjs",
     "clean:dts": "node ../../scripts/ci-clean-dts-map.cjs",
     "build": "pnpm run build:dev",
     "build:dev": "NODE_ENV=development pnpm run clean && pnpm run switch:src && pnpm run build:js && pnpm run build:types:raw && pnpm run build:types && pnpm run build:types:clean && pnpm run build:assets",
@@ -50,7 +50,9 @@
     "check:package": "npm pack --dry-run",
     "dev": "tsup --watch",
     "typecheck:tools": "tsc -p tsconfig.tools.json --noEmit",
-    "check": "pnpm run typecheck && pnpm run typecheck:tools"
+    "check": "pnpm run typecheck && pnpm run typecheck:tools",
+    "scan:client-directives": "node ../../scripts/ci-scan-missing-use-client.mjs",
+    "list:client-files": "node ../../scripts/ci-list-client-files.mjs"
   },
   "devDependencies": {
     "@cloudigniter/config-ts": "workspace:*",

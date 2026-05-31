@@ -25,6 +25,18 @@ export const BARRELS = [
     srcRoot: "src/client",
   },
   {
+    kind: "client",
+    barrel: "src/ui/client/index.ts",
+    outPrefix: "ui/client",
+    srcRoot: "src/ui/client",
+  },
+  {
+    kind: "other",
+    barrel: "src/locales/index.ts",
+    outPrefix: "locales",
+    srcRoot: "src/locales",
+  },
+  {
     kind: "other",
     barrel: "src/server/index.ts",
     outPrefix: "server",
@@ -32,15 +44,51 @@ export const BARRELS = [
   },
   {
     kind: "other",
-    barrel: "src/server/backend/index.ts",
-    outPrefix: "server/backend",
-    srcRoot: "src/server/backend",
+    barrel: "src/server/proxy/index.ts",
+    outPrefix: "server/proxy",
+    srcRoot: "src/server/proxy",
   },
   {
     kind: "other",
     barrel: "src/lib/index.ts",
     outPrefix: "lib",
     srcRoot: "src/lib",
+  },
+  {
+    kind: "other",
+    barrel: "src/ui/index.ts",
+    outPrefix: "ui",
+    srcRoot: "src/ui",
+  },
+  {
+    kind: "other",
+    barrel: "src/ui/server/index.ts",
+    outPrefix: "ui/server",
+    srcRoot: "src/ui/server",
+  },
+  {
+    kind: "other",
+    barrel: "src/wrapper/index.ts",
+    outPrefix: "wrapper",
+    srcRoot: "src/wrapper",
+  },
+  {
+    kind: "other",
+    barrel: "src/layout/app-standard/index.ts",
+    outPrefix: "layout/app-standard",
+    srcRoot: "src/layout/app-standard",
+  },
+  {
+    kind: "other",
+    barrel: "src/layout/cp-standard/index.ts",
+    outPrefix: "layout/cp-standard",
+    srcRoot: "src/layout/cp-standard",
+  },
+  {
+    kind: "other",
+    barrel: "src/layout/login-standard/index.ts",
+    outPrefix: "layout/login-standard",
+    srcRoot: "src/layout/login-standard",
   },
 ];
 
@@ -56,16 +104,48 @@ export const STATIC_ENTRY_PATHS = [
     path: "src/client/index.ts",
   },
   {
+    kind: "client",
+    path: "src/ui/client/index.ts",
+  },
+  {
+    kind: "other",
+    path: "src/locales/index.ts",
+  },
+  {
     kind: "other",
     path: "src/server/index.ts",
   },
   {
     kind: "other",
-    path: "src/server/backend/index.ts",
+    path: "src/server/proxy/index.ts",
   },
   {
     kind: "other",
     path: "src/lib/index.ts",
+  },
+  {
+    kind: "other",
+    path: "src/ui/index.ts",
+  },
+  {
+    kind: "other",
+    path: "src/ui/server/index.ts",
+  },
+  {
+    kind: "other",
+    path: "src/wrapper/index.ts",
+  },
+  {
+    kind: "other",
+    path: "src/layout/app-standard/index.ts",
+  },
+  {
+    kind: "other",
+    path: "src/layout/cp-standard/index.ts",
+  },
+  {
+    kind: "other",
+    path: "src/layout/login-standard/index.ts",
   },
 ];
 

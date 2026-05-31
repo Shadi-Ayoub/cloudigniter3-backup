@@ -1,7 +1,7 @@
 "use client";
 
 import { ciPrintToConsole } from "./ci-print-to-console";
-import type { CiConsolePrintInterface } from "@ci-next/ui/client";
+import type { CiConsolePrintInterface } from "@ci-core/types";
 
 export function CiConsolePrint({
   label,

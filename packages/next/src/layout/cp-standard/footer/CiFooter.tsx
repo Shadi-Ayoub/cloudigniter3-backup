@@ -1,9 +1,8 @@
 import React from "react";
 import { useTranslations } from "next-intl";
 import { ciCapitalizeFirstLetter } from "@cloudigniter/core/lib";
-import { ciStartTraceServer } from "@ci-next/server";
-import type { CiNextPageConfig } from "@ci-next/types";
-import type { CiSystemStatusCheckList } from "@ci-next/types";
+import { ciStartTraceServer } from "../../../server";
+import type { CiNextPageConfig, CiSystemStatusCheckList } from "../../../types";
 
 interface FooterInterface {
   config: CiNextPageConfig;

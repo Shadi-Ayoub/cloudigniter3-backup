@@ -57,6 +57,7 @@ export default defineConfig([
       await ciInjectUseClient([
         "dist/client/index.js",
         "dist/client/cookie.js",
+        "dist/client/feedback.js",
         "dist/client/local-storage.js",
         "dist/client/route.js",
       ]);

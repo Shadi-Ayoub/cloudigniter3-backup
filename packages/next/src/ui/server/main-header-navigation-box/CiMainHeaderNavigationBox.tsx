@@ -1,9 +1,10 @@
 import dynamic from "next/dynamic";
-import { ciStartTraceServer } from "@ci-next/server";
+import { ciStartTraceServer } from "../../../server";
 import type { CiMainMenuItem } from "@cloudigniter/core/types";
 import { type CiSettings } from "@cloudigniter/core/types";
-import { CiRoundButtonFallback } from "@ci-next/ui";
-import type { CiNextPageConfig } from "@ci-next/types";
+import { CiMainMenu } from "../../server";
+import { CiRoundButtonFallback } from "../../common";
+import type { CiNextPageConfig } from "../../../types";
 
 interface MainHeaderUserBoxInterface {
   config: CiNextPageConfig;
@@ -27,23 +28,10 @@ export function CiMainHeaderNavigationBox({
   });
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * [Lazy load interactive client components]
-   * Client components are "lazy loaded" using React.lazy or dynamic imports to reduce the initial load time.
-   * set ssr to false in cases where the client component need to be rendered on the client side
-   */
-  const MainMenu = dynamic(
-    () => import("@ci-next/ui/server").then((mod) => mod.CiMainMenu),
-    {
-      ssr: true,
-      loading: () => <CiRoundButtonFallback />,
-    },
-  );
-
   return (
     <nav aria-label="User Navigation" className="ci-main-header-user-box">
       <div className="ci-main-header-navigation-box">
-        <MainMenu config={settings.mainMenu as CiMainMenuItem[]} />
+        <CiMainMenu config={settings.mainMenu as CiMainMenuItem[]} />
       </div>
       <div className="ci-main-header-navigation-box-inner-mobile">
         {/* <MobileMenuToggle /> */}

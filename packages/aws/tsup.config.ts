@@ -1,15 +1,16 @@
 import { defineConfig } from "tsup";
 // import { preserveDirectivesPlugin } from "esbuild-plugin-preserve-directives";
 import { getAllEntries } from "./scripts/entries.mjs";
+import { ciInjectUseClient } from "../../scripts/ci-inject-use-client.mjs";
 
 const isProduction = process.env.NODE_ENV === "production";
 
-const { allEntries } = getAllEntries();
+const { clientEntries, otherEntries } = getAllEntries();
 
 export default defineConfig([
   // Client entrypoints
   {
-    entry: allEntries,
+    entry: clientEntries,
     format: ["esm"],
     bundle: true,
     splitting: false,
@@ -20,11 +21,19 @@ export default defineConfig([
     target: "es2022",
     dts: false,
     outDir: "dist",
-    tsconfig: "./tsconfig.build.json",
-    external: ["react", "react-dom", "@aws-amplify/ui-react", "aws-amplify"],
+    external: [
+      "react",
+      "react-dom",
+      "motion",
+      "motion/react",
+      "@monaco-editor/react",
+      "@aws-amplify/ui-react",
+      "aws-amplify",
+    ],
+    // metafile: true, // Helps the plugin accurately map files to chunks
     // esbuildPlugins: [
     //   preserveDirectivesPlugin({
-    //     directives: ["use client", "use strict", "use server"],
+    //     directives: ["use client", "use server"],
     //     include: /\.(js|ts|jsx|tsx)$/,
     //     exclude: /node_modules/,
     //   }),
@@ -34,12 +43,18 @@ export default defineConfig([
       // opts.plugins = [];
       // opts.chunkNames = "chunks/[name]-[hash]";
       opts.jsx = "automatic";
+      // opts.banner = {
+      //   js: '"use client";',
+      // };
+    },
+    onSuccess: async () => {
+      await ciInjectUseClient(["dist/client/index.js", "dist/client/auth.js"]);
     },
   },
 
   // Server / lib / shared entrypoints
   {
-    entry: allEntries,
+    entry: otherEntries,
     format: ["esm"],
     bundle: true,
     splitting: false,
@@ -50,11 +65,12 @@ export default defineConfig([
     target: "es2022",
     dts: false,
     outDir: "dist",
-    tsconfig: "./tsconfig.build.json",
-    external: ["react", "react-dom", "@aws-amplify/ui-react", "aws-amplify"],
+
+    external: ["react", "react-dom", "aws-amplify"],
+    // metafile: true, // Helps the plugin accurately map files to chunks
     // esbuildPlugins: [
     //   preserveDirectivesPlugin({
-    //     directives: ["use client", "use strict", "use server"],
+    //     directives: ["use client", "use server"],
     //     include: /\.(js|ts|jsx|tsx)$/,
     //     exclude: /node_modules/,
     //   }),

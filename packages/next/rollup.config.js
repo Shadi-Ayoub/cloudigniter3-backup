@@ -70,10 +70,6 @@ const aliasPlugin = alias({
       ),
     },
     {
-      find: "@ci-next/wrapper",
-      replacement: path.resolve(projectRoot, "dist/.types/wrapper/index.d.ts"),
-    },
-    {
       find: "@ci-next/layout/app-standard",
       replacement: path.resolve(
         projectRoot,
@@ -181,16 +177,6 @@ const config = [
     input: "dist/.types/ui/server/index.d.ts",
     output: {
       file: "dist/ui/server/index.d.ts",
-      format: "es",
-    },
-    external,
-    plugins: [aliasPlugin, dts()],
-  },
-
-  {
-    input: "dist/.types/wrapper/index.d.ts",
-    output: {
-      file: "dist/wrapper/index.d.ts",
       format: "es",
     },
     external,

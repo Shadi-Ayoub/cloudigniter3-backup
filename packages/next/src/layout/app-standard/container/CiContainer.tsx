@@ -1,6 +1,6 @@
 import React from "react";
-import { ciStartTraceServer } from "@ci-next/server";
-import type { CiNextPageConfig } from "@ci-next/types";
+import { ciStartTraceServer } from "../../../server";
+import type { CiNextPageConfig } from "../../../types";
 
 interface ContentInterface {
   config: CiNextPageConfig;

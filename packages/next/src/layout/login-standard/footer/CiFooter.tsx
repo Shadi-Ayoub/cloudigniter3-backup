@@ -1,8 +1,8 @@
 import React from "react";
 // import { useTranslations } from 'next-intl';
 
-import { ciStartTraceServer } from "@ci-next/server";
-import type { CiNextPageConfig } from "@ci-next/types";
+import { ciStartTraceServer } from "../../../server";
+import type { CiNextPageConfig } from "../../../types";
 
 interface FooterInterface {
   config: CiNextPageConfig;

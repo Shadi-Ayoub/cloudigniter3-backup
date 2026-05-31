@@ -1,12 +1,12 @@
-import { ciStartTraceServer } from "@ci-next/server";
+import { ciStartTraceServer } from "../../server";
 import { type CiSystemStatus } from "@cloudigniter/core/types";
-import type { CiNextPageConfig } from "@ci-next/types";
-import { CiPageWrapper } from "@ci-next/wrapper";
+import type { CiNextPageConfig } from "../../types";
 import {
   CiMainHeaderNavigationBox,
   CiMainHeaderUserBox,
-} from "@ci-next/ui/server";
-import { CiHeaderLogo } from "@ci-next/ui/client";
+  CiPageWrapper,
+} from "../../ui/server";
+import { CiHeaderLogo } from "../../ui/client";
 import { CiHeader } from "./header/CiHeader";
 import { CiContainer } from "./container/CiContainer";
 import { CiCopyright, CiFooter } from "./footer";

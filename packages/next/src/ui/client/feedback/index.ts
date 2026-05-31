@@ -1,9 +1,4 @@
 // ─────────────────────────────────────────────────────────────
-// console print
-// ─────────────────────────────────────────────────────────────
-export { CiConsolePrint, ciPrintToConsole } from "./console-print";
-
-// ─────────────────────────────────────────────────────────────
 // helpers
 // ─────────────────────────────────────────────────────────────
 export { ciNormalizeClientThrownError } from "./ci-normalize-client-thrown-error";
@@ -25,12 +20,6 @@ export {
 // types
 // ─────────────────────────────────────────────────────────────
 export type {
-  // console print
-  CiConsoleLogOptions,
-  CiConsolePrintInterface,
-  CiPrintOutputFormat,
-  CiPrintOutputType,
-
   //notify
   CiClientFeedbackPayload,
   CiDeliveryChannel,

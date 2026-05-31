@@ -1,4 +1,4 @@
-import type { CiNextPageConfig } from "@ci-next/types";
+import type { CiNextPageConfig } from "../../../../types";
 
 export interface CiMainHeaderUserBoxProps {
   config: CiNextPageConfig;

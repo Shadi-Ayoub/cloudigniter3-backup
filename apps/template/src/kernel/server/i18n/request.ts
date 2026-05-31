@@ -10,7 +10,6 @@ import {
   ciPascalToKebab,
   ciResolveRoute,
 } from "@cloudigniter/core/lib";
-// import { CI_DEFAULT_ROUTE_PATHNAME_COOKIE_NAME } from "@cloudigniter/next/constants";
 import type {
   CiRoutesMap,
   CiServerErrorPayload,
@@ -20,20 +19,55 @@ import config from "@/../cloudigniter.config";
 
 import { locales } from "@cloudigniter/next/locales";
 
-export default getRequestConfig(async () => {
-  // const ck = await cookies();
-  // const hdr = await headers();
+type CiMessageModule = {
+  default: AbstractIntlMessages;
+};
 
+type CiMessageLoader = () => Promise<CiMessageModule>;
+
+const customLocaleLoaders = {
+  en: {
+    common: () => import("../../../locales/en/common.json"),
+    // Add route namespaces here, for example:
+    // dashboard: () => import("../../../locales/en/dashboard.json"),
+  },
+  ar: {
+    common: () => import("../../../locales/ar/common.json"),
+    // Add route namespaces here, for example:
+    // dashboard: () => import("../../../locales/ar/dashboard.json"),
+  },
+} satisfies Record<string, Record<string, CiMessageLoader>>;
+
+function ciIsCustomLocaleKey(
+  value: string,
+): value is keyof typeof customLocaleLoaders {
+  return value in customLocaleLoaders;
+}
+
+async function ciLoadCustomMessages(
+  loc: string,
+  namespace: string,
+): Promise<AbstractIntlMessages> {
+  if (!ciIsCustomLocaleKey(loc)) {
+    return {};
+  }
+
+  const loaders: Record<string, CiMessageLoader> = customLocaleLoaders[loc];
+  const loader = loaders[namespace];
+
+  if (!loader) {
+    return {};
+  }
+
+  return (await loader()).default;
+}
+
+export default getRequestConfig(async () => {
   try {
     const loc = await ciGetServerLocale({
       cookieName: config.i18n.cookieName,
       defaultLocale: config.i18n.defaultLocale,
     });
-
-    // const loc =
-    //   ck.get(config.i18n.cookieName)?.value ??
-    //   config.i18n.defaultLocale ??
-    //   "ci-locale";
 
     if (!locales[loc]) {
       throw new Error(
@@ -46,7 +80,6 @@ export default getRequestConfig(async () => {
       );
     }
 
-    // Source of truth for the path: try cookie first and then header
     const ck = await cookies();
     const ciPath =
       ck.get(
@@ -72,7 +105,6 @@ export default getRequestConfig(async () => {
       );
     }
 
-    // Resolve route → namespace
     const routes = config.routes as CiRoutesMap;
     const route = ciResolveRoute(urlPath, routes);
 
@@ -94,10 +126,7 @@ export default getRequestConfig(async () => {
 
     try {
       commonMessages = locales[loc]["common"] ?? {};
-
-      customCommonMessages = (
-        await import(`../../../locales/${loc}/common.json`)
-      ).default;
+      customCommonMessages = await ciLoadCustomMessages(loc, "common");
     } catch (error) {
       const errorObj = ciNormalizeThrownError(error);
       console.log(
@@ -105,21 +134,16 @@ export default getRequestConfig(async () => {
       );
     }
 
-    if (route !== null) {
-      // If we have a named route, load “namespace” JSON files:
-      const nsKebab = ciPascalToKebab(route.namespace);
+    const nsKebab = ciPascalToKebab(route.namespace);
 
-      try {
-        namespaceMessages = locales[loc][nsKebab] ?? {};
-        customNamespaceMessages = (
-          await import(`../../../locales/${loc}/${nsKebab}.json`)
-        ).default;
-      } catch (error) {
-        const errorObj = ciNormalizeThrownError(error);
-        console.log(
-          `Could not load the current route language file for the route "${route?.namespace}"! Error: ${errorObj.message}`,
-        );
-      }
+    try {
+      namespaceMessages = locales[loc][nsKebab] ?? {};
+      customNamespaceMessages = await ciLoadCustomMessages(loc, nsKebab);
+    } catch (error) {
+      const errorObj = ciNormalizeThrownError(error);
+      console.log(
+        `Could not load the current route language file for the route "${route?.namespace}"! Error: ${errorObj.message}`,
+      );
     }
 
     const systemMessages = deepmerge(

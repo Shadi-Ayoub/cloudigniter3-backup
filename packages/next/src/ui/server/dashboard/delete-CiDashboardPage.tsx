@@ -1,11 +1,9 @@
-// import "server-only";
-
 import { getTranslations } from "next-intl/server";
-import { ciStartTraceServer } from "@ci-next/server";
+import { ciStartTraceServer } from "../../../server";
 import {
   ciResolveDashboardCardViewModels,
   type CiDashboardPageProps,
-} from "@ci-next/ui/client";
+} from "../../client";
 import { CiDashboardCard } from "./CiDashboardCard";
 import { CiDashboardGrid } from "./CiDashboardGrid";
 

@@ -1,9 +1,9 @@
 // import "server-only";
 import { getTranslations } from "next-intl/server";
 import { ciCapitalizeFirstLetter } from "@cloudigniter/core/lib";
-import { ciStartTraceServer } from "@ci-next/server";
-import { type CiDashboardCardProps as CiDashboardCardType } from "@ci-next/ui/client";
-import type { CiNextPageConfig } from "@ci-next/types";
+import { ciStartTraceServer } from "../../../server";
+import { type CiDashboardCardProps as CiDashboardCardType } from "../../client";
+import type { CiNextPageConfig } from "../../../types";
 import { CiDashboardCard } from "./CiDashboardCard";
 import { CiDashboardGrid } from "./CiDashboardGrid";
 

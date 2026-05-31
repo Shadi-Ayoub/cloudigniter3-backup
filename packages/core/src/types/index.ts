@@ -30,6 +30,16 @@ export type {
 } from "./auth-types";
 
 // ─────────────────────────────────────────────────────────────
+// console print
+// ─────────────────────────────────────────────────────────────
+export type {
+  CiConsoleLogOptions,
+  CiConsolePrintInterface,
+  CiPrintOutputFormat,
+  CiPrintOutputType,
+} from "./console-print-types";
+
+// ─────────────────────────────────────────────────────────────
 // cookie
 // ─────────────────────────────────────────────────────────────
 export type { CiCookieOptions, CiCookiePriority } from "./cookie-types";

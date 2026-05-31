@@ -1,6 +1,8 @@
 import dynamic from "next/dynamic";
-import { CiRoundButtonFallback } from "@ci-next/ui";
-import { ciStartTraceServer } from "@ci-next/server";
+import { CiRoundButtonFallback } from "../../common";
+import { ciStartTraceServer } from "../../../server";
+import { CiNextLocaleSwitcher, CiThemeSwitcher } from "../../../client";
+import { CiProfileMenu } from "../../client";
 import type { CiMainHeaderUserBoxProps } from "./types";
 
 export function CiMainHeaderUserBox({ config }: CiMainHeaderUserBoxProps) {
@@ -17,44 +19,15 @@ export function CiMainHeaderUserBox({ config }: CiMainHeaderUserBoxProps) {
   });
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * [Lazy load interactive client components]
-   * Client components are "lazy loaded" using React.lazy or dynamic imports to reduce the initial load time.
-   * set ssr to false in cases where the client component nees to be rendered on the client side
-   */
-  const ThemeSwitcher = dynamic(
-    () => import("@ci-next/client").then((mod) => mod.CiThemeSwitcher),
-    {
-      ssr: true,
-      loading: () => <CiRoundButtonFallback />,
-    },
-  );
-
-  const LocaleSwitcher = dynamic(
-    () => import("@ci-next/client").then((mod) => mod.CiNextLocaleSwitcher),
-    {
-      ssr: true,
-      loading: () => <CiRoundButtonFallback />,
-    },
-  );
-
-  const ProfileMenu = dynamic(
-    () => import("@ci-next/ui/client").then((mod) => mod.CiProfileMenu),
-    {
-      ssr: true,
-      loading: () => <CiRoundButtonFallback />,
-    },
-  );
-
   return (
     <nav aria-label="User Navigation" className="ci-main-header-user-box">
       <div className="ci-main-header-user-box-inner">
-        <ThemeSwitcher config={config} dir={config.ciConfig.direction} />
-        <LocaleSwitcher
+        <CiThemeSwitcher config={config} dir={config.ciConfig.direction} />
+        <CiNextLocaleSwitcher
           config={config.ciConfig.i18n}
           traceConfig={config.ciConfig.dev.traceLog}
         />
-        <ProfileMenu config={config} dir={config.ciConfig.direction} />
+        <CiProfileMenu config={config} dir={config.ciConfig.direction} />
       </div>
       <div className="ci-main-header-user-box-inner-mobile">
         {/* <MobileMenuToggle /> */}

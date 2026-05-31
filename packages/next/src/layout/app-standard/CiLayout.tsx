@@ -1,10 +1,9 @@
 import React from "react";
 
-import { CiPageWrapper } from "@ci-next/wrapper";
-import { CiMainHeaderUserBox } from "@ci-next/ui/server";
-import { CiDashboardHeaderButton } from "@ci-next/ui/client";
-import { ciStartTraceServer } from "@ci-next/server";
-import type { CiNextPageConfig } from "@ci-next/types";
+import { CiMainHeaderUserBox, CiPageWrapper } from "../../ui/server";
+import { CiDashboardHeaderButton } from "../../ui/client";
+import { ciStartTraceServer } from "../../server";
+import type { CiNextPageConfig } from "../../types";
 
 import { CiHeader } from "./header";
 import { CiContainer } from "./container";

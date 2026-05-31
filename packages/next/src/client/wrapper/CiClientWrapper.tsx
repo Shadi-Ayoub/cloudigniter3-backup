@@ -9,27 +9,18 @@
  * - Error Handler
  */
 
-import dynamic from "next/dynamic";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
-import { ciRemoveCookie } from "@cloudigniter/core/client";
+import { CiConsolePrint, ciRemoveCookie } from "@cloudigniter/core/client";
 import {
-  CiConsolePrint,
   CiFeedbackHandler,
   CiFeedbackProvider,
-  CiSpinner,
   type CiFeedbackSonnerConfig,
 } from "@ci-next/ui/client";
 
 import { CiThemeProvider } from "@ci-next/client";
 import type { CiClientWrapperProps } from "@ci-next/types";
 
-const InitialLoader = dynamic(
-  () => import("./CiInitialLoader").then((mod) => mod.CiInitialLoader),
-  {
-    ssr: false,
-    loading: () => <CiSpinner text={"Loading...."} />,
-  },
-);
+import { CiInitialLoader } from "./CiInitialLoader";
 
 export const CiClientWrapper = ({
   theme,
@@ -93,7 +84,7 @@ export const CiClientWrapper = ({
               }}
             />
             <CiFeedbackHandler direction={direction} />
-            <InitialLoader />
+            <CiInitialLoader />
             {/* <ErrorHandler direction={direction} /> */}
             {/* <DevBeaconWrapper /> */}
             {children}

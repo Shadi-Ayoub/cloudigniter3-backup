@@ -1,7 +1,6 @@
 import { cache } from "react";
 
 import {
-  ciBootstrap as _ciBootstrap,
   ciGetCookies,
   ciGetHeaders,
   ciGetTenantContext,
@@ -11,14 +10,15 @@ import { ciNormalizeThrownError } from "@cloudigniter/core/lib";
 import type { CiServerErrorPayload } from "@cloudigniter/next/types";
 import type { CiAmplifyOutputs } from "@cloudigniter/aws/types";
 
+// import { appBootstrap } from "@/kernel/server";
 // import { ciGetSettings } from "@/kernel/api/server";
 import { ciGetServerStatus } from "./ci-get-server-status";
 import { appGetServerAllConfig } from "@/kernel/server";
 
 ////
-import type { CiPageCoreConfig } from "@cloudigniter/core/client";
+import type { CiPageCoreConfig } from "@cloudigniter/core/types";
 import type { CiSettings, CiSystemStatus } from "@cloudigniter/core/types";
-import type { CiNextPageConfig } from "@ci-next/types";
+import type { CiNextPageConfig } from "@cloudigniter/next/types";
 
 import { ciPrepareConfig } from "./ci-prepare-config";
 

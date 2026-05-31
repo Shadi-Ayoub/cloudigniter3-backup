@@ -9,11 +9,8 @@ import {
   ciNormalizeThrownError,
   ciSafeToString,
 } from "@cloudigniter/core/lib";
-import {
-  ciPrintToConsole,
-  ciNotify,
-  useCiPageLoaderStore,
-} from "@ci-next/ui/client";
+import { ciPrintToConsole } from "@cloudigniter/core/client";
+import { ciNotify, useCiPageLoaderStore } from "@ci-next/ui/client";
 import type {
   CiRequest,
   CiResponse,

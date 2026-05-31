@@ -1,11 +1,11 @@
-import { ciStartTraceServer } from "@ci-next/server";
+import { ciStartTraceServer } from "../../server";
 // import {
 //   CiHeaderLogo,
 //   CiMainHeaderNavigationBox,
 //   CiMainHeaderUserBox,
 // } from "@ci-next/ui";
-import type { CiNextPageConfig } from "@ci-next/types";
-import { CiPageWrapper } from "@ci-next/wrapper";
+import type { CiNextPageConfig } from "../../types";
+import { CiPageWrapper } from "../../ui/server";
 import { CiHeader } from "./header/CiHeader";
 import { CiContainer } from "./container/CiContainer";
 import { CiCopyright, CiFooter } from "./footer";

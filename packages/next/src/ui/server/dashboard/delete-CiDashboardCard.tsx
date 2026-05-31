@@ -1,5 +1,5 @@
-import { Card, type CiDashboardCardProps } from "@ci-next/ui/client";
-import { CiNavigateWithLoader } from "@ci-next/client";
+import { Card, type CiDashboardCardProps } from "../../client";
+import { CiNavigateWithLoader } from "../../../client";
 
 export function CiDashboardCard({
   id,

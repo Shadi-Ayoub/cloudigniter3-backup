@@ -1,12 +1,12 @@
 import type { ReactNode } from "react";
 import { CI_DEV_BEACON_LOGO } from "@cloudigniter/core/lib";
-import { ciStartTraceServer } from "@ci-next/server";
+import { ciStartTraceServer } from "../../../server";
 import type { CiI18nConfig, CiSettings } from "@cloudigniter/core/types";
-import { CiDevBeacon } from "@ci-next/server";
+import { CiDevBeacon } from "../../server";
 
-import type { CiNextPageConfig } from "@ci-next/types";
+import type { CiNextPageConfig } from "../../../types";
 
-import { CiClientWrapper } from "@ci-next/client";
+import { CiClientWrapper } from "../../../client";
 
 interface CloudIgniterClientWrapperInterface {
   config: CiNextPageConfig;

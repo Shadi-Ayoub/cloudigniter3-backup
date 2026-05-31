@@ -16,13 +16,6 @@ export {
 // dev
 // ─────────────────────────────────────────────────────────────
 export {
-  // debug probe
-  CiDebugProbe,
-
-  // dev beacon
-  CiDevBeacon,
-  CiNextAwsDevBeacon,
-  type CiNexAwsDevBeaconProps,
   // seeder
   ciReadMocksForItem,
 

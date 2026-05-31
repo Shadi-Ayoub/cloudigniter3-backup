@@ -4,6 +4,19 @@
 export { CiDashboardPage } from "./dashboard";
 
 // ─────────────────────────────────────────────────────────────
+// dev
+// ─────────────────────────────────────────────────────────────
+export {
+  // debug probe
+  CiDebugProbe,
+
+  // dev beacon
+  CiDevBeacon,
+  CiNextAwsDevBeacon,
+  type CiNexAwsDevBeaconProps,
+} from "./dev";
+
+// ─────────────────────────────────────────────────────────────
 // main header navigation box
 // ─────────────────────────────────────────────────────────────
 export { CiMainHeaderNavigationBox } from "./main-header-navigation-box";
@@ -20,3 +33,8 @@ export {
 // main menu
 // ─────────────────────────────────────────────────────────────
 export { CiMainMenu } from "./main-menu";
+
+// ─────────────────────────────────────────────────────────────
+// main menu
+// ─────────────────────────────────────────────────────────────
+export { CiNextRootWrapper, CiPageWrapper } from "./wrapper";

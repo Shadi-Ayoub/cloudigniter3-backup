@@ -11,7 +11,7 @@ import {
 } from "@aws-amplify/ui-react";
 import { Amplify } from "aws-amplify";
 
-import { CiConsolePrint } from "@ci-next/ui/client";
+import { CiConsolePrint } from "@cloudigniter/core/client";
 import type { CiAuthUiConfig } from "@cloudigniter/core/types";
 import type { CiAmplifyOutputs } from "@cloudigniter/aws/types";
 

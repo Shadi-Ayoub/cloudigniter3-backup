@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 
-import { ciStartTraceServer } from "@ci-next/server";
+import { ciStartTraceServer } from "../../../server";
 import { type CiCoreConfig } from "@cloudigniter/core/types";
 
 interface CiNextRootWrapperInterface {

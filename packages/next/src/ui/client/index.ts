@@ -228,10 +228,6 @@ export {
 // feedback
 // ─────────────────────────────────────────────────────────────
 export {
-  // console print
-  CiConsolePrint,
-  ciPrintToConsole,
-
   // helpers
   ciNormalizeClientThrownError,
 
@@ -243,12 +239,6 @@ export {
   ciNotify,
   ciResolveFeedbackConfig,
   useCiFeedbackStore,
-
-  // console print
-  type CiConsoleLogOptions,
-  type CiConsolePrintInterface,
-  type CiPrintOutputFormat,
-  type CiPrintOutputType,
 
   //notify
   type CiClientFeedbackPayload,

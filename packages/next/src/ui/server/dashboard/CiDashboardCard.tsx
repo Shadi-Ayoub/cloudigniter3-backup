@@ -1,6 +1,6 @@
 import { type ReactNode } from "react";
-import { Card } from "@ci-next/ui/client";
-import { CiNavigateWithLoader } from "@ci-next/client";
+import { Card } from "../../client";
+import { CiNavigateWithLoader } from "../../../client";
 
 interface DashboardCardProps {
   id: string;
