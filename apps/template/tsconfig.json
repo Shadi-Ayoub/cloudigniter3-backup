@@ -5,6 +5,12 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@ci-next/*": [
+        "../../packages/next/src/*"
+      ],
+      "@ci-core/*": [
+        "../../packages/core/src/*"
       ]
     },
     "plugins": [

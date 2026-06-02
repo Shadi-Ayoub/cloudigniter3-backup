@@ -1,8 +1,7 @@
 import { defineConfig } from "tsup";
 import { preserveDirectivesPlugin } from "esbuild-plugin-preserve-directives";
-
 import { getAllEntries } from "./scripts/entries.mjs";
-import { ciInjectUseClient } from "../../scripts/ci-inject-use-client.mjs";
+import { ciInjectUseClient } from "../../scripts/build-steps/ci-inject-use-client.mjs";
 
 const isProduction = process.env.NODE_ENV === "production";
 

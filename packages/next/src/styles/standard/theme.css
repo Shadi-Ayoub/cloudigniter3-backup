@@ -14,113 +14,96 @@
   --z-index-modal: 1000; /* e.g. Edit settings */
   --z-index-toast: 1100; /* e.g. toasts, Beacon */
 
-  --color-background: oklch(0.98 0.02 260);
-  --color-foreground: oklch(0.07 0.02 260);
+  /* === CloudIgniter Standard Theme: Gray-based === */
 
-  --color-dark-background: oklch(0.12 0.02 260);
-  --color-dark-foreground: oklch(0.93 0.02 260);
+  --color-background: oklch(0.985 0.003 260);
+  --color-foreground: oklch(0.18 0.01 260);
 
-  --color-primary: oklch(0.55 0.16 186);
-  --color-secondary: oklch(0.65 0.18 90);
-  --color-accent: oklch(0.6 0.22 293);
-  --color-muted: oklch(0.6 0.03 260);
+  --color-dark-background: oklch(0.145 0.006 260);
+  --color-dark-foreground: oklch(0.94 0.004 260);
 
-  --color-dark-primary: oklch(0.65 0.18 186);
-  --color-dark-secondary: oklch(0.75 0.16 90);
-  --color-dark-accent: oklch(0.7 0.25 293);
-  --color-dark-muted: oklch(0.55 0.04 260);
+  --color-primary: oklch(0.48 0.035 255);
+  --color-secondary: oklch(0.56 0.025 160);
+  --color-accent: oklch(0.55 0.04 25);
+  --color-muted: oklch(0.58 0.012 260);
 
-  --color-primary-50: oklch(0.984 0.014 180.72);
-  --color-primary-100: oklch(0.953 0.051 180.801);
-  --color-primary-200: oklch(0.91 0.096 180.426);
-  --color-primary-300: oklch(0.855 0.138 181.071);
-  --color-primary-400: oklch(0.777 0.152 181.912);
-  --color-primary-500: oklch(0.704 0.14 182.503);
-  --color-primary-600: oklch(0.6 0.118 184.704);
-  --color-primary-700: oklch(0.511 0.096 186.391);
-  --color-primary-800: oklch(0.437 0.078 188.216);
-  --color-primary-900: oklch(0.386 0.063 188.416);
-  --color-primary-950: oklch(0.277 0.046 192.524);
+  --color-dark-primary: oklch(0.74 0.035 255);
+  --color-dark-secondary: oklch(0.72 0.03 160);
+  --color-dark-accent: oklch(0.72 0.04 25);
+  --color-dark-muted: oklch(0.68 0.012 260);
 
-  --color-secondary-50: oklch(0.984 0.019 200.873);
-  --color-secondary-100: oklch(0.956 0.045 203.388);
-  --color-secondary-200: oklch(0.917 0.08 205.041);
-  --color-secondary-300: oklch(0.865 0.127 207.078);
-  --color-secondary-400: oklch(0.789 0.154 211.53);
-  --color-secondary-500: oklch(0.715 0.143 215.221);
-  --color-secondary-600: oklch(0.609 0.126 221.723);
-  --color-secondary-700: oklch(0.52 0.105 223.128);
-  --color-secondary-800: oklch(0.45 0.085 224.283);
-  --color-secondary-900: oklch(0.398 0.07 227.392);
-  --color-secondary-950: oklch(0.302 0.056 229.695);
+  /* Neutral gray scale */
+  --color-muted-50: oklch(0.985 0.003 260);
+  --color-muted-100: oklch(0.96 0.004 260);
+  --color-muted-200: oklch(0.91 0.005 260);
+  --color-muted-300: oklch(0.84 0.006 260);
+  --color-muted-400: oklch(0.68 0.008 260);
+  --color-muted-500: oklch(0.55 0.01 260);
+  --color-muted-600: oklch(0.44 0.01 260);
+  --color-muted-700: oklch(0.34 0.01 260);
+  --color-muted-800: oklch(0.24 0.008 260);
+  --color-muted-900: oklch(0.18 0.006 260);
+  --color-muted-950: oklch(0.12 0.005 260);
 
-  --color-accent-50: oklch(0.969 0.016 293.756);
-  --color-accent-100: oklch(0.943 0.029 294.588);
-  --color-accent-200: oklch(0.894 0.057 293.283);
-  --color-accent-300: oklch(0.811 0.111 293.571);
-  --color-accent-400: oklch(0.702 0.183 293.541);
-  --color-accent-500: oklch(0.606 0.25 292.717);
-  --color-accent-600: oklch(0.541 0.281 293.009);
-  --color-accent-700: oklch(0.491 0.27 292.581);
-  --color-accent-800: oklch(0.432 0.232 292.759);
-  --color-accent-900: oklch(0.38 0.189 293.745);
-  --color-accent-950: oklch(0.283 0.141 291.089);
+  /* Mild blue-gray scale */
+  --color-primary-50: oklch(0.975 0.008 255);
+  --color-primary-100: oklch(0.94 0.012 255);
+  --color-primary-200: oklch(0.88 0.018 255);
+  --color-primary-300: oklch(0.78 0.025 255);
+  --color-primary-400: oklch(0.66 0.032 255);
+  --color-primary-500: oklch(0.54 0.038 255);
+  --color-primary-600: oklch(0.46 0.036 255);
+  --color-primary-700: oklch(0.38 0.032 255);
+  --color-primary-800: oklch(0.3 0.026 255);
+  --color-primary-900: oklch(0.22 0.018 255);
+  --color-primary-950: oklch(0.15 0.014 255);
 
-  --color-muted-50: oklch(0.985 0.002 247.839);
-  --color-muted-100: oklch(0.967 0.003 264.542);
-  --color-muted-200: oklch(0.928 0.006 264.531);
-  --color-muted-300: oklch(0.872 0.01 258.338);
-  --color-muted-400: oklch(0.707 0.022 261.325);
-  --color-muted-500: oklch(0.551 0.027 264.364);
-  --color-muted-600: oklch(0.446 0.03 256.802);
-  --color-muted-700: oklch(0.373 0.034 259.733);
-  --color-muted-800: oklch(0.278 0.033 256.848);
-  --color-muted-900: oklch(0.21 0.034 264.665);
-  --color-muted-950: oklch(0.13 0.028 261.692);
+  /* Mild green-gray scale */
+  --color-secondary-50: oklch(0.975 0.009 160);
+  --color-secondary-100: oklch(0.94 0.014 160);
+  --color-secondary-200: oklch(0.88 0.02 160);
+  --color-secondary-300: oklch(0.78 0.027 160);
+  --color-secondary-400: oklch(0.66 0.032 160);
+  --color-secondary-500: oklch(0.55 0.035 160);
+  --color-secondary-600: oklch(0.46 0.032 160);
+  --color-secondary-700: oklch(0.38 0.028 160);
+  --color-secondary-800: oklch(0.3 0.023 160);
+  --color-secondary-900: oklch(0.22 0.017 160);
+  --color-secondary-950: oklch(0.15 0.012 160);
 
-  --color-success-background: oklch(0.9215 0.0657 163.11);
-  --color-success-foreground: oklch(0.4708 0.0657 163.11);
-  --color-success-background-dark: oklch(0.9215 0.0657 163.11);
-  --color-success-foreground-dark: oklch(0.4708 0.0657 163.11);
+  /* Mild red-gray scale */
+  --color-accent-50: oklch(0.975 0.01 25);
+  --color-accent-100: oklch(0.94 0.016 25);
+  --color-accent-200: oklch(0.88 0.024 25);
+  --color-accent-300: oklch(0.78 0.033 25);
+  --color-accent-400: oklch(0.66 0.042 25);
+  --color-accent-500: oklch(0.56 0.048 25);
+  --color-accent-600: oklch(0.47 0.044 25);
+  --color-accent-700: oklch(0.39 0.038 25);
+  --color-accent-800: oklch(0.31 0.03 25);
+  --color-accent-900: oklch(0.23 0.022 25);
+  --color-accent-950: oklch(0.16 0.016 25);
 
-  --color-info-background: oklch(
-    0.949 0.25 170.8
-  ); /* Default background color for info */
-  --color-info-foreground: oklch(
-    0.2627 0.1828 211.2
-  ); /* Default text color for info */
-  --color-info-background-dark: oklch(
-    0.949 0.25 170.8
-  ); /* Dark mode background color for info */
-  --color-info-foreground-dark: oklch(
-    0.2627 0.1828 211.2
-  ); /* Dark mode text color for info */
+  /* Semantic states */
+  --color-success-background: oklch(0.94 0.035 155);
+  --color-success-foreground: oklch(0.36 0.055 155);
+  --color-success-background-dark: oklch(0.24 0.035 155);
+  --color-success-foreground-dark: oklch(0.82 0.04 155);
 
-  --color-warning-background: oklch(
-    0.932 0.071244 84.4205
-  ); /* Default background color for warning */
-  --color-warning-foreground: oklch(
-    0.412 0.09 40
-  ); /* Default text color for warning */
-  --color-warning-background-dark: oklch(
-    0.932 0.071244 84.4205
-  ); /* Dark mode background color for warning */
-  --color-warning-foreground-dark: oklch(
-    0.412 0.09 40
-  ); /* Dark mode text color for warning */
+  --color-info-background: oklch(0.94 0.03 250);
+  --color-info-foreground: oklch(0.36 0.055 250);
+  --color-info-background-dark: oklch(0.24 0.035 250);
+  --color-info-foreground-dark: oklch(0.82 0.04 250);
 
-  --color-danger-background: oklch(
-    0.861 0.0776 7.75 / 95%
-  ); /* Default background color for warning */
-  --color-danger-foreground: oklch(
-    0.3132 0.1227 28.24
-  ); /* Default text color for warning */
-  --color-danger-background-dark: oklch(
-    0.861 0.0776 7.75 / 95%
-  ); /* Dark mode background color for warning */
-  --color-danger-foreground-dark: oklch(
-    0.3132 0.1227 28.24
-  ); /* Dark mode text color for warning */
+  --color-warning-background: oklch(0.94 0.04 85);
+  --color-warning-foreground: oklch(0.4 0.06 70);
+  --color-warning-background-dark: oklch(0.26 0.035 85);
+  --color-warning-foreground-dark: oklch(0.84 0.045 85);
+
+  --color-danger-background: oklch(0.93 0.04 25);
+  --color-danger-foreground: oklch(0.38 0.075 25);
+  --color-danger-background-dark: oklch(0.25 0.04 25);
+  --color-danger-foreground-dark: oklch(0.82 0.05 25);
 
   --animate-gradient-shift: gradient-shift 3s ease infinite;
   --animate-flicker: flicker 1.5s infinite;

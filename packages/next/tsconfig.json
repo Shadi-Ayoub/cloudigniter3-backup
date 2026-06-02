@@ -5,6 +5,12 @@
     "paths": {
       "@ci-next/*": [
         "./src/*"
+      ],
+      "@ci-core/*": [
+        "../core/src/*"
+      ],
+      "@ci-aws/*": [
+        "../aws/src/*"
       ]
     }
   },

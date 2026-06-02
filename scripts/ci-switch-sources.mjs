@@ -275,8 +275,8 @@ function updateAppTemplateTsconfigAlias() {
 
   console.log(
     target === "src"
-      ? `✅ Added ${config.sourceAlias.alias} to app template tsconfig`
-      : `✅ Removed ${config.sourceAlias.alias} from app template tsconfig`,
+      ? `Added ${config.sourceAlias.alias} to app template tsconfig`
+      : `Removed ${config.sourceAlias.alias} from app template tsconfig`,
   );
 }
 
@@ -310,8 +310,8 @@ function updateCurrentPackageTsconfigAliases() {
 
   console.log(
     target === "src"
-      ? "✅ Added current package source aliases"
-      : "✅ Removed current package source aliases",
+      ? "Added current package source aliases"
+      : "Removed current package source aliases",
   );
 }
 // ------------------------------------------------------------------------------------
@@ -423,6 +423,6 @@ updateCurrentPackageTsconfigAliases();
 writeJsonFile(pkgPath, pkg);
 
 console.log(
-  `✅ Switched ${config.packageName ?? pkg.name} exports to ./${target}`,
+  `Switched ${config.packageName ?? pkg.name} exports to ./${target}`,
 );
 // ------------------------------------------------------------------------------------

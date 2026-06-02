@@ -2,10 +2,26 @@ import fs from "node:fs";
 import path from "node:path";
 
 /**
+ * Emits a marked output section for the shared build runner.
+ *
+ * @param {"tree" | "block" | "plain"} mode - Output rendering mode.
+ * @param {string[]} lines - Output lines.
+ */
+function ciEmitOutputSection(mode, lines) {
+  const cleanLines = lines.filter((line) => line.trim() !== "");
+
+  if (cleanLines.length === 0) return;
+
+  console.log(`::ci-output ${mode}`);
+  console.log(cleanLines.join("\n"));
+  console.log("::ci-output-end");
+}
+
+/**
  * Recursively collects JavaScript files from a directory.
  *
- * @param {string} dirPath
- * @returns {string[]}
+ * @param {string} dirPath - Directory path.
+ * @returns {string[]} JavaScript file paths.
  */
 function ciCollectJsFiles(dirPath) {
   const files = [];
@@ -29,8 +45,8 @@ function ciCollectJsFiles(dirPath) {
 /**
  * Checks whether a compiled file already starts with "use client".
  *
- * @param {string} content
- * @returns {boolean}
+ * @param {string} content - File content.
+ * @returns {boolean} Whether the file already has "use client".
  */
 function ciHasUseClient(content) {
   const trimmed = content.trimStart();
@@ -46,12 +62,8 @@ function ciHasUseClient(content) {
 /**
  * Detects empty / type-only JS output.
  *
- * Common examples:
- *   export {};
- *   "use strict"; export {};
- *
- * @param {string} content
- * @returns {boolean}
+ * @param {string} content - File content.
+ * @returns {boolean} Whether the file is an empty chunk.
  */
 function ciIsEmptyChunk(content) {
   const normalized = content
@@ -71,8 +83,8 @@ function ciIsEmptyChunk(content) {
 /**
  * Resolves file and directory targets into concrete JavaScript file paths.
  *
- * @param {string[]} targets
- * @returns {string[]}
+ * @param {string[]} targets - File or directory targets.
+ * @returns {string[]} JavaScript file paths.
  */
 function ciResolveJsTargets(targets) {
   const files = [];
@@ -81,7 +93,7 @@ function ciResolveJsTargets(targets) {
     const targetPath = path.resolve(target);
 
     if (!fs.existsSync(targetPath)) {
-      console.warn(`⚠️ Target not found: ${targetPath}`);
+      ciEmitOutputSection("tree", [`Target not found: ${targetPath}`]);
       continue;
     }
 
@@ -97,7 +109,7 @@ function ciResolveJsTargets(targets) {
       continue;
     }
 
-    console.warn(`⚠️ Skipped non-JS target: ${targetPath}`);
+    ciEmitOutputSection("tree", [`Skipped non-JS target: ${targetPath}`]);
   }
 
   return [...new Set(files)];
@@ -106,10 +118,7 @@ function ciResolveJsTargets(targets) {
 /**
  * Injects "use client" into compiled JavaScript files if not already present.
  *
- * Targets may be explicit .js files or directories. When a directory is passed,
- * all .js files inside it and its subdirectories are processed.
- *
- * @param {string[]} targets
+ * @param {string[]} targets - File or directory targets.
  */
 export async function ciInjectUseClient(targets) {
   const files = ciResolveJsTargets(targets);
@@ -132,19 +141,17 @@ export async function ciInjectUseClient(targets) {
     }
 
     fs.writeFileSync(filePath, `"use client";\n${content}`, "utf8");
-
     injected++;
-
-    // console.log(`⚡️ Successfully injected "use client" into ${filePath}`);
   }
 
-  console.log("");
-  console.log("────────────────────────────────────────");
-  console.log("ciInjectUseClient Summary");
-  console.log("────────────────────────────────────────");
-  console.log(`Files scanned:      ${files.length}`);
-  console.log(`Injected:           ${injected}`);
-  console.log(`Already client:     ${skippedUseClient}`);
-  console.log(`Empty chunks:       ${skippedEmpty}`);
-  console.log("────────────────────────────────────────");
+  ciEmitOutputSection("block", [
+    "────────────────────────────────────────",
+    "ciInjectUseClient Summary",
+    "────────────────────────────────────────",
+    `Files scanned:      ${files.length}`,
+    `Injected:           ${injected}`,
+    `Already client:     ${skippedUseClient}`,
+    `Empty chunks:       ${skippedEmpty}`,
+    "────────────────────────────────────────",
+  ]);
 }

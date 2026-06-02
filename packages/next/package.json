@@ -4,68 +4,68 @@
   "private": false,
   "type": "module",
   "files": [
-    "dist"
+    "src"
   ],
   "sideEffects": [
     "**/*.css"
   ],
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/types/index.d.ts",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/types/index.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
     },
     "./locales": {
-      "types": "./dist/locales/index.d.ts",
-      "import": "./dist/locales/index.js"
+      "types": "./src/locales/index.ts",
+      "import": "./src/locales/index.ts"
     },
     "./client": {
-      "types": "./dist/client/index.d.ts",
-      "import": "./dist/client/index.js"
+      "types": "./src/client/index.ts",
+      "import": "./src/client/index.ts"
     },
     "./server": {
-      "types": "./dist/server/index.d.ts",
-      "import": "./dist/server/index.js"
+      "types": "./src/server/index.ts",
+      "import": "./src/server/index.ts"
     },
     "./server/proxy": {
-      "types": "./dist/server/proxy/index.d.ts",
-      "import": "./dist/server/proxy/index.js"
+      "types": "./src/server/proxy/index.ts",
+      "import": "./src/server/proxy/index.ts"
     },
     "./lib": {
-      "types": "./dist/lib/index.d.ts",
-      "import": "./dist/lib/index.js"
+      "types": "./src/lib/index.ts",
+      "import": "./src/lib/index.ts"
     },
     "./ui": {
-      "types": "./dist/ui/index.d.ts",
-      "import": "./dist/ui/index.js"
+      "types": "./src/ui/index.ts",
+      "import": "./src/ui/index.ts"
     },
     "./ui/client": {
-      "types": "./dist/ui/client/index.d.ts",
-      "import": "./dist/ui/client/index.js"
+      "types": "./src/ui/client/index.ts",
+      "import": "./src/ui/client/index.ts"
     },
     "./ui/server": {
-      "types": "./dist/ui/server/index.d.ts",
-      "import": "./dist/ui/server/index.js"
+      "types": "./src/ui/server/index.ts",
+      "import": "./src/ui/server/index.ts"
     },
     "./layout/app-standard": {
-      "types": "./dist/layout/app-standard/index.d.ts",
-      "import": "./dist/layout/app-standard/index.js"
+      "types": "./src/layout/app-standard/index.ts",
+      "import": "./src/layout/app-standard/index.ts"
     },
     "./layout/cp-standard": {
-      "types": "./dist/layout/cp-standard/index.d.ts",
-      "import": "./dist/layout/cp-standard/index.js"
+      "types": "./src/layout/cp-standard/index.ts",
+      "import": "./src/layout/cp-standard/index.ts"
     },
     "./layout/login-standard": {
-      "types": "./dist/layout/login-standard/index.d.ts",
-      "import": "./dist/layout/login-standard/index.js"
+      "types": "./src/layout/login-standard/index.ts",
+      "import": "./src/layout/login-standard/index.ts"
     },
     "./types": {
-      "import": "./dist/types/index.d.ts"
+      "import": "./src/types/index.ts"
     },
-    "./styles/standard/style.css": "./dist/styles/standard/style.css",
-    "./styles/standard/theme.css": "./dist/styles/standard/theme.css"
+    "./styles/standard/style.css": "./src/styles/standard/style.css",
+    "./styles/standard/theme.css": "./src/styles/standard/theme.css"
   },
   "scripts": {
     "switch:src": "node ../../scripts/ci-switch-sources.mjs src",
@@ -73,11 +73,13 @@
     "clean": "rimraf dist .tsbuildinfo",
     "clean:maps": "node ../../scripts/ci-clean-dist-maps.mjs",
     "clean:dts": "node ../../scripts/ci-clean-dts-map.cjs",
-    "build": "pnpm run build:dev",
-    "build:dev": "NODE_ENV=development pnpm run clean && pnpm run switch:src && pnpm run build:js && pnpm run build:types:raw && pnpm run build:types && pnpm run build:assets",
-    "build:prod": "NODE_ENV=production pnpm run clean && pnpm run switch:src && pnpm run build:js && pnpm run build:types:raw && pnpm run build:types && pnpm run build:types:clean && pnpm run build:assets && pnpm run clean:maps &&  pnpm run obfuscate && pnpm run switch:dist",
+    "build": "pnpm --silent run build:dev",
+    "build:dev": "node ../../scripts/ci-build-package.mjs dev",
+    "build:prod": "node ../../scripts/ci-build-package.mjs prod",
+    "build:dev2": "NODE_ENV=development pnpm run clean && pnpm run switch:src && pnpm run build:js && pnpm run build:types:raw && pnpm run build:types && pnpm run build:assets",
+    "build:prod2": "NODE_ENV=production pnpm run clean && pnpm run switch:src && pnpm run build:js && pnpm run build:types:raw && pnpm run build:types && pnpm run build:types:clean && pnpm run build:assets && pnpm run clean:maps &&  pnpm run obfuscate && pnpm run switch:dist",
     "build:js": "tsup --config tsup.config.ts",
-    "build:types:clean": "rm -rf dist/.types",
+    "build:types:clean": "rimraf dist/.types",
     "build:types": "NODE_OPTIONS=--max-old-space-size=12288 rollup -c rollup.config.js",
     "build:types:raw": "tsc -p tsconfig.build.json",
     "build:assets": "node ./scripts/build-assets.mjs && pnpm -v",
@@ -142,6 +144,7 @@
   "devDependencies": {
     "@cloudigniter/config-ts": "workspace:*",
     "@rollup/plugin-alias": "^6.0.0",
+    "@tailwindcss/cli": "^4.3.0",
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
