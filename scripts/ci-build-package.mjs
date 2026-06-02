@@ -155,6 +155,10 @@ function ciDestroySpinner(spinner) {
  * @returns {string} Formatted time.
  */
 function ciFormatTime(date) {
+  if (!(date instanceof Date)) {
+    return "-";
+  }
+
   return date.toLocaleTimeString("en-GB", {
     hour12: false,
   });
@@ -234,35 +238,35 @@ async function ciLoadBuildConfig() {
  *
  * @param {{ label: string; value: string }[]} rows - Rows to print.
  */
-function ciPrintSummaryTable(rows) {
-  const labelWidth = Math.max(...rows.map((row) => row.label.length));
-  const valueWidth = Math.max(...rows.map((row) => row.value.length));
+// function ciPrintSummaryTable(rows) {
+//   const labelWidth = Math.max(...rows.map((row) => row.label.length));
+//   const valueWidth = Math.max(...rows.map((row) => row.value.length));
 
-  const top = `┌${"─".repeat(labelWidth + 2)}┬${"─".repeat(valueWidth + 2)}┐`;
-  const separator = `├${"─".repeat(labelWidth + 2)}┼${"─".repeat(
-    valueWidth + 2,
-  )}┤`;
-  const bottom = `└${"─".repeat(labelWidth + 2)}┴${"─".repeat(
-    valueWidth + 2,
-  )}┘`;
+//   const top = `┌${"─".repeat(labelWidth + 2)}┬${"─".repeat(valueWidth + 2)}┐`;
+//   const separator = `├${"─".repeat(labelWidth + 2)}┼${"─".repeat(
+//     valueWidth + 2,
+//   )}┤`;
+//   const bottom = `└${"─".repeat(labelWidth + 2)}┴${"─".repeat(
+//     valueWidth + 2,
+//   )}┘`;
 
-  console.log(top);
+//   console.log(top);
 
-  rows.forEach((row, index) => {
-    console.log(
-      `│ ${row.label.padEnd(labelWidth, " ")} │ ${row.value.padEnd(
-        valueWidth,
-        " ",
-      )} │`,
-    );
+//   rows.forEach((row, index) => {
+//     console.log(
+//       `│ ${row.label.padEnd(labelWidth, " ")} │ ${row.value.padEnd(
+//         valueWidth,
+//         " ",
+//       )} │`,
+//     );
 
-    if (index === 1) {
-      console.log(separator);
-    }
-  });
+//     if (index === 1) {
+//       console.log(separator);
+//     }
+//   });
 
-  console.log(bottom);
-}
+//   console.log(bottom);
+// }
 
 /**
  * Flushes buffered child-process output after a step completes.
@@ -288,6 +292,98 @@ function ciFlushOutput({ stdout, stderr, mode = "tree" }) {
 }
 
 /**
+ * Prints the final build summary table.
+ *
+ * @param {object} input - Summary input.
+ * @param {Date} input.buildFinished - Build completion time.
+ * @param {number} input.duration - Total build duration.
+ * @param {Array<{
+ *   stepNumber: number;
+ *   description: string;
+ *   startedAt: Date;
+ *   duration: number;
+ *   status: "success" | "failed";
+ * }>} input.stepResults - Step results.
+ */
+function ciPrintSummaryTable({ buildFinished, duration, stepResults }) {
+  const rows = [
+    ...stepResults.map((result) => ({
+      step: `STEP${result.stepNumber}`,
+      started: ciFormatTime(result.startedAt),
+      duration: ciFormatDuration(result.duration ?? 0),
+      description: result.description ?? "-",
+    })),
+
+    {
+      step: "TOTAL",
+      started: ciFormatTime(buildFinished),
+      duration: ciFormatDuration(duration),
+      description: "Build completed",
+    },
+  ];
+
+  const stepWidth = Math.max(
+    "Step".length,
+    ...rows.map((row) => String(row.step ?? "").length),
+  );
+
+  const startedWidth = Math.max(
+    "Started".length,
+    ...rows.map((row) => String(row.started ?? "").length),
+  );
+
+  const durationWidth = Math.max(
+    "Duration".length,
+    ...rows.map((row) => String(row.duration ?? "").length),
+  );
+
+  const descriptionWidth = Math.max(
+    "Description".length,
+    ...rows.map((row) => String(row.description ?? "").length),
+  );
+
+  const top =
+    `┌${"─".repeat(stepWidth + 2)}` +
+    `┬${"─".repeat(startedWidth + 2)}` +
+    `┬${"─".repeat(durationWidth + 2)}` +
+    `┬${"─".repeat(descriptionWidth + 2)}┐`;
+
+  const separator =
+    `├${"─".repeat(stepWidth + 2)}` +
+    `┼${"─".repeat(startedWidth + 2)}` +
+    `┼${"─".repeat(durationWidth + 2)}` +
+    `┼${"─".repeat(descriptionWidth + 2)}┤`;
+
+  const bottom =
+    `└${"─".repeat(stepWidth + 2)}` +
+    `┴${"─".repeat(startedWidth + 2)}` +
+    `┴${"─".repeat(durationWidth + 2)}` +
+    `┴${"─".repeat(descriptionWidth + 2)}┘`;
+
+  console.log(top);
+
+  console.log(
+    `│ ${"Step".padEnd(stepWidth)} ` +
+      `│ ${"Started".padEnd(startedWidth)} ` +
+      `│ ${"Duration".padEnd(durationWidth)} ` +
+      `│ ${"Description".padEnd(descriptionWidth)} │`,
+  );
+
+  console.log(separator);
+
+  for (const row of rows) {
+    console.log(
+      `│ ${row.step.padEnd(stepWidth)} ` +
+        `│ ${row.started.padEnd(startedWidth)} ` +
+        `│ ${row.duration.padEnd(durationWidth)} ` +
+        `│ ${row.description.padEnd(descriptionWidth)} │`,
+    );
+  }
+
+  console.log(bottom);
+}
+
+/**
  * Runs one package script.
  *
  * Child process output is captured while ora displays a stable spinner.
@@ -300,10 +396,11 @@ function ciFlushOutput({ stdout, stderr, mode = "tree" }) {
  * @param {Record<string, string>} input.extraEnv - Extra environment variables.
  * @returns {Promise<void>}
  */
-function ciRunScript({ step, stepNumber, extraEnv }) {
+function ciRunScript({ step, stepNumber, extraEnv, stepResults }) {
   return new Promise((resolve) => {
     const stepLabel = `STEP${stepNumber}`;
     const started = Date.now();
+    const startedAt = new Date();
 
     const stepPath = path.join(ciBuildStepsDir, step.file);
 
@@ -358,6 +455,14 @@ function ciRunScript({ step, stepNumber, extraEnv }) {
 
       console.log();
 
+      stepResults.push({
+        stepNumber,
+        description: step.message,
+        startedAt,
+        duration: elapsed,
+        status: "failed",
+      });
+
       process.exit(1);
     });
 
@@ -387,6 +492,14 @@ function ciRunScript({ step, stepNumber, extraEnv }) {
 
         console.log();
 
+        stepResults.push({
+          stepNumber,
+          description: step.message,
+          startedAt,
+          duration: elapsed,
+          status: "failed",
+        });
+
         process.exit(code ?? 1);
       }
 
@@ -408,6 +521,14 @@ function ciRunScript({ step, stepNumber, extraEnv }) {
       });
 
       console.log();
+
+      stepResults.push({
+        stepNumber,
+        description: step.message,
+        startedAt,
+        duration: elapsed,
+        status: "success",
+      });
 
       resolve();
     });
@@ -431,6 +552,7 @@ async function ciRunBuild() {
   const nodeEnv = mode === "prod" ? "production" : "development";
   const buildStarted = new Date();
   const steps = config.steps[mode];
+  const stepResults = [];
 
   console.log("");
   console.log(
@@ -449,6 +571,7 @@ async function ciRunBuild() {
     await ciRunScript({
       step,
       stepNumber: index + 1,
+      stepResults,
       extraEnv: {
         NODE_ENV: nodeEnv,
       },
@@ -468,20 +591,11 @@ async function ciRunBuild() {
   );
   console.log("");
 
-  ciPrintSummaryTable([
-    {
-      label: "End Time",
-      value: ciFormatTime(buildFinished),
-    },
-    {
-      label: "Duration",
-      value: ciFormatDuration(duration),
-    },
-    ...steps.map((step, index) => ({
-      label: `STEP${index + 1}`,
-      value: step.message,
-    })),
-  ]);
+  ciPrintSummaryTable({
+    buildFinished,
+    duration,
+    stepResults,
+  });
 
   console.log("");
 }
