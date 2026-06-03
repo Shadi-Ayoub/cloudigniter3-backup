@@ -1,11 +1,9 @@
 import { defineConfig } from "tsup";
 import { preserveDirectivesPlugin } from "esbuild-plugin-preserve-directives";
-import { getAllEntries } from "./scripts/entries.mjs";
+import { getAllEntries } from "../../scripts/build-steps/ci-entries.mjs";
 import { ciInjectUseClient } from "../../scripts/build-steps/ci-inject-use-client.mjs";
 
 const isProduction = process.env.NODE_ENV === "production";
-
-const { clientEntries, rscEntries, otherEntries } = getAllEntries();
 
 const externalPackages = [
   "react",
@@ -35,108 +33,112 @@ const externalPackages = [
   "@cloudigniter/aws/types",
 ];
 
-export default defineConfig([
-  /**
-   * Client entries:
-   * - Browser/client modules.
-   * - Bundled because these are explicit client-side surfaces.
-   * - "use client" is injected after build into all files under client output zones.
-   */
-  {
-    entry: clientEntries,
-    format: ["esm"],
-    bundle: true,
-    splitting: false,
-    sourcemap: !isProduction,
-    clean: true,
-    minify: isProduction,
-    treeshake: true,
-    target: "es2022",
-    dts: false,
-    outDir: "dist",
-    tsconfig: "./tsconfig.build.json",
-    external: externalPackages,
-    loader: {
-      ".css": "file",
-    },
-    // esbuildPlugins: [
-    //   preserveDirectivesPlugin({
-    //     directives: ["use client"],
-    //     include: /\.(js|jsx|ts|tsx)$/,
-    //     exclude: /node_modules/,
-    //   }),
-    // ],
-    esbuildOptions(opts) {
-      opts.jsx = "automatic";
-    },
-    silent: true,
-    onSuccess: async () => {
-      console.log("✅ Client Entries Build completed");
-      await ciInjectUseClient(["dist/client", "dist/ui/client"]);
-    },
-  },
+export default defineConfig(async () => {
+  const { clientEntries, rscEntries, otherEntries } = await getAllEntries();
 
-  /**
-   * RSC entries:
-   * - React Server Component / layout / UI server modules.
-   * - Not bundled because they may render Client Components.
-   * - Preserving imports avoids inlining client code into server component output.
-   */
-  {
-    entry: rscEntries,
-    format: ["esm"],
-    bundle: false,
-    splitting: false,
-    sourcemap: !isProduction,
-    clean: false,
-    minify: false,
-    treeshake: true,
-    target: "es2022",
-    dts: false,
-    outDir: "dist",
-    tsconfig: "./tsconfig.build.json",
-    external: externalPackages,
-    loader: {
-      ".css": "file",
+  return [
+    /**
+     * Client entries:
+     * - Browser/client modules.
+     * - Bundled because these are explicit client-side surfaces.
+     * - "use client" is injected after build into all files under client output zones.
+     */
+    {
+      entry: clientEntries,
+      format: ["esm"],
+      bundle: true,
+      splitting: false,
+      sourcemap: !isProduction,
+      clean: true,
+      minify: isProduction,
+      treeshake: true,
+      target: "es2022",
+      dts: false,
+      outDir: "dist",
+      tsconfig: "./tsconfig.build.json",
+      external: externalPackages,
+      loader: {
+        ".css": "file",
+      },
+      // esbuildPlugins: [
+      //   preserveDirectivesPlugin({
+      //     directives: ["use client"],
+      //     include: /\.(js|jsx|ts|tsx)$/,
+      //     exclude: /node_modules/,
+      //   }),
+      // ],
+      esbuildOptions(opts) {
+        opts.jsx = "automatic";
+      },
+      silent: true,
+      onSuccess: async () => {
+        console.log("✅ Client Entries Build completed");
+        await ciInjectUseClient(["dist/client", "dist/ui/client"]);
+      },
     },
-    silent: true,
-    esbuildOptions(opts) {
-      opts.jsx = "automatic";
-    },
-    onSuccess: async () => {
-      console.log("✅ RSC Entries Build completed");
-    },
-  },
 
-  /**
-   * Other entries:
-   * - Server, proxy, lib, locale, and utility modules.
-   * - Bundled to avoid unresolved internal relative imports.
-   * - Must remain free from client-only modules.
-   */
-  {
-    entry: otherEntries,
-    format: ["esm"],
-    bundle: true,
-    splitting: false,
-    sourcemap: !isProduction,
-    clean: false,
-    minify: isProduction,
-    treeshake: true,
-    target: "es2022",
-    dts: false,
-    outDir: "dist",
-    tsconfig: "./tsconfig.build.json",
-    external: externalPackages,
-    loader: {
-      ".css": "file",
+    /**
+     * RSC entries:
+     * - React Server Component / layout / UI server modules.
+     * - Not bundled because they may render Client Components.
+     * - Preserving imports avoids inlining client code into server component output.
+     */
+    {
+      entry: rscEntries,
+      format: ["esm"],
+      bundle: false,
+      splitting: false,
+      sourcemap: !isProduction,
+      clean: false,
+      minify: false,
+      treeshake: true,
+      target: "es2022",
+      dts: false,
+      outDir: "dist",
+      tsconfig: "./tsconfig.build.json",
+      external: externalPackages,
+      loader: {
+        ".css": "file",
+      },
+      silent: true,
+      esbuildOptions(opts) {
+        opts.jsx = "automatic";
+      },
+      onSuccess: async () => {
+        console.log("✅ RSC Entries Build completed");
+      },
     },
-    silent: true,
-    esbuildOptions(opts) {
-      opts.jsx = "automatic";
+
+    /**
+     * Other entries:
+     * - Server, proxy, lib, locale, and utility modules.
+     * - Bundled to avoid unresolved internal relative imports.
+     * - Must remain free from client-only modules.
+     */
+    {
+      entry: otherEntries,
+      format: ["esm"],
+      bundle: true,
+      splitting: false,
+      sourcemap: !isProduction,
+      clean: false,
+      minify: isProduction,
+      treeshake: true,
+      target: "es2022",
+      dts: false,
+      outDir: "dist",
+      tsconfig: "./tsconfig.build.json",
+      external: externalPackages,
+      loader: {
+        ".css": "file",
+      },
+      silent: true,
+      esbuildOptions(opts) {
+        opts.jsx = "automatic";
+      },
+      onSuccess: async () => {
+        console.log("✅ Other Entries Build completed");
+      },
     },
-    onSuccess: async () => {
-      console.log("✅ Other Entries Build completed");
-    },
-  },
-]);
+  ];
+});

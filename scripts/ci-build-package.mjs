@@ -305,21 +305,25 @@ function ciFlushOutput({ stdout, stderr, mode = "tree" }) {
  *   status: "success" | "failed";
  * }>} input.stepResults - Step results.
  */
-function ciPrintSummaryTable({ buildFinished, duration, stepResults }) {
+function ciPrintSummaryTable({
+  buildStarted,
+  buildFinished,
+  duration,
+  stepResults,
+}) {
   const rows = [
+    {
+      step: "TOTAL",
+      started: ciFormatTime(buildStarted),
+      duration: ciFormatDuration(duration),
+      description: `Finished at ${ciFormatTime(buildFinished)}`,
+    },
     ...stepResults.map((result) => ({
       step: `STEP${result.stepNumber}`,
       started: ciFormatTime(result.startedAt),
       duration: ciFormatDuration(result.duration ?? 0),
       description: result.description ?? "-",
     })),
-
-    {
-      step: "TOTAL",
-      started: ciFormatTime(buildFinished),
-      duration: ciFormatDuration(duration),
-      description: "Build completed",
-    },
   ];
 
   const stepWidth = Math.max(
@@ -592,6 +596,7 @@ async function ciRunBuild() {
   console.log("");
 
   ciPrintSummaryTable({
+    buildStarted,
     buildFinished,
     duration,
     stepResults,

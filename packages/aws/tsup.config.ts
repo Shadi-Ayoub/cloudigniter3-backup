@@ -1,85 +1,78 @@
 import { defineConfig } from "tsup";
-// import { preserveDirectivesPlugin } from "esbuild-plugin-preserve-directives";
-import { getAllEntries } from "./scripts/entries.mjs";
+import type { BuildOptions } from "esbuild";
+import { getAllEntries } from "../../scripts/build-steps/ci-entries.mjs";
 import { ciInjectUseClient } from "../../scripts/build-steps/ci-inject-use-client.mjs";
 
 const isProduction = process.env.NODE_ENV === "production";
 
-const { clientEntries, otherEntries } = getAllEntries();
+const externalPackages = [
+  "react",
+  "react-dom",
+  "motion",
+  "motion/react",
+  "@monaco-editor/react",
+  "@aws-amplify/ui-react",
+  "aws-amplify",
+];
 
-export default defineConfig([
-  // Client entrypoints
-  {
-    entry: clientEntries,
-    format: ["esm"],
-    bundle: true,
-    splitting: false,
-    sourcemap: !isProduction,
-    clean: false,
-    minify: isProduction, // Minify output only in production
-    treeshake: true,
-    target: "es2022",
-    dts: false,
-    outDir: "dist",
-    external: [
-      "react",
-      "react-dom",
-      "motion",
-      "motion/react",
-      "@monaco-editor/react",
-      "@aws-amplify/ui-react",
-      "aws-amplify",
-    ],
-    // metafile: true, // Helps the plugin accurately map files to chunks
-    // esbuildPlugins: [
-    //   preserveDirectivesPlugin({
-    //     directives: ["use client", "use server"],
-    //     include: /\.(js|ts|jsx|tsx)$/,
-    //     exclude: /node_modules/,
-    //   }),
-    // ],
-    esbuildOptions(opts) {
-      // opts.treeShaking = true;
-      // opts.plugins = [];
-      // opts.chunkNames = "chunks/[name]-[hash]";
-      opts.jsx = "automatic";
-      // opts.banner = {
-      //   js: '"use client";',
-      // };
-    },
-    onSuccess: async () => {
-      await ciInjectUseClient(["dist/client/index.js", "dist/client/auth.js"]);
-    },
-  },
+function ciSetEsbuildOptions(opts: BuildOptions) {
+  opts.jsx = "automatic";
+}
 
-  // Server / lib / shared entrypoints
-  {
-    entry: otherEntries,
-    format: ["esm"],
-    bundle: true,
-    splitting: false,
-    sourcemap: !isProduction,
-    clean: false,
-    minify: isProduction, // Minify output only in production
-    treeshake: true,
-    target: "es2022",
-    dts: false,
-    outDir: "dist",
+export default defineConfig(async () => {
+  const { clientEntries, otherEntries } = await getAllEntries();
 
-    external: ["react", "react-dom", "aws-amplify"],
-    // metafile: true, // Helps the plugin accurately map files to chunks
-    // esbuildPlugins: [
-    //   preserveDirectivesPlugin({
-    //     directives: ["use client", "use server"],
-    //     include: /\.(js|ts|jsx|tsx)$/,
-    //     exclude: /node_modules/,
-    //   }),
-    // ],
-    esbuildOptions(opts) {
-      // opts.treeShaking = true;
-      // opts.plugins = [];
-      // opts.chunkNames = "chunks/[name]-[hash]";
-      opts.jsx = "automatic";
+  return [
+    // Client entrypoints
+    {
+      entry: clientEntries,
+      format: ["esm"],
+      bundle: true,
+      splitting: false,
+      sourcemap: !isProduction,
+      clean: true,
+      minify: isProduction,
+      treeshake: true,
+      target: "es2022",
+      dts: false,
+      outDir: "dist",
+      tsconfig: "./tsconfig.build.json",
+      external: externalPackages,
+      esbuildOptions: ciSetEsbuildOptions,
+      silent: true,
+      onSuccess: async () => {
+        console.log("✅ Client Entries Build completed");
+        await ciInjectUseClient(["dist/client/index.js"]);
+      },
     },
-  },
-]);
+
+    /**
+     * Other entries:
+     * - Server, proxy, lib, locale, and utility modules.
+     * - Bundled to avoid unresolved internal relative imports.
+     * - Must remain free from client-only modules.
+     */
+    {
+      entry: otherEntries,
+      format: ["esm"],
+      bundle: true,
+      splitting: false,
+      sourcemap: !isProduction,
+      clean: false,
+      minify: isProduction,
+      treeshake: true,
+      target: "es2022",
+      dts: false,
+      outDir: "dist",
+      tsconfig: "./tsconfig.build.json",
+      external: externalPackages,
+      silent: true,
+      esbuildOptions(opts) {
+        opts.jsx = "automatic";
+      },
+      onSuccess: async () => {
+        console.log("✅ Other Entries Build completed");
+      },
+    },
+  ];
+});

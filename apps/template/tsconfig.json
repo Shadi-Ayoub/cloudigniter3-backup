@@ -11,6 +11,9 @@
       ],
       "@ci-core/*": [
         "../../packages/core/src/*"
+      ],
+      "@ci-aws/*": [
+        "../../packages/aws/src/*"
       ]
     },
     "plugins": [

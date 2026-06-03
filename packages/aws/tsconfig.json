@@ -5,6 +5,9 @@
     "paths": {
       "@ci-aws/*": [
         "./src/*"
+      ],
+      "@ci-core/*": [
+        "../core/src/*"
       ]
     }
   },
