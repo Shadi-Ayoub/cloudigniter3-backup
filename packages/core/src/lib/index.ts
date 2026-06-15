@@ -58,15 +58,22 @@ export {
 } from "./graphql";
 
 // ─────────────────────────────────────────────────────────────
+// icon
+// ─────────────────────────────────────────────────────────────
+export { ciIconRegistry, ciResolveIcon } from "./icon";
+
+// ─────────────────────────────────────────────────────────────
 // i18n
 // ─────────────────────────────────────────────────────────────
 export {
   ciGetLangDir,
+  ciResolveNamespaceLocaleFileNames,
   CI_DEFAULT_LOCALE,
   CI_DEFAULT_LOCALE_COOKIE_NAME,
   CI_DEFAULT_LOCALE_DIRECTION,
   CI_DEFAULT_LOCALE_NAME,
   CI_DEFAULT_LOCALES,
+  CI_LANGUAGES,
 } from "./i18n";
 
 // ─────────────────────────────────────────────────────────────
@@ -79,6 +86,11 @@ export {
   CI_DEFAULT_PRIVATE_CORE_SETTINGS_ID,
   CI_DEFAULT_USER_CORE_SETTINGS_ID,
 } from "./kernel";
+
+// ─────────────────────────────────────────────────────────────
+// namespace
+// ─────────────────────────────────────────────────────────────
+export { ciNamespaceSegmentToKebab } from "./namespace";
 
 // ─────────────────────────────────────────────────────────────
 // result

@@ -1,3 +1,1 @@
-const customRoutes = {};
-
-export { customRoutes };
+export const customRoutes = {};

@@ -35,16 +35,17 @@ export function CiDevBeaconClient({
 
   return (
     <>
-      {!open && (
-        <CiDevBeaconButton
-          loaded={loaded}
-          onClick={() => setOpen(true)}
-          env={env}
-          position={position}
-          size="md"
-          logo={logo}
-        />
-      )}
+      <CiDevBeaconButton
+        loaded={loaded}
+        onClick={() => setOpen(true)}
+        env={env}
+        position={position}
+        size="md"
+        logo={logo}
+        aria-hidden={open}
+        tabIndex={open ? -1 : 0}
+        className={open ? "pointer-events-none opacity-0" : undefined}
+      />
 
       <CiDevBeaconModal
         open={open}

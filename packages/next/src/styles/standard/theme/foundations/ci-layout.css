@@ -1,0 +1,33 @@
+@theme static {
+  --spacing-primary-header-height: 70px;
+  --spacing-secondary-header-height: 48px;
+  --spacing-breadcrumb-height: 20px;
+  --spacing-page-header-height: 24px;
+  --spacing-footer-height: 32px;
+
+  --spacing-sidebar-width: 280px;
+  --spacing-sidebar-collapsed-width: 72px;
+  --spacing-content-max-width: 1600px;
+
+  --z-index-base: 0;
+  --z-index-raised: 10;
+  --z-index-sticky: 100;
+  --z-index-layout: 200;
+  --z-index-header: 200;
+  --z-index-sidebar: 250;
+  --z-index-menu: 300;
+  --z-index-dropdown: 300;
+  --z-index-popover: 400;
+
+  --z-index-overlay-1: 400;
+  --z-index-overlay-2: 500;
+
+  --z-index-tooltip: 500;
+  --z-index-overlay: 800;
+  --z-index-modal: 900;
+  --z-index-toast: 1000;
+  --z-index-debug: 2000;
+
+  --z-index-dev-beacon: var(--z-index-debug);
+  --z-index-debug-probe: var(--z-index-debug);
+}

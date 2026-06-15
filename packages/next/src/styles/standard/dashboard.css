@@ -9,11 +9,11 @@
   }
 
   .dashboard-grid {
-    @apply dark:bg-muted-900 grid gap-x-5 gap-y-5 bg-gray-50 p-3 px-4 pb-0 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5;
+    @apply dark:bg-muted grid gap-x-5 gap-y-5 bg-gray-50 p-3 px-4 pb-0 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5;
   }
 
   .dashboard-card {
-    @apply border-secondary-700 bg-muted-100 hover:bg-secondary-50 hover:shadow-secondary-100 hover:ring-secondary-500 dark:bg-muted-800 hover:dark:bg-muted-950 hover:dark:ring-secondary-200 h-32 w-32 cursor-pointer rounded-lg shadow-md transition hover:border-0 hover:shadow-lg hover:ring-2 hover:dark:shadow-none hover:dark:ring-2;
+    @apply border-secondary-700 bg-muted hover:bg-secondary-50 hover:shadow-secondary-100 hover:ring-secondary-500 dark:bg-muted hover:dark:bg-muted-950 hover:dark:ring-secondary-200 h-32 w-32 cursor-pointer rounded-lg shadow-md transition hover:border-0 hover:shadow-lg hover:ring-2 hover:dark:shadow-none hover:dark:ring-2;
   }
 
   .dashboard-card-content {

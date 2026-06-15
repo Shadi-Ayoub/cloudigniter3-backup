@@ -6,14 +6,14 @@
       "@/*": [
         "./src/*"
       ],
-      "@ci-next/*": [
-        "../../packages/next/src/*"
-      ],
       "@ci-core/*": [
         "../../packages/core/src/*"
       ],
       "@ci-aws/*": [
         "../../packages/aws/src/*"
+      ],
+      "@ci-next/*": [
+        "../../packages/next/src/*"
       ]
     },
     "plugins": [

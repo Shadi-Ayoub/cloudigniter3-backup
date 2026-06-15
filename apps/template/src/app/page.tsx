@@ -8,20 +8,17 @@ export default async function HomePage() {
   const config = await appBootstrap();
 
   return (
-    <>
-      <p>Hello</p>
-      <CiLayout config={config} protect={false}>
-        <CiPage
-          name={"homepage"}
-          setup={{ showPageHeader: false }}
-          config={config}
-        >
-          <CiAboutBorderBeam
-            traceConfig={config.ciConfig.dev.traceLog}
-            options={{ duration: 8, size: 200 }}
-          />
-        </CiPage>
-      </CiLayout>
-    </>
+    <CiLayout config={config} protect={false}>
+      <CiPage
+        name={"homepage"}
+        setup={{ showPageHeader: false, showBreadcrumbs: false }}
+        config={config}
+      >
+        <CiAboutBorderBeam
+          traceConfig={config.ciConfig.dev.traceLog}
+          options={{ duration: 8, size: 200 }}
+        />
+      </CiPage>
+    </CiLayout>
   );
 }

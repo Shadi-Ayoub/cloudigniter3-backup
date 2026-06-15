@@ -5,6 +5,7 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Order is important! */
 @import "./theme.css";
 @import "./base.css";
 @import "./main.css";
@@ -12,7 +13,8 @@
 @import "./about-border-beam.css";
 @import "./data-table.css";
 @import "./dashboard.css";
-@import "./dev-beacon.css";
+@import "./dev/dev-beacon.css";
+@import "./dev/debug-probe.css";
 @import "./dropdown-menu.css";
 @import "./error.css";
 @import "./footer.css";

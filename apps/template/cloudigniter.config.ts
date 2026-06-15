@@ -1,4 +1,4 @@
-import type { CiNextAwsCoreConfig } from "@/kernel";
+import type { CiNextAwsCoreConfig } from "@/kernel/types";
 
 import { routes } from "./routes";
 
@@ -139,7 +139,11 @@ export default {
   },
   routes,
   dev: {
-    debug: { enabled: true },
+    debug: {
+      debugProbe: {
+        enabled: true,
+      },
+    },
     traceLog: {
       enabled: true,
       truncRate: 0.5,

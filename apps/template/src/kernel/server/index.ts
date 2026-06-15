@@ -51,6 +51,11 @@ export {
 // ─────────────────────────────────────────────────────────────
 export {} from "./lib";
 
+// ─────────────────────────────────────────────────────────────
+// settings
+// ─────────────────────────────────────────────────────────────
+export { appGetSettings } from "./settings";
+
 // export { getSettings } from './get-settings';
 // export { getContext } from './get-context';
 // export { ciGetServerStatus } from "./ci-get-server-status";

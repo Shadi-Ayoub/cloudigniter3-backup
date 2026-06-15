@@ -1,6 +1,6 @@
 @layer components {
   .ci-page-header-main {
-    @apply dark:bg-muted-800 border-muted-200 dark:border-muted-700 z-raised sticky flex items-center gap-1 border-b bg-white px-4 backdrop-blur-sm transition-all duration-300;
+    @apply dark:bg-muted border-muted-200 dark:border-muted-700 z-raised sticky flex items-center gap-1 border-b bg-white px-4 backdrop-blur-sm transition-all duration-300;
 
     top: 0; /* default when no breadcrumbs */
     transform: translateZ(0); /* promote to GPU */
@@ -14,11 +14,11 @@
     top: var(--spacing-breadcrumb-height);
   } */
 
-  .ci-page-header-main:not([data-compact='true']) {
+  .ci-page-header-main:not([data-compact="true"]) {
     @apply py-3;
   }
 
-  .ci-page-header-main[data-compact='true'] {
+  .ci-page-header-main[data-compact="true"] {
     @apply z-raised py-1;
   }
 

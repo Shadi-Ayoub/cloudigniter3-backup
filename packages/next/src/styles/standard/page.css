@@ -14,7 +14,8 @@
 
   .ci-page-content > .ci-page-content-inner {
     padding-top: calc(
-      var(--spacing-primary-header-height, 70px) + var(--spacing-breadcrumb-height, 40px) +
+      var(--spacing-primary-header-height, 70px) +
+        var(--spacing-breadcrumb-height, 40px) +
         var(--spacing-page-header-height, 24px)
     );
     @apply m-0 h-auto min-h-0 px-4 pt-4 pb-8;
@@ -22,7 +23,8 @@
 
   .ci-page-content:not(.has-breadcrumbs) > .ci-page-content-inner {
     padding-top: calc(
-      var(--spacing-primary-header-height, 70px) + /* no breadcrumb */ var(--spacing-page-header-height, 24px)
+      var(--spacing-primary-header-height, 70px) + /* no breadcrumb */
+        var(--spacing-page-header-height, 24px)
     );
   }
 
@@ -33,9 +35,13 @@
     @apply mt-0;
   }
 
+  /* Keep flex-1 basis-0 only for normal app pages: */
+  /* Login pages should be viewport-based, not parent-flex-based. */
   .ci-login-page-content {
     /* @apply h-0 min-h-0 flex-auto overflow-y-auto overscroll-contain; */
-    @apply z-base min-h-0 flex-1 basis-0 overflow-y-auto overscroll-contain;
+    /* @apply z-base min-h-0 flex-1 basis-0 overflow-y-auto overscroll-contain; */
+    @apply z-base w-full overflow-y-auto overscroll-contain;
+    /* min-height: 100dvh; */
   }
 
   /* .ci-login-page-content > .ci-login-page-content-inner {
@@ -43,11 +49,12 @@
   } */
 
   .ci-login-page-content > .ci-login-page-content-inner {
-    padding-top: calc(
+    @apply m-0 flex min-h-full items-center justify-center px-4 py-8;
+    /* padding-top: calc(
       var(--spacing-primary-header-height, 70px) + var(--spacing-breadcrumb-height, 40px) +
         var(--spacing-page-header-height, 24px)
-    );
-    @apply m-0 h-auto min-h-0 px-4 pt-4 pb-8;
+    ); */
+    /* @apply m-0 h-auto min-h-0 px-4 pt-4 pb-8; */
   }
 
   .ci-login-page-content-inner > :first-child {

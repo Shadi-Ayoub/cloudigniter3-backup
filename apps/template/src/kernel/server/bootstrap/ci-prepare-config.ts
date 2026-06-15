@@ -2,7 +2,7 @@
 import type {
   CiCoreConfig,
   CiResolvedCoreConfig,
-  CiSettings,
+  CiCoreSettings,
   CiSystemStatus,
 } from "@cloudigniter/core/types";
 import type {
@@ -13,7 +13,7 @@ import type {
 
 export function ciPrepareConfig(
   config: CiCoreConfig & CiResolvedCoreConfig & CiNextResolvedConfig,
-  settings: CiSettings = {},
+  settings: CiCoreSettings,
   headers: Record<string, string> = {},
   cookies: Record<string, string> = {},
   status: CiSystemStatus = {},

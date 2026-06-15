@@ -3,7 +3,6 @@
 import { useMemo } from "react";
 import { ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
-
 import type { CiBreadcrumbItem } from "@cloudigniter/core/types";
 import { CiNavigateWithLoader } from "@ci-next/client";
 

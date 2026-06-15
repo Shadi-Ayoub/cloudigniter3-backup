@@ -16,15 +16,20 @@
     "backup": "./scripts/backup.sh ./",
     "build:core": "pnpm --filter @cloudigniter/core build",
     "build:aws": "pnpm --filter @cloudigniter/aws build",
+    "build:next": "pnpm --filter @cloudigniter/next build",
+    "build:packages": "pnpm --filter @cloudigniter/core build && pnpm --filter @cloudigniter/aws build && pnpm --filter @cloudigniter/next build",
+    "build:packages:prod": "pnpm --filter @cloudigniter/core build:prod && pnpm --filter @cloudigniter/aws build:prod && pnpm --filter @cloudigniter/next build:prod",
     "clean:macos": "find . -type f -name '._*' -print -delete"
   },
   "devDependencies": {
     "@changesets/cli": "^2.30.0",
+    "esbuild": "^0.28.0",
     "fast-glob": "^3.3.3",
     "javascript-obfuscator": "^5.4.1",
     "jsonc-parser": "^3.3.1",
     "ora": "^9.4.0",
     "rimraf": "^6.1.3",
+    "tsup": "^8.5.1",
     "turbo": "^2.9.1",
     "typescript": "^6.0.2"
   }

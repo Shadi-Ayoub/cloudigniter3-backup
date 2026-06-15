@@ -1,0 +1,51 @@
+@theme static {
+  --color-success: var(--color-ci-green-600);
+  --color-success-foreground: var(--color-ci-white);
+  --color-success-surface: var(--color-ci-green-50);
+  --color-success-surface-foreground: var(--color-ci-green-800);
+  --color-success-border: var(--color-ci-green-200);
+
+  --color-info: var(--color-ci-blue-600);
+  --color-info-foreground: var(--color-ci-white);
+  --color-info-surface: var(--color-ci-blue-50);
+  --color-info-surface-foreground: var(--color-ci-blue-800);
+  --color-info-border: var(--color-ci-blue-200);
+
+  --color-warning: var(--color-ci-amber-500);
+  --color-warning-foreground: var(--color-ci-gray-950);
+  --color-warning-surface: var(--color-ci-amber-50);
+  --color-warning-surface-foreground: var(--color-ci-amber-800);
+  --color-warning-border: var(--color-ci-amber-200);
+
+  --color-danger: var(--color-ci-red-600);
+  --color-danger-foreground: var(--color-ci-white);
+  --color-danger-surface: var(--color-ci-red-50);
+  --color-danger-surface-foreground: var(--color-ci-red-800);
+  --color-danger-border: var(--color-ci-red-200);
+}
+
+.dark {
+  --color-success: var(--color-ci-green-500);
+  --color-success-foreground: var(--color-ci-white);
+  --color-success-surface: var(--color-ci-green-950);
+  --color-success-surface-foreground: var(--color-ci-green-200);
+  --color-success-border: var(--color-ci-green-800);
+
+  --color-info: var(--color-ci-blue-500);
+  --color-info-foreground: var(--color-ci-white);
+  --color-info-surface: var(--color-ci-blue-950);
+  --color-info-surface-foreground: var(--color-ci-blue-200);
+  --color-info-border: var(--color-ci-blue-800);
+
+  --color-warning: var(--color-ci-amber-400);
+  --color-warning-foreground: var(--color-ci-gray-950);
+  --color-warning-surface: var(--color-ci-amber-950);
+  --color-warning-surface-foreground: var(--color-ci-amber-200);
+  --color-warning-border: var(--color-ci-amber-800);
+
+  --color-danger: var(--color-ci-red-500);
+  --color-danger-foreground: var(--color-ci-white);
+  --color-danger-surface: var(--color-ci-red-950);
+  --color-danger-surface-foreground: var(--color-ci-red-200);
+  --color-danger-border: var(--color-ci-red-800);
+}

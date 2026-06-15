@@ -2,22 +2,21 @@ import { getRequestConfig } from "next-intl/server";
 import { cookies, headers } from "next/headers";
 import { deepmerge } from "deepmerge-ts";
 import type { AbstractIntlMessages } from "next-intl";
-
-import { ciGetServerLocale } from "@cloudigniter/next/server";
 import {
   CI_DEFAULT_ROUTE_PATHNAME_COOKIE_NAME,
   ciNormalizeThrownError,
   ciPascalToKebab,
+  ciResolveNamespaceLocaleFileNames,
   ciResolveRoute,
 } from "@cloudigniter/core/lib";
 import type {
   CiRoutesMap,
   CiServerErrorPayload,
 } from "@cloudigniter/core/types";
+import { ciGetServerLocale } from "@cloudigniter/next/server";
+import { locales } from "@cloudigniter/next/locales";
 
 import config from "@/../cloudigniter.config";
-
-import { locales } from "@cloudigniter/next/locales";
 
 type CiMessageModule = {
   default: AbstractIntlMessages;
@@ -27,12 +26,12 @@ type CiMessageLoader = () => Promise<CiMessageModule>;
 
 const customLocaleLoaders = {
   en: {
-    common: () => import("../../../locales/en/common.json"),
+    common: () => import("../../../custom/locales/en/common.json"),
     // Add route namespaces here, for example:
     // dashboard: () => import("../../../locales/en/dashboard.json"),
   },
   ar: {
-    common: () => import("../../../locales/ar/common.json"),
+    common: () => import("../../../custom/locales/ar/common.json"),
     // Add route namespaces here, for example:
     // dashboard: () => import("../../../locales/ar/dashboard.json"),
   },
@@ -69,7 +68,9 @@ export default getRequestConfig(async () => {
       defaultLocale: config.i18n.defaultLocale,
     });
 
-    if (!locales[loc]) {
+    const localeCode = loc.code;
+
+    if (!locales[localeCode]) {
       throw new Error(
         JSON.stringify({
           title: "No locale is defined!",
@@ -125,8 +126,8 @@ export default getRequestConfig(async () => {
     let customNamespaceMessages = {};
 
     try {
-      commonMessages = locales[loc]["common"] ?? {};
-      customCommonMessages = await ciLoadCustomMessages(loc, "common");
+      commonMessages = locales[localeCode]["common"] ?? {};
+      customCommonMessages = await ciLoadCustomMessages(localeCode, "common");
     } catch (error) {
       const errorObj = ciNormalizeThrownError(error);
       console.log(
@@ -134,16 +135,32 @@ export default getRequestConfig(async () => {
       );
     }
 
-    const nsKebab = ciPascalToKebab(route.namespace);
+    // const nsKebab = ciPascalToKebab(route.namespace);
 
-    try {
-      namespaceMessages = locales[loc][nsKebab] ?? {};
-      customNamespaceMessages = await ciLoadCustomMessages(loc, nsKebab);
-    } catch (error) {
-      const errorObj = ciNormalizeThrownError(error);
-      console.log(
-        `Could not load the current route language file for the route "${route?.namespace}"! Error: ${errorObj.message}`,
-      );
+    // try {
+    //   namespaceMessages = locales[localeCode][nsKebab] ?? {};
+    //   customNamespaceMessages = await ciLoadCustomMessages(localeCode, nsKebab);
+    // } catch (error) {
+    //   const errorObj = ciNormalizeThrownError(error);
+    //   console.log(
+    //     `Could not load the current route language file for the route "${route?.namespace}"! Error: ${errorObj.message}`,
+    //   );
+    // }
+
+    const namespaceFileNames = ciResolveNamespaceLocaleFileNames(
+      route.namespace,
+    );
+
+    for (const fileName of namespaceFileNames) {
+      namespaceMessages = deepmerge(
+        namespaceMessages,
+        locales[localeCode][fileName] ?? {},
+      ) as AbstractIntlMessages;
+
+      customNamespaceMessages = deepmerge(
+        customNamespaceMessages,
+        await ciLoadCustomMessages(localeCode, fileName),
+      ) as AbstractIntlMessages;
     }
 
     const systemMessages = deepmerge(
@@ -162,7 +179,7 @@ export default getRequestConfig(async () => {
     ) as AbstractIntlMessages;
 
     return {
-      locale: loc,
+      locale: localeCode,
       messages,
       urlPath,
     };

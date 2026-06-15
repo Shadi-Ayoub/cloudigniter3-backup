@@ -54,6 +54,7 @@ export type {
 // ui
 // ─────────────────────────────────────────────────────────────
 export type {
+  // profile menu
   CiNextProfileMenuProps,
   CiProfileMenuItem,
   CiProfileMenuProps,

@@ -2,14 +2,14 @@
 import { getTranslations } from "next-intl/server";
 import { ciCapitalizeFirstLetter } from "@cloudigniter/core/lib";
 import { ciStartTraceServer } from "../../../server";
-import { type CiDashboardCardProps as CiDashboardCardType } from "../../client";
+import { type CiDashboardCardProps } from "../../client";
 import type { CiNextPageConfig } from "../../../types";
 import { CiDashboardCard } from "./CiDashboardCard";
 import { CiDashboardGrid } from "./CiDashboardGrid";
 
 export type CiDashboardPageProps = {
   config: CiNextPageConfig;
-  setup: CiDashboardCardType[];
+  setup: CiDashboardCardProps[];
 };
 
 export async function CiDashboardPage({ config, setup }: CiDashboardPageProps) {

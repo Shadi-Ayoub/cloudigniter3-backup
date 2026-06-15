@@ -48,11 +48,13 @@ export default function CiLayout({
         </CiHeader>
         <CiContainer config={config}>{children}</CiContainer>
         <CiFooter
-          checkList={{
-            // amplifyOutputs: config.providers?.aws?.amplifyOutputs,
-            settings: config.settings,
-            // status: status,
-          }}
+          checkList={
+            {
+              // amplifyOutputs: config.providers?.aws?.amplifyOutputs,
+              //settings: config,
+              // status: status,
+            }
+          }
           config={config}
         >
           <CiCopyright />

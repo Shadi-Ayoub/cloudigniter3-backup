@@ -4,7 +4,7 @@ import type {
   // ServerConfig,
   CiSystemStatus,
   CiSystemStatusItem,
-  CiSettings,
+  CiCoreSettings,
 } from "@cloudigniter/core/types";
 import type { CiAmplifyOutputs } from "@cloudigniter/aws/types";
 // import type { Schema } from 'amplify-schema';
@@ -14,7 +14,7 @@ import type { CiAmplifyOutputs } from "@cloudigniter/aws/types";
 // const amplifyConfig = resolveAmplifyOutputs();
 
 export const ciGetServerStatus = async (
-  settings: CiSettings,
+  settings: CiCoreSettings,
   amplifyConfig: CiAmplifyOutputs,
   isOk: boolean,
 ) => {
@@ -113,7 +113,9 @@ export async function amplifySchemaStatus(
   };
 }
 
-export function systemSettingsStatus(settings: CiSettings): CiSystemStatusItem {
+export function systemSettingsStatus(
+  settings: CiCoreSettings,
+): CiSystemStatusItem {
   const isValid =
     settings && typeof settings === "object" && "general" in settings;
 

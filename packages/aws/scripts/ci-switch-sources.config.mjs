@@ -9,6 +9,7 @@ export default {
   appTemplate: {
     folderName: "template",
     tsconfigPath: "../../apps/template/tsconfig.json",
+    globalsCssPath: "../../apps/template/src/app/globals.css",
   },
 
   currentPackageAliases: [

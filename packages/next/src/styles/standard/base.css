@@ -6,7 +6,7 @@
     @apply m-0 h-full;
   }
   #__next {
-    @apply bg-muted-100 dark:bg-muted-900 h-full;
+    @apply bg-muted dark:bg-muted h-full;
     /* If you need the flex root:
        @apply min-h-0 flex flex-col;
     */

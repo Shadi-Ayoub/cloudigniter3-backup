@@ -6,6 +6,14 @@ import {
 } from "@ci-core/lib";
 import type { CiTenantScope } from "@ci-core/types";
 
+//------
+export type { CiAppSettings } from "./CiAppSettings";
+export type { CiCoreSettings } from "./CiCoreSettings";
+export type { CiPrivateCoreSettings } from "./CiPrivateCoreSettings";
+export type { CiPublicCoreSettings } from "./CiPublicCoreSettings";
+export type { CiUserCoreSettings } from "./CiUserCoreSettings";
+//-----
+
 export type { CiScopedSettingsScope } from "./CiScopedSettingsScope";
 export type { CiBuildSettingsKeysInput } from "./CiBuildSettingsKeysInput";
 export type { CiSettingsKey } from "./CiSettingsKey";

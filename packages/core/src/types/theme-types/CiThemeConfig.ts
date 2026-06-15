@@ -72,3 +72,5 @@ export type CiThemeConfig<TTheme extends string = string> = {
    */
   metadata?: Record<string, unknown>;
 };
+
+export type CiThemeSettings = CiThemeConfig;

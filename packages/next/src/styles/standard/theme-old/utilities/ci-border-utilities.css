@@ -1,0 +1,11 @@
+@utility rounded-lg {
+  border-radius: var(--radius);
+}
+
+@utility rounded-md {
+  border-radius: calc(var(--radius) - 2px);
+}
+
+@utility rounded-sm {
+  border-radius: calc(var(--radius) - 4px);
+}

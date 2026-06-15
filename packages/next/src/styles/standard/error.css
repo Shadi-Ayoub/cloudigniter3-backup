@@ -12,7 +12,7 @@
   }
 
   .notification-card-warning {
-    @apply bg-warning-background text-warning-foreground border-warning-foreground;
+    @apply bg-warning-surface text-warning-foreground border-warning-foreground;
   }
 
   .notification-card-warning-icon {
@@ -20,7 +20,7 @@
   }
 
   .notification-card-info {
-    @apply bg-info-background text-info-foreground border-info-foreground-dark;
+    @apply bg-info-surface text-info-foreground border-info-foreground;
   }
 
   .notification-card-info-icon {
@@ -28,7 +28,7 @@
   }
 
   .notification-card-error {
-    @apply bg-danger-background text-danger-foreground border-danger-foreground-dark;
+    @apply bg-danger-surface text-danger-foreground border-danger-foreground;
   }
 
   .notification-card-error-icon {
@@ -40,15 +40,15 @@
   }
 
   .notification-dialog-content-warning {
-    @apply bg-warning-background text-warning-foreground border-warning-foreground-dark;
+    @apply bg-warning-surface text-warning-foreground border-warning-foreground;
   }
 
   .notification-dialog-content-info {
-    @apply bg-info-background text-info-foreground border-info-foreground-dark;
+    @apply bg-info-surface text-info-foreground border-info-foreground;
   }
 
   .notification-dialog-content-error {
-    @apply bg-danger-background text-danger-foreground border-danger-foreground-dark;
+    @apply bg-danger-surface text-danger-foreground border-danger-foreground;
   }
 
   .dialog-title {
@@ -76,19 +76,19 @@
   }
 
   .dialog-close-btn-warning {
-    @apply bg-warning-background text-warning-foreground border-warning-foreground hover:bg-warning-foreground hover:text-warning-foreground-dark hover:border-warning-foreground-dark hover:ring-warning-foreground-dark dark:border-warning-foreground dark:bg-warning-background dark:hover:text-warning-foreground dark:hover:bg-warning-background-dark;
+    @apply bg-warning-surface text-warning-foreground border-warning-foreground hover:bg-warning-foreground hover:text-warning-foreground hover:border-warning-foreground hover:ring-warning-foreground dark:border-warning-foreground dark:bg-warning-surface dark:hover:text-warning-foreground dark:hover:bg-warning-surface;
   }
 
   .dialog-close-btn-info {
-    @apply bg-info-background text-info-foreground border-info-foreground hover:bg-info-foreground hover:text-info-foreground-dark hover:border-info-foreground-dark hover:ring-info-foreground-dark dark:border-info-foreground dark:bg-info-background dark:hover:text-info-foreground dark:hover:bg-info-background-dark;
+    @apply bg-info-surface text-info-foreground border-info-foreground hover:bg-info-foreground hover:text-info-foreground hover:border-info-foreground hover:ring-info-foreground dark:border-info-foreground dark:bg-info-surface dark:hover:text-info-foreground dark:hover:bg-info-surface;
   }
 
   .dialog-close-btn-error {
-    @apply bg-danger-background text-danger-foreground border-danger-foreground hover:bg-danger-foreground hover:text-danger-foreground-dark hover:border-danger-foreground-dark hover:ring-danger-foreground-dark dark:border-danger-foreground dark:bg-danger-background dark:hover:text-danger-foreground dark:hover:bg-danger-background-dark;
+    @apply bg-danger-surface text-danger-foreground border-danger-foreground hover:bg-danger-foreground hover:text-danger-foreground hover:border-danger-foreground hover:ring-danger-foreground dark:border-danger-foreground dark:bg-danger-surface dark:hover:text-danger-foreground dark:hover:bg-danger-surface;
   }
 
   .critical-backdrop {
-    @apply bg-danger-background text-danger-foreground z-toast fixed inset-0 flex flex-col items-center justify-center;
+    @apply bg-danger-surface text-danger-foreground z-toast fixed inset-0 flex flex-col items-center justify-center;
   }
 
   .critical-backdrop-title-icon {

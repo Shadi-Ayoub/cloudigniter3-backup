@@ -15,11 +15,7 @@ interface CiLayoutProps {
   children: React.ReactNode;
 }
 
-const CiLayout: React.FC<CiLayoutProps> = ({
-  config,
-  protect,
-  children,
-}: CiLayoutProps) => {
+const CiLayout = ({ config, protect, children }: CiLayoutProps) => {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger } = ciStartTraceServer(
     config.ciConfig.dev.traceLog,

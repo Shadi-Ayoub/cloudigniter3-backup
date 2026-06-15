@@ -1,5 +1,4 @@
 import type { CiEnvMode, CiLocaleDirection } from "@ci-core/types";
-import type { CiCorePageConfig } from "@ci-core/types";
 import type {
   CiDevBeaconExtraTabSpec,
   CiDevBeaconLogoSpec,
@@ -14,11 +13,11 @@ import type {
  * - This component is a Server Component and MUST only pass serializable (plain) props to the Client wrapper.
  * - Do not pass React elements/functions here (e.g., icons, components, JSX). Use spec types instead.
  */
-export interface CiDevBeaconProps {
+export interface CiDevBeaconProps<T> {
   /**
    * CloudIgniter Page configurations passed by the application.
    */
-  corePageConfig: CiCorePageConfig;
+  appPageConfig: T;
 
   /**
    * CloudIgniter Page configurations passed by the application.

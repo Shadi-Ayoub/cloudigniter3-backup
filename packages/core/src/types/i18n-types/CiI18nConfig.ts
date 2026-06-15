@@ -3,3 +3,5 @@ export type CiI18nConfig = {
   defaultLocale: string;
   cookieName: string;
 };
+
+export type CiI18nSettings = CiI18nConfig;

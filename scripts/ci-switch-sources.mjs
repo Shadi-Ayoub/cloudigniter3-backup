@@ -316,6 +316,186 @@ function updateCurrentPackageTsconfigAliases() {
 }
 // ------------------------------------------------------------------------------------
 
+/**
+ * Resolves the application template root folder.
+ *
+ * Priority:
+ * 1. config.appTemplate.rootPath
+ * 2. directory of config.appTemplate.tsconfigPath
+ * 3. current package root
+ *
+ * @returns {string} Absolute application template root path.
+ */
+function ciResolveAppTemplateRootPath() {
+  if (config.appTemplate?.rootPath) {
+    return path.resolve(packageRoot, config.appTemplate.rootPath);
+  }
+
+  if (config.appTemplate?.tsconfigPath) {
+    return path.dirname(
+      path.resolve(packageRoot, config.appTemplate.tsconfigPath),
+    );
+  }
+
+  return packageRoot;
+}
+
+/**
+ * Resolves the application template globals.css file.
+ *
+ * By default, it expects:
+ * src/app/globals.css
+ *
+ * @returns {string} Absolute globals.css path.
+ */
+function ciResolveAppTemplateGlobalsCssPath() {
+  if (config.appTemplate?.globalsCssPath) {
+    return path.resolve(packageRoot, config.appTemplate.globalsCssPath);
+  }
+
+  return path.resolve(ciResolveAppTemplateRootPath(), "src/app/globals.css");
+}
+
+/**
+ * Converts a filesystem path to a CSS-friendly relative source path.
+ *
+ * @param {string} fromDir - Directory containing globals.css.
+ * @param {string} toPath - Target source directory.
+ * @returns {string} Normalized relative path.
+ */
+function ciBuildRelativeCssSourcePath(fromDir, toPath) {
+  const relativePath = path.relative(fromDir, toPath).replaceAll(path.sep, "/");
+
+  return relativePath.startsWith(".") ? relativePath : `./${relativePath}`;
+}
+
+/**
+ * Gets the current package short name.
+ *
+ * Example:
+ * @cloudigniter/core -> core
+ *
+ * @returns {string} Package short name.
+ */
+function ciGetPackageShortName() {
+  return String(pkg.name ?? config.packageName ?? "")
+    .split("/")
+    .at(-1);
+}
+
+/**
+ * Builds the Tailwind @source line for the current package and selected target.
+ *
+ * @param {string} globalsCssPath - Absolute globals.css path.
+ * @returns {string} Tailwind @source statement.
+ */
+function ciBuildTailwindSourceLine(globalsCssPath) {
+  const globalsCssDir = path.dirname(globalsCssPath);
+  const appTemplateRoot = ciResolveAppTemplateRootPath();
+  const packageName = config.packageName ?? pkg.name;
+  const packageShortName = ciGetPackageShortName();
+
+  if (!packageName || !packageShortName) {
+    throw new Error("Cannot build Tailwind @source line without package name.");
+  }
+
+  const sourceRoot =
+    target === "src"
+      ? path.resolve(packageRoot, "src")
+      : path.resolve(appTemplateRoot, "node_modules", packageName, "dist");
+
+  const relativeSourceRoot = ciBuildRelativeCssSourcePath(
+    globalsCssDir,
+    sourceRoot,
+  );
+
+  const glob = target === "src" ? "**/*.{ts,tsx}" : "**/*.{js,mjs}";
+
+  return `@source "${relativeSourceRoot}/${glob}";`;
+}
+
+/**
+ * Checks whether a globals.css line is a Tailwind @source line for this package.
+ *
+ * @param {string} line - CSS line.
+ * @returns {boolean} Whether the line points to this package.
+ */
+function ciIsTailwindSourceLineForCurrentPackage(line) {
+  const packageName = config.packageName ?? pkg.name;
+  const packageShortName = ciGetPackageShortName();
+  const normalizedLine = line.replaceAll("\\", "/");
+
+  return (
+    normalizedLine.includes("@source") &&
+    (normalizedLine.includes(`node_modules/${packageName}/dist/`) ||
+      normalizedLine.includes(`packages/${packageShortName}/src/`))
+  );
+}
+
+/**
+ * Finds where a Tailwind @source line should be inserted.
+ *
+ * Insert after the last @source statement. If no @source exists,
+ * insert after the last @import statement.
+ *
+ * @param {string[]} lines - CSS file lines.
+ * @returns {number} Insert index.
+ */
+function ciFindTailwindSourceInsertIndex(lines) {
+  const lastSourceIndex = lines.findLastIndex((line) =>
+    line.trim().startsWith("@source "),
+  );
+
+  if (lastSourceIndex >= 0) {
+    return lastSourceIndex + 1;
+  }
+
+  const lastImportIndex = lines.findLastIndex((line) =>
+    line.trim().startsWith("@import "),
+  );
+
+  if (lastImportIndex >= 0) {
+    return lastImportIndex + 1;
+  }
+
+  return 0;
+}
+
+/**
+ * Updates the application template globals.css Tailwind @source line
+ * for the current package according to the selected target.
+ */
+function updateAppTemplateGlobalsCssSource() {
+  const globalsCssPath = ciResolveAppTemplateGlobalsCssPath();
+
+  if (!fs.existsSync(globalsCssPath)) {
+    console.warn(`⚠️ App template globals.css not found: ${globalsCssPath}`);
+    return;
+  }
+
+  const originalText = fs.readFileSync(globalsCssPath, "utf8");
+  const lineEnding = originalText.includes("\r\n") ? "\r\n" : "\n";
+  const hasFinalNewline = originalText.endsWith("\n");
+
+  const nextSourceLine = ciBuildTailwindSourceLine(globalsCssPath);
+
+  const lines = originalText
+    .split(/\r?\n/)
+    .filter((line) => !ciIsTailwindSourceLineForCurrentPackage(line));
+
+  const insertIndex = ciFindTailwindSourceInsertIndex(lines);
+  lines.splice(insertIndex, 0, nextSourceLine);
+
+  const nextText = lines.join(lineEnding);
+
+  fs.writeFileSync(
+    globalsCssPath,
+    hasFinalNewline ? nextText.replace(/\r?\n?$/, lineEnding) : nextText,
+  );
+
+  console.log(`Updated app template globals.css @source for ${pkg.name}`);
+}
+
 // ------------------------------------------------------------------------------------
 // main rewrite
 // ------------------------------------------------------------------------------------
@@ -419,6 +599,7 @@ if (pkg.types && typeof pkg.types === "string" && topLevelTypesPath) {
 
 updateAppTemplateTsconfigAlias();
 updateCurrentPackageTsconfigAliases();
+updateAppTemplateGlobalsCssSource();
 
 writeJsonFile(pkgPath, pkg);
 

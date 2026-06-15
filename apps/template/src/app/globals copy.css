@@ -1,0 +1,14 @@
+@import "tailwindcss";
+@import "@aws-amplify/ui-react/styles.css";
+@import "@cloudigniter/next/styles/standard/theme.css";
+@import "@cloudigniter/next/styles/standard/style.css";
+@import "../custom/authenticator/authenticator.css";
+
+@source "../../node_modules/@cloudigniter/core/dist/**/*.{js,mjs}";
+@source "../../node_modules/@cloudigniter/next/dist/**/*.{js,mjs}";
+@source "../../node_modules/@cloudigniter/aws/dist/**/*.{js,mjs}";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+}

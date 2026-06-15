@@ -3,7 +3,7 @@
 }
 
 .ci-about-border-beam-box {
-  @apply bg-muted-100 dark:bg-muted-800 relative m-auto flex h-[500px] w-[700px] flex-col items-center justify-center overflow-hidden rounded-lg border-0 md:shadow-xl;
+  @apply bg-muted dark:bg-muted relative m-auto flex h-[500px] w-[700px] flex-col items-center justify-center overflow-hidden rounded-lg border-0 md:shadow-xl;
 }
 
 .ci-about-border-beam-title {

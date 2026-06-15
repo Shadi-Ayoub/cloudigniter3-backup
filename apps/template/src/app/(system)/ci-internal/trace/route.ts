@@ -1,37 +1,37 @@
-import { NextResponse } from 'next/server';
-import { getConfig } from '@/kernel';
-import { promises as fsp } from 'node:fs';
-import { open as fsOpen } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { NextResponse } from "next/server";
+import { appGetServerCoreConfig } from "@/kernel/server";
+import { promises as fsp } from "node:fs";
+import { open as fsOpen } from "node:fs/promises";
+import { resolve } from "node:path";
 
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 async function tailFileByBytes(
   filePath: string,
-  maxBytes: number
+  maxBytes: number,
 ): Promise<{ size: number; text: string }> {
   try {
-    const fh = await fsOpen(filePath, 'r');
+    const fh = await fsOpen(filePath, "r");
     try {
       const stat = await fh.stat();
       const size = stat.size;
-      if (size === 0) return { size, text: '' };
+      if (size === 0) return { size, text: "" };
       const start = Math.max(0, size - Math.max(1, maxBytes));
       const length = size - start;
       const buf = Buffer.alloc(length);
       await fh.read(buf, 0, length, start);
-      return { size, text: buf.toString('utf8') };
+      return { size, text: buf.toString("utf8") };
     } finally {
       await fh.close();
     }
   } catch (e) {
     if (
-      typeof e === 'object' &&
+      typeof e === "object" &&
       e !== null &&
-      (e as { code?: string }).code === 'ENOENT'
+      (e as { code?: string }).code === "ENOENT"
     ) {
-      return { size: 0, text: '' };
+      return { size: 0, text: "" };
     }
     throw e;
   }
@@ -44,27 +44,28 @@ function takeLastLines(text: string, maxLines: number): string[] {
   return lines.slice(-maxLines);
 }
 
-export async function GET(req: CiRequest) {
-  const cfg = getConfig('api/trace:GET');
-  const traceLog = cfg?.traceLog;
+export async function GET(req: Request) {
+  // const cfg = getConfig('api/trace:GET');
+  const cfg = appGetServerCoreConfig();
+  const traceLog = cfg?.dev.traceLog;
   const enabled = (traceLog?.enabled ?? true) === true;
 
   const url = new URL(req.url);
   const maxBytes = Math.min(
-    Math.max(Number(url.searchParams.get('bytes')) || 65536, 1024),
-    4 * 1024 * 1024
+    Math.max(Number(url.searchParams.get("bytes")) || 65536, 1024),
+    4 * 1024 * 1024,
   );
   const maxLines = Math.min(
-    Math.max(Number(url.searchParams.get('lines')) || 500, 10),
-    5000
+    Math.max(Number(url.searchParams.get("lines")) || 500, 10),
+    5000,
   );
-  const format = (url.searchParams.get('format') || 'json').toLowerCase(); // 'json' | 'text'
+  const format = (url.searchParams.get("format") || "json").toLowerCase(); // 'json' | 'text'
 
   if (!enabled || !traceLog?.filePath) {
-    if (format === 'text') {
-      return new NextResponse('', {
+    if (format === "text") {
+      return new NextResponse("", {
         status: 200,
-        headers: { 'content-type': 'text/plain; charset=utf-8' },
+        headers: { "content-type": "text/plain; charset=utf-8" },
       });
     }
     return NextResponse.json({
@@ -79,11 +80,11 @@ export async function GET(req: CiRequest) {
   const { size, text } = await tailFileByBytes(absPath, maxBytes);
   const lines = takeLastLines(text, maxLines);
 
-  if (format === 'text') {
-    const body = lines.join('\n');
+  if (format === "text") {
+    const body = lines.join("\n");
     return new NextResponse(body, {
       status: 200,
-      headers: { 'content-type': 'text/plain; charset=utf-8' },
+      headers: { "content-type": "text/plain; charset=utf-8" },
     });
   }
 
@@ -93,27 +94,27 @@ export async function GET(req: CiRequest) {
       try {
         const obj = JSON.parse(ln) as Record<string, unknown>;
         return {
-          ts: typeof obj.ts === 'number' ? obj.ts : Date.now(),
-          seq: typeof obj.seq === 'number' ? obj.seq : i + 1,
+          ts: typeof obj.ts === "number" ? obj.ts : Date.now(),
+          seq: typeof obj.seq === "number" ? obj.seq : i + 1,
           phase:
-            typeof obj.phase === 'string'
+            typeof obj.phase === "string"
               ? obj.phase
-              : typeof obj.event === 'string'
-                ? obj.event
-                : 'log',
+              : typeof obj.event === "string"
+              ? obj.event
+              : "log",
           name:
-            typeof obj.name === 'string'
+            typeof obj.name === "string"
               ? obj.name
-              : typeof obj.msg === 'string'
-                ? obj.msg
-                : 'trace',
-          level: typeof obj.level === 'string' ? obj.level : undefined,
+              : typeof obj.msg === "string"
+              ? obj.msg
+              : "trace",
+          level: typeof obj.level === "string" ? obj.level : undefined,
           requestId:
-            typeof obj.requestId === 'string' ? obj.requestId : undefined,
-          traceId: typeof obj.traceId === 'string' ? obj.traceId : undefined,
+            typeof obj.requestId === "string" ? obj.requestId : undefined,
+          traceId: typeof obj.traceId === "string" ? obj.traceId : undefined,
           detail: (obj as unknown) ?? {},
-          source: typeof obj.source === 'string' ? obj.source : 'server',
-          tag: typeof obj.tag === 'string' ? obj.tag : undefined,
+          source: typeof obj.source === "string" ? obj.source : "server",
+          tag: typeof obj.tag === "string" ? obj.tag : undefined,
         };
       } catch {
         return null;
@@ -130,17 +131,18 @@ export async function GET(req: CiRequest) {
 }
 
 export async function DELETE() {
-  const cfg = getConfig('api/trace:DELETE');
-  const fp = cfg?.traceLog?.filePath;
+  // const cfg = getConfig("api/trace:DELETE");
+  const cfg = appGetServerCoreConfig();
+  const fp = cfg?.dev.traceLog?.filePath;
   if (!fp) return new NextResponse(null, { status: 204 });
   try {
     await fsp.truncate(resolve(fp), 0);
   } catch (e) {
     if (
       !(
-        typeof e === 'object' &&
+        typeof e === "object" &&
         e !== null &&
-        (e as { code?: string }).code === 'ENOENT'
+        (e as { code?: string }).code === "ENOENT"
       )
     ) {
       // swallow to keep quiet for Dev Beacon

@@ -36,9 +36,16 @@ export function CiNextAwsLoginPage({
   // cannot read them → fetchAuthSession(serverCtx) returns no tokens → unauthenticated.
   // With ssr: true, Amplify uses a cookie-compatible storage strategy so the server adapter can see the session.
   // This is required so the middleware can verify user login.
-  useEffect(() => {
+  const configuredRef = useRef(false);
+
+  if (!configuredRef.current) {
     Amplify.configure(outputs, { ssr: true });
-  }, [outputs]);
+    configuredRef.current = true;
+  }
+
+  // useEffect(() => {
+  //   Amplify.configure(outputs, { ssr: true });
+  // }, [outputs]);
 
   const authUiRef = useRef<HTMLDivElement>(null);
   useShowLoaderWhenAuthenticatorDisappears(
@@ -55,11 +62,13 @@ export function CiNextAwsLoginPage({
 
   return (
     <ThemeProvider theme={authenticatorStyleTheme}>
-      <div ref={authUiRef}>
-        <Authenticator {...authenticatorProps} className="px-4 pt-8 pb-8">
-          {() => <LoginRedirector />}
-        </Authenticator>
-      </div>
+      <Authenticator.Provider>
+        <div ref={authUiRef}>
+          <Authenticator {...authenticatorProps} className="px-4 pt-8 pb-8" />
+          {/* <LoginRedirector /> */}
+        </div>
+      </Authenticator.Provider>
+
       <CiConsolePrint
         label="Auth"
         message="Amplify Authenticator is loaded..."

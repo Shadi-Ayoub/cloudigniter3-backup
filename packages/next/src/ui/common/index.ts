@@ -53,3 +53,8 @@ export {
   // CiThemeSwitcher,
   // type CiThemeSwitcherProps,
 } from "./round-button-fallback";
+
+// ─────────────────────────────────────────────────────────────
+// icon
+// ─────────────────────────────────────────────────────────────
+export { CiIcon } from "./icon";

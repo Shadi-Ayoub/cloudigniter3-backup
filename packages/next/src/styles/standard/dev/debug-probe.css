@@ -1,0 +1,61 @@
+@layer components {
+  .ci-debug-probe-anchor {
+    @apply relative inline-block;
+  }
+
+  .ci-debug-probe-button {
+    @apply fixed z-debug
+           inline-flex items-center justify-center
+           text-base
+           opacity-70
+           transition-all duration-200
+           hover:scale-110 hover:opacity-100
+           active:scale-95;
+  }
+
+  .ci-debug-probe-backdrop {
+    @apply fixed inset-0 z-overlay
+           flex items-center justify-center
+           bg-black/60
+           backdrop-blur-sm;
+  }
+
+  .ci-debug-probe-modal {
+    @apply flex h-[80vh] w-[90vw] max-w-5xl flex-col
+           overflow-hidden
+           rounded-xl
+           border border-border
+           bg-background
+           shadow-2xl;
+  }
+
+  .ci-debug-probe-header {
+    @apply flex items-center justify-between
+           border-b
+           bg-muted/50
+           px-4 py-3
+           text-sm font-semibold;
+  }
+
+  .ci-debug-probe-id {
+    @apply mt-1 font-mono text-xs font-normal text-muted-foreground;
+  }
+
+  .ci-debug-probe-header button {
+    @apply flex h-8 w-8 items-center justify-center
+           rounded-md
+           text-muted-foreground
+           transition-colors
+           hover:bg-muted
+           hover:text-foreground;
+  }
+
+  .ci-debug-probe-content {
+    @apply flex-1 overflow-auto
+           bg-muted/20
+           p-4
+           font-mono text-xs
+           whitespace-pre-wrap
+           wrap-break-word;
+  }
+}

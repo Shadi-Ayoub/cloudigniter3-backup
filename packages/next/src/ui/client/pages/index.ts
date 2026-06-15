@@ -3,7 +3,7 @@ export {
   CiSandboxPage,
   CiSeederPage,
   CiTenantsPage,
+  CiThemePresentationPage,
 } from "./dashboard";
 export { CiNextAwsLoginPage } from "./login/CiNextAwsLoginPage";
-export { CiThemePresentationPage } from "./theme/CiThemePresentationPage";
 // export { UsersManagementPage } from './dashboard/users/users-management-page';

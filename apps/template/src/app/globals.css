@@ -1,20 +1,28 @@
 @import "tailwindcss";
-
-@source "../../node_modules/@cloudigniter/core/dist/**/*.{js,mjs}";
-@source "../../node_modules/@cloudigniter/next/dist/**/*.{js,mjs}";
-@source "../../node_modules/@cloudigniter/aws/dist/**/*.{js,mjs}";
+@plugin "tailwindcss-animate";
 
 @import "@aws-amplify/ui-react/styles.css";
-
-@custom-variant dark (&:where(.dark, .dark *));
 
 @import "@cloudigniter/next/styles/standard/theme.css";
 @import "@cloudigniter/next/styles/standard/style.css";
 
-@import "../custom/authenticator/authenticator.css";
+@import "../custom/styles/standard/style.css";
 
-/* @import "../../node_modules/@cloudigniter/next/dist/styles/standard/theme.css"; */
-/* @source '../../node_modules/@cloudigniter/next/'; */
-
-@layer base {
-}
+/*
+|--------------------------------------------------------------------------
+| CloudIgniter Component Sources
+|--------------------------------------------------------------------------
+|
+| These @source statements allow Tailwind CSS to discover utility classes
+| used inside CloudIgniter packages installed in node_modules.
+|
+| Removing these entries may cause CloudIgniter components to render
+| without the expected styling because Tailwind will no longer detect
+| and generate the required utility classes.
+|
+| Keep these entries intact when upgrading or customizing the application.
+|
+*/
+@source "../../../../packages/core/src/**/*.{ts,tsx}";
+@source "../../../../packages/aws/src/**/*.{ts,tsx}";
+@source "../../../../packages/next/src/**/*.{ts,tsx}";

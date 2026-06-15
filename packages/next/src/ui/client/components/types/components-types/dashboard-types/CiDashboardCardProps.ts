@@ -1,10 +1,10 @@
-import type { ReactNode } from "react";
+import type { CiIconName } from "@cloudigniter/core/types";
 
 export type CiDashboardCardProps = {
   id: string;
   route: string;
   label: string;
-  icon?: ReactNode;
+  icon: CiIconName;
   className?: string;
   contentClassName?: string;
   iconClassName?: string;
@@ -13,4 +13,5 @@ export type CiDashboardCardProps = {
   refresh?: boolean;
   removeFocus?: boolean;
   externalTarget?: "_blank" | "_self";
+  setup?: boolean;
 };

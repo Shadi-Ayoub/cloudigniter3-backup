@@ -1,0 +1,131 @@
+@theme {
+  /* ========================================================================
+   * SUCCESS
+   * ====================================================================== */
+
+  --color-success: var(--color-ci-green-600);
+
+  --color-success-background-light: var(--color-ci-green-50);
+  --color-success-background: var(--color-ci-green-100);
+  --color-success-background-dark: var(--color-ci-green-200);
+
+  --color-success-border: var(--color-ci-green-200);
+
+  --color-success-foreground-light: var(--color-ci-green-600);
+  --color-success-foreground: var(--color-ci-green-700);
+  --color-success-foreground-dark: var(--color-ci-green-800);
+
+  /* ========================================================================
+   * INFO
+   * ====================================================================== */
+
+  --color-info: var(--color-ci-blue-600);
+
+  --color-info-background-light: var(--color-ci-blue-50);
+  --color-info-background: var(--color-ci-blue-100);
+  --color-info-background-dark: var(--color-ci-blue-200);
+
+  --color-info-border: var(--color-ci-blue-200);
+
+  --color-info-foreground-light: var(--color-ci-blue-600);
+  --color-info-foreground: var(--color-ci-blue-700);
+  --color-info-foreground-dark: var(--color-ci-blue-800);
+
+  /* ========================================================================
+   * WARNING
+   * ====================================================================== */
+
+  --color-warning: var(--color-ci-amber-500);
+
+  --color-warning-surface-light: var(--color-ci-amber-50);
+  --color-warning-surface: var(--color-ci-amber-100);
+  --color-warning-surface-dark: var(--color-ci-amber-200);
+
+  --color-warning-border: var(--color-ci-amber-200);
+
+  --color-warning-foreground-light: var(--color-ci-amber-600);
+  --color-warning-foreground: var(--color-ci-amber-700);
+  --color-warning-foreground-dark: var(--color-ci-amber-800);
+
+  /* ========================================================================
+   * DANGER
+   * ====================================================================== */
+
+  --color-danger: var(--color-ci-red-600);
+
+  --color-danger-background-light: var(--color-ci-red-50);
+  --color-danger-background: var(--color-ci-red-100);
+  --color-danger-background-dark: var(--color-ci-red-200);
+
+  --color-danger-border: var(--color-ci-red-200);
+
+  --color-danger-foreground-light: var(--color-ci-red-600);
+  --color-danger-foreground: var(--color-ci-red-700);
+  --color-danger-foreground-dark: var(--color-ci-red-800);
+}
+
+.dark {
+  /* ========================================================================
+   * SUCCESS
+   * ====================================================================== */
+
+  --color-success: var(--color-ci-green-500);
+
+  --color-success-background-light: var(--color-ci-green-950);
+  --color-success-background: var(--color-ci-green-900);
+  --color-success-background-dark: var(--color-ci-green-800);
+
+  --color-success-border: var(--color-ci-green-800);
+
+  --color-success-foreground-light: var(--color-ci-green-300);
+  --color-success-foreground: var(--color-ci-green-200);
+  --color-success-foreground-dark: var(--color-ci-green-100);
+
+  /* ========================================================================
+   * INFO
+   * ====================================================================== */
+
+  --color-info: var(--color-ci-blue-500);
+
+  --color-info-background-light: var(--color-ci-blue-950);
+  --color-info-background: var(--color-ci-blue-900);
+  --color-info-background-dark: var(--color-ci-blue-800);
+
+  --color-info-border: var(--color-ci-blue-800);
+
+  --color-info-foreground-light: var(--color-ci-blue-300);
+  --color-info-foreground: var(--color-ci-blue-200);
+  --color-info-foreground-dark: var(--color-ci-blue-100);
+
+  /* ========================================================================
+   * WARNING
+   * ====================================================================== */
+
+  --color-warning: var(--color-ci-amber-400);
+
+  --color-warning-surface-light: var(--color-ci-amber-950);
+  --color-warning-surface: var(--color-ci-amber-900);
+  --color-warning-surface-dark: var(--color-ci-amber-800);
+
+  --color-warning-border: var(--color-ci-amber-800);
+
+  --color-warning-foreground-light: var(--color-ci-amber-300);
+  --color-warning-foreground: var(--color-ci-amber-200);
+  --color-warning-foreground-dark: var(--color-ci-amber-100);
+
+  /* ========================================================================
+   * DANGER
+   * ====================================================================== */
+
+  --color-danger: var(--color-ci-red-500);
+
+  --color-danger-background-light: var(--color-ci-red-950);
+  --color-danger-background: var(--color-ci-red-900);
+  --color-danger-background-dark: var(--color-ci-red-800);
+
+  --color-danger-border: var(--color-ci-red-800);
+
+  --color-danger-foreground-light: var(--color-ci-red-300);
+  --color-danger-foreground: var(--color-ci-red-200);
+  --color-danger-foreground-dark: var(--color-ci-red-100);
+}

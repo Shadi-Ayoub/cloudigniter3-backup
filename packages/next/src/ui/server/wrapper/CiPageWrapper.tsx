@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { ciGetServerLocale } from "@cloudigniter/next/server";
 import { CI_DEV_BEACON_LOGO } from "@cloudigniter/core/lib";
 import { ciStartTraceServer } from "../../../server";
 import type { CiI18nConfig, CiSettings } from "@cloudigniter/core/types";
@@ -14,7 +15,7 @@ interface CloudIgniterClientWrapperInterface {
   children: ReactNode;
 }
 
-export function CiPageWrapper({
+export async function CiPageWrapper({
   config,
   protect = true,
   children,
@@ -30,6 +31,11 @@ export function CiPageWrapper({
     event: `Rendering the <CiPageWrapper> component`,
   });
 
+  const locale = await ciGetServerLocale({
+    cookieName: config.ciConfig.i18n.cookieName,
+    defaultLocale: config.ciConfig.i18n.defaultLocale,
+  });
+
   const settings = config.settings as CiSettings;
 
   if (protect && !settings) {
@@ -38,16 +44,17 @@ export function CiPageWrapper({
 
   return (
     <CiClientWrapper
-      theme={{
+      themeConfig={{
         ...config.ciConfig.theme,
         themeProviderProps: config.ciConfig.themeProviderProps,
       }}
-      i18n={config.ciConfig.i18n as CiI18nConfig}
-      direction={config.ciConfig.direction}
+      i18nConfig={config.ciConfig.i18n as CiI18nConfig}
+      devConfig={config.ciConfig.dev}
+      locale={locale}
       protect={protect}
     >
       <CiDevBeacon
-        corePageConfig={config}
+        appPageConfig={config}
         dir="ltr"
         position="bottom-right"
         visibleWhenEnv="development"

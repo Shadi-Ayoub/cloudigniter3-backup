@@ -7,20 +7,17 @@ import { getLocale } from "next-intl/server";
 
 import { ciGetLangDir } from "@cloudigniter/core/lib";
 import { ciStartTraceServer } from "@cloudigniter/next/server";
-import { CiNextRootWrapper } from "@cloudigniter/next/ui/server";
-
-import { CiDebugProbe } from "@cloudigniter/next/ui/server";
+import { CiDebugProbe, CiNextRootWrapper } from "@cloudigniter/next/ui/server";
 
 import { Kernel, appGetServerCoreConfig } from "@/kernel/server";
-
 import "./globals.css"; // Always after importing Kernel so you can overwrite pre-defined CSS.
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default async function RootLayout({ children }: PropsWithChildren) {
+export default async function AppRootLayout({ children }: PropsWithChildren) {
   const coreConfig = appGetServerCoreConfig();
 
-  const debugEnabled = coreConfig.dev.debug?.enabled === true;
+  const debugProbeEnabled = coreConfig.dev.debug.debugProbe.enabled === true;
 
   // ─────────────────────────────────────────────────────────────
   // Log trace
@@ -51,7 +48,12 @@ export default async function RootLayout({ children }: PropsWithChildren) {
         <CiDebugProbe
           id="root-layout"
           title="Root Layout Debug Information"
-          enabled={debugEnabled}
+          options={{
+            visible: false,
+            x: 40,
+            y: 60,
+          }}
+          enabled={debugProbeEnabled}
           data={{
             component: "RootLayout",
             lang: locale,

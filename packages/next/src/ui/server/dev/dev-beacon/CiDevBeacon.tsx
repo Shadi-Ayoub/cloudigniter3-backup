@@ -4,7 +4,8 @@ import type {
   CiEnvMode,
   CiTenantScope,
 } from "@cloudigniter/core/types";
-import { CiDevBeaconWrapper } from "../../../client"; // Client boundary: DOM measurement + UI rendering
+import { CiDevBeaconWrapper } from "@ci-next/ui/client"; // Client boundary: DOM measurement + UI rendering
+import type { CiNextPageConfig } from "@ci-next/types";
 /**
  * Resolve a normalized DevEnv value for gating DevBeacon visibility.
  *
@@ -63,7 +64,7 @@ async function readTenantFromHeaders(
  * - rendering tabs and client-only content (Trace, Monaco, etc.)
  */
 export async function CiDevBeacon({
-  corePageConfig,
+  appPageConfig,
   dir = "ltr",
   position = "bottom-right",
   visibleWhenEnv = "development",
@@ -73,7 +74,7 @@ export async function CiDevBeacon({
   extraTabSpecs = [],
   viewportTopOffset = "120px",
   viewportBottomOffset = "0px",
-}: CiDevBeaconProps) {
+}: CiDevBeaconProps<CiNextPageConfig>) {
   const resolvedEnv = resolveEnv(env);
 
   // Visibility gate: keep DevBeacon completely out of the tree when disabled.
@@ -81,9 +82,9 @@ export async function CiDevBeacon({
     visibleWhenEnv === null ||
     String(visibleWhenEnv).toLowerCase() === String(resolvedEnv).toLowerCase();
 
-  if (!isVisible) return null;
+  // if (!isVisible) return null;
 
-  const tenant = await readTenantFromHeaders(corePageConfig.headers ?? {});
+  const tenant = await readTenantFromHeaders(appPageConfig.headers ?? {});
 
   // Pass only plain (serializable) values into the Client boundary.
   return (

@@ -68,7 +68,7 @@ export function CiPageShell({
         </div>
       </section>
 
-      {loaderSlot}
+      {!isLoginPage ? loaderSlot : null}
     </>
   );
 }

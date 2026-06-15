@@ -18,47 +18,47 @@ export const routes: CiRoutesMap = {
   },
   "/dashboard/auth": {
     title: "Manage Authorization",
-    namespace: "authorization",
+    namespace: "dashboard.auth",
     protected: true,
   },
   "/dashboard/dev": {
     title: "Developer Toolbox",
-    namespace: "dev",
+    namespace: "dashboard.dev",
     protected: true,
   },
   "/dashboard/dev/install1": {
     title: "CloudIgniter Application Installation Page",
-    namespace: "dev",
+    namespace: "dashboard.dev.install",
     protected: false,
   },
   "/dashboard/dev/sandbox/*": {
     title: "CloudIgniter Application Sandbox Section",
-    namespace: "dev",
+    namespace: "dashboard.dev.sandbox",
     protected: true,
   },
   "/dashboard/dev/seeder/*": {
     title: "CloudIgniter Application Seeder Tool",
-    namespace: "dev",
+    namespace: "dashboard.dev.seeder",
     protected: true,
   },
   "/dashboard/settings": {
     title: "Manage Settings",
-    namespace: "systemSettings",
+    namespace: "dashboard.settings",
     protected: true,
   },
   "/dashboard/tenants": {
     title: "Manage Tenants",
-    namespace: "tenants",
+    namespace: "dashboard.tenants",
     protected: true,
   },
   "/dashboard/theme": {
     title: "Theme Presentation",
-    namespace: "theme",
+    namespace: "dashboard.theme",
     protected: false,
   },
   "/dashboard/users/*": {
     title: "List Users",
-    namespace: "users",
+    namespace: "dashboard.users",
     protected: true,
   },
   "/login": {

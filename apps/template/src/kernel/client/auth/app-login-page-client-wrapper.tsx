@@ -37,17 +37,18 @@ export function AppLoginPageClientWrapper({
   );
 
   const props = ciBuildAuthenticatorProps(amplifyAuthenticatorCustomProps);
-
+  // throw new Error(`Authenticator props: ${JSON.stringify(props)}`);
   return (
     <CiPage
-      name={"dashboard-homepage"}
+      name={"login-homepage"}
       setup={{
         showPageHeader: false,
         layoutHasHeader: false,
         layoutHasFooter: false,
+        // showBreadcrumbs: false,
       }}
       config={config}
-      login={true}
+      login
     >
       <CiNextAwsLoginPage
         outputs={amplifyOutputs}

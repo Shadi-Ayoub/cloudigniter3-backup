@@ -12,7 +12,7 @@ const RTL_LANGS = new Set([
 
 export function ciGetLangDir(locale?: string | null): "rtl" | "ltr" {
   if (!locale) return "ltr";
-
+  // throw new Error(`ciGetLangDir locale = ${locale}, ${typeof locale}`);
   const lang = locale.split(/[-_]/, 1)[0]?.toLowerCase() ?? "";
   return RTL_LANGS.has(lang) ? "rtl" : "ltr";
 }

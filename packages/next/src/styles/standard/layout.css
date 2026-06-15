@@ -1,6 +1,6 @@
 @layer components {
   .ci-body {
-    @apply dark:bg-muted-900 h-dvh min-h-0 overflow-hidden bg-gray-50;
+    @apply dark:bg-muted h-dvh min-h-0 overflow-hidden bg-gray-50;
   }
 
   /* .ci-main is the fixed inset frame: keep ONLY insets, NO padding */
@@ -19,7 +19,7 @@
   }
 
   .ci-main-header {
-    @apply h-primary-header-height border-muted-200 text-muted-900 dark:bg-muted-900/60 dark:text-muted-200 dark:border-muted-900 z-layout fixed inset-x-0 top-0 flex w-full items-center justify-between border-b bg-gray-50/60 shadow-md;
+    @apply h-primary-header-height border-muted-200 text-muted-900 dark:bg-muted/60 dark:text-muted-200 dark:border-muted-900 z-layout fixed inset-x-0 top-0 flex w-full items-center justify-between border-b bg-gray-50/60 shadow-md;
     margin-bottom: -1px; /* cancels the 1px border from scrollHeight */
   }
 

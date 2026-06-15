@@ -1,7 +1,0 @@
-@import 'tailwindcss';
-@import './utilities/colors.css';
-/* @import './theme-switcher.css'; */
-
-body {
-  @apply --bg-muted-600;
-}

@@ -13,7 +13,7 @@ interface MainHeaderUserBoxInterface {
 export function CiMainHeaderNavigationBox({
   config,
 }: MainHeaderUserBoxInterface) {
-  const settings = config.settings as CiSettings;
+  const mainMenuConfig = config.settings?.private.mainMenu as CiMainMenuItem[];
 
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger } = ciStartTraceServer(
@@ -31,7 +31,7 @@ export function CiMainHeaderNavigationBox({
   return (
     <nav aria-label="User Navigation" className="ci-main-header-user-box">
       <div className="ci-main-header-navigation-box">
-        <CiMainMenu config={settings.mainMenu as CiMainMenuItem[]} />
+        <CiMainMenu config={mainMenuConfig} />
       </div>
       <div className="ci-main-header-navigation-box-inner-mobile">
         {/* <MobileMenuToggle /> */}

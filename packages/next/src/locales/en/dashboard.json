@@ -1,6 +1,7 @@
 {
   "dashboard": {
     "admins": "admins",
+    "devtools": "devtools",
     "install": "install",
     "languages": "languages",
     "overview": "Overview",
@@ -9,7 +10,6 @@
     "settings": "settings",
     "tenants": "tenants",
     "theme": "theme",
-    "devtools": "devtools",
     "title": "Dashboard",
     "users": "users"
   }

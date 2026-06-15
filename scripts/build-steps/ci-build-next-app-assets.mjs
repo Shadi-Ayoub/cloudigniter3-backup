@@ -3,7 +3,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
-import { readdir, rm, mkdir, copyFile, cp } from "node:fs/promises";
+import { readdir, rm, mkdir, cp, copyFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 
 const cwd = process.cwd();
@@ -71,7 +71,7 @@ function ciBuildTailwindCss(inputCssFile, outputCssFile) {
   );
 
   if (result.error) {
-    console.error(`❌ Failed to start Tailwind CSS CLI.`);
+    console.error("❌ Failed to start Tailwind CSS CLI.");
     console.error(result.error.message);
     process.exit(1);
   }
@@ -85,7 +85,7 @@ function ciBuildTailwindCss(inputCssFile, outputCssFile) {
       console.error(result.stderr.trimEnd());
     }
 
-    console.error(`❌ Tailwind CSS build failed.`);
+    console.error("❌ Tailwind CSS build failed.");
     console.error(`Input:  ${inputCssFile}`);
     console.error(`Output: ${outputCssFile}`);
 
@@ -94,9 +94,79 @@ function ciBuildTailwindCss(inputCssFile, outputCssFile) {
 }
 
 /**
+ * Copies the source theme entry file and modular theme folder.
+ *
+ * This intentionally copies only:
+ * - theme.css
+ * - theme/**
+ *
+ * It does not copy other root-level CSS files beside the compiled style.css.
+ *
+ * @param {object} input - Copy input.
+ * @param {string} input.themeSrcDir - Source style theme directory.
+ * @param {string} input.outputThemeDir - Destination style theme directory.
+ * @returns {Promise<{ copiedThemeCss: boolean; copiedThemeFolder: boolean }>}
+ */
+async function ciCopyThemeSourceAssets({ themeSrcDir, outputThemeDir }) {
+  const srcThemeCss = path.join(themeSrcDir, "theme.css");
+  const destThemeCss = path.join(outputThemeDir, "theme.css");
+
+  const srcThemeFolder = path.join(themeSrcDir, "theme");
+  const destThemeFolder = path.join(outputThemeDir, "theme");
+
+  let copiedThemeCss = false;
+  let copiedThemeFolder = false;
+
+  if (ciPathExists(srcThemeCss)) {
+    await copyFile(srcThemeCss, destThemeCss);
+    copiedThemeCss = true;
+  }
+
+  if (ciPathExists(srcThemeFolder)) {
+    await cp(srcThemeFolder, destThemeFolder, {
+      recursive: true,
+    });
+
+    copiedThemeFolder = true;
+  }
+
+  return {
+    copiedThemeCss,
+    copiedThemeFolder,
+  };
+}
+
+/**
  * Builds package theme styles.
  *
- * @returns {Promise<{ builtThemes: string[]; skippedThemes: string[] }>}
+ * Expected source structure:
+ *
+ * src/styles/<theme-name>/
+ *   style.css
+ *   theme.css
+ *   theme/
+ *     foundations/*.css
+ *     colors/*.css
+ *     utilities/*.css
+ *
+ * Output structure:
+ *
+ * dist/styles/<theme-name>/
+ *   style.css
+ *   theme.css
+ *   theme/
+ *     foundations/*.css
+ *     colors/*.css
+ *     utilities/*.css
+ *
+ * @returns {Promise<{
+ *   builtThemes: Array<{
+ *     name: string;
+ *     copiedThemeCss: boolean;
+ *     copiedThemeFolder: boolean;
+ *   }>;
+ *   skippedThemes: string[];
+ * }>}
  */
 async function ciBuildStyles() {
   const builtThemes = [];
@@ -140,10 +210,9 @@ async function ciBuildStyles() {
   for (const theme of themes) {
     const themeSrcDir = path.join(srcStylesDir, theme);
     const outputThemeDir = path.join(destStylesDir, theme);
+
     const inputCssFile = path.join(themeSrcDir, "style.css");
     const outputCssFile = path.join(outputThemeDir, "style.css");
-    const srcThemeCss = path.join(themeSrcDir, "theme.css");
-    const destThemeCss = path.join(outputThemeDir, "theme.css");
 
     if (!ciPathExists(inputCssFile)) {
       skippedThemes.push(theme);
@@ -156,11 +225,18 @@ async function ciBuildStyles() {
 
     ciBuildTailwindCss(inputCssFile, outputCssFile);
 
-    if (ciPathExists(srcThemeCss)) {
-      await copyFile(srcThemeCss, destThemeCss);
-    }
+    const { copiedThemeCss, copiedThemeFolder } = await ciCopyThemeSourceAssets(
+      {
+        themeSrcDir,
+        outputThemeDir,
+      },
+    );
 
-    builtThemes.push(theme);
+    builtThemes.push({
+      name: theme,
+      copiedThemeCss,
+      copiedThemeFolder,
+    });
   }
 
   return {
@@ -247,7 +323,21 @@ async function ciBuildNextAppAssets() {
 
   if (builtThemes.length > 0) {
     for (const theme of builtThemes) {
-      outputLines.push(`Built CSS theme: ${theme}`);
+      const copiedAssets = [];
+
+      if (theme.copiedThemeCss) {
+        copiedAssets.push("theme.css");
+      }
+
+      if (theme.copiedThemeFolder) {
+        copiedAssets.push("theme/");
+      }
+
+      outputLines.push(
+        `Built CSS theme: ${theme.name} (${
+          copiedAssets.join(", ") || "no source theme assets"
+        } copied)`,
+      );
     }
   }
 

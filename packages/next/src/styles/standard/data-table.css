@@ -38,11 +38,11 @@
   }
 
   .ci-dt-pagination-button {
-    @apply bg-muted-100/40 rounded border-[1px] text-sm font-medium;
+    @apply bg-muted/40 rounded border-[1px] text-sm font-medium;
   }
 
   .ci-dt-pagination-button.active {
-    @apply bg-muted-900 text-muted-50;
+    @apply bg-muted text-muted-50;
   }
 
   .ci-dt-sort-indicator-active {

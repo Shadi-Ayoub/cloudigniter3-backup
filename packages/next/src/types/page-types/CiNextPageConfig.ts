@@ -1,6 +1,6 @@
 import type { CiPageCoreConfig } from "@cloudigniter/core/types";
 import type {
-  CiMainMenuItem,
+  // CiMainMenuItem,
   CiCoreConfig,
   CiResolvedCoreConfig,
 } from "@cloudigniter/core/types";
@@ -8,6 +8,6 @@ import type {
 import type { CiNextResolvedConfig } from "@ci-next/types";
 
 export type CiNextPageConfig = CiPageCoreConfig & {
-  menu?: CiMainMenuItem[];
+  // mainMenu?: CiMainMenuItem[];
   ciConfig: CiCoreConfig & CiResolvedCoreConfig & CiNextResolvedConfig;
 };

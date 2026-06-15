@@ -1,6 +1,6 @@
 @layer components {
   .spinner-box {
-    @apply dark:bg-muted-900/50 z-overlay-1 fixed inset-0 flex items-center justify-center bg-white/50 backdrop-blur-sm;
+    @apply dark:bg-muted/50 z-overlay-1 fixed inset-0 flex items-center justify-center bg-white/50 backdrop-blur-sm;
   }
 
   .spinner-inner {

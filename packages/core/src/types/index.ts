@@ -45,31 +45,65 @@ export type {
 export type { CiCookieOptions, CiCookiePriority } from "./cookie-types";
 
 // ─────────────────────────────────────────────────────────────
+// dev
+// ─────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
 // debug prob
 // ─────────────────────────────────────────────────────────────
-export type { CiDebugProbeProps } from "./dev-types/debug-probe-types";
+export type {
+  // debug probe
+  CiDebugProbeProps,
 
-// ─────────────────────────────────────────────────────────────
-// devbeacon
-// ─────────────────────────────────────────────────────────────
-export {
-  type CiDevBeaconButtonProps,
-  type CiDevBeaconClientProps,
-  type CiDevBeaconExtraTab,
-  type CiDevBeaconExtraTabSpec,
-  type CiDevBeaconLogoSpec,
-  type CiDevBeaconPosition,
-  type CiDevBeaconProps,
-  type CiDevBeaconSize,
-  type CiDevBeaconSectionToolsProps,
-  type CiDevBeaconSideTabsListProps,
-  type CiDevBeaconSectionStatusProps,
-  type CiDevBeaconTabValue,
-  type CiDevBeaconTenantInfo,
-  type CiDevBeaconTraceLogViewerTextProps,
-  type CiDevBeaconTraceTabProps,
-  type CiDevBeaconWrapperProps,
-} from "./dev-types/devbeacon-types";
+  // devbeacon
+  CiDevBeaconButtonProps,
+  CiDevBeaconClientProps,
+  CiDevBeaconExtraTab,
+  CiDevBeaconExtraTabSpec,
+  CiDevBeaconLogoSpec,
+  CiDevBeaconPosition,
+  CiDevBeaconProps,
+  CiDevBeaconSize,
+  CiDevBeaconSectionToolsProps,
+  CiDevBeaconSideTabsListProps,
+  CiDevBeaconSectionStatusProps,
+  CiDevBeaconTabValue,
+  CiDevBeaconTenantInfo,
+  CiDevBeaconTraceLogViewerTextProps,
+  CiDevBeaconTraceTabProps,
+  CiDevBeaconWrapperProps,
+
+  // sandbox
+  CiAsyncResponseFunction,
+  CiGenericObject,
+  CiSandboxApiFunctionDefinition,
+  CiSandboxButtonsGridConfig,
+  CiSandboxCallbackFunction,
+  CiSandboxMethodDefinition,
+
+  // seeder
+  CiClearSeederInterface,
+  CiSeederAction,
+  CiSeederErrorBody,
+  CiSeederInput,
+  CiSeederInputItem,
+  CiSeedItemDef,
+  CiSeederItemKey,
+  CiSeedMarkerDdbItem,
+  CiSeederResponseBody,
+
+  // trace
+  CiBuildCanonicalInput,
+  CiCanonicalRecord,
+  CiLogEntryType,
+  CiMetricConfig,
+  CiStartTraceInit,
+  CiStartTraceResult,
+  CiTimerRecord,
+  CiTraceConfig,
+  CiTraceLoggerFactory,
+  CiTraceLoggerLike,
+  CiTraceLoggerOptions,
+} from "./dev-types";
 
 // ─────────────────────────────────────────────────────────────
 // email
@@ -101,12 +135,18 @@ export type {
 } from "./graphql-types";
 
 // ─────────────────────────────────────────────────────────────
+// icon
+// ─────────────────────────────────────────────────────────────
+export type { CiAppIcon, CiBuiltInIcon, CiIconName } from "./icon-types";
+
+// ─────────────────────────────────────────────────────────────
 // i18n
 // ─────────────────────────────────────────────────────────────
 export {
   type CiExtendedI18nConfig,
   type CiGetServerLocaleInterface,
   type CiI18nConfig,
+  type CiI18nSettings,
   type CiLocale,
   type CiLocaleDirection,
   type CiLocaleSwitcherProps,
@@ -174,41 +214,22 @@ export type {
 } from "./route-types";
 
 // ─────────────────────────────────────────────────────────────
-// sandbox
-// ─────────────────────────────────────────────────────────────
-export type {
-  CiAsyncResponseFunction,
-  CiGenericObject,
-  CiSandboxApiFunctionDefinition,
-  CiSandboxButtonsGridConfig,
-  CiSandboxCallbackFunction,
-  CiSandboxMethodDefinition,
-} from "./dev-types/sandbox-types";
-
-// ─────────────────────────────────────────────────────────────
 // security
 // ─────────────────────────────────────────────────────────────
 export type { CiSecuritySettings } from "./security-types";
 
 // ─────────────────────────────────────────────────────────────
-// seeder
-// ─────────────────────────────────────────────────────────────
-export type {
-  CiClearSeederInterface,
-  CiSeederAction,
-  CiSeederErrorBody,
-  CiSeederInput,
-  CiSeederInputItem,
-  CiSeedItemDef,
-  CiSeederItemKey,
-  CiSeedMarkerDdbItem,
-  CiSeederResponseBody,
-} from "./dev-types/seeder-types";
-
-// ─────────────────────────────────────────────────────────────
 // settings
 // ─────────────────────────────────────────────────────────────
 export type {
+  // newest
+  CiAppSettings,
+  CiCoreSettings,
+  CiPrivateCoreSettings,
+  CiPublicCoreSettings,
+  CiUserCoreSettings,
+
+  // old
   CiBuildSettingsKeysInput,
   CiSettingsContextValue,
   // CiCanOverrideSettingsValue,
@@ -332,21 +353,5 @@ export type {
   CiClientThemeConfig,
   CiThemeAttributeStrategy,
   CiThemeConfig,
+  CiThemeSettings,
 } from "./theme-types";
-
-// ─────────────────────────────────────────────────────────────
-// trace
-// ─────────────────────────────────────────────────────────────
-export type {
-  CiBuildCanonicalInput,
-  CiCanonicalRecord,
-  CiLogEntryType,
-  CiMetricConfig,
-  CiStartTraceInit,
-  CiStartTraceResult,
-  CiTimerRecord,
-  CiTraceConfig,
-  CiTraceLoggerFactory,
-  CiTraceLoggerLike,
-  CiTraceLoggerOptions,
-} from "./dev-types/trace-types";

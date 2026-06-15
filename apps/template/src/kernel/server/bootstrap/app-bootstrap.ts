@@ -22,14 +22,18 @@ import type { CiNextPageConfig } from "@cloudigniter/next/types";
 
 import { ciPrepareConfig } from "./ci-prepare-config";
 
-import outputs from "@/../amplify_outputs.json";
+import { appGetSettings } from "@/kernel/server";
+// import outputs from "@/../amplify_outputs.json";
 
-const amplifyOutputs = outputs as CiAmplifyOutputs;
+// const amplifyOutputs = outputs as CiAmplifyOutputs;
 
 export const appBootstrap = cache(async () => {
   try {
     const tenantContext = await ciGetTenantContext();
     const config = await appGetServerAllConfig();
+
+    const amplifyOutputs = config.amplifyOutputs as CiAmplifyOutputs;
+
     const user = await ciAwsGetCurrentUser(amplifyOutputs);
 
     const authMode = user.isAuthenticated
@@ -45,8 +49,7 @@ export const appBootstrap = cache(async () => {
     //   userSettingIds: authMode === "userPool" ? ["notifications"] : [],
     // });
 
-    const settings = {};
-
+    const settings = await appGetSettings();
     const status = await ciGetServerStatus(settings, amplifyOutputs);
     const ciHeaders = await ciGetHeaders();
     const ciCookies = await ciGetCookies();
@@ -55,17 +58,17 @@ export const appBootstrap = cache(async () => {
 
     let pageConfig: CiNextPageConfig;
 
-    if (settings !== undefined && status !== undefined) {
-      pageConfig = ciPrepareConfig(
-        config,
-        settings,
-        ciHeaders,
-        ciCookies,
-        status,
-      );
-    } else {
-      pageConfig = ciPrepareConfig(config);
-    }
+    // if (settings !== undefined && status !== undefined) {
+    pageConfig = ciPrepareConfig(
+      config,
+      settings,
+      ciHeaders,
+      ciCookies,
+      status,
+    );
+    // } else {
+    // pageConfig = ciPrepareConfig(config);
+    // }
 
     return pageConfig;
   } catch (error) {
