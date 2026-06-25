@@ -1,0 +1,24 @@
+---
+title: Page Client Wrapper
+---
+
+# Page Client Wrapper
+
+Is the client-side entry point for a CloudIgniter route and is always implemented as a **Client Component**
+colocated with the **[Route Page](RoutePage.mdx)**. Its role is to receive the server-provided configuration payload
+and **translate it into a fully wired page experience** by assembling page-specific input props, configuring the
+CloudIgniter page shell (title, breadcrumbs, header actions, layout options), and injecting any application-specific
+extensions such as custom schemas, defaults, tabs, or UI components. The Page Client Wrapper renders the
+CloudIgniter `<Page>` container and the inner page UI component, and it owns all interactive behavior, including
+event handlers, client-side state, navigation, and visual feedback. By centralizing UI composition and interactivity
+in the wrapper, CloudIgniter ensures consistent page structure, extensibility, and a strict separation from
+server-only logic.
+
+:::tip Guidelines
+
+- Create the `page-client-wrapper.tsx` file in the same folder as the **[Route Page](RoutePage.mdx)**. This is
+  CloudIgniter's **Page Client Wrapper**.
+- Make sure it is a **Client Component**.
+- Use the **[Page Component](PageComponent.mdx)** to define how a page behaves in the CloudIgniter application.
+
+:::

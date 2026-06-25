@@ -1,0 +1,20 @@
+---
+title: Language Switcher
+sidebar_position: 5
+---
+
+import ImageWrapper from "../../src/components/ImageWrapper";
+import languageSwitcher from "../assets/images/language-switcher.png";
+
+Cloudigniter provides a language switcher component for your application. This component will show up only if multiple languages are detected. If the application uses only one language, this component will not show.
+
+<ImageWrapper
+  imgUrl={languageSwitcher}
+  caption="Application Language Switcher"
+/>
+
+Upon selecting a locale from the Language Switcher dropdown menu, the selection will be persisted in a cookie in order to save selection for following requests.
+
+:::note
+The default name of the cookie, `ci-locale`, can be changed fron configurations if needed.
+:::

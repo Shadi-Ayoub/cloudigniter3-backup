@@ -1,0 +1,53 @@
+---
+title: Framework Boot
+sidebar_position: 2
+---
+
+# 1. Framework Boot
+
+CloudIgniter uses next-intl's plugin (see <a href="https://next-intl.dev/" target="_blank">next-intl</a>) to
+hook into Next.js very early in the build/runtime pipeline. This is where we allow external directories, adjust
+webpack fallbacks for client bundles, and—crucially—attach the `getRequestConfig` you'll see in the next section.
+
+```ts {2,6,34} title="next.config.ts" showLineNumbers
+import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+
+console.log("▶ next.config.js loaded");
+
+const withNextIntl = createNextIntlPlugin("./src/kernel/i18n/request.ts");
+
+const nextConfig: NextConfig = {
+  // 1. Allow code outside the project root
+  experimental: {
+    externalDir: true,
+  },
+
+  // 2. Tell Next.js to transpile your linked/local package
+  // transpilePackages: ['@cloudigniter/next'],
+  // Prevents fs and path from being bundled on the client side (which causes the Module not found: Can't resolve 'fs' error).
+  // Lets you still use them freely on the server (like in layout.tsx or API routes).
+  webpack(config, { isServer }) {
+    // ensure Webpack follows your symlink
+    // config.resolve.symlinks = true;
+
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        path: false,
+      };
+    }
+
+    return config;
+  },
+};
+
+export default withNextIntl(nextConfig);
+```
+
+Three points to highlight regarding the **Next.js** configurations:
+
+1. `createNextIntlPlugin` registers your request-time locale loader (next section).
+2. `externalDir: true` enables monorepo/dev-package scenarios.
+3. Webpack fallbacks prevent server-only modules from leaking into client bundles.

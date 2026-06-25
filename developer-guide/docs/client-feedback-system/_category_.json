@@ -1,0 +1,8 @@
+{
+  "label": "Client Feedback system",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Describes how to use Cloudigniter client feedback system through its ready to use utilities"
+  }
+}

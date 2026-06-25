@@ -1,0 +1,256 @@
+---
+title: call
+category: Client APIs
+package: "@cloudigniter/next"
+availability: Client
+sidebar_position: 2
+---
+
+import ImageWrapper from "../../../src/components/ImageWrapper";
+import callApi from "../../assets/images/ci-call-api.png";
+
+# call()
+
+<ImageWrapper
+  imgUrl={callApi}
+  caption="CloudIgniter's Client calling a Route Handler"
+/>
+
+## Description
+
+`call()` is the canonical client utility used to call CloudIgniter (CI) route handlers (BFF endpoints) that implement the CI API contract:
+
+- Requests are sent as a CI `Request<T>`
+- Responses are expected as a CI `Response<Ok, Err>`
+- Errors are normalized into a predictable `Response` shape even when the runtime fails to parse JSON or the network fails. This ensures calling
+  code can handle success and failure consistently without duplicating fetch parsing logic and error mapping.
+
+:::info[Good to Know]
+
+- call() Invokes a CloudIgniter Route Handler using a consistent request/response contract and returns a typed `Response` object, with normalized error
+  handling for network failures, non-JSON payloads, and API-level errors.
+
+- `call()` uses [`fetch()`](https://reactnative.dev/docs/network#using-fetch) under the hood. The goal is that callers do not need to wrap `fetch()` in
+  their own try/catch blocks for routine API errors.
+
+- Although `call()` is safe to execute in server environments, it is categorized as a **Client API** because it represents the client-side invocation
+  contract for CloudIgniter route handlers.
+
+:::
+
+## Syntax
+
+```ts
+call<Ok, Input = unknown, Err extends object = { error: string }>(
+  url: string,
+  request?: Request<Input>,
+  options?: CallOptions
+): Promise<Response<Ok, Err>>
+```
+
+## Parameters
+
+| Name      | Type              | Description                                                                                                                                                                              |
+| --------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `url`     | `string`          | Target route handler path (for example, `/dashboard/tenants/seed`).                                                                                                                      |
+| `request` | `Request<TInput>` | CloudIgniter request payload (see [CloudIgniter Request](intro.mdx)).                                                                                                                    |
+| `options` | `CallOptions`     | Optional fetch and invocation controls used to customize transport behavior (HTTP method, headers, cancellation, and cache semantics) without changing the CI request/response contract. |
+
+---
+
+## Options
+
+`options` provides a controlled extension point around the underlying [`fetch()`](https://reactnative.dev/docs/network#using-fetch) call, which is used by the function under the hood. It is primarily used to:
+
+- Attach **diagnostic and correlation metadata** (for example, a correlation ID used to tie together client logs, route handler logs, and trace events).
+- Override the **HTTP method** when calling non-POST handlers (or when adopting REST-like semantics).
+- Support **cancellation** (abort) for long-running requests initiated by UI interactions.
+- Adjust **fetch behavior** such as cache policy and credentials handling when integrating with different runtime needs.
+
+| Name             | Type                                                             | Description                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ---------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `method`         | `'GET' \| 'POST' \| 'PUT' \| 'PATCH' \| 'DELETE'`                | Overrides the HTTP method used by the request. If omitted, `call()` uses its default method (typically `POST` in CloudIgniter’s route-handler contract).                                                                                                                                                                                                                                                            |
+| `headers`        | `Record<string, string>`                                         | Additional headers merged into the request. Use this for cross-cutting metadata such as correlation IDs, feature flags, or tenant context without modifying the `Request<TInput>` payload schema.                                                                                                                                                                                                                   |
+| `signal`         | `AbortSignal`                                                    | Enables request cancellation via [`AbortController`](https://developer.mozilla.org/en-US/docs/Web/API/AbortController). Useful for UI flows where a user navigates away, changes filters rapidly, or closes a dialog while a request is in flight.                                                                                                                                                                  |
+| `cache`          | `RequestCache`                                                   | Controls request cache behavior as defined by the Fetch API. Use only when cache semantics are explicitly required.                                                                                                                                                                                                                                                                                                 |
+| `credentials`    | `RequestCredentials`                                             | Controls whether credentials (such as cookies) are sent with the request. Use deliberately to avoid unintended authentication behavior.                                                                                                                                                                                                                                                                             |
+| `mode`           | `RequestMode`                                                    | Defines the request mode (for example, `cors`, `same-origin`). Rarely needed for standard CloudIgniter route handlers.                                                                                                                                                                                                                                                                                              |
+| `redirect`       | `RequestRedirect`                                                | Controls how redirects are handled by the underlying fetch implementation.                                                                                                                                                                                                                                                                                                                                          |
+| `referrerPolicy` | `ReferrerPolicy`                                                 | Controls the referrer information included with the request.                                                                                                                                                                                                                                                                                                                                                        |
+| `fetch`          | `Omit<RequestInit, 'method' \| 'headers' \| 'body' \| 'signal'>` | Advanced escape hatch for additional [`fetch()`](https://reactnative.dev/docs/network#using-fetch) options supported by [`RequestInit`](https://developer.mozilla.org/en-US/docs/Web/API/RequestInit) (for example, `keepalive`, `referrer`, `integrity`, `priority`). `call()` will ignore/override any attempt to set `method`, `headers`, `body`, or `signal` through this property to preserve the CI contract. |
+
+### Examples
+
+**Add a correlation ID header**
+
+Use this pattern when you want to correlate:
+
+- client logs,
+- route handler logs, and
+- trace sessions (for example, in startTrace())
+
+```ts {2}
+const res = await call("/dashboard/tenants/seed", request, {
+  headers: { "x-ci-correlation-id": crypto.randomUUID() },
+});
+```
+
+**Abort a request when the user cancels a UI action**
+
+```ts {4}
+const controller = new AbortController();
+
+const promise = call("/dashboard/search", request, {
+  signal: controller.signal,
+});
+
+// Later (for example, when the user closes a dialog)
+controller.abort();
+
+const res = await promise;
+if (!res.ok && res.kind === "NETWORK_ERROR") {
+  // Aborts are surfaced as fetch-level failures and normalized by `call()`.
+  console.warn("Request was cancelled by the user.");
+}
+```
+
+**Override HTTP method (advanced)**
+
+Use method overrides only when you intentionally expose non-POST route handlers and want the client contract to reflect that.
+
+```ts {4}
+const res = await call(
+  "/health/ping",
+  { input: { ping: true } },
+  { method: "PUT" }
+);
+```
+
+### Some Remarks
+
+- Call `Options` changes transport behavior only; it does not change the CloudIgniter request/response contract.
+- Prefer `headers` for cross-cutting metadata. Avoid embedding operational concerns into the `Request<TInput>` unless they are part of the domain contract.
+- If your application standardizes correlation IDs, define a single header name (for example `x-ci-correlation-id`) and use it consistently across all calls.
+
+:::info[Note on Fetch Compatibility]
+
+`options` intentionally exposes only a curated subset of [fetch()](https://reactnative.dev/docs/network#using-fetch) options as first-class fields.  
+Although additional `RequestInit` options exist, **not all of them are relevant to CloudIgniter's route-handler contract**, and many are not expected
+to be used in typical CI applications.
+
+In particular:
+
+- CloudIgniter owns the request contract (`Request<TInput>` JSON body, default headers, and response normalization).
+- Options that primarily affect low-level browser behavior (for example, referrer/integrity/priority semantics) are generally outside the scope of standard
+  CI route handler calls.
+- Use advanced options only when there is a clear, documented requirement; otherwise prefer the defaults to keep behavior consistent across the application.
+
+If you expose an escape hatch (for example, `options.fetch`), treat it as an advanced capability and avoid using it as the default pattern.
+
+:::
+
+## Return Value
+
+Returns a `Promise<Response<Ok, Err>>`.
+
+On success, the returned value is typically:
+
+```ts
+{
+  statusCode: 200,
+  body: <Ok>
+}
+
+```
+
+On failure, `call()` returns a normalized error response:
+
+```ts
+{
+  statusCode: 400 | 404 | 500,
+  body: { error: string, fieldErrors?: Record<string, string> }
+}
+
+```
+
+## Examples
+
+**Basic POST Request**
+
+```ts
+import type {
+  Request,
+  Response,
+  CiEnvMode,
+  SeedTenantItem,
+  SeedTenantsResult,
+} from "@cloudigniter/next/types";
+import { call } from "@cloudigniter/next/utility";
+
+const envMode = process.env.NEXT_PUBLIC_CI_ENV_MODE as CiEnvMode;
+
+const request: Request<SeedTenantItem[]> = {
+  input: [
+    { tenantId: "tenant:001", name: "School A", slug: "school-a" },
+    { tenantId: "tenant:002", name: "School B", slug: "school-b" },
+  ],
+  envMode,
+};
+
+const response = await call<SeedTenantItem[], SeedTenantsResult>(
+  "/dashboard/tenants/seed",
+  request
+);
+
+if (result.ok) {
+  console.log("Seed tenants success:", response.body);
+} else {
+  console.error("Seed tenants failed:", (response.body as any).error);
+}
+```
+
+**Handling Non-JSON Responses Safely**
+
+```ts
+const res = await call<{ ping: true }, { ok: true }>("/health/ping", {
+  input: { ping: true },
+});
+
+if (!result.ok) {
+  // `call()` normalizes non-JSON or malformed responses into a standard error shape
+  console.warn("Ping failed:", (res.body as any).error);
+}
+```
+
+**Typed Error Handling (Field Errors)**
+
+```ts
+type FormErr = { error: string; fieldErrors?: Record<string, string> };
+
+const res = await call<{ ok: true }, { email: string }, FormErr>(
+  "/auth/invite",
+  { input: { email: "invalid" } }
+);
+
+if (res.statusCode === 400) {
+  console.log("Error:", res.body.error);
+  console.log("Field errors:", res.body.fieldErrors);
+}
+```
+
+## Notes
+
+- `call()` should be used as the only route-handler invocation mechanism in CloudIgniter apps to enforce a consistent contract.
+- Implement route handlers to always return a `CloudIgniter Response` shape, and set the HTTP status code to match `response.statusCode`.
+- `call()` is designed to treat the following cases as first-class errors and normalize them:
+  - Network failures (request cannot be completed)
+  - Non-JSON responses where JSON is expected
+  - HTTP !ok statuses (4xx/5xx) even when the payload is missing or malformed
+  - API-level errors where response.statusCode >= 400
+
+## See Also
+
+- [Request](https://reactnative.dev/docs/network#using-fetch)
+- [Response](https://reactnative.dev/docs/network#using-fetch)
+- [prepareApiRequest](https://reactnative.dev/docs/network#using-fetch)
+- [Route Handler Strategy](https://reactnative.dev/docs/network#using-fetch)

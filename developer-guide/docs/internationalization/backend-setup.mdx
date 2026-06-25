@@ -1,0 +1,23 @@
+---
+title: Backend Setup
+sidebar_position: 4
+---
+
+import ImageWrapper from "../../src/components/ImageWrapper";
+import requestMiddleware from "../assets/images/request.ts.png";
+
+In order to use the `useTranslation()` hook to get translated messages/tokens or use the `getLocale()` function to get the current locale, a certain code was tailored in the backend. This code is executed on the server for each request before returning the next page.
+
+```tsx title="using useTranslation() and getLocale() on the server"
+const locale = await i18n.getLocale();
+const t = useTranslations("login");
+```
+
+<ImageWrapper
+  imgUrl={requestMiddleware}
+  caption="Resolving current locale and messages on the Server"
+/>
+
+:::note
+When the application is set to use only one language, no cookie will be stored in the browser. In this case, the default locale will be the one set in the configurations.
+:::

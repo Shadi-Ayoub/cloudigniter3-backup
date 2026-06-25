@@ -1,0 +1,76 @@
+---
+title: CloudIgniter Response<T>
+sidebar_position: 6
+---
+
+## CloudIgniter `Response<T>`
+
+## Core API Types
+
+```ts {6-10} title="Response<T>" showLineNumbers
+import { type AppSyncResolverEvent, type Context } from "aws-lambda";
+
+export type InputArgs = { inputString?: string | null };
+export type LambdaEvent = AppSyncResolverEvent<InputArgs, any>;
+
+export type Response<
+  Ok = unknown,
+  Err extends object = { error: string; fieldErrors?: FieldErrors },
+  S extends ErrorStatus = ErrorStatus
+> = ApiResult<Ok, Err, S> & ApiResultExtra;
+
+export type ApiOk<T = unknown> = { statusCode: 200; body: T };
+
+//Error
+export type FieldErrors = Record<string, string>;
+export type ErrorStatus = 400 | 403 | 404 | 500;
+export type ApiErr<
+  T extends object = { error: string; fieldErrors?: FieldErrors },
+  S extends ErrorStatus = 400
+> = {
+  statusCode: S;
+  body: T;
+};
+
+export type ApiResult<
+  Ok = unknown,
+  Err extends object = { error: string; fieldErrors?: FieldErrors },
+  S extends ErrorStatus = 400
+> = ApiOk<Ok> | ApiErr<Err, S>;
+
+export type ApiResultExtra = {
+  message?: string; // Description of the status or outcome
+  parameter?: string | null; // Passed parameter (json string)
+  response?: unknown;
+  event?: LambdaEvent;
+  context?: Context;
+  env?: string[];
+  metrics?: unknown | null;
+  lastEventLog?: unknown | null;
+};
+```
+
+```ts {14-20} title="GraphQLResponse" showLineNumbers
+export type JsonPrimitive = string | number | boolean | null | object;
+export type JsonValue =
+  | JsonPrimitive
+  | { [k: string]: JsonValue }
+  | JsonValue[];
+export type Nullable<T> = T | null;
+
+export interface GraphQLError {
+  message: string;
+  [key: string]: any;
+}
+
+// Result object from the API (Amplify Data)
+export type GraphQLResponse = {
+  data: Nullable<JsonValue>;
+  errors?: GraphQLError[];
+  extensions?: {
+    [key: string]: unknown;
+  };
+};
+```
+
+CloudIgniter mandates strict usage of these shapes for every client → backend exchange.

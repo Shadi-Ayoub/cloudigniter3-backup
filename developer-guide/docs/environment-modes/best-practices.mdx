@@ -1,0 +1,30 @@
+---
+title: Best Practices
+sidebar_position: 5
+---
+
+# Best Practices (“Do & Don’t”)
+
+## ✔ DO
+
+- Set `CI_ENV_MODE=live` for production-like deployments
+- Commit `.env.local` with:
+
+  ```env
+  CI_ENV_MODE=live
+  NEXT_PUBLIC_CI_ENV_MODE=live
+  ```
+
+- Use test mode for automated test suites
+- Use sandbox mode for local experimentation
+- Always scope queries by environment mode (already automatic)
+- Always include `envMode` in corresponding tables records
+
+## ❌ DON’T
+
+- ❌ Never allow test or sandbox mode in real production
+- ❌ Never run cleanup scripts in `live` mode
+- ❌ Never use seed data in `live` mode
+- ❌ Never mix test records with real records
+- ❌ Never bypass the PK scoping logic
+- ❌ Never expose destructive sandbox features to end users

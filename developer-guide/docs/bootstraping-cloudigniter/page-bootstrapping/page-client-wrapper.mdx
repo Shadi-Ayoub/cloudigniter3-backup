@@ -1,0 +1,172 @@
+---
+title: Page Client Wrapper
+sidebar_position: 3
+---
+
+# CloudIgniter Page Client Wrapper
+
+This section explains how to create the **Page Client Wrapper** and why the pattern exists.
+CloudIgniter suggests creating the `page-client-wrapper.tsx` file as the **interactive UI entry** for
+the route. The file is assumed to reside side-by-side with the **Route Page** (`page.tsx`) file in the
+route folder. Below is an example of a typical route folder, where the client wrapper file is a sibling
+of the `page.tsx` file:
+
+```pgsql
+app/<route>/
+  page.tsx                  # Server Component (route entry)
+  page-client-wrapper.tsx   # sibling to page.tsx (UI entry)
+  components/               # optional, client-only UI pieces
+  _lib/                     # optional, route-local helpers
+```
+
+## Why CloudIgniter uses a Client Wrapper
+
+CloudIgniter enforces a Server → Client split for any route segment to:
+
+- Keep **bootstrapping** on the server (tenant, auth, locale, settings, env mode, etc).
+- Prevent accidental **static optimization** and stale config leakage.
+- Keep pages consistent: every route has the same mental model and structure.
+- Allow rich UI composition (Page layout, headers, breadcrumbs, actions) with client interactivity.
+
+:::tip Rule of thumb
+**Route Page** (`page.tsx`) decides _what data/config to load_; **Page Client Wrapper** (`PageClientWrapper`)
+decides _how the page behaves and renders_. All UI interactions live here (or in children).
+:::
+
+## Server → Client Split Strategy
+
+As explained in the previous [section](page.mdx), CloudIgniter enforces a Server → Client split for a **Route Segment Page**.
+The **Route Page** (`page.tsx`):
+
+- Imports the wrapper from `./page-client-wrapper`
+- Runs server bootstrapping (using `bootstrap()`)
+- Forces dynamic rendering when runtime context is involved
+- Passes a JSON-safe `config` object and specific generated data to the wrapper
+
+The **Page Client Wrapper** (`page-client-wrapper.tsx`):
+
+- Must start with `'use client'`;
+- Receives global configurations, and the specific data, and transforms it into:
+  - UI props needed by the actual page component
+  - layout setup for the CloudIgniter `<Page />` core component
+- Renders `<Page>` + the inner page UI component
+- Hosts client-only interactions: buttons, modals, stores, hooks, navigation, etc.
+
+:::info
+`page-client-wrapper.tsx` is the **interactive UI entry** for the route. It should:
+
+- Receive initial server payload (config, initialData, etc.)
+- Initialize client-side providers/stores if needed
+- Render the interactive UI tree (forms, tables, modals, tabs, etc.)
+- Perform client-only effects (listeners, toasts, navigation, etc.)
+
+:::
+
+## Anatomy of PageClientWrapper
+
+:::note CloudIgniter Page Client Wrapper Example
+
+```ts showLineNumbers
+'use client';
+
+import { SettingOutlined, ReloadOutlined } from '@ant-design/icons';
+
+import type {
+  CloudIgniterPageConfig,
+  PageSetup,
+  SettingsPageProps,
+} from '@cloudigniter/next/types';
+import { SettingsPage } from '@cloudigniter/next/ui/pages';
+import {
+  extendedSettingsDefaultValues,
+  extendedSettingsZodSchema,
+} from '@/custom/settings';
+import { Page, PageHeaderActionButton } from '@cloudigniter/next/ui/layout';
+
+interface PageClientWrapperInterface {
+  config: CloudIgniterPageConfig;
+}
+export function PageClientWrapper({ config }: PageClientWrapperInterface) {
+  const input: SettingsPageProps = {
+    input: {
+      settings: config.settings ?? {},
+      values: extendedSettingsDefaultValues, // pass the defaults of the extended settings
+      extendedZodSchema: extendedSettingsZodSchema,
+      extendedTabs: [],
+      direction: config.ciConfig.direction,
+    },
+  };
+
+  const setup: PageSetup = {
+    title: 'System Settings',
+    subtitle: 'Manage general and advanced platform settings',
+    icon: <SettingOutlined className='text-muted-foreground h-6 w-6' />,
+    actions: [
+      <PageHeaderActionButton
+        key='refresh-page-btn'
+        icon={<ReloadOutlined />}
+        onClick={() => console.log('clicked')}
+        ariaLabel='Manage Settings'
+        title='Manage System Settings'
+      />,
+    ],
+    showPageHeader: false,
+    showBreadcrumbs: true,
+    breadcrumbs: [
+      { i18nKey: 'common.dashboard', href: '/dashboard' },
+      { i18nKey: 'systemSettings.settings' }, // Final/current item: no href (or set current: true)
+    ],
+    includeHomeInBreadcrumbs: true,
+    homeHref: '/',
+    homeI18nKey: 'common.home',
+  };
+
+  return (
+    <Page name={'dashboard-settings'} setup={setup} config={config}>
+      <SettingsPage {...input} />
+    </Page>
+  );
+}
+```
+
+:::
+
+Below are the required parts of the wrapper.
+
+### Client directive
+
+The wrapper is a Client Component, therefore always add the `'use client';` line in the beginning.
+
+### Imports (UI + types + extensions)
+
+A CloudIgniter wrapper typically imports:
+
+- Icons and UI primitives (e.g., Ant Design icons)
+- CloudIgniter core types (CloudIgniterPageConfig, PageSetup, etc.)
+- The actual page UI component (e.g., SettingsPage)
+- Your project extensions (schemas, defaults, extra tabs, etc.)
+- The CloudIgniter `<Page />` layout + header action components
+
+### Wrapper props interface
+
+Keep wrapper props small (minimal and stable). Usually you only need `config: CloudIgniterPageConfig`
+
+:::warning Constraint
+`config` must be **serializable** and safe to cross the Server → Client boundary.
+:::
+
+### Page input props object
+
+This is where you translate config into the page component's props shape.
+
+```ts title="Building the page input props object"
+const input: SettingsPageProps = {
+  input: {
+    settings: config.settings ?? {},
+    values: extendedSettingsDefaultValues,
+    extendedZodSchema: extendedSettingsZodSchema,
+    extendedTabs: [],
+    direction: config.ciConfig.direction,
+  },
+};
+```

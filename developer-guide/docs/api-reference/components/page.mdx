@@ -1,0 +1,223 @@
+---
+title: Page
+---
+
+# Page
+
+The CloudIgniter **Page** Component is a client-side layout shell that provides the standardized runtime
+environment for rendering a route's UI content. It is responsible for managing page-level user experience
+concerns—including internal scrolling, headers, breadcrumbs, internationalization hydration, loading overlays,
+and client-side instrumentation—while remaining fully decoupled from server-only logic.
+
+The component acts as the single scroll owner for a page and applies layout-aware height calculations to ensure
+consistent behavior across desktop and mobile viewports. It renders optional chrome (page header and breadcrumbs)
+based on declarative configuration and suppresses these elements for authentication or special-purpose pages when
+required.
+
+The CloudIgniter **Page** Component is configuration-driven and composition-first: it receives all runtime context
+(locale, messages, direction, tracing options) from its, presumably, parent **Route Page (`page.tsx`)** and never accesses server headers, cookies,
+or request state directly. This guarantees a clear separation of concerns between server orchestration and client
+presentation while enabling predictable, reusable page layouts across the CloudIgniter ecosystem.
+
+## Props
+
+**config?: CiPageConfig**  
+Runtime page configuration: locale/messages/direction + trace settings.
+
+**setup?: PageSetup**  
+Declarative UI configuration for the header/breadcrumb/layout participation.
+
+**login?: boolean**  
+Login pages suppress breadcrumbs/header and use different layout classes.
+
+**name?: string**  
+Optional label for trace/debug metadata.
+
+**children: ReactNode**  
+The actual page content.
+
+```ts {18,32-54,57,59} title="Example: Using the <Page> component in a Page Client Wrapper" showLineNumbers
+'use client';
+
+import { SettingOutlined, ReloadOutlined } from '@ant-design/icons';
+
+import type {
+  CloudIgniterPageConfig,
+  PageSetup,
+  SettingsPageProps,
+} from '@cloudigniter/next/types';
+import { SettingsPage } from '@cloudigniter/next/ui/pages';
+import {
+  extendedSettingsDefaultValues,
+  extendedSettingsZodSchema,
+} from '@/custom/settings';
+import { Page, PageHeaderActionButton } from '@cloudigniter/next/ui/layout';
+
+interface PageClientWrapperInterface {
+  config: CloudIgniterPageConfig;
+}
+
+export function PageClientWrapper({ config }: PageClientWrapperInterface) {
+  const input: SettingsPageProps = {
+    input: {
+      settings: config.settings ?? {},
+      values: extendedSettingsDefaultValues, // pass the defaults of the extended settings
+      extendedZodSchema: extendedSettingsZodSchema,
+      extendedTabs: [],
+      direction: config.ciConfig.direction,
+    },
+  };
+
+  const setup: PageSetup = {
+    title: 'System Settings',
+    subtitle: 'Manage general and advanced platform settings',
+    icon: <SettingOutlined className='text-muted-foreground h-6 w-6' />,
+    actions: [
+      <PageHeaderActionButton
+        key='refresh-page-btn'
+        icon={<ReloadOutlined />}
+        onClick={() => console.log('clicked')}
+        ariaLabel='Manage Settings'
+        title='Manage System Settings'
+      />,
+    ],
+    showPageHeader: false,
+    showBreadcrumbs: true,
+    breadcrumbs: [
+      { i18nKey: 'common.dashboard', href: '/dashboard' },
+      { i18nKey: 'systemSettings.settings' }, // Final/current item: no href (or set current: true)
+    ],
+    includeHomeInBreadcrumbs: true,
+    homeHref: '/',
+    homeI18nKey: 'common.home',
+  };
+
+  return (
+    <Page name={'dashboard-settings'} setup={setup} config={config}>
+      <SettingsPage {...input} />
+    </Page>
+  );
+}
+```
+
+### config
+
+In CloudIgniter, the `config` prop represents the **complete runtime context** required by a page to render
+correctly on the client. It is prepared **entirely on the server** and passed into the **Page** Component as
+a single, typed object.
+
+From a developer's perspective, `config` answers one question:
+
+> _“What does the system already know about this request when it reaches the page UI?”_
+
+The **Page** Component treats `config` as **read-only runtime truth**. It does not infer, resolve, or compute
+values on its own—it simply consumes what the server has already decided.
+
+The `config` prop is typed as [CiPageConfig](../type-definitions/CiPageConfig.mdx) and includes the following
+categories of information:
+
+1. **Core CloudIgniter Runtime Configuration** (`ciConfig`)
+
+   `config.ciConfig` is at the heart of `config` and is typed as [CiExtendedConfig](../type-definitions/CiExtendedConfig.mdx). This is the fully resolved CloudIgniter configuration for the
+   current request. It extends the base configuration defined in [cloudigniter.config.ts](../../core-system/configurations/cloudigniter.config.ts.mdx) with values that can only be known at runtime.
+
+   From the **Page** Component's point of view, `ciConfig` is the authoritative source for:
+   he active locale
+   - layout direction (`ltr` / `rtl`)
+   - translation messages
+   - environment-specific Amplify outputs
+   - theme initialization parameters
+   - feature flags and CloudIgniter behavior defined in the base config
+   - client-side tracing controls
+
+   The **Page** Component does not care how these values were derived—only that they are complete and correct.
+
+2. **Localization Context (Resolved, Not Inferred)**
+
+   The `config` prop always carries resolved localization data via `ciConfig`:
+   - `locale` — the effective locale for this request
+   - `direction` — text and layout direction derived from the locale
+   - `messages` — the fully loaded message dictionary for translations for the current route
+
+   These values are computed server-side (Middleware / Route Page) and passed down as final results.
+
+   This design guarantees that:
+   - all client components render with the same locale and direction
+   - no client-side locale guessing occurs
+   - i18n hydration is deterministic and free of mismatch issues
+
+   The **Page** Component simply wires these values into [NextIntlClientProvider](https://next-intl.dev/docs/usage/configuration#nextintlclientprovider).
+
+3. **Environment and Infrastructure Context**
+
+   Through `ciConfig`, the `config` prop also exposes environment-bound information such as:
+   - **Amplify outputs** for the active environment (sandbox, test, live)
+   - resolved AWS configuration required by client UI layers
+
+   This allows page-level UI components and tools to behave consistently across environments without importing
+   environment files directly or re-implementing detection logic.
+
+4. **Theme Initialization Context**
+
+   The `config` prop includes precomputed theme provider inputs. From the **Page** Component's perspective:
+   - theming is already resolved
+   - defaults, overrides, and user/tenant preferences have already been applied
+   - the component simply consumes the prepared props
+
+   This avoids client components having to interpret configuration rules or user preferences themselves.
+
+5. **Optional Diagnostic and System Context**
+
+   In addition to `ciConfig`, the `config` prop may include optional diagnostic data:
+   - `settings` — resolved system [settings](../../dictionary/ApplicationSettings.mdx)
+   - `headers` / `cookies` — a sanitized subset of request metadata explicitly approved for client
+     visibility (e.g. x-ci-_, ci-_)
+   - `status` — system health or runtime status information
+
+   These fields exist primarily to support:
+   - developer tooling (DevBeacon)
+   - status indicators
+   - controlled UX behavior based on server inference
+
+   They are optional by design and not required for basic page rendering.
+
+**How Developers Should Think About `config`**
+
+When working with the CloudIgniter **Page** Component:
+
+- `config` is not configuration you define per page  
+  It is configuration the system resolves for the page
+- `config` is immutable in client components  
+  Never mutate it or attempt to “fix” missing values in the **Page** Component.
+- `config` replaces direct access to request context  
+  Client components should never read headers, cookies, or environment state directly.
+- **If something is missing from** `config`, it is a server concern  
+  Extend the server logic that builds `config`, not the client code that consumes it.
+
+## dump
+
+---
+
+The CloudIgniter **Page** Component is intentionally **configuration-driven**. Instead of reading request context
+directly (headers/cookies/tenant/locale), it receives everything via typed contracts. The two key types are:
+
+- `CloudIgniterPageConfig` — runtime context payload (server-prepared)
+- `PageSetup` — page chrome & i18n presentation contract (developer-authored per route)
+
+These types serve different layers of responsibility and should not be mixed.
+
+### `CloudIgniterPageConfig`
+
+```ts
+export type CloudIgniterPageConfig = {
+  ciConfig: ExtendedConfig;
+  settings?: Settings;
+  headers?: Record<string, string>;
+  cookies?: Record<string, string>;
+  status?: SystemStatus;
+};
+```
+
+`CloudIgniterPageConfig` is the **server-prepared runtime configuration object** passed into the client wrapper /
+page shell. Think of it as the page's execution context snapshot: it contains the resolved CloudIgniter configuration
+and optional diagnostic/runtime data that the UI may need.

@@ -1,0 +1,26 @@
+---
+title: Environment Modes & Testing
+sidebar_position: 3
+---
+
+# Environment Modes and Testing
+
+Testing isolation is enforced via **Environment Modes**:
+
+```ts
+export type CiEnvMode = "live" | "test" | "sandbox";
+```
+
+- **live**  
+  Real environment, real live data.  
+  👉 **No testing helpers or seeders are allowed to run here.**
+
+- **test**  
+  Dedicated for automated & manual testing.  
+  👉 Safe for seed/cleanup, never touches live data.
+
+- **sandbox**  
+  Developer playground, can be broken/reset freely.  
+  👉 Intended for local dev experimentation, not user-facing.
+
+For structural details on environment modes, see [Environment Modes](../environment-modes/intro.mdx). This section focuses on how to **use** environment modes in testing.

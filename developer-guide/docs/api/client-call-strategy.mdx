@@ -1,0 +1,254 @@
+---
+title: Client Call Strategy
+sidebar_position: 4
+---
+
+import ImageWrapper from "../../src/components/ImageWrapper";
+import clientLayer from "../assets/images/client-layer.png";
+
+# Client Call Strategy
+
+<ImageWrapper
+  imgUrl={clientLayer}
+  caption="CloudIgniter's Client sends a Request & receives a Response"
+/>
+
+The **client layer** is the starting point of the CloudIgniter API flow. It is intentionally kept **thin and predictable**:
+
+- The client does **not** know about AppSync, Lambda, DynamoDB, or AWS SDKs.
+- The client only knows **two shapes**:
+  - `Request<T>` → what it sends.
+  - `Response<U>` → what it receives.
+
+CloudIgniter enforces a small set of non-negotiable rules for all client-side API calls:
+
+1. **Always use `POST`**
+2. **Always send `Request<T>` as the request body**
+3. **Always expect `Response<T>` from the server**
+4. **Never call AppSync or AWS services directly from the client**
+5. **Always go through a Next.js route handler (Backend-for-Frontend)**
+
+These rules are part of the **orthodox strategy** that makes CloudIgniter projects consistent and maintainable across teams and environments.
+
+## Canonical Pattern
+
+Below is the canonical pattern for calling an API from a client component or page:
+
+```ts title="Example: Calling an API from a client component." showLineNumbers
+'use client'
+.
+.
+.
+const request: Request<MyInput[]> = {
+  input: items,
+  // envMode: "test", // optional; default is NEXT_PUBLIC_CI_ENV_MODE or 'test'
+  // authMode: 'userPool', // optional; default is 'userPool'
+  // critical: true,       // optional; see notes below
+};
+
+const res = await fetch("/api/do-something", {
+  method: "POST",
+  body: JSON.stringify(request),
+  headers: { "Content-Type": "application/json" },
+});
+
+let response: Response | null = null;
+
+try {
+  response = (await res.json()) as Response;
+} catch {
+  console.error("Non-JSON response from /api/do-something");
+}
+
+if (!response) {
+  // Handle unexpected no-response case (network issues, etc.)
+  // e.g., show toast, log error, etc.
+} else if (response.statusCode !== 200) {
+  // Handle error response in a standardized way
+  console.error('[Client] API Error:', response);
+} else {
+  // Success: response.body contains the payload
+  console.log('[Client] API OK:', response.body);
+}
+
+.
+.
+.
+```
+
+## What the Client Must Do
+
+**1. Always Construct a `Request<T>`**
+
+All client calls must wrap the business payload in a `Request<T>`:
+
+```ts
+const request: Request<MyInput> = {
+  input: {
+    id: "123",
+    name: "Example",
+  },
+  envMode: "test", // or 'sandbox' / 'live' if explicitly needed
+  // authMode, options, critical are optional
+};
+```
+
+> - You never send “raw” payloads like `{ id, name }`.
+> - You always send `Request<{ id: string; name: string }>`.
+
+This guarantees that:
+
+- The server wrapper and Lambda always see the same envelope.
+- `envMode`, `authMode`, and `critical` can be honored end-to-end.
+- The request can be serialized into `inputString` for AppSync.
+
+**2. Always Use `POST` + JSON Body (unless you are already using `call()`)**
+
+All CloudIgniter API calls from the client:
+
+- Use `POST`
+- Send the `Request<T>` as a `JSON` body
+- Set `Content-Type: application/json`
+
+```ts
+await fetch("/api/do-something", {
+  method: "POST",
+  body: JSON.stringify(request),
+  headers: { "Content-Type": "application/json" },
+});
+```
+
+This simplifies both routing and security:
+
+- No accidental caching or query-string leaking for sensitive operations.
+- All calls are uniform, which simplifies auditing and logging.
+
+**3. Always Expect `Response<T>`**
+
+The client always expects the server to respond with a `Response<T>`:
+
+```ts
+let response: Response | null = null;
+
+try {
+  response = (await res.json()) as Response;
+} catch {
+  console.error("[Client] Non-JSON response from /api/do-something");
+}
+```
+
+Once parsed:
+
+- `response.statusCode` tells you if the call is logically successful (200) or not (400/403/404/500).
+- `response.body` holds the actual payload (or the error object).
+- Additional fields (`message`, `parameter`, `response`, etc.) may be present for debugging and tracing.
+
+This means you **never** have to guess:
+
+- Was it a network error?
+- A GraphQL error?
+- A Lambda validation error?
+
+It is always wrapped into a **single, predictable shape**.
+
+## What the Client Must Not Do
+
+❌ Never Call AppSync or AWS Directly
+
+The client must **never**:
+
+- Instantiate Amplify GraphQL clients directly.
+- Call AppSync endpoints.
+- Use AWS SDK clients (DynamoDB, Cognito, etc.) from the browser.
+
+All of this is handled behind the route handler and server API wrapper. The client only talks to local route paths such as:
+
+- `/api/...`
+- `/dashboard/.../action`
+- `/internal/...`
+
+This supports:
+
+- A clean **Backend-for-Frontend (BFF)** pattern
+- Better security (no secrets in the browser)
+- Easier refactoring (infrastructure can change without touching client code)
+
+## Using `critical` on the Client
+
+The `critical` flag can be set by the client to influence how upstream logic treats the operation:
+
+```ts {4}
+const request: Request<MyInput> = {
+  input,
+  envMode: "test",
+  critical: true,
+};
+```
+
+**Typical usage:**
+
+- `critical: true`
+
+  - Use for operations that **must not silently fail** (e.g., seeding, migrations, security updates).
+  - Server-side utilities can choose to throw exceptions or log more aggressively.
+
+- `critical: false` (or omitted)
+  - Use for standard UI-driven operations where you want to handle failures more gracefully in the UI.
+
+At the client level, you are still dealing with a `Response`, but the flag informs **how the server and utilities might behave** (e.g., in logging, alerting, or tracing).
+
+## Recommended Helper: `call()`
+
+:::tip[Recommended]
+Alternatively, You can encapsulate the standard fetch pattern into a small reusable helper. This is optional but **recommended**.
+Using `call()` would keep client code **very lean** while still being fully typed. You are encouraged to always use it.
+:::
+
+```ts {13} title="Recommended pattern for calling an API from a client component." showLineNumbers
+'use client'
+.
+.
+.
+// Step 1
+const request: Request<MyInput> = {
+  input: items,
+  envMode: "test",
+  critical: true,
+};
+
+// Step 2
+const result = await call<MyInput, MyOutput>("/api/do-something", request);
+
+// Step 3
+if (!result.ok) {
+  // handle error (toast, dialog, etc.)
+} else {
+  const data = result.response.body; // typed as MyOutput
+  // continue
+}
+```
+
+## Do/Don't Summary
+
+**Do:**
+
+✅ Always send `Request<T>`  
+✅ Always consume `Response<T>`  
+✅ Always use the small helper `call()` for consistency (Recommended)
+
+**Don't:**
+
+❌ Don't send raw `{ ... }` objects as request bodies  
+❌ Don't call AppSync or AWS directly from the browser  
+❌ Don't invent custom response shapes per page  
+❌ Don't mix `GET`/`POST` conventions arbitrarily for API calls
+
+:::tip
+By following this **Client Call Strategy**, every frontend developer working with CloudIgniter:
+
+- Uses the same calling pattern
+- Benefits from the same type safety
+- Integrates cleanly with the route handlers, server wrappers, and Lambda handlers
+- Delivers consistent, production-grade quality without re-inventing API patterns per feature or per project.
+
+:::

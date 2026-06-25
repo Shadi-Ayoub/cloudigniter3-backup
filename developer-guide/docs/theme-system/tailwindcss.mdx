@@ -1,0 +1,46 @@
+---
+title: Tailwind CSS
+sidebar_position: 2
+---
+
+[Tailwind CSS](https://tailwindcss.com/) is pre-installed and pre-configured for you. Also, the setup is done in a way that your Tailwind configuration at the root extends the Kernel's Tailwind configuration so you can add to and customize the application theme. Open the `tailwind.config.ts` file in the root and notice the added lines highlighted below:
+
+```ts {2,9,14} title="tailwind.config.ts"
+import type { Config } from "tailwindcss";
+import cloudigniterTailwindConfig from "./src/kernel/theme/tailwind.config";
+
+export default {
+  darkMode: ["selector"],
+  content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
+  theme: {
+    extend: {
+      ...cloudigniterTailwindConfig.theme.extend,
+      // add your extended configurations
+    },
+  },
+  plugins: [
+    ...cloudigniterTailwindConfig.plugins,
+    // add your additional plugins
+  ],
+} satisfies Config;
+```
+
+:::info
+By installing [Tailwind CSS](https://tailwindcss.com/), other modules will be installed to support its function. The main one is [PostCSS](https://github.com/postcss/postcss), which is needed by Tailwind to transform your styles using JavaScript plugins.
+
+```js title="postcss.config.js"
+export const plugins = {
+  "postcss-import": {},
+  tailwindcss: {},
+  autoprefixer: {},
+  ...(process.env.NODE_ENV === "production" ? { cssnano: {} } : {}),
+};
+```
+
+See also:
+
+- [Using Tailwindcss with Preprocessors](https://tailwindcss.com/docs/using-with-preprocessors)
+- [PostCSS Import](https://github.com/postcss/postcss-import)
+- [PostCSS Autoprefixer](https://github.com/postcss/autoprefixer)
+- [PostCSS CSSnano](https://github.com/cssnano/cssnano)
+  :::

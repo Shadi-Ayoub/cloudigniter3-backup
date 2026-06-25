@@ -1,0 +1,23 @@
+---
+title: Tenant Isolation and Security
+sidebar_position: 7
+---
+
+# Tenant Isolation and Security
+
+## IAM Enforcement
+
+IAM policies restrict:
+
+- Which Lambda functions can read/write tenants
+- Which environments allow mutation
+- Which actions are allowed per handler
+
+## Application-Level Guards
+
+Before processing tenant-scoped logic, CloudIgniter verifies:
+
+- Tenant existence
+- Tenant status
+- User membership in tenant
+- Required permissions

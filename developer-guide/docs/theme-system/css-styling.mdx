@@ -1,0 +1,28 @@
+---
+title: CSS Styling
+sidebar_position: 3
+---
+
+import ImageWrapper from "../../src/components/ImageWrapper";
+import stylingConcept from "../assets/images/styling-concept.png";
+
+The styling system in your Cloudigniter application is built around the `globals.css` file inside your `src/app` folder. This stylesheet file is prepared for you to import Tailwind CSS default styling as well as the core styling of Cloudigniter. This arrangement will allow you to extend and override the preset styles smoothly.
+
+Please note that your native css files generated upon building time for production will stem from the `globals.css` file. Therefore, all your styles and classes need to be hosted in this file either by being directly written inside it or imported from other css files via the `@import` directive.
+
+:::tip
+See [Using Tailwindcss with Preprocessors](https://tailwindcss.com/docs/using-with-preprocessors) for more information about importing styles from multiple css files.
+:::
+
+<ImageWrapper imgUrl={stylingConcept} caption="Styling Concept" />
+
+:::tip
+Consider using the option `!import` in your Tailwind classes as some may be overwitten by Tailwindcss defaults.
+
+```css
+.dialog-title-icon-warning {
+  @apply text-warning-foreground !important;
+}
+```
+
+:::

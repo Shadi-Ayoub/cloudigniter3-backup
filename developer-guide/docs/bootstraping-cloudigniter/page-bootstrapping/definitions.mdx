@@ -1,0 +1,28 @@
+---
+title: Definitions
+sidebar_position: 4
+---
+
+:::tip CloudIgniter Route Page (`page.tsx`)
+The **CloudIgniter Route Page** is the server-side entry point for a route in a CloudIgniter application
+built with the Next.js App Router. It is always implemented as a **Server Component** and is responsible for
+executing all **request-time bootstrapping logic**, such as resolving tenant and scope, determining locale and
+direction, validating authentication state, loading environment-aware configuration, and fetching any
+server-only data required to render the page. The Route Page explicitly controls the route's rendering and
+caching behavior (commonly by forcing dynamic rendering) and acts as a thin controller layer
+that prepares a **serializable configuration payload**. It does not contain interactive UI logic; instead, it
+renders and delegates all user-facing behavior to a sibling **CloudIgniter Page Client Wrapper**, ensuring a
+clean separation between server concerns and client interactivity.
+:::
+
+:::tip CloudIgniter Page Client Wrapper (`page-client-wrapper.tsx`)
+The **CloudIgniter Page Client Wrapper** is the client-side entry point for a CloudIgniter route and is always
+implemented as a **Client Component** colocated with the Route Page. Its role is to receive the server-provided
+configuration payload and **translate it into a fully wired page experience** by assembling page-specific input props,
+configuring the CloudIgniter page shell (title, breadcrumbs, header actions, layout options), and injecting any
+application-specific extensions such as custom schemas, defaults, tabs, or UI components. The Page Client Wrapper
+renders the CloudIgniter `<Page>` container and the inner page UI component, and it owns all interactive behavior,
+including event handlers, client-side state, navigation, and visual feedback. By centralizing UI composition and
+interactivity in the wrapper, CloudIgniter ensures consistent page structure, extensibility, and a strict separation
+from server-only logic.
+:::

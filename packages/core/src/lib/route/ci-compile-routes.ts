@@ -1,5 +1,5 @@
 import type { CiRoute, CiRoutesMap, CiMatchedRoute } from "@ci-core/types";
-import { ciNormalizePath } from "@ci-core/lib";
+import { ciNormalizePathname } from "@ci-core/lib";
 
 type CompiledEntry = {
   pattern: string;
@@ -32,11 +32,11 @@ function escapeRegex(s: string) {
  * - exact paths     -> matched exactly
  */
 function toRegex(pattern: string) {
-  const pat = ciNormalizePath(pattern);
+  const pat = ciNormalizePathname(pattern);
 
   // Wildcard suffix: '/base/*'
   if (pat.endsWith("/*")) {
-    const base = ciNormalizePath(pat.slice(0, -2));
+    const base = ciNormalizePathname(pat.slice(0, -2));
     // '^/base(?:/.*)?$' matches '/base' and any deeper path
     return new RegExp(`^${escapeRegex(base)}(?:/.*)?$`);
   }
@@ -62,7 +62,7 @@ function toRegex(pattern: string) {
  *  - Then break ties by longer pattern length.
  */
 function patternScore(pattern: string) {
-  const pat = ciNormalizePath(pattern);
+  const pat = ciNormalizePathname(pattern);
   const segs = pat.split("/").filter(Boolean);
 
   let score = 0;
@@ -113,7 +113,7 @@ export function ciCompileRoutes(routes: CiRoutesMap): CiCompiledRoutes {
   );
 
   function match(path: string | URL): CiMatchedRoute {
-    const p = ciNormalizePath(path);
+    const p = ciNormalizePathname(path);
 
     let best: CompiledEntry | null = null;
 

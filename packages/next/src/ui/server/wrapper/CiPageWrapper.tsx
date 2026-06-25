@@ -58,7 +58,7 @@ export async function CiPageWrapper({
         dir="ltr"
         position="bottom-right"
         visibleWhenEnv="development"
-        defaultTab="trace"
+        defaultTab="status"
         // Plain logo spec (client will render next/image)
         logo={CI_DEV_BEACON_LOGO}
         // Plain tab specs (client will build tabs and render client components)

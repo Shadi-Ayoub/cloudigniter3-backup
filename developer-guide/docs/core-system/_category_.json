@@ -1,0 +1,8 @@
+{
+  "label": "Core System",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Describes Cloudigniter's system core files."
+  }
+}

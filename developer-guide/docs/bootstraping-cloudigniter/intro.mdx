@@ -1,0 +1,71 @@
+---
+title: Introduction
+sidebar_position: 1
+---
+
+# Bootstrapping CloudIgniter
+
+So, what runs before any page renders?
+
+A CloudIgniter app does a surprising amount of work before your route's layout/page ever renders. This
+section maps that startup path—from framework boot → locale resolution → root wiring → page protection →
+client shells—so you know where to plug in and what to debug when something feels off.
+
+Below is "at a glance" sequence (timeline):
+
+1. Framework boot
+2. i18n plugin attaches (compile-time + request-time)
+3. Locale & messages assembled (server, per request)
+4. Root configuration bootstraps (theme, i18n, Amplify outputs, etc.)
+5. Root providers mount (Intl provider, global styles)
+6. Route layout bootstraps (protected route? fetch user, settings, status)
+7. Client shells mount (Amplify client config → Auth → Route guard → Theme/AntD → Initial loader → Error handler)
+8. Your page finally renders
+
+```mermaid
+flowchart TD
+  %% =============== BUILD / SETUP ===============
+  subgraph A[Build time]
+    A1[next.config.ts loads]
+    A2[next-intl plugin attached]
+    A1 --> A2
+  end
+
+  %% =============== SERVER: REQUEST ===============
+  subgraph B[Server on each request]
+    B1[request.ts resolves locale and messages]
+    B2[bootstrap root → load system config]
+    B3[Root layout sets html lang and dir]
+    B1 --> B2 --> B3
+  end
+
+  %% =============== SERVER: ROUTE LAYOUT ===============
+  subgraph C[Server on route layout]
+    C1[bootstrap page → read route and protection]
+    C2{Protected route?}
+    C1 --> C2
+    C2 -- yes --> C3[get current user]
+    C3 --> C4{Authenticated?}
+    C4 -- no --> C5[redirect to /login with next param]
+    C4 -- yes --> C6[fetch settings and status]
+    C2 -- no --> C7[optional user fetch]
+    C6 --> C8[build PageConfig]
+    C7 --> C8
+  end
+
+  %% =============== CLIENT: HYDRATION ===============
+  subgraph D[Client after hydration]
+    D1[Configure Amplify client side]
+    D2[Authenticator shell]
+    D3[Route handler checks RoutesMap]
+    D4[Client shell: Theme, AntD, Initial loader, Error handler]
+    D5[Render page children]
+    D1 --> D2 --> D3 --> D4 --> D5
+  end
+
+  %% =============== FLOW LINKS ===============
+  A2 --> B1
+  B3 --> C1
+  C8 --> D1
+
+```

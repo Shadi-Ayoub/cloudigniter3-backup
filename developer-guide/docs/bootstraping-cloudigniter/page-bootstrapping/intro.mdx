@@ -1,0 +1,37 @@
+---
+title: Introduction
+sidebar_position: 1
+---
+
+# Introduction
+
+A CloudIgniter page in the Next.js App Router can be defined as **_a Server Component page
+that performs server-only bootstrapping, then renders a Client Component wrapper (located as a sibling file)
+responsible for all interactive UI_**.
+
+A CloudIgniter page folder typically should look like this:
+
+```pgsql
+app/<route>/
+  page.tsx                # Server Component (entry)
+  page-client-wrapper.tsx # Client Component (UI + interactivity)
+  components/             # Optional: client-only UI pieces used by the wrapper
+  _lib/                   # Optional: route-scoped helpers (server/client split as needed)
+```
+
+:::tip Key rule
+
+- `page.tsx` is always a **Server Component**
+- `page-client-wrapper.tsx` is always a **Client Component**
+- They are siblings in the same route folder.
+
+:::
+
+:::info Summary
+
+CloudIgniter pages follow a strict pattern:
+
+- The **route entry** (`page.tsx`) is a **Server Component** responsible for **bootstrapping** and **request-time context**.
+- The **UI entry** (`PageClientWrapper`) is a **Client Component** (a sibling file) responsible for **interactive rendering**, **page setup**, and **client-only behaviors**.
+
+:::

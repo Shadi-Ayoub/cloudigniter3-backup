@@ -1,0 +1,33 @@
+---
+title: Example Code
+sidebar_position: 6
+---
+
+# Quick Code Recipes
+
+## Insert Tenant in Test Mode
+
+```ts showLineNumbers
+await ddb.writeItem({
+  tableName,
+  key: { PK: "TENANT#ats#test", SK: "META" },
+  item: {
+    type: "TENANT",
+    envMode: "test",
+    tenantId: "ats",
+    name: "ATS Test Tenant",
+  },
+});
+```
+
+## Query All Tenants for Current Environment
+
+```ts showLineNumbers
+const pkPrefix = `TENANT#${envMode === "live" ? "" : `${envMode}`}`;
+
+const res = await ddb.query({
+  TableName: tableName,
+  KeyConditionExpression: "begins_with(PK, :pk)",
+  ExpressionAttributeValues: { ":pk": pkPrefix },
+});
+```

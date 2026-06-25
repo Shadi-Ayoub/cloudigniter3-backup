@@ -1,0 +1,397 @@
+---
+title: Introduction
+sidebar_position: 1
+---
+
+# Client Feedback System
+
+CloudIgniter provides a **centralized, configurable, and extensible client-side feedback system** for notifying users
+about outcomes and events such as successful operations, warnings, validation notices, and errors. The system supports
+two delivery channels:
+
+- **Toast** notifications (via [Sonner](https://sonner.emilkowal.ski/))
+- **Modal / Sticky card** notifications
+
+This system is designed to:
+
+- Centralize all client-facing feedback (toasts, dialogs, and critical alerts) behind a single, consistent API
+- Eliminate direct usage of third-party notification libraries in application code
+- Enforce consistent UX, semantics, and severity handling across the platform
+- Remain fully extensible and strictly aligned with the underlying toast engine ([Sonner](https://sonner.emilkowal.ski/))
+- Allow system administrators to control behavior, placement, and styling via configuration
+- Allow developers to safely override behavior at runtime without breaking global consistency
+- Support both transient feedback (toasts) and acknowledgement-driven feedback (modal dialogs)
+
+At its core, the system wraps the **Sonner** toast engine and the CloudIgniter **Error Handler UX** behind a unified
+CloudIgniter abstraction, exposing a single, stable entry point for client feedback: **`notify()`**.
+
+## Key Concepts
+
+### 1) One `notify()` Utility
+
+Developers do not call Sonner APIs directly. Instead, they call:
+
+```ts
+notify(level, message, options?)
+```
+
+Where:
+
+- `level` is semantic (`success`, `info`, `warning`, `error`, `loading`, etc.)
+- `message` is the primary text shown to the user
+- `options` control delivery channel and advanced behavior
+
+---
+
+### 2) Two Delivery Channels
+
+CloudIgniter supports two delivery channels:
+
+1. Toast Channel ([Sonner](https://sonner.emilkowal.ski/))
+
+   - Best for lightweight, transient messages (save succeeded, background operation started, etc.)
+   - Fully configurable via [Sonner](https://sonner.emilkowal.ski/) Toaster props and per-toast options
+
+2. Modal Channel
+
+   - Best for messages requiring acknowledgement or additional details
+   - Implements features like:
+     - Optional sticky notification card (click to open dialog)
+     - Dialog with severity-based styling
+     - Optional critical full-screen backdrop
+
+3. Both  
+   You can display both toast and modal simultaneously (use sparingly).
+
+---
+
+### 3) One Store (Unified Runtime)
+
+CloudIgniter uses a single Zustand store for the feedback system. The store contains both:
+
+- Resolved runtime configuration (enabled/toaster/toastDefaults/toneTokens)
+- Modal queue state (items, sticky, open/close)
+
+This removes ambiguity and keeps the system consistent.
+
+---
+
+## Design Principles
+
+1. **Single Entry Point**
+
+   - All client-facing feedback (toasts, dialogs, and critical alerts) must be triggered via the `notify()` utility.
+   - Direct usage of third-party notification APIs (e.g. `toast()` or `<Toaster />`) outside CloudIgniter infrastructure is discouraged.
+
+2. **Unified Feedback Model**
+
+   - Toast notifications and modal-based feedback share a single runtime model and state store.
+   - Modal dialogs reuse the same UX and behavior as the CloudIgniter Error Handler (sticky card, dialog, critical backdrop).
+   - This ensures consistent behavior across success, warning, and error scenarios.
+
+3. **Centralized & Resolved Configuration**
+
+   - Feedback behavior (placement, duration, styling, tone tokens, etc.) is centrally defined and resolved at runtime.
+   - Configuration sources include:
+     - The CloudIgniter settings table
+     - A local configuration fallback
+     - Optional runtime overrides (advanced use cases)
+   - Persisted configuration is resolved into a stable runtime configuration before use.
+
+4. **Semantic Levels**
+
+   - Feedback is expressed using semantic levels rather than visual intent:
+     - `success`
+     - `info`
+     - `warning`
+     - `error`
+     - `critical`
+     - `loading`
+     - `message`
+   - Each level may have distinct defaults (duration, severity handling, modal vs toast behavior).
+
+5. **Engine-Aligned, Not Engine-Coupled**
+
+   - The system remains strictly aligned with the underlying toast engine (Sonner).
+   - Any Sonner-supported option may be passed via configuration or per-call overrides.
+   - CloudIgniter does not reimplement Sonner; it orchestrates and constrains its usage to enforce consistency.
+
+---
+
+## Configuration Model (Sonner-Aligned)
+
+CloudIgniter aligns its persisted config with [Sonner](https://sonner.emilkowal.ski/) primitives, while adding
+a small CI convenience layer: toneTokens.
+
+```ts title="Extending Sonner System" showLineNumbers
+export type CiFeedbackSonnerConfig = {
+  enabled?: boolean;
+
+  // 1:1 with Sonner primitives
+  toaster?: Partial<ToasterProps>;
+  toastDefaults?: Partial<ExternalToast>;
+
+  /**
+   * CI convenience: maps semantic levels to class tokens.
+   * - Used to populate Toaster.toastOptions.classNames
+   * - Optionally applied to per-toast className if caller didn't provide one
+   */
+  toneTokens?: CiToneTokens;
+};
+```
+
+### Resolved Runtime Configuration
+
+Persisted settings are optional by nature. Internally, CloudIgniter resolves configuration so runtime usage is stable:
+
+- Defaults are applied first
+- Persisted config overwrites defaults
+- Runtime overrides overwrite both (when used)
+
+This ensures `config.toneTokens` and other properties are always available at runtime.
+
+### toneTokens
+
+`toneTokens` are semantic class tokens used to standardize styling for toast types.
+
+```json title="Example mapping"
+{
+  "toneTokens": {
+    "success": "ci-toast-success",
+    "error": "ci-toast-error",
+    "warning": "ci-toast-warning",
+    "info": "ci-toast-info",
+    "loading": "ci-toast-loading",
+    "message": "ci-toast-message"
+  }
+}
+```
+
+```css title="Example Tailwind Styling"
+.ci-toast-success {
+  @apply border border-emerald-500/30 bg-emerald-50 text-emerald-900;
+  @apply dark:border-emerald-400/30 dark:bg-emerald-950/40 dark:text-emerald-50;
+}
+
+.ci-toast-error {
+  @apply border border-rose-500/30 bg-rose-50 text-rose-900;
+  @apply dark:border-rose-400/30 dark:bg-rose-950/40 dark:text-rose-50;
+}
+
+.ci-toast-warning {
+  @apply border border-amber-500/30 bg-amber-50 text-amber-900;
+  @apply dark:border-amber-400/30 dark:bg-amber-950/40 dark:text-amber-50;
+}
+
+.ci-toast-info {
+  @apply border border-sky-500/30 bg-sky-50 text-sky-900;
+  @apply dark:border-sky-400/30 dark:bg-sky-950/40 dark:text-sky-50;
+}
+```
+
+---
+
+## FeedbackProvider (Toast System Mount)
+
+CloudIgniter mounts [Sonner](https://sonner.emilkowal.ski/) once under the hood via `FeedbackProvider` by wrapping
+the layout with the `CloudIgniterPageWrapper` component.
+
+- The provider configures the global Sonner `<Toaster />`
+- It also injects `toneTokens` into `toastOptions.classNames`
+- It should be mounted exactly once (root layout)
+
+```ts title="Using FeedbackProvider" showLineNumbers
+import { FeedbackProvider } from "@cloudigniter/next/FeedbackProvider";
+import { getFeedbackConfig } from "@/kernel/feedback/getFeedbackConfig";
+
+export default async function RootLayout({ children }) {
+  const config = await getFeedbackConfig();
+
+  return (
+    <html>
+      <body>
+        <FeedbackProvider initialConfig={config} />
+        {children}
+      </body>
+    </html>
+  );
+}
+```
+
+---
+
+## FeedbackHandler (Modal + Sticky Card UX)
+
+CloudIgniter renders modal/card notifications using a handler that mirrors the Error Handler UX.
+
+- If sticky is enabled, a small notification card appears when the dialog is closed
+- Clicking the card opens a dialog showing full details
+- Critical messages may display a full-screen backdrop (optional)
+
+Mount it once in the root layout:
+
+```ts title="Using FeedbackHandler" showLineNumbers
+import { FeedbackHandler } from "@cloudigniter/next/FeedbackHandler";
+
+export default function Root({ children }) {
+  return (
+    <>
+      <FeedbackHandler direction="ltr" />
+      {children}
+    </>
+  );
+}
+```
+
+---
+
+## The `notify()` Utility
+
+> See **[Design Principles](#design-principles)** for guidance on when to use toast vs modal feedback.
+
+```ts title="notify() utility signature"
+notify(level, message, options?)
+```
+
+Where:
+
+- level (semantic): success | info | warning | error | loading | message
+- message: string (recommended) or ReactNode (toast supports ReactNode)
+- options: choose channel + pass through Sonner options
+
+```ts title="Delivery Channel Options" showLineNumbers
+type NotifyChannel = "toast" | "modal" | "both";
+
+type NotifyOptions = {
+  channel?: NotifyChannel;
+
+  // Modal settings (Error Handler UX)
+  modal?: {
+    id?: string;
+    title?: string;
+    sticky?: boolean;
+    open?: boolean;
+    isCritical?: boolean;
+  };
+
+  // Toast settings (Sonner options)
+  toast?: Partial<ExternalToast>;
+};
+```
+
+### Common Usage Examples
+
+**Example 1:**
+
+```ts title="Toast (default)"
+notify("success", "Settings saved");
+```
+
+**Example 2:**
+
+```ts title="Toast with description and action (Sonner options)" showLineNumbers
+notify("error", "Save failed", {
+  toast: {
+    description: "Unable to write to DynamoDB.",
+    action: {
+      label: "Retry",
+      onClick: () => retry(),
+    },
+  },
+});
+```
+
+**Example 3:**
+
+```ts title="Modal (requires acknowledgement)" showLineNumbers
+notify("warning", "Please review the highlighted fields", {
+  channel: "modal",
+  modal: {
+    title: "Validation warning",
+    sticky: true,
+    open: true,
+  },
+});
+```
+
+**Example 4:**
+
+```ts title="Both (toast + modal)" showLineNumbers
+notify("error", "Request failed", {
+  channel: "both",
+  toast: { description: "See details in the dialog." },
+  modal: { title: "Request failed", sticky: true, open: true },
+});
+```
+
+**Example 5:**
+
+```ts title="Critical full-screen backdrop" showLineNumbers
+notify(
+  "error",
+  "System configuration is missing. The application cannot continue.",
+  {
+    channel: "modal",
+    modal: { isCritical: true, sticky: false, open: true },
+  }
+);
+```
+
+---
+
+## Precedence Rules
+
+CloudIgniter follows predictable precedence rules.
+
+```ts title="Provider (Toaster) precedence"
+CI defaults
+→ persisted config
+→ runtime overrides (if used)
+```
+
+```ts title="Toast call precedence"
+CI per-level presets
+→ resolved runtime toastDefaults
+→ notify() toast options (wins)
+
+```
+
+---
+
+## Best Practices
+
+- Mount **one** `FeedbackProvider` and **one** `FeedbackHandler` in the root layout
+- Use **toast** for transient updates and **modal** for important or actionable messages
+- Prefer `toneTokens` for consistent styling and maintainability
+- Avoid calling `notify()` in unguarded `useEffect` logic in development (Strict Mode may run effects twice)
+- Do not import `sonner` directly in application code; use `notify()`
+
+---
+
+## Troubleshooting
+
+### Duplicate Toasts
+
+If each call to `notify()` shows two toasts:
+
+- You likely have two `<Toaster />` instances mounted
+- Search the codebase for `<Toaster />` or multiple `FeedbackProvider` mounts
+
+### TypeScript warning: `toneTokens` possibly undefined
+
+This occurs if you treat persisted config as runtime config. CloudIgniter resolves persisted config into a stable runtime config inside the store so
+`toneTokens` is always present.
+
+---
+
+## Summary
+
+The CloudIgniter Client Feedback System provides:
+
+- A unified developer API (`notify()`)
+- Two delivery channels (toast + modal) with consistent UX patterns
+- Central configuration aligned with Sonner primitives
+- Semantic styling via `toneTokens`
+- One unified store for runtime consistency
+
+This ensures a predictable user experience and a clean developer experience across all CloudIgniter applications.

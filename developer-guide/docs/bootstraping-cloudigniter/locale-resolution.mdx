@@ -1,0 +1,155 @@
+---
+title: Locale Resolution
+sidebar_position: 3
+---
+
+# 2. Locale Resolution & Message Assembly
+
+On every request, <a href="https://next-intl.dev/docs/usage/configuration#i18n-request" target="_blank">getRequestConfig</a>
+runs server-side to:
+
+- determine the currently selected locale (cookies + defaults),
+- compute the current route and its namespace,
+- load system messages from `json` files:
+  1. `Common` messages, which are always loaded for any route. Shared by all routes.
+  2. Route `Namespace` specific messages that load only when the corresponding route is requested.
+- load custom overrides from your app, and
+- "deep-merge" them into a single messages object delivered to the client.
+
+**More about this in the localization section.**
+
+```ts {15} title="src/kernel/i18n/request.ts" showLineNumbers
+import { getRequestConfig } from "next-intl/server";
+import { headers } from "next/headers";
+import { deepmerge } from "deepmerge-ts";
+import type { AbstractIntlMessages } from "next-intl";
+
+import { getServerLocale } from "@cloudigniter/next/server";
+import { resolveRoute } from "@cloudigniter/next/routing";
+import { getErrorMessage } from "@cloudigniter/next/utility";
+import { pascalToKebab } from "@cloudigniter/next/utility";
+import type { RoutesMap } from "@cloudigniter/next/types";
+
+import config from "@/../cloudigniter.config";
+import { locale } from "@cloudigniter/next/locale";
+
+export default getRequestConfig(async () => {
+  try {
+    const loc = await getServerLocale({
+      cookieName: config.i18n.cookieName,
+      defaultLocale: config.i18n.defaultLocale,
+    });
+
+    const hdr = await headers();
+    const urlRoute = hdr.get("x-request-path") ?? "";
+    const routes = config.routes as RoutesMap;
+    const route = resolveRoute(urlRoute, routes);
+
+    let commonMessages = {};
+    let namespaceMessages = {};
+    let customCommonMessages = {};
+    let customNamespaceMessages = {};
+
+    try {
+      commonMessages = locale[loc]["common"];
+
+      customCommonMessages = (await import(`../../locale/${loc}/common.json`))
+        .default;
+    } catch (error) {
+      console.log(
+        `Could not load the common language file! Error: ${getErrorMessage(
+          error
+        )}`
+      );
+    }
+
+    if (route !== null) {
+      // If we have a named route, load “namespace” JSON files:
+      const nsKebab = pascalToKebab(route.namespace);
+      try {
+        namespaceMessages = locale[loc][nsKebab];
+        customNamespaceMessages = (
+          await import(`../../locale/${loc}/${nsKebab}.json`)
+        ).default;
+      } catch (error) {
+        console.log(
+          `Could not load the current route language file! Error: ${getErrorMessage(
+            error
+          )}`
+        );
+      }
+    }
+
+    const systemMessages = deepmerge(
+      commonMessages,
+      namespaceMessages
+    ) as AbstractIntlMessages;
+
+    const customMessages = deepmerge(
+      customCommonMessages,
+      customNamespaceMessages
+    ) as AbstractIntlMessages;
+
+    const messages = deepmerge(
+      systemMessages,
+      customMessages
+    ) as AbstractIntlMessages;
+
+    return {
+      locale: loc,
+      messages,
+      urlRoute,
+    };
+  } catch (error) {
+    throw error;
+  }
+});
+```
+
+:::info
+CloudIgniter implements a special strategy for request-time Locale resolution and message assembly. The very first
+thing CloudIgniter does per request is guarantee that the right dictionary is ready for your page.
+Route namespaces let you keep translations modular and small. Custom app messages cleanly override system defaults
+via deep-merge.
+:::
+
+```mermaid
+flowchart TD
+  A([Start]) --> B["Top-level try"]
+  B --> C["Resolve locale with getServerLocale"]
+  C --> D["Read headers and get x-request-path as urlRoute"]
+  D --> E["Load routes from config and resolve route"]
+  E --> F["Initiate empty buckets: system common, system namespace, custom common, custom namespace"]
+
+  %% COMMON
+  F --> G{Load COMMON}
+  G -->|ok| H["Set system common messages"]
+  G -->|fail| I["Log and keep system common empty"]
+  H --> J{Load custom COMMON}
+  I --> J
+  J -->|ok| K["Set custom common messages"]
+  J -->|fail| L["Log and keep custom common empty"]
+
+  %% NAMESPACE (only if route exists)
+  K --> M{Route exists}
+  L --> M
+  M -->|yes| N["Compute namespace key in kebab case"]
+  M -->|no| S["Skip namespace load"]
+  N --> O{Load NAMESPACE}
+  O -->|ok| P["Set system namespace messages"]
+  O -->|fail| Q["Log and keep system namespace empty"]
+  P --> R{Load custom NAMESPACE}
+  Q --> R
+  R -->|ok| T["Set custom namespace messages"]
+  R -->|fail| U["Log and keep custom namespace empty"]
+
+  %% MERGE & RETURN
+  S --> V["Deep-merge system common and system namespace into systemMessages"]
+  T --> V
+  U --> V
+  V --> W["Deep-merge custom common and custom namespace into customMessages"]
+  W --> X["Deep-merge systemMessages and customMessages into messages"]
+  X --> Y["Return locale, messages, urlRoute"]
+  Y --> Z([End])
+
+```

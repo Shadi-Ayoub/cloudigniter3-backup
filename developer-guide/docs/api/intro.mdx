@@ -1,0 +1,28 @@
+---
+title: Introduction
+sidebar_position: 2
+---
+
+# CloudIgniter API Call Strategy
+
+CloudIgniter enforces a strict, orthodox API communication strategy that ensures high consistency, predictable behavior, and a professional-grade
+foundation for AWS-hosted applications. This strategy forms one of the biggest **value propositions** of adopting CloudIgniter, especially for
+startups that want quality-by-default backend patterns.
+
+This section describes the complete lifecycle of a CloudIgniter API call — from the client page → route handler → AppSync → Lambda handler → back to the client.
+
+:::tip[HIGHLIGHT]
+CloudIgniter adopts a strict, orthodox strategy for how client pages communicate with AWS backend services. This would bring many advantages such as:
+
+1. Consistent developer experience.
+2. Predictable API behavior across all pages.
+3. Clear request/response contracts.
+4. Strong type-safety.
+5. Reliable debugging and observability.
+6. Minimal boilerplate for scaling new features.
+7. Seamless compatibility with AWS Amplify (AppSync + Lambda + DynamoDB)
+   :::
+
+:::warning[Enforcing a Unified Pattern]
+By committing to one unified pattern, new developers can join a project and become productive quickly, business teams gain confidence in long-term maintainability, and the engineering team avoids fragmentation and technical debt.
+:::

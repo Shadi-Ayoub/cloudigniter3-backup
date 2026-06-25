@@ -1,0 +1,8 @@
+{
+  "label": "Internationalization (i18n)",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Describs the multiple language support system in Cloudigniter."
+  }
+}

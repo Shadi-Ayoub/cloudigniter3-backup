@@ -1,0 +1,87 @@
+---
+title: Route Handler Strategy
+sidebar_position: 8
+---
+
+# Route Handler Strategy
+
+Before explaining CloudIgniter's unified route-handling strategy, it is important to understand how Next.js (App Router) manages backend
+logic through **Route Handlers** .
+
+## Next.js Route Handlers
+
+Route Handlers allow developers to implement server-side functionality inside the `app/` directory without
+needing a separate Express server or an `api/` folder. According to the official Next.js documentation:
+
+- Route Handlers provide a way to define server-only functions that respond to HTTP methods (GET, POST, etc.) inside your application.
+  They are the recommended approach for backend logic when using the App Router.
+  See → [Next.js Route Handlers](https://nextjs.org/docs/app/getting-started/route-handlers)
+
+- Next.js encourages a **Backend-for-Frontend (BFF)** architecture, where server utilities (authentication, data access, validation, etc.) live
+  close to the UI layer while still running securely on the server. Route Handlers are a core part of this pattern.
+  See → [Next.js Backend for Frontend Pattern](https://nextjs.org/docs/app/guides/backend-for-frontend)
+
+- Route Handler files follow a specific file convention (`route.ts` or route.js) and map directly to HTTP endpoints inside the `app/` structure.
+  These handlers return Web Response objects and have full access to Next.js server capabilities.
+  See → [Next.js route file](https://nextjs.org/docs/app/api-reference/file-conventions/route)
+
+:::info[Why this matters for CloudIgniter]
+
+CloudIgniter builds **on top of this Next.js server model**, establishing a strict, opinionated pattern that ensures:
+
+- Consistent API access across all projects
+- Predictable request validation
+- Unified error handling
+- Seamless integration with AWS Amplify AppSync
+- A single point of responsibility for all client → backend communication
+
+Understanding how Next.js route handlers work provides the foundation for how CloudIgniter standardizes backend interactions and elevates them into a
+scalable, maintainable system.
+
+:::
+
+## CloudIgniter `Request`/`Response` Contract
+
+CloudIgniter standardizes **all communication** between the `client`, `Route Handlers`, and the `Server API Wrapper` by using two core types from `@cloudigniter/next/types`:
+
+- `Request<TInput>` - what the client sends to the backend
+- `Response<TOk, TErr>` - what the backend always returns
+
+At a high level:
+
+```ts
+// Simplified conceptual shape — actual type includes more fields.
+export type Request<TInput = unknown> = {
+  input: TInput;
+  envMode?: "sandbox" | "dev" | "prod"; // which Amplify env to target
+  options?: Record<string, unknown>; // additional metadata (e.g., flags, trace ids)
+};
+
+export type Response<Ok = unknown, Err extends object = { error: string }> =
+  | { statusCode: 200; body: Ok }
+  | { statusCode: 400 | 404 | 500; body: Err };
+```
+
+## Route Handler Responsibilities:
+
+So, the main responsibilities of a Route Handler are:
+
+- Parse request
+- Validate minimal conditions
+- Forward to Amplify server wrapper
+- Return `Response<T>`
+- Normalize unexpected errors
+
+```ts title="Example: Route Handler (in route.ts)" showLineNumbers
+"use server";
+
+import { NextRequest, NextResponse } from "next/server";
+import type { Request } from "@cloudigniter/next/types";
+import * as apiOnServer from "@/kernel/api/server";
+
+export async function POST(req: NextRequest) {
+  const request = (await req.json()) as Request<InputType>;
+  const result = await apiOnServer.action(request);
+  return NextResponse.json(result, { status: result.statusCode ?? 200 });
+}
+```

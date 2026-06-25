@@ -1,0 +1,166 @@
+---
+title: Lambda Handler Strategy
+sidebar_position: 12
+---
+
+import ImageWrapper from "../../src/components/ImageWrapper";
+import lambda from "../assets/images/lambda-io.png";
+
+# Lambda Handler Strategy
+
+In CloudIgniter, every AppSync resolver ultimately points to a **Lambda handler** that follows a strict, predictable pattern.
+A Lambda handler always receives two parameters: `event: LambdaEvent` and c`ontext: Context`.
+
+<ImageWrapper imgUrl={lambda} caption="Lambda Handler Interface" />
+
+:::tip[Good to Know]
+The Lambda Handler extracts the input string `inputString`from the `event` parameter:
+`event.arguments.inputString;`
+:::
+
+```ts title="Lambda Handler signature"
+import type { Context } from 'aws-lambda';
+import type { LambdaEvent, Response } from '@cloudigniter/next/types';
+
+export async function someHandler(event: LambdaEvent, context: Context): Promise<Response> {
+
+    ...
+
+    const request = safeParseRequest<InputType>(event.arguments.inputString);
+    const { input, envMode, options } = request;
+
+    ...
+
+    const response = await action();
+
+    ...
+
+    return {
+        ...response,
+        parameter: event.arguments.inputString,
+        event,
+        context,
+        env: ['CI_SYSTEM_TABLE_NAME', 'CI_REGION', 'CI_ENV_MODE'],
+    };
+}
+
+```
+
+```ts {5} title="LambdaEvent type" showLineNumbers
+import { type AppSyncResolverEvent } from "aws-lambda";
+
+export type InputArgs = { inputString?: string | null };
+
+export type LambdaEvent = AppSyncResolverEvent<InputArgs, any>;
+```
+
+From there, it applies a series of standardized steps before returning a `Response`. The flow is as follows:
+
+1. **Read environment configuration:**
+   The handler starts by reading required environment variables such as `CI_SYSTEM_TABLE_NAME` and `CI_REGION`, and resolving
+   the current runtime environment via `getEnvMode()` (`'live' | 'test' | 'sandbox'`). If any critical environment variable is
+   missing, it immediately returns an error `Response` using the `err()` helper, including rich context (`event`, `context`, `env list`)
+   for observability.
+
+---
+
+2. **Extract and parse the unified inputString:**
+   CloudIgniter's AppSync design emphasizes having one string input (`inputString`) per query/mutation. The handler reads `event.arguments.inputString`
+   and uses `safeParseRequest<InputType>` to convert that string back into a strongly-typed `Request<T>` object (with `input`, `envMode`, `options`, etc.).
+   If parsing fails, the handler again returns a standardized error `Response` indicating that `inputString` must be a valid `Request` JSON.
+
+:::tip[Good To Know]
+
+CloudIgniter uses a small but important utility to convert the unified `inputString` back into a strongly-typed `Request<T>` object. The utility
+returns `null` if the `inputString` is not a valid `JSON` string:
+
+```ts title="Example: using the safeParseRequest utility" showLineNumbers
+import { safeParseRequest } from "@cloudigniter/next/utility";
+
+const request = safeParseRequest<SeedTenantItem[]>(event.arguments.inputString);
+
+if (!request) {
+  return await err(
+    400,
+    {
+      error: `inputString must be a string and parsed as a Request object.`,
+    },
+    {
+      message: `inputString must be a string and parsed as a Request object.`,
+      parameter: event.arguments.inputString,
+      response: "",
+      event,
+      context,
+      env: ["CI_SYSTEM_TABLE_NAME", "CI_REGION", "CI_ENV_MODE"],
+    }
+  );
+}
+```
+
+This function serves several key purposes:
+
+- **Centralized parsing logic:**
+  Instead of every Lambda handler validating the input json string, all handlers rely on `safeParseRequest<T>()`. This keeps parsing behavior **
+  consistent across all CloudIgniter Lambdas.**
+
+- **Defensive against malformed input:**
+  If `inputString` is missing, empty, or invalid JSON, `safeParseRequest()` returns `null` instead of throwing. The handler can then cleanly convert
+  this into a structured error Response using `err()`, with a clear message such as:
+
+  > `inputString must be a string and parsed as a Request object`.
+
+- **Strong typing without runtime risk:**
+  The utility returns `Request<T> | null`, which nudges developers to handle the failure case explicitly (the `if (!request)` branch) while still
+  benefiting from TypeScript's type checking once a non-null value is confirmed.
+
+- **Supports the “single string input” design:**
+  Because CloudIgniter enforces a **single** `inputString` argument on AppSync operations, `safeParseRequest<T>()` is the official bridge from that
+  canonical string back into the rich `Request<T>` structure (`input`, `envMode`, `options`, etc.) used throughout the system.
+
+In short, `safeParseRequest<T>()` is the **first line of validation** inside the Lambda handler: it safely translates the raw wire payload into a trusted,
+typed object—or fails gracefully so the handler can return a proper `Response` instead of crashing.
+
+:::
+
+---
+
+3. **Apply environment and safety guards:**
+   Once the `Request` is parsed, the handler extracts `{ input, envMode, options }` and runs an **environment safety check**.
+   It Checks `envMode` to guard agains accident seeding into a `live` environment (`runtimeEnv` (from CI_ENV_MODE) is `live`). The check uses the `err()`
+   utility to return consistent `Response` objects, with helpful messages and full trace metadata.
+
+---
+
+4. **Validate the business input**
+   Before, say, touching DynamoDB, the handler validates the payload itself. For exmple, verify that input is a non-empty array. Any violation results in
+   a 400 error Response, again using `err()` with descriptive messages and context.
+
+---
+
+5. **Resolve client configuration and call the core server logic:**
+   The handler chooses the DynamoDB client configuration from `options?.DynamoDbClientConfig` or falls back to `{ region }`.
+   It then calls the core server-side function with a normalized argument object (tableName, clientConfig, etc.). This keeps the Lambda handler thin and
+   focu**sed on validation + orchestration**, while the actual business logic lives in the shared server library function.
+
+---
+
+6. **Enrich and return a unified Response:**
+   Finally, the handler takes the `Response` returned from the `library function` and enriches it with additional trace information: the original `parameter`
+   (`inputString`), the full `event`, the `context`, and the list of relevant `environment variables`. It then returns this enriched `Response` to AppSync,
+   which wraps it in a `GraphQLResponse` for the Next.js route handler, and ultimately back to the client.
+
+---
+
+In summary, a **CloudIgniter Lambda handler** is not an ad-hoc function: it is a strictly structured pipeline that:
+
+- Reads and validates environment configuration
+- Parses a single canonical `inputString` into a typed `Request<T>`
+- Applies environment and safety guards (including test/sandbox-only rules)
+- Enforces authorization and access rules
+- Validates the business payload
+- Delegates to shared server logic
+- Returns a standardized, richly annotated `Response`
+
+:::tip[IMPORTANT]
+This discipline ensures that every Lambda in a CloudIgniter system behaves the same way, making the overall backend predictable, debuggable, and safe—especially in multi-tenant, multi-environment deployments.
+:::

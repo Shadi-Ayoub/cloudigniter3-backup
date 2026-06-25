@@ -1,0 +1,238 @@
+---
+title: Client-side Errors
+sidebar_position: 4
+---
+
+# Client-side Error (store-driven, tracked list of errors)
+
+CloudIgniter's client-side error handling is built around a centralized store and the
+`<ErrorHandler />` component, which together provide a consistent way to surface issues
+that occur after the application has already bootstrapped, such as network hiccups, form
+validation failures, or runtime permission problems.
+
+## Error Payload
+
+Instead of crashing the entire page, client errors are represented as `ClientErrorPayload` objects, which
+include fields like `id`, `message`, `isCritical`, and `severity`, and are pushed into a tracked error list via
+the `useErrorStore`.
+
+```ts title="ClientErrorPayload & Severity types" showLineNumbers
+type Severity = "info" | "warning" | "error" | "critical";
+
+type ClientErrorPayload = {
+  id: string; // unique identifier
+  message: string;
+  isCritical: boolean;
+  severity: Severity;
+};
+```
+
+## ErrorHandler Component
+
+The `<ErrorHandler />` listens to this store and reacts in real time, automatically rendering
+the appropriate UI based on the severity and criticality of the error: non-blocking issues may
+appear as dismissible notification cards or dialogs that users can expand for more detail, while
+critical client-side errors trigger a full-screen backdrop to prevent further interaction until
+the problem is addressed. This layered approach makes it possible to distinguish between transient
+warnings and truly blocking failures, giving developers flexibility in how they escalate errors
+while keeping the user experience clean and predictable. Importantly, CloudIgniter separates
+diagnostic logging from user-facing messaging: developers can log technical details to the
+console or a monitoring service, while the UI remains user-friendly and actionable.
+By handling errors in the core through this store-driven model, CloudIgniter ensures that all
+client-side issues—whether recoverable or critical—are consistently managed, styled, and displayed
+across the application, reducing ad hoc implementations and promoting a unified error experience.
+
+Unlike server-side errors, client-side error notifications do not provide an onRetry mechanism, because most
+runtime issues are either recoverable through automatic retries inside the app logic or resolved by user
+interaction (e.g., re-entering data, fixing connectivity, or dismissing a modal). Instead, the client-side layer
+focuses on visibility and control — letting the user know what went wrong and giving them tools to acknowledge
+or dismiss the issue — while developers retain the ability to implement retry logic internally if the scenario
+calls for it. This separation of concerns keeps the UI clean and predictable: server-side errors expose a structured,
+retry-friendly contract through `<ErrorPage />`, while client-side errors emphasize in-app notifications that inform
+without derailing the user flow.
+
+## Client-Side Error Store
+
+### Overview
+
+CloudIgniter uses a centralized **Error Store** (powered by Zustand) to manage all client-side errors in a predictable way.
+Instead of scattering `useState` or ad-hoc error handling logic across components, you push errors into the store, and the
+global `<ErrorHandler />` component listens for changes and renders the right UI (notification card, modal, or critical backdrop).
+This approach ensures a single source of truth for client-side errors and keeps the error experience consistent across the entire
+application.
+
+### Store API
+
+The `useErrorStore` hook exposes a set of actions:
+
+- `triggerError(id, message, severity, options?)` → Pushes or updates an error.
+  - `id` should be stable per domain (e.g., "theme", "network"), so the same error gets replaced instead of duplicated.
+  - `options.isSticky` controls whether the error stays visible as a card until resolved.
+- `clearError(id)` → Removes a specific error from the store.
+- `clearAllErrors()` → Removes all errors.
+- `errorExists(id)` → Returns `true` if an error with that ID is active.
+- `getErrorById(id)` → Returns a specific error payload.
+- `getLastError()` → Returns the most recent error (useful for modal rendering).
+- `openModal()` / `closeModal()` → Toggles the modal view for non-sticky errors.
+
+### Example usage
+
+```ts {4,7-8,15-20,27} title="Example usage of the Error Store" showLineNumbers
+"use client";
+
+import { Button } from "@/ui/components/shadcn";
+import { useErrorStore } from "@cloudigniter/next/store";
+
+export default function ProfileActions() {
+  const triggerError = useErrorStore((s) => s.triggerError);
+  const clearError = useErrorStore((s) => s.clearError);
+
+  const saveProfile = async () => {
+    try {
+      // simulate failure
+      throw new Error("Save failed due to network issue");
+    } catch (e) {
+      triggerError(
+        "profile",
+        "Could not save your profile. Please try again later.",
+        "error",
+        { isSticky: true }
+      );
+    }
+  };
+
+  return (
+    <div className="space-x-2">
+      <Button onClick={saveProfile}>Save Profile</Button>
+      <Button variant="outline" onClick={() => clearError("profile")}>
+        Clear Error
+      </Button>
+    </div>
+  );
+}
+```
+
+### UI Rendering
+
+Errors in the store are not displayed directly — they are automatically rendered by the `<ErrorHandler />` component,
+which should be mounted globally inside the `<Client>` wrapper. Depending on severity and `isCritical`:
+
+- **critical** → renders a fullscreen backdrop blocking the session.
+- **error/warning/info** → shows a notification card (sticky) or a modal (non-sticky).
+
+### Best Practices
+
+- Use **stable IDs** per error category (e.g., "theme", "profile", "network") to avoid duplicates.
+- Reserve `critical severity` for unrecoverable conditions (e.g., expired session).
+- Keep messages concise and actionable, avoiding technical details or PII.
+- Use `isSticky` for persistent warnings users must notice (e.g., unsaved changes).
+
+## Example
+
+Below is a compact, practical example that again shows how to **trigger** and **clear** client-side errors using CloudIgniter's
+error store.
+
+:::tip
+Use stable IDs per error domain (e.g., "theme", "profile") so re-triggering replaces the prior entry instead of duplicating it.
+:::
+
+```ts {5,18-20,29-37,44-52,74-79} title="Example on how to trigger errors on client side" showLineNumbers
+"use client";
+
+import { useEffect, useState } from "react";
+import { Button } from "@/ui/components/shadcn";
+import { useErrorStore } from "@cloudigniter/next/store";
+import type { Severity } from "@cloudigniter/next/types";
+
+/**
+ * Demo: how to trigger & clear CloudIgniter client-side errors.
+ * - Uses stable IDs to avoid duplicates.
+ * - Shows both a transient warning (sticky card) and a critical error (backdrop).
+ * - Clears errors when the condition resolves.
+ *
+ * Note: <ErrorHandler direction="ltr|rtl" /> should be mounted in your app shell
+ * (e.g., inside <Client>) so these errors show automatically.
+ */
+export default function ClientErrorDemo() {
+  const triggerError = useErrorStore((s) => s.triggerError);
+  const clearError = useErrorStore((s) => s.clearError);
+  const errorExists = useErrorStore((s) => s.errorExists);
+
+  const [isOffline, setIsOffline] = useState(false);
+  const [hasUnsaved, setHasUnsaved] = useState(false);
+
+  // Example 1: Critical condition (e.g., offline)
+  useEffect(() => {
+    const ID = "network";
+    if (isOffline) {
+      triggerError(
+        ID,
+        "You appear to be offline. Some features are unavailable.",
+        "critical",
+        { isSticky: true } // sticky has no effect on critical backdrop, but OK to set
+      );
+    } else if (errorExists(ID)) {
+      clearError(ID);
+    }
+  }, [isOffline, triggerError, clearError, errorExists]);
+
+  // Example 2: Transient warning with sticky card
+  useEffect(() => {
+    const ID = "profile";
+    if (hasUnsaved) {
+      triggerError(
+        ID,
+        "You have unsaved changes. Don’t forget to save before leaving.",
+        "warning",
+        { isSticky: true } // keep a small card visible until user saves
+      );
+    } else if (errorExists(ID)) {
+      clearError(ID);
+    }
+  }, [hasUnsaved, triggerError, clearError, errorExists]);
+
+  // Utility to simulate states
+  const toggle = (setter: (b: boolean) => void) => setter((v) => !v);
+
+  return (
+    <div className="flex gap-3 p-4">
+      <Button onClick={() => toggle(setIsOffline)}>
+        {isOffline
+          ? "Go Online (Clear Critical)"
+          : "Go Offline (Trigger Critical)"}
+      </Button>
+      <Button variant="outline" onClick={() => toggle(setHasUnsaved)}>
+        {hasUnsaved
+          ? "Mark as Saved (Clear Warning)"
+          : "Mark Unsaved (Trigger Warning)"}
+      </Button>
+      <Button
+        variant="ghost"
+        onClick={() => {
+          // Ad-hoc non-sticky error, disappears when modal is closed
+          triggerError(
+            "adhoc",
+            "A one-off error occurred while syncing. Try again shortly.",
+            "error",
+            { isSticky: false }
+          );
+        }}
+      >
+        Trigger Non-Sticky Error
+      </Button>
+    </div>
+  );
+}
+```
+
+**How it works**
+
+- `triggerError(id, message, severity, { isSticky })`: pushes/updates an error in the store. Use a
+  stable `id` per domain so you don't stack duplicates.
+- `clearError(id)`: removes that error (e.g., after the condition resolves).
+- `errorExists(id)`: handy for avoiding unnecessary state churn.
+- UI rendering: `<ErrorHandler />` listens to the store globally and renders:
+  - critical → fullscreen blocking backdrop.
+  - warning/error/info → sticky card or modal (per your ErrorHandler logic).
+- Sticky vs non-sticky: `isSticky: true` keeps a small card visible; `false` allows the modal to close
+  and disappear when acknowledged.

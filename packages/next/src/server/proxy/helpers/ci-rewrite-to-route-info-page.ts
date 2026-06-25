@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+
 import type { CiRouteInfoPageReason } from "@cloudigniter/core/types";
 
 export function ciRewriteToRouteInfoPage(
@@ -21,6 +22,14 @@ export function ciRewriteToRouteInfoPage(
     infoPageStrategy?: "rewrite" | "redirect";
   },
   response?: NextResponse,
+
+  /**
+   * Optional request headers forwarded to the rewritten destination.
+   *
+   * This makes resolved request context available to Server Components during
+   * the same request cycle.
+   */
+  requestHeaders?: Headers,
 ) {
   const url = request.nextUrl.clone();
   url.pathname = opts.infoPagePath;
@@ -41,7 +50,25 @@ export function ciRewriteToRouteInfoPage(
   const r = response ?? NextResponse.next();
   const strategy = opts.infoPageStrategy ?? "rewrite";
 
-  return strategy === "redirect"
-    ? NextResponse.redirect(url, { headers: r.headers })
-    : NextResponse.rewrite(url, { headers: r.headers });
+  /**
+   * Redirects start a new browser request, so there is no rewritten request
+   * whose headers need to be forwarded.
+   */
+  if (strategy === "redirect") {
+    return NextResponse.redirect(url, {
+      headers: r.headers,
+    });
+  }
+
+  return NextResponse.rewrite(url, {
+    headers: r.headers,
+
+    ...(requestHeaders
+      ? {
+          request: {
+            headers: requestHeaders,
+          },
+        }
+      : {}),
+  });
 }

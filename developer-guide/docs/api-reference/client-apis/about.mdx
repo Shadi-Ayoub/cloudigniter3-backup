@@ -1,0 +1,40 @@
+---
+title: About
+sidebar_position: 1
+---
+
+# About
+
+Client APIs are the browser-facing (and client-component-friendly) interfaces provided by CloudIgniter.  
+They primarily support UI flows such as navigation, data loading, user feedback, and client-side orchestration.
+
+Use Client APIs when the caller is a client component, a hook, or a UI-driven workflow that initiates interaction with route handlers or other runtime services.
+
+---
+
+## Core Client Utilities
+
+- [`call`](call.mdx) — Invoke a CloudIgniter route handler using the standard CI request/response contract, with normalized error handling and optional transport controls (headers, abort signals, cache semantics).
+- [`usePageLoader`](call.mdx) — Global page loading state utilities for consistent navigation/loading UX.
+- [`NavigateWithLoader`](call.mdx) — Navigation helper that triggers the loader before route transitions.
+
+---
+
+## Client Hooks
+
+- [`useSettings`](call.mdx) — Load and access application settings on the client using the CloudIgniter settings contract.
+- [`useAmplify`](call.mdx) — Access configured Amplify resources and client utilities through the CloudIgniter provider.
+
+---
+
+## UI Helpers
+
+- [`Spinner`](call.mdx) — Standard CloudIgniter spinner component with optional text and consistent styling rules.
+- [`ErrorHandler`](call.mdx) — Client-side error presentation utilities and notification patterns.
+
+---
+
+## Notes
+
+- Client APIs may be callable from the server in certain deployments, but are categorized as **Client APIs** when their conceptual purpose is to support client-side orchestration (for example, `call()`).
+- For route handler implementation and data access, refer to **Server APIs**.

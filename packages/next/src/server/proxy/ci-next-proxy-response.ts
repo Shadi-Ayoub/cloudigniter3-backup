@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
-import { ciNormalizePath } from "@cloudigniter/core/lib";
+
+import { ciNormalizePathname } from "@cloudigniter/core/lib";
+
 import type { CiNextProxyResponseInterface } from "./types";
+
 import { ciGetBypassFlag } from "./helpers";
 import { ciHandleRouteLogic } from "./ci-handle-route-logic";
-import { ciHandleTenantLogic } from "./ci-handle-tenant-logic";
+
+import { ciHandleTenantLogic, ciRewriteTenantRoute } from "@ci-next/server";
 
 /**
  * Always resolve the request path string and store it in a cookie and in the response header.
@@ -19,10 +23,10 @@ export async function ciNextProxyResponse({
   routeConfig,
   tenantRoutingConfig,
   routes,
-}: CiNextProxyResponseInterface) {
-  let response = NextResponse.next();
+}: CiNextProxyResponseInterface): Promise<NextResponse> {
+  const response = NextResponse.next();
 
-  const pathnameNormalized = ciNormalizePath(request.nextUrl.pathname);
+  const pathnameNormalized = ciNormalizePathname(request.nextUrl.pathname);
 
   const bypass = ciGetBypassFlag(pathnameNormalized);
 
@@ -31,39 +35,47 @@ export async function ciNextProxyResponse({
   }
 
   // -------------------------------------------------------
-  // Route validation step
+  // Tenant and Org Unit resolution step
   // -------------------------------------------------------
-  const resultPath = await ciHandleRouteLogic({
+  const tenantResult = await ciHandleTenantLogic({
     request,
     response,
-    pathnameNormalized,
-    routeConfig,
-    routes,
-  });
-
-  if (resultPath.exit) {
-    return resultPath.response;
-  }
-
-  const responseAfterPathCheck = resultPath.response;
-  // -------------------------------------------------------
-
-  // -------------------------------------------------------
-  // CiTenant validation step
-  // -------------------------------------------------------
-  const resultTenant = await ciHandleTenantLogic({
-    request,
-    response: responseAfterPathCheck,
     pathnameNormalized,
     tenantRoutingConfig,
   });
 
-  if (resultTenant.exit) {
-    return resultTenant.response;
+  if (tenantResult.exit) {
+    return tenantResult.response;
   }
-
-  const responseAfterTenantCheck = resultTenant.response;
   // -------------------------------------------------------
 
-  return responseAfterTenantCheck;
+  // -------------------------------------------------------
+  // Route validation step
+  //
+  // Validate the resolved logical feature pathname, not the public
+  // Tenant transport pathname.
+  //
+  // Example:
+  // /tx/acme/academic/grade-10/math/dashboard -> /dashboard
+  // -------------------------------------------------------
+  const routeResult = await ciHandleRouteLogic({
+    request,
+    response: tenantResult.response,
+    pathnameNormalized: tenantResult.featurePathname ?? pathnameNormalized,
+    routeConfig,
+    routes,
+  });
+
+  if (routeResult.exit) {
+    return routeResult.response;
+  }
+  // -------------------------------------------------------
+
+  return ciRewriteTenantRoute({
+    request,
+    response: routeResult.response,
+    requestHeaders: tenantResult.requestHeaders,
+    tenant: tenantResult.tenant,
+    featurePathname: tenantResult.featurePathname,
+  });
 }

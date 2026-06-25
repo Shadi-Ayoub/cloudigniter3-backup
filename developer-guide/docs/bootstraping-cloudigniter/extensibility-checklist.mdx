@@ -1,0 +1,20 @@
+---
+title: Extensibility Checklist
+sidebar_position: 11
+---
+
+10. Extensibility Checklist (what you can customize safely)
+
+- Locales & dictionaries
+  - Add/override in `src/locale/<locale>/{common,public,<namespace>}.json`.
+  - Keep strings small and namespace-scoped.
+- Theme defaults
+  - Provide theme provider props in your system config; client picks them up automatically.
+- Routes & protection
+  - Maintain a typed `RoutesMap` (including \* patterns). Use it for auth gating and client checks.
+- Authenticator
+  - Configure once server-side; ship props/themes through `PageConfig`.
+- Error surfaces
+  - Reuse the client error store anywhere (toasts, modals, critical overlays).
+- CSS order
+  - Put base/framework CSS in `Kernel`, app-wide rules in `globals.css`, page-specific styles in components.

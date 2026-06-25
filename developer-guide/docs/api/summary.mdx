@@ -1,0 +1,47 @@
+---
+title: Summary
+sidebar_position: 12
+---
+
+:::info[The Workflow]
+Client → Route Handler → AppSync → Lambda → AppSync → Route Handler → Client
+
+**CLIENT PAGE**
+
+- React Component / Page.tsx / Action
+- Uses `fetch(Request<T>)` to send "request" and receive "response"
+- Receives typed `Response<T>` object
+
+**NEXT.JS ROUTE HANDLER (server)**
+
+- Validates request
+- Calls Amplify `AppSync` client
+- Sends `Response<T>` back to client
+
+**AWS APPSYNC RESOLVER**
+
+- Receives GraphQL query or mutation
+- auto-wrap `GraphQLResponse`
+- Sends `GraphQLResponse` back to Next.js Route Handler
+
+**LAMBDA HANDLER**
+
+- Parses `Request<T>` to get input (event.arguments.inputString → request)
+- Validates envMode, authMode, input
+- Executes business logic
+- Returns `Response<T>`
+
+```txt
+This unified flow ensures:
+
+- Consistent contracts
+- Strong security boundaries
+- Predictable debugging
+- Easy onboarding
+- Minimal cognitive overhead
+
+This enforced flow is what makes CloudIgniter a quality-driven framework rather than a “collection of utilities.”
+
+```
+
+:::

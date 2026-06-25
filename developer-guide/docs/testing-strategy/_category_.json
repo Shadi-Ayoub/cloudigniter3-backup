@@ -1,0 +1,8 @@
+{
+  "label": "Testing Strategy",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "This section descripes CloudIgniter's testing strategy."
+  }
+}

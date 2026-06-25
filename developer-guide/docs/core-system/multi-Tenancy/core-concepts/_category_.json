@@ -1,0 +1,8 @@
+{
+  "label": "Core Concepts",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Describes the core concepts of Cloudigniter's multi-tenancy feature."
+  }
+}

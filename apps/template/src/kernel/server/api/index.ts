@@ -2,12 +2,15 @@ export { appServerClient } from "./app-server-client";
 export { getLambdaParameters } from "./system/get-lambda-parameters";
 export { appPrepareServerApiRequest } from "./app-prepare-server-api-request";
 
-//Tenants
 export {
+  //Tenant
   appGetTenant,
   appGetTenantLookupBySlug,
   appListTenants,
   appSeedTenants,
+
+  // org unit
+  appGetOrgUnitLookupByPath,
 } from "./system";
 
 //Settings

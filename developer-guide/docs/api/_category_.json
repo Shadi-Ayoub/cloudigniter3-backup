@@ -1,0 +1,8 @@
+{
+  "label": "API Call Strategy",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "This section descripes CloudIgniter's strategy for API call from client and server."
+  }
+}

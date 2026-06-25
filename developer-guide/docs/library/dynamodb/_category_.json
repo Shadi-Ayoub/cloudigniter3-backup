@@ -1,0 +1,8 @@
+{
+  "label": "DynamoDB",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Describes the available methods for developers to interact with DynamoDB tables with convenience."
+  }
+}

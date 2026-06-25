@@ -1,0 +1,562 @@
+---
+title: Dynamodb
+---
+
+# Dynamodb
+
+CloudIgniter ships with a lightweight DynamoDB wrapper class (`Dynamodb`) that standardizes how you create
+and reuse a [DynamoDB document client](https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/migrate-dynamodb-doc-client.html)
+across environments, and provides safe, typed helpers for common operations (read, write, delete, and transactional writes). It standardizes:
+
+- Client initialization (Lambda vs non-Lambda).
+- Typed Result-style responses.
+- Safe Put/Update/Delete/Transaction patterns.
+- Optional timestamps, existence conditions, optimistic locking, and metrics.
+
+:::warning Please note
+It is **not an ORM** — it is a predictable, explicit, low-level abstraction aligned with CloudIgniter architecture
+(single-table friendly, condition-aware, Result-union based).
+:::
+
+## Lifecycle of Usage
+
+The class follows a very simple lifecycle:
+
+### 1. Create an instance
+
+```ts
+const db = new Dynamodb({
+  region: process.env.AWS_REGION!,
+});
+```
+
+### 2. Initialize
+
+```ts
+await db.initialize(); // Initialize once, reuse
+```
+
+:::warning Please note
+The Dynamodb class is environment aware during initialization:
+
+- In Lambda → uses execution role automatically.
+- Outside Lambda → loads credentials from Amplify Auth session.
+
+Initialization is idempotent and cached internally.
+:::
+
+### 3. Perform operations
+
+```ts
+await db.readItem(...)
+await db.writeItem(...)
+await db.deleteItem(...)
+await db.transactWrite(...)
+```
+
+Each operation returns a Result-style union `{ ok: true, ... }` or `{ ok: false, statusCode, error }`
+
+### 4. (Optional) Destroy
+
+```ts
+db.destroy();
+```
+
+## Available Methods
+
+| Method            | Purpose                                                                   |
+| ----------------- | ------------------------------------------------------------------------- |
+| `initialize()`    | Creates (or returns cached) `DynamoDBDocumentClient`                      |
+| `readItem()`      | GetItem with projection, consistency, metrics                             |
+| `writeItem()`     | PutItem / UpdateItem with timestamps, existence rules, optimistic locking |
+| `deleteItem()`    | DeleteItem with existence rule and return values                          |
+| `transactWrite()` | TransactWriteItems (put/update/delete in one atomic call)                 |
+| `destroy()`       | Releases SDK resources                                                    |
+
+## Quick Example (End-to-End)
+
+```ts
+import { Dynamodb } from "@cloudigniter/next/server";
+
+type UserProfile = {
+  PK: string;
+  SK: string;
+  name: string;
+};
+
+export async function example() {
+  const db = new Dynamodb({ region: process.env.AWS_REGION! });
+
+  await db.initialize();
+
+  // 1️⃣ Insert user (insert only)
+  const create = await db.writeItem({
+    tableName: process.env.CI_USER_PROFILE_TABLE!,
+    key: { PK: "USER#123", SK: "PROFILE" },
+    item: { name: "Shady" },
+    existence: "insertOnly",
+  });
+
+  if (!create.ok) {
+    throw new Error(`Create failed: ${create.error}`);
+  }
+
+  // 2️⃣ Read user
+  const read = await db.readItem<UserProfile, { PK: string; SK: string }>({
+    tableName: process.env.CI_USER_PROFILE_TABLE!,
+    key: { PK: "USER#123", SK: "PROFILE" },
+  });
+
+  if (!read.ok) {
+    throw new Error(`Read failed: ${read.error}`);
+  }
+
+  console.log("User:", read.item);
+
+  // 3️⃣ Update user
+  const update = await db.writeItem({
+    tableName: process.env.CI_USER_PROFILE_TABLE!,
+    key: { PK: "USER#123", SK: "PROFILE" },
+    update: {
+      set: { name: "Shadi" },
+    },
+    existence: "updateOnly",
+  });
+
+  if (!update.ok) {
+    throw new Error(`Update failed: ${update.error}`);
+  }
+
+  // 4️⃣ Delete user
+  const del = await db.deleteItem({
+    tableName: process.env.CI_USER_PROFILE_TABLE!,
+    key: { PK: "USER#123", SK: "PROFILE" },
+  });
+
+  if (!del.ok) {
+    throw new Error(`Delete failed: ${del.error}`);
+  }
+}
+```
+
+## Recommended Usage Patterns
+
+### Pattern A: Server-only (recommended)
+
+Use the class from:
+
+- Next.js Server Components
+- Route handlers
+- Server Actions
+- Lambda functions
+
+:::tip
+Using the class only on server will keep your DynamoDB access behind your backend security boundary.
+:::
+
+### Pattern B: Client-side access (advanced)
+
+Only do this if:
+
+- you have configured Identity Pools / IAM policies properly
+- you understand that client-side access increases your attack surface
+- you enforce tenant scoping and least privilege at the IAM layer
+
+## Reading an Item (GetItem)
+
+### Basic read by key
+
+```ts
+type UserProfile = {
+  PK: string;
+  SK: string;
+  name: string;
+  email?: string;
+};
+
+const db = new Dynamodb({ region: "eu-west-1" });
+await db.initialize();
+
+const r = await db.readItem<UserProfile, { PK: string; SK: string }>({
+  tableName: process.env.CI_USER_PROFILE_TABLE!,
+  key: { PK: "USER#123", SK: "PROFILE" },
+});
+
+if (!r.ok) {
+  // r.statusCode, r.error, r.originalError
+  throw new Error(`Read failed (${r.statusCode}): ${r.error}`);
+}
+
+if (!r.item) {
+  // item not found
+  console.log("User not found");
+} else {
+  console.log("User:", r.item.name);
+}
+```
+
+### Projection scenarios (return only some attributes)
+
+:::tip
+Projection is useful for performance and cost control.
+:::
+
+```ts title="Array projection"
+const r = await db.readItem<{ name: string }, { PK: string; SK: string }>({
+  tableName,
+  key,
+  projection: ["name"],
+});
+```
+
+```ts title="Attribute-map projection"
+const r = await db.readItem<{ name: string }, { PK: string; SK: string }>({
+  tableName,
+  key,
+  projection: ["name"],
+});
+```
+
+```ts title="Raw ProjectionExpression string"
+const r = await db.readItem<{ name: string }, { PK: string; SK: string }>({
+  tableName,
+  key,
+  projection: ["name"],
+});
+```
+
+```ts title="Raw ProjectionExpression with names"
+const r = await db.readItem<{ name: string }, { PK: string; SK: string }>({
+  tableName,
+  key,
+  projection: ["name"],
+});
+```
+
+### Strong consistency (ConsistentRead)
+
+```ts
+const r = await db.readItem<any, any>({
+  tableName,
+  key,
+  consistent: true,
+});
+```
+
+### Metrics (consumed capacity)
+
+```ts
+const r = await db.readItem<any, any>({
+  tableName,
+  key,
+  metrics: true, // TOTAL
+});
+
+if (r.ok) {
+  console.log("ConsumedCapacity:", r.consumedCapacity);
+}
+```
+
+## Writing an Item (PutItem / UpdateItem)
+
+`writeItem()` is the most powerful method. It supports both Put and Update.
+
+### Scenario 1: Put (insert/replace)
+
+```ts title="Scenario 1: Put (insert/replace)"
+const r = await db.writeItem<{ name: string }, { PK: string; SK: string }>({
+  tableName,
+  key: { PK: "USER#123", SK: "PROFILE" },
+  item: { name: "Shadi" },
+  mode: "put", // optional: "auto" would also choose put because update is not provided
+});
+
+if (!r.ok) throw new Error(r.error);
+```
+
+```ts title="Disable timestamps"
+await db.writeItem({
+  tableName,
+  key,
+  item,
+  timestamps: false,
+});
+```
+
+:::info
+By default, Put writes `createdAt` and `updatedAt`.
+:::
+
+```ts title="Custumizing timestamps field names"
+await db.writeItem({
+  tableName,
+  key,
+  item,
+  timestamps: {
+    createdAtField: "created_at",
+    updatedAtField: "updated_at",
+    numeric: true, // stores millis
+  },
+});
+```
+
+### Scenario 2: Insert only (fail if exists)
+
+Use `existence: 'insertOnly'` to ensure you do not overwrite.
+
+```ts title="Guarding against overwrite"
+const r = await db.writeItem({
+  tableName,
+  key,
+  item,
+  existence: "insertOnly",
+});
+
+if (!r.ok) {
+  // On condition failure, statusCode is typically 400 (per CloudIgniter semantics)
+  console.error(r.statusCode, r.error);
+}
+```
+
+### Scenario 3: Update (SET/REMOVE/ADD/DELETE)
+
+```ts
+const r = await db.writeItem({
+  tableName,
+  key,
+  update: {
+    set: {
+      name: "New Name",
+      status: "active",
+    },
+    remove: ["legacyField"],
+  },
+  mode: "update", // optional; auto will infer update when update is present
+});
+
+if (!r.ok) throw new Error(r.error);
+```
+
+### Scenario 4: Update only (fail if missing)
+
+```ts
+const r = await db.writeItem({
+  tableName,
+  key,
+  update: { set: { status: "active" } },
+  existence: "updateOnly",
+});
+
+if (!r.ok) {
+  // missing item => ConditionalCheckFailedException => mapped to 400
+  console.error("Update failed:", r.statusCode, r.error);
+}
+```
+
+### Scenario 5: Optimistic locking (version check)
+
+```ts
+const r = await db.writeItem({
+  tableName,
+  key,
+  update: { set: { status: "active" } },
+  optimisticLock: {
+    attribute: "version",
+    expected: 5,
+  },
+});
+
+if (!r.ok) {
+  console.error("Lock failed:", r.statusCode, r.error);
+}
+```
+
+### Scenario 6: ReturnValues
+
+```ts title="Update: get updated attributes back"
+const r = await db.writeItem({
+  tableName,
+  key,
+  update: { set: { status: "active" } },
+  returnValues: "ALL_NEW",
+});
+
+if (r.ok) {
+  console.log("New Attributes:", r.attributes);
+}
+```
+
+:::tip
+If you request unsupported return values on Put, CloudIgniter returns a warning and uses NONE.
+:::
+
+```ts title="Put: only supports NONE | ALL_OLD"
+const r = await db.writeItem({
+  tableName,
+  key,
+  item,
+  mode: "put",
+  returnValues: "ALL_OLD", // OK for put
+});
+
+if (r.ok) console.log("Old item:", r.attributes);
+```
+
+### Scenario 7: Metrics (ConsumedCapacity / ItemCollectionMetrics)
+
+```ts
+const r = await db.writeItem({
+  tableName,
+  key,
+  update: { set: { status: "active" } },
+  metrics: true, // TOTAL + SIZE
+});
+
+if (r.ok) {
+  console.log("ConsumedCapacity:", r.consumedCapacity);
+  console.log("ItemCollectionMetrics:", r.itemCollectionMetrics);
+}
+```
+
+## Deleting an Item (DeleteItem)
+
+### Basic delete
+
+```ts title="Basic delete"
+const r = await db.deleteItem({
+  tableName,
+  key: { PK: "USER#123", SK: "PROFILE" },
+});
+
+if (!r.ok) throw new Error(r.error);
+```
+
+### Delete only if item exists
+
+```ts title="Delete only if item exists"
+const r = await db.deleteItem({
+  tableName,
+  key,
+  existence: "deleteOnly",
+});
+
+if (!r.ok) {
+  console.error("Delete failed:", r.statusCode, r.error);
+}
+```
+
+### Return old item on delete
+
+```ts title="Return old item on delete"
+const r = await db.deleteItem<{ PK: string; SK: string }, any>({
+  tableName,
+  key,
+  returnValues: "ALL_OLD",
+});
+
+if (r.ok) {
+  console.log("Deleted item:", r.item);
+}
+```
+
+## Transactional Writes (TransactWriteItems)
+
+:::tip
+Use transactions when you need all-or-nothing across multiple operations.
+:::
+
+```ts title="Put + Update + Delete in one transaction"
+const r = await db.transactWrite({
+  tableName,
+  items: [
+    {
+      mode: "put",
+      key: { PK: "USER#123", SK: "PROFILE" },
+      item: { name: "Shadi", status: "active" },
+      existence: "insertOnly", // optional
+    },
+    {
+      mode: "update",
+      key: { PK: "USER#123", SK: "SETTINGS" },
+      update: { set: { theme: "dark" } },
+      existence: "updateOnly", // optional
+    },
+    {
+      mode: "delete",
+      key: { PK: "USER#123", SK: "LEGACY" },
+      existence: "deleteOnly", // optional
+    },
+  ],
+  returnConsumedCapacity: "TOTAL",
+});
+
+if (!r.ok) {
+  console.error("Transaction failed:", r.statusCode, r.error);
+} else {
+  console.log("Capacity:", r.consumedCapacity);
+}
+```
+
+### Transaction failure semantics
+
+- Conditional-like failures (e.g., item missing when `updateOnly`) commonly surface as:
+  - `TransactionCanceledException`
+- CloudIgniter maps these cases to **400** to reflect “request preconditions not met”.
+
+## Error Handling Convention
+
+All helper operations return a union:
+
+- **Success:** `{ ok: true, ... }`
+- **Error:** `{ ok: false, statusCode, error, originalError? }`
+
+### Recommended handling pattern
+
+```ts title="Recommended handling pattern"
+const r = await db.writeItem(...);
+
+if (!r.ok) {
+  // consistent place to handle, log, or map to CiResult/CiResponse
+  console.error('DynamoDB error', { statusCode: r.statusCode, error: r.error });
+  return r;
+}
+
+// continue with r.attributes / r.metadata ...
+```
+
+## Performance + Safety Notes
+
+- Prefer projections for hot reads (reduce RCU/cost).
+- Prefer `existence` + optimistic lock for correctness under concurrency.
+- Keep the `Dynamodb` instance cached per request or per function invocation:
+  - Next.js server: create once inside request scope and reuse across calls
+  - Lambda: you may create it outside the handler to benefit from container reuse
+
+:::info Quick Reference (Cheat Sheet)
+
+```ts title="Initialize"
+await db.initialize();
+```
+
+```ts title="Read"
+await db.readItem({ tableName, key });
+```
+
+```ts title="Write (auto put/update)"
+await db.writeItem({ tableName, key, item });           // put
+await db.writeItem({ tableName, key, update: {...} });  // update
+```
+
+```ts title="Delete"
+await db.deleteItem({ tableName, key });
+```
+
+```ts title="Transaction"
+await db.transactWrite({ tableName, items: [...] });
+```
+
+```ts title="Cleanup (tests/scripts)"
+db.destroy();
+```
+
+:::

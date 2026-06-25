@@ -1,0 +1,232 @@
+---
+title: Route Page
+sidebar_position: 2
+---
+
+# CloudIgniter Route Page
+
+Each CloudIgniter route is implemented using a Next.js **Route Segment Page** (`page.tsx`), which acts as
+the server-side entry point for the route. Throughout our documentations, this **server-side controller**
+will be refered to as **CloudIgniter Route Page**. It is responsible for:
+
+- Resolving runtime context (env mode, tenant, locale, auth, etc.)
+- Loading initial configuration/data
+- Passing a **serializable** payload into the **Page Client Wrapper**
+- Enforcing dynamic rendering when needed
+
+```ts title="page.tsx minimal pattern example" showLineNumbers
+import { PageClientWrapper } from './page-client-wrapper';
+import { bootstrap } from '@/kernel/server';
+
+export const dynamic = 'force-dynamic';
+
+export default async function SettingsPage() {
+  const config = await bootstrap();
+  return <PageClientWrapper config={config} />;
+}
+```
+
+:::note Read More
+
+- [Creating a Page in Next.js App Router](https://nextjs.org/docs/app/getting-started/layouts-and-pages#creating-a-page)
+- [Page File Convention Reference](https://nextjs.org/docs/app/api-reference/file-conventions/page)
+
+:::
+
+## The Primary parts
+
+### Imports
+
+- Import the client wrapper from `./page-client-wrapper`
+- Import server-only services from `@/kernel/server` and other libraries
+
+```ts
+import { PageClientWrapper } from "./page-client-wrapper";
+import { bootstrap } from "@/kernel/server";
+```
+
+### Dynamic directive
+
+`page.tsx` depends on runtime context (cookies, headers, auth, tenant, env, etc). Hence, it needs to
+include the line below to prevent static optimization and ensures request-time rendering.
+
+```ts
+export const dynamic = "force-dynamic";
+```
+
+:::warning
+**You should not remove it!**
+
+If you are following the recommended pattern when creating route pages, you should always include this
+line. It is not cosmetic — it is a **routing-level directive to Next.js** that fundamentally changes how
+this page is rendered and cached.
+
+**What `dynamic = 'force-dynamic'` does**
+
+In **Next.js App Router**, pages are **static by default when possible**. If Next.js determines that a route:
+
+- has no explicit dynamic markers (cookies(), headers(), searchParams, etc.)
+- and all async work _looks deterministic at build time_
+
+it may **pre-render the page at build time** or cache it as static.
+
+So, by adding this line you are explicitly telling Next.js:
+
+> _“This page must always be rendered on the server at request time. Do not statically optimize,
+> pre-render, or cache it.”_
+
+**Why this is required for a CloudIgniter page?**
+
+1.  `bootstrap()` is runtime-dependent
+
+    ```ts
+    const config = await bootstrap();
+    ```
+
+    Based on CloudIgniter architecture, `bootstrap()` typically:
+    - Reads environment-specific configuration
+    - Resolves tenant / scope
+    - Reads headers, cookies, or request context
+    - Possibly depends on authentication state
+    - May return different values per request
+
+    Even if `bootstrap()` internally uses:
+    - headers()
+    - cookies()
+    - server-side Amplify context
+    - tenant resolution
+
+    Next.js cannot always infer that automatically. Without `force-dynamic`, Next.js may incorrectly assume:
+
+    > _“This async function is safe to run once and cache.”_
+
+    Which would cause:
+    - Wrong tenant config
+    - Stale settings
+    - Cross-user leakage
+    - Incorrect environment resolution
+
+2.  This page feeds data into a Client Component
+
+        ```tsx
+        <ClientWrapper config={config} />
+        ```
+        This is a classic **Server → Client boundary**. If the page were statically rendered:
+        - `config` would be frozen at build time
+        - Every user would receive the **same config payload**
+        - That is **catastrophic** for:
+            - tenant-aware apps
+            - auth-aware apps
+            - environment-aware apps (sandbox/test/live)
+
+3.  This page is a configuration entry point
+    A page named `SettingsPage` that calls `bootstrap()` is:
+    - Semantically non-cacheable
+    - Expected to reflect current system state
+    - Often affected by:
+      - logged-in user
+      - role/permissions
+      - tenant
+      - runtime flags
+
+    For such pages, **static rendering is invalid by design**.
+
+**Why Next.js did not infer this automatically**
+
+Next.js auto-detects dynamic rendering **only when it sees**:
+
+- cookies()
+- headers()
+- useSearchParams()
+- draftMode()
+
+If `bootstrap()` hides those calls internally, the compiler sees `await someAsyncFunction();`, which
+is **not enough** to force dynamic rendering. So you add `export const dynamic = "force-dynamic";` as
+an **explicit contract**.
+
+**What would happen if you removed it**
+
+Some potential failure modes are depicted in the table below:
+
+| Symptom                            | Cause                 |
+| ---------------------------------- | --------------------- |
+| Same settings shown for all users. | Page cached           |
+| Tenant switching not reflected     | Static render         |
+| Auth-dependent config ignored      | Build-time evaluation |
+| Changes require rebuild            | Static optimization   |
+
+These issues are **hard to debug** because they appear “random” in production.
+
+**When you should use `force-dynamic` (rule of thumb)**
+
+Use it when any of the following are true:
+
+- Page depends on request headers or cookies
+- Page resolves tenant / scope
+- Page loads user-specific or role-specific data
+- Page calls a bootstrap / config / resolver function
+- Page feeds server data into a Client Component
+- Caching would be incorrect or dangerous
+
+A CloudIgniter page satisfies all of them.
+
+**Mental model (important)**
+
+Think of `export const dynamic = 'force-dynamic';` as saying:
+
+> _“This page is part of the runtime control plane, not the static site.”_
+
+Which is exactly what a CloudIgniter-style page is.
+
+**Summary (one-liner)**
+
+The line was added to **prevent Next.js from statically optimizing a page that depends on runtime configuration**,
+ensuring `bootstrap()` executes **on every request** with the correct tenant, user, and environment context.
+
+:::
+
+### `async` page function
+
+The page is typically `async` to allow server bootstrapping and data fetching. It also Keeps the logic thin:
+call well-defined server functions (e.g., bootstrap()).
+
+```ts {3-4}
+...
+
+export default async function SettingsPage() {
+    const config = await bootstrap();
+    ...
+}
+```
+
+### Return the Page Client Wrapper
+
+The server page should return **exactly one primary UI root**: the **Page Client Wrapper**. It should not implement
+interactive UI directly.
+
+```tsx
+return <PageClientWrapper config={config} />;
+```
+
+:::warning Important constraints
+Props passed from `page.tsx` to the **Page Client Wrapper** must be **serializable (JSON-safe)**. Avoid passing
+class instances, functions, Headers, Request, etc.
+:::
+
+:::tip[About `bootstrap()`]
+
+Using **_bootstrap()_** helps in keeping server concerns on the server and also helps in producing a compact,
+**serializable** configurations for the client. You can refere to the [details](https://www.google.com/) on the
+function and its returned type:
+
+```ts title="CloudIgniterPageConfig type" showLineNumbers
+type CloudIgniterPageConfig = {
+  ciConfig: ExtendedConfig;
+  settings?: Settings;
+  headers?: Record<string, string>;
+  cookies?: Record<string, string>;
+  status?: SystemStatus;
+};
+```
+
+:::

@@ -1,0 +1,22 @@
+---
+title: Theme Configurations
+sidebar_position: 7
+---
+
+Below are the set of theme configurations available in the system configuration section:
+
+1. **storageKey:** Key used to store theme setting in localStorage. The default value is `ci-theme`.
+2. **defaultTheme:** Default theme name, which is `system`. If `enableSystem` is false, the default theme is `light`
+3. **enableSystem:** Whether to switch between dark and light based on `prefers-color-scheme`. Default is `true`.
+4. **enableColorScheme:** Whether to indicate to browsers which color scheme is used (dark or light) for built-in UI like inputs and buttons. Default is `true`.
+5. **disableTransitionOnChange:** Optionally disable all CSS transitions when switching themes. Default is `false`.
+6. **themes:** List of pre-defined theme names. ['light', 'dark'].
+7. **attribute:** HTML attribute modified based on the active theme. Default is `class`.
+8. **value:** Optional mapping of theme name to attribute value.
+9. **nonce:** Optional nonce passed to the injected script tag, used to allow-list the next-themes script in your CSP.
+10. **scriptProps:** Optional props to pass to the injected script tag.
+11. **themeDir:** The theme directory in the system. This cannot be passed to `Cloudigniter` and defaults to `src/theme`
+
+:::tip
+You can override any configuration by passing the `ThemeProviderProps` object to `CloudigniterProvider` in the root layout or you can simply update the configuration from the system. Refer to the `next-themes` [documentations](https://www.npmjs.com/package/next-themes) to see examples on each API configuration and how to interact with it.
+:::

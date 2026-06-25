@@ -1,0 +1,158 @@
+---
+title: CloudIgniter `graphqlResponse`
+sidebar_position: 11
+---
+
+# CloudIgniter `GraphQLResponse`
+
+_**The AppSync Result Envelope**_
+
+Once a CloudIgniter server API wrapper prepares the request and calls AppSync via the Amplify client, it receives a `GraphQLResponse`. This is the standard result
+shape returned by GraphQL (and by extension AppSync), and it is what the wrapper must interpret and normalize into a CloudIgniter `Response<T>` before forwarding
+it back to the Next.js route handler.
+
+```ts {13-19} title="GraphQLResponse" showLineNumbers
+export type JsonPrimitive = string | number | boolean | null | object;
+export type JsonValue =
+  | JsonPrimitive
+  | { [k: string]: JsonValue }
+  | JsonValue[];
+export type Nullable<T> = T | null;
+
+export interface GraphQLError {
+  message: string;
+  [key: string]: any;
+}
+
+export type GraphQLResponse = {
+  data: Nullable<JsonValue>;
+  errors?: GraphQLError[];
+  extensions?: {
+    [key: string]: unknown;
+  };
+};
+```
+
+At a high level:
+
+- `GraphQLResponse` is the wire format coming back from AppSync.
+- CloudIgniter's server API wrapper converts this into the internal `Response<T>` format that the rest of the system understands.
+- This conversion is typically handled by a utility such as `parseGraphqlResponse<Response>()`.
+
+### Breaking Down GraphQLResponse
+
+🔍 1. `data: Nullable<JsonValue>`
+
+- Represents the **actual result** of the GraphQL operation.
+- For a mutation/query, `data` will usually look like:
+
+  ```json
+  {
+    "statusCode": 200,
+    "body": [ ... ],
+    "message": "...",
+    ...
+  }
+  ```
+
+  But from TypeScript's perspective in CloudIgniter, it is typed as a generic `JsonValue` wrapped in `Nullable`:
+
+  ```ts
+  data: Nullable<JsonValue>;
+  ```
+
+It can be:
+
+- A non-null object with the field corresponding to your operation. CloudIgniter's core lambda handlers will return Response.
+- null (for example, when something failed before writing a result).
+- Potentially partial if resolver-level errors occurred.
+
+🔍 2. `errors?: GraphQLError[]`
+
+- Optional field containing a list of **GraphQL-level errors**.
+- Each `GraphQLError` at minimum contains `message: string`, but may also include fields like `path`, `locations`, `extensions`, etc.:
+
+```ts title="GraphQLError" showLineNumbers
+export interface GraphQLError {
+  message: string;
+  [key: string]: any;
+}
+```
+
+- Important distinction:
+
+  - These are **GraphQL/AppSync errors** (e.g. resolver failed, mapping template issues, runtime exceptions in Lambda, auth errors, schema violations).
+  - They are **not necessarily** the same as your CloudIgniter `Response` errors, which live inside `data` if your handler returned a structured `Response`
+    with `statusCode != 200`.
+
+- A typical error response from AppSync might look like:
+
+```json
+{
+  "data": null,
+  "errors": [
+    {
+      "message": "The security token included in the request is invalid.",
+      "path": ["seedTenants"],
+      "extensions": { "code": "UNAUTHENTICATED" }
+    }
+  ]
+}
+```
+
+:::info
+
+- This is a **GraphQL/AppSync error**, not a handler-level Response.
+- parseGraphqlResponse sees errors and either:
+
+  - Throws (if the parameter `critical` is passed with a value equal to `true`), or
+  - Converts it into a Response like:
+
+  ```ts
+  {
+    "statusCode": 403,
+    "body": { "error": "Not Authorized to access seedTenants on type Mutation" },
+    "message": "AppSync/GraphQL error",
+    "response": { ...full GraphQLResponse... }
+  }
+  ```
+
+  :::
+
+🔍 3. `extensions?: { [key: string]: unknown }`
+
+- Optional metadata object for GraphQL engine extensions.
+- AppSync may use this for various internal details or additional context.
+- CloudIgniter's core flow usually does not rely heavily on this field for standard CRUD-style operations, but it is preserved
+  in `GraphQLResponse` for completeness and potential future use.
+
+**🔁 Where `GraphQLResponse` Fits in the CloudIgniter Flow**
+
+The typical flow in a server API wrapper is:
+
+1. **Prepare the request** using `prepareApiRequest()`
+2. **Serialize** to a single `inputString` and call the Amplify client
+3. **Receive** `GraphQLResponse` from AppSync
+4. **Normalize** it into a CloudIgniter `Response<T>` using a parser utility
+5. **Return** `Response<T>` to the Next.js route handler
+
+```ts title="Example: Server seedTenants API wrapper" showLineNumbers
+const ciRequest = prepareApiRequest(request);
+const inputString = JSON.stringify(ciRequest);
+
+const graphqlResponse: GraphQLResponse = await client.mutations.seedTenants(
+  { inputString },
+  { authMode: ciRequest.authMode }
+);
+
+const ciResponse = parseGraphqlResponse<Response>(graphqlResponse, true);
+
+return ciResponse;
+```
+
+Here:
+
+- `graphqlResponse` is the raw `GraphQLResponse`.
+- `ciResponse` is the normalized CloudIgniter `Response`, ready for the route handler.
+
+### `parseGraphqlResponse()`

@@ -1,0 +1,159 @@
+---
+title: Core Helpers & Utilities
+sidebar_position: 4
+---
+
+# Core Helpers & Utilities
+
+:::tip
+CloudIgniter provides several **core helpers** so all testing-related logic is centralized and consistent.
+Therefore, developers are advised to use these helpers and utilities following the suggested patterns in order to
+make sure that CloudIgniter's testing strategy is applied effectively. They should not re-implement them.
+:::
+
+## `getEnvMode()`
+
+Returns the current environment mode as a typed value.
+
+```ts title="getEnvMode() usage example" showLineNumbers
+import { getEnvMode } from "@cloudigniter/next/utility";
+
+const envMode = getEnvMode();
+if (envMode === "test") {
+  // Enable test-only utilities, extra logging, etc.
+}
+```
+
+## `isLiveEnv()`
+
+Returns `true` if the current environment mode is `live`.
+
+```ts title="isLiveEnv() usage example" showLineNumbers
+import { isLiveEnv } from "@cloudigniter/next/utility";
+
+export async function runTestSeeder() {
+  if (isLiveEnv()) {
+    throw new Error(
+      "This operation is not allowed in live environment. Use CI_ENV_MODE=test or sandbox."
+    );
+  }
+  // ... seeding logic
+}
+```
+
+## `assertNotLive()`
+
+Triggers an exception if the current environment mode is `live`. This helper is ment to be used in any **test-only** utility to
+ensure you **never** accidentally run test code in production.
+
+```ts title="assertNotLive() usage example." showLineNumbers
+import { assertNotLive } from "@cloudigniter/next/utility";
+
+export async function runTestSeeder() {
+  assertNotLive("Seeders are forbidden in live mode.");
+  // ... seeding logic
+}
+```
+
+## `scopePkWithEnv()`
+
+This is an Environment-Aware PK helper that adds the environment suffix to PKs (can also be used for SKs scoping if needed) so **test/sandbox
+data never collides with live data**.
+
+```ts title="scopePkWithEnv() usage example." showLineNumbers
+import { scopePkWithEnv } from "@cloudigniter/next/utility";
+
+export function buildTenantPK(tenantId: string): string {
+  const base = `TENANT#${tenantId}`;
+  return scopePkWithEnv(base);
+}
+
+export function buildOrgUnitPK(tenantId: string): string {
+  const base = `OU#${tenantId}`;
+  return scopePkWithEnv(base);
+}
+```
+
+The code above ensures:
+
+- **live** → `TENANT#{tenantId}`
+- **test** → `TENANT#{tenantId}#test`
+- **sandbox** → `TENANT#{tenantId}#sandbox`
+
+:::tip[Important:]  
+Do **not** manually append `#test` or `#sandbox` anywhere. Always use `scopePkWithEnv()` so the logic is centralized.
+:::
+
+### 3.4 `cleanupEnvironment(envMode: 'test' | 'sandbox')`
+
+A high‑level cleanup utility to remove all test/sandbox data. It must call
+`assertNotLive()` and be restricted to non‑live modes.
+
+```ts
+// @CI/testing/cleanup.ts
+import { assertNotLive } from "@CI/env";
+import { Dynamodb } from "@CI/server";
+
+export async function cleanupEnvironment(envMode: "test" | "sandbox") {
+  assertNotLive("cleanupEnvironment is forbidden in live mode.");
+
+  const ddb = new Dynamodb({ region: process.env.AWS_REGION ?? "us-east-1" });
+  await ddb.initialize();
+
+  try {
+    // Example: delete all rows whose PK ends with "#test" or "#sandbox".
+    // Pseudocode – you will implement this using Scan + BatchWrite:
+    //
+    // const suffix = `#${envMode}`;
+    // const items = await scanItemsWithPkSuffix(ddb.client, systemTableName, suffix);
+    // await batchDeleteItems(ddb.client, systemTableName, items);
+  } finally {
+    ddb.destroy();
+  }
+}
+```
+
+> In practice you’ll implement batch delete logic using DynamoDB’s `Query/Scan` & `BatchWrite`.
+> The important part: this utility is **centralized** and always guarded by `assertNotLive()`.
+
+---
+
+### 3.5 Seed Helpers (Tenants, Roles, OUs, Settings)
+
+CloudIgniter seeders (examples, not exhaustive):
+
+```ts
+// @CI/testing/seeds/seed-tenant.ts
+import { assertNotLive } from "@CI/env";
+import { createTenant } from "@CI/server/lib/system/tenants";
+
+export async function seedTestTenant(tenantId = "demo") {
+  assertNotLive("Tenant seeding is for test/sandbox only.");
+
+  return await createTenant({
+    tableName: process.env.CI_SYSTEM_TABLE_NAME!,
+    clientConfig: { region: process.env.CI_REGION! },
+    input: {
+      tenantId,
+      name: `Demo Tenant (${tenantId})`,
+      description: "Testing tenant",
+      slug: tenantId,
+      meta: { seeded: true },
+    },
+  });
+}
+```
+
+Similarly, you’d have:
+
+- `seedTestRoles(tenantId)`
+- `seedTestOrgUnits(tenantId)`
+- `seedTestSettings(tenantId)`
+
+Each should:
+
+1. Call `assertNotLive()`
+2. Use normal key builders (`buildTenantPK`, `buildOrgUnitPK`, etc.), which internally call `scopePkWithEnv()`
+3. Only target the current environment’s PK/SK namespace
+
+---

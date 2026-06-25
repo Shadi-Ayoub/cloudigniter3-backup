@@ -1,0 +1,8 @@
+{
+  "label": "AWS Amplify Setup",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "Describs the implementation of AWS Amplify and how developers can extend and override the pre-configuration of Cloudigniter in the \"Amplify folder\"."
+  }
+}

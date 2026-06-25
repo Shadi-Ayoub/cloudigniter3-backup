@@ -1,0 +1,39 @@
+---
+title: The Theme Switcher
+sidebar_position: 6
+---
+
+import ImageWrapper from "../../src/components/ImageWrapper";
+import themeSwitcher from "../assets/images/theme-switcher.png";
+
+The Cloudigniter application comes with a theme switcher to enable the user to switch between three theme modes:
+
+- **Light Theme Mode**:
+  - The default appearance with a light background and dark text.
+  - Suitable for well-lit environments.
+  - White background with black text is commonly used.
+  - Use soft colors and ensure good contrast for readability.
+- **Dark Theme Mode**:
+  - A mode with a dark background and light text.
+  - Ideal for low-light environments or night-time use.
+  - Black background with white text is commonly used.
+  - Use muted, less-saturated colors to reduce eye strain.
+- **System Theme Mode**:
+
+  - Automatically matches the operating system’s current appearance setting.
+  - Provides a seamless, native-like experience.
+  - If the user’s OS is set to dark mode, the app uses dark mode.
+  - Allow system theme detection using CSS media queries like `prefers-color-scheme`.
+
+<ImageWrapper imgUrl={themeSwitcher} caption="The Application Theme Switcher" />
+
+Once a theme is selected, it will be saved in the localstorage of the browser with a default key name "ci-theme". This will ebable the system to use the last selected theme once the application is re-visited by the user on the same machine.
+
+:::note
+You can change the default key name in localstore from the configurations section if needed.
+:::
+
+The Theme Switcher bahavior is aligned with the `next-themes` configurations specifications. Below are some related points:
+
+1. If the `enableSystem` is set to `false`, the `System` menu item will not be shown. The default value in this case will be `light` unless the `dark` theme was selected before disabling the `System` option.
+2. If the `forcedTheme` cofiguration is passed to the ThemeProvider, the Theme Switcher will disable the theme selection in the drop-down menu. In case the `forceTheme` value is not included in the `themes` array, the system will trigger a <span className='red'>Critical Error</span> state.

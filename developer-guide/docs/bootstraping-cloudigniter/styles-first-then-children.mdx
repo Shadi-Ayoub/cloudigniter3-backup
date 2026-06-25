@@ -1,0 +1,23 @@
+---
+title: Styles First
+sidebar_position: 5
+---
+
+# 4. Styles first, then children
+
+The root wrapper uses `NextIntlClientProvider` so every child can call `useTranslations`. Styles are
+injected through a minimal `Kernel` that's imported before `globals.css` to guarantee order.
+
+```ts title="src/kernel/Kernel.tsx" showLineNumbers
+import "@cloudigniter/next/styles/standard.css";
+import "../authenticator/authenticator.css";
+
+const Kernel = () => {
+  return null;
+};
+
+export default Kernel;
+```
+
+Placing library and authenticator CSS here keeps layout files clean. Import order ensures tokens/utilities
+land before page-level overrides.

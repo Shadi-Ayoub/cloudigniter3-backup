@@ -1,0 +1,73 @@
+---
+title: Page Bootstrapping
+sidebar_position: 6
+---
+
+# 5. Page Bootstrapping (server): Protection, User, Settings, Status
+
+4. Why This Pattern Exists (Design Intent)
+
+This structure is intentional in CloudIgniter because it:
+
+Centralizes bootstrapping on the server (consistent runtime context)
+
+Avoids mixing server and client concerns
+
+Prevents accidental static rendering / caching bugs
+
+Improves maintainability: every route has a predictable layout
+
+Keeps client bundles smaller by keeping server logic out of client code
+
+5. Practical Rules to Follow
+   Rule 1 — Server page is “controller”
+
+Keep page.tsx minimal. It should mostly do:
+
+bootstrap()
+
+optional server data fetch
+
+render wrapper
+
+Rule 2 — Client wrapper is “application UI”
+
+All interactivity and state live in the client wrapper tree.
+
+Rule 3 — Always co-locate the wrapper
+
+client-wrapper.tsx should be a sibling of page.tsx.
+
+Rule 4 — Be explicit about rendering mode
+
+If the page depends on runtime context, add:
+
+`export const dynamic = "force-dynamic";`
+
+Rule 5 — Pass only JSON-safe props
+
+If you need richer server context, extract the fields you need and pass plain objects.
+
+6. Optional Extensions (Common in CloudIgniter)
+
+Depending on the route, you may also see:
+
+loading.tsx — route-level skeleton/loader
+
+error.tsx — route-level error boundary UI
+
+not-found.tsx — route-level 404
+
+layout.tsx — route-level layout nesting
+
+These are additive, but the core pattern remains:
+
+page.tsx (server) → client-wrapper.tsx (client) → UI tree
+
+If you want, I can provide a canonical template for:
+
+a “data page” (server fetches list, client renders table)
+
+a “settings page” (server bootstraps config, client renders tabs + form)
+
+a “tenant-aware page” (server resolves tenant headers + config)

@@ -1,0 +1,19 @@
+---
+title: Introduction
+sidebar_position: 1
+---
+
+# Environment Modes
+
+CloudIgniter supports multiple **environment modes** to separate real production data from test/sandbox data.  
+This guide explains how environment modes work, how they influence the System Table, and how developers can safely use test features without ever risking production integrity.
+
+## 🔑 Why environment modes matter
+
+Without environment segmentation, test data could mix with real production data. Environment modes enforce:
+
+- Guaranteed separation between real and fake data
+- Safe CRUD operations on the tables
+- Data isolation per environment
+- Automatic cleanup for sandbox/test runs
+- Restriction of mock/test features from live production

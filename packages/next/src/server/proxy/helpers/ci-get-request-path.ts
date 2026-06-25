@@ -1,5 +1,5 @@
 import { headers } from "next/headers";
-import { ciNormalizePath } from "@cloudigniter/core/lib";
+import { ciNormalizePathname } from "@cloudigniter/core/lib";
 import { ciGetNextServerCookie } from "@ci-next/server";
 
 export async function ciGetRequestPath(opts?: {
@@ -12,11 +12,11 @@ export async function ciGetRequestPath(opts?: {
   // 1) Prefer the middleware-set header on this request
   const h = await headers();
   const fromHeader = h.get(headerName) ?? h.get(headerName.toUpperCase());
-  if (fromHeader) return ciNormalizePath(fromHeader);
+  if (fromHeader) return ciNormalizePathname(fromHeader);
 
   // 2) Fallback to the cookie via your utility
   const fromCookie = await ciGetNextServerCookie(cookieName);
-  if (fromCookie) return ciNormalizePath(fromCookie);
+  if (fromCookie) return ciNormalizePathname(fromCookie);
 
   return null;
 }

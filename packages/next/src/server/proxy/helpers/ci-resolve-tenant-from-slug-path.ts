@@ -24,7 +24,7 @@ import type { CiTenantSlugResult } from "@cloudigniter/core/types";
  * - Assumes `pathname` and `base` are already canonical
  * - Does not modify slashes beyond structural extraction
  *
- * Returned pathnameWithoutTenant:
+ * Returned featurePathname:
  * - Represents the logical application route with tenant prefix removed
  * - Always begins with "/"
  * - Root-safe (never empty)
@@ -71,13 +71,13 @@ export function ciResolveTenantFromSlugPath(
   }
 
   const logical = "/" + tail.join("/");
-  const pathnameWithoutTenant = logical === "/" ? "/" : logical;
+  const featurePathname = logical === "/" ? "/" : logical;
 
   if (seg === CI_DEFAULT_GLOBAL_SEGMENT) {
     return { scope: "global" };
   }
 
-  return { scope: "tenant", tenantId: seg, pathnameWithoutTenant };
+  return { scope: "tenant", tenantId: seg, featurePathname };
 }
 
 function stripTrailingSlash(p: string) {

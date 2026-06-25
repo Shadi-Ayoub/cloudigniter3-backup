@@ -1,0 +1,111 @@
+---
+title: The Middleware
+sidebar_position: 2
+---
+
+# The Middleware
+
+In `Next.js`, **Middleware** is a small server-side function that runs before a request reaches your route handler or page, letting you
+intercept and shape the request/response at the edge for things like auth gates, redirects/rewrites, A/B tests, geolocation/i18n routing,
+and header/cookie manipulation. Placed at `middleware.ts` in the `src` directory and configured with an optional matcher, it executes for
+matching paths on every request, enabling ultra-low-latency decisions without fully rendering a page first. Middleware runs in the Edge
+Runtime (Web APIs only), so it's fast and scalable but has some Node.js limitations (e.g., no filesystem, limited APIs). In short, it's
+your pre-routing checkpoint to enforce rules and reroute traffic efficiently across your app.
+
+```ts {20,30} title="src/middleware.ts" showLineNumbers
+import type { NextRequest } from "next/server";
+
+import type {
+  CloudIgniterAmplifyOutputs,
+  Config,
+} from "@cloudigniter/next/types";
+
+import ciConfig from "@/../cloudigniter.config";
+import outputs from "@/../amplify_outputs.json";
+
+import {
+  nextMiddlewareMatcher,
+  nextMiddlewareResponse,
+} from "@cloudigniter/next/middleware";
+
+const amplifyOutputs = outputs as CloudIgniterAmplifyOutputs;
+const ciConf = ciConfig as Config;
+
+export async function middleware(request: NextRequest) {
+  const res = await nextMiddlewareResponse({
+    request,
+    config: amplifyOutputs,
+    routes: ciConf.routes,
+  });
+
+  return res;
+}
+
+export const config = {
+  matcher: [nextMiddlewareMatcher],
+};
+```
+
+## nextMiddlewareResponse
+
+The middleware starts with a pass-through `NextResponse.next()` and adds three responsibilities on top of simple path tracking:
+
+**Path normalization + tracking**
+
+First, it normalizes the pathname by removing a trailing slash (except for `/`). Then, unless the request targets internal routes (`/_next`, `/_vercel`,
+`/api`, `/trpc`, `favicon/robots/sitemap`) or a static asset (e.g. `js`, `jpeg`, `ico`, `pdf`, etc.), it writes the normalized path to a cookie
+(`ci-path` by default, `path=/`, `SameSite=Lax`) and also mirrors it to a header (`x-ci-request-path` by default).
+
+**Auth check and protected-route guard (Amplify)**
+
+The middleware also checks whether the user is signed in before allowing access to pages that require login. If the user is not signed in, it redirects
+them to the login page and remembers the page they were trying to open so they can be sent back there after logging in. It relies on the defined routes
+from the system configuration to determine which pages are protected and require authentication.
+
+**First-class handling of "/login" and "/logout"**
+
+If the user is already signed in and tries to visit the login page, the middleware automatically redirects them to their intended page (if specified) or
+to the dashboard by default. When the user visits the logout page, it signs them out and redirects them back to the login page.
+
+:::note
+In short: CloudIgniter's `nextMiddlewareResponse` method is a lightweight path tracker plus an Amplify-aware gatekeeper—recording the current route in a
+cookie/header, enforcing access to protected paths, and cleanly handling login/logout flows with correct redirects.
+:::
+
+```ts title="@cloudigniter/next/middleware/nextMiddlewareResponse" showLineNumbers
+type NextMiddlewareOptions = {
+  pathCookieName: string;
+  pathHeaderName: string;
+};
+
+interface NextMiddlewareInterface {
+  request: NextRequest;
+  config: CloudIgniterAmplifyOutputs;
+  routes: Record<string, Route>;
+  options?: NextMiddlewareOptions;
+}
+
+async function nextMiddlewareResponse({
+  request,
+  config,
+  routes,
+  options = { pathCookieName: 'ci-path', pathHeaderName: 'x-ci-request-path' },
+}: NextMiddlewareInterface) {
+    ...
+}
+```
+
+## nextMiddlewareMatcher
+
+A matcher pattern for the Next.js middleware that tells the router which requests should trigger the middleware. It uses a negative look-ahead to skip common
+non-app targets—like `/api`, Next.js internals (`/\_next/\*`), and typical static assets such as `favicon.ico`, `robots.txt`, `sitemap.xml`, or any path ending with a
+file extension. In short, it runs for normal app routes (e.g. `/`, `/cp`, `/cp/dev`, `/users/123`) but not for API calls or static files.
+
+```ts title="@cloudigniter/next/middleware/nextMiddlewareMatcher"
+const nextMiddlewareMatcher =
+  "/((?!api|_next/static|_next/image|_next/webpack-hmr|favicon.ico|robots.txt|sitemap.xml|.*\\.[\\w-]+).*)";
+```
+
+:::tip
+Read more about Next.js <a href="https://nextjs.org/docs/app/getting-started/route-handlers-and-middleware" target="_blank">Route Handlers and Middleware</a>, <a href="https://nextjs.org/docs/app/guides/backend-for-frontend#middleware" target="_blank">Middleware</a>, and <a href="https://nextjs.org/docs/app/api-reference/file-conventions/middleware" target="_blank">middleware.js file</a>
+:::

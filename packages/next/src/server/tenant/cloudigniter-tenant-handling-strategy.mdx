@@ -1,0 +1,681 @@
+# CloudIgniter Tenant Handling Strategy
+
+## Purpose
+
+CloudIgniter is multi-tenant aware. A tenant can be resolved from either a URL slug or a subdomain, depending on the tenant configuration defined in `cloudigniter.config.ts`.
+
+The tenant handling strategy is based on one architectural principle:
+
+> The public tenant routing mode must not dictate the internal application route structure.
+
+This means the application should not depend directly on whether a tenant was resolved from:
+
+```txt
+/t/acme/dashboard
+```
+
+or:
+
+```txt
+acme.example.com/dashboard
+```
+
+Both requests should produce the same canonical tenant context and should be routed internally to the same tenant application tree.
+
+---
+
+## Core Definitions
+
+### Tenant Routing Mode
+
+The tenant routing mode defines how CloudIgniter detects the tenant from the incoming request.
+
+```ts
+type CiTenantRoutingMode = "slug" | "subdomain";
+```
+
+#### Slug Mode
+
+In slug mode, the tenant appears as part of the pathname.
+
+Example:
+
+```txt
+/t/acme/dashboard
+```
+
+Given this request:
+
+```ts
+basePath = "/t";
+tenantId = "acme";
+remainingPath = "/dashboard";
+```
+
+#### Subdomain Mode
+
+In subdomain mode, the tenant appears as the first subdomain.
+
+Example:
+
+```txt
+acme.example.com/dashboard
+```
+
+Given this request:
+
+```ts
+tenantId = "acme";
+remainingPath = "/dashboard";
+```
+
+---
+
+## Tenant Scope
+
+CloudIgniter resolves every request into one of three tenant scopes.
+
+```ts
+type CiTenantScope = "system" | "global" | "tenant";
+```
+
+### `system`
+
+The request belongs to the system-wide application area.
+
+Examples:
+
+```txt
+/login
+/logout
+/tenant/not-found
+/tenant/suspended
+/ci-internal/tenant-lookup
+```
+
+System routes are not tenant-specific.
+
+---
+
+### `global`
+
+The request belongs to the global tenant-aware area, but not to a specific tenant.
+
+Examples:
+
+```txt
+/t/global/dashboard
+global.example.com/dashboard
+```
+
+Global routes are useful for shared tenant-aware features, public dashboards, onboarding, or cross-tenant landing areas.
+
+---
+
+### `tenant`
+
+The request belongs to a specific tenant.
+
+Examples:
+
+```txt
+/t/acme/dashboard
+acme.example.com/dashboard
+```
+
+A tenant-scoped request must have a resolved tenant ID.
+
+---
+
+## Tenant Status
+
+Tenant status describes the lifecycle state of the resolved tenant.
+
+```ts
+type CiTenantStatus = "active" | "suspended" | "archived";
+```
+
+### `active`
+
+The tenant exists and is allowed to access tenant routes.
+
+### `suspended`
+
+The tenant exists but should not access normal tenant routes. The request should be rewritten or redirected to the configured suspended tenant page.
+
+### `archived`
+
+The tenant exists historically but should no longer access normal tenant routes. CloudIgniter may route archived tenants to a dedicated archived page or reuse the suspended page as a conservative fallback.
+
+---
+
+## Canonical Tenant Context
+
+CloudIgniter should normalize all tenant resolution results into one canonical object.
+
+```ts
+export interface CiTenantContext {
+  /**
+   * Tenant identifier.
+   * Only available when scope is "tenant".
+   */
+  id?: string;
+
+  /**
+   * Current tenant scope.
+   */
+  scope: "system" | "global" | "tenant";
+
+  /**
+   * Routing mode used to resolve the tenant.
+   */
+  mode: "slug" | "subdomain";
+
+  /**
+   * Tenant lifecycle status.
+   */
+  status: "active" | "suspended" | "archived";
+
+  /**
+   * Whether the resolved tenant exists.
+   */
+  exists: boolean;
+
+  /**
+   * Original normalized request pathname.
+   */
+  pathname: string;
+}
+```
+
+This object becomes the single tenant source of truth across middleware, server components, layouts, route handlers, and server actions.
+
+Application code should use:
+
+```ts
+const tenant = await ciGetTenantContext();
+```
+
+instead of reading tenant route params directly.
+
+---
+
+## Recommended Internal Route Structure
+
+The internal route tree should be stable regardless of the public tenant routing mode.
+
+```txt
+app/
+  (system)/
+    login/
+      page.tsx
+    logout/
+      route.ts
+    tenant/
+      not-found/
+        page.tsx
+      suspended/
+        page.tsx
+      archived/
+        page.tsx
+    ci-internal/
+      tenant-lookup/
+        route.ts
+
+  (ci-global)/
+    ci-global/
+      layout.tsx
+      dashboard/
+        page.tsx
+      settings/
+        page.tsx
+
+  (ci-tenant)/
+    ci-tenant/
+      layout.tsx
+      dashboard/
+        page.tsx
+      settings/
+        page.tsx
+      users/
+        page.tsx
+```
+
+The public URLs remain tenant-friendly, while the internal route tree remains mode-independent.
+
+---
+
+## Tenant Resolving Flow
+
+Tenant resolving happens inside the proxy tenant handling stage.
+
+Recommended pipeline:
+
+```txt
+Incoming Request
+  ↓
+ciNextProxyResponse()
+  ↓
+ciHandleRouteLogic()
+  ↓
+ciHandleTenantLogic()
+  ↓
+ciResolveTenantContext()
+  ↓
+ciWriteTenantContext()
+  ↓
+ciRewriteTenantRoute()
+  ↓
+NextResponse
+```
+
+---
+
+## Tenant Resolution Rules
+
+### Slug Mode Resolution
+
+Given:
+
+```ts
+mode = "slug";
+basePath = "/t";
+```
+
+The following request:
+
+```txt
+/t/acme/dashboard
+```
+
+resolves to:
+
+```ts
+{
+  id: "acme",
+  scope: "tenant",
+  mode: "slug",
+  status: "active",
+  exists: true,
+  pathname: "/t/acme/dashboard"
+}
+```
+
+The following request:
+
+```txt
+/t/global/dashboard
+```
+
+resolves to:
+
+```ts
+{
+  scope: "global",
+  mode: "slug",
+  status: "active",
+  exists: true,
+  pathname: "/t/global/dashboard"
+}
+```
+
+The following request:
+
+```txt
+/login
+```
+
+resolves to:
+
+```ts
+{
+  scope: "system",
+  mode: "slug",
+  status: "active",
+  exists: true,
+  pathname: "/login"
+}
+```
+
+---
+
+### Subdomain Mode Resolution
+
+Given:
+
+```ts
+mode = "subdomain";
+rootDomains = ["example.com"];
+```
+
+The following request:
+
+```txt
+acme.example.com/dashboard
+```
+
+resolves to:
+
+```ts
+{
+  id: "acme",
+  scope: "tenant",
+  mode: "subdomain",
+  status: "active",
+  exists: true,
+  pathname: "/dashboard"
+}
+```
+
+The following request:
+
+```txt
+global.example.com/dashboard
+```
+
+resolves to:
+
+```ts
+{
+  scope: "global",
+  mode: "subdomain",
+  status: "active",
+  exists: true,
+  pathname: "/dashboard"
+}
+```
+
+The following request:
+
+```txt
+example.com/login
+```
+
+resolves to:
+
+```ts
+{
+  scope: "system",
+  mode: "subdomain",
+  status: "active",
+  exists: true,
+  pathname: "/login"
+}
+```
+
+---
+
+## Reserved Tenant Names
+
+CloudIgniter should prevent reserved names from being interpreted as tenant IDs.
+
+Examples:
+
+```ts
+reservedSubdomains = ["www", "admin", "app", "api"];
+reservedTenantSlugs = ["login", "logout", "ci-internal"];
+```
+
+Invalid examples:
+
+```txt
+/t/login/dashboard
+admin.example.com/dashboard
+api.example.com/dashboard
+```
+
+Reserved names should resolve as system scope or invalid tenant scope depending on the configured policy.
+
+Recommended default behavior:
+
+```ts
+{
+  scope: "system",
+  status: "active",
+  exists: true
+}
+```
+
+---
+
+## Tenant Validation
+
+Tenant validation is optional and controlled by configuration.
+
+```ts
+validateTenant: true | false;
+```
+
+When validation is enabled and the request is tenant-scoped, CloudIgniter checks whether the tenant exists and whether it is active, suspended, or archived.
+
+Validation should not run for:
+
+```txt
+/tenant/not-found
+/tenant/suspended
+/tenant/archived
+/ci-internal/tenant-lookup
+```
+
+This prevents rewrite loops and internal lookup recursion.
+
+---
+
+## Tenant Context Persistence
+
+After resolving the canonical tenant context, the proxy writes tenant metadata to response headers.
+
+Typical headers:
+
+```txt
+x-ci-tenant-id
+x-ci-tenant-mode
+x-ci-tenant-scope
+x-ci-tenant-status
+```
+
+Example tenant request:
+
+```txt
+/t/acme/dashboard
+```
+
+Produces:
+
+```txt
+x-ci-tenant-id: acme
+x-ci-tenant-mode: slug
+x-ci-tenant-scope: tenant
+x-ci-tenant-status: active
+```
+
+Cookies may also be written when enabled:
+
+```ts
+writeTenantCookie: true;
+```
+
+Cookies should only be written when the value has changed to avoid unnecessary `Set-Cookie` headers.
+
+---
+
+## Tenant Routing Rewrite
+
+Tenant routing rewrite maps external tenant URLs to stable internal route trees.
+
+### Tenant Rewrite Rules
+
+```txt
+/t/acme/dashboard              → /ci-tenant/dashboard
+acme.example.com/dashboard     → /ci-tenant/dashboard
+```
+
+### Global Rewrite Rules
+
+```txt
+/t/global/dashboard            → /ci-global/dashboard
+global.example.com/dashboard   → /ci-global/dashboard
+```
+
+The browser URL remains unchanged when `NextResponse.rewrite()` is used.
+
+For example, the browser still shows:
+
+```txt
+/t/acme/dashboard
+```
+
+but Next.js serves:
+
+```txt
+/ci-tenant/dashboard
+```
+
+---
+
+## Rewrite Responsibility
+
+The rewrite should happen inside `ciHandleTenantLogic()` after tenant resolution and tenant validation.
+
+Recommended order:
+
+```txt
+1. Resolve tenant context
+2. Write tenant headers/cookies
+3. Handle non-existing tenant
+4. Handle suspended tenant
+5. Handle archived tenant
+6. Rewrite valid tenant/global request to internal route tree
+```
+
+This keeps all tenant routing behavior in one place.
+
+---
+
+## `ciHandleTenantLogic()` Responsibility
+
+`ciHandleTenantLogic()` should orchestrate tenant behavior, but should not contain all low-level logic inline.
+
+Recommended responsibilities:
+
+```ts
+export async function ciHandleTenantLogic(params) {
+  const tenant = await ciResolveTenantContext(...);
+
+  const responseWithTenant = ciWriteTenantContext(...);
+
+  if (!tenant.exists) {
+    return rewriteToTenantNotFound(...);
+  }
+
+  if (tenant.status === "suspended") {
+    return rewriteToTenantSuspended(...);
+  }
+
+  if (tenant.status === "archived") {
+    return rewriteToTenantArchived(...);
+  }
+
+  const rewrittenResponse = ciRewriteTenantRoute(...);
+
+  return {
+    tenant,
+    response: rewrittenResponse,
+    exit: false,
+  };
+}
+```
+
+Low-level logic should live in helpers:
+
+```txt
+ciResolveTenantContext()
+ciWriteTenantContext()
+ciRewriteTenantRoute()
+ciResolveTenantRemainingPath()
+ciRewriteToTenantInfoPage()
+```
+
+---
+
+## `ciRewriteTenantRoute()` Behavior
+
+The rewrite helper should:
+
+1. Ignore system-scope requests.
+2. Avoid rewriting internal routes again.
+3. Remove the public tenant prefix in slug mode.
+4. Preserve the pathname in subdomain mode.
+5. Rewrite tenant scope to `/ci-tenant`.
+6. Rewrite global scope to `/ci-global`.
+7. Preserve headers already written to the response.
+
+Example behavior:
+
+```ts
+if (tenant.scope === "tenant") {
+  url.pathname = ciJoinPath("/ci-tenant", remainingPath);
+  return NextResponse.rewrite(url, { headers: response.headers });
+}
+
+if (tenant.scope === "global") {
+  url.pathname = ciJoinPath("/ci-global", remainingPath);
+  return NextResponse.rewrite(url, { headers: response.headers });
+}
+```
+
+---
+
+## Server-Side Access
+
+Server components, layouts, route handlers, and server actions should read the tenant context through a single API.
+
+```ts
+const tenant = await ciGetTenantContext();
+```
+
+They should not read:
+
+```ts
+params.tenant
+```
+
+as the source of truth.
+
+`params.tenant` may exist in slug mode, but it does not exist in subdomain mode. The canonical context works in both modes.
+
+---
+
+## Design Benefits
+
+This strategy provides the following benefits:
+
+- Tenant identity is centralized.
+- Public routing mode is decoupled from internal route structure.
+- Slug and subdomain routing use the same application pages.
+- Server components do not need to re-resolve tenants.
+- Tenant metadata is consistently available through headers and optional cookies.
+- Tenant lifecycle handling is centralized.
+- Future tenant modes can be added without redesigning the app route tree.
+
+---
+
+## Final Design Principle
+
+CloudIgniter should treat tenant routing as an ingress concern.
+
+The proxy resolves the tenant, validates it, persists its context, and rewrites the request to the correct internal route tree.
+
+The application then consumes only the canonical tenant context.
+
+```txt
+External URL
+  ↓
+Proxy Tenant Resolution
+  ↓
+Canonical CiTenantContext
+  ↓
+Internal Route Rewrite
+  ↓
+Application Pages
+```

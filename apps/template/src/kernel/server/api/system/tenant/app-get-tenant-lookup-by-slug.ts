@@ -1,28 +1,67 @@
 import { cache } from "react";
-import { ciParseGraphqlResponse } from "@cloudigniter/core/lib";
+
 import type {
-  CiGraphQLResponse,
+  CiGetTenantBySlugInterface,
   CiRequest,
   CiResponse,
-} from "@cloudigniter/core/types";
+  CiTenantStatus,
+} from "@ci-core/types";
 
-import { appPrepareServerApiRequest, appServerClient } from "@/kernel/server";
+const CI_MOCK_TENANTS: Record<string, { status: CiTenantStatus }> = {
+  acme: {
+    status: "active",
+  },
+  suspended: {
+    status: "suspended",
+  },
+  archived: {
+    status: "archived",
+  },
+};
 
+/**
+ * Resolves a Tenant by its route-safe slug using temporary mock data.
+ *
+ * Replace this implementation with the Amplify-backed lookup once the routing
+ * and Org Unit resolution flow have been verified.
+ */
 export const appGetTenantLookupBySlug = cache(
-  async (request: CiRequest): Promise<CiResponse> => {
-    const apiRequest = appPrepareServerApiRequest(request);
-    const inputString = JSON.stringify(apiRequest);
+  async (
+    request: CiRequest<CiGetTenantBySlugInterface>,
+  ): Promise<CiResponse> => {
+    const slug = request.input.slug.trim().toLowerCase();
 
-    const apiResponse: CiGraphQLResponse =
-      await appServerClient.queries.getTenantLookupBySlug(
-        {
-          inputString,
+    if (!slug) {
+      return {
+        ok: false,
+        statusCode: 400,
+        body: {
+          error: "Tenant slug is required.",
         },
-        { authMode: apiRequest.authMode }, // <- 'userPool' for signed-in, 'apikey' for guests
-      );
+      };
+    }
 
-    const ciResponse = ciParseGraphqlResponse(apiResponse, true);
+    const tenant = CI_MOCK_TENANTS[slug];
 
-    return ciResponse;
+    if (!tenant) {
+      return {
+        ok: true,
+        statusCode: 200,
+        body: {
+          exists: false,
+          slug,
+        },
+      };
+    }
+
+    return {
+      ok: true,
+      statusCode: 200,
+      body: {
+        exists: true,
+        slug,
+        status: tenant.status,
+      },
+    };
   },
 );

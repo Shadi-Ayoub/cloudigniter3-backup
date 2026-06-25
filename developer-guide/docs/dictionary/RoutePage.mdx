@@ -1,0 +1,24 @@
+---
+title: Route Page
+---
+
+# Route Page
+
+Is the server-side entry point for a route in a CloudIgniter application built with the Next.js App Router
+(`page.tsx`). It is always implemented as a **Server Component** and is responsible for executing all
+**request-time bootstrapping logic**, such as resolving tenant and scope, determining locale and
+direction, validating authentication state, loading environment-aware configuration, and fetching any
+server-only data required to render the page. The Route Page explicitly controls the route's rendering and
+caching behavior (commonly by forcing dynamic rendering) and acts as a thin controller layer
+that prepares a **serializable configuration payload**. It does not contain interactive UI logic; instead, it
+renders and delegates all user-facing behavior to a sibling **CloudIgniter Page Client Wrapper**, ensuring a
+clean separation between server concerns and client interactivity.
+
+:::tip Guidelines
+
+- Create the `page.tsx` file as the [Next.js Route Segment Page](https://nextjs.org/docs/app/getting-started/layouts-and-pages#creating-a-page). This is CloudIgniter's **Route Page**.
+- Make sure it is a **Server Component**.
+- Include the **[Route Page Wrapper](RoutePageWrapper.mdx)** from a sibling file in the same folder.
+  This is the **interactive UI entry** for the route.
+
+:::

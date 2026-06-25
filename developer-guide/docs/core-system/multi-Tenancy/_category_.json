@@ -1,0 +1,8 @@
+{
+  "label": "Multi-Tenancy",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Describes Cloudigniter's Tenants management and configuration."
+  }
+}

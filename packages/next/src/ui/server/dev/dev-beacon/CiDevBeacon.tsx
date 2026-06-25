@@ -1,7 +1,20 @@
+import { cookies, headers } from "next/headers";
+import {
+  CI_DEFAULT_FEATURE_PATHNAME_HEADER_NAME,
+  CI_DEFAULT_ORG_UNIT_PATH_HEADER_NAME,
+  CI_DEFAULT_TENANT_ID_HEADER_NAME,
+  CI_DEFAULT_TENANT_MODE_HEADER_NAME,
+  CI_DEFAULT_TENANT_NAME_HEADER_NAME,
+  CI_DEFAULT_TENANT_SCOPE_HEADER_NAME,
+  CI_DEFAULT_TENANT_SLUG_HEADER_NAME,
+  CI_DEFAULT_TENANT_STATUS_HEADER_NAME,
+  CI_DEFAULT_TENANT_TYPE_HEADER_NAME,
+} from "@cloudigniter/core/lib";
 import type {
   CiDevBeaconProps,
   CiDevBeaconTenantInfo,
   CiEnvMode,
+  CiTenantMode,
   CiTenantScope,
 } from "@cloudigniter/core/types";
 import { CiDevBeaconWrapper } from "@ci-next/ui/client"; // Client boundary: DOM measurement + UI rendering
@@ -33,21 +46,89 @@ function resolveEnv(input?: CiEnvMode): CiEnvMode {
 }
 
 /**
- * Read tenant context emitted by middleware.
- * IMPORTANT: `headers()` is async in recent Next.js versions.
+ * Reads diagnostic headers forwarded by proxy/middleware.
+ *
+ * Only CloudIgniter and application-scoped headers are exposed to the
+ * Dev Beacon. Cookies and unrelated request headers are intentionally omitted.
+ */
+function readForwardedHeaders(requestHeaders: Headers): Record<string, string> {
+  const forwardedHeaders: Record<string, string> = {};
+
+  requestHeaders.forEach((value, name) => {
+    const normalizedName = name.toLowerCase();
+
+    if (
+      normalizedName.startsWith("x-ci-") ||
+      normalizedName.startsWith("x-app-")
+    ) {
+      forwardedHeaders[normalizedName] = value;
+    }
+  });
+
+  return Object.fromEntries(
+    Object.entries(forwardedHeaders).sort(([left], [right]) =>
+      left.localeCompare(right),
+    ),
+  );
+}
+
+/**
+ * Reads CloudIgniter and application-scoped request cookies for diagnostics.
+ */
+function readForwardedCookies(requestCookies: {
+  getAll(): Array<{
+    name: string;
+    value: string;
+  }>;
+}): Record<string, string> {
+  const values: Record<string, string> = {};
+
+  for (const { name, value } of requestCookies.getAll()) {
+    const normalizedName = name.toLowerCase();
+
+    if (normalizedName.startsWith("ci-") || normalizedName.startsWith("app-")) {
+      values[name] = value;
+    }
+  }
+
+  return Object.fromEntries(
+    Object.entries(values).sort(([left], [right]) => left.localeCompare(right)),
+  );
+}
+
+/**
+ * Reads the resolved routing context emitted by proxy/middleware.
  * Adjust header names to match your middleware conventions.
  */
-async function readTenantFromHeaders(
-  headers: Record<string, string>,
-): Promise<CiDevBeaconTenantInfo> {
+function readTenantFromHeaders(
+  requestHeaders: Headers,
+  requestCookies: {
+    getAll(): Array<{
+      name: string;
+      value: string;
+    }>;
+  },
+): CiDevBeaconTenantInfo {
   return {
-    id: headers["x-ci-tenant-id"] ?? undefined,
-    slug: headers["x-ci-tenant-slug"] ?? undefined,
-    name: headers["x-ci-tenant-name"] ?? undefined,
-    status: headers["x-ci-tenant-status"] ?? undefined,
-    type: headers["x-ci-tenant-type"] ?? undefined,
+    id: requestHeaders.get(CI_DEFAULT_TENANT_ID_HEADER_NAME) ?? undefined,
+    slug: requestHeaders.get(CI_DEFAULT_TENANT_SLUG_HEADER_NAME) ?? undefined,
+    name: requestHeaders.get(CI_DEFAULT_TENANT_NAME_HEADER_NAME) ?? undefined,
+    status:
+      requestHeaders.get(CI_DEFAULT_TENANT_STATUS_HEADER_NAME) ?? undefined,
+    type: requestHeaders.get(CI_DEFAULT_TENANT_TYPE_HEADER_NAME) ?? undefined,
+    scope: readTenantScope(
+      requestHeaders.get(CI_DEFAULT_TENANT_SCOPE_HEADER_NAME),
+    ),
+    mode: requestHeaders.get(CI_DEFAULT_TENANT_MODE_HEADER_NAME) as
+      | CiTenantMode
+      | undefined,
+    orgUnitPath:
+      requestHeaders.get(CI_DEFAULT_ORG_UNIT_PATH_HEADER_NAME) ?? undefined,
+    featurePathname:
+      requestHeaders.get(CI_DEFAULT_FEATURE_PATHNAME_HEADER_NAME) ?? undefined,
+    forwardedHeaders: readForwardedHeaders(requestHeaders),
+    forwardedCookies: readForwardedCookies(requestCookies),
     source: "headers",
-    scope: (headers["x-ci-tenant-scope"] as CiTenantScope) ?? undefined,
   };
 }
 
@@ -64,7 +145,7 @@ async function readTenantFromHeaders(
  * - rendering tabs and client-only content (Trace, Monaco, etc.)
  */
 export async function CiDevBeacon({
-  appPageConfig,
+  // appPageConfig,
   dir = "ltr",
   position = "bottom-right",
   visibleWhenEnv = "development",
@@ -84,7 +165,14 @@ export async function CiDevBeacon({
 
   // if (!isVisible) return null;
 
-  const tenant = await readTenantFromHeaders(appPageConfig.headers ?? {});
+  // IMPORTANT: `headers()` and `cookies()` are async in recent Next.js versions.
+  const [requestHeaders, requestCookies] = await Promise.all([
+    headers(),
+    cookies(),
+  ]);
+
+  const tenant = readTenantFromHeaders(requestHeaders, requestCookies);
+  // const tenant = await readTenantFromHeaders(appPageConfig.headers ?? {});
 
   // Pass only plain (serializable) values into the Client boundary.
   return (
@@ -102,4 +190,21 @@ export async function CiDevBeacon({
       />
     </>
   );
+}
+
+/**
+ * Normalizes the tenant scope received from forwarded request headers.
+ *
+ * Falls back to system scope when the header is absent or invalid.
+ */
+function readTenantScope(value: string | null): CiTenantScope {
+  switch (value) {
+    case "global":
+    case "tenant":
+      return value;
+
+    case "system":
+    default:
+      return "system";
+  }
 }

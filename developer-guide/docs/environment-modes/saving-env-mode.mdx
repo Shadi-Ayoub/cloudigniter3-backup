@@ -1,0 +1,78 @@
+---
+title: Environment Mode within Data
+sidebar_position: 3
+---
+
+# Environment Mode within Data
+
+## How CloudIgniter stores environment mode internally
+
+Every core table record in CloudIgniter includes:
+
+```ts
+envMode: CiEnvMode; // 'live' | 'test' | 'sandbox'
+```
+
+Examples:
+
+### Live Tenant Record in the System Table
+
+```json
+{
+  "PK": "TENANT#ats",
+  "SK": "META",
+  "type": "TENANT",
+  "tenantId": "ats",
+  "name": "Applied Technology Schools",
+  "envMode": "live",
+  "createdAt": "2025-01-02T10:12:33.509Z",
+  "updatedAt": "2025-01-02T10:12:33.509Z"
+}
+```
+
+### Test Tenant Record in the System Table
+
+```json
+{
+  "PK": "TENANT#ats#test",
+  "SK": "META",
+  "type": "TENANT",
+  "tenantId": "ats",
+  "name": "ATS (Test Copy)",
+  "envMode": "test",
+  "createdAt": "...",
+  "updatedAt": "..."
+}
+```
+
+### Sandbox OU Record in the System Table
+
+```json
+{
+  "PK": "OU#ats#sandbox",
+  "SK": "PATH#ats/division:science/grade:10",
+  "type": "ORG_UNIT",
+  "envMode": "sandbox"
+}
+```
+
+## Query Scoping by Environment Mode
+
+CloudIgniter prevents cross-environment contamination by enforcing the following:
+
+- **Every read query includes `envMode` automatically**
+- **Every write includes the current `CI_ENV_MODE`**
+
+CloudIgniter Dynamodb wrapper automatically injects the Environment Mode in the primary key `PK` using the below logic:
+
+```ts
+PK = `${PK_BASE}#${currentEnvMode !== "live" ? currentEnvMode : ""}`;
+```
+
+Example:
+
+| Mode    | Base PK      | Final PK             |
+| ------- | ------------ | -------------------- |
+| live    | `TENANT#ats` | `TENANT#ats`         |
+| test    | `TENANT#ats` | `TENANT#ats#test`    |
+| sandbox | `TENANT#ats` | `TENANT#ats#sandbox` |

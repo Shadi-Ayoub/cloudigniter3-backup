@@ -1,0 +1,495 @@
+---
+title: Authenticator Customisation
+sidebar_position: 1
+---
+
+import ImageWrapper from "../../../src/components/ImageWrapper";
+import authUI from "../../assets/images/authenticator-ui.png";
+
+# Authenticator Customisation
+
+<ImageWrapper
+  imgUrl={authUI}
+  caption="Authenticator User Interface"
+  size="xxl"
+/>
+
+This section explains how to customise the "look & feel" of the Authenticator User Interface (UI) when building your application using
+CloudIgniter. CloudIgniter uses the [AWS Amplify Authenticator](https://ui.docs.amplify.aws/react/connected-components/authenticator) React component
+and provides:
+
+- A base CSS layer (design tokens + CSS variables)
+- A base Amplify [Theme object](https://ui.docs.amplify.aws/react/theming#theme-object)
+- Utility helpers to merge and override themes safely (already implemented for you)
+- A clean separation between system defaults and consumer overrides
+
+This allows you to brand and style the Authenticator UI without breaking system consistency.
+
+:::info
+You need to maintain three customisation files in the `/src/custom/authenticator` folder. These files are:
+
+- `authenticator.css`: Your custom CSS and CSS variables (more information [here](https://ui.docs.amplify.aws/react/theming#css)).
+- `authenticator-custom-props.tsx`: Your custom props for the Authenticator react component (more information [here](https://ui.docs.amplify.aws/react/connected-components/authenticator/customization)).
+- `build-custom-authenticator-theme-from-tokens.ts`: Your custom Authenticator [Theme object](https://ui.docs.amplify.aws/react/theming#theme-object) builder.
+
+> For the details on AWS Amplify theming, refer to their [documentations](https://ui.docs.amplify.aws/react/theming).
+
+:::
+
+## Authenticator `Theme` Customisation
+
+Authenticator theming in CloudIgniter is layered where the next layer overwites the previous one:
+
+```vbnet
+Amplify Default Theme
+        ↓
+CloudIgniter Base Theme (tokens + CSS vars)
+        ↓
+Consumer Custom Theme (optional overrides)
+        ↓
+Final Merged Theme (applied to Authenticator)
+```
+
+Two parallel mechanisms work together:
+
+### `CSS`-based theming
+
+The Authenticator theme CSS is loaded globally via the `<Kernel />` component:
+
+```ts title="Loading Authenticator CSS in Kernel"
+import "@aws-amplify/ui-react/styles.css";
+import "@cloudigniter/next/styles/standard.css";
+import "../custom/authenticator/authenticator.css";
+
+...
+```
+
+These provide:
+
+- CSS variables (colors, radii, spacing, etc.)
+- Base design system alignment
+- Global visual consistency
+
+:::info
+The `<Kernel />` component is rendered in the root layout compnent:
+
+```ts {2,9} title="src/app/layout.tsx"
+...
+import Kernel, { getConfig } from '@/kernel';
+...
+
+return (
+    <html lang={locale} dir={direction} suppressHydrationWarning>
+      <body className={`ci-body ${inter.className}`}>
+        <CloudIgniterRootWrapper config={config}>
+          <Kernel />
+          {children}
+        </CloudIgniterRootWrapper>
+      </body>
+    </html>
+  );
+}
+```
+
+:::
+
+:::info
+Read more about theme customisation using CSS and CSS variables [here](https://ui.docs.amplify.aws/react/theming#css)
+
+:::
+
+### `Theme` Object (Amplify Theme)
+
+The [Theme object](https://ui.docs.amplify.aws/react/theming#theme-object) is built and merged at runtime in the `signin` page.
+
+```ts title="Building & Merging the Authenticator Theme in /src/kernel/auth/login-page-client-wrapper.tsx"
+const authenticatorCustomTheme =
+  buildCustomAuthenticatorThemeFromTokens(tokens);
+
+const theme = useAuthenticatorTheme(authenticatorCustomTheme);
+```
+
+This lets you override:
+
+- Colors
+- Component tokens
+- Typography
+- Borders
+- States (hover, focus, error, etc.)
+
+### Where The Theme Is Applied
+
+Theme logic is applied in the Login wrapper used in the `/src/app/(global)/login/page.tsx` file:
+
+```ts {1,3,5,9,11,12,18} title="/src/kernel/auth/login-page-client-wrapper.tsx"
+import { useTheme } from '@aws-amplify/ui-react';
+...
+import { ..., useAuthenticatorTheme, } from '@cloudigniter/next/utility';
+...
+import { ..., buildCustomAuthenticatorThemeFromTokens, } from '@/custom/authenticator';
+
+...
+
+const { tokens } = useTheme();
+
+const authenticatorCustomTheme = buildCustomAuthenticatorThemeFromTokens(tokens);
+const theme = useAuthenticatorTheme(authenticatorCustomTheme);
+
+...
+
+<LoginPage
+  ...
+  authenticatorStyleTheme={theme}
+/>
+
+...
+
+```
+
+:::note
+Internally, `ThemeProvider` applies the final theme and the `Authenticator` consumes it automatically.
+:::
+
+### Customization Approaches
+
+You have three levels of customization.
+
+#### Level 1 — `CSS`-only (Quick Branding)
+
+Edit `/src/custom/authenticator/authenticator.css`
+
+```css title="Example of css applied in authenticator.css"
+:root {
+  --amplify-colors-brand-primary-60: #0055ff;
+  --amplify-radii-small: 8px;
+}
+
+.amplify-button--primary {
+  font-weight: 600;
+}
+```
+
+✅ Best for:
+
+- Brand colors
+- Fonts
+- Small visual tweaks
+
+#### Level 2 — `Token`-based Theme Overrides (Recommended)
+
+Update `/src/custom/authenticator/build-custom-authenticator-theme-from-tokens.ts` to create your
+custom [Theme object](https://ui.docs.amplify.aws/react/theming#theme-object). CloudIgniter will automatically
+apply it as described above.
+
+```ts title="/src/custom/authenticator/build-custom-authenticator-theme-from-tokens.ts"
+import type { Theme } from "@aws-amplify/ui-react";
+
+export function buildCustomAuthenticatorThemeFromTokens(tokens: any): Theme {
+  return {
+    name: "custom-auth-theme",
+    tokens: {
+      components: {
+        button: {
+          primary: {
+            backgroundColor: tokens.colors.blue[60],
+            borderRadius: "10px",
+          },
+        },
+      },
+    },
+  };
+}
+```
+
+✅ Best for:
+
+- Systematic design control
+- Dark/light mode compatibility
+- Token-driven design systems
+
+#### Level 3 — Full Theme Override
+
+You can supply a complete theme override rather than merging with CloudIgnitor's Authenticator base theme. Just
+set the `authenticator.custom.merge` value in the `cloudigniter.config.ts` file to `false` (default is `true`);
+
+:::danger Use carefully
+Large overrides may reduce visual consistency with CloudIgniter UI.
+:::
+
+## Authenticator `Props` Customisation
+
+:::info Theme ≠ Behavior.
+
+Behavior/UI structure is customized separately in the file `/custom/authenticator/authenticator-custom-props.ts`.
+
+:::
+
+CloudIgniter lets you customize the **Amplify Authenticator behavior and structure** via `AuthenticatorProps`, _separately_ from theming.
+
+- **Theme** controls styling (tokens, colors, typography).
+- **AuthenticatorProps** controls _what fields/screens appear_ and _which UI slots/components are rendered_.
+
+CloudIgniter's pattern is:
+
+1. CloudIgniter provides a **base** `AuthenticatorProps` that works out-of-the-box.
+2. Your app provides a **partial override** in the file `/custom/authenticator/authenticator-custom-props.ts`.
+3. CloudIgniter merges them using `buildAuthenticatorProps()` in the login wrapper used by the `/src/app/(global)/login/page.tsx` file.
+
+```ts {1,5,9,15} title="/src/kernel/auth/login-page-client-wrapper.tsx"
+import { buildAuthenticatorProps, ... } from '@cloudigniter/next/utility';
+
+...
+
+import { authenticatorCustomProps, ..., } from '@/custom/authenticator';
+
+...
+
+const props = buildAuthenticatorProps(authenticatorCustomProps);
+
+...
+
+<LoginPage
+  ...
+  authenticatorProps={props}
+  ...
+/>
+
+...
+
+```
+
+This ensures your app stays compatible with future CI updates while still allowing deep customization.
+
+> Official Amplify UI docs describe customizing the Authenticator using props like `formFields`, `initialState`, and `hideSignUp`, and by overriding slot components (Header/Footer/etc.).
+
+### How `Props` are Being Merged
+
+CloudIgniter implements the following merge strategy:
+
+- **Deep merge nested objects** (e.g., `formFields.signUp.email.label`).
+- **Override wins** over default values.
+- **Special handling for `components`**:
+  React components are functions, and deep-merging functions can be unpredictable. Therefore, `components` are merged in a deterministic way:
+  _override per key replaces default per key_.
+
+:::warning What this means for you
+
+✅ You can override one field without redefining everything.  
+✅ You can replace only components.Header (or Footer, etc.) without losing the rest.  
+✅ CloudIgniter keeps a stable base (labels, ordering, required fields, branding header) unless you explicitly change it.
+
+:::
+
+### Customizing Sign Up / Sign In fields (formFields)
+
+CloudIgniter default formFields.signUp includes `email`, `password`, `confirm_password`. Developers can add more fields like
+`preferred_username`, `given_name`, `middle_name`, `family_name`, `birthdate`.
+
+Each field supports common properties like `label`, `placeholder`, `isRequired`, `order` (controls display order).
+
+:::note
+Amplify UI supports ordering Sign Up fields using `order`. Fields with no order appear at the bottom.
+:::
+
+```ts title="Example: Change field order and labels"
+// /src/custom/authenticator/authenticator-custom-props.ts
+
+import type { AuthenticatorProps } from "@aws-amplify/ui-react";
+
+export const authenticatorCustomProps: Partial<AuthenticatorProps> = {
+  formFields: {
+    signUp: {
+      // CloudIgniter already places email first to make it more explicit
+      email: {
+        label: "Work Email",
+        placeholder: "name@company.com",
+      },
+
+      preferred_username: {
+        label: "Preferred Username",
+        placeholder: "Choose a username",
+        isRequired: false,
+        order: 2,
+      },
+
+      given_name: {
+        label: "First Name",
+        placeholder: "Enter your first name",
+        isRequired: false,
+        order: 3,
+      },
+
+      middle_name: {
+        label: "Middle Name",
+        placeholder: "Enter your middle name",
+        isRequired: false,
+        order: 4,
+      },
+
+      family_name: {
+        label: "Last Name",
+        placeholder: "Enter your last name",
+        isRequired: false,
+        order: 5,
+      },
+
+      birthdate: {
+        label: "Birthdate",
+        placeholder: "Enter your birthdate",
+        isRequired: false,
+        order: 6,
+      },
+
+      // put password fields at the end
+      password: { order: 7 },
+      confirm_password: { order: 8 },
+    },
+  },
+};
+```
+
+```ts title="Example: Customizing “flow” behavior (initialState, hideSignUp, etc.)"
+import type { AuthenticatorProps } from "@aws-amplify/ui-react";
+
+export const authenticatorCustomProps: Partial<AuthenticatorProps> = {
+  initialState: "signUp",
+};
+```
+
+```ts title="Example: Hide Sign Up entirely"
+// This removes the “Create Account” tab and blocks the Sign Up flow.
+
+import type { AuthenticatorProps } from "@aws-amplify/ui-react";
+
+export const authenticatorCustomProps: Partial<AuthenticatorProps> = {
+  hideSignUp: true,
+};
+```
+
+### Customizing UI “slots” via `components`
+
+CloudIgniter base props provide a branded header. You can replace it (or add additional slots such as Footer) by overriding components.
+
+Because CloudIgniter does a per-key override merge, you can safely replace only one slot:
+
+```ts title="Example: Replace the Header"
+import * as React from 'react';
+import type { AuthenticatorProps } from '@aws-amplify/ui-react';
+import { View, Image, Text, useTheme } from '@aws-amplify/ui-react';
+
+function CustomHeader() {
+  const { tokens } = useTheme();
+  return (
+    <View textAlign="center" padding={tokens.space.large}>
+      <Image alt="My App" src="/images/my-logo.png" width="180px" />
+      <Text marginTop={tokens.space.small}>Welcome to My App</Text>
+    </View>
+  );
+}
+
+export const authenticatorCustomProps: Partial<AuthenticatorProps> = {
+  components: {
+    Header: CustomHeader,
+  },
+};
+
+```
+
+```ts title="Example: Add a Footer with links/support text"
+import * as React from 'react';
+import type { AuthenticatorProps } from '@aws-amplify/ui-react';
+import { View, Text, Link, useTheme } from '@aws-amplify/ui-react';
+
+function CustomFooter() {
+  const { tokens } = useTheme();
+  return (
+    <View textAlign="center" padding={tokens.space.large}>
+      <Text fontSize={tokens.fontSizes.small}>
+        Need help?{' '}
+        <Link href="/support">Contact Support</Link>
+      </Text>
+      <Text fontSize={tokens.fontSizes.xs} color={tokens.colors.font.tertiary}>
+        By continuing, you agree to our <Link href="/terms">Terms</Link>.
+      </Text>
+    </View>
+  );
+}
+
+export const authenticatorCustomProps: Partial<AuthenticatorProps> = {
+  components: {
+    Footer: CustomFooter,
+  },
+};
+
+```
+
+:::tip
+Amplify UI also supports more advanced state-driven customization via the useAuthenticator hook, but note that you must
+render the Authenticator UI component (or use its Provider) before using that hook.
+:::
+
+:::danger important
+Authenticator UI is not “free form”. Your visible form fields must comply with your backend configuration in Amazon
+Cognito (your User Pool settings):
+
+**What to verify in your backend settings**
+
+1. Username sign-in setting  
+   If your amplify outputs show username_attributes: ["email"].
+   That means Cognito expects users to sign in with email, not a separate username. If you expose preferred_username,
+   it's optional metadata—not the login identifier.
+2. Required attributes  
+   If your amplify outputs show standard_required_attributes: ["email","given_name","family_name"]. If you remove given_name
+   or family_name from the Sign Up UI, sign-up may fail with validation errors because Cognito requires them.
+3. Custom attributes  
+   If you add new fields (e.g. department, employeeId) they must exist as custom attributes in the Cognito User Pool schema
+   and be allowed in the signup flow.
+
+:::
+
+### Recommended workflow
+
+1. Start from CloudIgniter defaults
+2. Add a minimal override file: `/custom/authenticator/authenticator-custom-props.ts`
+3. Only override what you need:
+
+- `formFields` for field labels/order/requiredness
+- `initialState` / `hideSignUp` for flow behavior
+- `components.Header/Footer` for UI structure
+
+4. Validate against backend settings (required attributes and sign-in identifier).
+5. Test both tabs:
+
+- “Sign In” should fit without scroll
+- “Sign Up” should remain usable (should be scrollable if many fields are added)
+
+## Best Practices
+
+✅ Prefer Tokens Over Raw CSS: Token-based theming integrates better with Amplify and CloudIgniter.
+
+✅ Keep Overrides Minimal: Override only what you need.
+
+✅ Reuse System Tokens: Leverage `useTheme().tokens` for consistency.
+
+✅ Test Both Modes: If your app supports dark/light mode, validate both.
+
+## Typical Customization Workflow
+
+1. Define brand palette
+2. Update CSS variables
+3. Add token overrides
+4. Adjust form fields if needed
+5. Validate login, signup, MFA screens
+6. Test responsive layouts
+
+:::warning References
+
+- [Authenticator Style Theming](https://ui.docs.amplify.aws/react/theming)
+- [Authenticator Component Customisation](https://ui.docs.amplify.aws/react/connected-components/authenticator/customization)
+- [authenticatorCustomProps](http://cloudigniter.io)
+- [buildAuthenticatorProps()](http://cloudigniter.io)
+- [buildCustomAuthenticatorThemeFromTokens()](http://cloudigniter.io)
+- [useAuthenticatorTheme()](http://cloudigniter.io)
+  aa
+
+:::

@@ -1,7 +1,7 @@
 import type {
   CiTenantResolutionOptions,
   CiTenantResolutionResult,
-  CiTenantRoutingMode,
+  CiTenantMode,
 } from "@cloudigniter/core/types";
 import { ciBuildTenantRewritePath } from "./ci-build-tenant-rewrite-path";
 import { ciResolveTenantFromSlugPath } from "./ci-resolve-tenant-from-slug-path";
@@ -140,7 +140,7 @@ import { ciResolveTenantFromSubdomain } from "./ci-resolve-tenant-from-subdomain
  * rewritePathname:
  *   Optional canonical rewrite target (middleware decides whether to apply).
  *
- * pathnameWithoutTenant:
+ * featurePathname:
  *   Logical application pathname (used in slug mode).
  *
  * ---------------------------------------------------------------------------
@@ -169,7 +169,7 @@ export function ciResolveTenant(
     pathnameNormalized: string;
     // headers: Record<string, string | undefined>;
     host?: string;
-    mode: CiTenantRoutingMode;
+    mode: CiTenantMode;
   },
   opts: CiTenantResolutionOptions,
   //   isBypassed: boolean
@@ -200,12 +200,12 @@ export function ciResolveTenant(
             id: slug.tenantId,
             scope: "tenant",
             source: "slug",
-            pathnameWithoutTenant: slug.pathnameWithoutTenant,
+            featurePathname: slug.featurePathname,
           }
         : {
             scope: "global",
             source: "slug",
-            // pathnameWithoutTenant: slug.pathnameWithoutTenant,
+            // featurePathname: slug.featurePathname,
           };
     }
 

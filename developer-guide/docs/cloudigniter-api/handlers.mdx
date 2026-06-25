@@ -1,0 +1,357 @@
+---
+title: Handlers
+sidebar_position: 2
+---
+
+# CloudIgniter Handlers
+
+This section defines what a **handler** is in the CloudIgniter context, the contract it follows, and how developers should implement them.
+
+---
+
+## 📌 Definition
+
+A **CloudIgniter handler** is an **AWS AppSync Lambda resolver function** that:
+
+- Accepts a **single GraphQL argument** named `inputString`.
+- Parses `inputString` into a **`Request<T>`**.
+- Enforces **scope/action authorization**.
+- Executes business logic, often involving AWS services.
+- **Always returns a standardized `Response`** object.
+
+---
+
+## 1. Handler Signature
+
+```ts
+import type { Context } from "aws-lambda";
+import type { LambdaEvent, Response } from "@cloudigniter/next/types";
+
+export async function handler(
+  event: LambdaEvent,
+  context: Context
+): Promise<Response> {
+  // implementation
+}
+```
+
+- `event`: carries the single GraphQL argument `inputString?: string | null`.
+- `context`: AWS Lambda `Context` object (for tracing, logging, request metadata).
+- Return type: must **always** be a `Response`.
+
+---
+
+## 2. Input
+
+### `inputString`
+
+CloudIgniter handlers receive one argument namely, `event.arguments.inputString`. This is a **JSON string** representing
+a `Request<T>`.
+
+```ts
+export type Request<T = unknown> = {
+  input: T; // parameters for the handler
+  options?: unknown; // optional configs (e.g., DynamoDB or Cognito client)
+  scope: string; // authorization scope
+  action: string; // authorization action
+};
+```
+
+### Parsing
+
+The `safeParseRequest` function is a small utility that safely converts an incoming JSON string into a typed `Request<T>` object.
+It takes an optional json string, immediately returns null if the input is empty, and otherwise attempts to parse it with JSON.parse.
+If parsing succeeds, the result is cast to `Request<T>`; if parsing fails due to invalid JSON, the function gracefully returns null
+instead of throwing, ensuring that handlers can reliably detect and handle malformed input without breaking execution.
+
+```ts
+function safeParseRequest<T>(json?: string | null): Request<T> | null {
+  if (!json) return null;
+  try {
+    return JSON.parse(json) as Request<T>;
+  } catch {
+    return null;
+  }
+}
+```
+
+---
+
+## 3. Passing Client Configurations
+
+The `options` field in the `Request<T>` object can be used to send extra parameters. For example, in scenarios where the called handler
+involves **DynamoDB operations**, developers may pass a `DynamoDbClientConfig` option. Another example is a handler that involves **Cognito operations**,
+where developers may pass a `CognitoClientConfig` option. These extra options are serialized inside the `inputString` and should be checked by the handler.
+
+---
+
+## 3. Authorization
+
+Every CloudIgniter handler enforces authorization using `scope` and `action`. CloudIgniter Shield validates these values before proceeding. If unauthorized,
+return a **Response** (not throw):
+
+```ts
+return {
+  statusCode: 400,
+  body: { error: "Unauthorized" },
+  message: "Access denied",
+};
+```
+
+---
+
+## 4. Processing
+
+- Perform business logic after validating the request.
+- If AWS services are involved:
+  - Accept **optional client configs** (`DynamoDbClientConfig`, `CognitoClientConfig`) in `req.options` or typed fields.
+  - Use them to override default clients.
+
+---
+
+## 5. Output
+
+CloudIgniter handlers must always return a **Response**:
+
+```ts
+export type Response<
+  Ok = unknown,
+  Err extends object = { error: string; fieldErrors?: Record<string, string> },
+  S extends 400 | 404 | 500 = 400
+> = ({ statusCode: 200; body: Ok } | { statusCode: S; body: Err }) & {
+  message?: string;
+  parameter?: string | null;
+  response?: unknown;
+  event?: LambdaEvent;
+  context?: Context;
+  env?: string[];
+  metrics?: unknown | null;
+  lastEventLog?: unknown | null;
+};
+```
+
+- **200**: success, `body` contains payload.
+- **400/404/500**: error, `body.error` explains why.
+
+---
+
+## 6. Error Strategy
+
+- **Return** `Response` for business/validation errors.
+- **Throw** only for unrecoverable infra errors → GraphQL will wrap these in `errors`.
+
+```ts
+// Business error
+return {
+  statusCode: 400,
+  body: { error: "Invalid email" },
+  message: "Validation failed",
+};
+
+// Not found
+return {
+  statusCode: 404,
+  body: { error: "User not found" },
+  message: "Not found",
+};
+
+// Internal error
+return {
+  statusCode: 500,
+  body: { error: "Unexpected error" },
+  message: "Internal failure",
+};
+```
+
+---
+
+## 7. Good Practice: Enrich Responses
+
+As a good practice, before returning a Response, include the following fields:
+
+- parameter: the raw `inputString` from the event.
+
+- event: the Lambda event.
+
+- context: the Lambda context.
+
+- env: an array of environment variable names relevant to the handler.
+
+**Example**
+
+```ts
+...
+
+response = {
+  ...response,
+  parameter: event.arguments.inputString,
+  event,
+  context,
+  env: ["CI_SYSTEM_TABLE_NAME", "CI_REGION"],
+};
+
+return response;
+```
+
+---
+
+## 8. Environment Variables in Handlers
+
+When designing **Amplify Gen 2 infrastructure**, environment variables are often created automatically to support handler logic. These variables
+provide critical configuration values (e.g., DynamoDB table names) or can act as **defaults** when the developer does not pass explicit
+configuration (e.g., AWS Region).
+
+### Example: Environment Variable Creation in Amplify
+
+```ts
+import { defineBackend } from "@aws-amplify/backend";
+
+import { backendShape } from "./types";
+
+const backend = defineBackend(backendShape);
+
+const profileTable = backend.data.resources.tables.UserProfile;
+
+backend.createUserHandler.addEnvironment(
+  "CI_USER_PROFILE_TABLE_NAME",
+  profileTable.tableName
+);
+```
+
+In this example, the `CI_USER_PROFILE_TABLE_NAME` environment variable is injected into the `createUserHandler` Lambda function.
+Inside the handler, you can read it via `process.env.CI_USER_PROFILE_TABLE_NAME`.
+
+:::tip
+
+- **Always reference environment variables** instead of hardcoding resource names.
+- **Use env defaults** when client configs are not provided. Example: fall back to `process.env.CI_REGION` when no DynamoDB region override is passed.
+- Include important env keys in the `Response.env` array for debugging (but not their values).
+
+:::
+
+---
+
+## 9. Example Handlers
+
+### Query Example (Get User)
+
+```ts
+import type { Context } from "aws-lambda";
+import type { LambdaEvent, Request, Response } from "@CI/types";
+
+type GetUserInput = { userId: string };
+
+export async function handler(
+  event: LambdaEvent,
+  context: Context
+): Promise<Response> {
+  const req = safeParseRequest<GetUserInput>(event.arguments?.inputString);
+  if (!req)
+    return {
+      statusCode: 400,
+      body: { error: "Invalid inputString" },
+      message: "Bad request",
+    };
+
+  // Authorization check
+  // ensureAuthorized(req.scope, req.action, context);
+
+  if (!req.input.userId) {
+    return {
+      statusCode: 400,
+      body: { error: "Missing userId" },
+      message: "Validation error",
+    };
+  }
+
+  // Simulated DB lookup
+  const user = { id: req.input.userId, name: "Jane Doe" };
+
+  return { statusCode: 200, body: { user }, message: "OK" };
+}
+```
+
+### Mutation Example (Update User with Cognito)
+
+```ts
+import {
+  CognitoIdentityProviderClient,
+  AdminUpdateUserAttributesCommand,
+} from "@aws-sdk/client-cognito-identity-provider";
+
+export async function handler(
+  event: LambdaEvent,
+  context: Context
+): Promise<Response> {
+  const req = safeParseRequest<{
+    userId: string;
+    attributes: Record<string, string>;
+    userPoolId?: string;
+    CognitoClientConfig?: object;
+  }>(event.arguments?.inputString);
+  if (!req)
+    return {
+      statusCode: 400,
+      body: { error: "Invalid inputString" },
+      message: "Bad request",
+    };
+
+  const cognito = new CognitoIdentityProviderClient(
+    req.input.CognitoClientConfig ?? {}
+  );
+  if (!req.input.userPoolId)
+    return {
+      statusCode: 400,
+      body: { error: "Missing userPoolId" },
+      message: "Validation failed",
+    };
+
+  try {
+    await cognito.send(
+      new AdminUpdateUserAttributesCommand({
+        UserPoolId: req.input.userPoolId,
+        Username: req.input.userId,
+        UserAttributes: Object.entries(req.input.attributes).map(
+          ([Name, Value]) => ({ Name, Value })
+        ),
+      })
+    );
+
+    return {
+      statusCode: 200,
+      body: { updated: true },
+      message: "User updated",
+    };
+  } catch (err) {
+    return {
+      statusCode: 500,
+      body: { error: "Failed to update user" },
+      message: String(err instanceof Error ? err.message : err),
+    };
+  }
+}
+```
+
+---
+
+## 10. Developer Checklist
+
+✅ **Do:**
+
+- Parse and validate `inputString`.
+- Enforce scope/action authorization.
+- Accept optional client configs.
+- Always return a `Response`.
+- Use structured errors with `statusCode`.
+
+🚫 **Don’t:**
+
+- Don’t add extra GraphQL arguments.
+- Don’t throw for business/validation errors.
+- Don’t leak secrets in `message`.
+
+---
+
+## 🔑 One-Line Summary
+
+A **CloudIgniter handler** is a Lambda resolver that **parses one JSON string input, enforces scope/action authorization, executes business logic (optionally with AWS client overrides), and always returns a standardized `Response`.**

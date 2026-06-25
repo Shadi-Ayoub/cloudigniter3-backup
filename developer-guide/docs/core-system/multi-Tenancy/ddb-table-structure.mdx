@@ -1,0 +1,63 @@
+---
+title: DynamoDB Table Structure
+sidebar_position: 5
+---
+
+# DynamoDB Table Structure
+
+CloudIgniter uses a **single-table design** for system-level entities.
+
+### System Table Overview
+
+Example table name: `System`
+
+The table stores:
+
+- Tenants
+- Roles
+- Permissions
+- Settings
+- Relationships
+
+### Tenant Item Shape
+
+A tenant is stored as a single DynamoDB item.
+
+**Primary Keys**
+
+```text
+PK = TENANT#<tenantId>
+SK = META
+```
+
+```json title="Example Item"
+{
+  "PK": "TENANT#school-abu-dhabi",
+  "SK": "META",
+  "id": "school-abu-dhabi",
+  "type": "TENANT",
+  "status": "active",
+  "name": "School Abu Dhabi",
+  "slug": "abu-dhabi",
+  "description": "Main Abu Dhabi campus",
+  "meta": {
+    "region": "AD",
+    "country": "AE",
+    "timezone": "Asia/Dubai",
+    "orgUnitsCount": 12,
+    "capacity": 1800,
+    "tags": ["urban", "flagship"]
+  },
+  "createdAt": "2024-01-15T08:30:00.000Z",
+  "updatedAt": "2024-01-15T08:30:00.000Z"
+}
+```
+
+### Access Patterns
+
+| Use Case             | Key Pattern                                      |
+| -------------------- | ------------------------------------------------ |
+| Get tenant by ID     | `PK = TENANT#<id>`                               |
+| List all tenants     | `PK begins_with TENANT#` (via GSI or scan tools) |
+| Update tenant status | `PK + SK = META`                                 |
+| Audit/tracing        | Logged separately, never embedded                |

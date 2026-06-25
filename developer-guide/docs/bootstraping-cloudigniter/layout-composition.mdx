@@ -1,0 +1,22 @@
+---
+title: Layout Composition
+sidebar_position: 7
+---
+
+# 6. Layout Composition (client entrypoint)
+
+Your route layout mounts a page wrapper that layers all client-side concerns in a predictable order:
+
+- Amplify client configuration (using amplify_outputs.json),
+- Authenticator shell (theming + AWS UI Authenticator),
+- Route guard (only if protecting): verifies that the current path exists in your RoutesMap; reports critical
+  errors via the client error store
+- Client shell:
+  - next-themes provider (Dark/System),
+  - Ant Design registry (SSR-friendly styles),
+  - an Initial Loader for graceful first paint,
+  - the Error Handler (toast + modal + critical backdrop),
+  - finally, your page children.
+
+The order ensures the Amplify client is ready before auth, auth before routing checks, and theme before UI paint.
+The error store is always present, so anything can surface actionable messages.

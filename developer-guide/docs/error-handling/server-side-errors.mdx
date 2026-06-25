@@ -1,0 +1,246 @@
+---
+title: Server-side Errors
+sidebar_position: 3
+---
+
+# Server-side Errors (Error Boundaries)
+
+In CloudIgniter, server-side error handling is designed around a predictable contract that ensures
+errors thrown from server components, route handlers, or bootstrap logic are consistently captured and
+rendered through Next.js' App Router boundaries (`app/error.tsx` or route-scoped `error.tsx`). Read more
+about Next.js error handling <a href="https://nextjs.org/docs/app/getting-started/error-handling" target="_blank">
+here</a>.
+
+## Error payload
+
+Whenever a server process fails—such as a data fetch, configuration load, or authorization check—the developer
+**throws** either a plain string message or, preferably, a structured JSON payload that conforms to the
+`ServerErrorPayload` type. This payload supports fields like `title`, `message`, `severity`, `showRetry`,
+and indirectly `onRetry` which the framework parses to determine how the error should appear to the end user.
+
+```ts title="ServerErrorPayload & Severity types" showLineNumbers
+type Severity = "info" | "warning" | "error" | "critical";
+
+type ServerErrorPayload = {
+  title?: string;
+  message?: string;
+  severity?: Severity;
+  showRetry?: boolean;
+};
+```
+
+```ts title="Example: Throwing an Error on server" showLineNumbers
+import type { ServerErrorPayload } from "@cloudigniter/next/types";
+
+throw new Error(
+  JSON.stringify({
+    title: "Data fetch failed",
+    message: "Could not load the Layout Configurations!",
+    severity: "warning",
+    showRetry: true,
+  } satisfies ServerErrorPayload)
+);
+```
+
+```ts title="Throwing an error with only a plain message"
+throw new Error("Something blew up while processing your request.");
+```
+
+### Examples by context
+
+```ts title="Server Component / Route Handler / Server Action" showLineNumbers
+// e.g., in a loader or server action
+if (!resp.ok) {
+  throw new Error(
+    JSON.stringify({
+      title: "Unable to load profile",
+      message: `Server responded with ${resp.status}.`,
+      severity: "error",
+      showRetry: true,
+    })
+  );
+}
+```
+
+```ts title="When you know it's user-correctable" showLineNumbers
+throw new Error(
+  JSON.stringify({
+    title: "Connection lost",
+    message:
+      "We couldn’t reach the service. Check your connection and try again.",
+    severity: "warning",
+    showRetry: true,
+  })
+);
+```
+
+```ts title="Critical, no retry" showLineNumbers
+throw new Error(
+  JSON.stringify({
+    title: "Security policy violation",
+    message: "Your session cannot continue. Please sign in again.",
+    severity: "critical",
+    showRetry: false,
+  })
+);
+```
+
+## ErrorPage Component
+
+CloudIgniter ships with a shared `<ErrorPage />` component that takes these values and displays a clear,
+branded UI: a headline for the error title, a message explaining the failure, a severity-driven icon and
+color accent (info, warning, error, or critical), and, if configured, a retry button. The retry button is
+driven by two coordinated props—showRetry, which decides whether the button is shown, and onRetry,
+which provides the actual recovery action. If an onRetry function is passed (typically wired to Next.js' `reset()`),
+the retry executes a soft re-render, giving the user another chance without a full reload; if no function is provided,
+CloudIgniter automatically falls back to a hard page reload using window.location.reload().
+
+This approach makes server-side errors both transparent and user-friendly without exposing internal details such as stack
+traces or identifiers out of the UI. By centralizing parsing logic and UI rendering, and giving developers control
+over retry semantics, CloudIgniter guarantees a uniform, user-friendly, and recoverable server-side error experience across the
+application. Defaults are always enforced—so even if the thrown error is just a string, CloudIgniter ensures the user sees a
+consistent “Application Error” with sensible styling.
+
+:::note
+
+The `<ErrorPage>` component UI elements are:
+
+- Title: Large heading (default: “Application Error”).
+- Message: Human-readable description of what went wrong.
+- Severity: One of 'info' | 'warning' | 'error' | 'critical'. Drives the icon and accent color
+  (e.g., yellow for warning, red for error/critical).
+- Retry button: If enabled, clicking Retry calls Next.js' `reset()` for a soft re-render. If reset
+  isn't available, it falls back to a full page reload in the component.
+
+:::
+
+:::tip
+By centralizing parsing logic and UI rendering, server-side error handling in CloudIgniter
+guarantees a uniform experience across the app (as users see a clear error view with optional retry),
+prevents leaking sensitive information, and makes it simple for developers to communicate failures in
+a safe, predictable, and actionable way.
+:::
+
+```ts {22-28} title="src/app/error.tsx" showLineNumbers
+"use client";
+
+import { useEffect } from "react";
+import { parseServerErrorPayload } from "@cloudigniter/next/utility";
+import { ErrorPage } from "@cloudigniter/next/ui/layout";
+
+export default function GlobalError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  useEffect(() => {
+    // Hook up to your logger/Sentry/etc.
+    console.error("App Error:", error);
+  }, [error]);
+
+  const parsed = parseServerErrorPayload(error);
+
+  return (
+    <ErrorPage
+      title={parsed.title}
+      message={parsed.message}
+      severity={parsed.severity}
+      showRetry={parsed.showRetry}
+      onRetry={reset} // soft retry via Next.js
+    />
+  );
+}
+```
+
+:::note
+The error.tsx will parse either format. Missing fields get defaults.
+:::
+
+:::tip
+For Route-scoped error pages, drop the same `error.tsx` file inside a route
+folder (e.g., app/dashboard/error.tsx) to scope this behavior to that subtree.
+It can re-use the same `parseServerErrorPayload` CloudIgniter helper.
+:::
+
+:::note
+In the `ErrorPageProps` type, `onRetry` is defined as an optional callback (() => void) that
+enables the error page to provide a retry action directly to the user. When `showRetry` is set
+to true, the error page renders a Retry button. If an `onRetry` function is passed in, clicking
+this button will call it — which, in the context of Next.js, is usually the `reset()` function
+provided by the App Router's error boundary. This triggers a soft re-render of the route, allowing
+the page to attempt the failed operation again without a full reload. If no `onRetry` is provided,
+CloudIgniter gracefully falls back to calling **window.location.reload()**, forcing a hard refresh
+to recover from the error. This dual mechanism ensures that developers retain full control: they can
+wire retry to lightweight operations like re-fetching data, or leave it to the framework to refresh
+the entire page when a soft reset isn't appropriate. In practice, this makes the error handling experience
+more actionable and user-friendly — users aren't just told something went wrong, they're given a chance
+to recover immediately, while developers can fine-tune whether retry should be enabled, what it does,
+and under which severities it makes sense to expose it.
+:::
+
+## The `parseServerErrorPayload()` Helper
+
+CloudIgniter provides a small utility to safely parse server-thrown errors into a normalized object that
+can be directly consumed by the `<ErrorPage />` component. Since errors in Next.js may be thrown as plain
+strings, `Error` instances, or structured JSON payloads, this helper ensures you always get a valid, predictable
+shape without having to repeat parsing logic in every boundary.
+
+Using this helper across the application (recommended) brings many benefits:
+
+- **Error flexibility:** Developers may throw new Error("plain message") or new Error(`JSON.stringify({ ... })`).
+- **Consistency:** The UI should always receive all required fields (title, message, severity, showRetry) with sensible defaults.
+- **Safety:** Even malformed JSON or unexpected error objects won't crash the parser — it falls back to defaults.
+
+The helper returns a normalized payload where every field is guaranteed.
+
+:::note
+`onRetry` is not part of the server payload, because retry logic is supplied by the error boundary (`reset()` or page reload).
+:::
+
+```ts {1,16} title="Example usage of parseServerErrorPayload()" showLineNumbers
+import { parseServerErrorPayload } from "@cloudigniter/next/utility";
+
+...
+
+try {
+  // simulate failure
+  throw new Error(
+    JSON.stringify({
+      title: "Profile Load Failed",
+      message: "Could not fetch user profile data.",
+      severity: "warning",
+      showRetry: true,
+    })
+  );
+} catch (err) {
+  const parsed = parseServerErrorPayload(err);
+  // parsed: { title: "Profile Load Failed", message: "...", severity: "warning", showRetry: true }
+  return <ErrorPage {...parsed} />;
+}
+```
+
+## Good practices
+
+- **Be concise & helpful:** Write messages the user can act on.
+- **No internals/stack traces:** Don't expose PII (Personally Identifiable Information), IDs, or stack details in message.
+- **Logging:** The global `error.tsx` already logs the original error (e.g., to console/Sentry). Keep sensitive details in
+  logs, not in the user message.
+
+## Severity meaning (guideline):
+
+- **info**: benign issue, safe to proceed (rare in global error page).
+- **warning**: transient or recoverable (network hiccup, temporary outage).
+- **error**: normal failure that likely needs a retry or different input.
+- **critical**: do not retry here (auth, permissions, integrity issues).
+
+## Summary
+
+The CloudIgniter **server-side error handling contract** defines a consistent way to throw and render errors
+in Next.js App Router. Developers throw either a plain string or a JSON string matching the `ServerErrorPayload`
+type (`title`, `message`, `severity`, `showRetry`). The framework then parses the error using `parseServerErrorPayload`,
+applies safe defaults, and passes the normalized object into the shared `<ErrorPage />` component. This ensures every
+server error produces a predictable UI with a clear title, message, severity-driven styling, and an optional retry
+action (`onRetry` via Next.js `reset()` or a full reload). The contract guarantees uniform error handling across the app
+while keeping internal details hidden and user feedback actionable.

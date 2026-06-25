@@ -174,6 +174,20 @@ export type {
 export type { CiMainMenuItem, CiMainMenuTarget } from "./main-menu-types";
 
 // ─────────────────────────────────────────────────────────────
+// org unit
+// ─────────────────────────────────────────────────────────────
+export type {
+  CiGetOrgUnitByPathInterface,
+  CiLookupOrgUnitInput,
+  CiLookupOrgUnitResult,
+  CiOrgUnitContext,
+  CiOrgUnitRoutingOptions,
+  CiOrgUnitStatus,
+  CiResolveOrgUnitInput,
+  CiResolveOrgUnitResult,
+} from "./org-unit-types";
+
+// ─────────────────────────────────────────────────────────────
 // page
 // ─────────────────────────────────────────────────────────────
 export type {
@@ -212,6 +226,15 @@ export type {
   CiMatchedRoute,
   CiRoutesMap,
 } from "./route-types";
+
+// ─────────────────────────────────────────────────────────────
+// scope
+// ─────────────────────────────────────────────────────────────
+export type {
+  CiResolvedPathnameContext,
+  CiResolvedScopeContext,
+  CiScopeKind,
+} from "./scope-types";
 
 // ─────────────────────────────────────────────────────────────
 // security
@@ -307,43 +330,45 @@ export type {
 // tenant
 // ─────────────────────────────────────────────────────────────
 export type {
-  CiCreateTenantInterface,
-  CiCreateTenantApiInterface,
-  CiDeleteTenantInterface,
-  CiDeleteTenantApiInterface,
-  CiGetTenantInterface,
+  // CiCreateTenantInterface,
+  // CiCreateTenantApiInterface,
+  // CiDeleteTenantInterface,
+  // CiDeleteTenantApiInterface,
+  // CiGetTenantInterface,
   CiGetTenantBySlugInterface,
-  CiGetTenantApiInterface,
-  CiGetTenantBySlugApiInterface,
-  CiGetTenantLookupBySlugInterface,
-  CiGetTenantLookupBySlugApiInterface,
-  CiListTenantsInterface,
-  CiListTenantsApiInterface,
-  CiSeedTenantItem,
-  CiSeedTenantsApiInterface,
-  CiSeedTenantsInterface,
-  CiSeedTenantsResult,
-  CiSeedTenantsResultItem,
-  CiTenantSlugResult,
-  CiTenant,
+  // CiGetTenantApiInterface,
+  // CiGetTenantBySlugApiInterface,
+  // CiGetTenantLookupBySlugInterface,
+  // CiGetTenantLookupBySlugApiInterface,
+  // CiListTenantsInterface,
+  // CiListTenantsApiInterface,
+  // CiSeedTenantItem,
+  // CiSeedTenantsApiInterface,
+  // CiSeedTenantsInterface,
+  // CiSeedTenantsResult,
+  // CiSeedTenantsResultItem,
+  // CiTenantSlugResult,
+  // CiTenant,
   CiTenantContext,
-  CiTenantDdbTableItem,
-  CiTenantHeaderKey,
-  CiTenantHtmlTableRow,
+  // CiTenantDdbTableItem,
+  // CiTenantHeaderKey,
+  // CiTenantHtmlTableRow,
+  CiTenantInfoPageStrategy,
+  CiTenantMode,
   CiTenantResolutionOptions,
   CiTenantResolutionResult,
   CiTenantResolutionSource,
-  CiTenantRoutingMode,
   CiTenantRoutingOptions,
+  // CiTenantRoutingOptions,
   CiTenantScope,
-  CiTenantSlugDdbTableItem,
-  CiTenantsPageProps,
+  // CiTenantSlugDdbTableItem,
+  // CiTenantsPageProps,
   CiTenantStatus,
-  CiTenantLookupBySlugOkBody,
-  CiTenantLookupBySlugNotFoundBody,
-  CiUpdateTenantInterface,
-  CiUpdateTenantApiInterface,
-  CiTenantUrlStrategy,
+  // CiTenantLookupBySlugOkBody,
+  // CiTenantLookupBySlugNotFoundBody,
+  // CiUpdateTenantInterface,
+  // CiUpdateTenantApiInterface,
+  // CiTenantUrlStrategy,
 } from "./tenant-types";
 
 // ─────────────────────────────────────────────────────────────

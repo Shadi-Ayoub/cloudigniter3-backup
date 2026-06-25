@@ -71,10 +71,5 @@ export const routes: CiRoutesMap = {
     namespace: "authentication",
     protected: true,
   },
-  "/t/:id": {
-    title: "CloudIgniter Application Tenants Tree",
-    namespace: "tenant",
-    protected: true,
-  },
   "/test": { title: "Test Page", namespace: "test", protected: true },
 };

@@ -1,0 +1,49 @@
+---
+title: Tenant Management Strategy
+sidebar_position: 4
+---
+
+# Tenant Management Strategy
+
+CloudIgniter follows these guiding strategies:
+
+### Explicit Tenant Context
+
+Every request is evaluated within a tenant context, derived from:
+
+- Auth token claims
+- Server-side request metadata
+- Explicit developer overrides (advanced cases)
+
+There is **no implicit “current tenant”** without validation.
+
+---
+
+### Strong Isolation with Shared Infrastructure
+
+CloudIgniter uses:
+
+- Shared AWS resources
+- Logical isolation enforced via keys, policies, and access layers
+
+This allows:
+
+- Lower operational cost
+- Easier cross-tenant administration
+- Predictable scaling behavior
+
+---
+
+### Environment-Aware Tenancy
+
+Tenants exist within environments:
+
+- `production`
+- `sandbox`
+- `test`
+
+Environment scoping is handled at:
+
+- DynamoDB key level
+- IAM policy level
+- Seeder and tooling layers

@@ -1,0 +1,430 @@
+---
+title: API Calls on Server
+sidebar_position: 3
+---
+
+import ImageWrapper from "../../src/components/ImageWrapper";
+import apiSendReceive from "../assets/images/api-send-receive.png";
+
+# API Calls on Server
+
+<ImageWrapper
+  imgUrl={apiSendReceive}
+  caption="API call model in CloudIgniter"
+/>
+
+CloudIgniter uses the **AWS Amplify server client** to perform API calls from the server. The client is already created
+out-of-the box for the developer who can re-use it throughout the application. The client can be imported using the below line:
+
+```ts
+import { client } from "@/kernel/api/server";
+```
+
+Below is the code of the client implementation for your reference:
+
+```ts title="kernel/api/server/client.ts" showLineNumbers
+import { cookies } from "next/headers";
+import { generateServerClientUsingCookies } from "@aws-amplify/adapter-nextjs/api";
+
+import type { CloudIgniterAmplifyOutputs } from "@cloudigniter/next/types";
+
+import outputs from "@/../amplify_outputs.json";
+import type { Schema } from "@/../amplify/data/resource";
+
+const config = outputs as CloudIgniterAmplifyOutputs;
+
+function getClient() {
+  const client = generateServerClientUsingCookies<Schema>({
+    config,
+    cookies,
+  });
+
+  return client;
+}
+
+const client = getClient();
+
+export { client };
+```
+
+This client is used to call **queries**, **mutations**, or **model CRUD operations** as per the Amplify schema definition. Below is an example usage:
+
+```ts {11,23,25-27,29} title="kernel/api/server/system/getSettings.ts" showLineNumbers
+import { cache } from "react";
+
+import type {
+  GetSettingsHandlerInterface,
+  GraphQLResponse,
+  Settings,
+} from "@cloudigniter/next/types";
+import { getErrorMessage } from "@cloudigniter/next/utility";
+import { unwrapSettings } from "@cloudigniter/next/server";
+
+import { client } from "@/kernel/api/server";
+
+import ciConfig from "@/../cloudigniter.config";
+import { extendedSettingsDefaultValues } from "@/custom/settings";
+
+export const getSettings = cache(async () => {
+  try {
+    const getSettingsinput: GetSettingsHandlerInterface = {
+      extendedSettingsDefaultValues,
+      DynamoDbClientConfig: ciConfig.dynamodb.client,
+    };
+
+    const inputString = JSON.stringify(getSettingsinput);
+
+    const apiResponse: GraphQLResponse = await client.queries.getSettings({
+      inputString,
+    });
+
+    const settings = unwrapSettings(apiResponse) as Settings;
+
+    return settings;
+  } catch (error: unknown) {
+    throw new Error(
+      JSON.stringify({
+        title: "Settings fetch failed",
+        message: `Failed to get the settings! ${getErrorMessage(error)}`,
+        severity: "critical",
+        showRetry: true,
+      })
+    );
+  }
+});
+```
+
+---
+
+## Passing a `Request` object
+
+All CloudIgniter server calls send a **single** GraphQL variable: `inputString`, which must be a JSON string of a typed `Request<T>`:
+
+```ts title="The Request type"
+export type Request<T = unknown> = {
+  input: T; // parameters for the handler
+  options?: unknown; // optional overrides (e.g., AWS client configs)
+  scope: string; // for authorization (e.g., 'SETTINGS')
+  action: string; // for authorization (e.g., 'READ')
+};
+```
+
+**Recommended pattern**
+
+1. Build the `Request<T>` with your operation input.
+
+2. JSON.stringify it into inputString.
+
+3. Call the Amplify client operation.
+
+4. Handle the GraphQL response.
+
+```ts title="Example: calling the getSettings API" showLineNumbers
+import { cache } from "react";
+
+import type {
+  ServerErrorPayload,
+  GetSettingsHandlerInput,
+  GraphQLResponse,
+  Request,
+  Settings,
+} from "@cloudigniter/next/types";
+import { getErrorMessage } from "@cloudigniter/next/utility";
+import { unwrapSettings } from "@cloudigniter/next/server";
+
+import { client } from "@/kernel/api/server";
+import { extendedSettingsDefaultValues } from "@/custom/settings";
+import ciConfig from "@/../cloudigniter.config";
+
+export const getSettings = cache(async () => {
+  try {
+    // 1. Build the Request<T> with your operation input.
+    const input: Request<GetSettingsHandlerInput> = {
+      input: { extendedSettingsDefaultValues },
+      options: {
+        DynamoDbClientConfig: ciConfig.dynamodb.client,
+      },
+      scope: "",
+      action: "",
+    };
+
+    // 2. JSON.stringify it into inputString.
+    const inputString = JSON.stringify(input);
+
+    // 3. Call the Amplify client operation.
+    const apiResponse: GraphQLResponse = await client.queries.getSettings({
+      inputString,
+    });
+
+    // 4. Handle the GraphQL response.
+    const settings = unwrapSettings(apiResponse) as Settings;
+
+    return settings;
+  } catch (error: unknown) {
+    throw new Error(
+      JSON.stringify({
+        title: "Settings fetch failed",
+        message: `Failed to get the settings! ${getErrorMessage(error)}`,
+        severity: "critical",
+        showRetry: true,
+      } as ServerErrorPayload)
+    );
+  }
+});
+```
+
+:::tip
+If your handler also supports Cognito customization, add CognitoClientConfig under input and pass it the same way.
+:::
+
+## Handling the `GraphQLResponse`
+
+The Amplify client returns a `GraphQLResponse`:
+
+```ts title="A GraphQLResponse type" showLineNumbers
+export type GraphQLResponse = {
+  data: any | null; // set by your CloudIgniter handler
+  errors?: { message: string; [k: string]: any }[];
+  extensions?: Record<string, unknown>;
+};
+```
+
+✅ **Recommended (envelope-first): use parseApiResponse**
+
+CloudIgniter handlers return a standardized `Response` object in data. The simplest, safest way to consume it is
+via the helper `parseApiResponse`, which always gives you a `Response` (passes through handler responses; maps
+GraphQL `errors` to a 400):
+
+```ts
+import { cache } from "react";
+import type {
+  GraphQLResponse,
+  Response,
+  Settings,
+} from "@cloudigniter/next/types";
+import { parseApiResponse } from "@cloudigniter/next/utility";
+
+import { getSettingsRawGql } from "./getSettings.request";
+
+export const getSettings = cache(async () => {
+  const apiResponse: GraphQLResponse = await getSettingsRawGql();
+
+  // Normalize to a Response envelope (statusCode, body, message, etc.)
+  const res = parseApiResponse(apiResponse) as Response<{ settings: Settings }>;
+
+  if (res.statusCode !== 200) {
+    throw new Error(
+      JSON.stringify({
+        title: "Settings fetch failed",
+        message: res.body?.error ?? "Unknown error",
+        severity: "critical",
+        showRetry: true,
+      })
+    );
+  }
+
+  return res.body.settings;
+});
+```
+
+**Alternative (data-only): **`parseApiResponseData<Response<...>>`
+
+If you prefer to assert the underlying `Response` type explicitly, you can use `parseApiResponseData` with
+`critical=true`. This throws on GraphQL errors or invalid shapes:
+
+```ts
+import type {
+  GraphQLResponse,
+  Response,
+  Settings,
+} from "@cloudigniter/next/types";
+import { parseApiResponseData } from "@cloudigniter/next/utility";
+import { getSettingsRawGql } from "./getSettings.request";
+
+export async function getSettingsDataOnly() {
+  const apiResponse: GraphQLResponse = await getSettingsRawGql();
+
+  // data is a CloudIgniter Response coming from the handler
+  const envelope = parseApiResponseData<Response<{ settings: Settings }>>(
+    apiResponse,
+    true
+  );
+
+  if (envelope.statusCode !== 200) {
+    throw new Error(envelope.body?.error ?? "Unknown error");
+  }
+  return envelope.body.settings;
+}
+```
+
+**Legacy note (string/JSON payloads)**
+
+If you still have older handlers that return stringified JSON (instead of a Response object), you can unwrap them manually:
+
+```ts
+const data = parseApiResponseData<string>(apiResponse, true); // throws on error
+const parsed = JSON.parse(data); // shape depends on your legacy handler
+```
+
+:::tip
+For new and updated handlers, stick to returning `Response` on the server and using `parseApiResponse` on the client.
+It yields consistent error handling, status codes, and observability.
+:::
+
+**Quick reference**
+
+- Send: `inputString = JSON.stringify(Request<T>)`
+
+- Prefer: parseApiResponse(resp) → always a Response
+
+- Alt: `parseApiResponseData<Response<...>>(resp, true)` if you want to assert types manually
+
+- Legacy: `parseApiResponseData<string>` + JSON.parse only for old handlers that still return raw strings
+
+---
+
+## 3. Passing Client Configurations
+
+- If the called handler involves **DynamoDB operations**, developers may pass a `DynamoDbClientConfig` option.
+- If the handler involves **Cognito operations**, developers may pass a `CognitoClientConfig` option.
+- These options are serialized inside the `inputString` and parsed by the handler.
+
+---
+
+## 4. Request Format
+
+All AppSync resolvers/handlers accept **exactly one argument**:
+
+```ts
+inputString?: string | null;
+```
+
+- `inputString` is a **JSON string** representing a `Request<T>`.
+- No other GraphQL arguments are allowed.
+
+### Request Type
+
+```ts
+export type Request<T = unknown> = {
+  input: T;
+  options?: unknown;
+  scope: string;
+  action: string;
+};
+```
+
+### Example
+
+```ts
+const req: Request<{ userId: string }> = {
+  input: { userId: "abc123" },
+  scope: "USERS",
+  action: "READ_ONE",
+};
+
+const variables = { inputString: JSON.stringify(req) };
+```
+
+---
+
+## 5. Transport Response Type
+
+Handlers always produce a `GraphQLResponse` from the transport layer:
+
+```ts
+export type GraphQLResponse = {
+  data: JsonValue | null;
+  errors?: { message: string }[];
+  extensions?: Record<string, unknown>;
+};
+```
+
+---
+
+## 6. Client Unwrapping Options
+
+Developers have **two options** to unwrap a `GraphQLResponse`:
+
+### A) Data-Only (Strict)
+
+```ts
+const settingsString = parseApiResponseData<string>(resp, true);
+const settings = JSON.parse(settingsString) as Settings;
+```
+
+### B) Standardized Envelope
+
+```ts
+const res = parseApiResponse(resp);
+if (res.statusCode !== 200) console.error(res.body);
+else console.log(res.body);
+```
+
+---
+
+## 7. Error Handling Rules
+
+- Prefer **returning a `Response` with statusCode 400|404|500** for validation and business errors.
+- Reserve **throwing** for exceptional infra/runtime errors.
+- Standard error shape:
+
+```ts
+{ error: string; fieldErrors?: Record<string, string> }
+```
+
+---
+
+## 8. Developer Checklist
+
+✅ **Do:**
+
+- Always send `{ inputString: JSON.stringify(Request<T>) }`.
+- Use `parseApiResponseData` for typed data.
+- Use `parseApiResponse` for normalized envelopes.
+- Return `Response` for predictable error UX.
+
+🚫 **Don’t:**
+
+- Don’t add extra GraphQL args beyond `inputString`.
+- Don’t throw for business errors.
+- Don’t return raw unstructured errors.
+
+---
+
+## 9. Convenience Helpers
+
+```ts
+export async function callApiAsResponse<TInput, TBody>(
+  op: (vars: { inputString: string }) => Promise<GraphQLResponse>,
+  req: Request<TInput>
+): Promise<Response<TBody>> {
+  const resp = await op({ inputString: JSON.stringify(req) });
+  return parseApiResponse(resp) as Response<TBody>;
+}
+
+export async function callApiAsData<TInput, TData>(
+  op: (vars: { inputString: string }) => Promise<GraphQLResponse>,
+  req: Request<TInput>
+): Promise<TData> {
+  const resp = await op({ inputString: JSON.stringify(req) });
+  return parseApiResponseData<TData>(resp, true);
+}
+```
+
+---
+
+## 10. Edge Case Handling
+
+- `data: null` → `200 {}`.
+- String payloads must be valid JSON.
+- Arrays, booleans, numbers are accepted directly.
+- Handlers may return a full `Response` → passed through by client.
+
+---
+
+## TL;DR
+
+- **Send:** Always `{ inputString: JSON.stringify(Request<T>) }`.
+- **Handle:** Accept `(event, context)`, validate input, return `Response`.
+- **Receive:** Use `parseApiResponseData` (typed data) or `parseApiResponse` (normalized envelope).
+- **Errors:** Return `Response` for business errors; throw only for critical exceptions.

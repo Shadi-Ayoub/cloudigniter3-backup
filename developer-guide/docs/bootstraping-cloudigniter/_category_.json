@@ -1,0 +1,8 @@
+{
+  "label": "Bootstrapping CloudIgniter",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Describes the steps Cloudigniter go through before any page renders."
+  }
+}

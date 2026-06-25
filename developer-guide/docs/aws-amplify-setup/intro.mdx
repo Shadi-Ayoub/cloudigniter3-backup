@@ -1,0 +1,16 @@
+---
+title: Introduction
+sidebar_position: 1
+---
+
+The Cloudigniter ecosystem adopts AWS Amplify Gen 2 in its core. AWS Amplify provides a TypeScript-based, code-first approach to backend development, streamlining the developer experience (DX). With a unified DX, Amplify integrates hosting, backend, and UI-building capabilities, empowering developers to define cloud infrastructure directly in TypeScript. By expressing your app's data model, business logic, authentication, and authorization rules in code, Amplify handles the automatic provisioning of the necessary AWS resources. This eliminates the need to manually integrate individual AWS services, allowing developers to focus on building their applications without worrying about underlying infrastructure complexities.
+
+This chapter will describe the implementaion of AWS Amplify in Cloudigniter including the part were developers can extend and/or override the initial setup.
+
+:::tip
+Cloudigniter promotes the use of AWS Amplify for end-to-end fullstack development using Typescript.
+:::
+
+:::warning
+Developers are not supposed to alter any part of the `amplify folder`. This is important to allow future updates and upgrades suggested by Cloudigniter. `amplify_extended` folder is the place for your amplify code.
+:::

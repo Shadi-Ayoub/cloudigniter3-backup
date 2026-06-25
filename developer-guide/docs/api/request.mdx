@@ -1,0 +1,428 @@
+---
+title: CloudIgniter Request<T>
+sidebar_position: 5
+---
+
+# CloudIgniter `Request<T>`
+
+_**The Canonical API Envelope**_
+
+In CloudIgniter, every API call (from client → route handler → AppSync → Lambda) travels inside a single, well-defined envelope called
+`Request<T>`. This is the only accepted input shape across the stack. It gives you a consistent, strongly-typed contract that is easy to
+validate, log, and evolve over time.
+
+```ts {4-10} title="Request<T>" showLineNumbers
+import type { CognitoIdentityProviderClientConfig } from "@aws-sdk/client-cognito-identity-provider";
+import type { DynamoDBClientConfig } from "@aws-sdk/client-dynamodb";
+
+export type Request<T = unknown> = {
+  input: T;
+  envMode?: "test" | "sandbox" | "live";
+  authMode?: "userPool" | "apiKey" | "iam" | "lambda" | "oidc";
+  options?: RequestOptions;
+  critical?: boolean;
+};
+
+export type RequestOptions = {
+  CognitoClientConfig?: CognitoIdentityProviderClientConfig;
+  DynamoDbClientConfig?: DynamoDBClientConfig;
+  [key: string]: unknown; // fallback for extensibility
+};
+```
+
+**Why does this exist?**
+
+Instead of sending arbitrary payloads, CloudIgniter enforces a **single, structured envelope** that:
+
+- Keeps all calls **homogeneous** across the app
+- Encodes environment and auth intent (`envMode`, `authMode`) next to the business input
+- Provides a space for **runtime options** (options) like AWS client configs
+- Supports critical vs. non-critical calls (`critical`) to change error behavior
+- Maps cleanly into a single `inputString` argument for AppSync/Lambda
+
+**🔍 Field-by-Field Breakdown**
+
+⭐ `input: T` — **The Business Payload**
+
+- **Required**
+- T is the business-specific shape for the operation.
+- Example: For seeding tenants, T might be SeedTenantItem[].
+- This is the **only part** of the request that should know about your domain structure.
+
+```ts title="Payload in Request<T>" showLineNumbers
+type SeedTenantItem = {
+  tenantId: string;
+  name?: string;
+  description?: string;
+  slug?: string;
+  meta?: Record<string, unknown>;
+};
+
+const request: Request<SeedTenantItem[]> = {
+  input: [
+    { tenantId: "school-001", name: "Test School 1" },
+    { tenantId: "school-002", name: "Test School 2" },
+  ],
+};
+```
+
+⭐ `envMode?: "test" | "sandbox" | "live"` — **The Requested Environment Mode**
+
+- Optional (but heavily used); if absent, CloudIgniter will usually default it (e.g. via `prepareApiRequest()`).
+- Indicates which **runtime environment** the operation is meant for.
+- Used by Lambda handlers to enforce environment rules (e.g. “_seeding is forbidden in live_”).
+
+Typical usage:
+
+```ts title="envMode in Request<T>" showLineNumbers
+const request: Request<SeedTenantItem[]> = {
+  input: tenants,
+  envMode: "test", // explicitly seed only in the test environment
+};
+```
+
+In your Lambda handler, you then validate it:
+
+```ts title="Forbidding actions in a live environment in Lambda Handler" showLineNumbers
+if (envMode !== "test" && envMode !== "sandbox") {
+  // return 400: invalid envMode
+}
+```
+
+:::tip[IMPORTANT]
+This is a key part of CloudIgniter's safety model: **destructive or sensitive operations must be tagged with the correct envMode, and the
+backend will refuse them in** `live`.
+:::
+
+⭐ `authMode?: "userPool" | "apiKey" | "iam" | "lambda" | "oidc"` — **The Authentication Strategy**
+
+- **Optional**, but important for deciding how the Amplify client authenticates with AppSync.
+- This maps directly to Amplify's supported auth modes.
+- Common patterns:
+  - `"userPool"` — standard authenticated user calls
+  - `"apiKey"` — public/guest access
+  - `"iam"` — service-to-service or restricted internal calls
+
+Example:
+
+```ts title="Authentication mode in Request<T>" showLineNumbers
+const request: Request<{ settings: unknown }> = {
+  input: { settings: formData },
+  envMode: "live",
+  authMode: "userPool", // this update is performed as an authenticated user
+};
+```
+
+On the server wrapper:
+
+```ts title="Request Server Wrapper" showLineNumbers
+const apiRequest = prepareApiRequest(request);
+
+const apiResponse = await client.mutations.updateSettings(
+  { inputString: JSON.stringify(apiRequest) },
+  { authMode: apiRequest.authMode } // e.g. "userPool" or "apiKey"
+);
+```
+
+:::tip[IMPORTANT]
+CloudIgniter will set `authMode` to `userPool` by default unless it is explicitly specified otherwise in the Request.
+:::
+
+⭐ `options?: RequestOptions` — **Low-Level Runtime Options**
+
+- **Optional**. This is where you pass advanced configuration objects that your Lambda may rely on.
+- Usually used to pass AWS SDK client configs, e.g. `DynamoDbClientConfig`.
+- The type is open-ended (`[key: string]: unknown`) to allow future extension.
+
+```ts {4-9} title="options in Request<T>" showLineNumbers
+const request: Request<SeedTenantItem[]> = {
+  input: tenants,
+  envMode: "test",
+  options: {
+    DynamoDbClientConfig: {
+      region: "eu-central-1",
+      endpoint: "http://localhost:8000", // for local DynamoDB testing
+    },
+  },
+};
+```
+
+In your handler:
+
+```ts
+const clientConfig = request.options?.DynamoDbClientConfig ?? {
+  region: process.env.CI_REGION,
+};
+```
+
+This pattern keeps AWS-specific wiring **out of the client** and **inside the controlled API flow**.
+
+⭐ `critical?: boolean` — **Error Handling Semantics**
+
+- **Optional**. Defaults to `false` if unset.
+- Signals whether this operation should be treated as **critical**.
+- Your client or route handler can use it to decide whether to:
+  - Surface errors as **blocking exceptions**, or
+  - Soft-fail, show a toast, log them quietly, etc.
+
+```ts title="Specifying criticality of errors in Request<T>" showLineNumbers
+// Critical call: seeding tenants in a test/sandbox env
+const request: Request<SeedTenantItem[]> = {
+  input: tenants,
+  envMode: "test",
+  critical: true, // if this fails, we want loud errors / blocking behavior
+};
+```
+
+You can wire this into your client utility:
+
+```ts
+export async function call<TInput, TOutput>(
+  url: string,
+  request: Request<TInput>
+): Promise<Response<TOutput>> {
+  const res = await fetch(url, {
+    method: "POST",
+    body: JSON.stringify(request),
+    headers: { "Content-Type": "application/json" },
+  });
+
+  const response = (await res.json()) as Response<TOutput>;
+
+  if (request.critical && response.statusCode !== 200) {
+    throw new Error(
+      `[Critical API Error] ${response.statusCode}: ${
+        (response.body as any)?.error ?? "Unknown error"
+      }`
+    );
+  }
+
+  return response;
+}
+```
+
+### 🔧 `prepareApiRequest<T>()`
+
+_**Normalizing Requests with Environment-Aware Defaults**_
+
+Before a `Request<T>` is serialized and sent to AppSync, CloudIgniter routes it through the `prepareApiRequest<T>()` utility. This function
+ensures that **every outgoing request** is:
+
+- Aligned with the current **runtime environment**
+- Configured with the correct **auth mode**
+- Enriched with centralized **AWS client configuration**
+- Normalized for **critical** semantics
+
+```ts title="/src/kernel/api/prepare-api-request.ts" showLineNumbers
+import type { CiEnvMode, Request } from "@CI/types";
+
+import ciConfig from "@/../cloudigniter.config";
+
+export function prepareApiRequest<T = unknown>(
+  request: Request<T>
+): Request<T> {
+  const cognitoClientConfig = ciConfig.cognito.client;
+  const dynamodbClientConfig = ciConfig.dynamodb.client;
+
+  const envMode = (process.env.NEXT_PUBLIC_CI_ENV_MODE ?? "test") as CiEnvMode;
+
+  const apiRequest = {
+    ...request,
+    envMode: request.envMode ?? envMode,
+    authMode: request.authMode ?? "userPool", // <- 'userPool' for signed-in, 'apikey' for guests);
+    options: {
+      CognitoClientConfig:
+        request.options?.CognitoClientConfig ?? cognitoClientConfig,
+      DynamoDbClientConfig:
+        request.options?.DynamoDbClientConfig ?? dynamodbClientConfig,
+    },
+    critical: request.critical ?? false,
+  };
+
+  return apiRequest;
+}
+```
+
+This function behaves as follows:
+
+**1. Environment-Aware envMode Defaults**
+
+```ts
+const envMode = (process.env.NEXT_PUBLIC_CI_ENV_MODE ?? 'test') as CiEnvMode;
+
+envMode: request.envMode ?? envMode,
+```
+
+- `envMode` is first resolved from `process.env.NEXT_PUBLIC_CI_ENV_MODE`, falling back to `'test'` if not set.
+- This links the **API request behavior** to the application runtime configuration, so:
+  - Your dev sandbox, staging, and live environments can each expose their own NEXT_PUBLIC_CI_ENV_MODE.
+  - If the caller does not explicitly specify `request.envMode`, the request automatically inherits the environment's configured mode.
+- The explicit `request.envMode` still takes precedence when set. This offers a good balance between:
+  - **Centralized environment control** (NEXT_PUBLIC_CI_ENV_MODE)
+  - **Per-call overrides** where needed
+
+**2. Defaulting `authMode` to `"userPool"`**
+
+```ts
+authMode: request.authMode ?? 'userPool',
+```
+
+- If the caller does not specify an `authMode`, CloudIgniter defaults to `"userPool"`.
+- This reflects the typical pattern for **authenticated internal applications** such as accessing the dashboard.
+
+If you truly intend a public or system-level call, you must explicitly set `authMode` to `"apiKey"`, `"iam"`, `"lambda"`, or `"oidc"` in the original `Request<T>`.
+
+Then the API Server Wrapper forwards `authMode` to Amplify:
+
+```ts {4} title="Forwrding authMode to Amplify"
+...
+await client.mutations.someMutation(
+  { inputString },
+  { authMode: apiRequest.authMode }
+);
+...
+```
+
+**3. Injecting Central AWS Client Configs into `options`**
+
+```ts
+const cognitoClientConfig = ciConfig.cognito.client;
+const dynamodbClientConfig = ciConfig.dynamodb.client;
+
+options: {
+  CognitoClientConfig:
+    request.options?.CognitoClientConfig ?? cognitoClientConfig,
+  DynamoDbClientConfig:
+    request.options?.DynamoDbClientConfig ?? dynamodbClientConfig,
+},
+```
+
+- `ciConfig` (from `cloudigniter.config.ts`) is the **central authority** for how `Cognito` and `DynamoDB` clients should behave.
+- `prepareApiRequest()` ensures that every outgoing request has:
+  - `options.CognitoClientConfig` → used by handlers that interact with Cognito.
+  - `options.DynamoDbClientConfig` → used by handlers that interact with DynamoDB.
+- Callers can supply explicit overrides via `request.options`, but if they don't, the system automatically falls back to the shared configuration.
+
+This has two strong benefits:
+
+- **Consistency**: All handlers rely on the same base client configuration unless explicitly overridden.
+- **Separation of concerns**: Client code and route handlers do not need to know AWS client details.
+
+```ts title="Example: In LAmbda Handler" showLineNumbers
+const clientConfig = request.options?.DynamoDbClientConfig ?? {
+  region: process.env.CI_REGION,
+};
+```
+
+**4. Normalizing critical to a Boolean**
+
+```ts
+critical: request.critical ?? false,
+```
+
+- If the caller does not set `critical`, the flag becomes `false`.
+- This ensures that downstream logic (client, server, logging) **always sees an explicit boolean**, not undefined.
+- You can base error behavior on it, for example:
+  - `critical: true` → throw exceptions on non-200 responses or highlight prominently in UI/logs.
+  - `critical: false` → handle errors more gracefully.
+
+**5. How `prepareApiRequest()` Fits Into the Pipeline**
+
+The typical flow in a server API wrapper looks like this:
+
+```ts {12}
+export const seedTenants = cache(
+  async (request: Request<SeedTenantItem[]>): Promise<Response> => {
+    // 1) Local validation
+    if (!Array.isArray(request.input) || request.input.length === 0) {
+      return {
+        statusCode: 400,
+        body: { error: "tenants must be a non-empty array" },
+      };
+    }
+
+    // 2) Normalize / enrich request
+    const apiRequest = prepareApiRequest(request);
+
+    // 3) Convert to single string input for AppSync
+    const inputString = JSON.stringify(apiRequest);
+
+    // 4) Call Amplify / AppSync
+    const graphqlResponse = await client.mutations.seedTenants(
+      { inputString },
+      { authMode: apiRequest.authMode }
+    );
+
+    // 5) Parse GraphQLResponse -> Response<T>
+    return parseGraphqlResponse<Response>(graphqlResponse, true);
+  }
+);
+```
+
+So `prepareApiRequest()` is the **canonical normalization step** that:
+
+- Aligns the request with the environment (`envMode`)
+- Sets a secure default auth mode (`authMode`)
+- Injects AWS client configs (`options`)
+- Normalizes the `critical` flag
+
+All before the request is serialized with `JSON.stringify()` and sent as `inputString`.
+
+#### ✅ Key Guidance for Developers
+
+- **Always call `prepareApiRequest()` in server API wrappers before sending to AppSync.**
+- Do not manually patch `envMode`, `authMode`, or `options` directly in each wrapper; rely on this utility to maintain consistency.
+- Think of `prepareApiRequest()` as the **“server-side gatekeeper”** that transforms a loosely-formed `Request<T>` coming from the route handler into a fully-initialized, environment-aware `Request<T>` ready for AppSync/Lambda.
+
+### 🧩 Putting It Together — Example Scenarios
+
+**1. Simple Read Operation (Non-critical)**
+
+```ts title="Use case: fetching a single tenant record to display in a dashboard." showLineNumbers
+type GetTenantInput = { tenantId: string };
+
+const request: Request<GetTenantInput> = {
+  input: { tenantId: "school-001" },
+  envMode: "live",
+  authMode: "userPool",
+  // no options, not critical
+};
+```
+
+**2. Seeding Tenants in a Test Environment (Critical)**
+
+```ts title="Use case: initializing test data before running integration tests." showLineNumbers
+const request: Request<SeedTenantItem[]> = {
+  input: [{ tenantId: "seed-test-001" }, { tenantId: "seed-test-002" }],
+  envMode: "test",
+  authMode: "userPool",
+  critical: true, // If this fails, you do not want to proceed; the operation is critical.
+  options: {
+    DynamoDbClientConfig: {
+      region: "eu-central-1",
+    },
+  },
+};
+```
+
+**3. Public/Guest Query with API Key**
+
+```ts title="Use case: a public catalog page where the user is not signed in, backed by a public AppSync API key." showLineNumbers
+type PublicCatalogFilter = {
+  category?: string;
+  search?: string;
+};
+
+const request: Request<PublicCatalogFilter> = {
+  input: { category: "laptops", search: "student" },
+  envMode: "live",
+  authMode: "apiKey", // public-facing catalog
+};
+```
+
+## ✅ Key Takeaways for Developers
+
+- **Never send raw payloads**. Always wrap your input in `Request<T>`.
+- **Think of `Request<T>` as your “API envelope”**. It carries both the payload (input) and the intent (envMode, authMode, critical, options).
+- **CloudIgniter's backend logic relies on this structure** to enforce environment rules, auth strategies, error behavior, and AWS configuration in a consistent way.
+- **All the way down to Lambda**, the request remains recognizable and strongly typed, which is crucial for safety and observability.

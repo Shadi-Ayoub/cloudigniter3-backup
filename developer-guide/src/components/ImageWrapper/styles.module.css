@@ -1,0 +1,52 @@
+.imageCaptionWrapper {
+  display: block; /* Make it a block-level element */
+  width: fit-content; /* Adjust to content size */
+  margin: 2rem auto; /* Center horizontally */
+  text-align: center; /* Center text inside */
+}
+
+/* .centerImage {
+  display: block;
+  margin: 0 auto;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  text-align: center;
+} */
+
+.image {
+  max-width: 100%; /* Scales the image within its container */
+  height: auto; /* Maintains aspect ratio */
+  background-color: #fafafa;
+  padding: 12px 34px;
+  border-radius: 8px; /* Optional: Rounded corners */
+}
+
+.imageCaptionText {
+  font-size: 1.2rem; /* Slightly smaller font size */
+  color: #555; /* Subtle text color */
+  font-weight: bolder;
+  margin: 0;
+  margin-top: 0.8rem; /* Space between image and caption */
+  line-height: 1.4; /* Better readability */
+}
+
+/* size variants */
+.imageSm {
+  width: 120px;
+}
+
+.imageLg {
+  width: 240px;
+}
+
+.imageXl {
+  width: 360px;
+}
+
+.imageXxl {
+  width: 480px;
+}
+
+.imageHuge {
+  width: 720px; /* or larger as needed */
+}

@@ -1,0 +1,38 @@
+---
+title: Server API Wrapper Strategy
+sidebar_position: 9
+---
+
+# Server API Wrapper Strategy
+
+In CloudIgniter, route handlers never talk to Amplify/AppSync directly. Instead, they call a set of **server-side API wrappers** located under:
+`/src/kernel/api/server` (or similar internal server folder).
+
+These wrappers encapsulate **all interaction with the Amplify client** and enforce CloudIgniter's orthodox API design. Each wrapper:
+
+- Exposes a **single, typed function** (e.g. `seedTenants`) that accepts a `Request<T>` and returns a `Response`.
+- Is often wrapped with React's `cache()` helper to benefit from **idempotent, memoized server calls** where appropriate.
+- Performs **pre-GraphQL validation** (e.g. checking `envMode`, verifying arrays are non-empty) so AppSync/Lambda only receive well-formed requests.
+- Uses shared utilities like `prepareApiRequest()` to inject default values (such as `envMode`, `authMode`, and client options) and normalize the request shape.
+- Converts the enriched `Request<T>` into a **single string input** via `JSON.stringify()` (`inputString`), because CloudIgniter's Amplify/AppSync design
+  standardizes on one string argument per query/mutation. This greatly simplifies resolver definitions and Lambda handlers.
+- Sends the `inputString` to AppSync using the generated Amplify client (e.g. `client.mutations.seedTenants({ inputString }, { authMode })`).
+- Parses the resulting `GraphQLResponse` using utilities like `parseGraphqlResponse()` and returns a unified `Response` object back to the route handler.
+
+The utility prepareApiRequest() is used to normalizethe request. This enriches:
+
+envMode (from NEXT_PUBLIC_CI_ENV_MODE or explicit override)
+authMode (default: userPool)
+options (Cognito/DynamoDB client configs)
+critical flag normalization
+
+:::info[SUMMARY]
+A Server API Wrapper is responsible for:
+
+- Preparing internal API request
+- Converting request → `inputString`
+- Calling AppSync query/mutation
+- Parsing `GraphQLResponse`
+- Returning `Response`
+
+:::

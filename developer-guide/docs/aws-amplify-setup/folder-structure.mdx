@@ -1,0 +1,172 @@
+---
+title: The Folders Structure
+sidebar_position: 2
+---
+
+import ImageWrapper from "../../src/components/ImageWrapper";
+import amplifyFolders from "../assets/images/amplify-folder.png";
+import amplifyFolderInternal from "../assets/images/amplify-folder-internal.png";
+
+The figure below demenstrates how the Amplify related folders are arranged and how you, as a developer, interact with them.
+
+AWS mandate having the "amplify" folder in the application root. This folder comes preloaded with the core configurations of the cloud infrastructure needed by Cloudigniter platform to run. Developers can add their part in the "amplify_extended" folder, which is seemlessly integrated with the "amplify" folder. Please refer to the [AWS Amplify Gen 2 documentations](https://docs.amplify.aws/nextjs/) to learn about how to code.
+
+<ImageWrapper imgUrl={amplifyFolders} caption="AWS Amplify Implementation" />
+
+## The "amplify" Folder
+
+<ImageWrapper
+  imgUrl={amplifyFolderInternal}
+  caption="The 'amplify' folder internal structure"
+/>
+
+### backend.ts
+
+The entry point of the AWS Amplify configurations code is the `backend.ts` file in
+the "amplify" folder root.
+
+```ts title="backend.ts" showLineNumbers
+import { defineBackend } from "@aws-amplify/backend";
+import { auth } from "./auth/resource";
+import { data } from "./data/resource";
+
+defineBackend({
+  auth,
+  data,
+});
+```
+
+The `defineBackend` method creates a new Amplify backend instance and returns it. Its paremeter provides the `constructFactories`, which is a list of backend factories such as those created by `defineAuth` or `defineData`. Cloudigniter prepares the `auth` and `data` backend factories for the `defineBackend` method.
+
+### auth/resource.ts
+
+Amplify Auth is powered by [Amazon Cognito](https://aws.amazon.com/cognito/). Cognito is a robust user directory service that handles user registration, authentication, account recovery, and other operations ([Read more](https://docs.amplify.aws/nextjs/build-a-backend/auth/concepts/)).
+
+This resource is provided by the file `resource.ts` in the `auth` folder root.
+
+```ts {10-11,17-18} title="auth/resource.ts" showLineNumbers
+import { defineAuth } from "@aws-amplify/backend";
+
+import { coreBackendAuth, coreBackendAuthAccess } from "./core-backend-auth";
+import {
+  extendedBackendAuth,
+  extendedBackendAuthAccess,
+} from "../../amplify_extended/auth/extended-backend-auth";
+
+const backendAuth = {
+  ...coreBackendAuth,
+  ...extendedBackendAuth,
+};
+
+export const auth = defineAuth({
+  ...backendAuth,
+  access: (allow) => [
+    ...coreBackendAuthAccess(allow),
+    ...extendedBackendAuthAccess(allow),
+  ],
+});
+```
+
+As you can see, the auth backend settings has two parts, one is the cognito resource setup definition and the second is the `access` definition. Each part includes both the core definitions that comes with Cloudigniter and the extended definitions that developers add and which are relevant to the application under development. Developers definitions are imported from the `amplify_extended/auth/extended-backend-auth.ts` folder while the system's pre-definitions are hosted in the file `amplify/auth/core-backend-auth.ts`.
+
+#### auth/core-backend-auth.ts
+
+```ts {4,7,17,21,33} title="auth/core-backend-auth.ts" showLineNumbers
+import { createCognitoUser } from "./cognito-user";
+
+const coreBackendAuth: AmplifyAuthProps = {
+  loginWith: {
+    email: true,
+  },
+  userAttributes: {
+    givenName: {
+      mutable: true,
+      required: true,
+    },
+    familyName: {
+      mutable: true,
+      required: true,
+    },
+  },
+  groups: ["USERS", "DEVELOPERS", "ADMINS", "SUPER_ADMINS"], // Order impact precedence!
+};
+
+const coreBackendAuthAccess = (allow: AuthAccessBuilder) => {
+  const accessArray: AuthAccessDefinition[] = [
+    // allow.resource(listCognitoUsers).to(['listUsers']),
+    // allow.resource(getCognitoUser).to(['getUser']),
+    allow.resource(createCognitoUser).to(["createUser"]),
+    // allow.resource(setCognitoUserPassword).to(['setUserPassword']),
+    // allow.resource(deleteCognitoUser).to(['disableUser']),
+    // allow.resource(deleteCognitoUser).to(['deleteUser']),
+  ];
+
+  return accessArray;
+};
+
+export { coreBackendAuth, coreBackendAuthAccess };
+```
+
+The core auth definition is intentionally kept simple. The following points describe the core definition as per the code above:
+
+1. We kept the Amplify Auth default, which is scaffolded with `email` as the default method for user sign-in.
+2. The `loginWith` property definition will result in Amplify Auth automatically configure an `email` attribute that is required for sign-in. In addition, we extended the user profile by configuring two additional attributes namely, `givenName` and `familyName` and we made them required fields.
+3. We configured the `groups` property with four basic groups namely, `USERS`, `DEVELOPERS`, `ADMINS`, `SUPER_ADMINS`. These groups are used by Cloudigniter to customize user access to the different functions and sections in the system. You can extend this property by adding more groups in the `amplify_extended/auth/extended-backend-auth.ts` file.
+4. We defined `access` in an array that will be passed to the `auth/resource.ts` as explained above.
+
+:::warning
+
+- Please note that after you create your auth resource, you cannot switch an attribute between `required` and not required.
+- Also, the four pre-defined `groups` are essentail to the platform and should not be deleted or renamed. Doing so will cause serious problems in the system.
+
+Furthermore, please note that some initial configuration options cannot be changed after the backend resources are configured:
+
+- User attributes that are used to identify your individual users (such as `email` and phone) cannot be renamed or deleted.
+- Sign-in methods (including username, `email`, and phone) cannot be added or changed after the initial configuration. This includes both defining which attributes are used to sign in and which attributes are required. `Required` attributes must have a value for all users once set.
+- `Verification` methods (including username and email) are the same as required attributes and cannot be removed once configured.
+- The `sub` attribute is a unique identifier within each user pool that cannot be modified and can be used to index and search users.
+- If `MFA` (Multi-Factor Authentication) is set to required with phone number for all users, you will need to include MFA setup (i.e. mandating phone number) when users sign up.
+  :::
+
+### data/resource.ts
+
+With [Amplify Data](https://docs.amplify.aws/nextjs/build-a-backend/data/), developers can build a secure, real-time API backed by a database in minutes. After you define your data model using TypeScript, Amplify will deploy a real-time API for you. This API is powered by [AWS AppSync](https://us-east-1.console.aws.amazon.com/appsync/) and connected to an [Amazon DynamoDB](https://us-east-1.console.aws.amazon.com/dynamodbv2/) database. You can secure your API with authorization rules and scale to custom use cases with AWS Lambda.
+
+The `data/resource.ts` is the central location of the data backend configuration. The most important element is the schema object, which defines your backend data models (a.model()) and custom queries (a.query()), mutations (a.mutation()), and subscriptions (a.subscription()).
+
+```ts {5,6,11,13} title="data/resource.ts" showLineNumbers
+import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
+import { coreSchemas, extendedSchemas } from "./schemata";
+
+const schema = a.schema({
+  ...coreSchemas,
+  ...extendedSchemas,
+});
+
+console.log(JSON.stringify(schema));
+
+export type Schema = ClientSchema<typeof schema>;
+
+export const data = defineData({
+  schema,
+  authorizationModes: {
+    defaultAuthorizationMode: "userPool",
+  },
+});
+```
+
+More TBD...
+
+## The "amplify_extended" folder
+
+TBD...
+
+Developers should add their...
+:::tip
+Visit the below links for more details on possible Auth settings:
+
+1. [Amazon Cognito documentation](https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html).
+2. [User pool attributes](https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-attributes.html).
+3. [Adding MFA to a user pool](https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-mfa.html).
+4. [Amplify Authentication Backend Concepts](https://docs.amplify.aws/nextjs/build-a-backend/auth/concepts/).
+   :::

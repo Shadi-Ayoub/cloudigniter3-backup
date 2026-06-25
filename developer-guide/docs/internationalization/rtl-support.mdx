@@ -1,0 +1,32 @@
+---
+title: RTL Support
+sidebar_position: 3
+---
+
+Cloudigniter auto-detects language direction and reflect that in all components and pages.
+
+```tsx {2-3,8} title='layout.tsx'
+export default async function RootLayout({ children }: PropsWithChildren) {
+  const locale = await i18n.getLocale();
+  const direction = await i18n.getLangDir(locale);
+
+  const themeConfig: ThemeProviderProps = { forcedTheme: undefined };
+
+  return (
+    <html lang={locale} dir={direction} suppressHydrationWarning>
+      <body className={`${inter.className}`}>
+        <CloudIgniterProvider
+          layout="standard"
+          themeProviderProps={themeConfig}
+        >
+          {children}
+        </CloudIgniterProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+:::tip
+You may need to pass the direction to your components in order to apply the Tailwindcss class utilities according to the selected language direction. Read more on this topic in the [next-intl](https://next-intl.dev/docs/usage/messages#right-to-left-languages) and [Tailwindcss](https://tailwindcss.com/docs/hover-focus-and-other-states#rtl-support) documentations.
+:::

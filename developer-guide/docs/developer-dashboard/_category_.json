@@ -1,0 +1,8 @@
+{
+  "label": "Developer Dashboard",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Describes the Developer Dashboard used during development phase."
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "label": "Server APIs",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "This section descripes CloudIgniter's APIs dedicated to Server."
+  }
+}

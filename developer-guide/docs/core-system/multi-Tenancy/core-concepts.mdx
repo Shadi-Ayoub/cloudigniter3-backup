@@ -1,0 +1,54 @@
+---
+title: Core Tenant Concepts
+sidebar_position: 3
+---
+
+# Core Tenant Concepts
+
+### Tenant Identity
+
+Each tenant is identified by a stable `tenantId`.
+
+Examples:
+
+```text
+school-abu-dhabi
+school-dubai
+sandbox-dev
+```
+
+The tenantId:
+
+- Is immutable once created
+- Is used in DynamoDB partition keys
+- Is propagated through backend and client contexts
+- Appears in logs, traces, and audit records
+
+### Tenant Status
+
+Tenants have a lifecycle state:
+
+| Status    | Description                                 |
+| --------- | ------------------------------------------- |
+| active    | Fully operational.                          |
+| suspended | Temporarily disabled (read-only or blocked) |
+| archived  | No longer active, preserved for audit       |
+
+Status is enforced at:
+
+- API boundaries
+- Permission checks
+- UI routing and guards
+
+---
+
+### Tenant Type
+
+Tenants may be classified by type to support platform logic. Examples:
+
+- `TENANT`
+- `SANDBOX`
+- `SYSTEM`
+- `SETTING`
+
+Type is **descriptive**, not authoritative, and should never replace permission checks.

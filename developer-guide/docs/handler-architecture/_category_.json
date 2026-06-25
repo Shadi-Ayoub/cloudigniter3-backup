@@ -1,0 +1,8 @@
+{
+  "label": "Handler Architecture",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Describs architecture of handlers and how to use the available helper in Cloudigniter."
+  }
+}

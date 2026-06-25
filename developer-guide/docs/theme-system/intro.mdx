@@ -1,0 +1,24 @@
+---
+title: Introduction
+sidebar_position: 1
+---
+
+import ImageWrapper from "../../src/components/ImageWrapper";
+import themeSystem from "../assets/images/theme-system.png";
+
+Cloudigniter application comes pre-configured to support customizable theme
+implementation for the three modes namely, `light`, `dark`, and `system`. The
+theme system consists of the `globals.css` file in your `app` folder and the
+`tailwind.config.ts` file in the root of your application. Those two files
+were integrated with the corresponding files of the system Kernel.
+
+:::info
+Cloudigniter adopts [Tailwind CSS](https://tailwindcss.com/) with Next.js for styling the application. For more informatiom, take a look at the following resources:
+
+- [next-themes](https://www.npmjs.com/package/next-themes)
+- [Shadcn UI Theming](https://ui.shadcn.com/docs/theming)
+- [Shadcn UI Dark Mode](https://ui.shadcn.com/docs/dark-mode/next)
+
+  :::
+
+<ImageWrapper imgUrl={themeSystem} caption="Cloudigniter Theme System" />

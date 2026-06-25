@@ -1,0 +1,60 @@
+---
+title: The Theme provider
+sidebar_position: 5
+---
+
+import ImageWrapper from "../../src/components/ImageWrapper";
+import htmlClass from "../assets/images/html-element-class.png";
+import suppressHydrationWarning from "../assets/images/suppress-hydration-warning.png";
+import themeProviderProps from "../assets/images/theme-provider-props.png";
+
+The `CloudigniterProvider` provider used in the root layout component of your application integrates with [next-themes](https://github.com/pacocoursey/next-themes) and its `ThemeProvider` in the backend. The `ThemeProvider` configurations are kept the default until you modify them if you need to.
+
+<ImageWrapper
+  imgUrl={themeProviderProps}
+  caption="Passing theme configurations to Cloudigniter Provider"
+/>
+
+:::info You will not be able to modify the `attribute` option in the configuration
+The Cloudigniter app uses a `class` to style the page based on the theme. Therefore, the `attribute` configuration of the `ThemeProvider` cannot be modified and it must be set to `class` at all times in order for the theme switching feature to work. With this, selecting the theme, say, "light" via the `Theme Switcher` will automatically set class="dark" in the \<html\> element.
+:::
+
+<ImageWrapper imgUrl={htmlClass} caption="Theme class in <html> element" />
+
+If you need to change any of the `ThemeProvider` configurations, you can pass your `ThemeProviderProps` object to the `CloudigniterProvider` component (see the example below). This object simply contains the next-themes `ThemeProvider` configurations. You can learn about the different configurations by exploring their [documentations](https://github.com/pacocoursey/next-themes).
+
+```tsx {1,4,6} title="Example: passing selected theme configurations"
+import { type ThemeProviderProps } from 'next-themes';
+import { CloudIgniterProvider } from '@cloudigniter/next';
+
+const themeConfig:ThemeProviderProps = {storageKey: 'my-app-theme', enableSystem: false, forcedTheme: dark};
+
+<CloudigniterProvider layout='standard' themeProviderProps={themeConfig} >
+    .....
+</CloudIgniterProvider>
+```
+
+To interact with the application theme in your code, use the `useTheme` hook. The example below shows how to retrieve the `forcedTheme` theme configuration as described in the `next-themes` [documentations](https://github.com/pacocoursey/next-themes)
+
+```tsx title="Example: getting the theme configurations"
+import { useTheme } from "next-themes";
+const { forcedTheme } = useTheme();
+
+// Theme is forced, we shouldn't allow user to change the theme
+const disabled = !!forcedTheme;
+```
+
+:::tip
+Adding `suppressHydrationWarning` to the \<html\> element in the root layout will help avoiding getting warnings because `next-themes` updates that element.
+:::
+
+<ImageWrapper
+  imgUrl={suppressHydrationWarning}
+  caption="suppresshydrationwarning option in <html> element"
+/>
+
+:::note
+The ThemeProvider is a client component and therefore, all page components in the system need to be client components as well since they are wrapped by it.
+:::
+
+If you're using the value prop to specify different attribute values, make sure your dark theme explicitly uses the "dark" value, as required by Tailwind ([read more](https://www.npmjs.com/package/next-themes#with-tailwindcss)).

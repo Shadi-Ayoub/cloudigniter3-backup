@@ -1,0 +1,200 @@
+---
+title: End-to-End Architecture
+sidebar_position: 3
+---
+
+import ImageWrapper from "../../src/components/ImageWrapper";
+import apiConcept from "../assets/images/api-concept.png";
+
+# End-to-End Architecture Overview
+
+_**A Unified, Orthodox Request → Server → Cloud → Response Model**_
+
+<ImageWrapper
+  imgUrl={apiConcept}
+  caption="CloudIgniter's Client-Server-Cloud Architecture"
+/>
+
+CloudIgniter enforces a clean, predictable, and strongly-typed end-to-end API strategy designed to remove ambiguity from full-stack development.
+Whether the request originates from a client page, a server component, or another internal system, every API call follows the same orthodoxy:
+
+> A single consistent data model (`Request<T>` in → `Response<U>` out), flowing predictably through Next.js, AppSync, Lambda, and back.
+
+This section summarizes the entire pipeline so developers understand exactly **how data travels through the system**, how errors are surfaced,
+and where validation, parsing, and normalization take place.
+
+## 📌 Client Layer
+
+The flow begins in the client (Next.js Page/Component). Prior to a call, the client constructs a typed `Request<T>`. Then, the client performs a
+standard call to a local Next.js route handler. The call is performed either by using `fetch()` or, **preferably**, by using the `call()` utility.
+For further details, refer to the section [Client Call Strategy](client-call-strategy.mdx).
+
+:::tip[Key guarantees at this layer]
+
+- Callers only interact with `Request<T>`.
+- No AWS knowledge (AppSync, Lambda, DynamoDB) is required.
+- All outgoing payloads are strongly typed and traceable.
+
+:::
+
+## 📌 Next.js Route Handler Layer
+
+The route handler receives the raw HTTP request. It then parses the HTTP request into a `Request<T>` before forwarding
+it to the `Server API Wrapper`. The Route Handler returns a JSON-serialized `Response` back to the client.
+For further details, refer to [Route Handler Strategy](route-handler-strategy.mdx).
+
+:::tip[Key guarantees at this layer]
+
+- No AppSync/Lambda details leak into Next.js routing.
+- Route handlers exclusively speak in terms of `Request<T>` and `Response<U>`.
+- Errors thrown by wrappers are normalized into `Response` objects.
+
+:::
+
+## 📌 Server API Wrapper Layer
+
+This layer (in CloudIgniter Kernel) is responsible for fully preparing and normalizing the request before it enters AWS.
+The utility `prepareApiRequest()` is used to normalize the request. Then it serializes the request to a single GraphQL-ready
+string (using `JSON.stringify()`)before calling AppSync via Amplify. Once the wrapper receives the graphql response it
+converts it to CloudIgniter `Response` via the utility `parseGraphqlResponse()` and then return the response to the client.
+For further details, refer to [Server API Wrapper Strategy](server-api-wrapper-strategy.mdx).
+
+:::tip[Key guarantees at this layer]
+
+- Every AppSync operation receives **exactly one string input** (`inputString`).
+- All requests to Lambda share a unified format.
+- Errors from AppSync are captured and normalized.
+- Lambda responses are parsed safely (string, object, array, primitive).
+
+:::
+
+## 📌 AWS AppSync Layer
+
+**AppSync** acts as a thin routing layer. It Receives the request as a string from the client (via the route handler and then
+the Server API Wrapper), and then passes it directly to the configured Lambda resolver. Eventualy, it returns either:
+
+- A normal GraphQL data envelope, or
+- A GraphQL error envelope.
+
+More about this layer in the section [AWS Appsync Layer](appsync.mdx).
+
+:::tip[Key guarantees at this layer]
+
+- AppSync carries no business logic in CloudIgniter.
+- All intelligence remains in Lambda + server wrappers.
+- The contract remains stable because AppSync only ever transports one input field.
+
+:::
+
+## 📌 Lambda Handler Layer
+
+Lambda receives the request via the `event` parameter and begins strict request validation (like validating the
+environment variables). It parses the request payload via the utility `safeParseRequest()` to validate:
+
+- Input type and structure
+- Input parameters
+- Environment consistency (envMode vs runtime)
+- Forbidden operations in "live"
+
+After validation, the handler calls the internal server logic (e.g. database operations) and returns a typed
+CloudIgniter `Response<T>` to **AppSync**. See the section [Lambda Handler Strategy](lambda-handler-strategy.mdx).
+
+:::tip[Key guarantees at this layer]
+
+- Lambda always returns a CloudIgniter `Response<T>` — not arbitrary shapes.
+- All Lambda output flows back through AppSync unchanged.
+- All errors (validation, environment mismatch, AWS errors) are normalized.
+
+:::
+
+## 📌 Returning Response to Client
+
+After **Lambda** returns the result, **AppSync** simply wraps it into a GraphQL envelope and returns it to the **Server API Wrapper**,
+which converts that envelope into a CloudIgniter `Response` via the utility `parseGraphqlResponse()` before returning it to
+the **Next.js Route Handler**. The handler forwards the `Response` to the **Client** as a `Response<T>` object to be processed.
+
+## 📌 End-to-End Developer Promise
+
+CloudIgniter guarantees:
+
+**1. Unified Structure**
+
+Every API call in CloudIgniter, regardless of target, always follows:
+
+```ts
+Request<T> → Response<U>
+```
+
+This uniformity eliminates:
+
+- Ad-hoc payloads
+- Unpredictable error shapes
+- Inconsistent parsing strategies
+
+**2. Single String Input to AWS**
+
+All AppSync mutations/queries receive:
+
+```ts
+{
+  inputString: string;
+}
+```
+
+This ensures:
+
+- No AppSync mapping templates
+- No schema/argument drift
+- Maximum flexibility for the backend contract
+
+**3. Full Type Safety**
+
+- Client creates typed Requests (`Request<T>`).
+- Lambda receives typed values (via safe parsing & guards).
+- Everything returns typed Responses (`Response<U>`).
+
+**4. Normalized Error Handling**
+
+Errors can originate from:
+
+- Client misuse
+- Route handler
+- Server wrapper
+- AppSync
+- Lambda
+- DynamoDB/Cognito SDK failures
+
+But all are eventually surfaced as:
+
+```sql
+Response<unknown> with statusCode ≠ 200
+```
+
+Unless a wrapper uses `{ critical: true }` to explicitly allow exceptions.
+
+**5. Cloud-Native, Environment-Safe Behavior**
+
+- `envMode` flows correctly from client → wrapper → Lambda.
+- Runtime restrictions (e.g., no seeding in `live`) prevent dangerous operations.
+
+## 🎯 Final Summary
+
+CloudIgniter's end-to-end API flow defines a disciplined architecture where:
+
+- Client code is simple and declarative.
+- Route handlers stay thin and infrastructure-agnostic.
+- Server wrappers provide normalization, safety, business logic, and AWS integration.
+- AppSync acts only as a transport.
+- Lambda contains the business logic and strict validation.
+- All layers speak the same language (`Request<T>` → `Response<U>`).
+
+This orthodoxy ensures:
+
+- Predictability
+- Strong typing
+- Debuggability
+- Environment safety
+- Reduced developer cognitive load
+- Lower long-term maintenance cost
+
+This architectural consistency is one of CloudIgniter's strongest advantages for teams building scalable, maintainable applications on AWS.

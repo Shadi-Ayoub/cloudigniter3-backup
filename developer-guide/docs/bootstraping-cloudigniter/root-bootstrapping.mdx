@@ -1,0 +1,55 @@
+---
+title: Root Bootstrapping
+sidebar_position: 4
+---
+
+# 3. Root Bootstrapping
+
+Before any layout renders, CloudIgniter's 'bootstrap('root')' (server) collects system-wide configuration
+(i18n, theme, Amplify outputs, etc.). The root layout then:
+
+- sets `<html lang>` and text direction (ltr/rtl) using the resolved locale,
+- mounts a root provider that supplies locale + messages to the entire app,
+- ensures global CSS is loaded in the intended order.
+
+```ts title="src/app/layout.tsx" showLineNumbers
+import { type PropsWithChildren } from "react";
+import { Inter } from "next/font/google";
+
+import { CloudIgniterRootWrapper } from "@cloudigniter/next/provider/server";
+import { getLangDir } from "@cloudigniter/next/utility";
+
+import { bootstrap } from "@/kernel/server";
+import Kernel from "@/kernel";
+
+import "./globals.css"; // Always after importing Kernel
+
+const inter = Inter({ subsets: ["latin"] });
+
+export default async function rootLayout({ children }: PropsWithChildren) {
+  const setup = await bootstrap("root");
+  const locale = setup.rootConfig?.locale ?? "en";
+  const direction = getLangDir(locale);
+
+  return (
+    <html lang={locale} dir={direction} suppressHydrationWarning>
+      <body className={`ci-body ${inter.className}`}>
+        <CloudIgniterRootWrapper config={setup.rootConfig!}>
+          <Kernel />
+          {children}
+        </CloudIgniterRootWrapper>
+      </body>
+    </html>
+  );
+}
+```
+
+:::note
+In Next.js, the `suppressHydrationWarning` prop is a React feature used to silence hydration mismatch warnings.
+Hydration warnings occur when the server-rendered HTML differs from the client-rendered version, which can happen
+in various scenarios, including theme implementation.
+:::
+
+:::note
+The root `layout.tsx` and its `CloudIgniterRootWrapper` server component wire the root pieces: i18n context, theme defaults, and baseline styles.
+:::

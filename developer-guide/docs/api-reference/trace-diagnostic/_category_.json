@@ -1,0 +1,8 @@
+{
+  "label": "Trace & Diagnostics",
+  "position": 7,
+  "link": {
+    "type": "generated-index",
+    "description": "This section descripes CloudIgniter's functions & utilities used for tracing and diagnostic purposes."
+  }
+}

@@ -1,0 +1,180 @@
+---
+title: The Registry
+---
+
+# The Registry
+
+`@cloudigniter/next` provides a typed settings registry system that lets you declare, validate, and scope
+application settings at boot time. Settings are grouped into `namespaces`, each with a `scope`, `defaults`,
+and a `Zod schema` for validation.
+
+## Concepts
+
+| Term          | Description                                                    |
+| ------------- | -------------------------------------------------------------- |
+| **Registry**  | The central store of all settings namespaces                   |
+| **Namespace** | A named group of settings (e.g. `notifications`, `corePublic`) |
+| **Scope**     | Controls visibility — `public`, `private`, or `user`           |
+| **Schema**    | A Zod schema that validates the shape of the settings          |
+| **Defaults**  | Fallback values used when no override is provided              |
+
+## Step-by-Step Setup
+
+1. **Define a custom settings schema**
+
+   Use `zod` to define the shape of your settings group:
+
+   ```ts
+   import { z } from "zod";
+
+   const NotificationsSettingsSchema = z.object({
+     email: z.boolean(),
+     push: z.boolean(),
+   });
+   ```
+
+2. **Augment the CiSettingsRegistryMap type**
+   This extends the global type map so your custom namespace is fully typed throughout the app:
+
+   ```ts
+   declare module "@cloudigniter/next/types" {
+     interface CiSettingsRegistryMap {
+       notifications: {
+         defaults: z.infer<typeof NotificationsSettingsSchema>;
+         schema: typeof NotificationsSettingsSchema;
+       };
+     }
+   }
+   ```
+
+   :::tip Important
+   Do this once per custom namespace, typically in the same file where you define the schema.
+   :::
+
+3. **Build the settings registry**
+   Create a dedicated function that constructs and returns the fully populated registry. Call this once at application boot:
+
+   ```ts title="src/custom/settings/ci-settings-registry.ts"
+   import {
+     ciCreateSettingsRegistry,
+     ciDefaultPrivateCoreSettings,
+     ciDefaultPublicCoreSettings,
+     ciDefaultUserCoreSettings,
+     ciRegisterSettings,
+   } from "@cloudigniter/next/server";
+   import {
+     CiPrivateCoreSettingsSchema,
+     CiPublicCoreSettingsSchema,
+     CiUserCoreSettingsSchema,
+   } from "@cloudigniter/next/schemata";
+   import {
+     CI_DEFAULT_PRIVATE_CORE_SETTINGS_ID,
+     CI_DEFAULT_PUBLIC_CORE_SETTINGS_ID,
+     CI_DEFAULT_USER_CORE_SETTINGS_ID,
+   } from "@cloudigniter/next/constants";
+   import type { CiSettingsRegistry } from "@cloudigniter/next/types";
+
+   export function ciBuildSettingsRegistry(): CiSettingsRegistry {
+     const registry = ciCreateSettingsRegistry();
+
+     // Register built-in core settings
+     ciRegisterSettings(registry, CI_DEFAULT_PUBLIC_CORE_SETTINGS_ID, {
+       scope: "public",
+       defaults: ciDefaultPublicCoreSettings,
+       schema: CiPublicCoreSettingsSchema,
+     });
+
+     ciRegisterSettings(registry, CI_DEFAULT_PRIVATE_CORE_SETTINGS_ID, {
+       scope: "private",
+       defaults: ciDefaultPrivateCoreSettings,
+       schema: CiPrivateCoreSettingsSchema,
+     });
+
+     ciRegisterSettings(registry, CI_DEFAULT_USER_CORE_SETTINGS_ID, {
+       scope: "user",
+       defaults: ciDefaultUserCoreSettings,
+       schema: CiUserCoreSettingsSchema,
+     });
+
+     // Register your custom settings
+     ciRegisterSettings(registry, "notifications", {
+       scope: "user",
+       defaults: {
+         email: true,
+         push: false,
+       },
+       schema: NotificationsSettingsSchema,
+     });
+
+     return registry;
+   }
+   ```
+
+## Scopes Reference
+
+| Scope     | Description                                                          |
+| --------- | -------------------------------------------------------------------- |
+| `public`  | Accessible on both client and server. Safe for non-sensitive config. |
+| `private` | Server-only. Use for secrets, API keys, internal config.             |
+| `user`    | Per-user settings. Stored and resolved in a user context.            |
+
+## Adding a New Custom Namespace
+
+Follow this checklist whenever you add a new settings group:
+
+1. **Define the Zod schema** for your settings shape
+2. **Augment `CiSettingsRegistryMap`** with the namespace key, `defaults` type, and `schema` type
+3. **Call `ciRegisterSettings()`** inside your `ciBuildSettingsRegistry()` function, passing the registry,
+   namespace key, scope, defaults, and schema
+
+```ts
+// 1. Schema
+const ThemeSettingsSchema = z.object({
+  darkMode: z.boolean(),
+  accentColor: z.string(),
+});
+
+// 2. Type augmentation
+declare module "@cloudigniter/next/types" {
+  interface CiSettingsRegistryMap {
+    theme: {
+      defaults: z.infer<typeof ThemeSettingsSchema>;
+      schema: typeof ThemeSettingsSchema;
+    };
+  }
+}
+
+// 3. Registration (inside ciBuildSettingsRegistry)
+ciRegisterSettings(registry, "theme", {
+  scope: "user",
+  defaults: { darkMode: false, accentColor: "#0070f3" },
+  schema: ThemeSettingsSchema,
+});
+```
+
+## Boot Integration
+
+Call `ciBuildSettingsRegistry()` once during application startup. This happens inside `getSettings()` function
+called by the application `Bootstrap`:
+
+```ts
+import { ciBuildSettingsRegistry } from "@/custom/settings/ci-settings-registry";
+
+export async function getSettings() {
+  ...
+  const registry = ciBuildSettingsRegistry();
+  ...
+}
+```
+
+## Key Rules
+
+- **Register all namespaces before the app handles requests** — the registry is built once at boot and should be
+  treated as immutable after that.
+- **Never skip type augmentation** — without it, TypeScript won't recognise your custom namespace and you'll lose
+  type safety.
+- **Defaults must satisfy the schema** — if they don't, runtime validation will fail.
+- **Core settings** should always be registered using the ids (`CI_DEFAULT_PUBLIC_CORE_SETTINGS_ID`,
+  `CI_DEFAULT_PRIVATE_CORE_SETTINGS_ID`, `CI_DEFAULT_USER_CORE_SETTINGS_ID`), their defaults (`ciDefaultPublicCoreSettings`,
+  `ciDefaultPrivateCoreSettings`, `ciDefaultUserCoreSettings`) and schemas (`CiPublicCoreSettingsSchema`, `CiPrivateCoreSettingsSchema`,
+  `CiUserCoreSettingsSchema`) provided by CloudIgniter.

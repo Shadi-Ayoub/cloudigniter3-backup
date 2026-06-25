@@ -1,20 +1,38 @@
 "use client";
 
+import type { ReactNode } from "react";
+
 import type { CiDevBeaconSectionStatusProps } from "@cloudigniter/core/types";
 
 export function CiDevBeaconSectionStatus({
   tenant,
 }: CiDevBeaconSectionStatusProps) {
-  // Placeholder values for now; wire these to your real sources (store/config/tenant resolver) as needed.
-  // const tenant = {
-  //   name: 'Default CiTenant',
-  //   slug: 'default',
-  //   status: 'active',
-  // };
   const inferredTenantInfo = tenant ?? {
     source: "headers" as const,
     scope: "system" as const,
   };
+
+  const forwardedHeaderEntries = Object.entries(
+    inferredTenantInfo.forwardedHeaders ?? {},
+  ).sort(([left], [right]) => left.localeCompare(right));
+
+  const forwardedCookieEntries = Object.entries(
+    inferredTenantInfo.forwardedCookies ?? {},
+  ).sort(([left], [right]) => left.localeCompare(right));
+
+  const tenantDisplayValue =
+    inferredTenantInfo.name ??
+    inferredTenantInfo.slug ??
+    inferredTenantInfo.id ??
+    "—";
+
+  const hasDistinctTenantId =
+    Boolean(inferredTenantInfo.id) &&
+    inferredTenantInfo.id !== inferredTenantInfo.slug;
+
+  const hasDistinctTenantSlug =
+    Boolean(inferredTenantInfo.slug) &&
+    inferredTenantInfo.slug !== inferredTenantInfo.id;
 
   const language = {
     locale: "en",
@@ -22,95 +40,262 @@ export function CiDevBeaconSectionStatus({
   };
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Status</h3>
+    <div className="space-y-6">
+      <header className="flex flex-col gap-1 border-b pb-4">
+        <h3 className="text-lg font-semibold">Status</h3>
 
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-        {/* Box 1: System Status */}
-        <div className="rounded-lg border p-3">
-          <div className="mb-2 text-sm font-medium">System Status</div>
-          <ul className="space-y-2 text-sm">
-            <li className="flex items-center justify-between gap-3">
-              <span className="text-muted-foreground">Next.js Runtime</span>
-              <span className="bg-muted rounded px-2 py-0.5">App Router</span>
-            </li>
-            <li className="flex items-center justify-between gap-3">
-              <span className="text-muted-foreground">Amplify Auth</span>
-              <span className="rounded bg-emerald-500/10 px-2 py-0.5 text-emerald-700">
-                OK
-              </span>
-            </li>
-            <li className="flex items-center justify-between gap-3">
-              <span className="text-muted-foreground">Data Schema</span>
-              <span className="rounded bg-amber-500/10 px-2 py-0.5 text-amber-700">
-                Check
-              </span>
-            </li>
-          </ul>
+        <p className="text-sm text-muted-foreground">
+          Runtime, resolved routing context, request headers, and cookies.
+        </p>
+      </header>
+
+      <section aria-label="Operational overview">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <h4 className="text-sm font-semibold">Overview</h4>
+
+          <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+            Source: {inferredTenantInfo.source}
+          </span>
         </div>
 
-        {/* Box 2: Inferred CiTenant */}
-        <div className="rounded-lg border p-3">
-          <div className="mb-2 text-sm font-medium">Inferred CiTenant</div>
-          <ul className="space-y-2 text-sm">
-            <li className="flex items-center justify-between gap-3">
-              <span className="text-muted-foreground">Name</span>
-              <span className="truncate">{inferredTenantInfo.name ?? "—"}</span>
-            </li>
-            <li className="flex items-center justify-between gap-3">
-              <span className="text-muted-foreground">Scope</span>
-              <span className="bg-muted rounded px-2 py-0.5 font-mono text-xs">
-                {inferredTenantInfo.scope ?? "—"}
-              </span>
-            </li>
-            <li className="flex items-center justify-between gap-3">
-              <span className="text-muted-foreground">Slug</span>
-              <span className="bg-muted rounded px-2 py-0.5 font-mono text-xs">
-                {inferredTenantInfo.slug ?? "—"}
-              </span>
-            </li>
-            <li className="flex items-center justify-between gap-3">
-              <span className="text-muted-foreground">Id</span>
-              <span className="bg-muted rounded px-2 py-0.5 font-mono text-xs">
-                {inferredTenantInfo.id ?? "—"}
-              </span>
-            </li>
-            <li className="flex items-center justify-between gap-3">
-              <span className="text-muted-foreground">Status</span>
-              <span className="bg-muted rounded px-2 py-0.5">
-                {inferredTenantInfo.status ?? "—"}
-              </span>
-            </li>
-          </ul>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+          <CiDevBeaconStatusCard title="System Status">
+            <CiDevBeaconStatusRow label="Next.js Runtime" value="App Router" />
 
-          <p className="text-muted-foreground mt-2 text-xs">
-            Source: <code>{inferredTenantInfo.source}</code> (middleware
-            headers)
+            <CiDevBeaconStatusRow
+              label="Amplify Auth"
+              value="OK"
+              valueClassName="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+            />
+
+            <CiDevBeaconStatusRow
+              label="Data Schema"
+              value="Check"
+              valueClassName="bg-amber-500/10 text-amber-700 dark:text-amber-400"
+            />
+          </CiDevBeaconStatusCard>
+
+          <CiDevBeaconStatusCard title="Tenant & Routing Context">
+            <CiDevBeaconStatusRow
+              label="Tenant"
+              value={tenantDisplayValue}
+              mono={!inferredTenantInfo.name}
+            />
+
+            <CiDevBeaconStatusRow
+              label="Scope"
+              value={inferredTenantInfo.scope}
+            />
+
+            <CiDevBeaconStatusRow
+              label="Mode"
+              value={inferredTenantInfo.mode ?? "—"}
+              mono
+            />
+
+            <CiDevBeaconStatusRow
+              label="Status"
+              value={inferredTenantInfo.status ?? "—"}
+            />
+
+            {hasDistinctTenantSlug ? (
+              <CiDevBeaconStatusRow
+                label="Route Slug"
+                value={inferredTenantInfo.slug ?? "—"}
+                mono
+              />
+            ) : null}
+
+            {hasDistinctTenantId ? (
+              <CiDevBeaconStatusRow
+                label="Tenant ID"
+                value={inferredTenantInfo.id ?? "—"}
+                mono
+              />
+            ) : null}
+
+            <div className="my-3 border-t" />
+
+            <CiDevBeaconStatusRow
+              label="Org Unit"
+              value={inferredTenantInfo.orgUnitPath ?? "—"}
+              mono
+              allowWrap
+            />
+
+            <CiDevBeaconStatusRow
+              label="Feature Route"
+              value={inferredTenantInfo.featurePathname ?? "—"}
+              mono
+              allowWrap
+            />
+
+            <p className="mt-3 text-xs leading-5 text-muted-foreground">
+              Resolved by proxy and forwarded to the current request.
+            </p>
+          </CiDevBeaconStatusCard>
+
+          <CiDevBeaconStatusCard title="Language">
+            <CiDevBeaconStatusRow label="Locale" value={language.locale} mono />
+
+            <CiDevBeaconStatusRow label="Direction" value={language.dir} mono />
+
+            <p className="mt-3 text-xs leading-5 text-muted-foreground">
+              Source: i18n provider and CloudIgniter configuration.
+            </p>
+          </CiDevBeaconStatusCard>
+        </div>
+      </section>
+
+      <section aria-label="Request diagnostics">
+        <div className="mb-3">
+          <h4 className="text-sm font-semibold">Request Diagnostics</h4>
+
+          <p className="mt-1 text-xs text-muted-foreground">
+            Values visible to the current Server Component request.
           </p>
         </div>
 
-        {/* Box 3: Language */}
-        <div className="rounded-lg border p-3">
-          <div className="mb-2 text-sm font-medium">Language</div>
-          <ul className="space-y-2 text-sm">
-            <li className="flex items-center justify-between gap-3">
-              <span className="text-muted-foreground">Locale</span>
-              <span className="bg-muted rounded px-2 py-0.5 font-mono text-xs">
-                {language.locale}
-              </span>
-            </li>
-            <li className="flex items-center justify-between gap-3">
-              <span className="text-muted-foreground">Direction</span>
-              <span className="bg-muted rounded px-2 py-0.5 font-mono text-xs">
-                {language.dir}
-              </span>
-            </li>
-          </ul>
-          <p className="text-muted-foreground mt-2 text-xs">
-            Source: i18n provider / CI config.
-          </p>
+        <div className="grid gap-4 xl:grid-cols-2">
+          <CiDevBeaconDiagnosticsBox
+            title="Forwarded Request Headers"
+            description={
+              <>
+                Includes only <code>x-ci-*</code> and <code>x-app-*</code>{" "}
+                headers.
+              </>
+            }
+            entries={forwardedHeaderEntries}
+            emptyMessage={
+              <>
+                No <code>x-ci-*</code> or <code>x-app-*</code> headers were
+                received.
+              </>
+            }
+          />
+
+          <CiDevBeaconDiagnosticsBox
+            title="Request Cookies"
+            description={
+              <>
+                Includes only <code>ci-*</code> and <code>app-*</code> cookies.
+              </>
+            }
+            entries={forwardedCookieEntries}
+            emptyMessage={
+              <>
+                No <code>ci-*</code> or <code>app-*</code> cookies were
+                received.
+              </>
+            }
+          />
         </div>
-      </div>
+      </section>
     </div>
+  );
+}
+
+function CiDevBeaconStatusCard({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="rounded-lg border bg-card p-4 shadow-sm">
+      <h4 className="mb-3 text-sm font-semibold">{title}</h4>
+
+      <div className="space-y-2">{children}</div>
+    </section>
+  );
+}
+
+function CiDevBeaconStatusRow({
+  label,
+  value,
+  mono = false,
+  allowWrap = false,
+  valueClassName,
+}: {
+  label: string;
+  value: string;
+  mono?: boolean;
+  allowWrap?: boolean;
+  valueClassName?: string;
+}) {
+  return (
+    <div className="flex items-start justify-between gap-3 text-sm">
+      <span className="shrink-0 text-muted-foreground">{label}</span>
+
+      <span
+        className={[
+          "max-w-[65%] rounded px-2 py-0.5 text-right text-xs",
+          mono ? "bg-muted font-mono" : "bg-muted/70",
+          allowWrap ? "break-all" : "truncate",
+          valueClassName ?? "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+        title={value}
+      >
+        {value}
+      </span>
+    </div>
+  );
+}
+
+function CiDevBeaconDiagnosticsBox({
+  title,
+  description,
+  entries,
+  emptyMessage,
+}: {
+  title: string;
+  description: ReactNode;
+  entries: Array<[string, string]>;
+  emptyMessage: ReactNode;
+}) {
+  return (
+    <section className="overflow-hidden rounded-lg border bg-card shadow-sm">
+      <header className="flex items-start justify-between gap-3 border-b bg-muted/25 px-4 py-3">
+        <div>
+          <h5 className="text-sm font-semibold">{title}</h5>
+
+          <p className="mt-1 text-xs leading-5 text-muted-foreground">
+            {description}
+          </p>
+        </div>
+
+        <span className="shrink-0 rounded-full bg-background px-2 py-0.5 text-xs text-muted-foreground ring-1 ring-border">
+          {entries.length}
+        </span>
+      </header>
+
+      {entries.length > 0 ? (
+        <div className="max-h-80 overflow-auto">
+          <dl className="divide-y">
+            {entries.map(([name, value]) => (
+              <div
+                key={name}
+                className="grid grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-4 px-4 py-3"
+              >
+                <dt className="break-all font-mono text-xs text-muted-foreground">
+                  {name}
+                </dt>
+
+                <dd className="break-all text-right font-mono text-xs text-foreground">
+                  {value || "—"}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      ) : (
+        <div className="px-4 py-8 text-center text-sm text-muted-foreground">
+          {emptyMessage}
+        </div>
+      )}
+    </section>
   );
 }

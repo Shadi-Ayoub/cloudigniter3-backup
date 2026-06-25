@@ -1,0 +1,22 @@
+---
+title: Introduction
+sidebar_position: 1
+---
+
+Internationalization (i18n) is an essential part of the user experience, therefore Cloudigniter brings you this feature out of the box. Your application is configured to support multiple languages in the simplest way possible.
+
+Nothing needs to be configured by you except for the list of locales supported by your application and the default language, as will be discussed later. The library that was adopted to implement this feature is [next-intl](https://next-intl.dev/) for its simplicity, community support, and compatibility with Next.js App Router.
+
+```js {2,4,6} title="next.config.mjs"
+/** @type {import('next').NextConfig} */
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin("./src/kernel/i18n/request.ts");
+const nextConfig = {};
+
+export default withNextIntl(nextConfig);
+```
+
+:::tip
+Cloudigniter adopted the "Without i18n routing" implementation approach to exclude the `locale` from the URL. This configuration would be more convenient for applications that only support a single language. Read about how the configuration was done [here](https://next-intl.dev/docs/getting-started/app-router/without-i18n-routing).
+:::

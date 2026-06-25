@@ -1,0 +1,20 @@
+---
+title: Testing Goals
+sidebar_position: 2
+---
+
+# Testing Goals
+
+CloudIgniter's testing strategy is built around the following goals:
+
+- ✅ Completely isolate test data from live data
+- ✅ Support rich automated integration tests (Cypress / Playwright / etc.)
+- ✅ Allow easy seeding of realistic mock tenants / roles / OUs / settings
+- ✅ Provide reliable cleanup/reset utilities
+- ✅ Prevent accidental interaction with real tenants, users, roles, etc.
+- ✅ Require minimal special-case code in the application itself
+
+Testing must **never** interfere with:
+
+- Real live data
+- Real authentication flows

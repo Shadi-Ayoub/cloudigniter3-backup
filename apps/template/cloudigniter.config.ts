@@ -81,12 +81,14 @@ export default {
     modeHeaderName: "x-ci-tenant-mode", // "slug" | "subdomain"
     scopeHeaderName: "x-ci-tenant-scope", // 'system' | 'global' | 'tenant'
     statusHeaderName: "x-ci-tenant-status", // 'active' | 'suspended' | 'archived'
+    featurePathnameHeaderName: "x-ci-feature-pathname",
 
     // Cookies names used by middleware and server components
     idCookieName: "ci-tenant-id",
     modeCookieName: "ci-tenant-mode", // "slug" | "subdomain"
     scopeCookieName: "ci-tenant-scope", // 'system' | 'global' | 'tenant'
     statusCookieName: "ci-tenant-status", // 'active' | 'suspended' | 'archived'
+    featurePathnameCookieName: "ci-feature-pathname",
 
     // Persist resolved tenant in a cookie (useful for server components / RSC)
     writeTenantCookie: true,
@@ -136,6 +138,29 @@ export default {
      * - redirect: change URL in browser
      */
     infoPageStrategy: "rewrite",
+
+    orgUnit: {
+      enabled: true,
+
+      idHeaderName: "x-ci-org-unit-id",
+      slugHeaderName: "x-ci-org-unit-slug",
+      pathHeaderName: "x-ci-org-unit-path",
+      statusHeaderName: "x-ci-org-unit-status",
+
+      idCookieName: "ci-org-unit-id",
+      slugCookieName: "ci-org-unit-slug",
+      pathCookieName: "ci-org-unit-path",
+      statusCookieName: "ci-org-unit-status",
+
+      writeOrgUnitCookie: true,
+
+      lookupPath: "/ci-internal/org-unit-lookup",
+      enforceStatus: true,
+
+      suspendedPath: "/org-unit/suspended",
+
+      maxDepth: 5,
+    },
   },
   routes,
   dev: {

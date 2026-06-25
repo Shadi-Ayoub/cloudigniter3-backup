@@ -1,12 +1,13 @@
 import { type ReactNode } from "react";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
-
-import { ciStartTraceServer } from "../../../server";
-import { type CiCoreConfig } from "@cloudigniter/core/types";
+import { CI_DEV_BEACON_LOGO } from "@cloudigniter/core/lib";
+import { CiDevBeacon } from "@ci-next/ui/server";
+import { ciStartTraceServer } from "@ci-next/server";
+import { type CiNextPageConfig } from "@ci-next/types";
 
 interface CiNextRootWrapperInterface {
-  config: CiCoreConfig;
+  config: CiNextPageConfig;
   children: ReactNode;
 }
 
@@ -20,7 +21,7 @@ export async function CiNextRootWrapper({
 }: CiNextRootWrapperInterface) {
   /////////////////////////////////////////////////////////////////////////////////////////Initiate Log trace
   const { logger, done } = ciStartTraceServer(
-    config.dev.traceLog, // your config object (must include enabled: true to activate)
+    config.ciConfig.dev.traceLog, // your config object (must include enabled: true to activate)
     { source: "server", prettyWave: true }, // per-call overrides
     { name: "CloudIgniterRootWrapper" }, // optional timer name + base fields
   );
@@ -45,6 +46,24 @@ export async function CiNextRootWrapper({
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
+      <CiDevBeacon
+        appPageConfig={config}
+        dir="ltr"
+        position="bottom-right"
+        visibleWhenEnv="development"
+        defaultTab="status"
+        // Plain logo spec (client will render next/image)
+        logo={CI_DEV_BEACON_LOGO}
+        // Plain tab specs (client will build tabs and render client components)
+        extraTabSpecs={[
+          {
+            kind: "trace-log-text",
+            props: { endpoint: "/ci-internal/trace", pollMs: 9000 },
+          },
+        ]}
+        viewportTopOffset="120px"
+        viewportBottomOffset="0px"
+      />
       {children}
     </NextIntlClientProvider>
   );

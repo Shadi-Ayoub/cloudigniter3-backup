@@ -1,0 +1,8 @@
+{
+  "label": "Cloudigniter Library",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Describes the available methods for developers."
+  }
+}

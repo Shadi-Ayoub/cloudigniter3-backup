@@ -1,0 +1,100 @@
+---
+title: Introduction
+sidebar_position: 1
+---
+
+import ImageWrapper from "../../src/components/ImageWrapper";
+import apiSendReceive from "../assets/images/api-send-receive.png";
+
+# CloudIgniter API Send/Receive
+
+This document defines the **developer contract** for interacting with the CloudIgniter API. It outlines how requests must be sent, how handlers should process them, and how clients must unwrap responses. Adhering to this contract ensures consistency, predictable error handling, and type safety across the platform.
+
+<ImageWrapper
+  imgUrl={apiSendReceive}
+  caption="API call model in CloudIgniter"
+/>
+
+---
+
+## 1. API Calls on Server
+
+CloudIgniter uses the **AWS Amplify server client** to perform API calls from the server. The client is created out-of-the box for the developer who can re-used throughout the application. The client can be imported using the below line:
+
+```ts
+import { client } from "@/kernel/api/server";
+```
+
+Below is the code of the client implementation for your reference:
+
+```ts title="kernel/api/server/client.ts" showLineNumbers
+import { cookies } from "next/headers";
+import { generateServerClientUsingCookies } from "@aws-amplify/adapter-nextjs/api";
+
+import type { CloudIgniterAmplifyOutputs } from "@cloudigniter/next/types";
+
+import outputs from "@/../amplify_outputs.json";
+import type { Schema } from "@/../amplify/data/resource";
+
+const config = outputs as CloudIgniterAmplifyOutputs;
+
+function getClient() {
+  const client = generateServerClientUsingCookies<Schema>({
+    config,
+    cookies,
+  });
+
+  return client;
+}
+
+const client = getClient();
+
+export { client };
+```
+
+This client is used to call **queries**, **mutations**, or **model CRUD operations**. Below is an example usage:
+
+```ts {11,23,25-27,29} title="kernel/api/server/system/getSettings.ts" showLineNumbers
+import { cache } from "react";
+
+import type {
+  GetSettingsHandlerInterface,
+  GraphQLResponse,
+  Settings,
+} from "@cloudigniter/next/types";
+import { getErrorMessage } from "@cloudigniter/next/utility";
+import { unwrapSettings } from "@cloudigniter/next/server";
+
+import { client } from "@/kernel/api/server";
+
+import ciConfig from "@/../cloudigniter.config";
+import { extendedSettingsDefaultValues } from "@/custom/settings";
+
+export const getSettings = cache(async () => {
+  try {
+    const getSettingsinput: GetSettingsHandlerInterface = {
+      extendedSettingsDefaultValues,
+      DynamoDbClientConfig: ciConfig.dynamodb.client,
+    };
+
+    const inputString = JSON.stringify(getSettingsinput);
+
+    const apiResponse: GraphQLResponse = await client.queries.getSettings({
+      inputString,
+    });
+
+    const settings = unwrapSettings(apiResponse) as Settings;
+
+    return settings;
+  } catch (error: unknown) {
+    throw new Error(
+      JSON.stringify({
+        title: "Settings fetch failed",
+        message: `Failed to get the settings! ${getErrorMessage(error)}`,
+        severity: "critical",
+        showRetry: true,
+      })
+    );
+  }
+});
+```

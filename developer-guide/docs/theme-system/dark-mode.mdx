@@ -1,0 +1,22 @@
+---
+title: Dark Mode
+sidebar_position: 4
+---
+
+We realize that `dark mode` is now a first-class feature of modern web applications. It’s becoming more and more common to design a dark version of your website to go along with the default design. Cloudigniter application supports the dark theme mode out of the box. This was possible via the Tailwind `dark` variant.
+
+:::tip
+You can read about Tailwindcss dark mode [here](https://tailwindcss.com/docs/dark-mode). Also, consider the below resources as they are part of the application theme system implementation:
+
+1. [next-themes](https://www.npmjs.com/package/next-themes)
+2. [Shadcn Dark Mode](https://ui.shadcn.com/docs/dark-mode/next)
+   :::
+
+Please note that the dark mode property in **tailwind.config.js** is set to `selector` to enable the support for **Dark Mode** in Tailwindcss. This setting should not be changed:
+
+```ts title="tailwind.config.js"
+module.exports = {
+  darkMode: 'selector'
+  ...
+};
+```

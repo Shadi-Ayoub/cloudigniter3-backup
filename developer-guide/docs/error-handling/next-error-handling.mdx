@@ -1,0 +1,76 @@
+---
+title: Next.js Error Handling
+sidebar_position: 1
+---
+
+# Next.js Error Handling
+
+**How Next.js error handling maps to React Error Boundaries (Server vs. Client Components)?**
+
+Next.js' `error.tsx` / `global-error.tsx` implement **React Error Boundaries**. They interact with **both** Server and Client Components, with these nuances:
+
+- **Boundary files are Client Components**
+
+- `error.tsx` & `global-error.tsx` must include `'use client'`. This allows interactive UI and calling the provided
+  `reset()` function.
+
+  - Although they’re Client Components, they receive errors originating from **Server Components** as well as **Client Components** that render within their segment.
+
+- **What they catch (by component type)**
+
+  - **Server Components:** Errors during **rendering/streaming** of the server component subtree in that route segment, including most data-fetching that occurs during render and uncaught Server Action throws.
+  - **Client Components:** Errors thrown during **render** of the subtree (e.g., throwing in the render path).
+
+- **What they don’t catch**
+  - **Client event handlers** (`onClick`, `onChange`, etc.) and **detached async work** (`setTimeout`, background promises). Handle these with `try/catch` and report via `useErrorStore`.
+  - **Route Handlers / API routes** (e.g., `app/api/*/route.ts`) and middleware—these run outside the boundary tree.
+  - **404s** (use `not-found.tsx`) and **redirects** (handled by Next.js).
+
+:::tip
+Read more:
+
+- Next.js <a
+  href="https://nextjs.org/docs/app/getting-started/error-handling"
+  target="\_blank">Error Handling</a>
+- Next.js <a
+  href="https://nextjs.org/docs/app/api-reference/file-conventions/error"
+  target="\_blank">error.tsx / global-error.tsx</a> files.
+- React <a href="https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary" target="_blank">Error Boundary</a>
+  :::
+
+### Scope & isolation (segment boundaries)
+
+- Add an `error.tsx` **inside a route folder** to isolate failures to that segment. A crash in `/cp/dev` won’t take down `/` if the boundary is scoped correctly.
+- Use `app/global-error.tsx` to catch unhandled errors that escape segment boundaries.
+
+### Recovery via `reset()`
+
+`error.tsx` receives `{ error, reset }`. Calling `reset()` asks React to **retry rendering** the subtree—useful after transient failures (e.g., flaky network, stale cache). Typical steps:
+
+1. **Log/telemetry** the error (e.g., Sentry) in an effect.
+2. Optionally **clear/invalidate** any caches or state that might be causing the failure.
+3. Provide a **“Try again”** button wired to `reset()`.
+
+**Minimal pattern:**
+
+```tsx
+"use client";
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  // Example: send to your telemetry
+  // useEffect(() => log(error), [error]);
+
+  return (
+    <div>
+      <h2>Something went wrong</h2>
+      <button onClick={() => reset()}>Try again</button>
+    </div>
+  );
+}
+```

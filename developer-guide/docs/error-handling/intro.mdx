@@ -1,0 +1,20 @@
+---
+title: Introduction
+sidebar_position: 1
+---
+
+CloudIgniter provides a **two-layer error handling model**:
+
+1. **Server-side errors** — caught by Next.js `app/error.tsx` (or route-scoped `error.tsx`) and rendered using the shared `<ErrorPage />` component.
+2. **Client-side errors** — tracked centrally in the CloudIgniter core via a store (`useErrorStore`) and displayed with the `<ErrorHandler />` component as notifications, dialogs, or critical backdrops.
+
+This separation ensures:
+
+- **Predictable UX** for global app crashes and loader failures (server-side).
+- **Flexible UX** for recoverable issues, sticky warnings, and interactive client notifications (client-side).
+
+:::warning
+
+Talk about the `normalizeError()` utility.
+
+:::

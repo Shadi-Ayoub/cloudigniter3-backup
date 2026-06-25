@@ -1,0 +1,413 @@
+---
+title: TypeScript Types for Tenants
+sidebar_position: 10
+---
+
+# TypeScript Types for Tenants
+
+CloudIgniter exposes tenant data in **three shapes**, each optimized for a specific layer of the application:
+
+1. `Tenant` — the canonical, high-level domain model used across CloudIgniter UI and server utilities.
+2. `TenantDdbTableItem` — the raw DynamoDB item shape as stored in the `System` table.
+3. `TenantHtmlTableRow` — a UI-oriented, flattened model for presenting tenants in tables (and other list views).
+
+To keep these consistent, CloudIgniter defines a shared base type and then extends it into each specialization.
+
+## Why three types exist
+
+CloudIgniter intentionally separates tenant representations to keep concerns clean:
+
+- DynamoDB items contain storage-specific keys (`PK`, `SK`) and nested data blobs.
+- Domain types should be developer-friendly and stable across persistence changes.
+- UI table rows should be flattened, strongly typed for rendering, and may include computed/aggregated
+  fields (e.g., user counts) not stored in the tenant record itself.
+
+This separation prevents common issues such as:
+
+- leaking persistence keys into UI code
+- over-fetching data for simple views
+- breaking app code when storage evolves
+
+---
+
+## Base type: `TenantBase`
+
+`TenantBase` captures the **minimum stable tenant identity and lifecycle fields** that developers will rely on
+regardless of where the data originates (database, API, or UI state).
+
+```ts title="TenantBase type"
+/**
+ * Shared fields that represent a tenant consistently across CloudIgniter layers.
+ * This is the "contract" developers should internalize.
+ */
+export type TenantBase = {
+  /**
+   * Stable unique identifier used as:
+   * - tenant context key
+   * - primary identifier in URLs/claims
+   * - join key for tenant-scoped data
+   */
+  tenantId: string;
+
+  /**
+   * Human-readable display name
+   */
+  name: string;
+
+  /**
+   * ISO timestamps (CloudIgniter uses string timestamps across boundaries)
+   */
+  createdAt?: string;
+  updatedAt?: string;
+};
+```
+
+---
+
+## 1) `Tenant`: High-level domain model
+
+Use `Tenant` when you are building CloudIgniter features (server logic, UI state, hooks) and you want a **
+developer-friendly object** with consistent field names.
+
+Key traits:
+
+- Includes `id` for convenience (often equal to `tenantId`)
+- Includes `slug`, `meta`, and optional `raw` reference
+- Designed to be stable even if the DynamoDB schema evolves
+
+```ts title="Tenant type"
+/**
+ * High-level Tenant type used across CloudIgniter.
+ * Derived from the raw DynamoDB item, but with nicer field names.
+ */
+export type Tenant = TenantBase & {
+  /**
+   * Internal ID (typically the same as tenantId).
+   * Kept for compatibility with systems that prefer a generic `id`.
+   */
+  id: string;
+
+  description?: string;
+
+  /**
+   * Human-friendly slug (URL, labels, etc.)
+   */
+  slug: string;
+
+  /**
+   * Arbitrary tenant metadata (config, tags, etc.)
+   */
+  meta?: Record<string, unknown>;
+
+  /**
+   * Optional reference to the raw database item for debugging,
+   * trace logging, or admin tools.
+   */
+  raw?: TenantDdbTableItem;
+};
+```
+
+**Developer guidance**
+
+- Prefer `Tenant` in most application code.
+- It is the safest type to persist in client state (Zustand/React state) and to pass between components.
+- Treat `raw` as optional and non-authoritative; it is best used for admin/debug tooling (e.g., Dev Beacon inspectors).
+
+---
+
+## 2) `TenantDdbTableItem`: DynamoDB storage shape
+
+Use `TenantDdbTableItem` only when you are implementing **persistence** logic (repository layer, data mappers, seeders,
+or migrations).
+
+Key traits:
+
+- Includes DynamoDB partition/sort keys: `PK`, `SK`
+- Includes CloudIgniter system `type`
+- Stores flexible payload in `data` (including slug, meta, and future fields)
+
+```ts title="TenantDdbTableItem type"
+export type TenantDdbTableItem = TenantBase & {
+  /**
+   * DynamoDB keys (single-table design).
+   * Note: your table may use either:
+   * - PK="TENANT#<id>", SK="META"
+   * - or PK="TENANT", SK="TENANT#<id>"
+   *
+   * Always follow the implementation of the server utility you are using.
+   */
+  PK: string;
+  SK: string;
+
+  /**
+   * Internal ID (may be used by tooling; often equals tenantId).
+   */
+  id: string;
+
+  /**
+   * System discriminator for items in the System table.
+   */
+  type: SystemItemType; // e.g., "TENANT"
+
+  description?: string;
+
+  /**
+   * Flexible nested data payload to support non-breaking evolution.
+   */
+  data?: {
+    slug?: string;
+    meta?: Record<string, unknown>;
+    [key: string]: unknown;
+  };
+
+  /**
+   * In storage, timestamps should be present.
+   */
+  createdAt: string;
+  updatedAt: string;
+};
+```
+
+**Developer guidance**
+
+- Do not pass `TenantDdbTableItem` into React components.
+- Do not expose `PK`/`SK` in public API contracts unless you are building an admin-only internal tool.
+- Always map this type to `Tenant` (domain) or `TenantHtmlTableRow` (UI list) before returning it from
+  app-facing functions.
+
+---
+
+## 3) `TenantHtmlRow`: UI list / table model
+
+Use `TenantHtmlRow` for **presentational views**, especially when rendering a tenant list table.
+
+Key traits:
+
+- Flattened shape (easy to render)
+- Enforces UI-relevant enums such as `status` and `type`
+- Allows computed/aggregated fields like orgUnitsCount (often coming from counts tables, GSIs, or separate queries)
+
+```ts title="TenantHtml type"
+export type TenantHtml = TenantBase & {
+  /**
+   * URL-safe identifier (used in routes, subdomains, etc.)
+   */
+  slug: string;
+
+  /**
+   * Operational state of the tenant
+   */
+  status: "active" | "suspended" | "archived";
+
+  /**
+   * Business / organizational classification for UI
+   */
+  type: "school" | "department" | "organization";
+
+  /**
+   * Region or jurisdiction (useful for governance & data residency)
+   */
+  region: string;
+
+  /**
+   * Optional computed / aggregated metadata for UI
+   */
+  orgUnitsCount?: number;
+
+  /**
+   * Flags for system-level tenants
+   */
+  isSystem?: boolean;
+};
+```
+
+**Developer guidance**
+
+- Treat `TenantHtml` as “view data,” not a persistence type.
+- It is appropriate to build this shape by combining:
+  - `Tenant` (core fields)
+  - settings/meta extraction
+  - counts (e.g., `orgUnitsCount`)
+  - derived rules (e.g., `isSystem`)
+
+---
+
+## Recommended mapping strategy
+
+Having a clear type mapping strategy would keep the domain model stable while allowing the storage model and UI
+model to evolve independently. CloudIgniter's recommended pattern is to keep conversions explicit. It follows a **one-way refinement flow**
+for tenant data (TenantDdbTableItem -> Tenant -> TenantHtml):
+
+- `TenantDdbTableItem` → `Tenant` via a mapper (`fromDdbTenantItem`)
+- `Tenant` → `TenantHtml` via a view mapper (`toTenantHtml`)
+
+```ts title="Example conversion intent (illustrative, not exhaustive)"
+function fromDdbTenantItem(item: TenantDdbTableItem): Tenant {
+  return {
+    id: item.tenantId,
+    tenantId: item.tenantId,
+    name: item.name,
+    description: item.description,
+    slug: String(item.data?.slug ?? ""),
+    meta: item.data?.meta,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+    raw: item,
+  };
+}
+```
+
+**Why this matters**
+
+- Each step **reduces coupling**
+- Upper layers never need to know how lower layers work
+- Storage changes do not cascade into UI breakage
+- UI-specific optimizations never pollute domain logic
+
+---
+
+## Type Ownership and Contracts
+
+This section clarifies **which CloudIgniter layer owns which tenant type**, and how developers should reason
+about responsibilities, guarantees, and allowed transformations.
+
+The goal is to avoid:
+
+- leaking persistence concerns into UI code
+- overloading domain models with view-only data
+- accidental coupling between DynamoDB structure and application logic
+
+---
+
+### Type Ownership by Layer
+
+CloudIgniter enforces **clear ownership boundaries** for tenant-related types.
+
+| Type                 | Owned By                       | Intended Usage                                             |
+| -------------------- | ------------------------------ | ---------------------------------------------------------- |
+| `TenantDdbTableItem` | **Persistence Layer**          | Raw DynamoDB storage shape (System table)                  |
+| `Tenant`             | **Domain / Application Layer** | Canonical tenant model used across CloudIgniter            |
+| `TenantHtmlTableRow` | **Presentation / UI Layer**    | Flattened, UI-friendly representation for tables and lists |
+
+**Key Rule**
+
+> **Only one layer owns a type.**  
+> Other layers may _consume_ it, but must not _depend_ on its internal structure.
+
+---
+
+## Type Responsibilities Explained
+
+### `TenantDdbTableItem` (Persistence Contract)
+
+This type exists to satisfy **DynamoDB and infrastructure requirements**.
+
+Responsibilities:
+
+- Encodes partition and sort keys (`PK`, `SK`)
+- Carries system discriminators (`type`)
+- Allows schema evolution through nested `data`
+- Preserves full audit timestamps
+
+Non-responsibilities:
+
+- UI friendliness
+- Stable naming conventions for frontend usage
+- Business semantics beyond storage
+
+**Rule of thumb**  
+If you see `PK` or `SK` in your code, you are already at the lowest layer and should map upward immediately.
+
+---
+
+### `Tenant` (Domain Contract)
+
+This is the **primary contract CloudIgniter offers to developers**.
+
+Responsibilities:
+
+- Stable identity (`tenantId`, `id`)
+- Human-readable fields (`name`, `slug`, `description`)
+- Arbitrary metadata (`meta`)
+- Optional traceability back to storage (`raw`)
+
+Non-responsibilities:
+
+- DynamoDB key management
+- UI-specific aggregation (counts, flags)
+- View-only formatting rules
+
+**Rule of thumb**  
+If you are unsure which tenant type to use, use `Tenant`.
+
+---
+
+### `TenantHtml` (UI Contract)
+
+This type exists to support **efficient and predictable rendering**.
+
+Responsibilities:
+
+- Enforced enums for UI (`status`, `type`)
+- Flattened structure (no nested blobs)
+- Derived or aggregated fields (`orgUnitsCount`, `isSystem`)
+- Strong typing for tables and lists
+
+Non-responsibilities:
+
+- Persistence fidelity
+- Acting as a source of truth
+- Round-tripping back to DynamoDB
+
+**Rule of thumb**  
+This type is disposable and regenerable; never persist it.
+
+---
+
+## Contract Comparison Table
+
+The table below highlights how the three types differ in purpose and guarantees.
+
+| Aspect                       | `TenantDdbTableItem` | `Tenant` | `TenantHtml` |
+| ---------------------------- | -------------------- | -------- | ------------ |
+| Layer                        | Persistence          | Domain   | UI           |
+| Stable across schema changes | ❌                   | ✅       | ❌           |
+| Contains DynamoDB keys       | ✅                   | ❌       | ❌           |
+| Safe for client state        | ❌                   | ✅       | ✅           |
+| Contains derived fields      | ❌                   | ❌       | ✅           |
+| Suitable for tables          | ❌                   | ⚠️       | ✅           |
+| Intended for long-term use   | ⚠️                   | ✅       | ❌           |
+
+---
+
+## Practical Guidance for Developers
+
+### When writing backend logic
+
+- Accept or return `Tenant`
+- Internally map from `TenantDdbTableItem`
+- Never expose `PK` / `SK` beyond the server boundary
+
+### When building UI pages
+
+- Load `Tenant` objects from APIs
+- Transform them into `TenantHtml` for tables and lists
+- Avoid storing raw DynamoDB items in client state
+
+### When extending CloudIgniter
+
+- Add new tenant fields at the **domain level first**
+- Reflect them into persistence (`data`) if needed
+- Expose them to UI only when there is a clear use case
+
+---
+
+## Design Principle Recap
+
+1. **Persistence is private**
+2. **Domain is stable**
+3. **UI is disposable**
+4. **Mappings are explicit**
+5. **Tenant identity never changes**
+
+---

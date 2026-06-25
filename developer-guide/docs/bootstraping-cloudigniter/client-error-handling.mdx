@@ -1,0 +1,15 @@
+---
+title: Client Error Handling Layer
+sidebar_position: 10
+---
+
+# 9. Client Error Handling Layer
+
+The Client Error Handler sits high in the tree so any child can:
+
+- push sticky/ephemeral notifications,
+- open a modal with details,
+- trigger a critical full-screen backdrop for show-stoppers,
+- localize messages via next-intl.
+
+Route validation also uses this layer to flag unregistered paths early.

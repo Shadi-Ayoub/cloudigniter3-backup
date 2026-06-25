@@ -1,0 +1,13 @@
+---
+title: Language Customization
+sidebar_position: 2
+---
+
+import ImageWrapper from "../../src/components/ImageWrapper";
+import languageSelection from "../assets/images/language-selection.png";
+
+Cloudigniter comes with a selected number of pre-defined languages (currently supports English and Arabic) that you can extend and/or override. You can also define a new non-existing language that the system did not originally include. You just need to upload the new language JSON file, which should have the name convention [lang_code].json, into the `src/locales` folder. You also need to update the language configuration section if needed.
+
+To manage your dictionary, all what you need to deal with all the time is the corresponding `locale` JSON files in the application `src/locales` directory. `next-intl` provides the hook `useTranslation` to translate text tokens inside your code. Check `next-intl` [documentations](https://next-intl.dev/docs/usage) to learn how to use their library.
+
+<ImageWrapper imgUrl={languageSelection} caption="Language Selection Backend" />

@@ -9,21 +9,22 @@ import { ciGetLangDir } from "@cloudigniter/core/lib";
 import { ciStartTraceServer } from "@cloudigniter/next/server";
 import { CiDebugProbe, CiNextRootWrapper } from "@cloudigniter/next/ui/server";
 
-import { Kernel, appGetServerCoreConfig } from "@/kernel/server";
+import { appBootstrap, Kernel } from "@/kernel/server";
 import "./globals.css"; // Always after importing Kernel so you can overwrite pre-defined CSS.
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default async function AppRootLayout({ children }: PropsWithChildren) {
-  const coreConfig = appGetServerCoreConfig();
+  const config = await appBootstrap();
 
-  const debugProbeEnabled = coreConfig.dev.debug.debugProbe.enabled === true;
+  const debugProbeEnabled =
+    config.ciConfig.dev.debug.debugProbe.enabled === true;
 
   // ─────────────────────────────────────────────────────────────
   // Log trace
   // ─────────────────────────────────────────────────────────────
   const { logger } = ciStartTraceServer(
-    coreConfig.dev.traceLog, // your config object (must include enabled: true to activate)
+    config.ciConfig.dev.traceLog, // your config object (must include enabled: true to activate)
     { source: "server", prettyWave: true }, // per-call overrides
     { name: "RootLayout" }, // optional timer name + base fields
   );
@@ -59,10 +60,10 @@ export default async function AppRootLayout({ children }: PropsWithChildren) {
             lang: locale,
             dir: direction,
             bodyClassName: `ci-body ${inter.className}`,
-            coreConfig,
+            coreConfig: config.ciConfig,
           }}
         />
-        <CiNextRootWrapper config={coreConfig}>
+        <CiNextRootWrapper config={config}>
           <Kernel />
           {children}
         </CiNextRootWrapper>

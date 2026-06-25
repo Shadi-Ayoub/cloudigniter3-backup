@@ -1,0 +1,16 @@
+---
+title: Client-Side Tenant Awareness
+sidebar_position: 8
+---
+
+# Client-Side Tenant Awareness
+
+On the client:
+
+- Tenant context is never trusted blindly
+- Tenant data is loaded via secured APIs
+- UI routing reacts to tenant availability and status
+
+```ts title="Typical usage"
+const { tenant, isLoading, error } = useTenant();
+```

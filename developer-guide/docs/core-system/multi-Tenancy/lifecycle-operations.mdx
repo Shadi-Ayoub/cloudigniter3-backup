@@ -1,0 +1,50 @@
+---
+title: Tenant Lifecycle Operations
+sidebar_position: 6
+---
+
+# Tenant Lifecycle Operations
+
+## Creating a Tenant
+
+Tenant creation is handled through controlled server utilities:
+
+- Enforces environment restrictions
+- Validates tenant uniqueness
+- Applies consistent key structure
+- Optionally seeds default settings
+
+```ts title="Example (server-side)"
+await createTenant({
+  tenantId: "school-dubai",
+  name: "School Dubai",
+  status: "active",
+  meta: { region: "DXB" },
+});
+```
+
+---
+
+## Seeding Tenants (Developer Tooling)
+
+CloudIgniter includes a **Seeder Tool** intended for:
+
+- Sandbox environments
+- Local development
+- Automated test setups
+
+Seeder features:
+
+- Environment-aware execution
+- Idempotent operations
+- Marker items for tracking seeded data
+- Safe clearing of seeded tenants
+
+---
+
+## Clearing Seeded Tenants
+
+Seeded tenants are tagged with internal markers so they can be removed safely without affecting real data.
+
+> Clearing is explicit and opt-in.  
+> Production tenants are never cleared automatically.

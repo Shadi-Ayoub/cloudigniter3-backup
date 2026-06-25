@@ -42,6 +42,16 @@ export { ciGetHeaders } from "./header";
 // ─────────────────────────────────────────────────────────────
 export { ciGetServerLocale, ciResolveLocale, ciSetServerLocale } from "./i18n";
 
+// ─────────────────────────────────────────────────────────────
+// org unit
+// ─────────────────────────────────────────────────────────────
+export {
+  ciGetOrgUnitContext,
+  ciResolveOrgUnitContext,
+  ciResolveOrgUnit,
+  ciWriteOrgUnitContext,
+} from "./org-unit";
+
 // TBD
 // ─────────────────────────────────────────────────────────────
 // settings
@@ -57,4 +67,10 @@ export {
 // ─────────────────────────────────────────────────────────────
 // tenant
 // ─────────────────────────────────────────────────────────────
-export { ciGetTenantContext, ciGetTenantId } from "./tenant";
+export {
+  ciGetTenantContext,
+  ciHandleTenantLogic,
+  ciResolveTenantContext,
+  ciRewriteTenantRoute,
+  ciWriteTenantContext,
+} from "./tenant";

@@ -1,0 +1,23 @@
+---
+title: Theme & CSS Loading Model
+sidebar_position: 8
+---
+
+# 7. Theme & CSS Loading Model
+
+Theme is managed by `next-themes` on the client and wired from server-provided defaults (via `bootstrap`).
+CSS is split intentionally:
+
+- Library/core CSS via `Kernel` (guaranteed load order),
+- Global app CSS via `globals.css`,
+- Authenticator CSS next to the kernel for predictable overrides.
+
+This keeps theming deterministic and avoids FOUC across SSR/CSR boundaries.
+
+:::info
+**FOUC**, or Flash of Unstyled Content, is a web development issue where a web page displays
+unstyled content briefly before the browser's CSS styles load and are applied. This can make
+a website appear unprofessional and degrades the user experience. It happens because the browser
+renders the HTML content before it finishes retrieving and processing the external CSS stylesheets,
+leading to a momentary display of unstyled elements.  
+:::
