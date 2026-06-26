@@ -7,9 +7,10 @@ import { getLocale } from "next-intl/server";
 
 import { ciGetLangDir } from "@cloudigniter/core/lib";
 import { ciStartTraceServer } from "@cloudigniter/next/server";
+import { ciGetEnvMode } from "@cloudigniter/next/server";
 import { CiDebugProbe, CiNextRootWrapper } from "@cloudigniter/next/ui/server";
 
-import { appBootstrap, Kernel } from "@/kernel/server";
+import { appBootstrap, appGetDevBeaconActor, Kernel } from "@/kernel/server";
 import "./globals.css"; // Always after importing Kernel so you can overwrite pre-defined CSS.
 
 const inter = Inter({ subsets: ["latin"] });
@@ -32,6 +33,14 @@ export default async function AppRootLayout({ children }: PropsWithChildren) {
 
   const locale = await getLocale();
   const direction = ciGetLangDir(locale);
+
+  const envMode = ciGetEnvMode();
+
+  if (!envMode) {
+    throw new Error(`No environment mode is defined!!!`);
+  }
+
+  const actor = await appGetDevBeaconActor();
 
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   logger.wave("Application Root Layout Re-rendered");
@@ -63,7 +72,7 @@ export default async function AppRootLayout({ children }: PropsWithChildren) {
             coreConfig: config.ciConfig,
           }}
         />
-        <CiNextRootWrapper config={config}>
+        <CiNextRootWrapper config={config} envMode={envMode} actor={actor}>
           <Kernel />
           {children}
         </CiNextRootWrapper>

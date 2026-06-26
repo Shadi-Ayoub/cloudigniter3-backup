@@ -168,6 +168,19 @@ export default {
       debugProbe: {
         enabled: true,
       },
+      devBeacon: {
+        enabled: true,
+
+        /**
+         * Keep false until Attribute Role-based Access Control is implemented.
+         *
+         * When true, production access still requires an authenticated user
+         * with the DEVELOPER role.
+         */
+        allowProduction: false,
+
+        requiredRoles: ["DEVELOPER"],
+      },
     },
     traceLog: {
       enabled: true,

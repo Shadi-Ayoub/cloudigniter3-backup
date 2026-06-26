@@ -1,8 +1,57 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import type {
+  CiDevBeaconSectionStatusProps,
+  CiDevTenantResolutionCheckup,
+} from "@cloudigniter/core/types";
 
-import type { CiDevBeaconSectionStatusProps } from "@cloudigniter/core/types";
+let cachedTenantResolutionCheckup: CiDevTenantResolutionCheckup | null = null;
+
+let tenantResolutionCheckupPromise: Promise<CiDevTenantResolutionCheckup> | null =
+  null;
+
+async function ciGetTenantResolutionCheckup(): Promise<CiDevTenantResolutionCheckup> {
+  if (cachedTenantResolutionCheckup) {
+    return cachedTenantResolutionCheckup;
+  }
+
+  if (tenantResolutionCheckupPromise) {
+    return tenantResolutionCheckupPromise;
+  }
+
+  tenantResolutionCheckupPromise = fetch(
+    "/ci-internal/dev-beacon/tenant-resolution-checkup",
+    {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+      },
+      cache: "no-store",
+    },
+  )
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new Error(
+          `Tenant resolution checkup failed with HTTP ${response.status}.`,
+        );
+      }
+
+      return (await response.json()) as CiDevTenantResolutionCheckup;
+    })
+    .then((result) => {
+      cachedTenantResolutionCheckup = result;
+
+      return result;
+    })
+    .catch((error) => {
+      tenantResolutionCheckupPromise = null;
+
+      throw error;
+    });
+
+  return tenantResolutionCheckupPromise;
+}
 
 export function CiDevBeaconSectionStatus({
   tenant,
@@ -39,6 +88,41 @@ export function CiDevBeaconSectionStatus({
     dir: "ltr",
   };
 
+  const [checkup, setCheckup] = useState<CiDevTenantResolutionCheckup | null>(
+    cachedTenantResolutionCheckup,
+  );
+
+  const [checkupError, setCheckupError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isActive = true;
+
+    void ciGetTenantResolutionCheckup()
+      .then((result) => {
+        if (!isActive) {
+          return;
+        }
+
+        setCheckup(result);
+        setCheckupError(null);
+      })
+      .catch((error: unknown) => {
+        if (!isActive) {
+          return;
+        }
+
+        setCheckupError(
+          error instanceof Error
+            ? error.message
+            : "Tenant resolution checkup failed.",
+        );
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
   return (
     <div className="space-y-6">
       <header className="flex flex-col gap-1 border-b pb-4">
@@ -72,6 +156,42 @@ export function CiDevBeaconSectionStatus({
               label="Data Schema"
               value="Check"
               valueClassName="bg-amber-500/10 text-amber-700 dark:text-amber-400"
+            />
+
+            <CiDevBeaconStatusRow
+              label="Tenant Resolution"
+              value={
+                checkupError
+                  ? "Failed"
+                  : checkup
+                  ? `Passed · ${checkup.tenant.passed}/${checkup.tenant.total}`
+                  : "Checking…"
+              }
+              valueClassName={
+                checkupError || (checkup && checkup.tenant.failed > 0)
+                  ? "bg-red-500/10 text-red-700 dark:text-red-400"
+                  : checkup
+                  ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                  : "bg-muted text-muted-foreground"
+              }
+            />
+
+            <CiDevBeaconStatusRow
+              label="Org Unit Resolution"
+              value={
+                checkupError
+                  ? "Failed"
+                  : checkup
+                  ? `Passed · ${checkup.orgUnit.passed}/${checkup.orgUnit.total}`
+                  : "Checking…"
+              }
+              valueClassName={
+                checkupError || (checkup && checkup.orgUnit.failed > 0)
+                  ? "bg-red-500/10 text-red-700 dark:text-red-400"
+                  : checkup
+                  ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                  : "bg-muted text-muted-foreground"
+              }
             />
           </CiDevBeaconStatusCard>
 

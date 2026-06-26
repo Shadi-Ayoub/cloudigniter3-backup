@@ -1,6 +1,23 @@
-import type { CiDevBeaconLogoSpec, CiDevBeaconPosition } from "@ci-core/types";
+import type {
+  CiDevBeaconLogoSpec,
+  CiDevBeaconOptions,
+  CiDevBeaconPosition,
+} from "@ci-core/types";
 
-export const CI_DEV_BEACON_DEFAULT_POSITION_CLASSES = {
+export const CI_DEV_BEACON_LOGO: CiDevBeaconLogoSpec = {
+  kind: "image",
+  src: "/images/cloudigniter-icon-1.png",
+  alt: "CloudIgniter",
+  sizePx: 28,
+};
+
+export const CI_DEFAULT_DEV_BEACON_OPTIONS: Required<CiDevBeaconOptions> = {
+  enabled: false,
+  allowProduction: false,
+  requiredRoles: ["DEVELOPER"],
+};
+
+export const CI_DEFAULT_DEV_BEACON_POSITION_CLASSES = {
   "top-left": "ci-dev-beacon-location-top-left",
   "top-middle": "ci-dev-beacon-location-top-middle",
   "top-right": "ci-dev-beacon-location-top-right",
@@ -10,10 +27,3 @@ export const CI_DEV_BEACON_DEFAULT_POSITION_CLASSES = {
   "bottom-middle": "ci-dev-beacon-location-bottom-middle",
   "bottom-right": "ci-dev-beacon-location-bottom-right",
 } as const satisfies Record<CiDevBeaconPosition, string>;
-
-export const CI_DEV_BEACON_LOGO: CiDevBeaconLogoSpec = {
-  kind: "image",
-  src: "/images/cloudigniter-icon-1.png",
-  alt: "CloudIgniter",
-  sizePx: 28,
-};

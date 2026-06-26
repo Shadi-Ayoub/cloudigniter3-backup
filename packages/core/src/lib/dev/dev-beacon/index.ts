@@ -1,4 +1,7 @@
+export { ciCanAccessDevBeacon } from "./ci-dev-beacon-access";
+export {} from "./ci-devbeacon-presets";
 export {
   CI_DEV_BEACON_LOGO,
-  CI_DEV_BEACON_DEFAULT_POSITION_CLASSES,
-} from "./ci-devbeacon-presets";
+  CI_DEFAULT_DEV_BEACON_OPTIONS,
+  CI_DEFAULT_DEV_BEACON_POSITION_CLASSES,
+} from "./constants";

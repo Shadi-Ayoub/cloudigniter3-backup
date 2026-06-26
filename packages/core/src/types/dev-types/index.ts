@@ -6,24 +6,36 @@ export type { CiDebugProbeProps } from "./debug-probe-types";
 // ─────────────────────────────────────────────────────────────
 // devbeacon
 // ─────────────────────────────────────────────────────────────
-export {
-  type CiDevBeaconButtonProps,
-  type CiDevBeaconClientProps,
-  type CiDevBeaconExtraTab,
-  type CiDevBeaconExtraTabSpec,
-  type CiDevBeaconLogoSpec,
-  type CiDevBeaconPosition,
-  type CiDevBeaconProps,
-  type CiDevBeaconSize,
-  type CiDevBeaconSectionToolsProps,
-  type CiDevBeaconSideTabsListProps,
-  type CiDevBeaconSectionStatusProps,
-  type CiDevBeaconTabValue,
-  type CiDevBeaconTenantInfo,
-  type CiDevBeaconTraceLogViewerTextProps,
-  type CiDevBeaconTraceTabProps,
-  type CiDevBeaconWrapperProps,
+export type {
+  CiDevBeaconAccessInput,
+  CiDevBeaconActor,
+  CiDevBeaconButtonProps,
+  CiDevBeaconClientProps,
+  CiDevBeaconExtraTab,
+  CiDevBeaconExtraTabSpec,
+  CiDevBeaconLogoSpec,
+  CiDevBeaconOptions,
+  CiDevBeaconPosition,
+  CiDevBeaconProps,
+  CiDevBeaconSize,
+  CiDevBeaconSectionToolsProps,
+  CiDevBeaconSideTabsListProps,
+  CiDevBeaconSectionStatusProps,
+  CiDevBeaconTabValue,
+  CiDevBeaconTenantInfo,
+  CiDevBeaconTraceLogViewerTextProps,
+  CiDevBeaconTraceTabProps,
+  CiDevBeaconWrapperProps,
 } from "./devbeacon-types";
+
+// ─────────────────────────────────────────────────────────────
+// general
+// ─────────────────────────────────────────────────────────────
+export type {
+  CiDevResolutionCheck,
+  CiDevResolutionCheckState,
+  CiDevTenantResolutionCheckup,
+} from "./general-types";
 
 // ─────────────────────────────────────────────────────────────
 // sandbox

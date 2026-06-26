@@ -32,8 +32,10 @@ export {
 // ─────────────────────────────────────────────────────────────
 export {
   // dev beacon
-  CI_DEV_BEACON_DEFAULT_POSITION_CLASSES,
+  ciCanAccessDevBeacon,
   CI_DEV_BEACON_LOGO,
+  CI_DEFAULT_DEV_BEACON_POSITION_CLASSES,
+  CI_DEFAULT_DEV_BEACON_OPTIONS,
 
   // trace
   ciStartTraceCore,
@@ -214,6 +216,7 @@ export {
   CI_DEFAULT_WRITE_TENANT_COOKIE,
   CI_DEFAULT_REWRITE_SUBDOMAIN_TO_TENANT_PATH,
   CI_DEFAULT_VALIDATE_TENANT,
+  CI_DEV_TENANT_RESOLUTION_PROBES,
 } from "./tenant";
 
 // ─────────────────────────────────────────────────────────────

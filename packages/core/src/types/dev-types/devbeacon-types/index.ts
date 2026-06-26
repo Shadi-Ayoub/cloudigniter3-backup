@@ -1,8 +1,11 @@
+export type { CiDevBeaconAccessInput } from "./CiDevBeaconAccessInput";
+export type { CiDevBeaconActor } from "./CiDevBeaconActor";
 export type { CiDevBeaconButtonProps } from "./CiDevBeaconButtonProps";
 export type { CiDevBeaconClientProps } from "./CiDevBeaconClientProps";
 export type { CiDevBeaconExtraTab } from "./CiDevBeaconExtraTab";
 export type { CiDevBeaconExtraTabSpec } from "./CiDevBeaconExtraTabSpec";
 export type { CiDevBeaconLogoSpec } from "./CiDevBeaconLogoSpec";
+export type { CiDevBeaconOptions } from "./CiDevBeaconOptions";
 export type { CiDevBeaconPosition } from "./CiDevBeaconPosition";
 export type { CiDevBeaconProps } from "./CiDevBeaconProps";
 export type { CiDevBeaconSize } from "./CiDevBeaconSize";

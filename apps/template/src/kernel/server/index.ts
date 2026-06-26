@@ -28,6 +28,11 @@ export {
 } from "./api";
 
 // ─────────────────────────────────────────────────────────────
+// auth
+// ─────────────────────────────────────────────────────────────
+export { appGetDevBeaconAccess, appGetDevBeaconActor } from "./auth";
+
+// ─────────────────────────────────────────────────────────────
 // bootstrap
 // ─────────────────────────────────────────────────────────────
 export { appBootstrap, ciPrepareConfig, ciGetServerStatus } from "./bootstrap";

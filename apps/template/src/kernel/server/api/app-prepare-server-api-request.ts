@@ -1,6 +1,6 @@
 import "server-only";
 import type { CiRequest } from "@cloudigniter/core/types";
-import { ciGetEnvMode } from "@cloudigniter/next/lib";
+import { ciGetEnvMode } from "@cloudigniter/next/server";
 
 import ciConfig from "@/../cloudigniter.config";
 

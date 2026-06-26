@@ -1,13 +1,19 @@
 import { type ReactNode } from "react";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
-import { CI_DEV_BEACON_LOGO } from "@cloudigniter/core/lib";
+import {
+  CI_DEV_BEACON_LOGO,
+  ciCanAccessDevBeacon,
+} from "@cloudigniter/core/lib";
+import type { CiDevBeaconActor, CiEnvMode } from "@cloudigniter/core/types";
 import { CiDevBeacon } from "@ci-next/ui/server";
 import { ciStartTraceServer } from "@ci-next/server";
-import { type CiNextPageConfig } from "@ci-next/types";
+import type { CiNextPageConfig } from "@ci-next/types";
 
 interface CiNextRootWrapperInterface {
   config: CiNextPageConfig;
+  envMode: CiEnvMode;
+  actor: CiDevBeaconActor;
   children: ReactNode;
 }
 
@@ -17,6 +23,8 @@ interface CiNextRootWrapperInterface {
  */
 export async function CiNextRootWrapper({
   config,
+  envMode,
+  actor,
   children,
 }: CiNextRootWrapperInterface) {
   /////////////////////////////////////////////////////////////////////////////////////////Initiate Log trace
@@ -44,26 +52,34 @@ export async function CiNextRootWrapper({
   });
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+  const devBeaconAccess = ciCanAccessDevBeacon({
+    options: config.ciConfig.dev?.debug?.devBeacon,
+    envMode,
+    actor,
+  });
+
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
-      <CiDevBeacon
-        appPageConfig={config}
-        dir="ltr"
-        position="bottom-right"
-        visibleWhenEnv="development"
-        defaultTab="status"
-        // Plain logo spec (client will render next/image)
-        logo={CI_DEV_BEACON_LOGO}
-        // Plain tab specs (client will build tabs and render client components)
-        extraTabSpecs={[
-          {
-            kind: "trace-log-text",
-            props: { endpoint: "/ci-internal/trace", pollMs: 9000 },
-          },
-        ]}
-        viewportTopOffset="120px"
-        viewportBottomOffset="0px"
-      />
+      {devBeaconAccess ? (
+        <CiDevBeacon
+          appPageConfig={config}
+          dir="ltr"
+          position="bottom-right"
+          visibleWhenEnv={null} // always visible
+          defaultTab="status"
+          // Plain logo spec (client will render next/image)
+          logo={CI_DEV_BEACON_LOGO}
+          // Plain tab specs (client will build tabs and render client components)
+          extraTabSpecs={[
+            {
+              kind: "trace-log-text",
+              props: { endpoint: "/ci-internal/trace", pollMs: 9000 },
+            },
+          ]}
+          viewportTopOffset="120px"
+          viewportBottomOffset="0px"
+        />
+      ) : null}
       {children}
     </NextIntlClientProvider>
   );

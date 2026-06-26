@@ -4,7 +4,7 @@ import * as React from "react";
 import { Spin } from "antd";
 import type { CiEnvMode } from "@cloudigniter/core/types";
 import { cn } from "@ci-next/ui/client";
-import { CI_DEV_BEACON_DEFAULT_POSITION_CLASSES } from "@cloudigniter/core/lib";
+import { CI_DEFAULT_DEV_BEACON_POSITION_CLASSES } from "@cloudigniter/core/lib";
 import type {
   CiDevBeaconButtonProps,
   CiDevBeaconSize,
@@ -73,7 +73,7 @@ const CiDevBeaconButton = React.forwardRef<
   ) => {
     const posClass =
       positionClasses?.[position] ??
-      CI_DEV_BEACON_DEFAULT_POSITION_CLASSES[position];
+      CI_DEFAULT_DEV_BEACON_POSITION_CLASSES[position];
     const { btn, icon } = sizeMap[size];
     const haloColor = pulseClassOverride ?? envPulseClass(env);
     const showPulse = pulse && (!pulseOnlyWhenLoaded || loaded);

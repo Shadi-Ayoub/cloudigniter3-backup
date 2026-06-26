@@ -56,11 +56,11 @@ export async function ciLookupOrgUnit(
     lookupUrl.searchParams.set("tenant", normalizedTenantId);
     lookupUrl.searchParams.set("path", normalizedOrgUnitPath);
 
-    console.log("[CI Org Unit Lookup] Request", {
-      url: lookupUrl.toString(),
-      tenantId: normalizedTenantId,
-      orgUnitPath: normalizedOrgUnitPath,
-    });
+    // console.log("[CI Org Unit Lookup] Request", {
+    //   url: lookupUrl.toString(),
+    //   tenantId: normalizedTenantId,
+    //   orgUnitPath: normalizedOrgUnitPath,
+    // });
 
     const response = await fetch(lookupUrl, {
       method: "GET",
@@ -72,11 +72,11 @@ export async function ciLookupOrgUnit(
 
     const rawBody = await response.text();
 
-    console.log("[CI Org Unit Lookup] Response", {
-      status: response.status,
-      ok: response.ok,
-      body: rawBody,
-    });
+    // console.log("[CI Org Unit Lookup] Response", {
+    //   status: response.status,
+    //   ok: response.ok,
+    //   body: rawBody,
+    // });
 
     if (!response.ok) {
       return null;

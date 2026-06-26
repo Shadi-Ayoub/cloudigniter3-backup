@@ -58,3 +58,22 @@ export const CI_DEFAULT_TENANT_URL_STRATEGY: CiTenantInfoPageStrategy =
 export const CI_DEFAULT_WRITE_TENANT_COOKIE: boolean = true;
 export const CI_DEFAULT_REWRITE_SUBDOMAIN_TO_TENANT_PATH: boolean = true;
 export const CI_DEFAULT_VALIDATE_TENANT: boolean = true;
+
+// A shared probe manifest to provide common technical fixture identifiers used by the endpoint and mock lookups
+export const CI_DEV_TENANT_RESOLUTION_PROBES = {
+  tenant: {
+    active: "ci-probe-tenant-6f7a2d91-active",
+    suspended: "ci-probe-tenant-6f7a2d91-suspended",
+    archived: "ci-probe-tenant-6f7a2d91-archived",
+    missing: "ci-probe-tenant-6f7a2d91-missing",
+  },
+
+  orgUnit: {
+    root: "/ci-probe-org-6f7a2d91-root",
+    branch: "/ci-probe-org-6f7a2d91-root/branch-31f7",
+    deep: "/ci-probe-org-6f7a2d91-root/branch-31f7/leaf-6ac0",
+    suspended: "/ci-probe-org-6f7a2d91-suspended",
+    archived: "/ci-probe-org-6f7a2d91-archived",
+    missing: "/ci-probe-org-6f7a2d91-missing",
+  },
+} as const;

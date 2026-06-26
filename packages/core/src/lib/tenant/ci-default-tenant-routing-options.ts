@@ -19,7 +19,7 @@ import {
   CI_DEFAULT_TENANT_URL_STRATEGY,
   CI_DEFAULT_VALIDATE_TENANT,
   CI_DEFAULT_WRITE_TENANT_COOKIE,
-} from "./common";
+} from "./constants";
 
 import type { CiTenantRoutingOptions } from "@ci-core/types";
 

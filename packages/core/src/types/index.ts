@@ -47,19 +47,19 @@ export type { CiCookieOptions, CiCookiePriority } from "./cookie-types";
 // ─────────────────────────────────────────────────────────────
 // dev
 // ─────────────────────────────────────────────────────────────
-// ─────────────────────────────────────────────────────────────
-// debug prob
-// ─────────────────────────────────────────────────────────────
 export type {
   // debug probe
   CiDebugProbeProps,
 
   // devbeacon
+  CiDevBeaconAccessInput,
+  CiDevBeaconActor,
   CiDevBeaconButtonProps,
   CiDevBeaconClientProps,
   CiDevBeaconExtraTab,
   CiDevBeaconExtraTabSpec,
   CiDevBeaconLogoSpec,
+  CiDevBeaconOptions,
   CiDevBeaconPosition,
   CiDevBeaconProps,
   CiDevBeaconSize,
@@ -71,6 +71,11 @@ export type {
   CiDevBeaconTraceLogViewerTextProps,
   CiDevBeaconTraceTabProps,
   CiDevBeaconWrapperProps,
+
+  // general
+  CiDevResolutionCheck,
+  CiDevResolutionCheckState,
+  CiDevTenantResolutionCheckup,
 
   // sandbox
   CiAsyncResponseFunction,

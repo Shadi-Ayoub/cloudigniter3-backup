@@ -27,7 +27,7 @@ export {
   CI_DEFAULT_WRITE_TENANT_COOKIE,
   CI_DEFAULT_REWRITE_SUBDOMAIN_TO_TENANT_PATH,
   CI_DEFAULT_VALIDATE_TENANT,
-
+  CI_DEV_TENANT_RESOLUTION_PROBES,
   // types
   // type CiCreateTenantInterface,
   // type CiCreateTenantApiInterface,
@@ -66,5 +66,5 @@ export {
   // type CiUpdateTenantInterface,
   // type CiUpdateTenantApiInterface,
   // type CiTenantUrlStrategy,
-} from "./common";
+} from "./constants";
 export { CI_DEFAULT_TENANT_ROUTING_OPTIONS } from "./ci-default-tenant-routing-options";
