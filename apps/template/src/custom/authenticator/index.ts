@@ -1,2 +1,4 @@
-export { amplifyAuthenticatorCustomProps } from "./amplify-authenticator-custom-props";
+// export { amplifyAuthenticatorCustomProps } from "./amplify-authenticator-custom-props";
+export { AppLoginPageShell } from "./AppLoginPageShell";
+export { buildAmplifyAuthenticatorCustomProps } from "./amplify-authenticator-custom-props";
 export { buildCustomAmplifyAuthenticatorThemeOverride } from "./build-custom-amplify-authenticator-theme-from-tokens";

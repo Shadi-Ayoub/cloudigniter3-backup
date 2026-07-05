@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  type ComponentType,
+  type PropsWithChildren,
+} from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Authenticator,
@@ -18,11 +24,14 @@ import type { CiAmplifyOutputs } from "@cloudigniter/aws/types";
 import { useShowLoaderWhenAuthenticatorDisappears } from "./use-show-loader-when-authenticator-disappears";
 // import type { CiAuthenticatorConfig } from "@ci-next/types";
 
+export type CiNextAwsLoginPageShell = ComponentType<PropsWithChildren>;
+
 export interface LoginPageClientWrapperInterface {
   outputs: CiAmplifyOutputs;
   authenticatorProps: AuthenticatorProps;
   authenticatorStyleTheme?: Theme;
   authenticatorConfig: CiAuthUiConfig;
+  loginPageShell?: CiNextAwsLoginPageShell;
 }
 
 export function CiNextAwsLoginPage({
@@ -30,6 +39,7 @@ export function CiNextAwsLoginPage({
   authenticatorProps,
   authenticatorStyleTheme,
   authenticatorConfig,
+  loginPageShell: LoginPageShell,
 }: LoginPageClientWrapperInterface) {
   // Why ssr: true matters here
   // Without ssr: true, Amplify Auth typically persists tokens in localStorage (client-only). Server
@@ -60,13 +70,20 @@ export function CiNextAwsLoginPage({
     authenticatorConfig,
   );
 
+  const authenticator = (
+    <div ref={authUiRef}>
+      <Authenticator {...authenticatorProps} className="w-full" />
+    </div>
+  );
+
   return (
     <ThemeProvider theme={authenticatorStyleTheme}>
       <Authenticator.Provider>
-        <div ref={authUiRef}>
-          <Authenticator {...authenticatorProps} className="px-4 pt-8 pb-8" />
-          {/* <LoginRedirector /> */}
-        </div>
+        {LoginPageShell ? (
+          <LoginPageShell>{authenticator}</LoginPageShell>
+        ) : (
+          authenticator
+        )}
       </Authenticator.Provider>
 
       <CiConsolePrint

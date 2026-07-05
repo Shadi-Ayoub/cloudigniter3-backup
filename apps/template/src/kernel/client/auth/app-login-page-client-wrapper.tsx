@@ -6,14 +6,16 @@ import {
 } from "@cloudigniter/next/client";
 import { CiNextAwsLoginPage } from "@cloudigniter/next/ui/client";
 import { ciBuildAuthenticatorProps } from "@cloudigniter/aws/client";
+
 import type { CiAmplifyOutputs } from "@cloudigniter/aws/types";
 import type { CiNextAwsPageConfig } from "@/kernel/types";
 
-// import { getConfig } from '@/kernel';
 import {
-  amplifyAuthenticatorCustomProps,
+  AppLoginPageShell,
+  buildAmplifyAuthenticatorCustomProps,
   buildCustomAmplifyAuthenticatorThemeOverride,
 } from "@/custom/authenticator";
+
 import outputs from "@/../amplify_outputs.json";
 
 const amplifyOutputs = outputs as CiAmplifyOutputs;
@@ -25,19 +27,22 @@ interface AppLoginPageClientWrapperInterface {
 export function AppLoginPageClientWrapper({
   config,
 }: AppLoginPageClientWrapperInterface) {
-  // const { tokens } = useTheme();
   const authenticatorThemeOverride =
     buildCustomAmplifyAuthenticatorThemeOverride();
 
-  // const ciConfig = getConfig();
   const merge = config.ciConfig.auth.authUi.custom?.merge;
+
   const theme = useCiNextAwsAuthenticatorTheme(
     authenticatorThemeOverride,
     merge,
   );
 
-  const props = ciBuildAuthenticatorProps(amplifyAuthenticatorCustomProps);
-  // throw new Error(`Authenticator props: ${JSON.stringify(props)}`);
+  const props = ciBuildAuthenticatorProps(
+    buildAmplifyAuthenticatorCustomProps(),
+  );
+
+  // const props = ciBuildAuthenticatorProps(amplifyAuthenticatorCustomProps);
+
   return (
     <CiPage
       name={"login-homepage"}
@@ -45,7 +50,7 @@ export function AppLoginPageClientWrapper({
         showPageHeader: false,
         layoutHasHeader: false,
         layoutHasFooter: false,
-        // showBreadcrumbs: false,
+        showBreadcrumbs: false,
       }}
       config={config}
       login
@@ -55,6 +60,7 @@ export function AppLoginPageClientWrapper({
         authenticatorProps={props}
         authenticatorStyleTheme={theme}
         authenticatorConfig={config.ciConfig.auth.authUi}
+        loginPageShell={AppLoginPageShell}
       />
     </CiPage>
   );

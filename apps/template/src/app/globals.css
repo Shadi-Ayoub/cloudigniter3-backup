@@ -7,6 +7,7 @@
 @import "@cloudigniter/next/styles/standard/style.css";
 
 @import "../custom/styles/standard/style.css";
+@import "../custom/authenticator/authenticator.css";
 
 /*
 |--------------------------------------------------------------------------

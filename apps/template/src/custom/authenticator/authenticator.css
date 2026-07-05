@@ -20,43 +20,59 @@
   --amplify-components-button-link-color: var(--amplify-colors-purple-80);
 } */
 
-/* custom/authenticator/authenticator.css */
+/*
+ * This file must be imported after:
+ *   1. the CloudIgniter theme CSS
+ *   2. @aws-amplify/ui-react/styles.css
+ *
+ * Do not wrap these rules in a Tailwind @layer.
+ */
 
 [data-amplify-authenticator] {
-  --amplify-components-authenticator-box: 100px;
-
-  --amplify-components-authenticator-router-box-shadow: 0 16px 40px
-    hsl(var(--foreground) / 0.12);
-
+  --amplify-components-authenticator-router-background-color: var(--color-card);
+  --amplify-components-authenticator-router-border-color: var(--color-border);
   --amplify-components-authenticator-router-border-width: 1px;
-  --amplify-components-authenticator-router-border-color: hsl(var(--border));
-
-  --amplify-components-authenticator-router-background-color: hsl(var(--card));
-  --amplify-components-authenticator-router-color: hsl(var(--card-foreground));
+  --amplify-components-authenticator-router-box-shadow: var(--shadow-xl);
 
   --amplify-components-authenticator-form-padding: 1.5rem 2rem 2rem;
 
-  --amplify-components-button-primary-background-color: hsl(var(--primary));
-  --amplify-components-button-primary-color: hsl(var(--primary-foreground));
-  --amplify-components-button-primary-hover-background-color: hsl(
-    var(--primary) / 0.9
+  --amplify-components-button-primary-background-color: var(--color-primary);
+  --amplify-components-button-primary-border-color: var(--color-primary);
+  --amplify-components-button-primary-color: var(--color-primary-foreground);
+
+  --amplify-components-button-primary-hover-background-color: var(
+    --color-primary-700
+  );
+  --amplify-components-button-primary-hover-border-color: var(
+    --color-primary-700
+  );
+  --amplify-components-button-primary-hover-color: var(
+    --color-primary-foreground
   );
 
-  --amplify-components-button-link-color: hsl(var(--primary));
-  --amplify-components-button-link-hover-color: hsl(var(--primary) / 0.85);
+  --amplify-components-button-primary-focus-background-color: var(
+    --color-primary-700
+  );
+  --amplify-components-button-primary-focus-border-color: var(
+    --color-primary-700
+  );
+  --amplify-components-button-primary-focus-color: var(
+    --color-primary-foreground
+  );
 
-  --amplify-components-fieldcontrol-background-color: hsl(var(--background));
-  --amplify-components-fieldcontrol-color: hsl(var(--foreground));
-  --amplify-components-fieldcontrol-border-color: hsl(var(--border));
+  --amplify-components-button-link-color: var(--color-primary);
+  --amplify-components-button-link-hover-color: var(--color-primary-700);
 
-  --amplify-components-fieldcontrol-focus-border-color: hsl(var(--ring));
+  --amplify-components-fieldcontrol-background-color: var(--color-background);
+  --amplify-components-fieldcontrol-border-color: var(--color-input);
+  --amplify-components-fieldcontrol-border-radius: var(--radius-md);
+  --amplify-components-fieldcontrol-color: var(--color-foreground);
+
+  --amplify-components-fieldcontrol-focus-border-color: var(--color-ring);
   --amplify-components-fieldcontrol-focus-box-shadow: 0 0 0 2px
-    hsl(var(--ring) / 0.25);
+    var(--color-ring);
 
-  --amplify-components-tabs-item-color: hsl(var(--muted-foreground));
-  --amplify-components-tabs-item-active-color: hsl(var(--foreground));
-  --amplify-components-tabs-item-active-border-color: hsl(var(--primary));
-
-  --amplify-components-text-color: hsl(var(--foreground));
-  --amplify-components-heading-color: hsl(var(--foreground));
+  --amplify-components-tabs-item-color: var(--color-muted-foreground);
+  --amplify-components-tabs-item-active-color: var(--color-primary);
+  --amplify-components-tabs-item-active-border-color: var(--color-primary);
 }
