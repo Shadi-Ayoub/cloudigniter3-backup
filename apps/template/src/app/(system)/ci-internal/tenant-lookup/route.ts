@@ -1,7 +1,8 @@
 // Ensure this runs in Node.js (not Edge) so you can use AWS SDK / Amplify server libs safely.
 export const runtime = "nodejs";
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 import { ciNormalizeThrownError } from "@cloudigniter/core/lib";
 
@@ -14,26 +15,18 @@ import type {
 import * as apiOnServer from "@/kernel/server/api";
 
 /**
- * Resolves a Tenant by its route-safe slug.
+ * Resolves a Tenant by its slug.
  *
  * Query parameters:
  * - tenant: Tenant slug
- *
- * The server API owns validation, data access, and canonical response shaping.
  */
 export async function GET(req: NextRequest) {
-  const slug =
-    req.nextUrl.searchParams.get("tenant")?.trim().toLowerCase() ?? "";
+  const slug = req.nextUrl.searchParams.get("tenant")?.trim() ?? "";
 
   if (!slug) {
     return NextResponse.json(
       {
-        statusCode: 400,
-        body: {
-          error: {
-            message: "The 'tenant' query parameter is required.",
-          },
-        },
+        error: "The 'tenant' query parameter is required.",
       },
       { status: 400 },
     );
@@ -49,8 +42,8 @@ export async function GET(req: NextRequest) {
   try {
     const result = await apiOnServer.appGetTenantLookupBySlug(request);
 
-    return NextResponse.json(result, {
-      status: result.statusCode ?? 200,
+    return NextResponse.json(result.body, {
+      status: result.statusCode,
     });
   } catch (error: unknown) {
     const normalizedError = ciNormalizeThrownError(error);
@@ -59,10 +52,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(
       {
-        statusCode: 500,
-        body: {
-          error: normalizedError,
-        },
+        error: normalizedError.message,
       },
       { status: 500 },
     );

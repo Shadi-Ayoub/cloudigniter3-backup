@@ -1,5 +1,5 @@
 import { ciGetCookie } from "@ci-core/client";
-import { ciNormalizePath } from "@ci-core/lib";
+import { ciNormalizePathname } from "@ci-core/lib";
 
 export function ciGetRequestPath(opts?: {
   cookieName?: string; // default: 'ci-request-path'
@@ -13,5 +13,5 @@ export function ciGetRequestPath(opts?: {
   const raw =
     fromCookie ??
     (typeof window !== "undefined" ? window.location.pathname : "/");
-  return ciNormalizePath(raw) ?? "/";
+  return ciNormalizePathname(raw) ?? "/";
 }

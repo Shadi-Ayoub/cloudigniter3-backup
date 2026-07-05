@@ -1,6 +1,6 @@
-import { defineFunction } from '@aws-amplify/backend';
+// import { defineFunction } from '@aws-amplify/backend';
 
-export const createUserHandler = defineFunction({
-  name: 'create-user-handler',
-  resourceGroupName: 'auth',
-});
+// export const createUserHandler = defineFunction({
+//   name: 'create-user-handler',
+//   resourceGroupName: 'auth',
+// });

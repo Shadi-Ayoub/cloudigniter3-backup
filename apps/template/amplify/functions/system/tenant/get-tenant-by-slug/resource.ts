@@ -1,6 +1,6 @@
-import { defineFunction } from '@aws-amplify/backend';
+// import { defineFunction } from '@aws-amplify/backend';
 
-export const getTenantBySlugHandler = defineFunction({
-  name: 'get-tenant-by-slug-handler',
-  resourceGroupName: 'data',
-});
+// export const getTenantBySlugHandler = defineFunction({
+//   name: 'get-tenant-by-slug-handler',
+//   resourceGroupName: 'data',
+// });

@@ -1,11 +1,11 @@
-import type { CiCoreFunctionId } from './functions';
+import type { CiCoreFunctionId } from "./functions";
 
 export const CI_CORE_TABLE_KEYS = [
-  'privateSettingsTable',
-  'publicSettingsTable',
-  'systemTable',
-  'userProfileTable',
-  'userSettingsTable',
+  // 'privateSettingsTable',
+  // 'publicSettingsTable',
+  // 'systemTable',
+  "userProfileTable",
+  // 'userSettingsTable',
 ] as const;
 
 export type CiCoreTableKey = (typeof CI_CORE_TABLE_KEYS)[number];
@@ -14,16 +14,16 @@ export type CiCoreTableKey = (typeof CI_CORE_TABLE_KEYS)[number];
  * Supported logical table-grant actions used by the DynamoDB grant shim.
  */
 export type CiTableGrantAction =
-  | 'BatchWriteItem'
-  | 'DeleteItem'
-  | 'GetItem'
-  | 'PutItem'
-  | 'Query'
-  | 'Read'
-  | 'Scan'
-  | 'TransactWriteItems'
-  | 'UpdateItem'
-  | 'Write';
+  | "BatchWriteItem"
+  | "DeleteItem"
+  | "GetItem"
+  | "PutItem"
+  | "Query"
+  | "Read"
+  | "Scan"
+  | "TransactWriteItems"
+  | "UpdateItem"
+  | "Write";
 
 /**
  * Legacy table grant abstraction preserved for compatibility with the current

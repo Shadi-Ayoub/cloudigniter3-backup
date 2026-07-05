@@ -29,10 +29,10 @@ export type CiAuthResourceState = {
 };
 
 export type CiCoreResources = {
-  privateSettingsTable: CiTableResourceState;
-  publicSettingsTable: CiTableResourceState;
-  systemTable: CiTableResourceState;
+  // privateSettingsTable: CiTableResourceState;
+  // publicSettingsTable: CiTableResourceState;
+  // systemTable: CiTableResourceState;
   userProfileTable: CiTableResourceState;
-  userSettingsTable: CiTableResourceState;
+  // userSettingsTable: CiTableResourceState;
   auth: CiAuthResourceState;
 };

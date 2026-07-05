@@ -1,6 +1,6 @@
-import { a } from '@aws-amplify/backend';
+import { a } from "@aws-amplify/backend";
 
-import { createUserHandler } from '../../functions/user/create-user/resource';
+// import { createUserHandler } from '../../functions/user/create-user/resource';
 // import { getUser } from '../../functions/user/get-user/resource';
 
 const schemaUser = {
@@ -31,8 +31,8 @@ const schemaUser = {
       email: a
         .string()
         .authorization((allow) => [
-          allow.group('SYSTEM_ADMIN'),
-          allow.ownerDefinedIn('profileOwner').to(['read']),
+          allow.group("SYSTEM_ADMIN"),
+          allow.ownerDefinedIn("profileOwner").to(["read"]),
         ]),
       // dob: a.date(),
       profilePicture: a.string(),
@@ -45,32 +45,32 @@ const schemaUser = {
       profileOwner: a
         .string()
         .authorization((allow) => [
-          allow.ownerDefinedIn('profileOwner').to(['read']),
-          allow.group('SYSTEM_ADMIN'),
-          allow.guest().to(['read']),
-          allow.authenticated().to(['read']),
+          allow.ownerDefinedIn("profileOwner").to(["read"]),
+          allow.group("SYSTEM_ADMIN"),
+          allow.guest().to(["read"]),
+          allow.authenticated().to(["read"]),
         ]),
     })
-    .identifier(['userId']) // Not the default auto-generated id
-    .secondaryIndexes((index) => [index('username'), index('email')])
+    .identifier(["userId"]) // Not the default auto-generated id
+    .secondaryIndexes((index) => [index("username"), index("email")])
     .authorization((allow) => [
-      allow.ownerDefinedIn('profileOwner').to(['read', 'update']),
-      allow.group('SYSTEM_ADMIN'),
-      allow.guest().to(['read']),
-      allow.authenticated().to(['read']),
+      allow.ownerDefinedIn("profileOwner").to(["read", "update"]),
+      allow.group("SYSTEM_ADMIN"),
+      allow.guest().to(["read"]),
+      allow.authenticated().to(["read"]),
     ]),
 
-  createUser: a
-    .mutation()
-    .arguments({
-      inputString: a.string().required(), // JSON String
-    })
-    .handler(a.handler.function(createUserHandler))
-    .returns(a.json())
-    .authorization((allow) => [
-      allow.group('ADMIN'),
-      allow.group('SYSTEM_ADMIN'),
-    ]),
+  // createUser: a
+  //   .mutation()
+  //   .arguments({
+  //     inputString: a.string().required(), // JSON String
+  //   })
+  //   .handler(a.handler.function(createUserHandler))
+  //   .returns(a.json())
+  //   .authorization((allow) => [
+  //     allow.group('ADMIN'),
+  //     allow.group('SYSTEM_ADMIN'),
+  //   ]),
 };
 
 export default schemaUser;

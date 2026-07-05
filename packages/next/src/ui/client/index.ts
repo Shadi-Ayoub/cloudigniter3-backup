@@ -56,6 +56,10 @@ export {
   useCiSmartFormField,
 
   // shadcn
+  Alert,
+  AlertTitle,
+  AlertDescription,
+  AlertAction,
   Badge,
   BorderBeam,
   // type BorderBeamProps,

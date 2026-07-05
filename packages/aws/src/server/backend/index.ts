@@ -12,6 +12,10 @@ export { ciAuthResourceModule } from "./resources/auth";
 // handlers
 // ─────────────────────────────────────────────────────────────
 export {
+  // system
+  ciGetLambdaParametersHandler,
+
+  // cognito
   ciCreateCognitoUserHandler,
   ciDeleteCognitoUserHandler,
   ciGetCognitoUserHandler,

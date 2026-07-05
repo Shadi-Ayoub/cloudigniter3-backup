@@ -1,6 +1,6 @@
-import { defineFunction } from '@aws-amplify/backend';
+// import { defineFunction } from '@aws-amplify/backend';
 
-export const updateOrgUnitHandler = defineFunction({
-  name: 'update-ou-handler',
-  resourceGroupName: 'data',
-});
+// export const updateOrgUnitHandler = defineFunction({
+//   name: 'update-ou-handler',
+//   resourceGroupName: 'data',
+// });

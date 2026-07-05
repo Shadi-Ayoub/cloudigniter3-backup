@@ -68,3 +68,4 @@ export {
   // type CiTenantUrlStrategy,
 } from "./constants";
 export { CI_DEFAULT_TENANT_ROUTING_OPTIONS } from "./ci-default-tenant-routing-options";
+export { ciNormalizeTenantScope } from "./ci-normalize-tenant-scope";

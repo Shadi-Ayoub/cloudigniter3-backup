@@ -1,13 +1,13 @@
 import type {
   CiCoreFunctionId,
   CiResourceEnvKeyAllowlist,
-} from '@cloudigniter/next/server/backend';
+} from "@cloudigniter/aws/server/backend";
 
 export function ciPickEnvKeyAllowlistForFunctions<
   TFunctions extends Partial<Record<CiCoreFunctionId, unknown>>,
 >(
   allowlist: CiResourceEnvKeyAllowlist,
-  functions: TFunctions
+  functions: TFunctions,
 ): Partial<
   Record<Extract<keyof TFunctions, CiCoreFunctionId>, readonly string[]>
 > {

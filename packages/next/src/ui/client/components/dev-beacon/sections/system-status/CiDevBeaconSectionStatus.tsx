@@ -1,10 +1,17 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import type {
   CiDevBeaconSectionStatusProps,
   CiDevTenantResolutionCheckup,
 } from "@cloudigniter/core/types";
+
+import { Button } from "@ci-next/ui/client";
+import { CiDevBeaconStatusLanguage } from "./language/CiDevBeaconStatusLanguage";
+
+type CiDevResolutionCheckArea =
+  CiDevTenantResolutionCheckup["checks"][number]["area"];
 
 let cachedTenantResolutionCheckup: CiDevTenantResolutionCheckup | null = null;
 
@@ -55,6 +62,7 @@ async function ciGetTenantResolutionCheckup(): Promise<CiDevTenantResolutionChec
 
 export function CiDevBeaconSectionStatus({
   tenant,
+  languageDiagnosticsEndpoint,
 }: CiDevBeaconSectionStatusProps) {
   const inferredTenantInfo = tenant ?? {
     source: "headers" as const,
@@ -83,16 +91,14 @@ export function CiDevBeaconSectionStatus({
     Boolean(inferredTenantInfo.slug) &&
     inferredTenantInfo.slug !== inferredTenantInfo.id;
 
-  const language = {
-    locale: "en",
-    dir: "ltr",
-  };
-
   const [checkup, setCheckup] = useState<CiDevTenantResolutionCheckup | null>(
     cachedTenantResolutionCheckup,
   );
 
   const [checkupError, setCheckupError] = useState<string | null>(null);
+
+  const [checkupReportArea, setCheckupReportArea] =
+    useState<CiDevResolutionCheckArea | null>(null);
 
   useEffect(() => {
     let isActive = true;
@@ -174,6 +180,10 @@ export function CiDevBeaconSectionStatus({
                   ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
                   : "bg-muted text-muted-foreground"
               }
+              onClick={
+                checkup ? () => setCheckupReportArea("tenant") : undefined
+              }
+              clickTitle="Open Tenant Resolution report"
             />
 
             <CiDevBeaconStatusRow
@@ -192,6 +202,10 @@ export function CiDevBeaconSectionStatus({
                   ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
                   : "bg-muted text-muted-foreground"
               }
+              onClick={
+                checkup ? () => setCheckupReportArea("orgUnit") : undefined
+              }
+              clickTitle="Open Org Unit Resolution report"
             />
           </CiDevBeaconStatusCard>
 
@@ -255,15 +269,9 @@ export function CiDevBeaconSectionStatus({
             </p>
           </CiDevBeaconStatusCard>
 
-          <CiDevBeaconStatusCard title="Language">
-            <CiDevBeaconStatusRow label="Locale" value={language.locale} mono />
-
-            <CiDevBeaconStatusRow label="Direction" value={language.dir} mono />
-
-            <p className="mt-3 text-xs leading-5 text-muted-foreground">
-              Source: i18n provider and CloudIgniter configuration.
-            </p>
-          </CiDevBeaconStatusCard>
+          <div className="border-t pt-5">
+            <CiDevBeaconStatusLanguage endpoint={languageDiagnosticsEndpoint} />
+          </div>
         </div>
       </section>
 
@@ -311,6 +319,12 @@ export function CiDevBeaconSectionStatus({
           />
         </div>
       </section>
+
+      <CiDevBeaconResolutionCheckupModal
+        area={checkupReportArea}
+        checkup={checkup}
+        onClose={() => setCheckupReportArea(null)}
+      />
     </div>
   );
 }
@@ -337,30 +351,45 @@ function CiDevBeaconStatusRow({
   mono = false,
   allowWrap = false,
   valueClassName,
+  onClick,
+  clickTitle,
 }: {
   label: string;
   value: string;
   mono?: boolean;
   allowWrap?: boolean;
   valueClassName?: string;
+  onClick?: () => void;
+  clickTitle?: string;
 }) {
+  const valueClasses = [
+    "max-w-[65%] rounded px-2 py-0.5 text-right text-xs",
+    mono ? "bg-muted font-mono" : "bg-muted/70",
+    allowWrap ? "break-all" : "truncate",
+    onClick ? "cursor-pointer appearance-none border-0" : "",
+    valueClassName ?? "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <div className="flex items-start justify-between gap-3 text-sm">
       <span className="shrink-0 text-muted-foreground">{label}</span>
 
-      <span
-        className={[
-          "max-w-[65%] rounded px-2 py-0.5 text-right text-xs",
-          mono ? "bg-muted font-mono" : "bg-muted/70",
-          allowWrap ? "break-all" : "truncate",
-          valueClassName ?? "",
-        ]
-          .filter(Boolean)
-          .join(" ")}
-        title={value}
-      >
-        {value}
-      </span>
+      {onClick ? (
+        <button
+          type="button"
+          className={valueClasses}
+          title={clickTitle ?? value}
+          onClick={onClick}
+        >
+          {value}
+        </button>
+      ) : (
+        <span className={valueClasses} title={value}>
+          {value}
+        </span>
+      )}
     </div>
   );
 }
@@ -418,4 +447,189 @@ function CiDevBeaconDiagnosticsBox({
       )}
     </section>
   );
+}
+
+function CiDevBeaconResolutionCheckupModal({
+  area,
+  checkup,
+  onClose,
+}: {
+  area: CiDevResolutionCheckArea | null;
+  checkup: CiDevTenantResolutionCheckup | null;
+  onClose: () => void;
+}) {
+  const dialogRef = useRef<HTMLDivElement | null>(null);
+  const activeElementRef = useRef<HTMLElement | null>(null);
+
+  const open = area !== null && checkup !== null;
+
+  const title =
+    area === "tenant"
+      ? "Tenant Resolution Checkup"
+      : "Org Unit Resolution Checkup";
+
+  const summary = area === "tenant" ? checkup?.tenant : checkup?.orgUnit;
+
+  const checks =
+    area && checkup
+      ? checkup.checks.filter((check) => check.area === area)
+      : [];
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const previousBodyOverflow = document.body.style.overflow;
+
+    activeElementRef.current =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", handleKeyDown);
+
+    dialogRef.current?.focus();
+
+    return () => {
+      document.body.style.overflow = previousBodyOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+      activeElementRef.current?.focus();
+      activeElementRef.current = null;
+    };
+  }, [onClose, open]);
+
+  if (!open || typeof document === "undefined") {
+    return null;
+  }
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-2147483647 flex items-center justify-center p-4"
+      role="presentation"
+    >
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-black/60 backdrop-blur-[1px]"
+        onClick={onClose}
+      />
+
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="ci-dev-beacon-resolution-checkup-title"
+        aria-describedby="ci-dev-beacon-resolution-checkup-description"
+        tabIndex={-1}
+        className="relative z-10 flex h-[min(48rem,calc(100dvh-2rem))] w-[min(110rem,calc(100vw-2rem))] max-w-none flex-col overflow-hidden rounded-xl border bg-background text-foreground shadow-2xl outline-none"
+      >
+        <header className="flex shrink-0 items-start justify-between gap-4 border-b px-6 py-5">
+          <div>
+            <h2
+              id="ci-dev-beacon-resolution-checkup-title"
+              className="text-base font-semibold"
+            >
+              {title}
+            </h2>
+
+            <p
+              id="ci-dev-beacon-resolution-checkup-description"
+              className="mt-1 text-sm text-muted-foreground"
+            >
+              {summary
+                ? `${summary.passed} passed · ${summary.failed} failed · ${summary.total} total`
+                : "Resolution probe report."}
+            </p>
+          </div>
+
+          <Button type="button" variant="outline" onClick={onClose}>
+            Close
+          </Button>
+        </header>
+
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-5">
+          <div className="space-y-3">
+            {checks.map((check) => (
+              <article key={check.id} className="rounded-lg border bg-card p-4">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="min-w-0">
+                    <h5 className="text-sm font-semibold">{check.label}</h5>
+
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {check.message}
+                    </p>
+                  </div>
+
+                  <span
+                    className={[
+                      "shrink-0 rounded px-2 py-0.5 text-xs font-medium",
+                      check.state === "passed"
+                        ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                        : check.state === "failed"
+                        ? "bg-red-500/10 text-red-700 dark:text-red-400"
+                        : "bg-amber-500/10 text-amber-700 dark:text-amber-400",
+                    ].join(" ")}
+                  >
+                    {check.state}
+                  </span>
+                </div>
+
+                {check.pathname ? (
+                  <div className="mt-3 rounded-md border bg-muted/30 px-3 py-2">
+                    <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      Probe Pathname
+                    </div>
+
+                    <code className="mt-1 block break-all font-mono text-xs text-foreground">
+                      {check.pathname}
+                    </code>
+                  </div>
+                ) : null}
+
+                <dl className="mt-4 grid gap-3 lg:grid-cols-2">
+                  <div>
+                    <dt className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      Expected
+                    </dt>
+
+                    <dd className="max-h-52 overflow-auto overscroll-contain rounded bg-muted/60 p-3">
+                      <pre className="whitespace-pre-wrap break-all font-mono text-xs">
+                        {ciFormatResolutionCheckValue(check.expected)}
+                      </pre>
+                    </dd>
+                  </div>
+
+                  <div>
+                    <dt className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      Actual
+                    </dt>
+
+                    <dd className="max-h-52 overflow-auto overscroll-contain rounded bg-muted/60 p-3">
+                      <pre className="whitespace-pre-wrap break-all font-mono text-xs">
+                        {ciFormatResolutionCheckValue(check.actual)}
+                      </pre>
+                    </dd>
+                  </div>
+                </dl>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
+function ciFormatResolutionCheckValue(
+  value: Record<string, unknown> | undefined,
+): string {
+  return value ? JSON.stringify(value, null, 2) : "—";
 }

@@ -1,6 +1,6 @@
 // src/kernel/server/auth/app-get-dev-beacon-actor.ts
 
-import type { CiDevBeaconActor } from "@ci-core/types";
+import type { CiDevBeaconActor } from "@cloudigniter/core/types";
 
 /**
  * Temporary Dev Beacon actor resolver.

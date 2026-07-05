@@ -9,18 +9,22 @@ import type {
 } from "@ci-core/types";
 
 export interface CiDevBeaconClientProps {
-  dir?: CiLocaleDirection;
+  // general
   position?: CiDevBeaconPosition;
   env?: CiEnvMode;
   logo?: ReactNode;
   defaultTab?: CiDevBeaconTabValue | string;
-
   isContentLoaded?: boolean;
   onRequestMarkLoaded?: (fn: (loaded: boolean) => void) => void;
-
   extraTabs?: CiDevBeaconExtraTab[];
   viewportTopOffset?: string;
   viewportBottomOffset?: string;
 
+  // for tenant resolution diagnostics
   tenant?: CiDevBeaconTenantInfo;
+
+  // for language diagnostics
+  locale: string;
+  dir: CiLocaleDirection;
+  languageDiagnosticsEndpoint?: string;
 }

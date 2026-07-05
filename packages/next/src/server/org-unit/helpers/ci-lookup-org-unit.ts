@@ -1,5 +1,3 @@
-import type { NextRequest } from "next/server";
-
 import { ciNormalizePathname } from "@cloudigniter/core/lib";
 
 import type {
@@ -7,6 +5,8 @@ import type {
   CiOrgUnitRoutingOptions,
   CiOrgUnitStatus,
 } from "@cloudigniter/core/types";
+
+type CiOrgUnitLookupRequest = Pick<Request, "url">;
 
 /**
  * Looks up an Org Unit through the configured internal Org Unit lookup endpoint.
@@ -36,7 +36,7 @@ import type {
  *
  */
 export async function ciLookupOrgUnit(
-  request: NextRequest,
+  request: CiOrgUnitLookupRequest,
   tenantId: string,
   orgUnitPath: string,
   options: Required<CiOrgUnitRoutingOptions>,
@@ -49,7 +49,7 @@ export async function ciLookupOrgUnit(
   }
 
   try {
-    const lookupUrl = request.nextUrl.clone();
+    const lookupUrl = new URL(request.url);
 
     lookupUrl.pathname = options.lookupPath;
     lookupUrl.search = "";

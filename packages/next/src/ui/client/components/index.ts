@@ -102,6 +102,10 @@ export {
 // shadcn
 // ─────────────────────────────────────────────────────────────
 export {
+  Alert,
+  AlertTitle,
+  AlertDescription,
+  AlertAction,
   Badge,
   BorderBeam,
   // type BorderBeamProps,

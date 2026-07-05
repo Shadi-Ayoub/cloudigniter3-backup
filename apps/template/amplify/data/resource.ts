@@ -1,8 +1,8 @@
-import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
+import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 
-import { coreSchemas, extendedSchemas } from './schemata';
+import { coreSchemas, extendedSchemas } from "./schemata";
 // import { createUser } from '../functions/user';
-import { postConfirmation } from '../auth/post-confirmation/resource';
+import { postConfirmation } from "../auth/post-confirmation/resource";
 
 /*== STEP 1 ===============================================================
 The section below creates a Todo database table with a "content" field. Try
@@ -24,12 +24,12 @@ schema.authorization((allow) => [
 
 export type Schema = ClientSchema<typeof schema>;
 
-export type SystemTableRecord = Schema['System']['type'];
+// export type SystemTableRecord = Schema['System']['type'];
 
 export const data = defineData({
   schema,
   authorizationModes: {
-    defaultAuthorizationMode: 'userPool', // default for Cognito users
+    defaultAuthorizationMode: "userPool", // default for Cognito users
     apiKeyAuthorizationMode: { expiresInDays: 30 }, // secondary for guests
   },
 });

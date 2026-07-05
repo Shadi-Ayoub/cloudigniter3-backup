@@ -83,7 +83,7 @@
     "build:types:clean": "rimraf dist/.types",
     "build:types": "NODE_OPTIONS=--max-old-space-size=12288 rollup -c rollup.config.js",
     "build:types:raw": "tsc -p tsconfig.build.json",
-    "build:assets": "node ./scripts/build-assets.mjs && pnpm -v",
+    "build:assets": "node ../../scripts/build-steps/ci-build-next-app-assets.mjs && pnpm -v",
     "obfuscate": "node ../../scripts/ci-obfuscate-package.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "check:package": "npm pack --dry-run",

@@ -58,6 +58,15 @@ export type {
   CiDevBeaconClientProps,
   CiDevBeaconExtraTab,
   CiDevBeaconExtraTabSpec,
+  CiDevBeaconLanguageDiagnostics,
+  CiDevBeaconLanguageErrorResponse,
+  CiDevBeaconLanguageFileDiagnostic,
+  CiDevBeaconLanguageFileStatus,
+  CiDevBeaconLanguageMessageEntry,
+  CiDevBeaconLanguageMessagesResponse,
+  CiDevBeaconLanguageSourceMessages,
+  CiDevBeaconLanguageSummary,
+  CiDevBeaconLanguageSummaryResponse,
   CiDevBeaconLogoSpec,
   CiDevBeaconOptions,
   CiDevBeaconPosition,
@@ -147,15 +156,17 @@ export type { CiAppIcon, CiBuiltInIcon, CiIconName } from "./icon-types";
 // ─────────────────────────────────────────────────────────────
 // i18n
 // ─────────────────────────────────────────────────────────────
-export {
-  type CiExtendedI18nConfig,
-  type CiGetServerLocaleInterface,
-  type CiI18nConfig,
-  type CiI18nSettings,
-  type CiLocale,
-  type CiLocaleDirection,
-  type CiLocaleSwitcherProps,
-  type CiLocaleSwitcherSelectProps,
+export type {
+  CiExtendedI18nConfig,
+  CiGetServerLocaleInterface,
+  CiI18nConfig,
+  CiI18nSettings,
+  CiLanguageFileDiagnostic,
+  CiLanguageFileStatus,
+  CiLocale,
+  CiLocaleDirection,
+  CiLocaleSwitcherProps,
+  CiLocaleSwitcherSelectProps,
 } from "./i18n-types";
 
 // ─────────────────────────────────────────────────────────────

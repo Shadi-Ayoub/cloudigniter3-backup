@@ -79,6 +79,7 @@ export type {
   CiCreateDirectHandlerParams,
   CiDirectServiceFn,
   CiInferDirectServiceInput,
+  CiLambdaEvent,
   CiLambdaReportLog,
   CiLambdaHandlerRequestMode,
   CiErrorResponse,

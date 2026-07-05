@@ -1,14 +1,15 @@
-import type { NextRequest } from "next/server";
 import type {
   CiTenantRoutingOptions,
   CiTenantStatus,
 } from "@cloudigniter/core/types";
 
+type CiRequestForTenantLookup = Pick<Request, "headers" | "url">;
+
 /**
  * Looks up a tenant through the configured internal tenant lookup endpoint.
  */
 export async function ciLookupTenant(
-  request: NextRequest,
+  request: CiRequestForTenantLookup,
   tenantId: string,
   options: Required<CiTenantRoutingOptions>,
 ): Promise<{
@@ -20,10 +21,9 @@ export async function ciLookupTenant(
   }
 
   try {
-    const lookupUrl = request.nextUrl.clone();
+    const requestUrl = new URL(request.url);
+    const lookupUrl = new URL(options.lookupPath, requestUrl.origin);
 
-    lookupUrl.pathname = options.lookupPath;
-    lookupUrl.search = "";
     lookupUrl.searchParams.set("tenant", tenantId);
 
     const response = await fetch(lookupUrl, {

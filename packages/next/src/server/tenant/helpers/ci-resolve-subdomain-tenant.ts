@@ -4,6 +4,7 @@ import type {
 } from "@cloudigniter/core/types";
 import { ciNormalizeRootDomains } from "./ci-normalize-root-domains";
 import { ciStripPort } from "./ci-strip-port";
+
 /**
  * Resolves tenant from subdomain-based URLs.
  *
@@ -19,6 +20,7 @@ export function ciResolveSubdomainTenant(
 
   if (!normalizedHost) {
     return {
+      source: "subdomain",
       scope: "system",
       status: "active",
     };
@@ -32,6 +34,7 @@ export function ciResolveSubdomainTenant(
 
   if (!matchingRootDomain) {
     return {
+      source: "subdomain",
       scope: "system",
       status: "active",
     };
@@ -39,6 +42,7 @@ export function ciResolveSubdomainTenant(
 
   if (normalizedHost === matchingRootDomain) {
     return {
+      source: "subdomain",
       scope: "system",
       status: "active",
     };
@@ -52,6 +56,7 @@ export function ciResolveSubdomainTenant(
 
   if (!firstSubdomainPart) {
     return {
+      source: "subdomain",
       scope: "system",
       status: "active",
     };
@@ -59,6 +64,7 @@ export function ciResolveSubdomainTenant(
 
   if (firstSubdomainPart === "global") {
     return {
+      source: "subdomain",
       scope: "global",
       status: "active",
     };
@@ -66,6 +72,7 @@ export function ciResolveSubdomainTenant(
 
   return {
     id: firstSubdomainPart,
+    source: "subdomain",
     scope: "tenant",
     status: "active",
   };

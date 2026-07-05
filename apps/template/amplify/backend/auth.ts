@@ -1,21 +1,21 @@
-import { type IUserPool } from 'aws-cdk-lib/aws-cognito';
-import { ArnFormat, Stack } from 'aws-cdk-lib';
+import { type IUserPool } from "aws-cdk-lib/aws-cognito";
+import { ArnFormat, Stack } from "aws-cdk-lib";
 
 import {
   type CiCoreAuth,
   type CiCoreFunctionId,
   ciAuthResourceModule,
-} from '@cloudigniter/next/server/backend';
+} from "@cloudigniter/aws/server/backend";
 
-import { ciPickEnvKeyAllowlistForFunctions } from './ci-pick-env-key-allowlist-for-functions';
-import type { CiBackend } from './types';
+import { ciPickEnvKeyAllowlistForFunctions } from "./ci-pick-env-key-allowlist-for-functions";
+import type { CiBackend } from "./types";
 
 export const ciGetAuthStack = (backend: CiBackend) => {
   const userPool = ciPrepareUserPool(backend.auth.resources.userPool);
 
   const authParams = {
-    userPoolIdParam: '/cloudigniter/auth/userPoolId',
-    userPoolArnParam: '/cloudigniter/auth/userPoolArn',
+    userPoolIdParam: "/cloudigniter/auth/userPoolId",
+    userPoolArnParam: "/cloudigniter/auth/userPoolArn",
   };
 
   const functions = {
@@ -26,12 +26,12 @@ export const ciGetAuthStack = (backend: CiBackend) => {
 
   const CI_AUTH_FUNCS_IDS = ciAuthResourceModule.handlers.filter(
     (fnId): fnId is keyof typeof functions & CiCoreFunctionId =>
-      fnId in functions
+      fnId in functions,
   );
 
   const envKeyAllowlist = ciPickEnvKeyAllowlistForFunctions(
     ciAuthResourceModule.envKeyAllowlist,
-    functions
+    functions,
   );
 
   return {
@@ -48,8 +48,8 @@ export function ciPrepareUserPool(up: IUserPool) {
   const authStack = Stack.of(up);
 
   const userPoolArn = authStack.formatArn({
-    service: 'cognito-idp',
-    resource: 'userpool',
+    service: "cognito-idp",
+    resource: "userpool",
     resourceName: userPoolId,
     arnFormat: ArnFormat.SLASH_RESOURCE_NAME,
   });

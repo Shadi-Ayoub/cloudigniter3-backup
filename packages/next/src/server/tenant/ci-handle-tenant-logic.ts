@@ -53,7 +53,6 @@
  */
 
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
 import {
   CI_DEFAULT_ORG_UNIT_OPTIONS,
@@ -78,8 +77,14 @@ import { ciRewriteToTenantInfoPage } from "./helpers";
 import { ciResolveTenantContext } from "./ci-resolve-tenant-context";
 import { ciWriteTenantContext } from "./ci-write-tenant-context";
 
+type CiTenantRequest = Pick<Request, "headers" | "url"> & {
+  cookies: {
+    get(name: string): { value: string } | undefined;
+  };
+};
+
 interface CiHandleTenantLogicParams {
-  request: NextRequest;
+  request: CiTenantRequest;
   response: NextResponse;
   pathnameNormalized: string;
   tenantRoutingConfig: CiTenantRoutingOptions;
@@ -233,7 +238,7 @@ export async function ciHandleTenantLogic({
    * Tenant routing prefix, before resolving a possible Org Unit path.
    */
   let featurePathname = ciResolveTenantRemainingPath({
-    pathname: request.nextUrl.pathname,
+    pathname: pathnameNormalized,
     tenant,
     tenantRoutingConfig: tOpts,
   });
@@ -341,12 +346,6 @@ export async function ciHandleTenantLogic({
   };
 }
 
-/**
- * Resolves the remaining application pathname after removing the external
- * Tenant routing prefix.
- *
- * Org Unit path removal is performed separately by ciResolveOrgUnitContext().
- */
 /**
  * Resolves the remaining application pathname after removing the external
  * Tenant routing prefix.

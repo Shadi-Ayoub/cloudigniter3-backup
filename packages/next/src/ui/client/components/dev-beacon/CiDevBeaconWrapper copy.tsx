@@ -79,12 +79,18 @@ function buildExtraTabs(
       };
     }
 
-    return { id: "unknown", label: "Unknown", content: null };
+    return {
+      id: "unknown",
+      label: "Unknown",
+      content: null,
+    };
   });
 }
 
 export function CiDevBeaconWrapper({
+  locale,
   dir,
+  languageDiagnosticsEndpoint,
   position,
   env,
   defaultTab,
@@ -113,6 +119,7 @@ export function CiDevBeaconWrapper({
       );
 
       const top = (primary?.offsetHeight ?? 0) + (secondary?.offsetHeight ?? 0);
+
       const bottom = footerFixed?.offsetHeight ?? 0;
 
       setTopOffset(`${top}px`);
@@ -122,9 +129,11 @@ export function CiDevBeaconWrapper({
     measure();
 
     const ro = new ResizeObserver(measure);
+
     document
       .querySelectorAll("header, nav, footer")
       .forEach((el) => ro.observe(el));
+
     window.addEventListener("resize", measure);
 
     return () => {
@@ -143,7 +152,9 @@ export function CiDevBeaconWrapper({
   return (
     <CiDevBeaconClient
       isContentLoaded={ready}
+      locale={locale}
       dir={dir}
+      languageDiagnosticsEndpoint={languageDiagnosticsEndpoint}
       position={position}
       env={env}
       logo={logoNode}

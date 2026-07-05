@@ -9,7 +9,9 @@ import type {
 } from "@ci-core/types";
 
 export interface CiDevBeaconWrapperProps {
+  locale: string;
   dir: CiLocaleDirection;
+  languageDiagnosticsEndpoint: string;
   position: CiDevBeaconPosition;
   env: CiEnvMode;
   defaultTab: CiDevBeaconTabValue | string;

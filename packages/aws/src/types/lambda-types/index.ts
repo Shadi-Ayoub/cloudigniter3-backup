@@ -8,6 +8,7 @@ export type { CiAwsResponseDebug } from "./CiAwsResponseDebug";
 export type { CiCreateDirectHandlerParams } from "./CiCreateDirectHandlerParams";
 export type { CiDirectServiceFn } from "./CiDirectServiceFn";
 export type { CiInferDirectServiceInput } from "./CiInferDirectServiceInput";
+export type { CiLambdaEvent } from "./CiLambdaEvent";
 export type { CiLambdaReportLog } from "./CiLambdaReportLog";
 export type { CiLambdaHandlerRequestMode } from "./CiLambdaHandlerRequestMode";
 export type { CiErrorResponse } from "./CiErrorResponse";

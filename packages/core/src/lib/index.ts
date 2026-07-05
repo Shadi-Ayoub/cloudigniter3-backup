@@ -33,6 +33,7 @@ export {
 export {
   // dev beacon
   ciCanAccessDevBeacon,
+  ciIsDevBeaconLanguageErrorResponse,
   CI_DEV_BEACON_LOGO,
   CI_DEFAULT_DEV_BEACON_POSITION_CLASSES,
   CI_DEFAULT_DEV_BEACON_OPTIONS,
@@ -103,9 +104,10 @@ export { ciNamespaceSegmentToKebab } from "./namespace";
 // org unit
 // ─────────────────────────────────────────────────────────────
 export {
+  CI_DEFAULT_ORG_UNIT_OPTIONS,
   CI_DEFAULT_ORG_UNIT_PATH_COOKIE_NAME,
   CI_DEFAULT_ORG_UNIT_PATH_HEADER_NAME,
-  CI_DEFAULT_ORG_UNIT_OPTIONS,
+  CI_MOCK_ORG_UNITS,
 } from "./org-unit";
 
 // ─────────────────────────────────────────────────────────────
@@ -217,6 +219,9 @@ export {
   CI_DEFAULT_REWRITE_SUBDOMAIN_TO_TENANT_PATH,
   CI_DEFAULT_VALIDATE_TENANT,
   CI_DEV_TENANT_RESOLUTION_PROBES,
+
+  // helpers
+  ciNormalizeTenantScope,
 } from "./tenant";
 
 // ─────────────────────────────────────────────────────────────

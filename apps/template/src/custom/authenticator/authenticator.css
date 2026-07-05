@@ -1,6 +1,6 @@
 /* https://ui.docs.amplify.aws/react/theming/css-variables */
 
-[data-amplify-authenticator] {
+/* [data-amplify-authenticator] {
   --amplify-components-authenticator-box: 100px;
   --amplify-components-authenticator-router-box-shadow: 0 0 16px
     var(--amplify-colors-overlay-10);
@@ -18,4 +18,45 @@
   --amplify-components-tabs-item-color: var(--amplify-colors-neutral-80);
   --amplify-components-tabs-item-active-color: var(--amplify-colors-purple-100);
   --amplify-components-button-link-color: var(--amplify-colors-purple-80);
+} */
+
+/* custom/authenticator/authenticator.css */
+
+[data-amplify-authenticator] {
+  --amplify-components-authenticator-box: 100px;
+
+  --amplify-components-authenticator-router-box-shadow: 0 16px 40px
+    hsl(var(--foreground) / 0.12);
+
+  --amplify-components-authenticator-router-border-width: 1px;
+  --amplify-components-authenticator-router-border-color: hsl(var(--border));
+
+  --amplify-components-authenticator-router-background-color: hsl(var(--card));
+  --amplify-components-authenticator-router-color: hsl(var(--card-foreground));
+
+  --amplify-components-authenticator-form-padding: 1.5rem 2rem 2rem;
+
+  --amplify-components-button-primary-background-color: hsl(var(--primary));
+  --amplify-components-button-primary-color: hsl(var(--primary-foreground));
+  --amplify-components-button-primary-hover-background-color: hsl(
+    var(--primary) / 0.9
+  );
+
+  --amplify-components-button-link-color: hsl(var(--primary));
+  --amplify-components-button-link-hover-color: hsl(var(--primary) / 0.85);
+
+  --amplify-components-fieldcontrol-background-color: hsl(var(--background));
+  --amplify-components-fieldcontrol-color: hsl(var(--foreground));
+  --amplify-components-fieldcontrol-border-color: hsl(var(--border));
+
+  --amplify-components-fieldcontrol-focus-border-color: hsl(var(--ring));
+  --amplify-components-fieldcontrol-focus-box-shadow: 0 0 0 2px
+    hsl(var(--ring) / 0.25);
+
+  --amplify-components-tabs-item-color: hsl(var(--muted-foreground));
+  --amplify-components-tabs-item-active-color: hsl(var(--foreground));
+  --amplify-components-tabs-item-active-border-color: hsl(var(--primary));
+
+  --amplify-components-text-color: hsl(var(--foreground));
+  --amplify-components-heading-color: hsl(var(--foreground));
 }

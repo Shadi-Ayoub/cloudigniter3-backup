@@ -3,11 +3,11 @@
 // ─────────────────────────────────────────────────────────────
 export {
   CI_DATA_RESOURCE_MODULES,
-  ciPrivateSettingsTableResourceModule,
-  ciPublicSettingsTableResourceModule,
-  ciSystemTableResourceModule,
+  // ciPrivateSettingsTableResourceModule,
+  // ciPublicSettingsTableResourceModule,
+  // ciSystemTableResourceModule,
   ciUserProfileTableResourceModule,
-  ciUserSettingsTableResourceModule,
+  // ciUserSettingsTableResourceModule,
 } from "./data";
 
 // ─────────────────────────────────────────────────────────────

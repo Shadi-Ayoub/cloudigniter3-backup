@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
-import { ciGetServerLocale } from "@cloudigniter/next/server";
 import { CI_DEV_BEACON_LOGO } from "@cloudigniter/core/lib";
-import { ciStartTraceServer } from "../../../server";
+import { ciGetServerLocale, ciStartTraceServer } from "../../../server";
 import type { CiI18nConfig, CiSettings } from "@cloudigniter/core/types";
 import { CiDevBeacon } from "../../server";
 
@@ -55,7 +54,8 @@ export async function CiPageWrapper({
     >
       <CiDevBeacon
         appPageConfig={config}
-        dir="ltr"
+        locale={locale.code}
+        dir={locale.direction}
         position="bottom-right"
         visibleWhenEnv="development"
         defaultTab="status"

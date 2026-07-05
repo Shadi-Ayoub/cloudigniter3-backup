@@ -1,12 +1,12 @@
-import { createOrgUnitHandler } from '@cloudigniter/next/server/backend';
+// import { createOrgUnitHandler } from '@cloudigniter/next/server/backend';
 
-import type { Schema } from '../../../../data/resource';
+// import type { Schema } from '../../../../data/resource';
 
-type Handler = Schema['createOrgUnit']['functionHandler'];
-/**
- * * @param event
- * @returns
- */
-export const handler: Handler = async (event, context) => {
-  return await createOrgUnitHandler(event, context);
-};
+// type Handler = Schema['createOrgUnit']['functionHandler'];
+// /**
+//  * * @param event
+//  * @returns
+//  */
+// export const handler: Handler = async (event, context) => {
+//   return await createOrgUnitHandler(event, context);
+// };

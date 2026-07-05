@@ -7,7 +7,7 @@ import type {
 
 import { ciGetHost, ciLookupTenant, ciResolveTenant } from "./helpers";
 
-import type { NextRequest } from "next/server";
+type CiOrgUnitRequest = Pick<Request, "headers" | "url">;
 
 /**
  * Resolves the canonical tenant context for the current request.
@@ -23,7 +23,7 @@ export async function ciResolveTenantContext({
   pathnameNormalized,
   tenantRoutingConfig,
 }: {
-  request: NextRequest;
+  request: CiOrgUnitRequest;
   pathnameNormalized: string;
   tenantRoutingConfig: CiTenantRoutingOptions;
 }): Promise<CiTenantContext> {

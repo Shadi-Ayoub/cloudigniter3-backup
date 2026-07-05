@@ -1,5 +1,5 @@
 import type { CiRoutesMap, CiRoute } from "@ci-core/types";
-import { ciNormalizePath } from "@ci-core/lib";
+import { ciNormalizePathname } from "@ci-core/lib";
 import { ciMatchRoute } from "./ci-match-route";
 
 /**
@@ -14,6 +14,6 @@ export function ciIsRegisteredPath(
   const pathOnly =
     path instanceof URL ? path.pathname : String(path).split(/[?#]/)[0];
 
-  const normalized = ciNormalizePath(pathOnly);
+  const normalized = ciNormalizePathname(pathOnly);
   return ciMatchRoute(normalized, registeredRoutes as CiRoutesMap) !== null;
 }

@@ -4,6 +4,7 @@ import { getLocale, getMessages } from "next-intl/server";
 import {
   CI_DEV_BEACON_LOGO,
   ciCanAccessDevBeacon,
+  ciGetLangDir,
 } from "@cloudigniter/core/lib";
 import type { CiDevBeaconActor, CiEnvMode } from "@cloudigniter/core/types";
 import { CiDevBeacon } from "@ci-next/ui/server";
@@ -62,8 +63,9 @@ export async function CiNextRootWrapper({
     <NextIntlClientProvider locale={locale} messages={messages}>
       {devBeaconAccess ? (
         <CiDevBeacon
+          locale={locale}
+          dir={ciGetLangDir(locale)}
           appPageConfig={config}
-          dir="ltr"
           position="bottom-right"
           visibleWhenEnv={null} // always visible
           defaultTab="status"

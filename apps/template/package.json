@@ -10,7 +10,10 @@
     "typecheck:tools": "echo \"No tools typecheck for app\"",
     "check": "pnpm run typecheck",
     "lint": "next lint",
-    "clean": "rimraf .next"
+    "clean": "rimraf .next",
+    "sso": "aws sso login --profile developer1",
+    "sandbox": "npx ampx sandbox --profile developer1",
+    "sandbox:debug": "mkdir -p amplify/.logs && NODE_OPTIONS=\"--enable-source-maps --trace-uncaught\" ampx sandbox --profile developer1 --debug --once 2>&1 | tee amplify/.logs/amplify-sandbox-debug.log"
   },
   "dependencies": {
     "@aws-amplify/adapter-nextjs": "^1.7.2",
@@ -20,7 +23,9 @@
     "@cloudigniter/next": "workspace:*",
     "@tailwindcss/postcss": "^4.3.0",
     "aws-amplify": "^6.16.3",
+    "aws-lambda": "^1.0.7",
     "deepmerge-ts": "^7.1.5",
+    "dotenv": "^17.4.2",
     "next": "^16.2.1",
     "next-intl": "^4.9.0",
     "next-themes": "^0.4.6",
@@ -32,10 +37,18 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@aws-amplify/backend": "^1.23.0",
+    "@aws-amplify/backend-auth": "^1.9.4",
+    "@aws-amplify/backend-cli": "^1.8.3",
+    "@aws-amplify/backend-function": "^1.18.1",
+    "@aws-amplify/data-schema": "^1.26.0",
+    "@aws-amplify/plugin-types": "^1.12.1",
     "@cloudigniter/config-ts": "workspace:*",
+    "@types/aws-lambda": "^8.10.161",
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "aws-cdk-lib": "^2.261.0",
     "rimraf": "^6.0.1",
     "typescript": "^6.0.2"
   }

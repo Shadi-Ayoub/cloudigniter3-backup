@@ -1,9 +1,11 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 import type {
   CiTenantRoutingOptions,
   CiTenantScope,
 } from "@cloudigniter/core/types";
+
+type CiTenantInfoPageRequest = Pick<Request, "url">;
 
 /**
  * Rewrites or redirects the request to a tenant-aware informational page.
@@ -23,7 +25,7 @@ import type {
  *
  * Behavior
  * --------
- * 1) Clones the incoming Next.js URL to preserve origin / protocol.
+ * 1) Clones the incoming request URL to preserve origin / protocol.
  * 2) Replaces the pathname with the provided informational route.
  * 3) Clears existing query parameters to prevent polluted URLs.
  * 4) Injects canonical context parameters:
@@ -49,7 +51,7 @@ import type {
  * Parameters
  * ----------
  * request:
- *   The active NextRequest from middleware execution.
+ *   The active request from middleware execution.
  *
  * pathname:
  *   Destination informational route (absolute pathname).
@@ -89,15 +91,16 @@ import type {
  *   callers are responsible for resolution logic.
  */
 export function ciRewriteToTenantInfoPage(
-  request: NextRequest,
+  request: CiTenantInfoPageRequest,
   pathname: string,
   tenant: string,
   scope: CiTenantScope,
   opts: Required<CiTenantRoutingOptions>,
   response?: NextResponse,
   requestHeaders?: Headers,
-) {
-  const url = request.nextUrl.clone();
+): NextResponse {
+  const url = new URL(request.url);
+
   url.pathname = pathname;
 
   // Clear any existing query string to keep info pages canonical
@@ -105,18 +108,18 @@ export function ciRewriteToTenantInfoPage(
   url.searchParams.set("tenant", tenant);
   url.searchParams.set("scope", scope);
 
-  const r = response ?? NextResponse.next();
+  const responseToPreserve = response ?? NextResponse.next();
 
   const strategy = opts.infoPageStrategy ?? "rewrite";
 
   if (strategy === "redirect") {
     return NextResponse.redirect(url, {
-      headers: r.headers,
+      headers: responseToPreserve.headers,
     });
   }
 
   return NextResponse.rewrite(url, {
-    headers: r.headers,
+    headers: responseToPreserve.headers,
 
     ...(requestHeaders
       ? {

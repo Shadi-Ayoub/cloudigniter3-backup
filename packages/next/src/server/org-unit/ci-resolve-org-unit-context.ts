@@ -1,4 +1,4 @@
-import type { NextRequest } from "next/server";
+// import type { NextRequest } from "next/server";
 
 import { CI_DEFAULT_ORG_UNIT_OPTIONS } from "@cloudigniter/core/lib";
 
@@ -9,6 +9,8 @@ import type {
 } from "@cloudigniter/core/types";
 
 import { ciLookupOrgUnit, ciResolveOrgUnit } from "./helpers";
+
+type CiOrgUnitRequest = Pick<Request, "headers" | "url">;
 
 /**
  * Resolves the canonical Org Unit context for the current request.
@@ -30,7 +32,7 @@ export async function ciResolveOrgUnitContext({
   featurePathname,
   tenantRoutingConfig,
 }: {
-  request: NextRequest;
+  request: CiOrgUnitRequest;
   tenantContext: CiTenantContext;
   featurePathname: string;
   tenantRoutingConfig: CiTenantRoutingOptions;

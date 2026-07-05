@@ -1,5 +1,5 @@
 export { ciCanAccessDevBeacon } from "./ci-dev-beacon-access";
-export {} from "./ci-devbeacon-presets";
+export { ciIsDevBeaconLanguageErrorResponse } from "./ciIsDevBeaconLanguageErrorResponse";
 export {
   CI_DEV_BEACON_LOGO,
   CI_DEFAULT_DEV_BEACON_OPTIONS,

@@ -1,14 +1,14 @@
-import * as iam from 'aws-cdk-lib/aws-iam';
+import * as iam from "aws-cdk-lib/aws-iam";
 
 import {
   ciApplyCorePostBuildPlan,
   ciCreateCorePostBuildPlan,
-} from '@cloudigniter/next/server/backend';
+} from "@cloudigniter/aws/server/backend";
 
-import { ciGetAuthStack } from './auth';
-import { ciGetDataStack } from './data';
-import { ciGetRuntimeStack } from './runtime';
-import type { CiBackend } from './types';
+import { ciGetAuthStack } from "./auth";
+import { ciGetDataStack } from "./data";
+import { ciGetRuntimeStack } from "./runtime";
+import type { CiBackend } from "./types";
 
 export function ciPostBuild(backend: CiBackend) {
   const data = ciGetDataStack(backend);
@@ -26,7 +26,7 @@ export function ciPostBuild(backend: CiBackend) {
         userPoolId: auth.userPool.userPoolId,
         userPoolArn: auth.userPool.userPoolArn,
       },
-    }
+    },
   );
 
   ciApplyCorePostBuildPlan(plan, {
@@ -34,7 +34,7 @@ export function ciPostBuild(backend: CiBackend) {
     functions: auth.functions,
     includeFunctions: [...auth.CI_AUTH_FUNCS_IDS],
     envKeyAllowlist: auth.envKeyAllowlist,
-    stripServices: ['dynamodb'],
+    stripServices: ["dynamodb"],
   });
 
   ciApplyCorePostBuildPlan(plan, {

@@ -1,11 +1,11 @@
 import { cache } from "react";
-
+import { CI_DEV_TENANT_RESOLUTION_PROBES } from "@cloudigniter/core/lib";
 import type {
   CiGetTenantBySlugInterface,
   CiRequest,
   CiResponse,
   CiTenantStatus,
-} from "@ci-core/types";
+} from "@cloudigniter/core/types";
 
 const CI_MOCK_TENANTS: Record<string, { status: CiTenantStatus }> = {
   acme: {
@@ -15,6 +15,15 @@ const CI_MOCK_TENANTS: Record<string, { status: CiTenantStatus }> = {
     status: "suspended",
   },
   archived: {
+    status: "archived",
+  },
+  [CI_DEV_TENANT_RESOLUTION_PROBES.tenant.active]: {
+    status: "active",
+  },
+  [CI_DEV_TENANT_RESOLUTION_PROBES.tenant.suspended]: {
+    status: "suspended",
+  },
+  [CI_DEV_TENANT_RESOLUTION_PROBES.tenant.archived]: {
     status: "archived",
   },
 };

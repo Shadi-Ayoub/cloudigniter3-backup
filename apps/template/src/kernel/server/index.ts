@@ -52,9 +52,28 @@ export {
 } from "./config";
 
 // ─────────────────────────────────────────────────────────────
+// i18n
+// ─────────────────────────────────────────────────────────────
+export {
+  ciLoadRouteMessages,
+  type CiLoadRouteMessagesOptions,
+  type CiLoadRouteMessagesResult,
+} from "./i18n";
+
+// ─────────────────────────────────────────────────────────────
 // lib
 // ─────────────────────────────────────────────────────────────
 export {} from "./lib";
+
+// ─────────────────────────────────────────────────────────────
+// root
+// ─────────────────────────────────────────────────────────────
+export {
+  appResolveRootLayoutContext,
+  AppRootWrapper,
+  type AppRootLayoutContext,
+  type AppRootWrapperProps,
+} from "./root";
 
 // ─────────────────────────────────────────────────────────────
 // settings

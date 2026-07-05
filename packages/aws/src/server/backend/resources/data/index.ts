@@ -2,22 +2,22 @@
 // Imports (required for local usage)
 // ─────────────────────────────────────────────────────────────
 
-import { ciPrivateSettingsTableResourceModule } from "./private-settings-table";
-import { ciPublicSettingsTableResourceModule } from "./public-settings-table";
-import { ciSystemTableResourceModule } from "./system-table";
+// import { ciPrivateSettingsTableResourceModule } from "./private-settings-table";
+// import { ciPublicSettingsTableResourceModule } from "./public-settings-table";
+// import { ciSystemTableResourceModule } from "./system-table";
 import { ciUserProfileTableResourceModule } from "./user-profile-table";
-import { ciUserSettingsTableResourceModule } from "./user-settings-table";
+// import { ciUserSettingsTableResourceModule } from "./user-settings-table";
 
 // ─────────────────────────────────────────────────────────────
 // Re-exports (optional but recommended)
 // ─────────────────────────────────────────────────────────────
 
 export {
-  ciPrivateSettingsTableResourceModule,
-  ciPublicSettingsTableResourceModule,
-  ciSystemTableResourceModule,
+  // ciPrivateSettingsTableResourceModule,
+  // ciPublicSettingsTableResourceModule,
+  // ciSystemTableResourceModule,
   ciUserProfileTableResourceModule,
-  ciUserSettingsTableResourceModule,
+  // ciUserSettingsTableResourceModule,
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -25,9 +25,9 @@ export {
 // ─────────────────────────────────────────────────────────────
 
 export const CI_DATA_RESOURCE_MODULES = [
-  ciPrivateSettingsTableResourceModule,
-  ciPublicSettingsTableResourceModule,
-  ciSystemTableResourceModule,
+  // ciPrivateSettingsTableResourceModule,
+  // ciPublicSettingsTableResourceModule,
+  // ciSystemTableResourceModule,
   ciUserProfileTableResourceModule,
-  ciUserSettingsTableResourceModule,
+  // ciUserSettingsTableResourceModule,
 ] as const;

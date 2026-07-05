@@ -4,9 +4,9 @@ import {
   type AuthAccessDefinition,
   type AuthAccessBuilder,
   type AmplifyAuthProps,
-} from '@aws-amplify/backend-auth';
+} from "@aws-amplify/backend-auth";
 
-import { customBackendAuth } from '../custom/auth';
+import { customBackendAuth } from "../custom/auth";
 
 import {
   // listCognitoUsers,
@@ -14,9 +14,9 @@ import {
   // deleteCognitoUser,
   createCognitoUserHandler,
   setCognitoUserPasswordHandler,
-} from './cognito-user';
+} from "./cognito-user";
 
-import { createUserHandler } from '../functions/user/create-user/resource';
+// import { createUserHandler } from '../functions/user/create-user/resource';
 // import { createUser, getUser } from '../functions/user';
 // import { getUser } from '../functions/user';
 // import { postConfirmation } from './post-confirmation/resource';
@@ -34,13 +34,13 @@ const backendAuth: AmplifyAuthProps = {
     ...customBackendAuth.triggers,
   },
   groups: [
-    'USER',
-    'DEVELOPER',
+    "USER",
+    "DEVELOPER",
     ...customGroups,
-    'ADMIN',
-    'SUPER_ADMIN',
-    'SYSTEM_ADMIN',
-    'SYSTEM_SUPER_ADMIN',
+    "ADMIN",
+    "SUPER_ADMIN",
+    "SYSTEM_ADMIN",
+    "SYSTEM_SUPER_ADMIN",
   ], // Order impact precedence!
   senders: customBackendAuth.senders,
   userAttributes: { ...customBackendAuth.userAttributes },
@@ -53,10 +53,10 @@ const backendAuth: AmplifyAuthProps = {
 const backendAuthAccess = (allow: AuthAccessBuilder) => {
   const accessArray: AuthAccessDefinition[] = [
     // allow.resource(listCognitoUsers).to(['listUsers']),
-    allow.resource(getCognitoUserHandler).to(['getUser']),
-    allow.resource(createCognitoUserHandler).to(['createUser']),
-    allow.resource(createCognitoUserHandler).to(['getUser']),
-    allow.resource(setCognitoUserPasswordHandler).to(['setUserPassword']),
+    allow.resource(getCognitoUserHandler).to(["getUser"]),
+    allow.resource(createCognitoUserHandler).to(["createUser"]),
+    allow.resource(createCognitoUserHandler).to(["getUser"]),
+    allow.resource(setCognitoUserPasswordHandler).to(["setUserPassword"]),
     // allow.resource(deleteCognitoUser).to(['disableUser']),
     // allow.resource(deleteCognitoUser).to(['deleteUser']),
 

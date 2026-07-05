@@ -1,7 +1,7 @@
-import { ciCreateCognitoUserHandler } from '@cloudigniter/next/server/backend';
-import type { Schema } from '../../../data/resource';
+import { ciCreateCognitoUserHandler } from "@cloudigniter/aws/server/backend";
+import type { Schema } from "../../../data/resource";
 
-type Handler = Schema['CreateCognitoUser']['functionHandler'];
+type Handler = Schema["CreateCognitoUser"]["functionHandler"];
 /**
  * * @param event
  * @returns

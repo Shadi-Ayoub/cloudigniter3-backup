@@ -1,70 +1,12 @@
 import { cache } from "react";
 
-import { ciNormalizePathname } from "@ci-core/lib";
+import { CI_MOCK_ORG_UNITS, ciNormalizePathname } from "@cloudigniter/core/lib";
 
 import type {
   CiGetOrgUnitByPathInterface,
-  CiOrgUnitContext,
   CiRequest,
   CiResponse,
-} from "@ci-core/types";
-
-const CI_MOCK_ORG_UNITS: CiOrgUnitContext[] = [
-  {
-    id: "org_acme_hr",
-    tenantId: "acme",
-    parentId: null,
-    slug: "hr",
-    name: "Human Resources",
-    path: "/hr",
-    status: "active",
-  },
-  {
-    id: "org_acme_student_services",
-    tenantId: "acme",
-    parentId: null,
-    slug: "student-services",
-    name: "Student Services",
-    path: "/student-services",
-    status: "suspended",
-  },
-  {
-    id: "org_acme_academic",
-    tenantId: "acme",
-    parentId: null,
-    slug: "academic",
-    name: "Academic Affairs",
-    path: "/academic",
-    status: "active",
-  },
-  {
-    id: "org_acme_grade_10",
-    tenantId: "acme",
-    parentId: "org_acme_academic",
-    slug: "grade-10",
-    name: "Grade 10",
-    path: "/academic/grade-10",
-    status: "active",
-  },
-  {
-    id: "org_acme_math",
-    tenantId: "acme",
-    parentId: "org_acme_grade_10",
-    slug: "math",
-    name: "Mathematics Department",
-    path: "/academic/grade-10/math",
-    status: "active",
-  },
-  {
-    id: "org_acme_physics",
-    tenantId: "acme",
-    parentId: "org_acme_grade_10",
-    slug: "physics",
-    name: "Physics Department",
-    path: "/academic/grade-10/physics",
-    status: "archived",
-  },
-];
+} from "@cloudigniter/core/types";
 
 /**
  * Resolves an Org Unit by its canonical hierarchical path within a Tenant

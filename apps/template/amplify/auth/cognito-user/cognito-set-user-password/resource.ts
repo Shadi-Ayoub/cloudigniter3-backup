@@ -1,6 +1,6 @@
-import { defineFunction } from '@aws-amplify/backend';
+import { defineFunction } from "@aws-amplify/backend";
 
 export const setCognitoUserPasswordHandler = defineFunction({
-  name: 'set-cognito-user-password-handler',
-  resourceGroupName: 'auth',
+  name: "set-cognito-user-password-handler",
+  resourceGroupName: "auth",
 });

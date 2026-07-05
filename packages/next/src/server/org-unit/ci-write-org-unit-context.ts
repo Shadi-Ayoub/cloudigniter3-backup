@@ -1,4 +1,4 @@
-import type { NextRequest, NextResponse } from "next/server";
+import type { NextResponse } from "next/server";
 
 import { CI_DEFAULT_ORG_UNIT_OPTIONS } from "@cloudigniter/core/lib";
 
@@ -7,6 +7,12 @@ import type {
   CiOrgUnitRoutingOptions,
   CiTenantRoutingOptions,
 } from "@cloudigniter/core/types";
+
+type CiOrgUnitContextRequest = {
+  cookies: {
+    get(name: string): { value: string } | undefined;
+  };
+};
 
 /**
  * Writes canonical Org Unit context to response headers and, optionally, cookies.
@@ -25,7 +31,7 @@ export function ciWriteOrgUnitContext({
   context,
   tenantRoutingConfig,
 }: {
-  request: NextRequest;
+  request: CiOrgUnitContextRequest;
   response: NextResponse;
   requestHeaders?: Headers;
   context: CiOrgUnitContext | null;

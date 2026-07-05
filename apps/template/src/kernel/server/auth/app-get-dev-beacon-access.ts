@@ -3,7 +3,7 @@ import {
   ciCanAccessDevBeacon,
 } from "@cloudigniter/core/lib";
 
-import type { CiDevBeaconOptions, CiEnvMode } from "@ci-core/types";
+import type { CiDevBeaconOptions, CiEnvMode } from "@cloudigniter/core/types";
 
 import { appGetDevBeaconActor } from "./app-get-dev-beacon-actor";
 

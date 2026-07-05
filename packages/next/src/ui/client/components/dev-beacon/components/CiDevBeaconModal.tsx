@@ -66,10 +66,12 @@ export function CiDevBeaconModal({
       case "development":
         classByEnv = "bg-emerald-500/10 text-emerald-600";
         break;
+
       case "test":
       case "staging":
         classByEnv = "bg-amber-500/10 text-amber-700";
         break;
+
       default:
         classByEnv = "bg-muted text-foreground/60";
     }
@@ -89,19 +91,23 @@ export function CiDevBeaconModal({
             zIndex: 3000,
           }}
         />
+
         {/* Content: full-bleed horizontally, pinned vertically, no animations, no transforms */}
         <Dialog.Content
           // IMPORTANT: no shadcn default class string here—this is the Radix primitive
           className={cn(
-            "bg-background fixed right-0 left-0 z-[3001] overflow-y-auto rounded-none border-0 p-0 shadow-xl",
+            "bg-background fixed right-0 left-0 z-3001 overflow-y-auto rounded-none border-0 p-0 shadow-xl",
             // hard overrides to ensure no centering ever applies
-            "!w-screen !max-w-none !transform-none",
+            "w-screen! max-w-none! transform-none!",
             className,
           )}
-          style={{ top: viewportTopOffset, bottom: viewportBottomOffset }}
+          style={{
+            top: viewportTopOffset,
+            bottom: viewportBottomOffset,
+          }}
         >
           {/* Sticky header */}
-          <header className="bg-background/95 supports-[backdrop-filter]:bg-background/70 sticky top-0 z-[1] flex items-center justify-between border-b px-4 py-3 backdrop-blur">
+          <header className="bg-background/95 supports-backdrop-filter:bg-background/70 sticky top-0 z-1 flex items-center justify-between border-b px-4 py-3 backdrop-blur">
             <Dialog.Title className="text-xl font-semibold">
               {title}{" "}
               {env ? (
@@ -117,13 +123,15 @@ export function CiDevBeaconModal({
             </Dialog.Title>
 
             <div className="flex items-center gap-2">
-              {!loaded && (
+              {!loaded ? (
                 <span className="text-muted-foreground inline-flex items-center gap-2 text-xs">
                   <Loader2 className="size-3 animate-spin" />
                   Loading dashboard…
                 </span>
-              )}
+              ) : null}
+
               {headerActions}
+
               <Dialog.Close
                 className="rounded-md border px-2 py-1 text-xs"
                 aria-label="Close"

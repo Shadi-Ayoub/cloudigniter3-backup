@@ -1,4 +1,4 @@
-import type { NextRequest, NextResponse } from "next/server";
+import type { NextResponse } from "next/server";
 
 import type {
   CiTenantContext,
@@ -10,6 +10,12 @@ import {
   CI_DEFAULT_TENANT_HEADERS,
   CI_DEFAULT_TENANT_ROUTING_OPTIONS,
 } from "@cloudigniter/core/lib";
+
+type CiTenantContextRequest = {
+  cookies: {
+    get(name: string): { value: string } | undefined;
+  };
+};
 
 /**
  * Writes canonical tenant context to response headers and, optionally, cookies.
@@ -26,7 +32,7 @@ export function ciWriteTenantContext({
   context,
   tenantRoutingConfig,
 }: {
-  request: NextRequest;
+  request: CiTenantContextRequest;
   response: NextResponse;
   requestHeaders?: Headers;
   context: CiTenantContext;

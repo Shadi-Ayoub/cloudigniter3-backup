@@ -1,5 +1,7 @@
 export { cn } from "./lib/utils";
 
+export { Alert, AlertTitle, AlertDescription, AlertAction } from "./alert";
+
 export { Badge } from "./badge";
 
 export { BorderBeam, type BorderBeamProps } from "./border-beam";

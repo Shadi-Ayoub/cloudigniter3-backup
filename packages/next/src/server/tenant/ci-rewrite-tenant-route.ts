@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
 import { ciNormalizePathname } from "@cloudigniter/core/lib";
 
 import type { CiTenantContext } from "@cloudigniter/core/types";
+
+type CiTenantRewriteRequest = Pick<Request, "url">;
 
 /**
  * Rewrites a validated logical feature route to the internal Tenant or Global
@@ -20,7 +21,7 @@ export function ciRewriteTenantRoute({
   tenant,
   featurePathname,
 }: {
-  request: NextRequest;
+  request: CiTenantRewriteRequest;
   response: NextResponse;
   requestHeaders: Headers;
   tenant: CiTenantContext;
@@ -39,7 +40,7 @@ export function ciRewriteTenantRoute({
 
   const internalRoot = tenant.scope === "global" ? "/ci-global" : "/ci-tenant";
 
-  const rewriteUrl = request.nextUrl.clone();
+  const rewriteUrl = new URL(request.url);
 
   rewriteUrl.pathname =
     routePathname === "/" ? internalRoot : `${internalRoot}${routePathname}`;

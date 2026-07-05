@@ -2,9 +2,9 @@
 // See https://docs.aws.amazon.com/amplify/latest/userguide/welcome.html
 // See https://aws-amplify.github.io/amplify-backend/modules/_aws_amplify_backend_auth.html
 
-import { defineAuth } from '@aws-amplify/backend';
+import { defineAuth } from "@aws-amplify/backend";
 
-import { backendAuth, backendAuthAccess } from './backend-auth';
+import { backendAuth, backendAuthAccess } from "./backend-auth";
 
 /**
  * Define and configure your auth resource
@@ -13,7 +13,9 @@ import { backendAuth, backendAuthAccess } from './backend-auth';
  *
  */
 
-export const auth = defineAuth({
+type AmplifyAuthResource = ReturnType<typeof defineAuth>;
+
+export const auth: AmplifyAuthResource = defineAuth({
   ...backendAuth,
   access: (allow) => [...backendAuthAccess(allow)],
 });

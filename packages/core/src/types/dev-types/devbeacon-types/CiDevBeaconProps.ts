@@ -24,6 +24,7 @@ export interface CiDevBeaconProps<T> {
    */
   // extraConfig: CiCorePageConfig;
 
+  locale: string;
   /**
    * Layout direction for the DevBeacon UI surface.
    * Forwarded to the client wrapper and used to set `dir` on the content container.

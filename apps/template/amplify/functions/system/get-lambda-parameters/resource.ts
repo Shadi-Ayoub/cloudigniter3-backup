@@ -1,6 +1,6 @@
-import { defineFunction } from '@aws-amplify/backend';
+// import { defineFunction } from '@aws-amplify/backend';
 
-export const getLambdaParametersHandler = defineFunction({
-  name: 'get-lambda-parameters-handler',
-  resourceGroupName: 'data',
-});
+// export const getLambdaParametersHandler = defineFunction({
+//   name: 'get-lambda-parameters-handler',
+//   resourceGroupName: 'data',
+// });
