@@ -1,13 +1,9 @@
-import type { CiInfoPageStrategy } from "@cloudigniter/core/types";
+import type { CiResolvedCoreConfig } from "@cloudigniter/core/types";
+import type { CiNextResolvedConfig } from "@cloudigniter/next/types";
+import type { CiNextCoreConfig } from "./CiNextCoreConfig";
 
 export type CiNextConfig = {
-  loginRoute?: string;
-
-  route?: {
-    namespaceCookieName?: string;
-    namespaceHeaderName?: string;
-    pathnameCookieName?: string;
-    pathnameHeaderName?: string;
-    infoPageStrategy?: CiInfoPageStrategy;
-  };
+  appCoreConfig: CiNextCoreConfig; // the cloudigniter.config.ts file
+  appResolvedCoreConfig: CiResolvedCoreConfig;
+  appNextResolvedConfig: CiNextResolvedConfig;
 };

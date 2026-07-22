@@ -1,6 +1,5 @@
-import type { CiDevBeaconTenantInfo } from "./CiDevBeaconTenantInfo";
-
-export interface CiDevBeaconSectionStatusProps {
-  tenant?: CiDevBeaconTenantInfo;
-  languageDiagnosticsEndpoint?: string;
+export interface CiDevBeaconSectionStatusProps<CTX> {
+  pathname: string;
+  context: CTX;
+  routeHeadersRefreshing?: boolean;
 }

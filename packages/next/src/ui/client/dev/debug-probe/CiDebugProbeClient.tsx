@@ -10,7 +10,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "../../components/shadcn/tooltip";
+} from "@cloudigniter/ui/client";
 
 function ciToCssPositionValue(value: number | string | undefined): string {
   if (value === undefined) return "0px";

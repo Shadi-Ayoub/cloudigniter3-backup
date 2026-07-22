@@ -1,11 +1,11 @@
 import React from "react";
 // import { useTranslations } from 'next-intl';
 
-import { ciStartTraceServer } from "../../../server";
-import type { CiNextPageConfig } from "../../../types";
+import { ciStartTraceServer } from "@cloudigniter/core/server";
+import type { CiCoreConfig } from "@cloudigniter/core/types";
 
 interface FooterInterface {
-  config: CiNextPageConfig;
+  config: CiCoreConfig;
   // checkList: SystemStatusCheckList;
   children: React.ReactNode;
 }
@@ -15,7 +15,7 @@ export const CiFooter = ({ config, children }: FooterInterface) => {
 
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger } = ciStartTraceServer(
-    config.ciConfig.dev.traceLog,
+    config.dev.traceLog,
     { source: "server", prettyWave: true },
     { name: "<Footer>" },
   );

@@ -1,2 +1,5 @@
-export { CiMenuItem } from "./CiMenuItem";
-export { CiNavigationMenu } from "./CiNavigationMenu";
+export { CiNextMenuItem, type CiNextMenuItemProps } from "./CiNextMenuItem";
+export {
+  CiNextNavigationMenu,
+  type CiNextNavigationMenuProps,
+} from "./CiNextNavigationMenu";

@@ -1,1 +1,1 @@
-export { CiProfileMenu, CiProfileMenuBase } from "./components";
+export { CiNextProfileMenu } from "./CiNextProfileMenu";

@@ -28,6 +28,89 @@
  * Do not wrap these rules in a Tailwind @layer.
  */
 
+/*
+ * Hide only the Sign In/Create Account tab controls.
+ * Keep the active Create Account form panel visible.
+ */
+.ci-auth-page--sign-up [data-amplify-authenticator] .amplify-tabs__list {
+  display: none;
+}
+
+.ci-auth-page--sign-up [data-amplify-authenticator] {
+  width: 100%;
+
+  --amplify-components-authenticator-router-background-color: transparent;
+  --amplify-components-authenticator-router-border-width: 0;
+  --amplify-components-authenticator-router-box-shadow: none;
+  --amplify-components-authenticator-form-padding: 1.5rem;
+}
+
+.ci-auth-page--sign-up [data-amplify-router] {
+  width: 100%;
+  max-width: none;
+}
+
+/*
+ * Sign-up fields use one column by default and switch to a
+ * two-column profile layout on medium and larger screens.
+ */
+.ci-sign-up-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+/*
+ * Add a red asterisk only to fields that Amplify renders
+ * with the native required attribute.
+ */
+.ci-sign-up-fields > :has(:is(input, select, textarea):required) label::after {
+  color: var(--color-destructive, var(--color-red-600, #dc2626));
+  content: " *";
+  font-weight: 600;
+}
+
+.ci-sign-up-fields > * {
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  .ci-auth-page--sign-up [data-amplify-authenticator] {
+    --amplify-components-authenticator-form-padding: 2rem 2.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .ci-sign-up-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 1.25rem;
+    row-gap: 0.75rem;
+  }
+
+  /*
+   * Account credentials remain full-width. Profile fields that are
+   * not listed here will automatically occupy half-width columns.
+   */
+  .ci-sign-up-fields > :has([name="username"]),
+  .ci-sign-up-fields > :has([name="email"]),
+  .ci-sign-up-fields > :has([name="phone_number"]),
+  .ci-sign-up-fields > :has([name="password"]),
+  .ci-sign-up-fields > :has([name="confirm_password"]),
+  .ci-sign-up-fields > :has([name="preferred_username"]) {
+    grid-column: 1 / -1;
+  }
+}
+
+.ci-auth-page--sign-up [data-amplify-authenticator] {
+  --amplify-components-authenticator-form-padding: 1.25rem 1.5rem 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .ci-auth-page--sign-up [data-amplify-authenticator] {
+    --amplify-components-authenticator-form-padding: 1.5rem 2rem 1.75rem;
+  }
+}
+
 [data-amplify-authenticator] {
   --amplify-components-authenticator-router-background-color: var(--color-card);
   --amplify-components-authenticator-router-border-color: var(--color-border);

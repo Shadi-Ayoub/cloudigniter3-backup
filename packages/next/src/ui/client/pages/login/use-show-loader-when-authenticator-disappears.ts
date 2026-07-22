@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import { useCiPageLoaderStore } from "@ci-next/ui/client";
+import { useCiPageLoaderStore } from "@cloudigniter/ui/client";
 import type { CiAuthUiConfig } from "@cloudigniter/core/types";
 import type { CiAuthenticatorConfig } from "@ci-next/types";
 

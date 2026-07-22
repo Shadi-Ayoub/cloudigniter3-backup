@@ -1,6 +1,7 @@
 import type { CiNextPageConfig } from "@ci-next/types";
+import type { CiLocaleDirection } from "@cloudigniter/core/types";
 
 export interface CiThemeSwitcherProps {
-  dir: "ltr" | "rtl";
+  dir: CiLocaleDirection;
   config: CiNextPageConfig;
 }

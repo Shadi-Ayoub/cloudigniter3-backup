@@ -1,4 +1,5 @@
 export type { CiAuthConfig } from "./CiAuthConfig";
+export type { CiAuthenticatorPageMode } from "./CiAuthenticatorPageMode";
 export type { CiAuthMode } from "./CiAuthMode";
 export type { CiAuthProviderId } from "./CiAuthProviderId";
 export type { CiAuthUiConfig } from "./CiAuthUiConfig";

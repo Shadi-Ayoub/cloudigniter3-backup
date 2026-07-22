@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { useState } from "react";
 import { CiCoreSettingsFormSchema } from "@cloudigniter/core/lib";
-import { TooltipProvider } from "@ci-next/ui/client";
+import { TooltipProvider } from "@cloudigniter/ui/client";
 import {
   type CiResponse,
   type CiSettings,

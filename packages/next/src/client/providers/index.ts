@@ -1,1 +1,1 @@
-export { CiAmplifyClientConfigurer, CiAwsProfileMenu } from "./aws";
+export { CiAmplifyClientConfigurer } from "./aws";

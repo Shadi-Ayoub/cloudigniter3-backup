@@ -1,4 +1,4 @@
-import type { CiDataTableAction } from "@ci-next/ui/client";
+import type { CiDataTableAction } from "@cloudigniter/ui/types";
 import type { CiTenantHtmlTableRow } from "@cloudigniter/core/types";
 
 export const tenantActions = [

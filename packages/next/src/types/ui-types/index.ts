@@ -2,7 +2,6 @@
 // profile menu
 // ─────────────────────────────────────────────────────────────
 export type {
+  CiNextAwsProfileMenuProps,
   CiNextProfileMenuProps,
-  CiProfileMenuItem,
-  CiProfileMenuProps,
 } from "./profile-menu-types";

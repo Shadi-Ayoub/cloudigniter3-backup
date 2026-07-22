@@ -1,36 +1,36 @@
 import {
-  CI_DEFAULT_TENANT_ROUTING_OPTIONS,
+  // CI_DEFAULT_TENANT_ROUTING_OPTIONS,
   ciGetBypassFlag,
-  ciGetHost,
+  // ciGetHost,
   ciIsInternalPath,
   ciIsStaticFile,
-  ciGetRequestPath,
+  // ciGetRequestPath,
   ciRewriteToRouteInfoPage,
-  ciBuildTenantRewritePath,
-  ciLookupTenant,
-  ciResolveTenant,
-  ciResolveTenantFromSlugPath,
-  ciResolveTenantFromSubdomain,
-  ciRewriteToTenantInfoPage,
+  // ciBuildTenantRewritePath,
+  // ciLookupTenant,
+  // ciResolveTenant,
+  // ciResolveTenantFromSlugPath,
+  // ciResolveTenantFromSubdomain,
+  // ciRewriteToTenantInfoPage,
 } from "./helpers";
 
 export {
-  CI_DEFAULT_TENANT_ROUTING_OPTIONS,
+  // CI_DEFAULT_TENANT_ROUTING_OPTIONS,
   ciGetBypassFlag,
-  ciGetHost,
+  // ciGetHost,
   ciIsInternalPath,
   ciIsStaticFile,
-  ciGetRequestPath,
+  // ciGetRequestPath,
   ciRewriteToRouteInfoPage,
-  ciBuildTenantRewritePath,
-  ciLookupTenant,
-  ciResolveTenant,
-  ciResolveTenantFromSlugPath,
-  ciResolveTenantFromSubdomain,
-  ciRewriteToTenantInfoPage,
+  // ciBuildTenantRewritePath,
+  // ciLookupTenant,
+  // ciResolveTenant,
+  // ciResolveTenantFromSlugPath,
+  // ciResolveTenantFromSubdomain,
+  // ciRewriteToTenantInfoPage,
 };
 
 export { ciHandleRouteLogic } from "./ci-handle-route-logic";
-export { ciHandleTenantLogic } from "./ci-handle-tenant-logic";
+// export { ciHandleTenantLogic } from "./ci-handle-tenant-logic";
 export { ciNextProxyResponse } from "./ci-next-proxy-response";
 export { ciNextProxyMatcher } from "./ci-next-proxy-matcher";

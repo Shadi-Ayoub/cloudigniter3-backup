@@ -6,11 +6,14 @@
       "@ci-next/*": [
         "./src/*"
       ],
-      "@ci-core/*": [
-        "../core/src/*"
-      ],
       "@ci-aws/*": [
         "../aws/src/*"
+      ],
+      "@ci-ui/*": [
+        "../ui/src/*"
+      ],
+      "@ci-core/*": [
+        "../core/src/*"
       ]
     }
   },

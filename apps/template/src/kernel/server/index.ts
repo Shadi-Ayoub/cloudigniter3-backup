@@ -48,7 +48,7 @@ export { Kernel } from "./components";
 export {
   // buildPageConfig,
   appGetServerCoreConfig,
-  appGetServerAllConfig,
+  appGetAllServerConfig,
 } from "./config";
 
 // ─────────────────────────────────────────────────────────────

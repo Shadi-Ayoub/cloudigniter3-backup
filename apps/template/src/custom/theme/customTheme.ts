@@ -1,5 +1,5 @@
-import { type ThemeProviderProps } from 'next-themes';
+import { type ThemeProviderProps } from "next-themes";
 
-export const themeProviderProps: ThemeProviderProps = {
+export const appThemeProviderProps: ThemeProviderProps = {
   forcedTheme: undefined,
 };

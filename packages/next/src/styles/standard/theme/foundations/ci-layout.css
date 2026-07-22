@@ -27,7 +27,11 @@
   --z-index-modal: 900;
   --z-index-toast: 1000;
   --z-index-debug: 2000;
-
-  --z-index-dev-beacon: var(--z-index-debug);
   --z-index-debug-probe: var(--z-index-debug);
+
+  --z-index-dev-beacon-button: var(--z-index-debug);
+  --z-dev-beacon-overlay: 3000;
+  --z-dev-beacon-content: 3001;
+  --z-dev-beacon-diagnostics-overlay: 4000;
+  --z-dev-beacon-diagnostics-content: 4001;
 }

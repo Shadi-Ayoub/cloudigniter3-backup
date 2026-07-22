@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { NextIntlClientProvider, useLocale, useMessages } from "next-intl";
 import { ciGetLangDir } from "@cloudigniter/core/lib";
-import { CiDataTable, useCiPageLoaderStore } from "@ci-next/ui/client";
+import { CiDataTable, useCiPageLoaderStore } from "@cloudigniter/ui/client";
 import { type CiTenantHtmlTableRow } from "@cloudigniter/core/types";
 
 import { useTenantsLoader } from "./use-tenants-loader";

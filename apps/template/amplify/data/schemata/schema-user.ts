@@ -1,3 +1,5 @@
+// see: https://docs.amplify.aws/nextjs/build-a-backend/functions/examples/create-user-profile-record/
+
 import { a } from "@aws-amplify/backend";
 
 // import { createUserHandler } from '../../functions/user/create-user/resource';

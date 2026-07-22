@@ -7,7 +7,10 @@ import {
   ciSafeToString,
 } from "@cloudigniter/core/lib";
 import { ciPrintToConsole } from "@cloudigniter/core/client";
-import { ciNormalizeClientThrownError, ciNotify } from "@ci-next/ui/client";
+import {
+  ciNormalizeClientThrownError,
+  ciNotify,
+} from "@cloudigniter/ui/client";
 import {
   type CiTenant,
   type CiRequest,
@@ -19,7 +22,7 @@ import type {
   LoadTenantsErrorBody,
 } from "./types";
 
-import { ciGetEnvMode } from "@ci-next/lib";
+import { ciGetEnvMode } from "@ci-next/server";
 
 function isLoadTenantsOkBody(x: unknown): x is LoadTenantsOkBody {
   if (!x || typeof x !== "object") return false;

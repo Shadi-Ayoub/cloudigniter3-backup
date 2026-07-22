@@ -1,20 +1,19 @@
 // ─────────────────────────────────────────────────────────────
 // dashboard
 // ─────────────────────────────────────────────────────────────
-export { CiDashboardPage } from "./dashboard";
+export { CiNextDashboardPage } from "./dashboard";
 
 // ─────────────────────────────────────────────────────────────
 // dev
 // ─────────────────────────────────────────────────────────────
-export {
-  // debug probe
-  CiDebugProbe,
+export {} from // debug probe
+// CiDebugProbe,
 
-  // dev beacon
-  CiDevBeacon,
-  CiNextAwsDevBeacon,
-  type CiNexAwsDevBeaconProps,
-} from "./dev";
+// dev beacon
+// CiDevBeacon,
+// CiNextAwsDevBeacon,
+// type CiNexAwsDevBeaconProps,
+"./dev";
 
 // ─────────────────────────────────────────────────────────────
 // main header navigation box
@@ -32,9 +31,4 @@ export {
 // ─────────────────────────────────────────────────────────────
 // main menu
 // ─────────────────────────────────────────────────────────────
-export { CiMainMenu } from "./main-menu";
-
-// ─────────────────────────────────────────────────────────────
-// main menu
-// ─────────────────────────────────────────────────────────────
-export { CiNextRootWrapper, CiPageWrapper } from "./wrapper";
+// export { CiMainMenu } from "./main-menu";

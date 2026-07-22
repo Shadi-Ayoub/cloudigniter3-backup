@@ -24,6 +24,7 @@ export type {
   CiDevBeaconLanguageSummary,
   CiDevBeaconLanguageSummaryResponse,
   CiDevBeaconLogoSpec,
+  CiDevBeaconModalProps,
   CiDevBeaconOptions,
   CiDevBeaconPosition,
   CiDevBeaconProps,
@@ -32,10 +33,10 @@ export type {
   CiDevBeaconSideTabsListProps,
   CiDevBeaconSectionStatusProps,
   CiDevBeaconTabValue,
-  CiDevBeaconTenantInfo,
+  // CiDevBeaconTenantInfo,
   CiDevBeaconTraceLogViewerTextProps,
   CiDevBeaconTraceTabProps,
-  CiDevBeaconWrapperProps,
+  // CiDevBeaconWrapperProps,
 } from "./devbeacon-types";
 
 // ─────────────────────────────────────────────────────────────

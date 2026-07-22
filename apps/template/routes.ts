@@ -11,6 +11,11 @@ export const routes: CiRoutesMap = {
     namespace: "testing",
     protected: true,
   },
+  "/create-account": {
+    title: "Create an Account",
+    namespace: "authentication",
+    protected: false,
+  },
   "/dashboard": {
     title: "Admin Dashboard",
     namespace: "dashboard",

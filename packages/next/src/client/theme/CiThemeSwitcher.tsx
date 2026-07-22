@@ -23,13 +23,13 @@ import {
   TooltipContent,
   TooltipTrigger,
   useCiFeedbackStore,
-} from "@ci-next/ui/client";
+} from "@cloudigniter/ui/client";
 import type { CiThemeSwitcherProps } from "@ci-next/types";
 
 export function CiThemeSwitcher({ dir, config }: CiThemeSwitcherProps) {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger, done } = ciStartTraceClient(
-    config.ciConfig.dev.traceLog,
+    config.coreConfig.dev.traceLog,
     { source: "client", tag: `ThemeSwitcher` },
     { name: `<ThemeSwitcher />` },
   );
@@ -53,8 +53,8 @@ export function CiThemeSwitcher({ dir, config }: CiThemeSwitcherProps) {
   const t1 = useTranslations("themeSwitcher");
   const t2 = useTranslations("errorTheme");
 
-  const enableSystem = config.ciConfig.theme.enableSystem ?? true;
-  const storageKey = config.ciConfig.theme.storageKey ?? "ci-theme";
+  const enableSystem = config.coreConfig.theme.enableSystem ?? true;
+  const storageKey = config.coreConfig.theme.storageKey ?? "ci-theme";
   const currentTheme = ciGetLocalStorageItem(storageKey);
   const disabled = !!forcedTheme;
 

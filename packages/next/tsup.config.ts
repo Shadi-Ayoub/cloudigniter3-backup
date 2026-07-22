@@ -1,5 +1,4 @@
 import { defineConfig } from "tsup";
-
 import { ciCreateTsupConfig } from "../../scripts/build-steps/ci-tsup-config";
 
 const externalPackages = [

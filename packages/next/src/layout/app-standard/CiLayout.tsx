@@ -1,9 +1,10 @@
 import React from "react";
+import { CiDashboardHeaderButton } from "@cloudigniter/ui/client";
 
-import { CiMainHeaderUserBox, CiPageWrapper } from "../../ui/server";
-import { CiDashboardHeaderButton } from "../../ui/client";
-import { ciStartTraceServer } from "../../server";
-import type { CiNextPageConfig } from "../../types";
+import { CiPageWrapper } from "@ci-next/server";
+import { CiMainHeaderUserBox } from "@ci-next/ui/server";
+import { ciStartTraceServer } from "@cloudigniter/core/server";
+import type { CiNextPageConfig } from "@ci-next/types";
 
 import { CiHeader } from "./header";
 import { CiContainer } from "./container";
@@ -18,7 +19,7 @@ interface CiLayoutProps {
 const CiLayout = ({ config, protect, children }: CiLayoutProps) => {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger } = ciStartTraceServer(
-    config.ciConfig.dev.traceLog,
+    config.coreConfig.dev.traceLog,
     { source: "server", prettyWave: true },
     { name: "<Layout>" },
   );
@@ -32,7 +33,7 @@ const CiLayout = ({ config, protect, children }: CiLayoutProps) => {
   return (
     <CiPageWrapper config={config} protect={protect}>
       <CiHeader config={config}>
-        <CiDashboardHeaderButton traceConfig={config.ciConfig.dev.traceLog} />
+        <CiDashboardHeaderButton traceConfig={config.coreConfig.dev.traceLog} />
         <div></div>
         <CiMainHeaderUserBox config={config} />
       </CiHeader>

@@ -3,12 +3,15 @@
 import { useMemo } from "react";
 import { ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
-import type { CiBreadcrumbItem } from "@cloudigniter/core/types";
-import { CiNavigateWithLoader } from "@ci-next/client";
+import type {
+  CiBreadcrumbItem,
+  CiLocaleDirection,
+} from "@cloudigniter/core/types";
+import { CiNavigateWithLoader } from "@cloudigniter/ui/client";
 
 export interface CiBreadcrumbsProps {
   items: CiBreadcrumbItem[];
-  dir?: "ltr" | "rtl";
+  dir?: CiLocaleDirection;
   className?: string;
   /** If true, injects JSON-LD microdata for breadcrumbs. */
   withStructuredData?: boolean; // a simple on/off switch for emitting standards-compliant breadcrumb SEO metadata

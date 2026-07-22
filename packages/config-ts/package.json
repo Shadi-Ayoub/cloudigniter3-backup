@@ -15,6 +15,7 @@
     "README.md"
   ],
   "exports": {
+    "./ci-module.json": "./ci-module.json",
     "./ci-pkg-base.json": "./ci-pkg-base.json",
     "./base.json": "./base.json",
     "./library.json": "./library.json",

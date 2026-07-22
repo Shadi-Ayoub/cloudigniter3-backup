@@ -1,17 +1,17 @@
 import React from "react";
 
-import { ciStartTraceServer } from "../../../server";
-import type { CiNextPageConfig } from "../../../types";
+import { ciStartTraceServer } from "@cloudigniter/core/server";
+import type { CiCoreConfig } from "@cloudigniter/core/types";
 
 interface HeaderInterface {
-  config: CiNextPageConfig;
+  config: CiCoreConfig;
   children: React.ReactNode;
 }
 
 export const CiHeader = ({ config, children }: HeaderInterface) => {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger } = ciStartTraceServer(
-    config.ciConfig.dev.traceLog,
+    config.dev.traceLog,
     { source: "server", prettyWave: true },
     { name: "Header" },
   );

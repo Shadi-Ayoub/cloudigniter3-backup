@@ -4,6 +4,7 @@ import type {
   CiDevBeaconLogoSpec,
   CiDevBeaconPosition,
   CiDevBeaconTabValue,
+  CiProviderId,
 } from "@ci-core/types";
 
 /**
@@ -14,22 +15,25 @@ import type {
  * - Do not pass React elements/functions here (e.g., icons, components, JSX). Use spec types instead.
  */
 export interface CiDevBeaconProps<T> {
+  context: T;
   /**
    * CloudIgniter Page configurations passed by the application.
    */
-  appPageConfig: T;
+  // appPageConfig: T;
 
   /**
    * CloudIgniter Page configurations passed by the application.
    */
   // extraConfig: CiCorePageConfig;
 
-  locale: string;
+  // locale: string;
   /**
    * Layout direction for the DevBeacon UI surface.
    * Forwarded to the client wrapper and used to set `dir` on the content container.
    */
-  dir?: CiLocaleDirection;
+  // dir?: CiLocaleDirection;
+
+  // providers: CiProviderId[];
 
   /**
    * Floating button placement on the viewport (e.g. "bottom-right").
@@ -48,7 +52,7 @@ export interface CiDevBeaconProps<T> {
    * Explicit runtime environment override.
    * If omitted, env is resolved from `NEXT_PUBLIC_RUNTIME_ENV` (preferred) or `NODE_ENV`.
    */
-  env?: CiEnvMode;
+  // env?: CiEnvMode;
 
   /**
    * Default selected tab id when DevBeacon opens.

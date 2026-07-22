@@ -1,31 +1,23 @@
 import type { Options } from "tsup";
 import type { BuildOptions } from "esbuild";
-
 import { getAllEntries } from "./ci-entries.mjs";
 import { ciInjectUseClient } from "./ci-inject-use-client.mjs";
-
 /**
  * Supported CloudIgniter package build modes.
  */
-export type CiTsupPackageMode = "core" | "aws" | "next";
+export type CiTsupPackageMode = "core" | "aws" | "next" | "ui";
 
 /**
  * Common tsup config input.
  */
 export type CiCreateTsupConfigInput = {
-  /**
-   * Package-specific external dependencies.
-   */
+  //Package-specific external dependencies.
   external: string[];
 
-  /**
-   * Package build mode.
-   */
+  // Package build mode.
   mode: CiTsupPackageMode;
 
-  /**
-   * Output paths or files that should receive "use client".
-   */
+  // Output paths or files that should receive "use client".
   clientDirectiveTargets: string[];
 };
 
@@ -55,7 +47,6 @@ function ciCreateBaseTsupOptions(input: {
 }): Options {
   const { external, clean, bundle, minify, withCssLoader = false } = input;
   const isProduction = ciIsProductionBuild();
-
   return {
     format: ["esm"],
     bundle,
@@ -71,13 +62,7 @@ function ciCreateBaseTsupOptions(input: {
     external,
     silent: true,
     esbuildOptions: ciSetEsbuildOptions,
-    ...(withCssLoader
-      ? {
-          loader: {
-            ".css": "file",
-          },
-        }
-      : {}),
+    ...(withCssLoader ? { loader: { ".css": "file" } } : {}),
   };
 }
 
@@ -88,9 +73,7 @@ export async function ciCreateTsupConfig(input: CiCreateTsupConfigInput) {
   const { external, mode, clientDirectiveTargets } = input;
   const isProduction = ciIsProductionBuild();
   const withCssLoader = mode === "next";
-
   const { clientEntries, rscEntries, otherEntries } = await getAllEntries();
-
   const configs: Options[] = [
     {
       ...ciCreateBaseTsupOptions({
@@ -107,7 +90,6 @@ export async function ciCreateTsupConfig(input: CiCreateTsupConfigInput) {
       },
     },
   ];
-
   if (mode === "next") {
     configs.push({
       ...ciCreateBaseTsupOptions({
@@ -123,7 +105,6 @@ export async function ciCreateTsupConfig(input: CiCreateTsupConfigInput) {
       },
     });
   }
-
   configs.push({
     ...ciCreateBaseTsupOptions({
       external,
@@ -137,6 +118,5 @@ export async function ciCreateTsupConfig(input: CiCreateTsupConfigInput) {
       console.log("✅ Other Entries Build completed");
     },
   });
-
   return configs;
 }

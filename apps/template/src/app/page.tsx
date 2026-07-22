@@ -1,6 +1,6 @@
 import CiLayout from "@cloudigniter/next/layout/app-standard";
 import { CiPage } from "@cloudigniter/next/client";
-import { CiAboutBorderBeam } from "@cloudigniter/next/ui/client";
+import { CiAboutBorderBeam } from "@cloudigniter/ui/client";
 
 import { appBootstrap } from "@/kernel/server";
 

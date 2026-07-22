@@ -1,7 +1,7 @@
 import React from "react";
 
-import { ciStartTraceServer } from "../../../server";
-import type { CiNextPageConfig } from "../../../types";
+import { ciStartTraceServer } from "@cloudigniter/core/server";
+import type { CiNextPageConfig } from "@ci-next/types";
 
 interface HeaderInterface {
   config: CiNextPageConfig;
@@ -11,7 +11,7 @@ interface HeaderInterface {
 export const CiHeader = ({ config, children }: HeaderInterface) => {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger } = ciStartTraceServer(
-    config.ciConfig.dev.traceLog,
+    config.coreConfig.dev.traceLog,
     { source: "server", prettyWave: true },
     { name: "Header" },
   );

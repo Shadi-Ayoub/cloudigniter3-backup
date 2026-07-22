@@ -8,6 +8,7 @@ import type {
 import type { CiNextResolvedConfig } from "@ci-next/types";
 
 export type CiNextPageConfig = CiPageCoreConfig & {
-  // mainMenu?: CiMainMenuItem[];
-  ciConfig: CiCoreConfig & CiResolvedCoreConfig & CiNextResolvedConfig;
+  coreConfig: CiCoreConfig;
+  resolvedCoreConfig: CiResolvedCoreConfig;
+  nextResolvedConfig: CiNextResolvedConfig;
 };

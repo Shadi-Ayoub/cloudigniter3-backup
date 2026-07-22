@@ -20,8 +20,8 @@ export {
   ciReadMocksForItem,
 
   // trace
-  ciStartTraceServer,
-  CiTraceLoggerServer,
+  // ciStartTraceServer,
+  // CiTraceLoggerServer,
   // trace
   // type CiBuildCanonicalInput,
   // type CiCanonicalRecord,
@@ -79,3 +79,20 @@ export {
   ciRewriteTenantRoute,
   ciWriteTenantContext,
 } from "./tenant";
+
+// ─────────────────────────────────────────────────────────────
+// modules
+// ─────────────────────────────────────────────────────────────
+export {
+  // auth
+  ciAuthServerModule,
+
+  // devbeacon
+  CiDevBeacon,
+  type CiNexAwsDevBeaconProps,
+} from "../modules/server";
+
+// ─────────────────────────────────────────────────────────────
+// wrapper
+// ─────────────────────────────────────────────────────────────
+export { CiNextRootWrapper, CiPageWrapper } from "./wrapper";

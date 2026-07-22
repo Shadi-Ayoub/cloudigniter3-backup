@@ -11,12 +11,12 @@
 
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { CiConsolePrint, ciRemoveCookie } from "@cloudigniter/core/client";
+import { CiDebugProbeProvider } from "@ci-next/ui/client";
 import {
   CiFeedbackHandler,
   CiFeedbackProvider,
-  CiDebugProbeProvider,
   type CiFeedbackSonnerConfig,
-} from "@ci-next/ui/client";
+} from "@cloudigniter/ui/client";
 
 import { CiThemeProvider } from "@ci-next/client";
 import type { CiClientWrapperProps } from "@ci-next/types";
@@ -67,18 +67,18 @@ export const CiClientWrapper = ({
 
     return (
       <>
-        <CiDebugProbeProvider enabled={devConfig.debug.debugProbe.enabled}>
-          <AntdRegistry>
-            <CiThemeProvider
-              config={{
-                ...themeConfig,
-                themeProviderProps: {
-                  ...themeConfig.themeProviderProps,
-                  attribute: "class", // a must!
-                  defaultTheme: "system",
-                },
-              }}
-            >
+        <CiThemeProvider
+          config={{
+            ...themeConfig,
+            themeProviderProps: {
+              ...themeConfig.themeProviderProps,
+              attribute: "class", // a must!
+              defaultTheme: "system",
+            },
+          }}
+        >
+          <CiDebugProbeProvider enabled={devConfig.debug.debugProbe.enabled}>
+            <AntdRegistry>
               <CiFeedbackProvider
                 initialConfig={{ ...feedbackConfig }}
                 overrides={{
@@ -91,19 +91,19 @@ export const CiClientWrapper = ({
               {/* <ErrorHandler direction={direction} /> */}
               {/* <DevBeaconWrapper /> */}
               {children}
-            </CiThemeProvider>
-          </AntdRegistry>
-          <CiConsolePrint
-            label="Client"
-            message="Theme/Loader/ErrorHandler/Beacon are loaded..."
-            options={{ messageType: "SUCCESS" }}
-          />
-          <CiConsolePrint
-            label="Client"
-            message={`${protect ? "Protected Path" : "Un-protected Path"}`}
-            options={{ messageType: "SUCCESS" }}
-          />
-        </CiDebugProbeProvider>
+            </AntdRegistry>
+            <CiConsolePrint
+              label="Client"
+              message="Theme/Loader/ErrorHandler/Beacon are loaded..."
+              options={{ messageType: "SUCCESS" }}
+            />
+            <CiConsolePrint
+              label="Client"
+              message={`${protect ? "Protected Path" : "Un-protected Path"}`}
+              options={{ messageType: "SUCCESS" }}
+            />
+          </CiDebugProbeProvider>
+        </CiThemeProvider>
       </>
     );
   } catch (error: unknown) {

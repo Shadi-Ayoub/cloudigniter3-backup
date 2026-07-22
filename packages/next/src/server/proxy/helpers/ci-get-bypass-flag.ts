@@ -1,4 +1,5 @@
-import { ciIsInternalPath, ciIsStaticFile } from './';
+import { ciIsInternalPath } from "./ci-is-internal-path";
+import { ciIsStaticFile } from "./ci-is-static-file";
 
 export function ciGetBypassFlag(pathnameNormalized: string) {
   const isInternal = ciIsInternalPath(pathnameNormalized); // quick path filters (belt-and-suspenders with the matcher below)

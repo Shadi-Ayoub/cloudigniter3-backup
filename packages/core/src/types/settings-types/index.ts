@@ -5,7 +5,6 @@ import {
   CiUserSettingsFormSchema,
 } from "@ci-core/lib";
 import type { CiTenantScope } from "@ci-core/types";
-
 //------
 export type { CiAppSettings } from "./CiAppSettings";
 export type { CiCoreSettings } from "./CiCoreSettings";
@@ -201,7 +200,7 @@ export type CiUserSettingsFormValues = z.infer<typeof CiUserSettingsFormSchema>;
 export type CiSettingsPageProps<T extends z.ZodRawShape = {}> = {
   input: {
     settings: CiSettings;
-    direction: "ltr" | "rtl";
+    direction: CiLocaleDirection;
     submitUrl?: string;
     extendedZodSchema?: z.ZodObject<T>;
     values?: z.infer<z.ZodObject<T>> & Partial<CiCoreSettingsFormValues>;
@@ -212,7 +211,7 @@ export type CiSettingsPageProps<T extends z.ZodRawShape = {}> = {
 export type CiUserSettingsPageProps<T extends z.ZodRawShape = {}> = {
   input: {
     settings: CiSettings;
-    direction: "ltr" | "rtl";
+    direction: CiLocaleDirection;
     submitUrl?: string;
     extendedZodSchema?: z.ZodObject<T>;
     values?: z.infer<z.ZodObject<T>> & Partial<CiUserSettingsFormValues>;

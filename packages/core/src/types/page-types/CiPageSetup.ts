@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { CiLocaleDirection } from "@ci-core/types";
 import type { CiBreadcrumbItem } from "./CiBreadcrumbItem";
 
 export type CiPageSetup = {
@@ -15,7 +16,7 @@ export type CiPageSetup = {
   locale?: string;
 
   /** Language direction inferred or supplied by the framework layer. */
-  direction?: "ltr" | "rtl";
+  direction?: CiLocaleDirection;
 
   /** Breadcrumb configuration. */
   showBreadcrumbs?: boolean;

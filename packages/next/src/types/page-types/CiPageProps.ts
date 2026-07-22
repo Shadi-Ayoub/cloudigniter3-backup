@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import type { CiNextPageConfig } from "./CiNextPageConfig";
+import type { CiNextContext } from "@ci-next/types";
 import type { CiNextPageSetup } from "./CiNextPageSetup";
 
 /**
@@ -9,8 +9,7 @@ import type { CiNextPageSetup } from "./CiNextPageSetup";
  * It is typically rendered by a server route page (page.tsx) via a Page Client Wrapper.
  */
 export interface CiPageProps {
-  /** Full CloudIgniter page/runtime configuration (locale, direction, trace, etc.) */
-  config?: CiNextPageConfig;
+  context: CiNextContext;
 
   /** Optional logical page name, mainly used for tracing and debugging */
   name?: string;

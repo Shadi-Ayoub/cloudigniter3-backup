@@ -1,1 +1,1 @@
-export type { CiHeaderLogoProps } from "./CiHeaderLogoProps";
+export type { CiNextHeaderLogoProps } from "./CiNextHeaderLogoProps";

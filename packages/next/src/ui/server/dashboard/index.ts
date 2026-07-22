@@ -1,2 +1,1 @@
-export { CiDashboardPage } from "./CiDashboardPage";
-// export { CiDashboardHeaderButton } from "./CiDashboardHeaderButton";
+export { CiNextDashboardPage } from "./CiNextDashboardPage";

@@ -1,29 +1,29 @@
-import { ciStartTraceServer } from "../../server";
+import { ciStartTraceServer } from "@cloudigniter/core/server";
 // import {
 //   CiHeaderLogo,
 //   CiMainHeaderNavigationBox,
 //   CiMainHeaderUserBox,
 // } from "@ci-next/ui";
-import type { CiNextPageConfig } from "../../types";
-import { CiPageWrapper } from "../../ui/server";
+import type { CiNextContext } from "@ci-next/types";
+import { CiPageWrapper } from "@ci-next/server";
 import { CiHeader } from "./header/CiHeader";
 import { CiContainer } from "./container/CiContainer";
 import { CiCopyright, CiFooter } from "./footer";
 
 interface LayoutProps {
-  config: CiNextPageConfig;
+  context: CiNextContext;
   protect?: boolean;
   children: React.ReactNode;
 }
 
 export default function CiLayout({
-  config,
+  context,
   protect = true,
   children,
 }: LayoutProps) {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger } = ciStartTraceServer(
-    config.ciConfig.dev.traceLog,
+    context.config.appCoreConfig.dev.traceLog,
     { source: "server", prettyWave: true },
     { name: "Layout" },
   );
@@ -36,22 +36,24 @@ export default function CiLayout({
   });
   //////////////////////////////////////////////////////////////////////////////////////////////////
   return (
-    <CiPageWrapper config={config} protect={protect}>
+    <CiPageWrapper context={context} protect={protect}>
       <main className="ci-login-main">
-        <CiHeader config={config}>
+        <CiHeader config={context.config.appCoreConfig}>
           {null}
           {/* <MainHeaderNavigationBox config={config} />
           <HeaderLogo config={config} />
           <MainHeaderUserBox config={config} /> */}
         </CiHeader>
-        <CiContainer config={config}>{children}</CiContainer>
+        <CiContainer config={context.config.appCoreConfig}>
+          {children}
+        </CiContainer>
         <CiFooter
           // checkList={{
           //   amplifyOutputs: config.ciConfig.amplifyOutputs,
           //   settings: config.settings,
           //   status: config.status,
           // }}
-          config={config}
+          config={context.config.appCoreConfig}
         >
           <CiCopyright />
         </CiFooter>

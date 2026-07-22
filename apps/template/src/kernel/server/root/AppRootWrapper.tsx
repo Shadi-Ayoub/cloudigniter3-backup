@@ -1,24 +1,20 @@
 import type { PropsWithChildren } from "react";
 
-import { CiDebugProbe, CiNextRootWrapper } from "@cloudigniter/next/ui/server";
-
-import type { AppRootLayoutContext } from "./appResolveRootLayoutContext";
+import { CiNextRootWrapper } from "@cloudigniter/next/server";
+import { CiDebugProbe } from "@cloudigniter/ui/server";
+import type { CiNextRootLayoutContext } from "@cloudigniter/next/types";
 import { Kernel } from "@/kernel/server";
 
 export interface AppRootWrapperProps extends PropsWithChildren {
-  root: AppRootLayoutContext;
+  context: CiNextRootLayoutContext;
 }
 
-export function AppRootWrapper({ root, children }: AppRootWrapperProps) {
+export function AppRootWrapper({ context, children }: AppRootWrapperProps) {
   return (
     <>
-      <CiDebugProbe {...root.debugProbe} />
+      {/* <CiDebugProbe {...context.debugProbe} /> */}
 
-      <CiNextRootWrapper
-        config={root.config}
-        envMode={root.envMode}
-        actor={root.actor}
-      >
+      <CiNextRootWrapper context={context}>
         <Kernel />
         {children}
       </CiNextRootWrapper>

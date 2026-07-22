@@ -10,17 +10,14 @@ import {
   CI_DEFAULT_TENANT_TYPE_HEADER_NAME,
   ciNormalizeTenantScope,
 } from "@ci-core/lib";
+import type { CiTenantStatus } from "@ci-core/types";
 
 import {
   ciReadForwardedCookies,
   ciReadForwardedHeaders,
 } from "@ci-core/server";
 
-import type {
-  CiDevBeaconProps,
-  CiDevBeaconTenantInfo,
-  CiTenantMode,
-} from "@ci-core/types";
+import type { CiDevBeaconProps, CiTenant, CiTenantMode } from "@ci-core/types";
 
 /**
  * Reads the resolved routing context emitted by proxy/middleware.
@@ -34,13 +31,15 @@ export function ciReadTenantFromHeaders(
       value: string;
     }>;
   },
-): CiDevBeaconTenantInfo {
+): CiTenant {
+  const status = (requestHeaders.get(CI_DEFAULT_TENANT_STATUS_HEADER_NAME) ??
+    undefined) as CiTenantStatus;
+
   return {
     id: requestHeaders.get(CI_DEFAULT_TENANT_ID_HEADER_NAME) ?? undefined,
     slug: requestHeaders.get(CI_DEFAULT_TENANT_SLUG_HEADER_NAME) ?? undefined,
     name: requestHeaders.get(CI_DEFAULT_TENANT_NAME_HEADER_NAME) ?? undefined,
-    status:
-      requestHeaders.get(CI_DEFAULT_TENANT_STATUS_HEADER_NAME) ?? undefined,
+    status,
     type: requestHeaders.get(CI_DEFAULT_TENANT_TYPE_HEADER_NAME) ?? undefined,
     scope: ciNormalizeTenantScope(
       requestHeaders.get(CI_DEFAULT_TENANT_SCOPE_HEADER_NAME),

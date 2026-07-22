@@ -1,7 +1,8 @@
+import type { CiLocaleDirection } from "./CiLocaleDirection";
 import type { CiI18nConfig } from "./CiI18nConfig";
 
 export interface CiLocaleSwitcherSelectProps {
-  dir: "ltr" | "rtl";
+  dir: CiLocaleDirection;
   menuItems: {
     key: string;
     label: string;

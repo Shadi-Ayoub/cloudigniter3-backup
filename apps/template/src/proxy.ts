@@ -8,14 +8,15 @@ import type {
 
 import { ciNextProxyResponse } from "@cloudigniter/next/server/proxy";
 
-import { appGetServerAllConfig } from "@/kernel/server";
+import { appGetAllServerConfig } from "@/kernel/server";
 
 export async function proxy(request: NextRequest) {
-  const conf = await appGetServerAllConfig();
+  const conf = await appGetAllServerConfig();
 
-  const tenantRoutingConfig = conf.tenant as CiTenantRoutingOptions;
-  const routeConfig = conf.route as CiRouteRuntimeConfig;
-  const routes = conf.routes as Record<string, CiRoute>;
+  const tenantRoutingConfig = conf.appCoreConfig
+    .tenant as CiTenantRoutingOptions;
+  const routeConfig = conf.appCoreConfig.route as CiRouteRuntimeConfig;
+  const routes = conf.appCoreConfig.routes as Record<string, CiRoute>;
 
   return ciNextProxyResponse({
     request,

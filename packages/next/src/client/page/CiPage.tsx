@@ -10,7 +10,7 @@ import {
   CiPageLoader,
   CiPageShell,
   ciStartTraceClient,
-} from "@ci-next/ui/client";
+} from "@cloudigniter/ui/client";
 import { CiBreadcrumbs } from "./CiBreadcrumbs";
 import type { CiPageProps } from "@ci-next/types";
 
@@ -29,7 +29,7 @@ import type { CiPageProps } from "@ci-next/types";
  * server-only logic.
  */
 export function CiPage({
-  config,
+  context,
   name,
   setup = {},
   login,
@@ -55,7 +55,7 @@ export function CiPage({
   });
 
   const { logger, done } = ciStartTraceClient(
-    config?.ciConfig.dev.traceLog,
+    context.config?.appCoreConfig.dev.traceLog,
     { source: "client", tag: `Page:${name}` },
     { name: "Page" },
   );
@@ -82,7 +82,7 @@ export function CiPage({
     <div className="ci-breadcrumb-wrapper">
       <CiBreadcrumbs
         items={breadcrumbItems}
-        dir={config?.ciConfig.direction}
+        dir={context.config?.appResolvedCoreConfig.direction}
         className="ci-breadcrumb"
         withStructuredData={false}
       />
@@ -112,8 +112,10 @@ export function CiPage({
       loaderSlot={<CiPageLoader />}
     >
       <NextIntlClientProvider
-        locale={config?.ciConfig.locale}
-        messages={setup.messages ?? config?.ciConfig.messages}
+        locale={context.config?.appResolvedCoreConfig.locale}
+        messages={
+          setup.messages ?? context.config?.appNextResolvedConfig.messages
+        }
       >
         {children}
       </NextIntlClientProvider>

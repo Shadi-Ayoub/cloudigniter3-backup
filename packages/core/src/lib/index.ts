@@ -96,6 +96,15 @@ export {
 } from "./kernel";
 
 // ─────────────────────────────────────────────────────────────
+// module
+// ─────────────────────────────────────────────────────────────
+export {
+  ciCollectModulePackageDependencies,
+  ciResolveModuleGraph,
+  CiModuleError,
+} from "./module";
+
+// ─────────────────────────────────────────────────────────────
 // namespace
 // ─────────────────────────────────────────────────────────────
 export { ciNamespaceSegmentToKebab } from "./namespace";
@@ -109,6 +118,11 @@ export {
   CI_DEFAULT_ORG_UNIT_PATH_HEADER_NAME,
   CI_MOCK_ORG_UNITS,
 } from "./org-unit";
+
+// ─────────────────────────────────────────────────────────────
+// profile menu
+// ─────────────────────────────────────────────────────────────
+export { CI_DEFAULT_PROFILE_MENU_MESSAGES } from "./profile-menu";
 
 // ─────────────────────────────────────────────────────────────
 // result

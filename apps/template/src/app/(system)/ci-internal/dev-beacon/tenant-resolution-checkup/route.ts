@@ -6,7 +6,7 @@ export const revalidate = 0;
 
 // import { NextRequest, NextResponse } from "next/server";
 import { NextResponse } from "next/server";
-import { appGetDevBeaconAccess, appGetServerAllConfig } from "@/kernel/server";
+import { appGetDevBeaconAccess, appGetAllServerConfig } from "@/kernel/server";
 
 import {
   CI_DEFAULT_ORG_UNIT_OPTIONS,
@@ -127,10 +127,10 @@ const CI_ORG_UNIT_PROBE_SCENARIOS: CiOrgUnitProbeScenario[] = [
  * or when the application runs in production mode.
  */
 export async function GET(request: Request) {
-  const appConfig = await appGetServerAllConfig();
+  const appConfig = await appGetAllServerConfig();
 
   const devBeaconAccess = await appGetDevBeaconAccess(
-    appConfig.dev?.debug?.devBeacon,
+    appConfig.appCoreConfig.dev?.debug?.devBeacon,
   );
 
   /**
@@ -145,8 +145,9 @@ export async function GET(request: Request) {
   //   process.env.NEXT_PUBLIC_CI_ENV_MODE ??
   //   "test") as CiEnvMode;
 
-  const configuredTenantRouting = appConfig.tenant as
-    CiTenantRoutingOptions | undefined;
+  const configuredTenantRouting = appConfig.appCoreConfig.tenant as
+    | CiTenantRoutingOptions
+    | undefined;
 
   if (!configuredTenantRouting?.enabled) {
     return ciCheckupResponse(

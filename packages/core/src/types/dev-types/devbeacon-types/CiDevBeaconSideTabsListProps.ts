@@ -9,6 +9,9 @@ export interface CiDevBeaconSideTabsListProps {
   statusContent?: ReactNode;
   configContent?: ReactNode;
   toolsContent?: ReactNode;
-  /** NEW */
+
+  /**
+   * Extra tabs that have already been resolved into renderable content.
+   */
   extraTabs?: CiDevBeaconExtraTab[];
 }

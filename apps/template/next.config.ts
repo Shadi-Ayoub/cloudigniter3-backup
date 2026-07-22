@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(__dirname, "../.."),
   },
+  env: {
+    NEXT_VERSION: require("next/package.json").version,
+  },
 };
 
 // export default nextConfig;

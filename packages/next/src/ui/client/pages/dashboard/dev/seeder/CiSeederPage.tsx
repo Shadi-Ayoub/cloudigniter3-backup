@@ -10,7 +10,7 @@ import {
   ciSafeToString,
 } from "@cloudigniter/core/lib";
 import { ciPrintToConsole } from "@cloudigniter/core/client";
-import { ciNotify, useCiPageLoaderStore } from "@ci-next/ui/client";
+import { ciNotify, useCiPageLoaderStore } from "@cloudigniter/ui/client";
 import type {
   CiRequest,
   CiResponse,
@@ -20,7 +20,7 @@ import type {
   CiSeederItemKey,
 } from "@cloudigniter/core/types";
 
-import { ciGetEnvMode } from "@ci-next/lib";
+import { ciGetEnvMode } from "@ci-next/server";
 
 type LogLine = {
   ts: string;

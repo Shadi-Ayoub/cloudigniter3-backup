@@ -142,16 +142,16 @@ export function ciResolveTableInfoFromResources(
   resources: CiCoreResources,
 ) {
   switch (table) {
-    case "privateSettingsTable":
-      return resources.privateSettingsTable;
-    case "publicSettingsTable":
-      return resources.publicSettingsTable;
-    case "systemTable":
-      return resources.systemTable;
+    // case "privateSettingsTable":
+    //   return resources.privateSettingsTable;
+    // case "publicSettingsTable":
+    //   return resources.publicSettingsTable;
+    // case "systemTable":
+    //   return resources.systemTable;
     case "userProfileTable":
       return resources.userProfileTable;
-    case "userSettingsTable":
-      return resources.userSettingsTable;
+    // case "userSettingsTable":
+    //   return resources.userSettingsTable;
   }
 }
 

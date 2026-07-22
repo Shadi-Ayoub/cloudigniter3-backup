@@ -15,6 +15,7 @@ export type { CiDevBeaconLanguageSourceMessages } from "./CiDevBeaconLanguageSou
 export type { CiDevBeaconLanguageSummary } from "./CiDevBeaconLanguageSummary";
 export type { CiDevBeaconLanguageSummaryResponse } from "./CiDevBeaconLanguageSummaryResponse";
 export type { CiDevBeaconLogoSpec } from "./CiDevBeaconLogoSpec";
+export type { CiDevBeaconModalProps } from "./CiDevBeaconModalProps";
 export type { CiDevBeaconOptions } from "./CiDevBeaconOptions";
 export type { CiDevBeaconPosition } from "./CiDevBeaconPosition";
 export type { CiDevBeaconProps } from "./CiDevBeaconProps";
@@ -23,7 +24,7 @@ export type { CiDevBeaconSectionToolsProps } from "./CiDevBeaconSectionToolsProp
 export type { CiDevBeaconSideTabsListProps } from "./CiDevBeaconSideTabsListProps";
 export type { CiDevBeaconSectionStatusProps } from "./CiDevBeaconSectionStatusProps";
 export type { CiDevBeaconTabValue } from "./CiDevBeaconTabValue";
-export type { CiDevBeaconTenantInfo } from "./CiDevBeaconTenantInfo";
+// export type { CiDevBeaconTenantInfo } from "./CiDevBeaconTenantInfo";
 export type { CiDevBeaconTraceLogViewerTextProps } from "./CiDevBeaconTraceLogViewerTextProps";
 export type { CiDevBeaconTraceTabProps } from "./CiDevBeaconTraceTabProps";
-export type { CiDevBeaconWrapperProps } from "./CiDevBeaconWrapperProps";
+// export type { CiDevBeaconWrapperProps } from "./CiDevBeaconWrapperProps";

@@ -1,3 +1,4 @@
+import type { CiLocaleDirection } from "@ci-core/types";
 /**
  * Framework-agnostic resolved CloudIgniter config.
  *
@@ -6,5 +7,6 @@
  */
 export type CiResolvedCoreConfig = {
   locale: string;
-  direction: "ltr" | "rtl";
+  direction: CiLocaleDirection;
+  languageDiagnosticsEndpoint?: string;
 };

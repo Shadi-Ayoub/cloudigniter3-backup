@@ -6,7 +6,7 @@ export { ciReadMocksForItem } from "./seeder";
 // ─────────────────────────────────────────────────────────────
 // trace
 // ─────────────────────────────────────────────────────────────
-export { ciStartTraceServer, CiTraceLoggerServer } from "./trace";
+// export { ciStartTraceServer, CiTraceLoggerServer } from "./trace";
 
 // ─────────────────────────────────────────────────────────────
 // sandbox

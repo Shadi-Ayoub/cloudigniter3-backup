@@ -1,7 +1,7 @@
-import { ciStartTraceServer } from "../../../server";
-import { CiNextLocaleSwitcher, CiThemeSwitcher } from "../../../client";
-import { CiProfileMenu } from "../../../ui/client";
-import type { CiNextPageConfig } from "../../../types";
+import { ciStartTraceServer } from "@cloudigniter/core/server";
+import { CiNextLocaleSwitcher, CiThemeSwitcher } from "@ci-next/client";
+import { CiNextProfileMenu } from "@ci-next/ui/client";
+import type { CiNextPageConfig } from "@ci-next/types";
 
 interface MainHeaderUserBoxInterface {
   config: CiNextPageConfig;
@@ -10,7 +10,7 @@ interface MainHeaderUserBoxInterface {
 export function MainHeaderUserBox({ config }: MainHeaderUserBoxInterface) {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger } = ciStartTraceServer(
-    config.ciConfig.dev.traceLog,
+    config.coreConfig.dev.traceLog,
     { source: "server", prettyWave: true },
     { name: "<MainHeaderUserBox>" },
   );
@@ -27,12 +27,18 @@ export function MainHeaderUserBox({ config }: MainHeaderUserBoxInterface) {
       className="flex items-center space-x-4 ltr:mr-8 rtl:ml-8"
     >
       <div className="hidden flex-wrap gap-2 md:flex">
-        <CiThemeSwitcher dir={config.ciConfig.direction} config={config} />
-        <CiNextLocaleSwitcher
-          config={config.ciConfig.i18n}
-          traceConfig={config.ciConfig.dev.traceLog}
+        <CiThemeSwitcher
+          dir={config.resolvedCoreConfig.direction}
+          config={config}
         />
-        <CiProfileMenu dir={config.ciConfig.direction} config={config} />
+        <CiNextLocaleSwitcher
+          config={config.coreConfig.i18n}
+          traceConfig={config.coreConfig.dev.traceLog}
+        />
+        <CiNextProfileMenu
+          dir={config.resolvedCoreConfig.direction}
+          config={config}
+        />
       </div>
       <div className="flex md:hidden">{/* <MobileMenuToggle /> */}</div>
     </nav>

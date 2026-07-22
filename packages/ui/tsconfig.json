@@ -1,0 +1,30 @@
+{
+  "extends": "@cloudigniter/config-ts/ci-pkg-base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "paths": {
+      "@ci-ui/*": [
+        "./src/*"
+      ],
+      "@ci-core/*": [
+        "../core/src/*"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "__tests__/**/*.ts",
+    "__tests__/**/*.tsx",
+    "vitest.d.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "scripts",
+    ".*/**/*",
+    "**/*.mjs",
+    "**/*.cjs",
+    "coverage"
+  ]
+}

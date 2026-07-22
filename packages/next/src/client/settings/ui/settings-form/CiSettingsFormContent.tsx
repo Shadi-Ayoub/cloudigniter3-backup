@@ -9,8 +9,11 @@ import {
   TabPanel,
 } from "@headlessui/react";
 import { useSearchParams, usePathname } from "next/navigation";
-import { Button, CiSpinner, useCiFormikErrors } from "@ci-next/ui/client";
-import { type CiSettingsPageExtendedTab } from "@cloudigniter/core/types";
+import { Button, CiSpinner, useCiFormikErrors } from "@cloudigniter/ui/client";
+import type {
+  CiSettingsPageExtendedTab,
+  CiLocaleDirection,
+} from "@cloudigniter/core/types";
 
 interface SettingsFormContentProps {
   allTabs: CiSettingsPageExtendedTab[];
@@ -20,7 +23,7 @@ interface SettingsFormContentProps {
   fieldLabels: Record<string, string>;
   fieldSectionMap: Record<string, string>;
   loading: boolean;
-  direction: "ltr" | "rtl";
+  direction: CiLocaleDirection;
 }
 
 export function CiSettingsFormContent({

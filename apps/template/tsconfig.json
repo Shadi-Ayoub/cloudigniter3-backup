@@ -2,17 +2,26 @@
   "extends": "@cloudigniter/config-ts/next.json",
   "compilerOptions": {
     "jsx": "preserve",
-
     "noEmit": true,
     "declaration": false,
     "declarationMap": false,
     "composite": false,
-
     "paths": {
-      "@/*": ["./src/*"],
-      "@ci-core/*": ["../../packages/core/src/*"],
-      "@ci-aws/*": ["../../packages/aws/src/*"],
-      "@ci-next/*": ["../../packages/next/src/*"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@ci-core/*": [
+        "../../packages/core/src/*"
+      ],
+      "@ci-aws/*": [
+        "../../packages/aws/src/*"
+      ],
+      "@ci-ui/*": [
+        "../../packages/ui/src/*"
+      ],
+      "@ci-next/*": [
+        "../../packages/next/src/*"
+      ]
     },
     "plugins": [
       {
@@ -27,5 +36,7 @@
     ".next/types/**/*.ts",
     "cloudigniter.config.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

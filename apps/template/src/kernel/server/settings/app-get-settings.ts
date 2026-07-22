@@ -1,10 +1,10 @@
 import type { CiCoreSettings } from "@cloudigniter/core/types";
 
 export async function appGetSettings() {
-  return coreSettings;
+  return settings;
 }
 
-const coreSettings: CiCoreSettings = {
+const settings: CiCoreSettings & Record<string, unknown> = {
   public: {
     general: { applicationName: "Cloudigniter" },
     i18n: {

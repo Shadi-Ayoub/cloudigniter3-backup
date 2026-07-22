@@ -21,6 +21,7 @@ export type {
 // ─────────────────────────────────────────────────────────────
 export type {
   CiAuthConfig,
+  CiAuthenticatorPageMode,
   CiAuthMode,
   CiAuthProviderId,
   CiAuthUiConfig,
@@ -68,6 +69,7 @@ export type {
   CiDevBeaconLanguageSummary,
   CiDevBeaconLanguageSummaryResponse,
   CiDevBeaconLogoSpec,
+  CiDevBeaconModalProps,
   CiDevBeaconOptions,
   CiDevBeaconPosition,
   CiDevBeaconProps,
@@ -76,10 +78,10 @@ export type {
   CiDevBeaconSideTabsListProps,
   CiDevBeaconSectionStatusProps,
   CiDevBeaconTabValue,
-  CiDevBeaconTenantInfo,
+  // CiDevBeaconTenantInfo,
   CiDevBeaconTraceLogViewerTextProps,
   CiDevBeaconTraceTabProps,
-  CiDevBeaconWrapperProps,
+  // CiDevBeaconWrapperProps,
 
   // general
   CiDevResolutionCheck,
@@ -177,7 +179,10 @@ export type {
   CiDataConfig,
   CiDevConfig,
   CiGeneralSettings,
+  CiPlatformId,
+  CiProviderId,
   CiResolvedCoreConfig,
+  CiRootLayoutContext,
   CiSystemItemType,
   CiSystemTableItem,
   CiSystemStatus,
@@ -187,7 +192,36 @@ export type {
 // ─────────────────────────────────────────────────────────────
 // main menu
 // ─────────────────────────────────────────────────────────────
-export type { CiMainMenuItem, CiMainMenuTarget } from "./main-menu-types";
+export type {
+  CiMainMenuItem,
+  CiMainMenuTarget,
+  CiMenuItemProps,
+  CiNavigationMenuProps,
+} from "./main-menu-types";
+
+// ─────────────────────────────────────────────────────────────
+// module
+// ─────────────────────────────────────────────────────────────
+export type {
+  CiClientModuleContext,
+  CiClientModuleDefinition,
+  CiModuleContext,
+  CiModuleDependency,
+  CiModuleErrorCode,
+  CiModuleHost,
+  CiModuleId,
+  CiModuleManifest,
+  CiModulePackageDependency,
+  CiModulePackageSection,
+  CiModuleRuntimeEnvironment,
+  CiModuleRuntimeTargets,
+  CiModuleTarget,
+  CiResolvedModuleGraph,
+  CiResolvedModulePackageDependency,
+  CiResolveModuleGraphOptions,
+  CiServerModuleContext,
+  CiServerModuleDefinition,
+} from "./module-types";
 
 // ─────────────────────────────────────────────────────────────
 // org unit
@@ -217,6 +251,15 @@ export type {
   CiPageSetup,
   CiPageShellProps,
 } from "./page-types";
+
+// ─────────────────────────────────────────────────────────────
+// profile menu
+// ─────────────────────────────────────────────────────────────
+export type {
+  CiProfileMenuItem,
+  CiProfileMenuMessages,
+  CiProfileMenuProps,
+} from "./profile-menu";
 
 // ─────────────────────────────────────────────────────────────
 // result
@@ -364,11 +407,11 @@ export type {
   // CiSeedTenantsResult,
   // CiSeedTenantsResultItem,
   // CiTenantSlugResult,
-  // CiTenant,
+  CiTenant,
   CiTenantContext,
-  // CiTenantDdbTableItem,
+  CiTenantDdbTableItem,
   // CiTenantHeaderKey,
-  // CiTenantHtmlTableRow,
+  CiTenantHtmlTableRow,
   CiTenantInfoPageStrategy,
   CiTenantMode,
   CiTenantResolutionOptions,
@@ -385,6 +428,7 @@ export type {
   // CiUpdateTenantInterface,
   // CiUpdateTenantApiInterface,
   // CiTenantUrlStrategy,
+  // CiTenantSummary,
 } from "./tenant-types";
 
 // ─────────────────────────────────────────────────────────────

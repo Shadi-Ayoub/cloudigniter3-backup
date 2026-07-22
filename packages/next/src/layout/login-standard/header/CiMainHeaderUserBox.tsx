@@ -1,8 +1,7 @@
 // import dynamic from "next/dynamic";
-import { CiNextLocaleSwitcher, CiThemeSwitcher } from "../../../client";
-import { CiProfileMenu } from "../../../ui/client";
-import { CiRoundButtonFallback } from "../../../ui";
-import type { CiNextPageConfig } from "../../../types";
+import { CiNextLocaleSwitcher, CiThemeSwitcher } from "@ci-next/client";
+import { CiNextProfileMenu } from "@ci-next/ui/client";
+import type { CiNextPageConfig } from "@ci-next/types";
 
 interface MainHeaderUserBoxInterface {
   config: CiNextPageConfig;
@@ -15,12 +14,18 @@ export function MainHeaderUserBox({ config }: MainHeaderUserBoxInterface) {
       className="flex items-center space-x-4 ltr:mr-8 rtl:ml-8"
     >
       <div className="hidden flex-wrap gap-2 md:flex">
-        <CiThemeSwitcher dir={config.ciConfig.direction} config={config} />
-        <CiNextLocaleSwitcher
-          config={config.ciConfig.i18n}
-          traceConfig={config.ciConfig.dev.traceLog}
+        <CiThemeSwitcher
+          dir={config.resolvedCoreConfig.direction}
+          config={config}
         />
-        <CiProfileMenu dir={config.ciConfig.direction} config={config} />
+        <CiNextLocaleSwitcher
+          config={config.coreConfig.i18n}
+          traceConfig={config.coreConfig.dev.traceLog}
+        />
+        <CiNextProfileMenu
+          dir={config.resolvedCoreConfig.direction}
+          config={config}
+        />
       </div>
       <div className="flex md:hidden">{/* <MobileMenuToggle /> */}</div>
     </nav>

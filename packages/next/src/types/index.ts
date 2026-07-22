@@ -1,7 +1,11 @@
 // ─────────────────────────────────────────────────────────────
 // app
 // ─────────────────────────────────────────────────────────────
-export type { CiSystemStatusCheckList } from "./app-types";
+export type {
+  CiNextContext,
+  CiNextRootLayoutContext,
+  CiSystemStatusCheckList,
+} from "./app-types";
 
 // ─────────────────────────────────────────────────────────────
 // auth
@@ -19,7 +23,12 @@ export type {
 // ─────────────────────────────────────────────────────────────
 // config
 // ─────────────────────────────────────────────────────────────
-export type { CiNextConfig, CiNextResolvedConfig } from "./config-types";
+export type {
+  CiNextAppConfig,
+  CiNextConfig,
+  CiNextCoreConfig,
+  CiNextResolvedConfig,
+} from "./config-types";
 
 // ─────────────────────────────────────────────────────────────
 // i18n
@@ -55,9 +64,8 @@ export type {
 // ─────────────────────────────────────────────────────────────
 export type {
   // profile menu
+  CiNextAwsProfileMenuProps,
   CiNextProfileMenuProps,
-  CiProfileMenuItem,
-  CiProfileMenuProps,
 } from "./ui-types";
 
 // ─────────────────────────────────────────────────────────────

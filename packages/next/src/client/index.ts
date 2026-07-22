@@ -1,16 +1,4 @@
 // ─────────────────────────────────────────────────────────────
-// auth
-// ─────────────────────────────────────────────────────────────
-export {
-  useCiNextAwsAuthenticatorTheme,
-  CiAwsLoginInternal,
-  CiAwsLogoutButton,
-  CiAwsLogin,
-  CiAwsLogout,
-  useCiAwsLogout,
-} from "./auth";
-
-// ─────────────────────────────────────────────────────────────
 // i18n
 // ─────────────────────────────────────────────────────────────
 export { CiNextLocaleSwitcher } from "./i18n";
@@ -18,7 +6,7 @@ export { CiNextLocaleSwitcher } from "./i18n";
 // ─────────────────────────────────────────────────────────────
 // navigation
 // ─────────────────────────────────────────────────────────────
-export { CiNavigateWithLoader } from "./navigation";
+// export { CiNavigateWithLoader } from "./navigation";
 
 // ─────────────────────────────────────────────────────────────
 // page
@@ -28,7 +16,7 @@ export { CiPage, CiBreadcrumbs } from "./page";
 // ─────────────────────────────────────────────────────────────
 // providers
 // ─────────────────────────────────────────────────────────────
-export { CiAmplifyClientConfigurer, CiAwsProfileMenu } from "./providers";
+export { CiAmplifyClientConfigurer } from "./providers";
 
 // ─────────────────────────────────────────────────────────────
 // settings
@@ -71,3 +59,24 @@ export { CiThemeProvider, CiThemeSwitcher } from "./theme";
 // wrapper
 // ─────────────────────────────────────────────────────────────
 export { CiClientWrapper } from "./wrapper";
+
+// ─────────────────────────────────────────────────────────────
+// modules
+// ─────────────────────────────────────────────────────────────
+export {
+  // auth
+  CiLogin,
+  CiLogoutButton,
+  CiNextAwsLogin,
+  CiNextAwsLogoutButton,
+  useCiNextAwsLogout,
+  useCiNextAwsAuthenticatorTheme,
+  ciAuthClientModule,
+
+  // devbeacon
+  CiDevBeaconClient,
+  CiDevBeaconSideTabsList,
+  ciDevBeaconGetTraceLogTextTab,
+  CiDevBeaconTraceLogViewerText,
+  CiDevBeaconTraceTab,
+} from "../modules/client";

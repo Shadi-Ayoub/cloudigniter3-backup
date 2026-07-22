@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { CiSpinner } from "@ci-next/ui/client";
+import { CiSpinner } from "@cloudigniter/ui/client";
 import { type CiSandboxMethodDefinition } from "@cloudigniter/core/types";
 import SidePanel from "./side-panel";
 import OutputPanel from "./output-panel";

@@ -10,7 +10,7 @@ import {
   CiErrorPage,
   CiPageLoader,
   useCiPageLoaderStore,
-} from "@cloudigniter/next/ui/client";
+} from "@cloudigniter/ui/client";
 import { Inter } from "next/font/google";
 import type { CiNextAwsCoreConfig } from "@/kernel/types";
 import "@cloudigniter/next/styles/standard/style.css";

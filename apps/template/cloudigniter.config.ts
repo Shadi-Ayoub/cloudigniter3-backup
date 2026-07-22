@@ -1,4 +1,4 @@
-import type { CiNextAwsCoreConfig } from "@/kernel/types";
+import type { CiNextCoreConfig } from "@cloudigniter/next/types";
 
 import { routes } from "./routes";
 
@@ -14,7 +14,9 @@ export default {
     },
   },
   app: {
-    loginRoute: "/login",
+    platform: "Next.js",
+    version: "^16.2.1",
+    routerMode: "App Router",
     route: {
       namespaceCookieName: "ci-namespace",
       namespaceHeaderName: "x-ci-namespace",
@@ -49,12 +51,6 @@ export default {
     pathnameHeaderName: "x-ci-route-pathname",
     infoPageStrategy: "rewrite",
   },
-  // cognito: { client: { region: "us-east-1" } },
-  // dynamodb: {
-  //   clientConfig: {
-  //     region: "us-east-1",
-  //   },
-  // },
   i18n: {
     locales: [
       { code: "en", name: "english" },
@@ -193,4 +189,4 @@ export default {
       debug: false,
     },
   },
-} satisfies CiNextAwsCoreConfig;
+} satisfies CiNextCoreConfig;

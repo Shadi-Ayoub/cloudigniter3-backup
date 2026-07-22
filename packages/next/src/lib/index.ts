@@ -20,3 +20,10 @@ export {
   ciMapThemeConfigToNextThemeProviderProps,
   ciResolveNextThemeProviderProps,
 } from "./theme";
+
+// ─────────────────────────────────────────────────────────────
+// modules
+// ─────────────────────────────────────────────────────────────
+export {} from // auth
+
+"../modules/lib";

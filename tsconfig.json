@@ -2,9 +2,12 @@
   "files": [],
   "references": [
     { "path": "./packages/config-ts" },
-    { "path": "./packages/core" },
     { "path": "./packages/aws" },
+    { "path": "./packages/core" },
     { "path": "./packages/next" },
-    { "path": "./apps/template" }
+    { "path": "./packages/ui" },
+    { "path": "./modules/auth" },
+    { "path": "./apps/template" },
+    
   ]
 }

@@ -11,7 +11,7 @@ interface LayoutInterface {
   children: React.ReactNode;
 }
 export default async function LoginLayout({ children }: LayoutInterface) {
-  const config = await appBootstrap();
+  const context = await appBootstrap();
 
-  return <CiLayout config={config}>{children}</CiLayout>;
+  return <CiLayout context={context}>{children}</CiLayout>;
 }

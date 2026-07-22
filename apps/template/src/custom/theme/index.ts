@@ -1,1 +1,1 @@
-export { themeProviderProps } from './customTheme';
+export { appThemeProviderProps } from "./customTheme";

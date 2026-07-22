@@ -1,35 +1,34 @@
 import { Inter } from "next/font/google";
-import { getLocale } from "next-intl/server";
-
-import { ciGetLangDir } from "@cloudigniter/core/lib";
-import { ciGetEnvMode, ciStartTraceServer } from "@cloudigniter/next/server";
-
+import { ciStartTraceServer } from "@cloudigniter/core/server";
+import type { CiNextRootLayoutContext } from "@cloudigniter/next/types";
 import { appBootstrap, appGetDevBeaconActor } from "@/kernel/server";
 
 const inter = Inter({ subsets: ["latin"] });
 
+const version = process.env.NEXT_VERSION;
+
 export async function appResolveRootLayoutContext() {
-  const config = await appBootstrap();
+  const ctx = await appBootstrap();
 
   const debugProbeEnabled =
-    config.ciConfig.dev.debug.debugProbe.enabled === true;
+    ctx.config.appCoreConfig.dev.debug.debugProbe.enabled === true;
 
   // ─────────────────────────────────────────────────────────────
   // Log trace
   // ─────────────────────────────────────────────────────────────
   const { logger } = ciStartTraceServer(
-    config.ciConfig.dev.traceLog,
+    ctx.config.appCoreConfig.dev.traceLog,
     { source: "server", prettyWave: true },
     { name: "RootLayout" },
   );
   // ─────────────────────────────────────────────────────────────
 
-  const locale = await getLocale();
-  const direction = ciGetLangDir(locale);
+  // const locale = await getLocale();
+  // const direction = ciGetLangDir(locale);
 
-  const envMode = ciGetEnvMode();
+  // const envMode = ciGetEnvMode();
 
-  if (!envMode) {
+  if (!ctx.env.mode) {
     throw new Error("No environment mode is defined.");
   }
 
@@ -41,16 +40,16 @@ export async function appResolveRootLayoutContext() {
     type: "component",
     name: "RootLayout",
     scope: "layout",
-    event: `Rendering <RootLayout>: locale=${locale} & direction=${direction}`,
+    event: `Rendering <RootLayout>: locale=${ctx.config.appResolvedCoreConfig.locale} & direction=${ctx.config.appResolvedCoreConfig.direction}`,
   });
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
   const bodyClassName = `ci-body ${inter.className}`;
 
-  return {
+  const rootLayoutContext: CiNextRootLayoutContext = {
     htmlProps: {
-      lang: locale,
-      dir: direction,
+      lang: ctx.config.appResolvedCoreConfig.locale,
+      dir: ctx.config.appResolvedCoreConfig.direction,
       suppressHydrationWarning: true,
     },
 
@@ -58,9 +57,7 @@ export async function appResolveRootLayoutContext() {
       className: bodyClassName,
     },
 
-    config,
-    envMode,
-    actor,
+    ctx,
 
     debugProbe: {
       id: "root-layout",
@@ -73,15 +70,16 @@ export async function appResolveRootLayoutContext() {
       },
       data: {
         component: "RootLayout",
-        lang: locale,
-        dir: direction,
+        lang: ctx.config.appResolvedCoreConfig.locale,
+        dir: ctx.config.appResolvedCoreConfig.direction,
         bodyClassName,
-        coreConfig: config.ciConfig,
       },
     },
-  } as const;
+  };
+
+  return rootLayoutContext;
 }
 
-export type AppRootLayoutContext = Awaited<
-  ReturnType<typeof appResolveRootLayoutContext>
->;
+// export type AppRootLayoutContext = Awaited<
+//   ReturnType<typeof appResolveRootLayoutContext>
+// >;

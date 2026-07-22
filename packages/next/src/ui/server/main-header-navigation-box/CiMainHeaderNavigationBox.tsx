@@ -1,10 +1,7 @@
-import dynamic from "next/dynamic";
-import { ciStartTraceServer } from "../../../server";
+import { ciStartTraceServer } from "@cloudigniter/core/server";
 import type { CiMainMenuItem } from "@cloudigniter/core/types";
-import { type CiSettings } from "@cloudigniter/core/types";
-import { CiMainMenu } from "../../server";
-import { CiRoundButtonFallback } from "../../common";
-import type { CiNextPageConfig } from "../../../types";
+import { CiMainMenu } from "@cloudigniter/ui/server";
+import type { CiNextPageConfig } from "@ci-next/types";
 
 interface MainHeaderUserBoxInterface {
   config: CiNextPageConfig;
@@ -17,7 +14,7 @@ export function CiMainHeaderNavigationBox({
 
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger } = ciStartTraceServer(
-    config.ciConfig.dev.traceLog,
+    config.coreConfig.dev.traceLog,
     { source: "server", prettyWave: true },
     { name: "<Header>" },
   );

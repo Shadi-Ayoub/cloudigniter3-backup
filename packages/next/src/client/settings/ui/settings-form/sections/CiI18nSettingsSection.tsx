@@ -1,10 +1,11 @@
 import { useTranslations } from "next-intl";
 import { CiI18nSettingsSchema } from "@cloudigniter/core/lib";
-import { CiSmartFormField } from "@ci-next/ui/client";
+import type { CiLocaleDirection } from "@cloudigniter/core/types";
+import { CiSmartFormField } from "@cloudigniter/ui/client";
 import { CiSettingsFormSection } from "./CiSettingsFormSection";
 
 interface CiI18nSettingsSectionProps {
-  direction?: "ltr" | "rtl";
+  direction?: CiLocaleDirection;
 }
 
 export const CiI18nSettingsSection = ({

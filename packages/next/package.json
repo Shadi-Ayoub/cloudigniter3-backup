@@ -99,8 +99,6 @@
     "@aws-amplify/adapter-nextjs": "^1.7.2",
     "@aws-amplify/auth": "^6.20.0",
     "@aws-amplify/ui-react": "^6.15.3",
-    "@cloudigniter/aws": "workspace:*",
-    "@cloudigniter/core": "workspace:*",
     "@headlessui/react": "^2.2.10",
     "@iconify/react": "^6.0.2",
     "@monaco-editor/react": "^4.7.0",
@@ -146,6 +144,9 @@
   },
   "devDependencies": {
     "@cloudigniter/config-ts": "workspace:*",
+    "@cloudigniter/aws": "workspace:*",
+    "@cloudigniter/core": "workspace:*",
+    "@cloudigniter/ui": "workspace:*",
     "@rollup/plugin-alias": "^6.0.0",
     "@tailwindcss/cli": "^4.3.0",
     "@types/node": "^25.5.0",

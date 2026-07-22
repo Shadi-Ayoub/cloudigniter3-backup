@@ -1,45 +1,53 @@
 import { cache } from "react";
+import { headers, cookies } from "next/headers";
+import { ciReadTenantFromHeaders } from "@cloudigniter/core/server";
 
+import { ciNormalizeThrownError } from "@cloudigniter/core/lib";
 import {
+  ciAwsGetCurrentUser,
   ciGetCookies,
+  ciGetEnvMode,
   ciGetHeaders,
   ciGetTenantContext,
 } from "@cloudigniter/next/server";
-import { ciAwsGetCurrentUser } from "@cloudigniter/next/server";
-import { ciNormalizeThrownError } from "@cloudigniter/core/lib";
-import type { CiServerErrorPayload } from "@cloudigniter/next/types";
+import type {
+  CiNextContext,
+  CiServerErrorPayload,
+} from "@cloudigniter/next/types";
 import type { CiAmplifyOutputs } from "@cloudigniter/aws/types";
-
-// import { appBootstrap } from "@/kernel/server";
-// import { ciGetSettings } from "@/kernel/api/server";
-import { ciGetServerStatus } from "./ci-get-server-status";
-import { appGetServerAllConfig } from "@/kernel/server";
-
-////
-import type { CiPageCoreConfig } from "@cloudigniter/core/types";
-import type { CiSettings, CiSystemStatus } from "@cloudigniter/core/types";
-import type { CiNextPageConfig } from "@cloudigniter/next/types";
-
-import { ciPrepareConfig } from "./ci-prepare-config";
-
+import { appGetAllServerConfig } from "@/kernel/server";
 import { appGetSettings } from "@/kernel/server";
-// import outputs from "@/../amplify_outputs.json";
-
-// const amplifyOutputs = outputs as CiAmplifyOutputs;
 
 export const appBootstrap = cache(async () => {
   try {
     const tenantContext = await ciGetTenantContext();
-    const config = await appGetServerAllConfig();
+    const config = await appGetAllServerConfig();
 
-    const amplifyOutputs = config.amplifyOutputs as CiAmplifyOutputs;
+    const amplifyOutputs = config.appCoreConfig.providers?.aws?.amplify
+      ?.amplifyOutputs as CiAmplifyOutputs;
 
     const user = await ciAwsGetCurrentUser(amplifyOutputs);
 
     const authMode = user.isAuthenticated
       ? ("userPool" as const)
-      : config.data.publicAuthMode;
+      : config.appCoreConfig.data.publicAuthMode;
 
+    const auth = {
+      mode: authMode,
+      user: {
+        id: user.userId,
+        authenticated: true,
+        roles: ["DEVELOPER"],
+      },
+    };
+
+    const envMode = ciGetEnvMode();
+
+    const env = {
+      mode: envMode,
+    };
+
+    // TBD
     // const settings = await ciGetSettings({
     //   authMode,
     //   tenantId: tenantContext.tenantId,
@@ -50,27 +58,24 @@ export const appBootstrap = cache(async () => {
     // });
 
     const settings = await appGetSettings();
-    const status = await ciGetServerStatus(settings, amplifyOutputs);
     const ciHeaders = await ciGetHeaders();
     const ciCookies = await ciGetCookies();
 
-    // return await _ciBootstrap(config, settings, ciHeaders, ciCookies, status);
+    const hds = await headers();
+    const cks = await cookies();
+    const tenant = ciReadTenantFromHeaders(hds, cks);
 
-    let pageConfig: CiNextPageConfig;
-
-    // if (settings !== undefined && status !== undefined) {
-    pageConfig = ciPrepareConfig(
+    const context = {
       config,
       settings,
+      auth,
+      env,
+      tenant,
       ciHeaders,
       ciCookies,
-      status,
-    );
-    // } else {
-    // pageConfig = ciPrepareConfig(config);
-    // }
+    } as CiNextContext;
 
-    return pageConfig;
+    return context;
   } catch (error) {
     const errorObj = ciNormalizeThrownError(error);
 

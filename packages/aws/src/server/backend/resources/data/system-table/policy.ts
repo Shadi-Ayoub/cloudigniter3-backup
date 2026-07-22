@@ -1,134 +1,143 @@
-import type { CiPlanOptions, CiPolicyFragment } from '../../../types';
-import type { CiTableResourceState } from '../../resource-types';
+import type { CiPlanOptions, CiPolicyFragment } from "../../../types";
+import type { CiTableResourceState } from "../../resource-types";
 
 export function ciMakeSystemTablePolicies(
   tables: { system: CiTableResourceState },
-  options: CiPlanOptions
+  options: CiPlanOptions,
 ): CiPolicyFragment {
   if (!options.includeDefaultDynamoPolicies) return {};
 
   return {
     inlinePolicies: [
       {
-        for: 'ciClearSeederHandler',
-        id: 'SystemDdbReadWrite',
+        for: "ciClearSeederHandler",
+        id: "SystemDdbReadWrite",
         statements: [
           {
-            effect: 'Allow',
+            effect: "Allow",
             actions: [
-              'dynamodb:GetItem',
-              'dynamodb:PutItem',
-              'dynamodb:UpdateItem',
-              'dynamodb:DeleteItem',
-              'dynamodb:Query',
+              "dynamodb:GetItem",
+              "dynamodb:PutItem",
+              "dynamodb:UpdateItem",
+              "dynamodb:DeleteItem",
+              "dynamodb:Query",
             ],
             resources: [tables.system.arn],
           },
         ],
       },
       {
-        for: 'ciCreateTenantHandler',
-        id: 'SystemDdbReadWrite',
+        for: "ciCreateTenantHandler",
+        id: "SystemDdbReadWrite",
         statements: [
           {
-            effect: 'Allow',
-            actions: ['dynamodb:GetItem', 'dynamodb:PutItem', 'dynamodb:UpdateItem'],
+            effect: "Allow",
+            actions: [
+              "dynamodb:GetItem",
+              "dynamodb:PutItem",
+              "dynamodb:UpdateItem",
+            ],
             resources: [tables.system.arn],
           },
         ],
       },
       {
-        for: 'ciDeleteTenantHandler',
-        id: 'SystemDdbReadWrite',
+        for: "ciDeleteTenantHandler",
+        id: "SystemDdbReadWrite",
         statements: [
           {
-            effect: 'Allow',
-            actions: ['dynamodb:GetItem', 'dynamodb:DeleteItem'],
+            effect: "Allow",
+            actions: ["dynamodb:GetItem", "dynamodb:DeleteItem"],
             resources: [tables.system.arn],
           },
         ],
       },
       {
-        for: 'ciGetTenantHandler',
-        id: 'SystemDdbReadOnly',
+        for: "ciGetTenantHandler",
+        id: "SystemDdbReadOnly",
         statements: [
           {
-            effect: 'Allow',
-            actions: ['dynamodb:GetItem', 'dynamodb:Query'],
+            effect: "Allow",
+            actions: ["dynamodb:GetItem", "dynamodb:Query"],
             resources: [tables.system.arn],
           },
         ],
       },
       {
-        for: 'ciGetTenantBySlugHandler',
-        id: 'SystemDdbReadOnly',
+        for: "ciGetTenantBySlugHandler",
+        id: "SystemDdbReadOnly",
         statements: [
           {
-            effect: 'Allow',
-            actions: ['dynamodb:GetItem', 'dynamodb:Query'],
+            effect: "Allow",
+            actions: ["dynamodb:GetItem", "dynamodb:Query"],
             resources: [tables.system.arn],
           },
         ],
       },
       {
-        for: 'ciGetTenantLookupBySlugHandler',
-        id: 'SystemDdbReadOnly',
+        for: "ciGetTenantLookupBySlugHandler",
+        id: "SystemDdbReadOnly",
         statements: [
           {
-            effect: 'Allow',
-            actions: ['dynamodb:GetItem', 'dynamodb:Query'],
+            effect: "Allow",
+            actions: ["dynamodb:GetItem", "dynamodb:Query"],
             resources: [tables.system.arn],
           },
         ],
       },
       {
-        for: 'ciListTenantsHandler',
-        id: 'SystemDdbReadOnly',
+        for: "ciListTenantsHandler",
+        id: "SystemDdbReadOnly",
         statements: [
           {
-            effect: 'Allow',
-            actions: ['dynamodb:Query', 'dynamodb:Scan'],
+            effect: "Allow",
+            actions: ["dynamodb:Query", "dynamodb:Scan"],
             resources: [tables.system.arn],
           },
         ],
       },
       {
-        for: 'ciSeedTenantsHandler',
-        id: 'SystemDdbReadWrite',
+        for: "ciSeedTenantsHandler",
+        id: "SystemDdbReadWrite",
         statements: [
           {
-            effect: 'Allow',
-            actions: ['dynamodb:BatchWriteItem', 'dynamodb:PutItem', 'dynamodb:DeleteItem', 'dynamodb:UpdateItem'],
+            effect: "Allow",
+            actions: [
+              "dynamodb:BatchWriteItem",
+              "dynamodb:PutItem",
+              "dynamodb:DeleteItem",
+              "dynamodb:UpdateItem",
+            ],
             resources: [tables.system.arn],
           },
         ],
       },
       {
-        for: 'ciUpdateTenantHandler',
-        id: 'SystemDdbReadWrite',
+        for: "ciUpdateTenantHandler",
+        id: "SystemDdbReadWrite",
         statements: [
           {
-            effect: 'Allow',
-            actions: ['dynamodb:GetItem', 'dynamodb:UpdateItem'],
+            effect: "Allow",
+            actions: ["dynamodb:GetItem", "dynamodb:UpdateItem"],
             resources: [tables.system.arn],
           },
         ],
       },
     ],
     tableGrants: [
-      { for: 'ciClearSeederHandler', table: 'systemTable', actions: ['DeleteItem', 'Query', 'Write'] },
-      { for: 'ciCreateTenantHandler', table: 'systemTable', actions: ['GetItem', 'PutItem', 'UpdateItem'] },
-      { for: 'ciDeleteTenantHandler', table: 'systemTable', actions: ['GetItem', 'DeleteItem'] },
-      { for: 'ciGetTenantHandler', table: 'systemTable', actions: ['GetItem', 'Query'] },
-      { for: 'ciGetTenantBySlugHandler', table: 'systemTable', actions: ['GetItem', 'Query'] },
-      { for: 'ciGetTenantLookupBySlugHandler', table: 'systemTable', actions: ['GetItem', 'Query'] },
-      { for: 'ciListTenantsHandler', table: 'systemTable', actions: ['Query', 'Scan'] },
-      {
-        for: 'ciSeedTenantsHandler',
-        table: 'systemTable',
-        actions: ['BatchWriteItem', 'PutItem', 'DeleteItem', 'UpdateItem'],
-      },
-      { for: 'ciUpdateTenantHandler', table: 'systemTable', actions: ['GetItem', 'UpdateItem'] },
+      // { for: 'ciClearSeederHandler', table: 'systemTable', actions: ['DeleteItem', 'Query', 'Write'] },
+      // { for: 'ciCreateTenantHandler', table: 'systemTable', actions: ['GetItem', 'PutItem', 'UpdateItem'] },
+      // { for: 'ciDeleteTenantHandler', table: 'systemTable', actions: ['GetItem', 'DeleteItem'] },
+      // { for: 'ciGetTenantHandler', table: 'systemTable', actions: ['GetItem', 'Query'] },
+      // { for: 'ciGetTenantBySlugHandler', table: 'systemTable', actions: ['GetItem', 'Query'] },
+      // { for: 'ciGetTenantLookupBySlugHandler', table: 'systemTable', actions: ['GetItem', 'Query'] },
+      // { for: 'ciListTenantsHandler', table: 'systemTable', actions: ['Query', 'Scan'] },
+      // {
+      //   for: 'ciSeedTenantsHandler',
+      //   table: 'systemTable',
+      //   actions: ['BatchWriteItem', 'PutItem', 'DeleteItem', 'UpdateItem'],
+      // },
+      // { for: 'ciUpdateTenantHandler', table: 'systemTable', actions: ['GetItem', 'UpdateItem'] },
     ],
   };
 }
