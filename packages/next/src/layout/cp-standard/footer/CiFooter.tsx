@@ -2,20 +2,20 @@ import React from "react";
 import { useTranslations } from "next-intl";
 import { ciCapitalizeFirstLetter } from "@cloudigniter/core/lib";
 import { ciStartTraceServer } from "@cloudigniter/core/server";
-import type { CiNextPageConfig, CiSystemStatusCheckList } from "@ci-next/types";
+import type { CiNextContext, CiSystemStatusCheckList } from "@ci-next/types";
 
 interface FooterInterface {
-  config: CiNextPageConfig;
+  context: CiNextContext;
   checkList: CiSystemStatusCheckList;
   children: React.ReactNode;
 }
 
-export const CiFooter = ({ config, children }: FooterInterface) => {
+export const CiFooter = ({ context, children }: FooterInterface) => {
   const t = useTranslations("mainFooter");
 
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger } = ciStartTraceServer(
-    config.coreConfig.dev.traceLog,
+    context.config.appCoreConfig.dev.traceLog,
     { source: "server", prettyWave: true },
     { name: "<Footer>" },
   );
@@ -28,9 +28,7 @@ export const CiFooter = ({ config, children }: FooterInterface) => {
 
   return (
     <footer className="ci-main-footer">
-      <div className="flex-1 text-left">
-        {/* <CiSystemStatusDialog checkList={checkList} /> */}
-      </div>
+      <div className="flex-1 text-left">{/* <CiSystemStatusDialog checkList={checkList} /> */}</div>
 
       <div style={{ flex: 1, textAlign: "center" }}>
         <span>{children}</span>

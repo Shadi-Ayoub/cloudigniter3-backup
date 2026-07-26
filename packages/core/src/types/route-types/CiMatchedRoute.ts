@@ -1,3 +1,3 @@
-import type { CiRoute } from "./CiRoute";
+import type { CiRouteDefinition } from "./CiRouteDefinition";
 
-export type CiMatchedRoute = { pattern: string; route: CiRoute } | null;
+export type CiMatchedRoute = { pattern: string; route: CiRouteDefinition } | null;

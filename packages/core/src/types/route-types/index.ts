@@ -1,5 +1,10 @@
-export type { CiRoute } from "./CiRoute";
-export type { CiRouteInfoPageReason } from "./CiRouteInfoPageReason";
-export type { CiRouteRuntimeConfig } from "./CiRouteRuntimeConfig";
 export type { CiMatchedRoute } from "./CiMatchedRoute";
+export type { CiRoute } from "./CiRoute";
+export type { CiRouteDefinition } from "./CiRouteDefinition";
+export type { CiRouteInfoPageReason } from "./CiRouteInfoPageReason";
+export type { CiRouteMatch } from "./CiRouteMatch";
+export type { CiRouteMatchKind } from "./CiRouteMatchKind";
+export type { CiRoutePattern } from "./CiRoutePattern";
+export type { CiRouteRuntimeConfig } from "./CiRouteRuntimeConfig";
+export type { CiRouteSearchParams } from "./CiRouteSearchParams";
 export type { CiRoutesMap } from "./CiRoutesMap";

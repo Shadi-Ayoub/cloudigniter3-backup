@@ -1,22 +1,14 @@
-// src/kernel/i18n.messages.ts
-
 import "server-only";
 
 import { deepmerge } from "deepmerge-ts";
 import type { AbstractIntlMessages } from "next-intl";
-import {
-  ciNormalizeThrownError,
-  ciResolveNamespaceLocaleFileNames,
-  ciResolveRoute,
-} from "@cloudigniter/core/lib";
-import type {
-  CiRoutesMap,
-  CiServerErrorPayload,
-} from "@cloudigniter/core/types";
+
+import { ciNormalizeThrownError, ciResolveNamespaceLocaleFileNames } from "@cloudigniter/core/lib";
+
+import type { CiRoute, CiServerErrorPayload } from "@cloudigniter/core/types";
+
 import { locales as coreLocaleMessages } from "@cloudigniter/next/locales";
 import { locales as customLocaleMessages } from "@/custom/locales";
-
-import config from "@/../cloudigniter.config";
 
 export type CiLanguageMessageSource = "core" | "custom";
 
@@ -57,7 +49,16 @@ export interface CiLanguageMessagesDiagnostics {
 
 export interface CiLoadRouteMessagesOptions {
   localeCode: string;
-  urlPath: string;
+
+  /**
+   * Authoritative logical route resolved by the CloudIgniter proxy.
+   */
+  // route: Pick<CiRoute, "pathname" | "namespace">;
+
+  namespace: string;
+
+  pathname: string;
+
   includeMessageEntries?: boolean;
 }
 
@@ -78,10 +79,7 @@ type CiLoadedMessageFile = {
   entries?: CiLanguageMessageEntry[];
 };
 
-type CiLocaleMessagesRegistry = Record<
-  string,
-  Record<string, AbstractIntlMessages>
->;
+type CiLocaleMessagesRegistry = Record<string, Record<string, AbstractIntlMessages>>;
 
 const coreMessages = coreLocaleMessages as CiLocaleMessagesRegistry;
 
@@ -102,9 +100,7 @@ function ciIsMessageRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function ciFlattenMessages(
-  messages: AbstractIntlMessages,
-): CiLanguageMessageEntry[] {
+function ciFlattenMessages(messages: AbstractIntlMessages): CiLanguageMessageEntry[] {
   const entries: CiLanguageMessageEntry[] = [];
 
   const visit = (value: unknown, prefix: string) => {
@@ -129,10 +125,7 @@ function ciFlattenMessages(
   return entries.sort((left, right) => left.key.localeCompare(right.key));
 }
 
-function ciMergeMessages(
-  current: AbstractIntlMessages,
-  next: AbstractIntlMessages,
-): AbstractIntlMessages {
+function ciMergeMessages(current: AbstractIntlMessages, next: AbstractIntlMessages): AbstractIntlMessages {
   return deepmerge(current, next) as AbstractIntlMessages;
 }
 
@@ -153,24 +146,18 @@ function ciCreateFileDiagnostic(
   };
 }
 
-function ciLoadCoreMessages(
-  localeCode: string,
-  fileName: string,
-): CiLoadedMessageFile | undefined {
+function ciLoadCoreMessages(localeCode: string, fileName: string): CiLoadedMessageFile | undefined {
   const messages = coreMessages[localeCode]?.[fileName];
 
-  // Core namespace files are optional. A route can belong to a deeper
-  // namespace than the language files supplied by @cloudigniter/next.
+  /*
+   * Core namespace files are optional. Application routes can belong to
+   * namespaces for which @cloudigniter/next provides no messages.
+   */
   if (!messages) {
     return undefined;
   }
 
-  const diagnostic = ciCreateFileDiagnostic(
-    "core",
-    localeCode,
-    fileName,
-    "loaded",
-  );
+  const diagnostic = ciCreateFileDiagnostic("core", localeCode, fileName, "loaded");
 
   const entries = ciFlattenMessages(messages);
 
@@ -183,16 +170,8 @@ function ciLoadCoreMessages(
   };
 }
 
-function ciLoadCustomMessages(
-  localeCode: string,
-  fileName: string,
-): CiLoadedMessageFile {
-  const diagnostic = ciCreateFileDiagnostic(
-    "custom",
-    localeCode,
-    fileName,
-    "not-found",
-  );
+function ciLoadCustomMessages(localeCode: string, fileName: string): CiLoadedMessageFile {
+  const diagnostic = ciCreateFileDiagnostic("custom", localeCode, fileName, "not-found");
 
   const messages = customMessages[localeCode]?.[fileName];
 
@@ -212,10 +191,10 @@ function ciLoadCustomMessages(
       entries,
     };
   } catch (error) {
-    const errorObj = ciNormalizeThrownError(error);
+    const normalizedError = ciNormalizeThrownError(error);
 
     diagnostic.status = "failed";
-    diagnostic.error = errorObj.message;
+    diagnostic.error = normalizedError.message;
 
     return { diagnostic };
   }
@@ -223,33 +202,23 @@ function ciLoadCustomMessages(
 
 export async function ciLoadRouteMessages({
   localeCode,
-  urlPath,
+  namespace,
+  pathname,
   includeMessageEntries = false,
 }: CiLoadRouteMessagesOptions): Promise<CiLoadRouteMessagesResult> {
   if (!coreMessages[localeCode]) {
     throw ciCreateCriticalI18nError(
       "No locale is defined!",
-      "[i18n.messages.ts] No locale code was found in CloudIgniter's next package!",
+      `[i18n.messages.ts] Locale "${localeCode}" is not defined in CloudIgniter's next package!`,
     );
   }
 
-  const routes = config.routes as CiRoutesMap;
-  const route = ciResolveRoute(urlPath, routes);
-
-  if (!route) {
-    throw ciCreateCriticalI18nError(
-      "Resolving Language File Failed!",
-      `[i18n.messages.ts] The route for the URL path "${urlPath}" is not registered in the CloudIgniter configuration file!`,
-    );
-  }
-
+  /*
+   * The route was already matched and validated by the proxy. Its logical
+   * namespace can therefore be used directly without resolving it again.
+   */
   const requestedFileNames = [
-    ...new Set([
-      "common",
-      ...ciResolveNamespaceLocaleFileNames(route.namespace).filter(
-        (fileName) => fileName !== "common",
-      ),
-    ]),
+    ...new Set(["common", ...ciResolveNamespaceLocaleFileNames(namespace).filter((fileName) => fileName !== "common")]),
   ];
 
   const coreFiles = requestedFileNames.flatMap((fileName) => {
@@ -258,15 +227,15 @@ export async function ciLoadRouteMessages({
     return file ? [file] : [];
   });
 
-  const customFiles = requestedFileNames.map((fileName) =>
-    ciLoadCustomMessages(localeCode, fileName),
-  );
+  const customFiles = requestedFileNames.map((fileName) => ciLoadCustomMessages(localeCode, fileName));
 
-  // Merge precedence:
-  // 1. core/common
-  // 2. core/namespace chain
-  // 3. custom/common
-  // 4. custom/namespace chain
+  /*
+   * Merge precedence:
+   * 1. core/common
+   * 2. core/namespace chain
+   * 3. custom/common
+   * 4. custom/namespace chain
+   */
   const allFiles = [...coreFiles, ...customFiles];
 
   let messages = {} as AbstractIntlMessages;
@@ -281,9 +250,7 @@ export async function ciLoadRouteMessages({
       continue;
     }
 
-    diagnostic.overriddenKeyCount = entries.filter(({ key }) =>
-      resolvedKeys.has(key),
-    ).length;
+    diagnostic.overriddenKeyCount = entries.filter(({ key }) => resolvedKeys.has(key)).length;
 
     if (diagnostic.source === "custom") {
       customOverrideCount += diagnostic.overriddenKeyCount;
@@ -300,8 +267,13 @@ export async function ciLoadRouteMessages({
 
   return {
     locale: localeCode,
-    urlPath,
-    namespace: route.namespace,
+
+    /*
+     * This is the normalized logical pathname, not the public Tenant-aware
+     * pathname.
+     */
+    urlPath: pathname,
+    namespace: namespace,
     requestedFileNames,
     messages,
     diagnostics: {
@@ -319,7 +291,7 @@ export async function ciLoadRouteMessages({
             status: diagnostic.status,
             messageCount: diagnostic.messageCount,
             overriddenKeyCount: diagnostic.overriddenKeyCount,
-            error: diagnostic.error,
+            ...(diagnostic.error === undefined ? {} : { error: diagnostic.error }),
             entries: entries ?? [],
           })),
         }

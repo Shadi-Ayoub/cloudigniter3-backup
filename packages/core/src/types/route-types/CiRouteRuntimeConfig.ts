@@ -5,27 +5,13 @@ import type { CiInfoPageStrategy } from "@ci-core/types";
  */
 export interface CiRouteRuntimeConfig {
   /**
-   * Cookie name used to persist the resolved route namespace.
-   */
-  namespaceCookieName?: string;
-
-  /**
-   * Header name used to expose the resolved route namespace.
-   */
-  namespaceHeaderName?: string;
-
-  /**
-   * Optional cookie name used to persist the resolved pathname.
-   */
-  pathnameCookieName?: string;
-
-  /**
-   * Optional header name used to expose the resolved pathname.
-   */
-  pathnameHeaderName?: string;
-
-  /**
    * Controls how info pages are resolved/rendered for route handling.
    */
+
+  /**
+   * Internal page used to explain rejected or unregistered routes.
+   */
+  infoPagePath?: string;
+
   infoPageStrategy?: CiInfoPageStrategy;
 }

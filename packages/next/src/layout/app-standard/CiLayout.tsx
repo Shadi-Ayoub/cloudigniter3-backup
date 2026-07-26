@@ -4,22 +4,22 @@ import { CiDashboardHeaderButton } from "@cloudigniter/ui/client";
 import { CiPageWrapper } from "@ci-next/server";
 import { CiMainHeaderUserBox } from "@ci-next/ui/server";
 import { ciStartTraceServer } from "@cloudigniter/core/server";
-import type { CiNextPageConfig } from "@ci-next/types";
+import type { CiNextContext } from "@ci-next/types";
 
 import { CiHeader } from "./header";
 import { CiContainer } from "./container";
 import { CiCopyright, CiFooter } from "./footer";
 
 interface CiLayoutProps {
-  config: CiNextPageConfig;
+  context: CiNextContext;
   protect: boolean;
   children: React.ReactNode;
 }
 
-const CiLayout = ({ config, protect, children }: CiLayoutProps) => {
+const CiLayout = ({ context, protect, children }: CiLayoutProps) => {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger } = ciStartTraceServer(
-    config.coreConfig.dev.traceLog,
+    context.config.appCoreConfig.dev.traceLog,
     { source: "server", prettyWave: true },
     { name: "<Layout>" },
   );
@@ -31,15 +31,15 @@ const CiLayout = ({ config, protect, children }: CiLayoutProps) => {
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
   return (
-    <CiPageWrapper config={config} protect={protect}>
-      <CiHeader config={config}>
-        <CiDashboardHeaderButton traceConfig={config.coreConfig.dev.traceLog} />
+    <CiPageWrapper context={context} protect={protect}>
+      <CiHeader context={context}>
+        <CiDashboardHeaderButton traceConfig={context.config.appCoreConfig.dev.traceLog} />
         <div></div>
-        <CiMainHeaderUserBox config={config} />
+        <CiMainHeaderUserBox context={context} />
       </CiHeader>
-      <CiContainer config={config}>{children}</CiContainer>
-      <CiFooter config={config}>
-        <CiCopyright config={config} />
+      <CiContainer context={context}>{children}</CiContainer>
+      <CiFooter context={context}>
+        <CiCopyright config={context.config} />
       </CiFooter>
     </CiPageWrapper>
   );

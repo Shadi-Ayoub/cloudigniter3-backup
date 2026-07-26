@@ -16,27 +16,27 @@ export type CiTenantRoutingOptions = {
   basePath?: string;
 
   /** Header names used by middleware and server components. */
-  idHeaderName?: string;
-  modeHeaderName?: string;
-  scopeHeaderName?: string;
-  statusHeaderName?: string;
+  // idHeaderName?: string;
+  // modeHeaderName?: string;
+  // scopeHeaderName?: string;
+  // statusHeaderName?: string;
   /**
    * Header name used to forward the final resolved application feature pathname.
    *
    * Example:
    * "/t/acme/academic/grade-10/math/dashboard" -> "/dashboard"
    */
-  featurePathnameHeaderName?: string;
+  // featurePathnameHeaderName?: string;
 
   /** Cookie names used by middleware and server components. */
-  idCookieName?: string;
-  modeCookieName?: string;
-  scopeCookieName?: string;
-  statusCookieName?: string;
-  featurePathnameCookieName?: string;
+  // idCookieName?: string;
+  // modeCookieName?: string;
+  // scopeCookieName?: string;
+  // statusCookieName?: string;
+  // featurePathnameCookieName?: string;
 
   /** Persist resolved tenant in cookies. */
-  writeTenantCookie?: boolean;
+  // writeTenantCookie?: boolean;
 
   /** If true, rewrite foo.example.com internally when using subdomain mode. */
   rewriteSubdomainToTenantPath?: boolean;

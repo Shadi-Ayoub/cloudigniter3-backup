@@ -1,24 +1,21 @@
 import { ciNormalizePathname } from "@cloudigniter/core/lib";
 
-import type {
-  CiTenantResolutionOptions,
-  CiTenantResolutionResult,
-} from "@cloudigniter/core/types";
+import type { CiTenantResolutionOptions, CiTenantResolutionResult } from "@cloudigniter/core/types";
 
 import { ciNormalizeBasePath } from "./ci-normalize-base-path";
 
 /**
- * Resolves tenant from slug-based URLs.
+ * Resolves Tenant routing information from slug-based URLs.
  *
  * Examples when tenantBasePath is "/tx":
- * - /tx/acme/dashboard  -> tenant: acme
- * - /tx/global/dashboard -> global scope
- * - /dashboard           -> system scope
+ * - /tx/acme/dashboard    -> Tenant slug: acme
+ * - /tx/global/dashboard -> Global scope
+ * - /dashboard           -> System scope
+ *
+ * This function performs route resolution only. Resolving the internal Tenant
+ * identifier and lifecycle status must happen in a subsequent lookup step.
  */
-export function ciResolveSlugTenant(
-  pathname: string,
-  options: CiTenantResolutionOptions,
-): CiTenantResolutionResult {
+export function ciResolveSlugTenant(pathname: string, options: CiTenantResolutionOptions): CiTenantResolutionResult {
   const pathnameNormalized = ciNormalizePathname(pathname);
   const basePath = ciNormalizeBasePath(options.tenantBasePath);
 
@@ -26,15 +23,11 @@ export function ciResolveSlugTenant(
     return {
       scope: "system",
       source: "none",
-      status: "active",
       featurePathname: pathnameNormalized,
     };
   }
 
-  const segments = pathnameNormalized
-    .slice(basePath.length)
-    .split("/")
-    .filter(Boolean);
+  const segments = pathnameNormalized.slice(basePath.length).split("/").filter(Boolean);
 
   const candidate = segments[0];
 
@@ -42,29 +35,24 @@ export function ciResolveSlugTenant(
     return {
       scope: "system",
       source: "none",
-      status: "active",
       featurePathname: pathnameNormalized,
     };
   }
 
-  const featurePathname = ciNormalizePathname(
-    `/${segments.slice(1).join("/")}`,
-  );
+  const featurePathname = ciNormalizePathname(`/${segments.slice(1).join("/")}`);
 
   if (candidate === "global") {
     return {
       scope: "global",
       source: "slug",
-      status: "active",
       featurePathname,
     };
   }
 
   return {
-    id: candidate,
+    slug: candidate,
     scope: "tenant",
     source: "slug",
-    status: "active",
     featurePathname,
   };
 }

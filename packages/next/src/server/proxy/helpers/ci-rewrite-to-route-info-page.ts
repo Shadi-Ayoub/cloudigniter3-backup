@@ -2,39 +2,70 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import type { CiRouteInfoPageReason } from "@cloudigniter/core/types";
 
+function ciGetForwardedResponseHeaders(response?: NextResponse): Headers {
+  const headers = new Headers(response?.headers);
+
+  /*
+   * Remove control headers belonging to the previous NextResponse.
+   * The replacement rewrite or redirect generates its own control headers.
+   *
+   * Preserve x-middleware-set-cookie because it carries cookies accumulated
+   * earlier in the proxy pipeline.
+   */
+  headers.delete("x-middleware-next");
+  headers.delete("x-middleware-rewrite");
+  headers.delete("x-middleware-override-headers");
+  headers.delete("location");
+
+  /*
+   * These headers are generated internally when NextResponse.next() or
+   * NextResponse.rewrite() receives request-header overrides.
+   */
+  const requestOverrideHeaders: string[] = [];
+
+  headers.forEach((_value, name) => {
+    if (name.startsWith("x-middleware-request-")) {
+      requestOverrideHeaders.push(name);
+    }
+  });
+
+  for (const name of requestOverrideHeaders) {
+    headers.delete(name);
+  }
+
+  return headers;
+}
+
 export function ciRewriteToRouteInfoPage(
   request: NextRequest,
   ctx: {
-    /** The original normalized pathname that was rejected (e.g. "/x/y") */
+    /** Original normalized pathname that was rejected. */
     requestedPath: string;
 
-    /** Optional: reason for info page rendering */
+    /** Reason for rendering the route information page. */
     reason?: CiRouteInfoPageReason;
 
-    /** Optional: best-match pattern (debug / tracing only) */
+    /** Best-matching route pattern, used for diagnostics. */
     matchedPattern?: string | null;
   },
   opts: {
-    /** Absolute pathname of the info page (e.g. "/info/invalid-route") */
+    /** Absolute pathname of the information page. */
     infoPagePath: string;
 
-    /** rewrite (default) or redirect */
+    /** Rewrite by default, or issue a browser redirect. */
     infoPageStrategy?: "rewrite" | "redirect";
   },
   response?: NextResponse,
 
   /**
-   * Optional request headers forwarded to the rewritten destination.
-   *
-   * This makes resolved request context available to Server Components during
-   * the same request cycle.
+   * Additional request headers accumulated by earlier proxy steps,
+   * such as Tenant, Org Unit, and route-context headers.
    */
   requestHeaders?: Headers,
-) {
+): NextResponse {
   const url = request.nextUrl.clone();
-  url.pathname = opts.infoPagePath;
 
-  // Canonical info page: remove prior query parameters
+  url.pathname = opts.infoPagePath;
   url.search = "";
 
   url.searchParams.set("path", ctx.requestedPath);
@@ -47,28 +78,33 @@ export function ciRewriteToRouteInfoPage(
     url.searchParams.set("pattern", ctx.matchedPattern);
   }
 
-  const r = response ?? NextResponse.next();
+  const responseHeaders = ciGetForwardedResponseHeaders(response);
   const strategy = opts.infoPageStrategy ?? "rewrite";
 
-  /**
-   * Redirects start a new browser request, so there is no rewritten request
-   * whose headers need to be forwarded.
+  /*
+   * A redirect starts a new browser request. Request headers cannot be
+   * forwarded to that new request, but response headers and cookies are kept.
    */
   if (strategy === "redirect") {
     return NextResponse.redirect(url, {
-      headers: r.headers,
+      headers: responseHeaders,
     });
   }
 
-  return NextResponse.rewrite(url, {
-    headers: r.headers,
+  /*
+   * Start with the original request headers and overlay the authoritative
+   * headers accumulated by earlier proxy stages.
+   */
+  const forwardedRequestHeaders = new Headers(request.headers);
 
-    ...(requestHeaders
-      ? {
-          request: {
-            headers: requestHeaders,
-          },
-        }
-      : {}),
+  requestHeaders?.forEach((value, name) => {
+    forwardedRequestHeaders.set(name, value);
+  });
+
+  return NextResponse.rewrite(url, {
+    headers: responseHeaders,
+    request: {
+      headers: forwardedRequestHeaders,
+    },
   });
 }

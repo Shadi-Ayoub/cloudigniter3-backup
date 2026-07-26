@@ -37,12 +37,12 @@ export type CiTenantResolutionOptions = {
    * Example:
    * "x-ci-tenant"
    */
-  tenantHeaderKey: string;
+  // tenantHeaderKey: string;
 
   /**
    * Header name used to propagate the resolved Tenant scope.
    */
-  scopeHeaderName: string;
+  // scopeHeaderName: string;
 
   /**
    * Optional fallback Tenant when none is resolved.

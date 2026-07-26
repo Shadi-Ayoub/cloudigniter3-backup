@@ -15,8 +15,10 @@ export function CiDevBeaconStatusRow({
   onClick?: (key: string) => void;
   clickTitle?: string;
 }) {
-  const isArrayValue = typeof value !== "string";
-  const values = isArrayValue ? value : [value];
+  const isArrayValue = Array.isArray(value);
+  const values: readonly string[] = isArrayValue
+    ? value
+    : [value ?? "Not available"];
 
   const valueClasses = [
     "rounded px-2 py-0.5 text-right text-xs",

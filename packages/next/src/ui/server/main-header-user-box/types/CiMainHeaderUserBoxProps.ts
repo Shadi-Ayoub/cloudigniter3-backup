@@ -1,5 +1,5 @@
-import type { CiNextPageConfig } from "../../../../types";
+import type { CiNextContext } from "@ci-next/types";
 
 export interface CiMainHeaderUserBoxProps {
-  config: CiNextPageConfig;
+  context: CiNextContext;
 }

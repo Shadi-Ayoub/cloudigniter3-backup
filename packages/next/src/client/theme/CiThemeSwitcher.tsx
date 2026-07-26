@@ -1,14 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  CheckIcon,
-  LaptopIcon,
-  Moon,
-  MoonIcon,
-  Sun,
-  SunIcon,
-} from "lucide-react";
+import { CheckIcon, LaptopIcon, Moon, MoonIcon, Sun, SunIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { ciGetLocalStorageItem } from "@cloudigniter/core/client";
@@ -29,7 +22,7 @@ import type { CiThemeSwitcherProps } from "@ci-next/types";
 export function CiThemeSwitcher({ dir, config }: CiThemeSwitcherProps) {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger, done } = ciStartTraceClient(
-    config.coreConfig.dev.traceLog,
+    config.appCoreConfig.dev.traceLog,
     { source: "client", tag: `ThemeSwitcher` },
     { name: `<ThemeSwitcher />` },
   );
@@ -53,15 +46,13 @@ export function CiThemeSwitcher({ dir, config }: CiThemeSwitcherProps) {
   const t1 = useTranslations("themeSwitcher");
   const t2 = useTranslations("errorTheme");
 
-  const enableSystem = config.coreConfig.theme.enableSystem ?? true;
-  const storageKey = config.coreConfig.theme.storageKey ?? "ci-theme";
+  const enableSystem = config.appCoreConfig.theme.enableSystem ?? true;
+  const storageKey = config.appCoreConfig.theme.storageKey ?? "ci-theme";
   const currentTheme = ciGetLocalStorageItem(storageKey);
   const disabled = !!forcedTheme;
 
   // Local state for validForcedTheme
-  const [validForcedTheme, setValidForcedTheme] = useState<string | undefined>(
-    forcedTheme,
-  );
+  const [validForcedTheme, setValidForcedTheme] = useState<string | undefined>(forcedTheme);
   const [menuOpen, setMenuOpen] = useState(false);
 
   // To make sure that ErrorHandler render does not happen during ThemeSwitcher render!
@@ -108,46 +99,26 @@ export function CiThemeSwitcher({ dir, config }: CiThemeSwitcherProps) {
         ) : null}
       </Tooltip>
 
-      <DropdownMenuContent
-        align="end"
-        onCloseAutoFocus={(e: Event) => e.preventDefault()}
-        className="ci-menu-content"
-      >
-        <DropdownMenuItem
-          onClick={() => setTheme("light")}
-          className="ci-menu-item"
-          disabled={disabled}
-        >
+      <DropdownMenuContent align="end" onCloseAutoFocus={(e: Event) => e.preventDefault()} className="ci-menu-content">
+        <DropdownMenuItem onClick={() => setTheme("light")} className="ci-menu-item" disabled={disabled}>
           <SunIcon />
           {t1("light")}
           {((theme === "light" && validForcedTheme === undefined) ||
             (currentTheme === "system" && !enableSystem) ||
-            validForcedTheme === "light") && (
-            <CheckIcon className="ci-menu-item-check-icon" />
-          )}
+            validForcedTheme === "light") && <CheckIcon className="ci-menu-item-check-icon" />}
         </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => setTheme("dark")}
-          className="ci-menu-item"
-          disabled={disabled}
-        >
+        <DropdownMenuItem onClick={() => setTheme("dark")} className="ci-menu-item" disabled={disabled}>
           <MoonIcon />
           {t1("dark")}
-          {((theme === "dark" && validForcedTheme === undefined) ||
-            validForcedTheme === "dark") && (
+          {((theme === "dark" && validForcedTheme === undefined) || validForcedTheme === "dark") && (
             <CheckIcon className="ci-menu-item-check-icon" />
           )}
         </DropdownMenuItem>
         {enableSystem && (
-          <DropdownMenuItem
-            onClick={() => setTheme("system")}
-            className="ci-menu-item"
-            disabled={disabled}
-          >
+          <DropdownMenuItem onClick={() => setTheme("system")} className="ci-menu-item" disabled={disabled}>
             <LaptopIcon />
             {t1("system")}
-            {((theme === "system" && validForcedTheme === undefined) ||
-              validForcedTheme === "system") && (
+            {((theme === "system" && validForcedTheme === undefined) || validForcedTheme === "system") && (
               <CheckIcon className="ci-menu-item-check-icon" />
             )}
           </DropdownMenuItem>

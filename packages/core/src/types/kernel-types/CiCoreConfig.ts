@@ -2,7 +2,7 @@ import type {
   CiAuthConfig,
   CiDevConfig,
   CiI18nConfig,
-  CiRoute,
+  CiRouteDefinition,
   CiRouteRuntimeConfig,
   CiTenantRoutingOptions,
   CiThemeConfig,
@@ -39,7 +39,7 @@ export type CiCoreConfig = {
 
   tenant: CiTenantRoutingOptions;
 
-  routes: Record<string, CiRoute>;
+  routes: Record<string, CiRouteDefinition>;
 
   dev: CiDevConfig;
 

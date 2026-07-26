@@ -1,11 +1,5 @@
+export { ciCreateRoute } from "./ci-create-route";
 export { ciGetBypassFlag } from "./ci-get-bypass-flag";
-// export { ciGetHost } from "./ci-get-host";
 export { ciIsInternalPath } from "./ci-is-internal-path";
 export { ciIsStaticFile } from "./ci-is-static-file";
-// export { ciGetRequestPath } from "./ci-get-request-path";
 export { ciRewriteToRouteInfoPage } from "./ci-rewrite-to-route-info-page";
-// export { ciBuildTenantRewritePath } from "./ci-build-tenant-rewrite-path";
-// export { ciLookupTenant } from "./ci-lookup-tenant";
-// export { ciResolveTenant } from "./ci-resolve-tenant";
-// export { ciResolveTenantFromSlugPath } from "./ci-resolve-tenant-from-slug-path";
-// export { ciResolveTenantFromSubdomain } from "./ci-resolve-tenant-from-subdomain";

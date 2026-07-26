@@ -76,6 +76,7 @@ export async function CiNextRootWrapper({
         />
       ) : null}
       <CiDebugProbe {...context.debugProbe} />
+
       {children}
     </NextIntlClientProvider>
   );

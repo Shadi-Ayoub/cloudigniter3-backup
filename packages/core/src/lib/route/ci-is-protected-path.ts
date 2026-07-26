@@ -1,15 +1,13 @@
 import type { CiRoutesMap } from "@ci-core/types";
+
 import { ciMatchRoute } from "./ci-match-route";
 
 /**
- * True if the matched route is protected.
- * If nothing matches, returns defaultWhenNoMatch (default false).
+ * Returns true when the matched route is protected.
+ * If no route matches, returns defaultWhenNoMatch.
  */
-export function ciIsProtectedPath(
-  path: string | URL,
-  routes: CiRoutesMap,
-  defaultWhenNoMatch = false,
-) {
+export function ciIsProtectedPath(path: string | URL, routes: CiRoutesMap, defaultWhenNoMatch = false): boolean {
   const match = ciMatchRoute(path, routes);
-  return match ? !!match.route.protected : defaultWhenNoMatch;
+
+  return match ? Boolean(match.definition.protected) : defaultWhenNoMatch;
 }

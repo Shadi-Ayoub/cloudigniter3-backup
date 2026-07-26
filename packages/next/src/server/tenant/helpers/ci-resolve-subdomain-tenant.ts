@@ -1,79 +1,83 @@
-import type {
-  CiTenantResolutionOptions,
-  CiTenantResolutionResult,
-} from "@cloudigniter/core/types";
+import { ciNormalizePathname } from "@cloudigniter/core/lib";
+
+import type { CiTenantResolutionOptions, CiTenantResolutionResult } from "@cloudigniter/core/types";
+
 import { ciNormalizeRootDomains } from "./ci-normalize-root-domains";
 import { ciStripPort } from "./ci-strip-port";
 
 /**
- * Resolves tenant from subdomain-based URLs.
+ * Resolves Tenant routing information from subdomain-based URLs.
  *
- * Example:
- * - acme.example.com -> tenant: acme
- * - example.com      -> system scope
+ * Examples:
+ * - acme.example.com/dashboard   -> Tenant slug: acme
+ * - global.example.com/dashboard -> Global scope
+ * - example.com/dashboard        -> System scope
+ *
+ * This function performs route resolution only. Resolving the internal Tenant
+ * identifier and lifecycle status must happen in a subsequent lookup step.
  */
 export function ciResolveSubdomainTenant(
   host: string,
+  pathname: string,
   options: CiTenantResolutionOptions,
 ): CiTenantResolutionResult {
   const normalizedHost = ciStripPort(host);
+  const featurePathname = ciNormalizePathname(pathname);
 
   if (!normalizedHost) {
     return {
-      source: "subdomain",
       scope: "system",
-      status: "active",
+      source: "none",
+      featurePathname,
     };
   }
 
   const rootDomains = ciNormalizeRootDomains(options.baseDomain ?? []);
 
-  const matchingRootDomain = rootDomains.find((domain) => {
-    return normalizedHost === domain || normalizedHost.endsWith(`.${domain}`);
-  });
+  const matchingRootDomain = rootDomains.find(
+    (domain) => normalizedHost === domain || normalizedHost.endsWith(`.${domain}`),
+  );
 
   if (!matchingRootDomain) {
     return {
-      source: "subdomain",
       scope: "system",
-      status: "active",
+      source: "none",
+      featurePathname,
     };
   }
 
   if (normalizedHost === matchingRootDomain) {
     return {
-      source: "subdomain",
       scope: "system",
-      status: "active",
+      source: "subdomain",
+      featurePathname,
     };
   }
 
-  const subdomain = normalizedHost
-    .slice(0, -matchingRootDomain.length)
-    .replace(/\.$/, "");
+  const subdomain = normalizedHost.slice(0, -matchingRootDomain.length).replace(/\.$/, "");
 
   const firstSubdomainPart = subdomain.split(".")[0];
 
   if (!firstSubdomainPart) {
     return {
-      source: "subdomain",
       scope: "system",
-      status: "active",
+      source: "subdomain",
+      featurePathname,
     };
   }
 
   if (firstSubdomainPart === "global") {
     return {
-      source: "subdomain",
       scope: "global",
-      status: "active",
+      source: "subdomain",
+      featurePathname,
     };
   }
 
   return {
-    id: firstSubdomainPart,
-    source: "subdomain",
+    slug: firstSubdomainPart,
     scope: "tenant",
-    status: "active",
+    source: "subdomain",
+    featurePathname,
   };
 }

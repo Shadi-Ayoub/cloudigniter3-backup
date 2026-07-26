@@ -1,7 +1,7 @@
 import type { CiProfileMenuProps } from "@cloudigniter/core/types";
-import type { CiNextPageConfig } from "@ci-next/types";
+import type { CiNextConfig } from "@ci-next/types";
 
 export type CiNextAwsProfileMenuProps = Omit<CiProfileMenuProps, "onLogout"> & {
-  config: CiNextPageConfig;
+  config: CiNextConfig;
   logoutRedirectTo?: string;
 };

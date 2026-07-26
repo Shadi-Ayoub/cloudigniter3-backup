@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────────
 // amplify
 // ─────────────────────────────────────────────────────────────
-export { appAmplifyServerClient, appWithAmplify } from "./amplify";
+export { appAmplifyServerClient, appWithAmplify, ciIsAmplifyOutputsOk, ciIsSchemaOk } from "./amplify";
 
 // ─────────────────────────────────────────────────────────────
 // api
@@ -35,7 +35,7 @@ export { appGetDevBeaconAccess, appGetDevBeaconActor } from "./auth";
 // ─────────────────────────────────────────────────────────────
 // bootstrap
 // ─────────────────────────────────────────────────────────────
-export { appBootstrap, ciPrepareConfig, ciGetServerStatus } from "./bootstrap";
+export { appBootstrap, ciGetServerStatus } from "./bootstrap";
 
 // ─────────────────────────────────────────────────────────────
 // components
@@ -47,18 +47,14 @@ export { Kernel } from "./components";
 // ─────────────────────────────────────────────────────────────
 export {
   // buildPageConfig,
-  appGetServerCoreConfig,
+  appGetCoreConfig,
   appGetAllServerConfig,
 } from "./config";
 
 // ─────────────────────────────────────────────────────────────
 // i18n
 // ─────────────────────────────────────────────────────────────
-export {
-  ciLoadRouteMessages,
-  type CiLoadRouteMessagesOptions,
-  type CiLoadRouteMessagesResult,
-} from "./i18n";
+export { ciLoadRouteMessages, type CiLoadRouteMessagesOptions, type CiLoadRouteMessagesResult } from "./i18n";
 
 // ─────────────────────────────────────────────────────────────
 // lib
@@ -71,7 +67,7 @@ export {} from "./lib";
 export {
   appResolveRootLayoutContext,
   AppRootWrapper,
-  type AppRootLayoutContext,
+  // type AppRootLayoutContext,
   type AppRootWrapperProps,
 } from "./root";
 

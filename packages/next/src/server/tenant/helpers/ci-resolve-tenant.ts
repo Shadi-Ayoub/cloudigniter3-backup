@@ -1,13 +1,13 @@
-import type {
-  CiTenantResolutionOptions,
-  CiTenantResolutionResult,
-} from "@cloudigniter/core/types";
+import type { CiTenantResolutionOptions, CiTenantResolutionResult } from "@cloudigniter/core/types";
 
 import { ciResolveSlugTenant } from "./ci-resolve-slug-tenant";
 import { ciResolveSubdomainTenant } from "./ci-resolve-subdomain-tenant";
 
 /**
- * Resolves tenant information from either slug-based or subdomain-based routing.
+ * Resolves Tenant routing information using slug- or subdomain-based routing.
+ *
+ * This performs route resolution only. Resolving the internal Tenant identifier
+ * and lifecycle status happens in a subsequent lookup step.
  */
 export function ciResolveTenant(
   input: {
@@ -21,7 +21,6 @@ export function ciResolveTenant(
     return {
       scope: "system",
       source: "none",
-      status: "active",
       featurePathname: input.pathnameNormalized,
     };
   }
@@ -30,5 +29,5 @@ export function ciResolveTenant(
     return ciResolveSlugTenant(input.pathnameNormalized, options);
   }
 
-  return ciResolveSubdomainTenant(input.host ?? "", options);
+  return ciResolveSubdomainTenant(input.host ?? "", input.pathnameNormalized, options);
 }

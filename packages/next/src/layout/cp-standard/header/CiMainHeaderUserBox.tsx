@@ -1,16 +1,16 @@
 import { ciStartTraceServer } from "@cloudigniter/core/server";
 import { CiNextLocaleSwitcher, CiThemeSwitcher } from "@ci-next/client";
 import { CiNextProfileMenu } from "@ci-next/ui/client";
-import type { CiNextPageConfig } from "@ci-next/types";
+import type { CiNextContext } from "@ci-next/types";
 
 interface MainHeaderUserBoxInterface {
-  config: CiNextPageConfig;
+  context: CiNextContext;
 }
 
-export function MainHeaderUserBox({ config }: MainHeaderUserBoxInterface) {
+export function MainHeaderUserBox({ context }: MainHeaderUserBoxInterface) {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger } = ciStartTraceServer(
-    config.coreConfig.dev.traceLog,
+    context.config.appCoreConfig.dev.traceLog,
     { source: "server", prettyWave: true },
     { name: "<MainHeaderUserBox>" },
   );
@@ -22,23 +22,14 @@ export function MainHeaderUserBox({ config }: MainHeaderUserBoxInterface) {
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
   return (
-    <nav
-      aria-label="User Navigation"
-      className="flex items-center space-x-4 ltr:mr-8 rtl:ml-8"
-    >
+    <nav aria-label="User Navigation" className="flex items-center space-x-4 ltr:mr-8 rtl:ml-8">
       <div className="hidden flex-wrap gap-2 md:flex">
-        <CiThemeSwitcher
-          dir={config.resolvedCoreConfig.direction}
-          config={config}
-        />
+        <CiThemeSwitcher dir={context.config.appResolvedCoreConfig.direction} config={context.config} />
         <CiNextLocaleSwitcher
-          config={config.coreConfig.i18n}
-          traceConfig={config.coreConfig.dev.traceLog}
+          config={context.config.appCoreConfig.i18n}
+          traceConfig={context.config.appCoreConfig.dev.traceLog}
         />
-        <CiNextProfileMenu
-          dir={config.resolvedCoreConfig.direction}
-          config={config}
-        />
+        <CiNextProfileMenu dir={context.config.appResolvedCoreConfig.direction} config={context.config} />
       </div>
       <div className="flex md:hidden">{/* <MobileMenuToggle /> */}</div>
     </nav>

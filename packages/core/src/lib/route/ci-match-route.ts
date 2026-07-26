@@ -1,24 +1,18 @@
-import type { CiMatchedRoute, CiRoutesMap } from "@ci-core/types";
+import type { CiRouteMatch, CiRoutesMap } from "@ci-core/types";
+
+import { ciNormalizePathname } from "@ci-core/lib";
+
 import { ciGetRoutesMatcher } from "./ci-get-routes-matcher";
+
 /**
- * Returns the best matching route definition for a given path.
- *
- * This is a convenience wrapper around `ciGetRoutesMatcher(routes).match(path)`.
- * It reuses the cached compiled matcher, so callers do not need to manually
- * compile routes before matching.
- *
- * Typical usage:
- * - resolve whether a path is registered
- * - determine the most specific matching route
- * - support protected-route checks and route metadata lookup
+ * Returns the best matching route definition and matching metadata.
  *
  * @param path - Runtime pathname or URL to match.
  * @param routes - Route pattern registry.
- * @returns The matched route result, or `null` when no route matches.
+ * @returns The resolved route match, or null when no route matches.
  */
-export function ciMatchRoute(
-  path: string | URL,
-  routes: CiRoutesMap,
-): CiMatchedRoute {
-  return ciGetRoutesMatcher(routes).match(path);
+export function ciMatchRoute(path: string | URL, routes: CiRoutesMap): CiRouteMatch | null {
+  const pathname = ciNormalizePathname(path);
+
+  return ciGetRoutesMatcher(routes).resolve(pathname);
 }

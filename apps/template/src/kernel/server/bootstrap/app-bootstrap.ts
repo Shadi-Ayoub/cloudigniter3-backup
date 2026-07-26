@@ -1,79 +1,113 @@
 import { cache } from "react";
-import { headers, cookies } from "next/headers";
-import { ciReadTenantFromHeaders } from "@cloudigniter/core/server";
 
+import type { CiAmplifyOutputs } from "@cloudigniter/aws/types";
 import { ciNormalizeThrownError } from "@cloudigniter/core/lib";
 import {
   ciAwsGetCurrentUser,
   ciGetCookies,
   ciGetEnvMode,
   ciGetHeaders,
-  ciGetTenantContext,
+  ciGetRequestContext,
 } from "@cloudigniter/next/server";
-import type {
-  CiNextContext,
-  CiServerErrorPayload,
-} from "@cloudigniter/next/types";
-import type { CiAmplifyOutputs } from "@cloudigniter/aws/types";
-import { appGetAllServerConfig } from "@/kernel/server";
-import { appGetSettings } from "@/kernel/server";
+import type { CiNextContext, CiNextStatus, CiServerErrorPayload } from "@cloudigniter/next/types";
 
-export const appBootstrap = cache(async () => {
+import { appGetAllServerConfig, appGetSettings, ciIsAmplifyOutputsOk, ciIsSchemaOk } from "@/kernel/server";
+
+export const appBootstrap = cache(async (): Promise<CiNextContext> => {
   try {
-    const tenantContext = await ciGetTenantContext();
+    /*
+     * This runs after Proxy has created and forwarded the unified
+     * CloudIgniter request-context header.
+     *
+     * appGetAllServerConfig() may therefore safely use getLocale()
+     * and getMessages().
+     */
     const config = await appGetAllServerConfig();
 
-    const amplifyOutputs = config.appCoreConfig.providers?.aws?.amplify
-      ?.amplifyOutputs as CiAmplifyOutputs;
+    /*
+     * Read the complete context produced by Proxy:
+     *
+     * - schemaVersion
+     * - tenant
+     * - orgUnit
+     * - featurePathname
+     * - route
+     */
+    const requestContext = await ciGetRequestContext();
 
-    const user = await ciAwsGetCurrentUser(amplifyOutputs);
+    if (!requestContext) {
+      throw new Error("The CloudIgniter request context was not forwarded by Proxy.");
+    }
 
-    const authMode = user.isAuthenticated
-      ? ("userPool" as const)
-      : config.appCoreConfig.data.publicAuthMode;
+    const amplifyOutputs = config.appCoreConfig.providers?.aws?.amplify?.amplifyOutputs as CiAmplifyOutputs;
 
-    const auth = {
-      mode: authMode,
+    const [currentUser, settings, requestHeaders, requestCookies] = await Promise.all([
+      ciAwsGetCurrentUser(amplifyOutputs),
+      appGetSettings(),
+      ciGetHeaders(),
+      ciGetCookies(),
+    ]);
+
+    const auth: CiNextContext["auth"] = {
+      mode: currentUser.isAuthenticated ? "userPool" : config.appCoreConfig.data.publicAuthMode,
       user: {
-        id: user.userId,
-        authenticated: true,
-        roles: ["DEVELOPER"],
+        id: currentUser.userId,
+        authenticated: currentUser.isAuthenticated,
+        roles: [...(currentUser.groups ?? [])],
       },
     };
 
     const envMode = ciGetEnvMode();
 
-    const env = {
+    if (!envMode) {
+      throw new Error("Unable to resolve the application environment mode.");
+    }
+
+    const env: CiNextContext["env"] = {
       mode: envMode,
     };
 
     // TBD
     // const settings = await ciGetSettings({
-    //   authMode,
-    //   tenantId: tenantContext.tenantId,
-    //   userId: user.userId ?? undefined,
+    //   authMode: auth.mode,
+    //   tenantId: requestContext.tenant?.id || undefined,
+    //   userId: currentUser.userId ?? undefined,
     //   include:
-    //     authMode === "userPool" ? ["public", "private", "user"] : ["public"],
-    //   userSettingIds: authMode === "userPool" ? ["notifications"] : [],
+    //     auth.mode === "userPool"
+    //       ? ["public", "private", "user"]
+    //       : ["public"],
+    //   userSettingIds:
+    //     auth.mode === "userPool" ? ["notifications"] : [],
     // });
 
-    const settings = await appGetSettings();
-    const ciHeaders = await ciGetHeaders();
-    const ciCookies = await ciGetCookies();
+    const status: CiNextStatus = {
+      providers: {
+        aws: {
+          amplifyOutputs: {
+            check: ciIsAmplifyOutputsOk(),
+          },
+          schema: {
+            check: ciIsSchemaOk(),
+          },
+        },
+      },
+    };
 
-    const hds = await headers();
-    const cks = await cookies();
-    const tenant = ciReadTenantFromHeaders(hds, cks);
+    const context: CiNextContext = {
+      /*
+       * Includes tenant, orgUnit, featurePathname, route,
+       * schemaVersion, and any future CiRequestContext fields.
+       */
+      ...requestContext,
 
-    const context = {
       config,
       settings,
       auth,
       env,
-      tenant,
-      ciHeaders,
-      ciCookies,
-    } as CiNextContext;
+      headers: requestHeaders,
+      cookies: requestCookies,
+      status,
+    };
 
     return context;
   } catch (error) {

@@ -20,7 +20,10 @@ export function ciCanAccessDevBeacon({
     ...(options ?? {}),
   };
 
-  if (!resolvedOptions.enabled || !actor.authenticated) {
+  if (
+    !resolvedOptions.enabled ||
+    (envMode !== "development" && !actor.authenticated)
+  ) {
     return false;
   }
 
@@ -32,11 +35,19 @@ export function ciCanAccessDevBeacon({
     .map((role) => role.trim().toUpperCase())
     .filter(Boolean);
 
-  if (requiredRoles.length === 0) {
+  if (envMode !== "development" && requiredRoles.length === 0) {
     return false;
   }
 
+  if (envMode === "development") {
+    return true;
+  }
+
+  const normalizedRequiredRoles = new Set(
+    requiredRoles.map((role) => role.trim().toLowerCase()),
+  );
+
   return actor.roles.some((actorRole) =>
-    requiredRoles.includes(actorRole.trim().toUpperCase()),
+    normalizedRequiredRoles.has(actorRole.trim().toLowerCase()),
   );
 }

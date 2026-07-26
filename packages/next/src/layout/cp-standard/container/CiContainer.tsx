@@ -1,16 +1,16 @@
 import React from "react";
 import { ciStartTraceServer } from "@cloudigniter/core/server";
-import type { CiNextPageConfig } from "@ci-next/types";
+import type { CiNextContext } from "@ci-next/types";
 
 interface ContentProps {
-  config: CiNextPageConfig;
+  context: CiNextContext;
   children: React.ReactNode;
 }
 
-export const CiContainer: React.FC<ContentProps> = ({ config, children }) => {
+export const CiContainer: React.FC<ContentProps> = ({ context, children }) => {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger } = ciStartTraceServer(
-    config.coreConfig.dev.traceLog,
+    context.config.appCoreConfig.dev.traceLog,
     { source: "server", prettyWave: true },
     { name: "<Container>" },
   );

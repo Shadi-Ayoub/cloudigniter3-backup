@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { CiTraceLoggerServer } from "@cloudigniter/core/server";
-import type { CiNextAwsCoreConfig } from "@/kernel/types";
-import { appGetServerCoreConfig } from "@/kernel/server";
+import type { CiNextCoreConfig } from "@cloudigniter/next/types";
+import { appGetCoreConfig } from "@/kernel/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -13,19 +13,15 @@ export async function POST(req: NextRequest) {
   // Tag resolver (unchanged)
   const q = req.nextUrl.searchParams;
   const tag =
-    (
-      q.get("tag") ??
-      q.get("t") ??
-      (typeof body?.tag === "string" ? body.tag : "client")
-    )
+    (q.get("tag") ?? q.get("t") ?? (typeof body?.tag === "string" ? body.tag : "client"))
       .trim()
       .replace(/[^A-Za-z0-9_\-\/\.:]/g, "")
       .slice(0, 64) || "client";
 
   // Load config
-  let cfg: CiNextAwsCoreConfig;
+  let cfg: CiNextCoreConfig;
   try {
-    cfg = appGetServerCoreConfig();
+    cfg = appGetCoreConfig();
   } catch (e) {
     return NextResponse.json({ ok: false, error: "config" }, { status: 500 });
   }
@@ -66,10 +62,7 @@ export async function POST(req: NextRequest) {
   });
 
   try {
-    const payload =
-      body && typeof body === "object"
-        ? (body as Record<string, unknown>)
-        : { msg: String(body) };
+    const payload = body && typeof body === "object" ? (body as Record<string, unknown>) : { msg: String(body) };
 
     logger.log({
       ...payload,

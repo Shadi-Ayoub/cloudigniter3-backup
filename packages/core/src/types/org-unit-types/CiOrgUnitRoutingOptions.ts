@@ -5,21 +5,6 @@ export type CiOrgUnitRoutingOptions = {
   /** Enable Org Unit resolution under tenants. */
   enabled?: boolean;
 
-  /** Header names used by middleware and server components. */
-  idHeaderName?: string;
-  slugHeaderName?: string;
-  pathHeaderName?: string;
-  statusHeaderName?: string;
-
-  /** Cookie names used by middleware and server components. */
-  idCookieName?: string;
-  slugCookieName?: string;
-  pathCookieName?: string;
-  statusCookieName?: string;
-
-  /** Persist resolved Org Unit in cookies. */
-  writeOrgUnitCookie?: boolean;
-
   /**
    * Internal lookup endpoint used by middleware to validate Org Unit existence/status.
    * MUST be excluded from middleware matching.

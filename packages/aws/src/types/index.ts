@@ -96,6 +96,11 @@ export type { CiSeederAwsCommonArgs } from "./seeder-types";
 export type { CiGetSettingsHandlerInterface } from "./settings-types";
 
 // ─────────────────────────────────────────────────────────────
+// status
+// ─────────────────────────────────────────────────────────────
+export type { CiAwsStatus } from "./status-types";
+
+// ─────────────────────────────────────────────────────────────
 // tenant
 // ─────────────────────────────────────────────────────────────
 export type { CiTenantCommonArgs } from "./tenant-types";

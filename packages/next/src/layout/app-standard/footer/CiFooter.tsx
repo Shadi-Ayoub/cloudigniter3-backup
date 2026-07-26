@@ -3,17 +3,17 @@ import { useTranslations } from "next-intl";
 
 import { ciStartTraceServer } from "@cloudigniter/core/server";
 import { ciCapitalizeFirstLetter } from "@cloudigniter/core/lib";
-import type { CiNextPageConfig } from "@ci-next/types";
+import type { CiNextContext } from "@ci-next/types";
 
 interface FooterProps {
-  config: CiNextPageConfig;
+  context: CiNextContext;
   children: React.ReactNode;
 }
 
-export const CiFooter: React.FC<FooterProps> = ({ config, children }) => {
+export const CiFooter: React.FC<FooterProps> = ({ context, children }) => {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger } = ciStartTraceServer(
-    config.coreConfig.dev.traceLog,
+    context.config.appCoreConfig.dev.traceLog,
     { source: "server", prettyWave: true },
     { name: "<Footer>" },
   );
@@ -38,9 +38,7 @@ export const CiFooter: React.FC<FooterProps> = ({ config, children }) => {
 
       <div className="ci-main-footer-right">
         <span>{ciCapitalizeFirstLetter(t("environment"))}:</span>&nbsp;
-        <span className="ci-main-footer-env-text">
-          {t(process.env.NODE_ENV)}
-        </span>
+        <span className="ci-main-footer-env-text">{t(process.env.NODE_ENV)}</span>
       </div>
     </footer>
   );

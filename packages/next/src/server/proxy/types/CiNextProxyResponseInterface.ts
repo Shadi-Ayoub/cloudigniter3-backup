@@ -1,13 +1,9 @@
 import type { NextRequest } from "next/server";
-import type {
-  CiTenantRoutingOptions,
-  CiRoute,
-  CiRouteRuntimeConfig,
-} from "@cloudigniter/core/types";
+import type { CiRoutesMap } from "@cloudigniter/core/types";
+import type { CiNextCoreConfig } from "@ci-next/types";
 
 export interface CiNextProxyResponseInterface {
   request: NextRequest;
-  routeConfig: CiRouteRuntimeConfig;
-  tenantRoutingConfig: CiTenantRoutingOptions;
-  routes: Record<string, CiRoute>;
+  config: CiNextCoreConfig;
+  routes: CiRoutesMap;
 }

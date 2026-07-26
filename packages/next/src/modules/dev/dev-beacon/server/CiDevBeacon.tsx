@@ -1,5 +1,3 @@
-import { cookies, headers } from "next/headers";
-
 import { ciResolveEnv } from "@cloudigniter/core/server";
 import type { CiDevBeaconProps } from "@cloudigniter/core/types";
 import { CiDevBeaconClient } from "@ci-next/client"; // Client boundary: DOM measurement + UI rendering
@@ -35,12 +33,6 @@ export async function CiDevBeacon({
     String(visibleWhenEnv).toLowerCase() === String(resolvedEnv).toLowerCase();
 
   if (!isVisible) return null;
-
-  // IMPORTANT: `headers()` and `cookies()` are async in recent Next.js versions.
-  const [requestHeaders, requestCookies] = await Promise.all([
-    headers(),
-    cookies(),
-  ]);
 
   // Pass only plain (serializable) values into the Client boundary.
   return (

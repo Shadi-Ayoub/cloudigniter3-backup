@@ -1,5 +1,7 @@
-import { CI_DEFAULT_TENANT_ROUTING_OPTIONS } from "@cloudigniter/core/lib";
+import { CI_DEFAULT_TENANT_ROUTING_OPTIONS, ciNormalizePathname } from "@cloudigniter/core/lib";
+
 import type {
+  CiResolveTenantContextResult,
   CiTenantContext,
   CiTenantResolutionOptions,
   CiTenantRoutingOptions,
@@ -7,89 +9,136 @@ import type {
 
 import { ciGetHost, ciLookupTenant, ciResolveTenant } from "./helpers";
 
-type CiOrgUnitRequest = Pick<Request, "headers" | "url">;
+type CiTenantRequest = Pick<Request, "headers" | "url">;
 
 /**
- * Resolves the canonical tenant context for the current request.
+ * Resolves the canonical Tenant context and logical feature pathname for the
+ * current request.
  *
- * This function is the single tenant-resolution boundary:
- * - resolves slug/subdomain routing
- * - determines system/global/tenant scope
- * - optionally validates tenant existence/status
- * - returns one normalized context object
+ * Route resolution identifies the Tenant slug. When Tenant validation is
+ * enabled, the lookup step resolves the internal Tenant identifier and
+ * lifecycle information.
+ *
+ * This function does not create responses, perform informational-page
+ * navigation, or serialize CiRequestContext.
  */
 export async function ciResolveTenantContext({
   request,
   pathnameNormalized,
   tenantRoutingConfig,
 }: {
-  request: CiOrgUnitRequest;
+  /**
+   * Active request containing the URL and routing headers.
+   */
+  request: CiTenantRequest;
+
+  /**
+   * Normalized public request pathname.
+   */
   pathnameNormalized: string;
-  tenantRoutingConfig: CiTenantRoutingOptions;
-}): Promise<CiTenantContext> {
-  const tOpts = {
+
+  /**
+   * Optional Tenant-routing configuration.
+   */
+  tenantRoutingConfig?: CiTenantRoutingOptions;
+}): Promise<CiResolveTenantContextResult> {
+  const tenantOptions = {
     ...CI_DEFAULT_TENANT_ROUTING_OPTIONS,
     ...(tenantRoutingConfig ?? {}),
   } as Required<CiTenantRoutingOptions>;
 
   const tenantResolutionOptions: CiTenantResolutionOptions = {
-    enabled: tOpts.enabled,
-    tenantRoutingMode: tOpts.mode,
-    tenantBasePath: tOpts.basePath,
-    baseDomain: tOpts.rootDomains,
-    tenantHeaderKey: tOpts.idHeaderName,
-    scopeHeaderName: tOpts.scopeHeaderName,
-    rewriteSubdomainToTenantPath: tOpts.rewriteSubdomainToTenantPath,
+    enabled: tenantOptions.enabled,
+    tenantRoutingMode: tenantOptions.mode,
+    tenantBasePath: tenantOptions.basePath,
+    baseDomain: tenantOptions.rootDomains,
+    rewriteSubdomainToTenantPath: tenantOptions.rewriteSubdomainToTenantPath,
   };
 
-  const resolved = ciResolveTenant(
+  const resolvedTenant = ciResolveTenant(
     {
       pathnameNormalized,
-      mode: tOpts.mode,
-      host: tOpts.mode === "subdomain" ? ciGetHost(request) : undefined,
+      mode: tenantOptions.mode,
+      host: tenantOptions.mode === "subdomain" ? ciGetHost(request) : undefined,
     },
     tenantResolutionOptions,
   );
 
+  const featurePathname = ciNormalizePathname(resolvedTenant.featurePathname ?? pathnameNormalized);
+
   const context: CiTenantContext = {
-    id: resolved.id,
-    scope: resolved.scope,
-    mode: tOpts.mode,
-    status: resolved.status ?? "active",
     exists: true,
+    ...(resolvedTenant.slug
+      ? {
+          slug: resolvedTenant.slug,
+        }
+      : {}),
+    scope: resolvedTenant.scope,
+    mode: tenantOptions.mode,
+    status: "active",
     pathname: pathnameNormalized,
+    source: resolvedTenant.source,
   };
 
+  const createResult = (tenant: CiTenantContext): CiResolveTenantContextResult => ({
+    tenant,
+    featurePathname,
+    ...(resolvedTenant.rewritePathname
+      ? {
+          rewritePathname: resolvedTenant.rewritePathname,
+        }
+      : {}),
+  });
+
   /**
-   * No lookup is required for system/global routes.
+   * Validation only applies to Tenant-scoped requests containing a resolved
+   * route-safe Tenant slug.
    */
-  if (!tOpts.validateTenant || context.scope !== "tenant" || !context.id) {
-    return context;
+  if (!tenantOptions.validateTenant || context.scope !== "tenant" || !context.slug) {
+    return createResult(context);
   }
 
   /**
-   * Avoid validating tenant info pages to prevent rewrite loops.
+   * Prevent validation loops when the logical feature pathname already points
+   * to a Tenant informational page.
    */
-  if (
-    pathnameNormalized === tOpts.notFoundPath ||
-    pathnameNormalized === tOpts.suspendedPath
-  ) {
-    return context;
+  const tenantInfoPaths = [tenantOptions.notFoundPath, tenantOptions.suspendedPath].map((pathname) =>
+    ciNormalizePathname(pathname, { lowercase: true }),
+  );
+
+  const featurePathnameNormalized = ciNormalizePathname(featurePathname, {
+    lowercase: true,
+  });
+
+  // case-insensitive path comparison
+  if (tenantInfoPaths.includes(featurePathnameNormalized)) {
+    return createResult(context);
   }
 
-  const lookup = await ciLookupTenant(request, context.id, tOpts);
+  const lookup = await ciLookupTenant(request, context.slug, tenantOptions);
 
   if (!lookup.exists) {
-    return {
+    return createResult({
       ...context,
       exists: false,
-      status: "active",
-    };
+    });
   }
 
-  return {
+  return createResult({
     ...context,
     exists: true,
-    status: lookup.status ?? "active",
-  };
+    id: lookup.id,
+    slug: lookup.slug,
+    status: lookup.status,
+    ...(lookup.name
+      ? {
+          name: lookup.name,
+        }
+      : {}),
+    ...(lookup.type
+      ? {
+          type: lookup.type,
+        }
+      : {}),
+  });
 }

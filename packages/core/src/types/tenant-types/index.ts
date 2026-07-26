@@ -1,6 +1,8 @@
 export type { CiGetTenantBySlugInterface } from "./CiGetTenantBySlugInterface";
+export type { CiResolveTenantContextResult } from "./CiResolveTenantContextResult";
 export type { CiTenantContext } from "./CiTenantContext";
 export type { CiTenantInfoPageStrategy } from "./CiTenantInfoPageStrategy";
+export type { CiTenantLookupResult } from "./CiTenantLookupResult";
 export type { CiTenantMode } from "./CiTenantMode";
 export type { CiTenantResolutionOptions } from "./CiTenantResolutionOptions";
 export type { CiTenantResolutionResult } from "./CiTenantResolutionResult";

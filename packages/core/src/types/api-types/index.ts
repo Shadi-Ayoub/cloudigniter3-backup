@@ -4,6 +4,7 @@ export type { CiGraphQLError } from "./CiGraphQLError";
 export type { CiGraphQLResponse } from "./CiGraphQLResponse";
 export type { CiNullable } from "./CiNullable";
 export type { CiRequest } from "./CiRequest";
+export type { CiRequestContext } from "./CiRequestContext";
 export type { CiRequestOptions } from "./CiRequestOptions";
 export type { CiResponse } from "./CiResponse";
 export type { CiResponseDebugMeta } from "./CiResponseDebugMeta";

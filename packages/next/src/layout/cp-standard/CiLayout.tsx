@@ -1,32 +1,29 @@
 import { ciStartTraceServer } from "@cloudigniter/core/server";
 import { type CiSystemStatus } from "@cloudigniter/core/types";
-import type { CiNextPageConfig } from "@ci-next/types";
+import type { CiNextContext } from "@ci-next/types";
 import { CiPageWrapper } from "@ci-next/server";
-import {
-  CiMainHeaderNavigationBox,
-  CiMainHeaderUserBox,
-} from "@ci-next/ui/server";
+import { CiMainHeaderNavigationBox, CiMainHeaderUserBox } from "@ci-next/ui/server";
 import { CiHeaderLogo } from "@cloudigniter/ui/client";
 import { CiHeader } from "./header/CiHeader";
 import { CiContainer } from "./container/CiContainer";
 import { CiCopyright, CiFooter } from "./footer";
 
 interface LayoutProps {
-  config: CiNextPageConfig;
+  context: CiNextContext;
   status?: CiSystemStatus;
   protect?: boolean;
   children: React.ReactNode;
 }
 
 export default function CiLayout({
-  config,
+  context,
   // status,
   protect = true,
   children,
 }: LayoutProps) {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger } = ciStartTraceServer(
-    config.coreConfig.dev.traceLog,
+    context.config.appCoreConfig.dev.traceLog,
     { source: "server", prettyWave: true },
     { name: "Layout" },
   );
@@ -39,14 +36,14 @@ export default function CiLayout({
   });
   //////////////////////////////////////////////////////////////////////////////////////////////////
   return (
-    <CiPageWrapper config={config} protect={protect}>
+    <CiPageWrapper context={context} protect={protect}>
       <main className="ci-main">
-        <CiHeader config={config}>
-          <CiMainHeaderNavigationBox config={config} />
+        <CiHeader context={context}>
+          <CiMainHeaderNavigationBox context={context} />
           <CiHeaderLogo />
-          <CiMainHeaderUserBox config={config} />
+          <CiMainHeaderUserBox context={context} />
         </CiHeader>
-        <CiContainer config={config}>{children}</CiContainer>
+        <CiContainer context={context}>{children}</CiContainer>
         <CiFooter
           checkList={
             {
@@ -55,7 +52,7 @@ export default function CiLayout({
               // status: status,
             }
           }
-          config={config}
+          context={context}
         >
           <CiCopyright />
         </CiFooter>

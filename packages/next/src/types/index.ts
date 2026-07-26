@@ -4,6 +4,7 @@
 export type {
   CiNextContext,
   CiNextRootLayoutContext,
+  CiNextStatus,
   CiSystemStatusCheckList,
 } from "./app-types";
 

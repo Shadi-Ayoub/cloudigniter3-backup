@@ -1,3 +1,6 @@
+// ─────────────────────────────────────────────────────────────
+// aws
+// ─────────────────────────────────────────────────────────────
 export {
   ciAwsGetCurrentUser,
   ciGetAmplifyServerContext,
@@ -6,11 +9,15 @@ export {
   ciResolveNextAwsAuthMode,
 } from "./aws";
 
-export {
-  ciGetCookies,
-  ciGetNextServerCookie,
-  ciSetNextServerCookie,
-} from "./cookie";
+// ─────────────────────────────────────────────────────────────
+// context
+// ─────────────────────────────────────────────────────────────
+export { ciGetRequestContext } from "./context";
+
+// ─────────────────────────────────────────────────────────────
+// cookie
+// ─────────────────────────────────────────────────────────────
+export { ciGetCookies, ciGetNextServerCookie, ciSetNextServerCookie } from "./cookie";
 
 // ─────────────────────────────────────────────────────────────
 // dev
@@ -50,23 +57,13 @@ export { ciGetServerLocale, ciResolveLocale, ciSetServerLocale } from "./i18n";
 // ─────────────────────────────────────────────────────────────
 // org unit
 // ─────────────────────────────────────────────────────────────
-export {
-  ciGetOrgUnitContext,
-  ciResolveOrgUnitContext,
-  ciResolveOrgUnit,
-  ciWriteOrgUnitContext,
-} from "./org-unit";
+export { ciGetOrgUnitContext, ciResolveOrgUnitContext, ciResolveOrgUnit } from "./org-unit";
 
 // TBD
 // ─────────────────────────────────────────────────────────────
 // settings
 // ─────────────────────────────────────────────────────────────
-export {
-  ciDeleteSettings,
-  ciGetSettings,
-  ciInitializeSettingsIfMissing,
-  ciSetSettings,
-} from "./settings";
+export { ciDeleteSettings, ciGetSettings, ciInitializeSettingsIfMissing, ciSetSettings } from "./settings";
 ///////
 
 // ─────────────────────────────────────────────────────────────
@@ -77,7 +74,7 @@ export {
   ciHandleTenantLogic,
   ciResolveTenantContext,
   ciRewriteTenantRoute,
-  ciWriteTenantContext,
+  // ciWriteTenantContext,
 } from "./tenant";
 
 // ─────────────────────────────────────────────────────────────

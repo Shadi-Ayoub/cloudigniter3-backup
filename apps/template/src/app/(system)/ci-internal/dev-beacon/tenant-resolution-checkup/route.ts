@@ -1,3 +1,86 @@
+// export const dynamic = "force-dynamic";
+
+// export async function GET(): Promise<Response> {
+//   let stage = "starting";
+
+//   try {
+//     stage = "importing @cloudigniter/core/lib";
+//     const coreLib = await import("@cloudigniter/core/lib");
+
+//     stage = "importing @cloudigniter/next/server";
+//     const nextServer = await import("@cloudigniter/next/server");
+
+//     stage = "importing @/kernel/server";
+//     const kernelServer = await import("@/kernel/server");
+
+//     stage = "validating probe constants";
+
+//     const probes = coreLib.CI_DEV_TENANT_RESOLUTION_PROBES;
+
+//     if (!probes) {
+//       throw new Error("CI_DEV_TENANT_RESOLUTION_PROBES is not exported.");
+//     }
+
+//     if (!probes.tenant) {
+//       throw new Error("CI_DEV_TENANT_RESOLUTION_PROBES.tenant is missing.");
+//     }
+
+//     if (!probes.orgUnit) {
+//       throw new Error("CI_DEV_TENANT_RESOLUTION_PROBES.orgUnit is missing.");
+//     }
+
+//     stage = "validating resolver exports";
+
+//     if (typeof nextServer.ciResolveTenantContext !== "function") {
+//       throw new Error("ciResolveTenantContext is not exported as a function.");
+//     }
+
+//     if (typeof nextServer.ciResolveOrgUnitContext !== "function") {
+//       throw new Error("ciResolveOrgUnitContext is not exported as a function.");
+//     }
+
+//     stage = "validating kernel exports";
+
+//     if (typeof kernelServer.appGetAllServerConfig !== "function") {
+//       throw new Error("appGetAllServerConfig is not exported as a function.");
+//     }
+
+//     if (typeof kernelServer.appGetDevBeaconAccess !== "function") {
+//       throw new Error("appGetDevBeaconAccess is not exported as a function.");
+//     }
+
+//     stage = "calling appGetAllServerConfig";
+//     const config = await kernelServer.appGetAllServerConfig();
+
+//     stage = "calling appGetDevBeaconAccess";
+//     const access = await kernelServer.appGetDevBeaconAccess();
+
+//     stage = "completed";
+
+//     return Response.json({
+//       ok: true,
+//       marker: "core-lib-import-succeeded",
+//       stage: "completed",
+//       coreLibLoaded: Boolean(coreLib),
+//     });
+//   } catch (error: unknown) {
+//     return Response.json(
+//       {
+//         ok: false,
+//         stage,
+//         message: error instanceof Error ? error.message : "Unknown import error",
+//         stack: error instanceof Error ? error.stack : undefined,
+//       },
+//       {
+//         status: 500,
+//         headers: {
+//           "Cache-Control": "no-store",
+//         },
+//       },
+//     );
+//   }
+// }
+
 // src/app/ci-internal/dev-beacon/tenant-resolution-checkup/route.ts
 
 export const runtime = "nodejs";
@@ -6,7 +89,7 @@ export const revalidate = 0;
 
 // import { NextRequest, NextResponse } from "next/server";
 import { NextResponse } from "next/server";
-import { appGetDevBeaconAccess, appGetAllServerConfig } from "@/kernel/server";
+import { appGetDevBeaconAccess, appGetCoreConfig } from "@/kernel/server";
 
 import {
   CI_DEFAULT_ORG_UNIT_OPTIONS,
@@ -24,10 +107,7 @@ import type {
   CiTenantRoutingOptions,
 } from "@cloudigniter/core/types";
 
-import {
-  ciResolveOrgUnitContext,
-  ciResolveTenantContext,
-} from "@cloudigniter/next/server";
+import { ciResolveOrgUnitContext, ciResolveTenantContext } from "@cloudigniter/next/server";
 
 type CiRequestLike = Pick<Request, "headers" | "url">;
 
@@ -48,10 +128,7 @@ type CiTenantProbeExpected = {
   exists: boolean;
 };
 
-type CiOrgUnitProbeExpectedContext = Pick<
-  CiOrgUnitContext,
-  "id" | "tenantId" | "slug" | "path" | "status"
->;
+type CiOrgUnitProbeExpectedContext = Pick<CiOrgUnitContext, "id" | "tenantId" | "slug" | "path" | "status">;
 
 type CiOrgUnitProbeScenario = {
   id: string;
@@ -62,62 +139,90 @@ type CiOrgUnitProbeScenario = {
 
 const CI_PROBE_FEATURE_PATHNAME = "/dashboard";
 
-const CI_ORG_UNIT_PROBE_SCENARIOS: CiOrgUnitProbeScenario[] = [
-  {
-    id: "org-unit-active-root",
-    label: "Active root Org Unit",
-    path: CI_DEV_TENANT_RESOLUTION_PROBES.orgUnit.root,
-    expectedOrgUnit: {
-      id: "ci_probe_org_6f7a2d91_root",
-      tenantId: CI_DEV_TENANT_RESOLUTION_PROBES.tenant.active,
-      slug: "ci-probe-org-6f7a2d91-root",
+function ciGetOrgUnitProbeScenarios(): CiOrgUnitProbeScenario[] {
+  return [
+    {
+      id: "org-unit-active-root",
+      label: "Active root Org Unit",
       path: CI_DEV_TENANT_RESOLUTION_PROBES.orgUnit.root,
-      status: "active",
+      expectedOrgUnit: {
+        id: "ci_probe_org_6f7a2d91_root",
+        tenantId: CI_DEV_TENANT_RESOLUTION_PROBES.tenant.active,
+        slug: "ci-probe-org-6f7a2d91-root",
+        path: CI_DEV_TENANT_RESOLUTION_PROBES.orgUnit.root,
+        status: "active",
+      },
     },
-  },
-  {
-    id: "org-unit-active-deep",
-    label: "Deep active Org Unit",
-    path: CI_DEV_TENANT_RESOLUTION_PROBES.orgUnit.deep,
-    expectedOrgUnit: {
-      id: "ci_probe_org_6f7a2d91_leaf_6ac0",
-      tenantId: CI_DEV_TENANT_RESOLUTION_PROBES.tenant.active,
-      slug: "leaf-6ac0",
+    {
+      id: "org-unit-active-deep",
+      label: "Deep active Org Unit",
       path: CI_DEV_TENANT_RESOLUTION_PROBES.orgUnit.deep,
-      status: "active",
+      expectedOrgUnit: {
+        id: "ci_probe_org_6f7a2d91_leaf_6ac0",
+        tenantId: CI_DEV_TENANT_RESOLUTION_PROBES.tenant.active,
+        slug: "leaf-6ac0",
+        path: CI_DEV_TENANT_RESOLUTION_PROBES.orgUnit.deep,
+        status: "active",
+      },
     },
-  },
-  {
-    id: "org-unit-missing",
-    label: "Missing Org Unit",
-    path: CI_DEV_TENANT_RESOLUTION_PROBES.orgUnit.missing,
-    expectedOrgUnit: null,
-  },
-  {
-    id: "org-unit-suspended",
-    label: "Suspended Org Unit",
-    path: CI_DEV_TENANT_RESOLUTION_PROBES.orgUnit.suspended,
-    expectedOrgUnit: {
-      id: "ci_probe_org_6f7a2d91_suspended",
-      tenantId: CI_DEV_TENANT_RESOLUTION_PROBES.tenant.active,
-      slug: "ci-probe-org-6f7a2d91-suspended",
+    {
+      id: "org-unit-missing",
+      label: "Missing Org Unit",
+      path: CI_DEV_TENANT_RESOLUTION_PROBES.orgUnit.missing,
+      expectedOrgUnit: null,
+    },
+    {
+      id: "org-unit-suspended",
+      label: "Suspended Org Unit",
       path: CI_DEV_TENANT_RESOLUTION_PROBES.orgUnit.suspended,
-      status: "suspended",
+      expectedOrgUnit: {
+        id: "ci_probe_org_6f7a2d91_suspended",
+        tenantId: CI_DEV_TENANT_RESOLUTION_PROBES.tenant.active,
+        slug: "ci-probe-org-6f7a2d91-suspended",
+        path: CI_DEV_TENANT_RESOLUTION_PROBES.orgUnit.suspended,
+        status: "suspended",
+      },
     },
-  },
-  {
-    id: "org-unit-archived",
-    label: "Archived Org Unit",
-    path: CI_DEV_TENANT_RESOLUTION_PROBES.orgUnit.archived,
-    expectedOrgUnit: {
-      id: "ci_probe_org_6f7a2d91_archived",
-      tenantId: CI_DEV_TENANT_RESOLUTION_PROBES.tenant.active,
-      slug: "ci-probe-org-6f7a2d91-archived",
+    {
+      id: "org-unit-archived",
+      label: "Archived Org Unit",
       path: CI_DEV_TENANT_RESOLUTION_PROBES.orgUnit.archived,
-      status: "archived",
+      expectedOrgUnit: {
+        id: "ci_probe_org_6f7a2d91_archived",
+        tenantId: CI_DEV_TENANT_RESOLUTION_PROBES.tenant.active,
+        slug: "ci-probe-org-6f7a2d91-archived",
+        path: CI_DEV_TENANT_RESOLUTION_PROBES.orgUnit.archived,
+        status: "archived",
+      },
     },
-  },
-];
+  ];
+}
+
+console.log("[tenant-resolution-checkup] route module loaded");
+
+export async function GET(request: Request): Promise<NextResponse> {
+  console.log("[tenant-resolution-checkup] GET started");
+  try {
+    return await ciRunTenantResolutionCheckup(request);
+  } catch (error: unknown) {
+    const normalizedError = ciNormalizeThrownError(error);
+
+    console.error("[tenant-resolution-checkup] Route failed:", normalizedError);
+
+    return NextResponse.json(
+      {
+        error: "Tenant resolution checkup failed.",
+        message: normalizedError.message,
+      },
+      {
+        status: 500,
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      },
+    );
+  }
+}
 
 /**
  * Runs development-only Tenant and Org Unit resolution checks against the
@@ -126,12 +231,12 @@ const CI_ORG_UNIT_PROBE_SCENARIOS: CiOrgUnitProbeScenario[] = [
  * This endpoint is intentionally unavailable when the Dev Beacon is disabled
  * or when the application runs in production mode.
  */
-export async function GET(request: Request) {
-  const appConfig = await appGetAllServerConfig();
+export async function ciRunTenantResolutionCheckup(request: Request) {
+  const orgUnitProbeScenarios = ciGetOrgUnitProbeScenarios();
 
-  const devBeaconAccess = await appGetDevBeaconAccess(
-    appConfig.appCoreConfig.dev?.debug?.devBeacon,
-  );
+  const appConfig = appGetCoreConfig();
+
+  const devBeaconAccess = await appGetDevBeaconAccess(appConfig.dev?.debug?.devBeacon);
 
   /**
    * Return 404 rather than 401/403 so the developer-only endpoint is not
@@ -145,15 +250,11 @@ export async function GET(request: Request) {
   //   process.env.NEXT_PUBLIC_CI_ENV_MODE ??
   //   "test") as CiEnvMode;
 
-  const configuredTenantRouting = appConfig.appCoreConfig.tenant as
-    | CiTenantRoutingOptions
-    | undefined;
+  const configuredTenantRouting = appConfig.tenant as CiTenantRoutingOptions | undefined;
 
   if (!configuredTenantRouting?.enabled) {
     return ciCheckupResponse(
-      ciCreateConfigurationFailureCheckup(
-        "Tenant routing is disabled in the active application configuration.",
-      ),
+      ciCreateConfigurationFailureCheckup("Tenant routing is disabled in the active application configuration."),
     );
   }
 
@@ -265,10 +366,8 @@ export async function GET(request: Request) {
   const orgUnitEnabled = tenantRoutingConfig.orgUnit?.enabled === true;
 
   if (!orgUnitEnabled) {
-    for (const scenario of CI_ORG_UNIT_PROBE_SCENARIOS) {
-      const featurePathname = ciNormalizePathname(
-        `${scenario.path}${CI_PROBE_FEATURE_PATHNAME}`,
-      );
+    for (const scenario of orgUnitProbeScenarios) {
+      const featurePathname = ciNormalizePathname(`${scenario.path}${CI_PROBE_FEATURE_PATHNAME}`);
 
       const probeRequest = ciCreateProbeRequest({
         request,
@@ -285,8 +384,7 @@ export async function GET(request: Request) {
           area: "orgUnit",
           label: scenario.label,
           pathname,
-          message:
-            "Org Unit routing is disabled in the active application configuration.",
+          message: "Org Unit routing is disabled in the active application configuration.",
           expected: ciCreateExpectedOrgUnitSnapshot({
             scenario,
             pathname,
@@ -299,14 +397,9 @@ export async function GET(request: Request) {
         }),
       );
     }
-  } else if (
-    activeTenantProbe.check.state !== "passed" ||
-    !activeTenantProbe.context
-  ) {
-    for (const scenario of CI_ORG_UNIT_PROBE_SCENARIOS) {
-      const featurePathname = ciNormalizePathname(
-        `${scenario.path}${CI_PROBE_FEATURE_PATHNAME}`,
-      );
+  } else if (activeTenantProbe.check.state !== "passed" || !activeTenantProbe.context) {
+    for (const scenario of orgUnitProbeScenarios) {
+      const featurePathname = ciNormalizePathname(`${scenario.path}${CI_PROBE_FEATURE_PATHNAME}`);
 
       const probeRequest = ciCreateProbeRequest({
         request,
@@ -323,8 +416,7 @@ export async function GET(request: Request) {
           area: "orgUnit",
           label: scenario.label,
           pathname,
-          message:
-            "The active Tenant probe did not resolve, so Org Unit resolution could not be verified.",
+          message: "The active Tenant probe did not resolve, so Org Unit resolution could not be verified.",
           expected: ciCreateExpectedOrgUnitSnapshot({
             scenario,
             pathname,
@@ -338,7 +430,7 @@ export async function GET(request: Request) {
       );
     }
   } else {
-    for (const scenario of CI_ORG_UNIT_PROBE_SCENARIOS) {
+    for (const scenario of orgUnitProbeScenarios) {
       checks.push(
         await ciRunOrgUnitProbe({
           request,
@@ -408,18 +500,17 @@ async function ciRunTenantProbe({
     pathname: probePathname,
     expected: expectedSnapshot,
     run: async () => {
-      resolvedContext = await ciResolveTenantContext({
+      const result = await ciResolveTenantContext({
         request: probeRequest,
         pathnameNormalized: probePathname,
         tenantRoutingConfig,
       });
 
-      const actualSnapshot = ciSnapshotTenantContext(resolvedContext);
+      resolvedContext = result.tenant;
 
-      const passed = ciAreResolutionSnapshotsEqual(
-        expectedSnapshot,
-        actualSnapshot,
-      );
+      const actualSnapshot = ciSnapshotTenantContext(result.tenant);
+
+      const passed = ciAreResolutionSnapshotsEqual(expectedSnapshot, actualSnapshot);
 
       return {
         passed,
@@ -444,17 +535,12 @@ function ciCreateExpectedOrgUnitSnapshot({
   scenario: CiOrgUnitProbeScenario;
   pathname: string;
 }): Record<string, unknown> {
-  const originalFeaturePathname = ciNormalizePathname(
-    `${scenario.path}${CI_PROBE_FEATURE_PATHNAME}`,
-  );
+  const originalFeaturePathname = ciNormalizePathname(`${scenario.path}${CI_PROBE_FEATURE_PATHNAME}`);
 
   return ciSnapshotOrgUnitResolution({
     pathname,
     orgUnit: scenario.expectedOrgUnit,
-    featurePathname:
-      scenario.expectedOrgUnit === null
-        ? originalFeaturePathname
-        : CI_PROBE_FEATURE_PATHNAME,
+    featurePathname: scenario.expectedOrgUnit === null ? originalFeaturePathname : CI_PROBE_FEATURE_PATHNAME,
   });
 }
 
@@ -469,9 +555,7 @@ async function ciRunOrgUnitProbe({
   tenantContext: CiTenantContext;
   scenario: CiOrgUnitProbeScenario;
 }): Promise<CiDevResolutionCheck> {
-  const featurePathname = ciNormalizePathname(
-    `${scenario.path}${CI_PROBE_FEATURE_PATHNAME}`,
-  );
+  const featurePathname = ciNormalizePathname(`${scenario.path}${CI_PROBE_FEATURE_PATHNAME}`);
 
   const probeRequest = ciCreateProbeRequest({
     request,
@@ -507,10 +591,7 @@ async function ciRunOrgUnitProbe({
         featurePathname: result.featurePathname,
       });
 
-      const passed = ciAreResolutionSnapshotsEqual(
-        expectedSnapshot,
-        actualSnapshot,
-      );
+      const passed = ciAreResolutionSnapshotsEqual(expectedSnapshot, actualSnapshot);
 
       return {
         passed,
@@ -623,11 +704,7 @@ function ciCreateProbeRequest({
 
     url.pathname = normalizedFeaturePathname;
   } else {
-    url.pathname = ciBuildSlugProbePath(
-      tenantRoutingConfig.basePath,
-      tenantSegment,
-      normalizedFeaturePathname,
-    );
+    url.pathname = ciBuildSlugProbePath(tenantRoutingConfig.basePath, tenantSegment, normalizedFeaturePathname);
   }
 
   url.search = "";
@@ -638,30 +715,19 @@ function ciCreateProbeRequest({
   });
 }
 
-function ciBuildSlugProbePath(
-  basePath: string | undefined,
-  tenantSegment: string,
-  featurePathname: string,
-): string {
-  const normalizedBasePath = basePath?.trim()
-    ? ciNormalizePathname(basePath)
-    : "";
+function ciBuildSlugProbePath(basePath: string | undefined, tenantSegment: string, featurePathname: string): string {
+  const normalizedBasePath = basePath?.trim() ? ciNormalizePathname(basePath) : "";
 
   const safeBasePath = normalizedBasePath === "/" ? "" : normalizedBasePath;
 
   const normalizedFeaturePathname = ciNormalizePathname(featurePathname);
 
   return ciNormalizePathname(
-    `${safeBasePath}/${tenantSegment}${
-      normalizedFeaturePathname === "/" ? "" : normalizedFeaturePathname
-    }`,
+    `${safeBasePath}/${tenantSegment}${normalizedFeaturePathname === "/" ? "" : normalizedFeaturePathname}`,
   );
 }
 
-function ciGetRootHost(
-  request: CiRequestLike,
-  rootDomains: string[] | undefined,
-): string {
+function ciGetRootHost(request: CiRequestLike, rootDomains: string[] | undefined): string {
   const configuredRootDomain = rootDomains?.[0];
 
   if (!configuredRootDomain) {
@@ -670,9 +736,7 @@ function ciGetRootHost(
 
   try {
     const rootDomainUrl = new URL(
-      configuredRootDomain.includes("://")
-        ? configuredRootDomain
-        : `http://${configuredRootDomain}`,
+      configuredRootDomain.includes("://") ? configuredRootDomain : `http://${configuredRootDomain}`,
     );
 
     return rootDomainUrl.host;
@@ -700,9 +764,7 @@ function ciCreateTenantProbeSnapshot({
   };
 }
 
-function ciSnapshotTenantContext(
-  context: CiTenantContext,
-): Record<string, unknown> {
+function ciSnapshotTenantContext(context: CiTenantContext): Record<string, unknown> {
   return {
     id: context.id ?? null,
     scope: context.scope,
@@ -737,9 +799,7 @@ function ciSnapshotOrgUnitResolution({
   };
 }
 
-function ciCreateConfigurationFailureCheckup(
-  message: string,
-): CiDevTenantResolutionCheckup {
+function ciCreateConfigurationFailureCheckup(message: string): CiDevTenantResolutionCheckup {
   return ciCreateCheckup([
     ciCreateFailedCheck({
       id: "tenant-routing-configuration",
@@ -756,9 +816,7 @@ function ciCreateConfigurationFailureCheckup(
   ]);
 }
 
-function ciCreateCheckup(
-  checks: CiDevResolutionCheck[],
-): CiDevTenantResolutionCheckup {
+function ciCreateCheckup(checks: CiDevResolutionCheck[]): CiDevTenantResolutionCheckup {
   return {
     tenant: ciCreateAreaSummary(checks, "tenant"),
     orgUnit: ciCreateAreaSummary(checks, "orgUnit"),
@@ -766,10 +824,7 @@ function ciCreateCheckup(
   };
 }
 
-function ciCreateAreaSummary(
-  checks: CiDevResolutionCheck[],
-  area: CiCheckArea,
-) {
+function ciCreateAreaSummary(checks: CiDevResolutionCheck[], area: CiCheckArea) {
   const areaChecks = checks.filter((check) => check.area === area);
 
   return {
@@ -779,9 +834,7 @@ function ciCreateAreaSummary(
   };
 }
 
-function ciCheckupResponse(
-  checkup: CiDevTenantResolutionCheckup,
-): NextResponse {
+function ciCheckupResponse(checkup: CiDevTenantResolutionCheckup): NextResponse {
   return NextResponse.json(checkup, {
     headers: {
       "Cache-Control": "no-store",
@@ -789,10 +842,7 @@ function ciCheckupResponse(
   });
 }
 
-function ciAreResolutionSnapshotsEqual(
-  expected: Record<string, unknown>,
-  actual: Record<string, unknown>,
-): boolean {
+function ciAreResolutionSnapshotsEqual(expected: Record<string, unknown>, actual: Record<string, unknown>): boolean {
   return JSON.stringify(expected) === JSON.stringify(actual);
 }
 

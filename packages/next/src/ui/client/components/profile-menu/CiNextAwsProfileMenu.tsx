@@ -4,11 +4,7 @@ import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
 import { ciAwsSignOut } from "@cloudigniter/aws/client";
-import {
-  CiProfileMenu,
-  ciStartTraceClient,
-  useCiPageLoaderStore,
-} from "@cloudigniter/ui/client";
+import { CiProfileMenu, ciStartTraceClient, useCiPageLoaderStore } from "@cloudigniter/ui/client";
 import type { CiProfileMenuItem } from "@cloudigniter/core/types";
 
 import type { CiNextAwsProfileMenuProps } from "@ci-next/types";
@@ -26,7 +22,7 @@ export function CiNextAwsProfileMenu({
   const { logger, done } = useMemo(
     () =>
       ciStartTraceClient(
-        config.coreConfig.dev.traceLog,
+        config.appCoreConfig.dev.traceLog,
         {
           source: "client",
           tag: "CiNextAwsProfileMenu",
@@ -35,7 +31,7 @@ export function CiNextAwsProfileMenu({
           name: "<CiNextAwsProfileMenu />",
         },
       ),
-    [config.coreConfig.dev.traceLog],
+    [config.appCoreConfig.dev.traceLog],
   );
 
   useEffect(() => {

@@ -2,16 +2,16 @@ import { useTranslations } from "next-intl";
 
 import { ciStartTraceServer } from "@cloudigniter/core/server";
 import { ciCapitalizeFirstLetter } from "@cloudigniter/core/lib";
-import type { CiNextPageConfig } from "@ci-next/types";
+import type { CiNextConfig } from "@ci-next/types";
 
 interface CopyrightInterface {
-  config: CiNextPageConfig;
+  config: CiNextConfig;
 }
 
 export const CiCopyright = ({ config }: CopyrightInterface) => {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger } = ciStartTraceServer(
-    config.coreConfig.dev.traceLog,
+    config.appCoreConfig.dev.traceLog,
     { source: "server", prettyWave: true },
     { name: "<Copyright>" },
   );
@@ -26,8 +26,7 @@ export const CiCopyright = ({ config }: CopyrightInterface) => {
 
   return (
     <p className="text-sm">
-      &copy; {new Date().getFullYear()} Cloudigniter.{" "}
-      {ciCapitalizeFirstLetter(t("all rights reserved"), true)}
+      &copy; {new Date().getFullYear()} Cloudigniter. {ciCapitalizeFirstLetter(t("all rights reserved"), true)}
     </p>
   );
 };

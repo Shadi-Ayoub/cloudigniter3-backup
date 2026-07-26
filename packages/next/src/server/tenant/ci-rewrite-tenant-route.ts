@@ -16,13 +16,11 @@ type CiTenantRewriteRequest = Pick<Request, "url">;
  */
 export function ciRewriteTenantRoute({
   request,
-  response,
   requestHeaders,
   tenant,
   featurePathname,
 }: {
   request: CiTenantRewriteRequest;
-  response: NextResponse;
   requestHeaders: Headers;
   tenant: CiTenantContext;
   featurePathname: string;
@@ -31,7 +29,6 @@ export function ciRewriteTenantRoute({
 
   if (tenant.scope === "system") {
     return NextResponse.next({
-      headers: response.headers,
       request: {
         headers: requestHeaders,
       },
@@ -42,11 +39,9 @@ export function ciRewriteTenantRoute({
 
   const rewriteUrl = new URL(request.url);
 
-  rewriteUrl.pathname =
-    routePathname === "/" ? internalRoot : `${internalRoot}${routePathname}`;
+  rewriteUrl.pathname = routePathname === "/" ? internalRoot : `${internalRoot}${routePathname}`;
 
   return NextResponse.rewrite(rewriteUrl, {
-    headers: response.headers,
     request: {
       headers: requestHeaders,
     },

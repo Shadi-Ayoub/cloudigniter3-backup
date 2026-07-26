@@ -1,14 +1,13 @@
-import type { CiRoutesMap, CiRoute } from "@ci-core/types";
+import type { CiRouteDefinition, CiRoutesMap } from "@ci-core/types";
+
 import { ciMatchRoute } from "./ci-match-route";
 
 /**
- * Resolve a route by matching the current path.
- * Returns the Route object or null if none match.
+ * Resolves the registered route definition matching the current path.
+ * Returns null when no route matches.
  */
-export function ciResolveRoute(
-  path: string | URL,
-  routes: CiRoutesMap,
-): CiRoute | null {
-  const m = ciMatchRoute(path, routes);
-  return m ? m.route : null;
+export function ciResolveRouteDefinition(path: string | URL, routes: CiRoutesMap): CiRouteDefinition | null {
+  const match = ciMatchRoute(path, routes);
+
+  return match?.definition ?? null;
 }

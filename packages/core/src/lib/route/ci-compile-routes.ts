@@ -1,9 +1,10 @@
-import type { CiRoute, CiRoutesMap, CiMatchedRoute } from "@ci-core/types";
+import type { CiMatchedRoute, CiRouteDefinition, CiRoutesMap } from "@ci-core/types";
+
 import { ciNormalizePathname } from "@ci-core/lib";
 
 type CompiledEntry = {
   pattern: string;
-  route: CiRoute;
+  route: CiRouteDefinition;
   rx: RegExp;
   score: number;
   len: number;
@@ -13,15 +14,23 @@ export type CiCompiledRoutes = {
   match: (path: string | URL) => CiMatchedRoute;
   isRegistered: (path: string | URL) => boolean;
   isProtected: (path: string | URL, defaultWhenNoMatch?: boolean) => boolean;
-  resolve: (path: string | URL) => CiRoute | null;
+
+  /**
+   * Returns the registered route definition.
+   *
+   * This is not a fully resolved CiRoute because request-specific
+   * properties have not been created yet.
+   */
+  resolve: (path: string | URL) => CiRouteDefinition | null;
+
   getNamespace: (path: string | URL) => string | undefined;
 };
 
 /**
  * Escape regex special chars in literals.
  */
-function escapeRegex(s: string) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 /**
@@ -31,24 +40,18 @@ function escapeRegex(s: string) {
  * - '/users/:id'    -> matches '/users/123' (single segment)
  * - exact paths     -> matched exactly
  */
-function toRegex(pattern: string) {
-  const pat = ciNormalizePathname(pattern);
+function toRegex(pattern: string): RegExp {
+  const normalizedPattern = ciNormalizePathname(pattern);
 
-  // Wildcard suffix: '/base/*'
-  if (pat.endsWith("/*")) {
-    const base = ciNormalizePathname(pat.slice(0, -2));
-    // '^/base(?:/.*)?$' matches '/base' and any deeper path
+  if (normalizedPattern.endsWith("/*")) {
+    const base = ciNormalizePathname(normalizedPattern.slice(0, -2));
+
     return new RegExp(`^${escapeRegex(base)}(?:/.*)?$`);
   }
 
-  // Replace :param with single-segment matcher ([^/]+)
-  // We escape the rest of the pattern safely:
-  // split by param tokens and rebuild.
-  const parts = pat.split(/(:[^/]+)/g).filter(Boolean);
+  const parts = normalizedPattern.split(/(:[^/]+)/g).filter(Boolean);
 
-  const rebuilt = parts
-    .map((part) => (part.startsWith(":") ? "[^/]+" : escapeRegex(part)))
-    .join("");
+  const rebuilt = parts.map((part) => (part.startsWith(":") ? "[^/]+" : escapeRegex(part))).join("");
 
   return new RegExp(`^${rebuilt}$`);
 }
@@ -61,22 +64,33 @@ function toRegex(pattern: string) {
  *  - wildcard suffix '/*' (-1 penalty)
  *  - Then break ties by longer pattern length.
  */
-function patternScore(pattern: string) {
-  const pat = ciNormalizePathname(pattern);
-  const segs = pat.split("/").filter(Boolean);
+function patternScore(pattern: string): {
+  score: number;
+  len: number;
+} {
+  const normalizedPattern = ciNormalizePathname(pattern);
+  const segments = normalizedPattern.split("/").filter(Boolean);
 
   let score = 0;
-  for (const s of segs) {
-    if (s === "*") {
-      score -= 2; // safety
-    } else if (s.startsWith(":")) {
+
+  for (const segment of segments) {
+    if (segment === "*") {
+      score -= 2;
+    } else if (segment.startsWith(":")) {
       score += 1;
     } else {
       score += 2;
     }
   }
-  if (pat.endsWith("/*")) score -= 1;
-  return { score, len: pat.length };
+
+  if (normalizedPattern.endsWith("/*")) {
+    score -= 1;
+  }
+
+  return {
+    score,
+    len: normalizedPattern.length,
+  };
 }
 
 /**
@@ -104,52 +118,65 @@ function patternScore(pattern: string) {
  * // => false
  */
 export function ciCompileRoutes(routes: CiRoutesMap): CiCompiledRoutes {
-  const compiled: CompiledEntry[] = Object.entries(routes).map(
-    ([pattern, route]) => {
-      const rx = toRegex(pattern);
-      const { score, len } = patternScore(pattern);
-      return { pattern, route, rx, score, len };
-    },
-  );
+  const compiled: CompiledEntry[] = Object.entries(routes).map(([pattern, route]) => {
+    const rx = toRegex(pattern);
+    const { score, len } = patternScore(pattern);
+
+    return {
+      pattern,
+      route,
+      rx,
+      score,
+      len,
+    };
+  });
 
   function match(path: string | URL): CiMatchedRoute {
-    const p = ciNormalizePathname(path);
+    const pathname = ciNormalizePathname(path);
 
     let best: CompiledEntry | null = null;
 
     for (const entry of compiled) {
-      if (!entry.rx.test(p)) continue;
+      if (!entry.rx.test(pathname)) {
+        continue;
+      }
 
-      if (
-        !best ||
-        entry.score > best.score ||
-        (entry.score === best.score && entry.len > best.len)
-      ) {
+      if (!best || entry.score > best.score || (entry.score === best.score && entry.len > best.len)) {
         best = entry;
       }
     }
 
-    return best ? { pattern: best.pattern, route: best.route } : null;
+    return best
+      ? {
+          pattern: best.pattern,
+          route: best.route,
+        }
+      : null;
   }
 
-  function isRegistered(path: string | URL) {
+  function isRegistered(path: string | URL): boolean {
     return match(path) !== null;
   }
 
-  function isProtected(path: string | URL, defaultWhenNoMatch = false) {
-    const m = match(path);
-    return m ? !!m.route.protected : defaultWhenNoMatch;
+  function isProtected(path: string | URL, defaultWhenNoMatch = false): boolean {
+    const matched = match(path);
+
+    return matched ? Boolean(matched.route.protected) : defaultWhenNoMatch;
   }
 
-  function resolve(path: string | URL) {
-    const m = match(path);
-    return m ? m.route : null;
+  function resolve(path: string | URL): CiRouteDefinition | null {
+    return match(path)?.route ?? null;
   }
 
-  function getNamespace(path: string | URL) {
-    const r = resolve(path);
-    return r?.namespace;
+  function getNamespace(path: string | URL): string | undefined {
+    return resolve(path)?.namespace;
   }
 
-  return { match, isRegistered, isProtected, resolve, getNamespace };
+  return {
+    match,
+    isRegistered,
+    isProtected,
+    resolve,
+    getNamespace,
+  };
 }

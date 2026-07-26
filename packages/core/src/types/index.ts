@@ -8,6 +8,7 @@ export type {
   CiGraphQLResponse,
   CiNullable,
   CiRequest,
+  CiRequestContext,
   CiRequestOptions,
   CiResponse,
   CiResponseDebugMeta,
@@ -192,12 +193,7 @@ export type {
 // ─────────────────────────────────────────────────────────────
 // main menu
 // ─────────────────────────────────────────────────────────────
-export type {
-  CiMainMenuItem,
-  CiMainMenuTarget,
-  CiMenuItemProps,
-  CiNavigationMenuProps,
-} from "./main-menu-types";
+export type { CiMainMenuItem, CiMainMenuTarget, CiMenuItemProps, CiNavigationMenuProps } from "./main-menu-types";
 
 // ─────────────────────────────────────────────────────────────
 // module
@@ -255,11 +251,7 @@ export type {
 // ─────────────────────────────────────────────────────────────
 // profile menu
 // ─────────────────────────────────────────────────────────────
-export type {
-  CiProfileMenuItem,
-  CiProfileMenuMessages,
-  CiProfileMenuProps,
-} from "./profile-menu";
+export type { CiProfileMenuItem, CiProfileMenuMessages, CiProfileMenuProps } from "./profile-menu";
 
 // ─────────────────────────────────────────────────────────────
 // result
@@ -279,21 +271,22 @@ export type {
 // route
 // ─────────────────────────────────────────────────────────────
 export type {
-  CiRoute,
-  CiRouteInfoPageReason,
-  CiRouteRuntimeConfig,
   CiMatchedRoute,
+  CiRoute,
+  CiRouteDefinition,
+  CiRouteInfoPageReason,
+  CiRouteMatch,
+  CiRouteMatchKind,
+  CiRoutePattern,
+  CiRouteRuntimeConfig,
+  CiRouteSearchParams,
   CiRoutesMap,
 } from "./route-types";
 
 // ─────────────────────────────────────────────────────────────
 // scope
 // ─────────────────────────────────────────────────────────────
-export type {
-  CiResolvedPathnameContext,
-  CiResolvedScopeContext,
-  CiScopeKind,
-} from "./scope-types";
+export type { CiResolvedPathnameContext, CiResolvedScopeContext, CiScopeKind } from "./scope-types";
 
 // ─────────────────────────────────────────────────────────────
 // security
@@ -395,6 +388,7 @@ export type {
   // CiDeleteTenantApiInterface,
   // CiGetTenantInterface,
   CiGetTenantBySlugInterface,
+  CiResolveTenantContextResult,
   // CiGetTenantApiInterface,
   // CiGetTenantBySlugApiInterface,
   // CiGetTenantLookupBySlugInterface,
@@ -413,6 +407,7 @@ export type {
   // CiTenantHeaderKey,
   CiTenantHtmlTableRow,
   CiTenantInfoPageStrategy,
+  CiTenantLookupResult,
   CiTenantMode,
   CiTenantResolutionOptions,
   CiTenantResolutionResult,
@@ -434,9 +429,9 @@ export type {
 // ─────────────────────────────────────────────────────────────
 // theme
 // ─────────────────────────────────────────────────────────────
-export type {
-  CiClientThemeConfig,
-  CiThemeAttributeStrategy,
-  CiThemeConfig,
-  CiThemeSettings,
-} from "./theme-types";
+export type { CiClientThemeConfig, CiThemeAttributeStrategy, CiThemeConfig, CiThemeSettings } from "./theme-types";
+
+// ─────────────────────────────────────────────────────────────
+// user
+// ─────────────────────────────────────────────────────────────
+export type { CiUser } from "./user-types";

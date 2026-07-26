@@ -19,12 +19,19 @@ export {
 // api
 // ─────────────────────────────────────────────────────────────
 export {
+  // defaults
+  CI_DEFAULT_REQUEST_CONTEXT_COOKIE_NAME,
+  CI_DEFAULT_REQUEST_CONTEXT_HEADER_NAME,
+
+  // helpers
+  ciDeserializeRequestContext,
   ciFinalizeResponse,
   ciIsResponseError,
   ciIsResponseOk,
   ciResponseError,
   ciResponseOk,
   ciSafeParseRequest,
+  ciSerializeRequestContext,
 } from "./api";
 
 // ─────────────────────────────────────────────────────────────
@@ -98,11 +105,7 @@ export {
 // ─────────────────────────────────────────────────────────────
 // module
 // ─────────────────────────────────────────────────────────────
-export {
-  ciCollectModulePackageDependencies,
-  ciResolveModuleGraph,
-  CiModuleError,
-} from "./module";
+export { ciCollectModulePackageDependencies, ciResolveModuleGraph, CiModuleError } from "./module";
 
 // ─────────────────────────────────────────────────────────────
 // namespace
@@ -144,24 +147,17 @@ export {
 // route
 // ─────────────────────────────────────────────────────────────
 export {
-  // defaults
-  CI_DEFAULT_ROUTE_NAMESPACE_COOKIE_NAME,
-  CI_DEFAULT_ROUTE_NAMESPACE_HEADER_NAME,
-  CI_DEFAULT_ROUTE_PATHNAME_HEADER_NAME,
-  CI_DEFAULT_ROUTE_PATHNAME_COOKIE_NAME,
-
-  // constants
-  ciCoreRoutes,
-
   // helpers
   ciCompileRoutes,
+  ciCoreRoutes,
   ciGetRoutes,
   ciGetRoutesMatcher,
+  ciGetRouteSearchParams,
   ciGetRouteNamespace,
   ciIsProtectedPath,
   ciIsRegisteredPath,
   ciMatchRoute,
-  ciResolveRoute,
+  ciResolveRouteDefinition,
 } from "./route";
 
 // ─────────────────────────────────────────────────────────────
@@ -205,23 +201,23 @@ export {
   CI_DEFAULT_TENANT_ROUTING_OPTIONS,
 
   // constants
-  CI_DEFAULT_FEATURE_PATHNAME_HEADER_NAME,
-  CI_DEFAULT_FEATURE_PATHNAME_COOKIE_NAME,
-  CI_DEFAULT_TENANT_ID_HEADER_NAME,
-  CI_DEFAULT_TENANT_SCOPE_HEADER_NAME,
-  CI_DEFAULT_TENANT_SLUG_HEADER_NAME,
-  CI_DEFAULT_TENANT_MODE_HEADER_NAME,
-  CI_DEFAULT_TENANT_NAME_HEADER_NAME,
-  CI_DEFAULT_TENANT_NAME_COOKIE_NAME,
-  CI_DEFAULT_TENANT_STATUS_HEADER_NAME,
-  CI_DEFAULT_TENANT_ID_COOKIE_NAME,
-  CI_DEFAULT_TENANT_SCOPE_COOKIE_NAME,
-  CI_DEFAULT_TENANT_TYPE_HEADER_NAME,
-  CI_DEFAULT_TENANT_TYPE_COOKIE_NAME,
-  CI_DEFAULT_TENANT_MODE_COOKIE_NAME,
-  CI_DEFAULT_TENANT_STATUS_COOKIE_NAME,
-  CI_DEFAULT_TENANT_HEADERS,
-  CI_DEFAULT_TENANT_COOKIES,
+  // CI_DEFAULT_FEATURE_PATHNAME_HEADER_NAME,
+  // CI_DEFAULT_FEATURE_PATHNAME_COOKIE_NAME,
+  // CI_DEFAULT_TENANT_ID_HEADER_NAME,
+  // CI_DEFAULT_TENANT_SCOPE_HEADER_NAME,
+  // CI_DEFAULT_TENANT_SLUG_HEADER_NAME,
+  // CI_DEFAULT_TENANT_MODE_HEADER_NAME,
+  // CI_DEFAULT_TENANT_NAME_HEADER_NAME,
+  // CI_DEFAULT_TENANT_NAME_COOKIE_NAME,
+  // CI_DEFAULT_TENANT_STATUS_HEADER_NAME,
+  // CI_DEFAULT_TENANT_ID_COOKIE_NAME,
+  // CI_DEFAULT_TENANT_SCOPE_COOKIE_NAME,
+  // CI_DEFAULT_TENANT_TYPE_HEADER_NAME,
+  // CI_DEFAULT_TENANT_TYPE_COOKIE_NAME,
+  // CI_DEFAULT_TENANT_MODE_COOKIE_NAME,
+  // CI_DEFAULT_TENANT_STATUS_COOKIE_NAME,
+  // CI_DEFAULT_TENANT_HEADERS,
+  // CI_DEFAULT_TENANT_COOKIES,
   CI_DEFAULT_TENANT_ROUTING_MODE,
   CI_DEFAULT_TENANT_BASE_PATH,
   CI_DEFAULT_TENANT_ROUTING_SCOPE,

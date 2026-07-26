@@ -1,11 +1,8 @@
-import type {
-  CiAuthProviderId,
-  CiLocaleDirection,
-} from "@cloudigniter/core/types";
-import type { CiNextPageConfig } from "@ci-next/types";
+import type { CiAuthProviderId, CiLocaleDirection } from "@cloudigniter/core/types";
+import type { CiNextConfig } from "@ci-next/types";
 
 export type CiNextProfileMenuProps = {
-  config: CiNextPageConfig;
+  config: CiNextConfig;
   dir: CiLocaleDirection;
 
   /**
