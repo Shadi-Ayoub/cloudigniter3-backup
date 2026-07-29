@@ -3,6 +3,12 @@ import type { CiNextCoreConfig } from "@cloudigniter/next/types";
 import { routes } from "./routes";
 
 export default {
+  request: {
+    context: {
+      requestContextCookieName: "ci-request-context",
+      requestContextHeaderName: "x-ci-request-context",
+    },
+  },
   providers: {
     aws: {
       cognito: {
@@ -17,8 +23,6 @@ export default {
     platform: "Next.js",
     version: "^16.2.1",
     routerMode: "App Router",
-    requestContextCookieName: "ci-request-context",
-    requestContextHeaderName: "x-ci-request-context",
   },
   auth: {
     loginRoute: "/login",

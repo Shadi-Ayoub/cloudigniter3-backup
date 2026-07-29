@@ -198,10 +198,7 @@ function ciGetOrgUnitProbeScenarios(): CiOrgUnitProbeScenario[] {
   ];
 }
 
-console.log("[tenant-resolution-checkup] route module loaded");
-
 export async function GET(request: Request): Promise<NextResponse> {
-  console.log("[tenant-resolution-checkup] GET started");
   try {
     return await ciRunTenantResolutionCheckup(request);
   } catch (error: unknown) {
@@ -692,6 +689,23 @@ function ciCreateProbeRequest({
   const url = new URL(request.url);
   const headers = new Headers(request.headers);
 
+  /*
+   * The incoming request belongs to the DevBeacon endpoint. Its x-ci-* headers
+   * describe that endpoint, not the synthetic probe pathname. Keeping them can
+   * cause tenant resolution to reuse a context whose tenant id is null.
+   */
+  const derivedHeaderNames: string[] = [];
+
+  headers.forEach((_value, name) => {
+    if (name.toLowerCase().startsWith("x-ci-")) {
+      derivedHeaderNames.push(name);
+    }
+  });
+
+  for (const name of derivedHeaderNames) {
+    headers.delete(name);
+  }
+
   const normalizedFeaturePathname = ciNormalizePathname(featurePathname);
 
   if (tenantRoutingConfig.mode === "subdomain") {
@@ -702,6 +716,7 @@ function ciCreateProbeRequest({
     headers.set("host", probeHost);
     headers.set("x-forwarded-host", probeHost);
 
+    url.host = probeHost;
     url.pathname = normalizedFeaturePathname;
   } else {
     url.pathname = ciBuildSlugProbePath(tenantRoutingConfig.basePath, tenantSegment, normalizedFeaturePathname);

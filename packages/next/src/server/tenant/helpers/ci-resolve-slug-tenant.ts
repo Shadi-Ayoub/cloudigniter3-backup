@@ -50,6 +50,7 @@ export function ciResolveSlugTenant(pathname: string, options: CiTenantResolutio
   }
 
   return {
+    id: candidate,
     slug: candidate,
     scope: "tenant",
     source: "slug",

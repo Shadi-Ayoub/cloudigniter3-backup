@@ -8,6 +8,8 @@ import type { CiTenantScope } from "./CiTenantScope";
  * the internal Tenant identifier and lifecycle status is a separate lookup step.
  */
 export type CiTenantResolutionResult = {
+  id?: string;
+
   /**
    * Route-safe Tenant slug extracted from the pathname or subdomain.
    */

@@ -15,10 +15,10 @@ import type { CiNextContext } from "@ci-next/types";
 import { CiDevBeaconButton } from "./components/CiDevBeaconButton";
 import { CiDevBeaconModal } from "./components/CiDevBeaconModal";
 import { CiDevBeaconSideTabsList } from "./components/CiDevBeaconSideTabsList";
-import { CiDevBeaconSectionConfig } from "./sections/system-config/CiDevBeaconSectionConfig";
-import { CiDevBeaconSectionStatus } from "./sections/system-status/CiDevBeaconSectionStatus";
-import { CiDevBeaconSectionTools } from "./sections/system-tools/CiDevBeaconSectionTools";
-import { CiDevBeaconTraceLogViewerText, CiDevBeaconTraceTab } from "./trace";
+import { CiDevBeaconSectionConfig } from "./components/sections/system-config/CiDevBeaconSectionConfig";
+import { CiDevBeaconSectionDiagnostics } from "./components/sections/diagnostics/CiDevBeaconSectionDiagnostics";
+import { CiDevBeaconSectionTools } from "./components/sections/system-tools/CiDevBeaconSectionTools";
+import { CiDevBeaconTraceLogViewerText, CiDevBeaconTraceTab } from "./components/trace";
 
 function buildLogoNode(spec?: CiDevBeaconLogoSpec): React.ReactNode {
   if (!spec || spec.kind === "default") {
@@ -43,10 +43,7 @@ function buildLogoNode(spec?: CiDevBeaconLogoSpec): React.ReactNode {
     const size = spec.sizePx ?? 28;
 
     return (
-      <div
-        className="pointer-events-none relative select-none"
-        style={{ width: size, height: size }}
-      >
+      <div className="pointer-events-none relative select-none" style={{ width: size, height: size }}>
         <img
           src={spec.src}
           alt={spec.alt ?? "CloudIgniter"}
@@ -87,18 +84,12 @@ function buildExtraTab(spec: CiDevBeaconExtraTabSpec): CiDevBeaconExtraTab {
     default: {
       const unsupportedSpec: never = spec;
 
-      throw new Error(
-        `Unsupported Dev Beacon extra-tab specification: ${String(
-          unsupportedSpec,
-        )}`,
-      );
+      throw new Error(`Unsupported Dev Beacon extra-tab specification: ${String(unsupportedSpec)}`);
     }
   }
 }
 
-function buildExtraTabs(
-  specs: CiDevBeaconExtraTabSpec[] = [],
-): CiDevBeaconExtraTab[] {
+function buildExtraTabs(specs: CiDevBeaconExtraTabSpec[] = []): CiDevBeaconExtraTab[] {
   return specs.map(buildExtraTab);
 }
 
@@ -118,13 +109,11 @@ export function CiDevBeaconClient({
   const [loaded, setLoaded] = React.useState(false);
   const [topOffset, setTopOffset] = React.useState(viewportTopOffset);
   const [bottomOffset, setBottomOffset] = React.useState(viewportBottomOffset);
-  const [routeHeadersRefreshPending, startRouteHeadersRefresh] =
-    React.useTransition();
+  const [routeHeadersRefreshPending, startRouteHeadersRefresh] = React.useTransition();
 
   const refreshedPathnameRef = React.useRef(pathname);
 
-  const routeHeadersRefreshing =
-    refreshedPathnameRef.current !== pathname || routeHeadersRefreshPending;
+  const routeHeadersRefreshing = refreshedPathnameRef.current !== pathname || routeHeadersRefreshPending;
 
   React.useEffect(() => {
     if (!open || refreshedPathnameRef.current === pathname) {
@@ -174,16 +163,13 @@ export function CiDevBeaconClient({
     };
   }, [pathname]);
 
-  const resolvedExtraTabs = React.useMemo(
-    () => buildExtraTabs(extraTabs),
-    [extraTabs],
-  );
+  const resolvedExtraTabs = React.useMemo(() => buildExtraTabs(extraTabs), [extraTabs]);
 
   const logoNode = React.useMemo(() => buildLogoNode(logo), [logo]);
 
   const SectionStatus = React.useCallback(
     () => (
-      <CiDevBeaconSectionStatus
+      <CiDevBeaconSectionDiagnostics
         key={pathname}
         pathname={pathname}
         context={context}
@@ -217,12 +203,7 @@ export function CiDevBeaconClient({
         SideTabsList={CiDevBeaconSideTabsList}
         SectionStatus={SectionStatus}
         SectionConfig={CiDevBeaconSectionConfig}
-        SectionTools={(props) => (
-          <CiDevBeaconSectionTools
-            {...props}
-            onMarkLoaded={() => setLoaded(true)}
-          />
-        )}
+        SectionTools={(props) => <CiDevBeaconSectionTools {...props} onMarkLoaded={() => setLoaded(true)} />}
         extraTabs={resolvedExtraTabs}
         viewportTopOffset={topOffset}
         viewportBottomOffset={bottomOffset}

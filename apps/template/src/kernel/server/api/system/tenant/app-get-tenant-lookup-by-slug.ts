@@ -1,31 +1,40 @@
 import { cache } from "react";
 import { CI_DEV_TENANT_RESOLUTION_PROBES } from "@cloudigniter/core/lib";
-import type {
-  CiGetTenantBySlugInterface,
-  CiRequest,
-  CiResponse,
-  CiTenantStatus,
-} from "@cloudigniter/core/types";
+import type { CiGetTenantBySlugInterface, CiRequest, CiResponse, CiTenantStatus } from "@cloudigniter/core/types";
 
-const CI_MOCK_TENANTS: Record<string, { status: CiTenantStatus }> = {
-  acme: {
-    status: "active",
-  },
-  suspended: {
-    status: "suspended",
-  },
-  archived: {
-    status: "archived",
-  },
-  [CI_DEV_TENANT_RESOLUTION_PROBES.tenant.active]: {
-    status: "active",
-  },
-  [CI_DEV_TENANT_RESOLUTION_PROBES.tenant.suspended]: {
-    status: "suspended",
-  },
-  [CI_DEV_TENANT_RESOLUTION_PROBES.tenant.archived]: {
-    status: "archived",
-  },
+type CiMockTenant = {
+  id: string;
+  slug: string;
+  status: CiTenantStatus;
+};
+
+function ciCreateMockTenant(slug: string, status: CiTenantStatus): CiMockTenant {
+  return {
+    id: slug,
+    slug,
+    status,
+  };
+}
+
+const CI_MOCK_TENANTS: Record<string, CiMockTenant> = {
+  acme: ciCreateMockTenant("acme", "active"),
+  suspended: ciCreateMockTenant("suspended", "suspended"),
+  archived: ciCreateMockTenant("archived", "archived"),
+
+  [CI_DEV_TENANT_RESOLUTION_PROBES.tenant.active]: ciCreateMockTenant(
+    CI_DEV_TENANT_RESOLUTION_PROBES.tenant.active,
+    "active",
+  ),
+
+  [CI_DEV_TENANT_RESOLUTION_PROBES.tenant.suspended]: ciCreateMockTenant(
+    CI_DEV_TENANT_RESOLUTION_PROBES.tenant.suspended,
+    "suspended",
+  ),
+
+  [CI_DEV_TENANT_RESOLUTION_PROBES.tenant.archived]: ciCreateMockTenant(
+    CI_DEV_TENANT_RESOLUTION_PROBES.tenant.archived,
+    "archived",
+  ),
 };
 
 /**
@@ -35,9 +44,7 @@ const CI_MOCK_TENANTS: Record<string, { status: CiTenantStatus }> = {
  * and Org Unit resolution flow have been verified.
  */
 export const appGetTenantLookupBySlug = cache(
-  async (
-    request: CiRequest<CiGetTenantBySlugInterface>,
-  ): Promise<CiResponse> => {
+  async (request: CiRequest<CiGetTenantBySlugInterface>): Promise<CiResponse> => {
     const slug = request.input.slug.trim().toLowerCase();
 
     if (!slug) {
@@ -68,7 +75,8 @@ export const appGetTenantLookupBySlug = cache(
       statusCode: 200,
       body: {
         exists: true,
-        slug,
+        id: tenant.id,
+        slug: tenant.slug,
         status: tenant.status,
       },
     };

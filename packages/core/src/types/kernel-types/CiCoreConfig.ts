@@ -2,6 +2,7 @@ import type {
   CiAuthConfig,
   CiDevConfig,
   CiI18nConfig,
+  CiRequestConfig,
   CiRouteDefinition,
   CiRouteRuntimeConfig,
   CiTenantRoutingOptions,
@@ -25,6 +26,8 @@ import type { CiDataConfig } from "./CiDataConfig";
 //   TAppConfig extends Record<string, unknown> = Record<string, never>,
 // > = {
 export type CiCoreConfig = {
+  request: CiRequestConfig;
+
   auth: CiAuthConfig;
 
   data: CiDataConfig;

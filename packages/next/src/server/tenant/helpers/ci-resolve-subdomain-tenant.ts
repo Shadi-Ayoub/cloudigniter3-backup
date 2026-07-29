@@ -75,6 +75,7 @@ export function ciResolveSubdomainTenant(
   }
 
   return {
+    id: firstSubdomainPart,
     slug: firstSubdomainPart,
     scope: "tenant",
     source: "subdomain",

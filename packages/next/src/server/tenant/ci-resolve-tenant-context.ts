@@ -67,17 +67,19 @@ export async function ciResolveTenantContext({
   const featurePathname = ciNormalizePathname(resolvedTenant.featurePathname ?? pathnameNormalized);
 
   const context: CiTenantContext = {
-    exists: true,
+    id: resolvedTenant.id,
     ...(resolvedTenant.slug
       ? {
           slug: resolvedTenant.slug,
         }
       : {}),
     scope: resolvedTenant.scope,
+    source: resolvedTenant.source,
     mode: tenantOptions.mode,
     status: "active",
     pathname: pathnameNormalized,
-    source: resolvedTenant.source,
+
+    exists: true,
   };
 
   const createResult = (tenant: CiTenantContext): CiResolveTenantContextResult => ({

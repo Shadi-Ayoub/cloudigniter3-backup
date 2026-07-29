@@ -6,11 +6,7 @@ import type { NextRequest } from "next/server";
 
 import { ciNormalizeThrownError } from "@cloudigniter/core/lib";
 
-import type {
-  CiEnvMode,
-  CiGetTenantBySlugInterface,
-  CiRequest,
-} from "@cloudigniter/core/types";
+import type { CiEnvMode, CiGetTenantBySlugInterface, CiRequest } from "@cloudigniter/core/types";
 
 import * as apiOnServer from "@/kernel/server/api";
 
@@ -18,15 +14,15 @@ import * as apiOnServer from "@/kernel/server/api";
  * Resolves a Tenant by its slug.
  *
  * Query parameters:
- * - tenant: Tenant slug
+ * - slug: Tenant slug
  */
 export async function GET(req: NextRequest) {
-  const slug = req.nextUrl.searchParams.get("tenant")?.trim() ?? "";
+  const slug = req.nextUrl.searchParams.get("slug")?.trim() ?? "";
 
   if (!slug) {
     return NextResponse.json(
       {
-        error: "The 'tenant' query parameter is required.",
+        error: "The 'slug' query parameter is required.",
       },
       { status: 400 },
     );
@@ -44,6 +40,9 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(result.body, {
       status: result.statusCode,
+      headers: {
+        "Cache-Control": "no-store",
+      },
     });
   } catch (error: unknown) {
     const normalizedError = ciNormalizeThrownError(error);

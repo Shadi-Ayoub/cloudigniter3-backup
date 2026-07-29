@@ -15,7 +15,7 @@ import {
   DialogTitle,
 } from "@cloudigniter/ui/client";
 
-import { CiDevBeaconStatusRow } from "../../../components";
+import { CiDevBeaconCardRow } from "@ci-next/modules/dev/dev-beacon/client/components";
 
 interface CiDevBeaconProvidersStatusRowProps<TProviders extends object> {
   providers: TProviders;
@@ -29,23 +29,17 @@ export function CiDevBeaconProvidersStatusRow<TProviders extends object>({
     config: unknown;
   } | null>(null);
 
-  const providerKeys = Object.keys(providers) as Array<
-    Extract<keyof TProviders, string>
-  >;
+  const providerKeys = Object.keys(providers) as Array<Extract<keyof TProviders, string>>;
 
-  const displayedProviders = providerKeys.map((providerKey) =>
-    providerKey.toUpperCase(),
-  );
+  const displayedProviders = providerKeys.map((providerKey) => providerKey.toUpperCase());
 
   return (
     <>
-      <CiDevBeaconStatusRow
+      <CiDevBeaconCardRow
         label="Cloud Providers"
         value={displayedProviders}
         onClick={(displayedProviderKey) => {
-          const providerKey = providerKeys.find(
-            (key) => key.toUpperCase() === displayedProviderKey,
-          );
+          const providerKey = providerKeys.find((key) => key.toUpperCase() === displayedProviderKey);
 
           if (!providerKey) {
             return;
@@ -128,11 +122,7 @@ export function CiDevBeaconProvidersStatusRow<TProviders extends object>({
               <div className="h-full overflow-hidden rounded-md border">
                 <Editor
                   language="json"
-                  value={JSON.stringify(
-                    selectedProvider?.config ?? {},
-                    null,
-                    2,
-                  )}
+                  value={JSON.stringify(selectedProvider?.config ?? {}, null, 2)}
                   options={{
                     readOnly: true,
                     automaticLayout: true,

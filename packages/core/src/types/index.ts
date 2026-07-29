@@ -182,6 +182,7 @@ export type {
   CiGeneralSettings,
   CiPlatformId,
   CiProviderId,
+  CiRequestConfig,
   CiResolvedCoreConfig,
   CiRootLayoutContext,
   CiSystemItemType,
