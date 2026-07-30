@@ -62,6 +62,12 @@ export function CiDevBeaconResolutionCheckupSegment() {
         }
         onClick={checkup ? () => setCheckupReportArea("tenant") : undefined}
         clickTitle="Open Tenant Resolution report"
+        tooltip={
+          <>
+            Shows the outcome of diagnostic checkups that verify the application's tenant resolution system is
+            functioning correctly. Click the displayed status to view the checkups performed and the result of each one.
+          </>
+        }
       />
 
       <CiDevBeaconCardRow
@@ -78,6 +84,13 @@ export function CiDevBeaconResolutionCheckupSegment() {
         }
         onClick={checkup ? () => setCheckupReportArea("orgUnit") : undefined}
         clickTitle="Open Org Unit Resolution report"
+        tooltip={
+          <>
+            Shows the outcome of diagnostic checkups that verify the application's organizational unit resolution system
+            is functioning correctly. Click the displayed status to view the checkups performed and the result of each
+            one.
+          </>
+        }
       />
       <CiDevBeaconResolutionCheckupModal
         area={checkupReportArea}

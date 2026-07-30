@@ -4,4 +4,6 @@ export type CiNextAppConfig = {
   platform: CiPlatformId;
   version?: string;
   routerMode?: "App Router" | "Pages Router";
+  url?: string;
+  github?: string;
 };

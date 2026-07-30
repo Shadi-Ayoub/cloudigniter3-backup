@@ -17,53 +17,37 @@ import {
 
 import { CiDevBeaconCardRow } from "@ci-next/modules/dev/dev-beacon/client/components";
 
-interface CiDevBeaconProvidersStatusRowProps<TProviders extends object> {
-  providers: TProviders;
+export interface CiDevBeaconAmplifyOutputsStatusRowProps {
+  amplifyOutputs: unknown;
+  isOk: boolean;
 }
 
-export function CiDevBeaconProvidersStatusRow<TProviders extends object>({
-  providers,
-}: CiDevBeaconProvidersStatusRowProps<TProviders>) {
-  const [selectedProvider, setSelectedProvider] = useState<{
-    key: string;
-    config: unknown;
-  } | null>(null);
+export function CiDevBeaconAmplifyOutputsStatusRow({ amplifyOutputs, isOk }: CiDevBeaconAmplifyOutputsStatusRowProps) {
+  const [isOpen, setIsOpen] = useState(false);
 
-  const providerKeys = Object.keys(providers) as Array<Extract<keyof TProviders, string>>;
-
-  const displayedProviders = providerKeys.map((providerKey) => providerKey.toUpperCase());
+  const canOpen = isOk && amplifyOutputs != null;
 
   return (
     <>
       <CiDevBeaconCardRow
-        label="Cloud Providers"
-        value={displayedProviders}
-        onClick={(displayedProviderKey) => {
-          const providerKey = providerKeys.find((key) => key.toUpperCase() === displayedProviderKey);
-
-          if (!providerKey) {
-            return;
-          }
-
-          setSelectedProvider({
-            key: displayedProviderKey,
-            config: providers[providerKey],
-          });
-        }}
+        label="Amplify Outputs"
+        value={isOk ? "OK" : "CHECK!"}
+        valueClassName={
+          isOk
+            ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+            : "bg-amber-500/10 text-amber-700 dark:text-amber-400"
+        }
+        onClick={canOpen ? () => setIsOpen(true) : undefined}
+        clickTitle={canOpen ? "View AWS Amplify Outputs" : undefined}
         tooltip={
-          <>Cloud providers configured for this application. Click a provider to inspect its resolved configuration.</>
+          <>
+            Indicates whether the AWS Amplify outputs were loaded successfully. Click <strong>OK</strong> to inspect the
+            resolved JSON.
+          </>
         }
       />
 
-      <Dialog
-        open={selectedProvider !== null}
-        modal
-        onOpenChange={(nextOpen) => {
-          if (!nextOpen) {
-            setSelectedProvider(null);
-          }
-        }}
-      >
+      <Dialog open={isOpen} modal onOpenChange={setIsOpen}>
         <DialogPortal>
           <DialogOverlay
             className="fixed inset-0 bg-black/60 backdrop-blur-[1px]"
@@ -93,19 +77,17 @@ export function CiDevBeaconProvidersStatusRow<TProviders extends object>({
           >
             <header className="flex shrink-0 items-start justify-between gap-4 border-b px-6 py-5">
               <div className="min-w-0">
-                <DialogTitle className="text-base font-semibold">
-                  {selectedProvider?.key} Provider Configuration
-                </DialogTitle>
+                <DialogTitle className="text-base font-semibold">AWS Amplify Outputs</DialogTitle>
 
                 <DialogDescription className="text-muted-foreground mt-1 text-sm">
-                  Resolved cloud provider configuration.
+                  Resolved AWS Amplify resource configuration.
                 </DialogDescription>
               </div>
 
               <DialogClose asChild>
                 <button
                   type="button"
-                  aria-label="Close provider configuration"
+                  aria-label="Close AWS Amplify Outputs"
                   className={cn(
                     "text-muted-foreground hover:text-foreground",
                     "hover:bg-muted/80 active:bg-muted",
@@ -125,7 +107,7 @@ export function CiDevBeaconProvidersStatusRow<TProviders extends object>({
               <div className="h-full overflow-hidden rounded-md border">
                 <Editor
                   language="json"
-                  value={JSON.stringify(selectedProvider?.config ?? {}, null, 2)}
+                  value={JSON.stringify(amplifyOutputs ?? {}, null, 2)}
                   options={{
                     readOnly: true,
                     automaticLayout: true,

@@ -22,6 +22,8 @@ export default {
   app: {
     platform: "Next.js",
     version: "^16.2.1",
+    url: "https://nextjs.org/",
+    github: "https://github.com/vercel/next.js",
     routerMode: "App Router",
   },
   auth: {

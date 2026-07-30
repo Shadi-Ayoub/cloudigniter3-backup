@@ -8,7 +8,11 @@ import {
   CiDevBeaconCardTitle,
   CiDevBeaconCardRow,
 } from "@ci-next/modules/dev/dev-beacon/client/components";
-import { CiDevBeaconProvidersStatusSegment, CiDevBeaconResolutionCheckupSegment } from "./components";
+import {
+  CiDevBeaconAuthenticationStatusSegment,
+  CiDevBeaconProvidersStatusSegment,
+  CiDevBeaconResolutionCheckupSegment,
+} from "./components";
 
 export interface CiGeneralStatusCardProps {
   context: CiNextContext;
@@ -22,10 +26,6 @@ export function CiDevBeaconGeneralDiagnisticsCard({ context }: CiGeneralStatusCa
   const isNextJs = platform === "Next.js";
 
   const currentUser = context.auth?.user;
-
-  const currentUserId = currentUser?.id?.trim() || "—";
-  const isAuthenticated = currentUser?.authenticated === true;
-  const currentUserRoles = currentUser?.roles ?? [];
 
   return (
     <TooltipProvider delayDuration={300} skipDelayDuration={100}>
@@ -47,12 +47,18 @@ export function CiDevBeaconGeneralDiagnisticsCard({ context }: CiGeneralStatusCa
           <CiDevBeaconCardRow
             label="Platform Name"
             value={platform}
+            url={context.config.appCoreConfig.app?.url}
             tooltip="The application framework or platform detected from the resolved CloudIgniter configuration."
           />
 
           {isNextJs ? (
             <>
-              <CiDevBeaconCardRow label="Platform Version" value={platformVersion} />
+              <CiDevBeaconCardRow
+                label="Platform Version"
+                value={platformVersion}
+                url={context.config.appCoreConfig.app?.github}
+                tooltip={<>The installed platform version currently used by the CloudIgniter application template.</>}
+              />
 
               <CiDevBeaconCardRow label="Platform Runtime" value="App Router" />
             </>
@@ -64,21 +70,10 @@ export function CiDevBeaconGeneralDiagnisticsCard({ context }: CiGeneralStatusCa
 
           <CiDevBeaconCardRowSeparator />
 
-          <CiDevBeaconCardRow label="Current User ID" value={currentUserId} />
-
-          <CiDevBeaconCardRow
-            label="Is Authenticated"
-            value={isAuthenticated ? "YES" : "NO"}
-            valueClassName={
-              isAuthenticated
-                ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
-                : "bg-amber-500/10 text-amber-700 dark:text-amber-400"
-            }
-          />
-
-          <CiDevBeaconCardRow label="Current User Roles" value={currentUserRoles.length > 0 ? currentUserRoles : "—"} />
+          <CiDevBeaconAuthenticationStatusSegment currentUser={currentUser} />
 
           <CiDevBeaconCardRowSeparator />
+
           <CiDevBeaconResolutionCheckupSegment />
         </div>
       </section>

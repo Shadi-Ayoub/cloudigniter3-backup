@@ -1,8 +1,11 @@
 "use client";
 
 import type { CiNextContext } from "@cloudigniter/next/types";
-import { CiDevBeaconProvidersStatusRow } from "./CiDevBeaconProvidersStatusRow";
+
 import { CiDevBeaconCardRow } from "@ci-next/modules/dev/dev-beacon/client/components";
+
+import { CiDevBeaconAmplifyOutputsStatusRow } from "./CiDevBeaconAmplifyOutputsStatusRow";
+import { CiDevBeaconProvidersStatusRow } from "./CiDevBeaconProvidersStatusRow";
 
 export interface CiDevBeaconProvidersStatusProps {
   context: CiNextContext;
@@ -10,25 +13,23 @@ export interface CiDevBeaconProvidersStatusProps {
 
 export function CiDevBeaconProvidersStatusSegment({ context }: CiDevBeaconProvidersStatusProps) {
   const providers = context.config.appCoreConfig.providers ?? [];
-  const isUsingAwsProvider = context.config.appCoreConfig.providers?.aws;
+  const awsProvider = context.config.appCoreConfig.providers?.aws;
 
   const awsProviderStatusAmplifyOutputsOk = context.status?.providers?.aws?.amplifyOutputs?.check === true;
 
   const awsProviderStatusSchemasOk = context.status?.providers?.aws?.schema?.check === true;
+
+  const amplifyOutputs = awsProvider?.amplify?.amplifyOutputs;
+
   return (
     <>
       <CiDevBeaconProvidersStatusRow providers={providers} />
 
-      {isUsingAwsProvider ? (
+      {awsProvider ? (
         <>
-          <CiDevBeaconCardRow
-            label="Amplify Outputs"
-            value={awsProviderStatusAmplifyOutputsOk ? "OK" : "CHECK!"}
-            valueClassName={
-              awsProviderStatusAmplifyOutputsOk
-                ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
-                : "bg-amber-500/10 text-amber-700 dark:text-amber-400"
-            }
+          <CiDevBeaconAmplifyOutputsStatusRow
+            amplifyOutputs={amplifyOutputs}
+            isOk={awsProviderStatusAmplifyOutputsOk}
           />
 
           <CiDevBeaconCardRow
@@ -39,6 +40,7 @@ export function CiDevBeaconProvidersStatusSegment({ context }: CiDevBeaconProvid
                 ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
                 : "bg-amber-500/10 text-amber-700 dark:text-amber-400"
             }
+            tooltip={<>Indicates whether the application's data schema was loaded and resolved successfully.</>}
           />
         </>
       ) : null}

@@ -7,6 +7,7 @@ import {
   CiDevBeaconCardRowSeparator,
   CiDevBeaconCardTitle,
   CiDevBeaconCardRow,
+  CiDevBeaconCardRowGrid,
 } from "@ci-next/modules/dev/dev-beacon/client/components";
 
 interface CiTenantRouteCardProps {
@@ -50,49 +51,51 @@ export function CiDevBeaconTenantRouteCard({ context }: CiTenantRouteCardProps) 
         />
 
         <div className="space-y-2">
-          <CiDevBeaconCardRow
-            label="Tenant"
-            value={tenantName}
-            mono={tenantName === EMPTY_VALUE}
-            tooltip="The display name of the tenant resolved for the current request."
-          />
+          <CiDevBeaconCardRowGrid title="Tenant Information" columns={2} boxed={true}>
+            <CiDevBeaconCardRow
+              label="Tenant"
+              value={tenantName}
+              mono={tenantName === EMPTY_VALUE}
+              tooltip="The display name of the tenant resolved for the current request."
+            />
 
-          <CiDevBeaconCardRow
-            label="Scope"
-            value={tenantScope}
-            mono={tenantScope === EMPTY_VALUE}
-            tooltip="Indicates whether the current request operates within a tenant scope or the shared system scope."
-          />
+            <CiDevBeaconCardRow
+              label="Scope"
+              value={tenantScope}
+              mono={tenantScope === EMPTY_VALUE}
+              tooltip="Indicates whether the current request operates within a tenant scope or the shared system scope."
+            />
 
-          <CiDevBeaconCardRow
-            label="Mode"
-            value={tenantMode}
-            mono={tenantMode === EMPTY_VALUE}
-            tooltip="The routing strategy used to resolve the tenant, such as slug-based or subdomain-based routing."
-          />
+            <CiDevBeaconCardRow
+              label="Mode"
+              value={tenantMode}
+              mono={tenantMode === EMPTY_VALUE}
+              tooltip="The routing strategy used to resolve the tenant, such as slug-based or subdomain-based routing."
+            />
 
-          <CiDevBeaconCardRow
-            label="Status"
-            value={tenantStatus}
-            mono={tenantStatus === EMPTY_VALUE}
-            tooltip="The current operational status of the resolved tenant."
-          />
+            <CiDevBeaconCardRow
+              label="Status"
+              value={tenantStatus}
+              mono={tenantStatus === EMPTY_VALUE}
+              tooltip="The current operational status of the resolved tenant."
+            />
 
-          <CiDevBeaconCardRow
-            label="Route Slug"
-            value={tenantSlug}
-            mono={tenantSlug === EMPTY_VALUE}
-            tooltip="The tenant slug extracted from or associated with the current route."
-            valueClassName={hasDistinctTenantSlug ? "bg-amber-500/10 text-amber-700 dark:text-amber-400" : ""}
-          />
+            <CiDevBeaconCardRow
+              label="Route Slug"
+              value={tenantSlug}
+              mono={tenantSlug === EMPTY_VALUE}
+              tooltip="The tenant slug extracted from or associated with the current route."
+              valueClassName={hasDistinctTenantSlug ? "bg-amber-500/10 text-amber-700 dark:text-amber-400" : ""}
+            />
 
-          <CiDevBeaconCardRow
-            label="Tenant ID"
-            value={tenantId}
-            mono={tenantId === EMPTY_VALUE}
-            tooltip="The stable identifier assigned to the resolved tenant. It may differ from the route slug."
-            valueClassName={hasDistinctTenantId ? "bg-amber-500/10 text-amber-700 dark:text-amber-400" : ""}
-          />
+            <CiDevBeaconCardRow
+              label="Tenant ID"
+              value={tenantId}
+              mono={tenantId === EMPTY_VALUE}
+              tooltip="The stable identifier assigned to the resolved tenant. It may differ from the route slug."
+              valueClassName={hasDistinctTenantId ? "bg-amber-500/10 text-amber-700 dark:text-amber-400" : ""}
+            />
+          </CiDevBeaconCardRowGrid>
 
           <CiDevBeaconCardRowSeparator />
 
