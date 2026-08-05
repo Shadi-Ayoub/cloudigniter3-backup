@@ -1,0 +1,36 @@
+---
+title: ciValidateAccessControlDefinition
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 5
+---
+
+# ciValidateAccessControlDefinition()
+
+Returns structured catalog integrity issues without throwing. Use it in editors, migrations, tests, and
+administration tooling that needs to display every problem at once.
+
+## Signature
+
+```ts
+function ciValidateAccessControlDefinition(
+  definition: CiAccessControlDefinition,
+): readonly CiAccessControlValidationIssue[];
+```
+
+Each issue contains `severity`, `code`, `path`, and `message`. Errors include malformed or duplicate IDs,
+unknown references, empty action/scope lists, invalid precedence, unsupported scopes, and inheritance cycles.
+A broad `*` resource plus `*` action produces a reviewable warning rather than an error.
+
+```ts
+const issues = ciValidateAccessControlDefinition(appAccessControl);
+const errors = issues.filter((issue) => issue.severity === "error");
+
+if (errors.length > 0) {
+  reportPolicyErrors(errors);
+}
+```
+
+The function does not alter the definition. Use
+[`ciAssertValidAccessControlDefinition()`](./ci-assert-valid-access-control-definition) for fail-fast startup
+validation.

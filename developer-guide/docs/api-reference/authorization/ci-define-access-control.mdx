@@ -1,0 +1,39 @@
+---
+title: ciDefineAccessControl
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 4
+---
+
+# ciDefineAccessControl()
+
+Validates a complete standalone catalog while preserving its TypeScript literal type. It does not add core
+defaults or merge layers.
+
+## Signature
+
+```ts
+function ciDefineAccessControl<
+  const Definition extends CiAccessControlDefinition
+>(definition: Definition): Definition;
+```
+
+```ts
+import { ciDefineAccessControl } from "@cloudigniter/core/lib";
+import type { CiAccessControlDefinition } from "@cloudigniter/core/types";
+
+export const isolatedCatalog = ciDefineAccessControl({
+  domains: [{ id: "documents", title: "Documents" }],
+  resources: [{
+    id: "documents.files",
+    domainId: "documents",
+    title: "Files",
+    actions: [{ id: "read", title: "Read files" }],
+    scopeKinds: ["tenant"],
+  }],
+  roles: [],
+} as const satisfies CiAccessControlDefinition);
+```
+
+Returns the same object reference when valid. Throws the same formatted error as
+[`ciAssertValidAccessControlDefinition()`](./ci-assert-valid-access-control-definition) when invalid.

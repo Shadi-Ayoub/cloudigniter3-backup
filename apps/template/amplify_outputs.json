@@ -18,32 +18,32 @@
     ],
     "groups": [
       {
-        "USER": {
+        "SYSTEM_SUPER_ADMIN": {
           "precedence": 0
         }
       },
       {
-        "DEVELOPER": {
+        "SYSTEM_ADMIN": {
           "precedence": 1
         }
       },
       {
-        "ADMIN": {
+        "SUPER_ADMIN": {
           "precedence": 2
         }
       },
       {
-        "SUPER_ADMIN": {
+        "ADMIN": {
           "precedence": 3
         }
       },
       {
-        "SYSTEM_ADMIN": {
+        "DEVELOPER": {
           "precedence": 4
         }
       },
       {
-        "SYSTEM_SUPER_ADMIN": {
+        "USER": {
           "precedence": 5
         }
       }
@@ -297,5 +297,10 @@
       }
     }
   },
-  "version": "1.4"
+  "version": "1.4",
+  "custom": {
+    "cloudigniter": {
+      "userProfileTableName": "UserProfile-fqsqohaocbgsbaazjeo2iw4lpm-NONE"
+    }
+  }
 }

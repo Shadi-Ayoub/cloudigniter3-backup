@@ -45,4 +45,13 @@ export function ciPostBuild(backend: CiBackend) {
     applyTableGrants: true,
     tableArns: data.tableArns,
   });
+
+  // This makes the physical table name available in amplify_outputs.json.
+  backend.addOutput({
+    custom: {
+      cloudigniter: {
+        userProfileTableName: data.tables.userProfileTable.name,
+      },
+    },
+  });
 }

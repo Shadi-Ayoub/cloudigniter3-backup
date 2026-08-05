@@ -1,0 +1,30 @@
+---
+title: ciMatchesAuthorizationPattern
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 43
+---
+
+# ciMatchesAuthorizationPattern()
+
+Matches a dot-delimited authorization pattern against a value. The evaluator uses it for privilege resource and
+action patterns.
+
+## Signature
+
+```ts
+function ciMatchesAuthorizationPattern(
+  pattern: string,
+  value: string,
+): boolean;
+```
+
+```ts
+ciMatchesAuthorizationPattern("identity.*", "identity.users"); // true
+ciMatchesAuthorizationPattern("identity.*.read", "identity.users.read"); // true
+ciMatchesAuthorizationPattern("identity.*.read", "identity.users.profile.read"); // false
+```
+
+A non-trailing wildcard consumes exactly one segment. A trailing wildcard accepts that segment and any
+remaining segments. Catalog validation ensures wildcard privileges match registered resources/actions before an
+authorizer is created.

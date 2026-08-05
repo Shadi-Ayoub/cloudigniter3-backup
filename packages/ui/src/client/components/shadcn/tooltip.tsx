@@ -40,7 +40,31 @@ function TooltipContent({
       >
         {children}
 
-        {showArrow && <TooltipPrimitive.Arrow className="ci-tooltip-arrow" />}
+        {showArrow && (
+          <TooltipPrimitive.Arrow asChild width={12} height={6}>
+            <svg
+              data-slot="tooltip-arrow"
+              className="ci-tooltip-arrow"
+              aria-hidden="true"
+            >
+              <polygon
+                data-slot="tooltip-arrow-fill"
+                className="ci-tooltip-arrow-fill"
+                points="0,0 30,0 15,10"
+              />
+              <polyline
+                data-slot="tooltip-arrow-border"
+                className="ci-tooltip-arrow-border"
+                points="0,0 15,10 30,0"
+                fill="none"
+                strokeWidth="1"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                vectorEffect="non-scaling-stroke"
+              />
+            </svg>
+          </TooltipPrimitive.Arrow>
+        )}
       </TooltipPrimitive.Content>
     </TooltipPrimitive.Portal>
   );

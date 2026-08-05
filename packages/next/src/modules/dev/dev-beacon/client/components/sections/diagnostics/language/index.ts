@@ -1,1 +1,0 @@
-export { CiDevBeaconStatusLanguage } from "./CiDevBeaconStatusLanguage";

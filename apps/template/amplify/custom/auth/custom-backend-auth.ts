@@ -13,7 +13,8 @@ const customBackendAuth: AmplifyAuthProps = {
       verificationEmailStyle: 'CODE',
     },
   }, // mandatory property.
-  groups: [], // Order impact precedence!
+  // Custom groups follow the canonical core roles. Earlier entries have higher precedence.
+  groups: [],
   userAttributes: {
     givenName: {
       mutable: true,

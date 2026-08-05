@@ -1,0 +1,28 @@
+---
+title: ciMatchesPermission
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 42
+---
+
+# ciMatchesPermission()
+
+Checks whether a dot-delimited permission pattern covers a complete permission string.
+
+## Signature
+
+```ts
+function ciMatchesPermission(
+  permissionPattern: string,
+  permission: string,
+): boolean;
+```
+
+```ts
+ciMatchesPermission("identity.*.*", "identity.users.delete"); // true
+ciMatchesPermission("identity.users.read", "identity.users.update"); // false
+```
+
+`*` matches one segment. A trailing `*` also consumes remaining segments, so `forum.posts.*` matches
+`forum.posts.comments.delete`. The function performs pattern matching only and does not register or grant a
+permission.

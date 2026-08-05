@@ -1,0 +1,38 @@
+---
+title: ciResolveIdentityGroupRoles
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 34
+---
+
+# ciResolveIdentityGroupRoles()
+
+Maps identity-provider group names to role IDs that exist in the resolved access-control catalog.
+
+## Signature
+
+```ts
+function ciResolveIdentityGroupRoles(
+  groupIds: readonly string[] | null | undefined,
+  definition: Pick<CiAccessControlDefinition, "roles">,
+  options?: CiIdentityGroupRoleResolutionOptions,
+): readonly string[];
+```
+
+## Options
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `roleMap` | `{}` | Exact group-to-role aliases. Map to `null` to exclude a group deliberately. |
+| `unknownGroupStrategy` | `"ignore"` | Ignore unknown mapped roles or `"throw"`. |
+
+```ts
+const roles = ciResolveIdentityGroupRoles(
+  ["ci-admins", "unrelated", "ci-admins"],
+  appAccessControl,
+  { roleMap: { "ci-admins": "ADMIN" } },
+); // ["ADMIN"]
+```
+
+Matching is exact and case-sensitive; results are deduplicated in first-seen order. Unmapped names are tried as
+role IDs. The core catalog, not provider metadata, is authoritative for precedence.

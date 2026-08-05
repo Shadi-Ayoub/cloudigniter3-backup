@@ -1,7 +1,7 @@
 import React from "react";
-import { CiDashboardHeaderButton } from "@cloudigniter/ui/client";
 
 import { CiPageWrapper } from "@ci-next/server";
+import { CiNextDashboardHeaderButton } from "@ci-next/ui/client";
 import { CiMainHeaderUserBox } from "@ci-next/ui/server";
 import { ciStartTraceServer } from "@cloudigniter/core/server";
 import type { CiNextContext } from "@ci-next/types";
@@ -33,7 +33,7 @@ const CiLayout = ({ context, protect, children }: CiLayoutProps) => {
   return (
     <CiPageWrapper context={context} protect={protect}>
       <CiHeader context={context}>
-        <CiDashboardHeaderButton traceConfig={context.config.appCoreConfig.dev.traceLog} />
+        <CiNextDashboardHeaderButton traceConfig={context.config.appCoreConfig.dev.traceLog} />
         <div></div>
         <CiMainHeaderUserBox context={context} />
       </CiHeader>

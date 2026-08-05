@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { CiDevTenantResolutionCheckup } from "@cloudigniter/core/types";
-import { CiDevBeaconCardRow } from "@ci-next/modules/dev/dev-beacon/client/components";
+import { CiDevBeaconCardRowGrid, CiDevBeaconCardRow } from "@ci-next/modules/dev/dev-beacon/client/components";
 import { CiDevBeaconResolutionCheckupModal } from "../components";
 import { ciGetTenantResolutionCheckup } from "../helpers";
 import type { CiDevResolutionCheckArea } from "../types";
@@ -47,7 +47,7 @@ export function CiDevBeaconResolutionCheckupSegment() {
   }, []);
 
   return (
-    <>
+    <CiDevBeaconCardRowGrid title="Resolution Checkup Results" columns={1} boxed={true} cellPadding="compact">
       <CiDevBeaconCardRow
         label="Tenant Resolution"
         value={
@@ -97,6 +97,6 @@ export function CiDevBeaconResolutionCheckupSegment() {
         checkup={checkup}
         onClose={() => setCheckupReportArea(null)}
       />
-    </>
+    </CiDevBeaconCardRowGrid>
   );
 }

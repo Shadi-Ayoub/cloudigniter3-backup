@@ -1,6 +1,9 @@
 "use client";
 
 import type { ReactNode } from "react";
+
+import { CardDescription, CardTitle, cn } from "@cloudigniter/ui/client";
+
 import { CiDevBeaconTooltipBalloon } from "./CiDevBeaconTooltipBalloon";
 
 export interface CiDevBeaconCardTitleProps {
@@ -21,14 +24,21 @@ export function CiDevBeaconCardTitle({
   className,
 }: CiDevBeaconCardTitleProps) {
   return (
-    <div className={className}>
-      <div className="flex items-center gap-1.5">
-        <h5 id={id} className="text-sm font-semibold">
-          {tooltip ? <CiDevBeaconTooltipBalloon label={title} tooltip={tooltip} labelTextSize="text-lg" /> : title}
-        </h5>
-      </div>
+    <div className={cn("space-y-1", className)}>
+      <CardTitle id={id} className="text-sm font-semibold">
+        {tooltip ? (
+          <CiDevBeaconTooltipBalloon
+            label={title}
+            tooltip={tooltip}
+            tooltipAriaLabel={tooltipAriaLabel}
+            labelTextSize="text-sm"
+          />
+        ) : (
+          title
+        )}
+      </CardTitle>
 
-      {description ? <p className="text-muted-foreground mt-1 text-xs leading-5">{description}</p> : null}
+      {description ? <CardDescription className="text-xs leading-5">{description}</CardDescription> : null}
     </div>
   );
 }

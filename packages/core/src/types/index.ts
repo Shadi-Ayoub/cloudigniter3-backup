@@ -21,14 +21,55 @@ export type {
 // auth
 // ─────────────────────────────────────────────────────────────
 export type {
+  CiAccessControlDefinition,
+  CiAccessControlEntryOrigin,
+  CiAccessControlEntryReference,
+  CiAccessControlLayer,
+  CiAccessControlValidationIssue,
+  CiAccessRequirement,
+  CiAccessScope,
+  CiAccessScopeKind,
+  CiActionDefinition,
+  CiActionDefinitionLayer,
   CiAuthConfig,
   CiAuthenticatorPageMode,
   CiAuthMode,
   CiAuthProviderId,
   CiAuthUiConfig,
+  CiAuthorizationBatchRequest,
+  CiAuthorizationCombiningAlgorithm,
+  CiAuthorizationDecision,
+  CiAuthorizationDecisionReason,
+  CiAuthorizationMatch,
+  CiAuthorizationRequest,
+  CiAuthorizationSubject,
+  CiAuthorizer,
+  CiAuthorizerOptions,
+  CiCoreAccessControlOverride,
+  CiCreateCoreAccessControlOverrideInput,
+  CiCreateCoreAccessControlOverrideOptions,
+  CiGrantWindow,
+  CiGlobalAccessScope,
+  CiIdentityGroupRoleMappingOptions,
+  CiIdentityGroupRoleResolutionOptions,
   CiLoginOptions,
   CiLogoutOptions,
+  CiOrgUnitAccessScope,
+  CiPrivilege,
+  CiPrivilegeLayer,
+  CiPrivilegeEffect,
   CiPublicAuthMode,
+  CiResourceDefinition,
+  CiResourceDefinitionLayer,
+  CiResourceDomainDefinition,
+  CiResourceDomainDefinitionLayer,
+  CiRoleAssignment,
+  CiRoleDefinition,
+  CiRoleDefinitionLayer,
+  CiScopedPrivilege,
+  CiScopePropagation,
+  CiSystemAccessScope,
+  CiTenantAccessScope,
 } from "./auth-types";
 
 // ─────────────────────────────────────────────────────────────
@@ -435,4 +476,4 @@ export type { CiClientThemeConfig, CiThemeAttributeStrategy, CiThemeConfig, CiTh
 // ─────────────────────────────────────────────────────────────
 // user
 // ─────────────────────────────────────────────────────────────
-export type { CiUser } from "./user-types";
+export type { CiCoreRole, CiUser } from "./user-types";

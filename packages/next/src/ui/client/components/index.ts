@@ -9,8 +9,11 @@
 // ─────────────────────────────────────────────────────────────
 // dashboard
 // ─────────────────────────────────────────────────────────────
-// export {
-//   CiDashboardHeaderButton,
+export {
+  CiNextDashboardCard,
+  CiNextDashboardHeaderButton,
+  type CiNextDashboardCardProps,
+  type CiNextDashboardHeaderButtonProps,
 //   ciResolveDashboardCardViewModels,
 //   ciResolveDashboardIcon,
 //   // type CiDashboardCardConfig,
@@ -19,7 +22,7 @@
 //   // type CiDashboardHeaderButtonProps,
 //   // type CiDashboardIcon,
 //   // type CiDashboardPageProps,
-// } from "./dashboard";
+} from "./dashboard";
 
 // ─────────────────────────────────────────────────────────────
 // data table
@@ -49,8 +52,10 @@
 // main menu
 // ─────────────────────────────────────────────────────────────
 export {
+  CiNextMainMenu,
   CiNextMenuItem,
   CiNextNavigationMenu,
+  type CiNextMainMenuProps,
   type CiNextMenuItemProps,
   type CiNextNavigationMenuProps,
 } from "./main-menu";

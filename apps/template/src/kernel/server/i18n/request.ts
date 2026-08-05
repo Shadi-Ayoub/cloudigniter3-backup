@@ -32,7 +32,8 @@ export default getRequestConfig(async () => {
 
   // throw new Error(JSON.stringify([...headerStore.keys()].sort(), null, 2));
 
-  const requestContextHeaderName = config.app?.requestContextHeaderName ?? CI_DEFAULT_REQUEST_CONTEXT_HEADER_NAME;
+  const requestContextHeaderName =
+    config.request.context.requestContextHeaderName ?? CI_DEFAULT_REQUEST_CONTEXT_HEADER_NAME;
 
   const serializedRequestContext = headerStore.get(requestContextHeaderName);
 

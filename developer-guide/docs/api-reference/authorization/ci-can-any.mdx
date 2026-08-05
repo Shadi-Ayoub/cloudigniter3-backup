@@ -1,0 +1,37 @@
+---
+title: ciCanAny
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 13
+---
+
+# ciCanAny()
+
+Returns `true` when at least one requirement in a non-empty batch is allowed for the same subject and scope.
+
+## Signature
+
+```ts
+function ciCanAny(
+  request: CiAuthorizationBatchRequest,
+  definition: CiAccessControlDefinition,
+  options?: CiAuthorizerOptions,
+): boolean;
+```
+
+```ts
+const canOpenPeopleArea = ciCanAny(
+  {
+    subject,
+    scope: ciTenantAccessScope("tenant-123"),
+    requirements: [
+      { resource: "identity.users", action: "read" },
+      { resource: "platform.authorization", action: "read" },
+    ],
+  },
+  appAccessControl,
+);
+```
+
+An empty `requirements` array returns `false`. Every requirement is evaluated independently; a deny for one
+requirement does not override an allow for a different requirement in an any-of batch.

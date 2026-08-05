@@ -1,3 +1,4 @@
+export { CiDashboardCard } from "./CiDashboardCard";
 export { CiDashboardHeaderButton } from "./CiDashboardHeaderButton";
 export {
   ciResolveDashboardCardViewModels,

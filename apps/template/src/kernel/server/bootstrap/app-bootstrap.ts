@@ -1,7 +1,10 @@
 import { cache } from "react";
 
 import type { CiAmplifyOutputs } from "@cloudigniter/aws/types";
-import { ciNormalizeThrownError } from "@cloudigniter/core/lib";
+import {
+  ciNormalizeThrownError,
+  ciResolvePrimaryRole,
+} from "@cloudigniter/core/lib";
 import {
   ciAwsGetCurrentUser,
   ciGetCookies,
@@ -48,12 +51,27 @@ export const appBootstrap = cache(async (): Promise<CiNextContext> => {
       ciGetCookies(),
     ]);
 
+    const roles = [...(currentUser.groups ?? [])];
     const auth: CiNextContext["auth"] = {
       mode: currentUser.isAuthenticated ? "userPool" : config.appCoreConfig.data.publicAuthMode,
       user: {
         id: currentUser.userId,
         authenticated: currentUser.isAuthenticated,
-        roles: [...(currentUser.groups ?? [])],
+        roles,
+        primaryRole: ciResolvePrimaryRole(roles),
+        ...(currentUser.isAuthenticated
+          ? {
+              email: currentUser.email,
+              emailVerified: currentUser.emailVerified,
+              displayName: currentUser.displayName,
+              username: currentUser.username,
+              signInId: currentUser.signInId,
+              authFlow: currentUser.authFlow,
+              sessionExpiresAt: currentUser.sessionExpiresAt,
+              accessToken: currentUser.accessToken,
+              idToken: currentUser.idToken,
+            }
+          : {}),
       },
     };
 

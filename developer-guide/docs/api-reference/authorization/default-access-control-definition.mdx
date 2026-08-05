@@ -1,0 +1,49 @@
+---
+title: CI_DEFAULT_ACCESS_CONTROL_DEFINITION
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 1
+---
+
+# CI_DEFAULT_ACCESS_CONTROL_DEFINITION
+
+The runtime-frozen core catalog used as the first layer by `ciCreateAppAccessControl()`. Import it from
+`@cloudigniter/core/lib` when you need to inspect, validate, or display the built-in policy.
+
+```ts title="Core access-control definition" showLineNumbers
+const CI_DEFAULT_ACCESS_CONTROL_DEFINITION: CiAccessControlDefinition;
+```
+
+It registers the `platform`, `identity`, and `developer` domains; dashboard, authorization, protected core
+authorization, settings, tenants, users, and developer-tool resources; and these roles:
+
+| Role | Precedence | Inherits |
+| --- | ---: | --- |
+| `SYSTEM_SUPER_ADMIN` | 0 | `SYSTEM_ADMIN` |
+| `SYSTEM_ADMIN` | 10 | `SUPER_ADMIN` |
+| `SUPER_ADMIN` | 20 | `ADMIN` |
+| `ADMIN` | 30 | `USER` |
+| `DEVELOPER` | 40 | `USER` |
+| `USER` | 50 | — |
+
+Lower precedence numbers are stronger. A system assignment remains system-only. Assign a compatible role at
+global scope with `descendants` when it must reach every tenant and Org Unit.
+
+`platform.authorization.core.override` is a sensitive, system-only capability. The core override helper also
+requires the matching access to come from a direct `SYSTEM_SUPER_ADMIN` assignment, so another role or direct
+privilege cannot opt itself into core modification.
+
+```ts title="Inspect the core catalog" showLineNumbers
+import {
+  CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
+  ciCreateAuthorizer,
+} from "@cloudigniter/core/lib";
+
+const authorizer = ciCreateAuthorizer(
+  CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
+);
+```
+
+The object and its nested collections are frozen. Use
+[`ciCreateAppAccessControl()`](./ci-create-app-access-control) for application-owned additions. Core changes
+must use an audited override created by a directly assigned `SYSTEM_SUPER_ADMIN`.

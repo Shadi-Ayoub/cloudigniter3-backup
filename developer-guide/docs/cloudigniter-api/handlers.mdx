@@ -87,8 +87,8 @@ where developers may pass a `CognitoClientConfig` option. These extra options ar
 
 ## 3. Authorization
 
-Every CloudIgniter handler enforces authorization using `scope` and `action`. CloudIgniter Shield validates these values before proceeding. If unauthorized,
-return a **Response** (not throw):
+Every CloudIgniter handler enforces authorization using `scope` and `action`. The CloudIgniter authorization
+engine validates these values before proceeding. If unauthorized, return a **Response** (not throw):
 
 ```ts
 return {

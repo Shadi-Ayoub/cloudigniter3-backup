@@ -1,0 +1,39 @@
+---
+title: ciCan
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 12
+---
+
+# ciCan()
+
+Runs one authorization check and returns only its boolean result.
+
+## Signature
+
+```ts
+function ciCan(
+  request: CiAuthorizationRequest,
+  definition: CiAccessControlDefinition,
+  options?: CiAuthorizerOptions,
+): boolean;
+```
+
+```ts
+const allowed = ciCan(
+  {
+    subject,
+    resource: "reporting.reports",
+    action: "export",
+    scope: ciTenantAccessScope("tenant-123"),
+  },
+  appAccessControl,
+);
+```
+
+`false` covers every deny reason, including unauthenticated, unknown resource/action, unsupported scope,
+missing assignment, no matching privilege, and explicit deny. Use [`ciAuthorize()`](./ci-authorize) when the
+reason or matching evidence is needed.
+
+This is a one-shot helper. Prefer a compiled [`ciCreateAuthorizer()`](./ci-create-authorizer) instance in hot
+request paths.

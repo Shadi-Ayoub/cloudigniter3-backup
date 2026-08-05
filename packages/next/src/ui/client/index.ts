@@ -6,7 +6,10 @@ export {
   // CiAboutBorderBeam,
 
   // dashboard
-  // CiDashboardHeaderButton,
+  CiNextDashboardCard,
+  CiNextDashboardHeaderButton,
+  type CiNextDashboardCardProps,
+  type CiNextDashboardHeaderButtonProps,
   // ciResolveDashboardCardViewModels,
   // ciResolveDashboardIcon,
 
@@ -27,8 +30,10 @@ export {
   // CiLocaleSwitcher,
 
   // main menu
+  CiNextMainMenu,
   CiNextMenuItem,
   CiNextNavigationMenu,
+  type CiNextMainMenuProps,
 
   // mark
   CiNextHeaderLogo,

@@ -1,0 +1,57 @@
+---
+title: ciCreateAuthorizer
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 10
+---
+
+# ciCreateAuthorizer()
+
+Compiles a validated catalog into a reusable, synchronous, provider-neutral authorizer. Role inheritance is
+resolved once when the instance is created.
+
+## Signature
+
+```ts
+function ciCreateAuthorizer(
+  definition: CiAccessControlDefinition,
+  options?: CiAuthorizerOptions,
+): CiAuthorizer;
+```
+
+## Options
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `combiningAlgorithm` | `"deny-overrides"` | Use any matching deny, or select `"highest-precedence"`. |
+| `clock` | `() => new Date()` | Supplies time for `validFrom` and `expiresAt`; inject in tests. |
+| `validateDefinition` | `true` | Validate before compilation. |
+
+## Return value
+
+```ts
+type CiAuthorizer = {
+  definition: CiAccessControlDefinition;
+  authorize(request: CiAuthorizationRequest): CiAuthorizationDecision;
+  can(request: CiAuthorizationRequest): boolean;
+  canAny(request: CiAuthorizationBatchRequest): boolean;
+  canAll(request: CiAuthorizationBatchRequest): boolean;
+};
+```
+
+```ts
+const authorizer = ciCreateAuthorizer(appAccessControl);
+
+const decision = authorizer.authorize({
+  subject,
+  resource: "identity.users",
+  action: "read",
+  scope: ciTenantAccessScope("tenant-123"),
+});
+```
+
+The evaluator denies unknown resources/actions, unsupported scopes, unauthenticated subjects, absent scoped
+assignments, and requests with no matching allow. Reuse the instance while its policy version remains current.
+
+Use [`ciCreateAppAuthorizer()`](./ci-create-app-authorizer) when the core default catalog should be available as
+the omitted-definition default.

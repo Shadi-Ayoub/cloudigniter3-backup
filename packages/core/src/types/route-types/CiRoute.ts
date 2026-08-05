@@ -1,4 +1,5 @@
 import type { CiRouteDefinition } from "./CiRouteDefinition";
+import type { CiRoutesMap } from "./CiRoutesMap";
 import type { CiRouteMatchKind } from "./CiRouteMatchKind";
 import type { CiRoutePattern } from "./CiRoutePattern";
 import type { CiRouteSearchParams } from "./CiRouteSearchParams";
@@ -48,4 +49,6 @@ export interface CiRoute extends CiRouteDefinition {
   requestTarget: string;
 
   searchParams: CiRouteSearchParams;
+
+  routesDefinitions: CiRoutesMap;
 }

@@ -11,9 +11,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  CiTooltipBalloon,
   ciStartTraceClient,
   Tooltip,
-  TooltipContent,
   TooltipTrigger,
   useCiFeedbackStore,
 } from "@cloudigniter/ui/client";
@@ -93,9 +93,7 @@ export function CiThemeSwitcher({ dir, config }: CiThemeSwitcherProps) {
           </DropdownMenuTrigger>
         </TooltipTrigger>
         {!menuOpen ? (
-          <TooltipContent>
-            <p>Toggle Theme</p>
-          </TooltipContent>
+          <CiTooltipBalloon content="Toggle Theme" />
         ) : null}
       </Tooltip>
 

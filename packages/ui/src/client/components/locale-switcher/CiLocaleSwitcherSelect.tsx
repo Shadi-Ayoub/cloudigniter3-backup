@@ -11,8 +11,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  CiTooltipBalloon,
   Tooltip,
-  TooltipContent,
   TooltipProvider,
   TooltipTrigger,
   useCiPageLoaderStore,
@@ -61,9 +61,7 @@ const LocaleSwitcherSelect = ({
             </DropdownMenuTrigger>
           </TooltipTrigger>
           {!menuOpen ? (
-            <TooltipContent>
-              <p>Select Language</p>
-            </TooltipContent>
+            <CiTooltipBalloon content="Select Language" />
           ) : null}
         </Tooltip>
       </TooltipProvider>

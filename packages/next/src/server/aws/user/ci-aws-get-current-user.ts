@@ -13,6 +13,15 @@ export type CurrentUserResult = {
   userId: string | null;
   groups: readonly string[];
   isAuthenticated: boolean;
+  email: string | null;
+  emailVerified: boolean | null;
+  displayName: string | null;
+  username: string | null;
+  signInId: string | null;
+  authFlow: string | null;
+  sessionExpiresAt: string | null;
+  accessToken: string | null;
+  idToken: string | null;
 };
 
 function ciGetStringArrayClaim(value: unknown): readonly string[] {
@@ -21,6 +30,62 @@ function ciGetStringArrayClaim(value: unknown): readonly string[] {
   }
 
   return value.filter((item): item is string => typeof item === "string");
+}
+
+function ciGetStringClaim(
+  payload: Record<string, unknown>,
+  claim: string,
+): string | null {
+  const value = payload[claim];
+
+  return typeof value === "string" && value.trim() ? value.trim() : null;
+}
+
+function ciGetBooleanClaim(
+  payload: Record<string, unknown>,
+  claim: string,
+): boolean | null {
+  const value = payload[claim];
+
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  if (value === "true") {
+    return true;
+  }
+
+  if (value === "false") {
+    return false;
+  }
+
+  return null;
+}
+
+function ciGetDisplayName(payload: Record<string, unknown>): string | null {
+  const name = ciGetStringClaim(payload, "name");
+
+  if (name) {
+    return name;
+  }
+
+  const displayName = [
+    ciGetStringClaim(payload, "given_name"),
+    ciGetStringClaim(payload, "family_name"),
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .trim();
+
+  return displayName || null;
+}
+
+function ciFormatUnixTimestamp(value: unknown): string | null {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return null;
+  }
+
+  return new Date(value * 1_000).toISOString();
 }
 
 export async function ciAwsGetCurrentUser(
@@ -45,6 +110,15 @@ export async function ciAwsGetCurrentUser(
           userId: null,
           groups: [],
           isAuthenticated: false,
+          email: null,
+          emailVerified: null,
+          displayName: null,
+          username: null,
+          signInId: null,
+          authFlow: null,
+          sessionExpiresAt: null,
+          accessToken: null,
+          idToken: null,
         };
       }
 
@@ -62,6 +136,15 @@ export async function ciAwsGetCurrentUser(
         userId: typeof sub === "string" ? sub : null,
         groups,
         isAuthenticated: true,
+        email: ciGetStringClaim(idToken.payload, "email"),
+        emailVerified: ciGetBooleanClaim(idToken.payload, "email_verified"),
+        displayName: ciGetDisplayName(idToken.payload),
+        username: user.username,
+        signInId: user.signInDetails?.loginId?.trim() || null,
+        authFlow: user.signInDetails?.authFlowType ?? null,
+        sessionExpiresAt: ciFormatUnixTimestamp(accessToken.payload.exp),
+        accessToken: accessToken.toString(),
+        idToken: idToken.toString(),
       };
     },
   });

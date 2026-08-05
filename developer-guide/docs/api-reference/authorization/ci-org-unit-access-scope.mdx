@@ -1,0 +1,32 @@
+---
+title: ciOrgUnitAccessScope
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 23
+---
+
+# ciOrgUnitAccessScope()
+
+Creates a scope for one Org Unit inside a tenant, optionally carrying its trusted ancestor chain.
+
+## Signature
+
+```ts
+function ciOrgUnitAccessScope(
+  tenantId: string,
+  orgUnitId: string,
+  ancestorOrgUnitIds?: readonly string[],
+): CiOrgUnitAccessScope;
+```
+
+```ts
+const payrollScope = ciOrgUnitAccessScope(
+  "tenant-123",
+  "payroll",
+  ["company", "finance"],
+);
+```
+
+Ancestors are ordered from root to direct parent. They allow a `descendants` grant on `finance` to contain the
+`payroll` request. `tenantId` must also match. The engine trusts the supplied ancestry, so construct it from
+server-side hierarchy data rather than request input.

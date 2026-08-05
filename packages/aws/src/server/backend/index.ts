@@ -1,12 +1,23 @@
 // ─────────────────────────────────────────────────────────────
+// auth
+// ─────────────────────────────────────────────────────────────
+export { ciAuthResourceModule } from "./resources/auth";
+
+// ─────────────────────────────────────────────────────────────
 // data resources
 // ─────────────────────────────────────────────────────────────
 export { CI_DATA_RESOURCE_MODULES } from "./resources";
 
 // ─────────────────────────────────────────────────────────────
-// auth
+// env
 // ─────────────────────────────────────────────────────────────
-export { ciAuthResourceModule } from "./resources/auth";
+export {
+  CI_ENV,
+  ciPrepareEnvironmentVars,
+  ciMergeEnvMaps,
+  type CiEnvKey,
+  type CiEnvAllowList,
+} from "./env";
 
 // ─────────────────────────────────────────────────────────────
 // handlers
@@ -22,6 +33,27 @@ export {
   ciSetCognitoUserPasswordHandler,
   ciUpdateCognitoUserHandler,
 } from "./handlers";
+
+// ─────────────────────────────────────────────────────────────
+// core build helpers
+// ─────────────────────────────────────────────────────────────
+export {
+  ciApplyCorePostBuildPlan,
+  ciCreateCorePostBuildPlan,
+} from "./post-build";
+
+// ─────────────────────────────────────────────────────────────
+// root user
+// ─────────────────────────────────────────────────────────────
+export {
+  ciBootstrapRootUser,
+  ciBootstrapRootUserFromAmplifyApp,
+  type CiBootstrapRootUserInput,
+  type CiBootstrapRootUserResult,
+  type CiBootstrapRootUserFromAmplifyAppInput,
+  type CiRootUserConfig,
+  type CiRootUserPasswordPolicy,
+} from "./root-user";
 
 // export { ciCreateOrgUnitHandler } from "./handlers/ou-handlers/create-ou-handler";
 // export { ciCreateTenantHandler } from "./handlers/tenant-handlers/create-tenant-handler";
@@ -40,25 +72,6 @@ export {
 // export { ciSeedTenantsHandler } from "./handlers/tenant-handlers/seed-tenants-handler";
 // export { ciUpdateOrgUnitHandler } from "./handlers/ou-handlers/update-ou-handler";
 // export { ciUpdateTenantHandler } from "./handlers/tenant-handlers/update-tenant-handler";
-
-// ─────────────────────────────────────────────────────────────
-// core build helpers
-// ─────────────────────────────────────────────────────────────
-export {
-  ciApplyCorePostBuildPlan,
-  ciCreateCorePostBuildPlan,
-} from "./post-build";
-
-// ─────────────────────────────────────────────────────────────
-// env
-// ─────────────────────────────────────────────────────────────
-export {
-  CI_ENV,
-  ciPrepareEnvironmentVars,
-  ciMergeEnvMaps,
-  type CiEnvKey,
-  type CiEnvAllowList,
-} from "./env";
 
 // ─────────────────────────────────────────────────────────────
 // core types

@@ -61,7 +61,7 @@ export function CiDevBeaconResolutionCheckupModal({
           className={cn(
             "bg-background text-foreground fixed top-1/2 left-1/2",
             "flex h-[min(48rem,calc(100dvh-2rem))]",
-            "w-[min(110rem,calc(100vw-2rem))] max-w-none",
+            "w-[min(110rem,calc(100vw-2rem))] max-w-none sm:max-w-none",
             "-translate-x-1/2 -translate-y-1/2 flex-col",
             "overflow-hidden rounded-xl border shadow-2xl outline-none",
           )}

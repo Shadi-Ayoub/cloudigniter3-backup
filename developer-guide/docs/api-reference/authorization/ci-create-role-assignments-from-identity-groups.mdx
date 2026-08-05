@@ -1,0 +1,47 @@
+---
+title: ciCreateRoleAssignmentsFromIdentityGroups
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 35
+---
+
+# ciCreateRoleAssignmentsFromIdentityGroups()
+
+Resolves provider group names against the catalog and converts the resulting roles into scoped assignments.
+
+## Signature
+
+```ts
+function ciCreateRoleAssignmentsFromIdentityGroups(
+  groupIds: readonly string[] | null | undefined,
+  definition: Pick<CiAccessControlDefinition, "roles">,
+  scope: CiAccessScope,
+  propagation: CiScopePropagation,
+  options?: CiIdentityGroupRoleMappingOptions,
+): readonly CiRoleAssignment[];
+```
+
+```ts
+const assignments = ciCreateRoleAssignmentsFromIdentityGroups(
+  cognitoClaims["cognito:groups"],
+  appAccessControl,
+  ciSystemAccessScope(),
+  "exact",
+  {
+    roleMap: {
+      "ci-users": "USER",
+      "ci-system-admins": "SYSTEM_ADMIN",
+    },
+  },
+);
+```
+
+The helper is provider-neutral; Cognito is only one possible source of strings. Cognito includes
+`cognito:groups` in ID and access tokens, as described in AWS's
+[user pool group documentation](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-user-groups.html),
+but its group precedence is not present in this helper's input. Role precedence comes from `definition.roles`.
+Use application persistence for tenant and Org Unit assignments unless the provider membership has a single,
+trusted scope.
+
+See also [`ciResolveIdentityGroupRoles()`](./ci-resolve-identity-group-roles) and the
+[identity-provider guide](/docs/core-system/authorization/subjects-and-providers).

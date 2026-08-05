@@ -1,0 +1,1 @@
+export { CiDevBeaconLanguageDetailsModal } from "./CiDevBeaconLanguageDetailsModal";

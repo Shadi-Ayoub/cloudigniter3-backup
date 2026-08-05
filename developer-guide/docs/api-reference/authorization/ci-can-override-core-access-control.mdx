@@ -1,0 +1,33 @@
+---
+title: ciCanOverrideCoreAccessControl
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 15
+---
+
+# ciCanOverrideCoreAccessControl()
+
+Checks whether a subject may enter the core-override workflow.
+
+## Signature
+
+```ts title="ciCanOverrideCoreAccessControl signature" showLineNumbers
+function ciCanOverrideCoreAccessControl(
+  subject: CiAuthorizationSubject,
+  definition?: CiAccessControlDefinition,
+): boolean;
+```
+
+The subject must have a direct, active `SYSTEM_SUPER_ADMIN` assignment covering system scope, and the effective
+catalog must allow `platform.authorization.core.override`. A direct privilege or a custom role that inherits
+`SYSTEM_SUPER_ADMIN` is intentionally insufficient.
+
+```ts title="Resolve the core editor capability" showLineNumbers
+const canOverrideCore = ciCanOverrideCoreAccessControl(
+  subject,
+  effectiveAccessControl,
+);
+```
+
+Use this boolean to explain UI lock state. The server must still create the mutation through
+`ciCreateCoreAccessControlOverride()`.

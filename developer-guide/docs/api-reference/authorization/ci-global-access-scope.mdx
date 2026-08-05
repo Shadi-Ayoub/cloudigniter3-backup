@@ -1,0 +1,34 @@
+---
+title: ciGlobalAccessScope
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 21
+---
+
+# ciGlobalAccessScope()
+
+Creates the cross-tenant access scope.
+
+## Signature
+
+```ts title="Signature" showLineNumbers
+function ciGlobalAccessScope(): CiGlobalAccessScope;
+```
+
+## Return value
+
+```ts title="Returned scope" showLineNumbers
+{ kind: "global" }
+```
+
+```ts title="Create an all-tenant assignment" showLineNumbers
+const assignment = ciCreateRoleAssignment(
+  "SYSTEM_SUPER_ADMIN",
+  ciGlobalAccessScope(),
+  "descendants",
+);
+```
+
+An `exact` global assignment applies to cross-tenant requests represented by `{ kind: "global" }`.
+`descendants` additionally permits requests for every tenant and Org Unit when the resource and privilege support
+those scope kinds. A global assignment never permits system requests.

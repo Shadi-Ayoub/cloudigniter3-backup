@@ -1,6 +1,6 @@
 import { ciStartTraceServer } from "@cloudigniter/core/server";
 import type { CiMainMenuItem } from "@cloudigniter/core/types";
-import { CiMainMenu } from "@cloudigniter/ui/server";
+import { CiNextMainMenu } from "@ci-next/ui/client";
 import type { CiNextContext } from "@ci-next/types";
 
 interface MainHeaderUserBoxInterface {
@@ -26,7 +26,7 @@ export function CiMainHeaderNavigationBox({ context }: MainHeaderUserBoxInterfac
   return (
     <nav aria-label="User Navigation" className="ci-main-header-user-box">
       <div className="ci-main-header-navigation-box">
-        <CiMainMenu config={mainMenuConfig} />
+        <CiNextMainMenu config={mainMenuConfig} />
       </div>
       <div className="ci-main-header-navigation-box-inner-mobile">{/* <MobileMenuToggle /> */}</div>
     </nav>

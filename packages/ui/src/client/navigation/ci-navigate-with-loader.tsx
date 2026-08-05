@@ -28,7 +28,7 @@ export interface CiNavigateWithLoaderProps extends PropsWithChildren {
    *
    * This can be used to display a page loader.
    */
-  onNavigateStart?: () => void;
+  onNavigateStart?: (href: string) => void;
 
   /**
    * Performs client-side navigation.
@@ -113,7 +113,7 @@ export function CiNavigateWithLoader({
       event.currentTarget.blur();
     }
 
-    onNavigateStart?.();
+    onNavigateStart?.(href);
 
     if (navigate) {
       await navigate(href);

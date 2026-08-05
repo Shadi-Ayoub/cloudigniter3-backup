@@ -1,10 +1,13 @@
 "use client";
 
 import * as React from "react";
-import Editor from "@monaco-editor/react";
 import type * as monacoNS from "monaco-editor";
 import { RefreshCw, Trash2, ListTree } from "lucide-react";
-import { Button, useCiMonacoTheme } from "@cloudigniter/ui/client";
+import {
+  Button,
+  CiCodeEditor,
+  useCiMonacoTheme,
+} from "@cloudigniter/ui/client";
 import type { CiDevBeaconTraceLogViewerTextProps } from "@cloudigniter/core/types";
 
 const safeFetchText = async (url: string, init?: RequestInit) => {
@@ -418,7 +421,7 @@ export function CiDevBeaconTraceLogViewerText({
 
       {/* Monaco editor */}
       <div className="w-full min-w-0 rounded border shadow-sm">
-        <Editor
+        <CiCodeEditor
           key={theme}
           height={height}
           width="100%"

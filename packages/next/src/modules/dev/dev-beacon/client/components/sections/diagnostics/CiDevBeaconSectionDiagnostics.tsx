@@ -4,8 +4,13 @@ import { CI_DEFAULT_REQUEST_CONTEXT_COOKIE_NAME, CI_DEFAULT_REQUEST_CONTEXT_HEAD
 import type { CiDevBeaconSectionStatusProps } from "@cloudigniter/core/types";
 import type { CiNextContext } from "@ci-next/types";
 
-import { CiDevBeaconGeneralDiagnisticsCard, CiDevBeaconTenantRouteCard, CiDevBeaconRequestContextCard } from "./cards";
-import { CiDevBeaconStatusLanguage } from "./language";
+import {
+  CiDevBeaconGeneralDiagnisticsCard,
+  CiDevBeaconLanguageCard,
+  CiDevBeaconTenantRouteCard,
+  CiDevBeaconRequestContextCard,
+} from "./cards";
+// import { CiDevBeaconStatusLanguage } from "./language";
 
 export function CiDevBeaconSectionDiagnostics({
   context,
@@ -47,7 +52,8 @@ export function CiDevBeaconSectionDiagnostics({
 
           <CiDevBeaconTenantRouteCard context={context} />
 
-          <CiDevBeaconStatusLanguage endpoint={context.config.appResolvedCoreConfig.languageDiagnosticsEndpoint} />
+          <CiDevBeaconLanguageCard endpoint={context.config.appResolvedCoreConfig.languageDiagnosticsEndpoint} />
+          {/* <CiDevBeaconStatusLanguage endpoint={context.config.appResolvedCoreConfig.languageDiagnosticsEndpoint} /> */}
         </div>
       </section>
 

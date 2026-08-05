@@ -1,0 +1,32 @@
+---
+title: ciCreateAuthorizationSubject
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 33
+---
+
+# ciCreateAuthorizationSubject()
+
+Adapts authenticated identity data and already resolved grants to the provider-neutral evaluator subject.
+
+## Signature
+
+```ts
+function ciCreateAuthorizationSubject(
+  user: Pick<CiUser, "id" | "authenticated">,
+  roleAssignments: readonly CiRoleAssignment[],
+  directPrivileges?: readonly CiScopedPrivilege[],
+): CiAuthorizationSubject;
+```
+
+```ts
+const subject = ciCreateAuthorizationSubject(
+  { id: verifiedUser.id, authenticated: true },
+  [...systemAssignments, ...tenantAssignments],
+  temporaryPrivileges,
+);
+```
+
+The helper copies the supplied values into a plain object. It does not verify tokens, load assignments, or
+resolve tenant membership. If `authenticated` is false or `id` is null, every authorization request is denied
+as unauthenticated.

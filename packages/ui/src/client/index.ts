@@ -5,7 +5,14 @@ export {
   // about border beam
   CiAboutBorderBeam,
 
+  // code editor
+  CiCodeEditor,
+  type CiCodeEditorContentSerializer,
+  type CiCodeEditorProps,
+  type CiCodeEditorSerializationContext,
+
   // dashboard
+  CiDashboardCard,
   CiDashboardHeaderButton,
   ciResolveDashboardCardViewModels,
   ciResolveDashboardIcon,
@@ -36,6 +43,11 @@ export {
 
   // profile menu
   CiProfileMenu,
+
+  // tooltip balloon
+  CiTooltipBalloon,
+  type CiTooltipBalloonColor,
+  type CiTooltipBalloonProps,
 
   // smart form
   CiSmartCheckboxField,

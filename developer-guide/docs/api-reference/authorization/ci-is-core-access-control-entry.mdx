@@ -1,0 +1,37 @@
+---
+title: ciIsCoreAccessControlEntry
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 7
+---
+
+# ciIsCoreAccessControlEntry()
+
+Returns whether a stable catalog reference identifies an entry owned by CloudIgniter core.
+
+## Signature
+
+```ts title="ciIsCoreAccessControlEntry signature" showLineNumbers
+function ciIsCoreAccessControlEntry(
+  reference: CiAccessControlEntryReference,
+): boolean;
+```
+
+```ts title="Classify catalog entries" showLineNumbers
+ciIsCoreAccessControlEntry({
+  kind: "action",
+  resourceId: "identity.users",
+  actionId: "read",
+});
+// true
+
+ciIsCoreAccessControlEntry({
+  kind: "action",
+  resourceId: "identity.users",
+  actionId: "suspend",
+});
+// false
+```
+
+Actions and privileges are classified independently from their parent. An application action beneath a core
+resource therefore remains application-owned and editable through the ordinary application workflow.

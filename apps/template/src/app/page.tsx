@@ -5,17 +5,13 @@ import { CiAboutBorderBeam } from "@cloudigniter/ui/client";
 import { appBootstrap } from "@/kernel/server";
 
 export default async function HomePage() {
-  const config = await appBootstrap();
+  const context = await appBootstrap();
 
   return (
-    <CiLayout config={config} protect={false}>
-      <CiPage
-        name={"homepage"}
-        setup={{ showPageHeader: false, showBreadcrumbs: false }}
-        config={config}
-      >
+    <CiLayout context={context} protect={false}>
+      <CiPage name={"homepage"} setup={{ showPageHeader: false, showBreadcrumbs: false }} context={context}>
         <CiAboutBorderBeam
-          traceConfig={config.ciConfig.dev.traceLog}
+          traceConfig={context.config.appCoreConfig.dev.traceLog}
           options={{ duration: 8, size: 200 }}
         />
       </CiPage>

@@ -4,9 +4,20 @@
 export { CiAboutBorderBeam } from "./about-border-beam";
 
 // ─────────────────────────────────────────────────────────────
+// code editor
+// ─────────────────────────────────────────────────────────────
+export {
+  CiCodeEditor,
+  type CiCodeEditorContentSerializer,
+  type CiCodeEditorProps,
+  type CiCodeEditorSerializationContext,
+} from "./code-editor";
+
+// ─────────────────────────────────────────────────────────────
 // dashboard
 // ─────────────────────────────────────────────────────────────
 export {
+  CiDashboardCard,
   CiDashboardHeaderButton,
   ciResolveDashboardCardViewModels,
   ciResolveDashboardIcon,
@@ -57,6 +68,15 @@ export { CiHeaderLogo, type CiHeaderLogoProps } from "./mark";
 // profile menu
 // ─────────────────────────────────────────────────────────────
 export { CiProfileMenu } from "./profile-menu";
+
+// ─────────────────────────────────────────────────────────────
+// tooltip balloon
+// ─────────────────────────────────────────────────────────────
+export {
+  CiTooltipBalloon,
+  type CiTooltipBalloonColor,
+  type CiTooltipBalloonProps,
+} from "./tooltip-balloon";
 
 // ─────────────────────────────────────────────────────────────
 // smart form

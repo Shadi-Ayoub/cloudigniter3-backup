@@ -36,9 +36,11 @@ export async function ciNextProxyResponse({
 }: CiNextProxyResponseInterface): Promise<NextResponse> {
   const pathnameNormalized = ciNormalizePathname(request.nextUrl.pathname);
 
-  const requestContextHeaderName = config.app?.requestContextHeaderName ?? CI_DEFAULT_REQUEST_CONTEXT_HEADER_NAME;
+  const requestContextHeaderName =
+    config.request.context.requestContextHeaderName ?? CI_DEFAULT_REQUEST_CONTEXT_HEADER_NAME;
 
-  const requestContextCookieName = config.app?.requestContextCookieName ?? CI_DEFAULT_REQUEST_CONTEXT_COOKIE_NAME;
+  const requestContextCookieName =
+    config.request.context.requestContextCookieName ?? CI_DEFAULT_REQUEST_CONTEXT_COOKIE_NAME;
 
   const bypass = ciGetBypassFlag(pathnameNormalized);
 
@@ -173,7 +175,7 @@ export async function ciNextProxyResponse({
    */
   const resolvedRequestContext: CiRequestContext = {
     ...unresolvedRequestContext,
-    route: routeResult.route,
+    route: { ...routeResult.route, routesDefinitions: routes },
   };
 
   // -------------------------------------------------------

@@ -1,0 +1,29 @@
+---
+title: ciGetAccessControlEntryOrigin
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 8
+---
+
+# ciGetAccessControlEntryOrigin()
+
+Returns `core` or `application` for a stable catalog entry reference.
+
+## Signature
+
+```ts title="ciGetAccessControlEntryOrigin signature" showLineNumbers
+function ciGetAccessControlEntryOrigin(
+  reference: CiAccessControlEntryReference,
+): CiAccessControlEntryOrigin;
+```
+
+```ts title="Build administration metadata" showLineNumbers
+const origin = ciGetAccessControlEntryOrigin({
+  kind: "role",
+  roleId: "SYSTEM_ADMIN",
+});
+// "core"
+```
+
+Use the result for badges, lock state, and routing to the correct server mutation. It is not authorization by
+itself; core mutations must still use `ciCreateCoreAccessControlOverride()` on the server.

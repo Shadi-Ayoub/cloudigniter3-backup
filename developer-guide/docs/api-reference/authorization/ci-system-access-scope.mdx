@@ -1,0 +1,33 @@
+---
+title: ciSystemAccessScope
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 20
+---
+
+# ciSystemAccessScope()
+
+Creates the system-only access scope for resources outside tenant data.
+
+## Signature
+
+```ts title="Signature" showLineNumbers
+function ciSystemAccessScope(): CiSystemAccessScope;
+```
+
+## Return value
+
+```ts title="Returned scope" showLineNumbers
+{ kind: "system" }
+```
+
+```ts title="Create a system assignment" showLineNumbers
+const assignment = ciCreateRoleAssignment(
+  "SYSTEM_ADMIN",
+  ciSystemAccessScope(),
+  "exact",
+);
+```
+
+System assignments apply only to system requests. `descendants` does not cross into global, tenant, or Org Unit
+requests. Use [`ciGlobalAccessScope()`](./ci-global-access-scope) for cross-tenant access.

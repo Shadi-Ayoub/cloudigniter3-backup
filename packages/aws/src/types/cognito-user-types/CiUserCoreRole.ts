@@ -1,1 +1,4 @@
-export type CiUserCoreRole = 'USER' | 'DEVELOPER' | 'ADMIN' | 'SUPER_ADMIN' | 'SYSTEM_ADMIN' | 'SYSTEM_SUPER_ADMIN';
+import type { CiCoreRole } from "@cloudigniter/core/types";
+
+/** @deprecated Prefer the provider-neutral {@link CiCoreRole}. */
+export type CiUserCoreRole = CiCoreRole;

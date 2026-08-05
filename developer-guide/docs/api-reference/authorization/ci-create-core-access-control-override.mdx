@@ -1,0 +1,44 @@
+---
+title: ciCreateCoreAccessControlOverride
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 16
+---
+
+# ciCreateCoreAccessControlOverride()
+
+Authorizes and creates one immutable, versioned core catalog override record.
+
+## Signature
+
+```ts title="ciCreateCoreAccessControlOverride signature" showLineNumbers
+function ciCreateCoreAccessControlOverride(
+  input: CiCreateCoreAccessControlOverrideInput,
+  options?: CiCreateCoreAccessControlOverrideOptions,
+): CiCoreAccessControlOverride;
+```
+
+```ts title="Create a core override" showLineNumbers
+const override = ciCreateCoreAccessControlOverride({
+  id: "core-override-2026-08-05-001",
+  expectedRevision: 4,
+  reason: "Use the organization-specific identity label.",
+  subject,
+  currentDefinition: effectiveAccessControl,
+  layer: {
+    domains: [{ id: "identity", title: "Identity directory" }],
+  },
+});
+```
+
+The helper:
+
+- requires a directly assigned system-scoped `SYSTEM_SUPER_ADMIN`;
+- permits only core-owned targets;
+- validates the prospective resolved catalog;
+- preserves bootstrap access and the core-administration resource;
+- records the actor, reason, timestamp, previous revision, and next revision; and
+- freezes the returned audit record.
+
+Persist it using an atomic condition that the stored revision still equals `expectedRevision`. The persistence
+adapter must also enforce step-up authentication and retain every record; the helper does not perform I/O.

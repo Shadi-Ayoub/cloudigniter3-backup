@@ -1,0 +1,34 @@
+---
+title: ciCreateAppAuthorizer
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 9
+---
+
+# ciCreateAppAuthorizer()
+
+Creates a reusable application authorizer from a resolved catalog. When no catalog is supplied, it compiles
+`CI_DEFAULT_ACCESS_CONTROL_DEFINITION`.
+
+## Signature
+
+```ts
+function ciCreateAppAuthorizer(
+  definition?: CiAccessControlDefinition,
+  options?: CiAuthorizerOptions,
+): CiAuthorizer;
+```
+
+```ts title="src/custom/auth/app-authorizer.ts"
+import { ciCreateAppAuthorizer } from "@cloudigniter/core/lib";
+
+import { appAccessControl } from "./app-access-control";
+
+export const appAuthorizer = ciCreateAppAuthorizer(appAccessControl);
+```
+
+The returned authorizer exposes `authorize()`, `can()`, `canAny()`, and `canAll()`. It validates the definition
+and compiles role inheritance once. Recreate it when a dynamic catalog's policy version changes.
+
+This convenience factory differs from [`ciCreateAuthorizer()`](./ci-create-authorizer) only by supplying the
+core default catalog when its first argument is omitted.

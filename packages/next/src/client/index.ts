@@ -6,7 +6,12 @@ export { CiNextLocaleSwitcher } from "./i18n";
 // ─────────────────────────────────────────────────────────────
 // navigation
 // ─────────────────────────────────────────────────────────────
-// export { CiNavigateWithLoader } from "./navigation";
+export {
+  CiNextNavigateWithLoader,
+  useCiNextNavigationWithLoader,
+  type CiNextNavigateWithLoaderProps,
+  type CiNextNavigationWithLoaderAdapter,
+} from "./navigation";
 
 // ─────────────────────────────────────────────────────────────
 // page

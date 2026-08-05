@@ -1,0 +1,33 @@
+---
+title: ciCreateRoleAssignments
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 31
+---
+
+# ciCreateRoleAssignments()
+
+Creates equivalent scoped assignments for several ARBAC role IDs.
+
+## Signature
+
+```ts
+function ciCreateRoleAssignments(
+  roleIds: readonly string[],
+  scope: CiAccessScope,
+  propagation: CiScopePropagation,
+  window?: CiGrantWindow,
+): readonly CiRoleAssignment[];
+```
+
+```ts
+const assignments = ciCreateRoleAssignments(
+  ["USER", "auditor"],
+  ciTenantAccessScope("tenant-123"),
+  "exact",
+);
+```
+
+The helper preserves input order and does not deduplicate or validate role IDs. For provider group claims, use
+[`ciCreateRoleAssignmentsFromIdentityGroups()`](./ci-create-role-assignments-from-identity-groups), which maps,
+filters, and deduplicates against the catalog.

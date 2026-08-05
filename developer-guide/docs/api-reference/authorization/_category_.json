@@ -1,0 +1,8 @@
+{
+  "label": "Authorization (ARBAC)",
+  "position": 8,
+  "link": {
+    "type": "generated-index",
+    "description": "Provider-neutral CloudIgniter APIs for catalogs, roles, scoped grants, identity groups, and authorization decisions."
+  }
+}

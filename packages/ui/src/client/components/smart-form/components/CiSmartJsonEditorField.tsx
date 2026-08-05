@@ -2,11 +2,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Editor from "@monaco-editor/react";
 import { useField, useFormikContext } from "formik";
 import { AlertCircle, Sparkles, Pencil, X } from "lucide-react";
 import { useCiMonacoTheme } from "../hooks/useCiMonacoTheme";
 import { Button } from "@ci-ui/client";
+import { CiCodeEditor } from "../../code-editor";
 
 interface SmartJsonEditorFieldProps {
   name: string;
@@ -139,7 +139,7 @@ export const CiSmartJsonEditorField = ({
 
       {readOnly ? (
         <div className="relative mb-2 rounded border shadow-sm">
-          <Editor
+          <CiCodeEditor
             key={theme}
             height={height}
             language="json"
@@ -204,7 +204,7 @@ export const CiSmartJsonEditorField = ({
             </div>
 
             <div className="mb-4 rounded border shadow-sm">
-              <Editor
+              <CiCodeEditor
                 key={theme + "_modal"}
                 height={height}
                 language="json"

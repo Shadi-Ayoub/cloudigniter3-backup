@@ -1,0 +1,30 @@
+---
+title: ciTenantAccessScope
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 22
+---
+
+# ciTenantAccessScope()
+
+Creates an access scope for one tenant.
+
+## Signature
+
+```ts
+function ciTenantAccessScope(tenantId: string): CiTenantAccessScope;
+```
+
+## Return value
+
+```ts
+{ kind: "tenant", tenantId: string }
+```
+
+```ts
+const tenantScope = ciTenantAccessScope("tenant-123");
+```
+
+With `exact` propagation, an assignment matches only that tenant. With `descendants`, it can also match Org
+Units whose `tenantId` is identical. Resolve the ID from trusted server context; the helper does not verify
+tenant existence or user membership.

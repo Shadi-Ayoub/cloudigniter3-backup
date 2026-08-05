@@ -1,0 +1,33 @@
+---
+title: ciApplyCoreAccessControlOverrides
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 17
+---
+
+# ciApplyCoreAccessControlOverrides()
+
+Replays a complete core-override history over a resolved application catalog.
+
+## Signature
+
+```ts title="ciApplyCoreAccessControlOverrides signature" showLineNumbers
+function ciApplyCoreAccessControlOverrides(
+  definition: CiAccessControlDefinition,
+  overrides: readonly CiCoreAccessControlOverride[],
+): CiAccessControlDefinition;
+```
+
+```ts title="Resolve the effective catalog" showLineNumbers
+const effectiveAccessControl = ciApplyCoreAccessControlOverrides(
+  appAccessControl,
+  persistedCoreOverrides,
+);
+```
+
+The history must start at revision zero and remain consecutive. Duplicate IDs, malformed audit records,
+application-owned targets, invalid policy results, and attempts to weaken bootstrap access throw. Inputs are not
+mutated.
+
+Loading an already authorized history does not re-authenticate the original actor. Only trusted server code
+should read the history, and every new record must be created with `ciCreateCoreAccessControlOverride()`.

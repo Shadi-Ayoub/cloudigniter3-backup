@@ -1,0 +1,47 @@
+---
+title: ciMergeAccessControlDefinitions
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 3
+---
+
+# ciMergeAccessControlDefinitions()
+
+Deeply merges standalone access-control layers and validates the completed catalog. Inputs are not mutated.
+
+## Signature
+
+```ts title="ciMergeAccessControlDefinitions signature" showLineNumbers
+function ciMergeAccessControlDefinitions(
+  ...layers: readonly (CiAccessControlLayer | null | undefined)[]
+): CiAccessControlDefinition;
+```
+
+## Merge rules
+
+| Structure | Rule |
+| --- | --- |
+| Domains, resources, roles | Merge by `id` |
+| Actions within a resource | Merge by `id` |
+| Privileges within a role | Merge by `id` |
+| Scalar fields | Latest defined value wins |
+| `scopeKinds`, `inherits` | Latest array replaces the earlier array |
+| New entries | Appended in layer order |
+
+```ts title="Standalone catalog merge" showLineNumbers
+const resolved = ciMergeAccessControlDefinitions(baseCatalog, featureLayer, {
+  roles: [{
+    id: "auditor",
+    title: "External auditor",
+    precedence: 60,
+    privileges: [],
+  }],
+});
+```
+
+The helper throws if required fields are missing or final policy validation reports errors. Layers must come
+from trusted application configuration, not directly from a client request.
+
+This is an unrestricted low-level primitive: it does not protect CloudIgniter-owned IDs. Use
+[`ciCreateAppAccessControl()`](./ci-create-app-access-control) for normal application composition and the
+audited core-override helpers for deliberate core changes.

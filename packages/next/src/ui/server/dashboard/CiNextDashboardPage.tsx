@@ -8,6 +8,7 @@ import type { CiNextPageConfig } from "@ci-next/types";
 import type { CiDashboardCardProps } from "@cloudigniter/ui/types";
 
 import { CiDashboardPage } from "@cloudigniter/ui/server";
+import { CiNextDashboardCard } from "@ci-next/ui/client";
 
 export type CiNextDashboardPageProps = {
   config: CiNextPageConfig;
@@ -33,5 +34,11 @@ export async function CiNextDashboardPage({
     event: "Rendering the <CiNextDashboardPage> component",
   });
 
-  return <CiDashboardPage setup={setup} translate={(key) => t(key)} />;
+  return (
+    <CiDashboardPage
+      setup={setup}
+      translate={(key) => t(key)}
+      renderCard={(card) => <CiNextDashboardCard {...card} />}
+    />
+  );
 }

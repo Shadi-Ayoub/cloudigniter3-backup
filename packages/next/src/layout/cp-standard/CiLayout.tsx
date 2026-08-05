@@ -2,8 +2,8 @@ import { ciStartTraceServer } from "@cloudigniter/core/server";
 import { type CiSystemStatus } from "@cloudigniter/core/types";
 import type { CiNextContext } from "@ci-next/types";
 import { CiPageWrapper } from "@ci-next/server";
+import { CiNextHeaderLogo } from "@ci-next/ui/client";
 import { CiMainHeaderNavigationBox, CiMainHeaderUserBox } from "@ci-next/ui/server";
-import { CiHeaderLogo } from "@cloudigniter/ui/client";
 import { CiHeader } from "./header/CiHeader";
 import { CiContainer } from "./container/CiContainer";
 import { CiCopyright, CiFooter } from "./footer";
@@ -40,7 +40,9 @@ export default function CiLayout({
       <main className="ci-main">
         <CiHeader context={context}>
           <CiMainHeaderNavigationBox context={context} />
-          <CiHeaderLogo />
+          <CiNextHeaderLogo
+            traceConfig={context.config.appCoreConfig.dev.traceLog}
+          />
           <CiMainHeaderUserBox context={context} />
         </CiHeader>
         <CiContainer context={context}>{children}</CiContainer>

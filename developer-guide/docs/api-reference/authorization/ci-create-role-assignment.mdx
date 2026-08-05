@@ -1,0 +1,34 @@
+---
+title: ciCreateRoleAssignment
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 30
+---
+
+# ciCreateRoleAssignment()
+
+Creates one serializable role assignment with an explicit scope, propagation policy, and optional validity
+window.
+
+## Signature
+
+```ts
+function ciCreateRoleAssignment(
+  roleId: string,
+  scope: CiAccessScope,
+  propagation: CiScopePropagation,
+  window?: CiGrantWindow,
+): CiRoleAssignment;
+```
+
+```ts
+const assignment = ciCreateRoleAssignment(
+  "support-agent",
+  ciTenantAccessScope("tenant-123"),
+  "descendants",
+  { expiresAt: "2026-08-31T23:59:59.000Z" },
+);
+```
+
+`validFrom` is inclusive and `expiresAt` is exclusive during evaluation. Dates are ISO strings; malformed dates
+make the grant inactive. This helper constructs data but does not verify that `roleId` exists.

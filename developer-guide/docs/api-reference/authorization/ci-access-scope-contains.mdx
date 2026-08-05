@@ -1,0 +1,33 @@
+---
+title: ciAccessScopeContains
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 24
+---
+
+# ciAccessScopeContains()
+
+Tests whether a grant scope contains a requested scope under the selected propagation policy.
+
+## Signature
+
+```ts title="Signature" showLineNumbers
+function ciAccessScopeContains(
+  grantScope: CiAccessScope,
+  requestedScope: CiAccessScope,
+  propagation: CiScopePropagation,
+): boolean;
+```
+
+```ts title="Check Org Unit containment" showLineNumbers
+const contains = ciAccessScopeContains(
+  ciOrgUnitAccessScope("tenant-123", "finance"),
+  ciOrgUnitAccessScope("tenant-123", "payroll", ["company", "finance"]),
+  "descendants",
+); // true
+```
+
+Containment rules are strict: system grants remain system-only, global grants never reach system requests,
+tenants never cross, and descendants require explicit propagation. A global grant with `descendants` contains
+all tenant and Org Unit scopes. This helper checks scope geometry only; it does not inspect roles, privileges,
+resources, actions, or time windows.

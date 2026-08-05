@@ -1,0 +1,32 @@
+---
+title: ciAssertValidAccessControlDefinition
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 6
+---
+
+# ciAssertValidAccessControlDefinition()
+
+Validates a complete catalog and throws one `Error` containing all error-severity issues. Warning-only catalogs
+are accepted.
+
+## Signature
+
+```ts
+function ciAssertValidAccessControlDefinition(
+  definition: CiAccessControlDefinition,
+): void;
+```
+
+```ts
+import { ciAssertValidAccessControlDefinition } from "@cloudigniter/core/lib";
+
+ciAssertValidAccessControlDefinition(appAccessControl);
+startApplication();
+```
+
+`ciCreateAuthorizer()` calls this helper by default. Pass `validateDefinition: false` only for a catalog that was
+already validated and whose integrity is guaranteed by the caller.
+
+For non-throwing validation, use
+[`ciValidateAccessControlDefinition()`](./ci-validate-access-control-definition).

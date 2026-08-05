@@ -1,0 +1,50 @@
+---
+title: ciCreateCoreAccessControl
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 2
+---
+
+# ciCreateCoreAccessControl()
+
+:::warning Deprecated
+
+Use [`ciCreateAppAccessControl()`](./ci-create-app-access-control). This compatibility alias will be removed in
+a future breaking release.
+
+:::
+
+Creates the resolved application catalog by delegating to `ciCreateAppAccessControl()`.
+
+## Signature
+
+```ts title="ciCreateCoreAccessControl signature" showLineNumbers
+function ciCreateCoreAccessControl(
+  ...extensions: readonly (CiAccessControlLayer | null | undefined)[]
+): CiAccessControlDefinition;
+```
+
+## Parameters
+
+| Parameter | Description |
+| --- | --- |
+| `extensions` | Zero or more application-owned partial catalogs; nullish layers are ignored. |
+
+Application-owned collections merge by `id`. A new entry must provide every required field. Core entries remain
+protected under the same rules as `ciCreateAppAccessControl()`.
+
+```ts title="src/custom/auth/app-access-control.ts" showLineNumbers
+import { ciCreateAppAccessControl } from "@cloudigniter/core/lib";
+import type { CiAccessControlLayer } from "@cloudigniter/core/types";
+
+const appLayer = {
+  resources: [{
+    id: "identity.users",
+    actions: [{ id: "suspend", title: "Suspend user", sensitive: true }],
+  }],
+} as const satisfies CiAccessControlLayer;
+
+export const appAccessControl = ciCreateAppAccessControl(appLayer);
+```
+
+New code should import the canonical application helper instead of this alias.

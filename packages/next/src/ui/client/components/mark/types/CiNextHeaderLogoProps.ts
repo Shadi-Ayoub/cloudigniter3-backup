@@ -1,5 +1,5 @@
-import type { CiNextPageConfig } from "@ci-next/types";
+import type { CiTraceConfig } from "@cloudigniter/core/types";
 
 export interface CiNextHeaderLogoProps {
-  config: CiNextPageConfig;
+  traceConfig: CiTraceConfig;
 }

@@ -1,0 +1,27 @@
+---
+title: ciParsePermission
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 41
+---
+
+# ciParsePermission()
+
+Parses a dot-delimited permission by treating the final segment as the action.
+
+## Signature
+
+```ts
+function ciParsePermission(permission: string): CiAccessRequirement | null;
+```
+
+```ts
+ciParsePermission("identity.users.read");
+// { resource: "identity.users", action: "read" }
+
+ciParsePermission("invalid");
+// null
+```
+
+The function returns `null` when no resource/action boundary exists or either side is empty. It does not check
+the catalog. Resource identifiers may contain dots, which is why splitting occurs at the final dot.

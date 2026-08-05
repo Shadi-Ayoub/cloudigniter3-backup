@@ -1,0 +1,43 @@
+---
+title: ciAuthorize
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 11
+---
+
+# ciAuthorize()
+
+Runs one authorization check without retaining an authorizer instance and returns the full decision evidence.
+
+## Signature
+
+```ts
+function ciAuthorize(
+  request: CiAuthorizationRequest,
+  definition: CiAccessControlDefinition,
+  options?: CiAuthorizerOptions,
+): CiAuthorizationDecision;
+```
+
+```ts
+const decision = ciAuthorize(
+  {
+    subject,
+    resource: "identity.users",
+    action: "update",
+    scope: ciTenantAccessScope("tenant-123"),
+  },
+  appAccessControl,
+);
+
+if (!decision.allowed) {
+  audit({ reason: decision.reason, evidence: decision.decidingMatches });
+  throw new ForbiddenError();
+}
+```
+
+The result includes `allowed`, final `effect`, `reason`, all `matches`, `decidingMatches`, and
+`evaluatedRoleIds`. Keep detailed evidence in trusted logs rather than returning it to an untrusted client.
+
+This helper recompiles the catalog per call. For repeated checks, prefer
+[`ciCreateAuthorizer()`](./ci-create-authorizer).

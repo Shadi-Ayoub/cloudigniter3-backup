@@ -1,8 +1,9 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
-import { CiMenuItem, useCiPageLoaderStore } from "@cloudigniter/ui/client";
+import { usePathname } from "next/navigation";
+import { CiMenuItem } from "@cloudigniter/ui/client";
 import type { CiMenuItemProps } from "@cloudigniter/core/types";
+import { useCiNextNavigationWithLoader } from "@ci-next/client/navigation";
 
 export type CiNextMenuItemProps = Omit<
   CiMenuItemProps,
@@ -11,16 +12,14 @@ export type CiNextMenuItemProps = Omit<
 
 export function CiNextMenuItem(props: CiNextMenuItemProps) {
   const pathname = usePathname();
-  const router = useRouter();
-
-  const setLoading = useCiPageLoaderStore((state) => state.setLoading);
+  const { navigate, onNavigateStart } = useCiNextNavigationWithLoader();
 
   return (
     <CiMenuItem
       {...props}
       pathname={pathname}
-      navigate={(href) => router.push(href)}
-      onNavigateStart={() => setLoading(true)}
+      navigate={navigate}
+      onNavigateStart={onNavigateStart}
     />
   );
 }

@@ -1,8 +1,9 @@
+import { Fragment, type ReactNode } from "react";
 import { ciCapitalizeFirstLetter } from "@cloudigniter/core/lib";
+import { CiDashboardCard } from "@ci-ui/client";
 
 import type { CiDashboardCardProps } from "@ci-ui/types";
 
-import { CiDashboardCard } from "./CiDashboardCard";
 import { CiDashboardGrid } from "./CiDashboardGrid";
 
 export type CiDashboardTranslate = (
@@ -24,12 +25,19 @@ export type CiDashboardPageProps = {
    * Controls whether the translated label should be capitalized.
    */
   capitalizeLabels?: boolean;
+
+  /** Overrides dashboard-card rendering for framework-specific navigation. */
+  renderCard?: (
+    card: CiDashboardCardProps,
+    index: number,
+  ) => ReactNode;
 };
 
 export function CiDashboardPage({
   setup,
   translate,
   capitalizeLabels = true,
+  renderCard,
 }: CiDashboardPageProps) {
   return (
     <CiDashboardGrid>
@@ -40,14 +48,13 @@ export function CiDashboardPage({
           ? ciCapitalizeFirstLetter(translatedLabel)
           : translatedLabel;
 
-        return (
-          <CiDashboardCard
-            key={card.route ?? card.id ?? index}
-            id={card.id}
-            icon={card.icon}
-            route={card.route}
-            label={label}
-          />
+        const resolvedCard = { ...card, label };
+        const key = card.route ?? card.id ?? index;
+
+        return renderCard ? (
+          <Fragment key={key}>{renderCard(resolvedCard, index)}</Fragment>
+        ) : (
+          <CiDashboardCard key={key} {...resolvedCard} />
         );
       })}
     </CiDashboardGrid>

@@ -13,8 +13,7 @@ A single, typed helper that unifies **Put** and **Update** behaviors for DynamoD
 
 ## Table of Contents
 
-- [`writeItem`](#writeitem)
-  - [Table of Contents](#table-of-contents)
+- [Table of Contents](#table-of-contents)
   - [Installation \& Imports](#installation--imports)
   - [API Overview](#api-overview)
   - [Behavior Matrix](#behavior-matrix)

@@ -1,29 +1,26 @@
 "use client";
 
 import { useCallback, useMemo } from "react";
-import { useRouter } from "next/navigation";
 
 import {
   CiHeaderLogo,
   ciStartTraceClient,
-  useCiPageLoaderStore,
 } from "@cloudigniter/ui/client";
+import { useCiNextNavigationWithLoader } from "@ci-next/client/navigation";
 
 import type { CiNextHeaderLogoProps } from "./types";
 
-export function CiNextHeaderLogo({ config }: CiNextHeaderLogoProps) {
-  const router = useRouter();
-
-  const setLoading = useCiPageLoaderStore((state) => state.setLoading);
+export function CiNextHeaderLogo({ traceConfig }: CiNextHeaderLogoProps) {
+  const { navigate, onNavigateStart } = useCiNextNavigationWithLoader();
 
   const trace = useMemo(
     () =>
       ciStartTraceClient(
-        config.coreConfig.dev.traceLog,
+        traceConfig,
         { source: "client" },
         { name: "HeaderLogo" },
       ),
-    [config.coreConfig.dev.traceLog],
+    [traceConfig],
   );
 
   const handleMount = useCallback(() => {
@@ -49,8 +46,8 @@ export function CiNextHeaderLogo({ config }: CiNextHeaderLogoProps) {
   return (
     <CiHeaderLogo
       href="/"
-      onNavigateStart={() => setLoading(true)}
-      navigate={(href) => router.push(href)}
+      navigate={navigate}
+      onNavigateStart={onNavigateStart}
       onMount={handleMount}
       onUnmount={handleUnmount}
     />

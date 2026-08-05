@@ -7,7 +7,7 @@ import type {
   CiBreadcrumbItem,
   CiLocaleDirection,
 } from "@cloudigniter/core/types";
-import { CiNavigateWithLoader } from "@cloudigniter/ui/client";
+import { CiNextNavigateWithLoader } from "../navigation";
 
 export interface CiBreadcrumbsProps {
   items: CiBreadcrumbItem[];
@@ -94,12 +94,12 @@ export function CiBreadcrumbs({
               className="inline-flex items-center"
             >
               {isClickable ? (
-                <CiNavigateWithLoader
+                <CiNextNavigateWithLoader
                   href={item.href!}
                   className="hover:bg-muted-100 dark:hover:bg-muted-900 focus-visible:ring-ring/60 rounded px-1 py-0.5 underline-offset-4 transition hover:underline focus-visible:ring-2 focus-visible:outline-none active:scale-[0.98]"
                 >
                   {content}
-                </CiNavigateWithLoader>
+                </CiNextNavigateWithLoader>
               ) : (
                 <span
                   aria-current={item.current ? "page" : undefined}

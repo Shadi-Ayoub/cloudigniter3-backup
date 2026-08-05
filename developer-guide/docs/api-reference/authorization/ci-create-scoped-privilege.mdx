@@ -1,0 +1,40 @@
+---
+title: ciCreateScopedPrivilege
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 32
+---
+
+# ciCreateScopedPrivilege()
+
+Creates a direct allow or deny assigned to one subject, bounded by scope, propagation, and an optional time
+window.
+
+## Signature
+
+```ts
+function ciCreateScopedPrivilege(
+  privilege: CiPrivilege,
+  scope: CiAccessScope,
+  propagation: CiScopePropagation,
+  window?: CiGrantWindow,
+): CiScopedPrivilege;
+```
+
+```ts
+const exception = ciCreateScopedPrivilege(
+  {
+    id: "incident-export",
+    effect: "allow",
+    resource: "reporting.reports",
+    action: "export",
+    scopeKinds: ["tenant"],
+  },
+  ciTenantAccessScope("tenant-123"),
+  "exact",
+  { expiresAt: "2026-08-05T12:00:00.000Z" },
+);
+```
+
+Direct privileges form the highest tier under `highest-precedence`; under the default algorithm, any matching
+deny still wins. Prefer roles for routine access and audit direct grants as exceptional policy.

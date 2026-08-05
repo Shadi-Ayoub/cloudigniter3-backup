@@ -1,0 +1,37 @@
+---
+title: ciCanAll
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 14
+---
+
+# ciCanAll()
+
+Returns `true` only when every requirement in a non-empty batch is allowed for the same subject and scope.
+
+## Signature
+
+```ts
+function ciCanAll(
+  request: CiAuthorizationBatchRequest,
+  definition: CiAccessControlDefinition,
+  options?: CiAuthorizerOptions,
+): boolean;
+```
+
+```ts
+const canMoveUser = ciCanAll(
+  {
+    subject,
+    scope: ciTenantAccessScope("tenant-123"),
+    requirements: [
+      { resource: "identity.users", action: "update" },
+      { resource: "platform.authorization", action: "manage" },
+    ],
+  },
+  appAccessControl,
+);
+```
+
+An empty `requirements` array returns `false`; it is not treated as vacuous authorization. Use
+[`ciCanAny()`](./ci-can-any) when any one capability is sufficient.

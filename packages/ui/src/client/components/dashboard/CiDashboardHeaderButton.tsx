@@ -3,10 +3,14 @@
 import { useEffect } from "react";
 import { ciStartTraceClient } from "@ci-ui/client";
 import { type CiDashboardHeaderButtonProps } from "@ci-ui/types";
-import { CiNavigateWithLoader } from "@ci-ui/client";
+import { CiNavigateWithLoader } from "../../navigation";
 
 export function CiDashboardHeaderButton({
   traceConfig,
+  refresh,
+  navigate,
+  refreshRoute,
+  onNavigateStart,
 }: CiDashboardHeaderButtonProps) {
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger, done } = ciStartTraceClient(
@@ -30,6 +34,10 @@ export function CiDashboardHeaderButton({
     <CiNavigateWithLoader
       href={"/dashboard"}
       className="ci-main-header-dashboard-button"
+      refresh={refresh}
+      navigate={navigate}
+      refreshRoute={refreshRoute}
+      onNavigateStart={onNavigateStart}
     >
       Dashboard
     </CiNavigateWithLoader>

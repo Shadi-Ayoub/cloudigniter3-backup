@@ -5,6 +5,7 @@ import { IoLogOutOutline, IoPersonOutline } from "react-icons/io5";
 
 import {
   Button,
+  CiTooltipBalloon,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
@@ -18,7 +19,6 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
   Tooltip,
-  TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@ci-ui/client";
@@ -94,9 +94,7 @@ export function CiProfileMenu({
           </TooltipTrigger>
 
           {!ciMenuOpen ? (
-            <TooltipContent>
-              <p>{ciMessages.profileTooltip}</p>
-            </TooltipContent>
+            <CiTooltipBalloon content={ciMessages.profileTooltip} />
           ) : null}
         </Tooltip>
       </TooltipProvider>

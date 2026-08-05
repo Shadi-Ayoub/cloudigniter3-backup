@@ -1,0 +1,46 @@
+---
+title: ciCreateAppAccessControl
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 2
+---
+
+# ciCreateAppAccessControl()
+
+Creates the resolved application catalog by merging application-owned layers with
+`CI_DEFAULT_ACCESS_CONTROL_DEFINITION`, enforcing core ownership, then validating the result.
+
+## Signature
+
+```ts title="ciCreateAppAccessControl signature" showLineNumbers
+function ciCreateAppAccessControl(
+  ...extensions: readonly (CiAccessControlLayer | null | undefined)[]
+): CiAccessControlDefinition;
+```
+
+Core domains, resource fields, existing actions, roles, and privileges are protected. Applications may add
+domains and resources, add new actions beneath a core resource, and create roles that inherit core roles.
+Later layers may refine application-owned entries by stable `id`. `SYSTEM_SUPER_ADMIN` inheritance and grants
+covering `platform.authorization.core.override` are reserved.
+
+```ts title="src/custom/auth/app-access-control.ts" showLineNumbers
+import { ciCreateAppAccessControl } from "@cloudigniter/core/lib";
+import type { CiAccessControlLayer } from "@cloudigniter/core/types";
+
+export const appAccessControlExtension = {
+  resources: [{
+    id: "identity.users",
+    actions: [{ id: "suspend", title: "Suspend user", sensitive: true }],
+  }],
+} as const satisfies CiAccessControlLayer;
+
+export const appAccessControl = ciCreateAppAccessControl(
+  appAccessControlExtension,
+);
+```
+
+The factory belongs to `@cloudigniter/core`; the extension remains application-owned. Attempts to redefine a
+core entry throw before the resolved catalog is returned.
+
+Use [`ciMergeAccessControlDefinitions()`](./ci-merge-access-control-definitions) when the core defaults must not
+be included. Use the dedicated core-override helpers when a `SYSTEM_SUPER_ADMIN` must change a core entry.

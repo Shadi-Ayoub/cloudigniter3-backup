@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Editor from "@monaco-editor/react";
 import { X } from "lucide-react";
 
 import {
+  CiCodeEditor,
   cn,
   Dialog,
   DialogClose,
@@ -76,7 +76,7 @@ export function CiDevBeaconProvidersStatusRow<TProviders extends object>({
             className={cn(
               "bg-background text-foreground fixed top-1/2 left-1/2",
               "flex h-[min(44rem,calc(100dvh-2rem))]",
-              "w-[min(70rem,calc(100vw-2rem))] max-w-none",
+              "w-[min(70rem,calc(100vw-2rem))] max-w-none sm:max-w-none",
               "-translate-x-1/2 -translate-y-1/2 flex-col",
               "overflow-hidden rounded-xl border shadow-2xl outline-none",
             )}
@@ -123,18 +123,11 @@ export function CiDevBeaconProvidersStatusRow<TProviders extends object>({
 
             <div className="min-h-0 flex-1 p-4">
               <div className="h-full overflow-hidden rounded-md border">
-                <Editor
-                  language="json"
-                  value={JSON.stringify(selectedProvider?.config ?? {}, null, 2)}
+                <CiCodeEditor
+                  content={selectedProvider?.config ?? {}}
                   options={{
                     readOnly: true,
-                    automaticLayout: true,
-                    minimap: {
-                      enabled: false,
-                    },
                     folding: true,
-                    lineNumbers: "on",
-                    scrollBeyondLastLine: false,
                     wordWrap: "on",
                   }}
                 />

@@ -7,12 +7,14 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "typecheck:tools": "echo \"No tools typecheck for app\"",
+    "typecheck:tools": "tsc -p amplify/tsconfig.tools.json --noEmit",
     "check": "pnpm run typecheck",
     "lint": "next lint",
     "clean": "rimraf .next",
     "sso": "aws sso login --profile developer1",
     "sandbox": "npx ampx sandbox --profile developer1",
+    "bootstrap:root": "node --import=tsx amplify/scripts/bootstrap-root-user.ts --profile developer1",
+    "sandbox:bootstrap": "npx ampx sandbox --once --profile developer1 && pnpm run bootstrap:root",
     "sandbox:debug": "mkdir -p amplify/.logs && NODE_OPTIONS=\"--enable-source-maps --trace-uncaught\" ampx sandbox --profile developer1 --debug --once 2>&1 | tee amplify/.logs/amplify-sandbox-debug.log"
   },
   "dependencies": {

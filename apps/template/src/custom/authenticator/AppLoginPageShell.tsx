@@ -2,8 +2,7 @@
 "use client";
 
 import { useState, type PropsWithChildren } from "react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   BadgeCheck,
   Building2,
@@ -14,7 +13,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-import { CiNavigateWithLoader } from "@cloudigniter/ui/client";
+import { CiNextNavigateWithLoader } from "@cloudigniter/next/client";
 
 import { appLoginPageContent } from "./app-login-page-content";
 
@@ -37,18 +36,9 @@ export function AppLoginPageShell({ children }: PropsWithChildren) {
     normalizedPathname.endsWith(accountNavigation.signUpHref);
 
   const [isNavigating, setIsNavigating] = useState(false);
-  const router = useRouter();
 
   function handleNavigateStart() {
     setIsNavigating(true);
-  }
-
-  function navigate(href: string) {
-    router.push(href);
-  }
-
-  function refreshRoute() {
-    router.refresh();
   }
 
   function AccountNavigationLink({
@@ -56,15 +46,13 @@ export function AppLoginPageShell({ children }: PropsWithChildren) {
     children,
   }: PropsWithChildren<{ href: string }>) {
     return (
-      <CiNavigateWithLoader
+      <CiNextNavigateWithLoader
         href={href}
-        navigate={navigate}
-        refreshRoute={refreshRoute}
         onNavigateStart={handleNavigateStart}
         className="text-primary font-medium underline-offset-4 hover:underline"
       >
         {children}
-      </CiNavigateWithLoader>
+      </CiNextNavigateWithLoader>
     );
   }
 
@@ -201,12 +189,9 @@ export function AppLoginPageShell({ children }: PropsWithChildren) {
             <div className="border-border/70 border-t px-6 py-5 text-center text-sm lg:hidden">
               <p className="text-muted-foreground">
                 {accountNavigation.signInPrompt}{" "}
-                <Link
-                  href={accountNavigation.signInHref}
-                  className="text-primary font-medium underline-offset-4 hover:underline"
-                >
+                <AccountNavigationLink href={accountNavigation.signInHref}>
                   {accountNavigation.signInLabel}
-                </Link>
+                </AccountNavigationLink>
               </p>
             </div>
 
@@ -343,12 +328,9 @@ export function AppLoginPageShell({ children }: PropsWithChildren) {
               {isCreateAccountPage ? (
                 <p className="text-muted-foreground">
                   {accountNavigation.signInPrompt}{" "}
-                  <Link
-                    href={accountNavigation.signInHref}
-                    className="text-primary font-medium underline-offset-4 hover:underline"
-                  >
+                  <AccountNavigationLink href={accountNavigation.signInHref}>
                     {accountNavigation.signInLabel}
-                  </Link>
+                  </AccountNavigationLink>
                 </p>
               ) : (
                 <p className="text-muted-foreground">

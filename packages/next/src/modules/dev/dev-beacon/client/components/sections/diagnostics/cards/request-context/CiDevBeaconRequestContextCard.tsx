@@ -1,11 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Editor from "@monaco-editor/react";
 import { Braces, Cookie, FileJson2, LoaderCircle, X } from "lucide-react";
-import { useTheme } from "next-themes";
 
 import {
+  CiCodeEditor,
   cn,
   Dialog,
   DialogPortal,
@@ -147,8 +146,6 @@ function CiDevBeaconJsonViewerDialog({
   entry: CiDevBeaconRequestContextEntry | null;
   onOpenChange: (open: boolean) => void;
 }) {
-  const { resolvedTheme } = useTheme();
-
   const formattedValue = useMemo(() => (entry?.value ? ciFormatJsonValue(entry.value) : ""), [entry?.value]);
 
   return (
@@ -165,17 +162,17 @@ function CiDevBeaconJsonViewerDialog({
           className={cn(
             "bg-background text-foreground fixed top-1/2 left-1/2",
             "flex h-[min(48rem,calc(100dvh-2rem))]",
-            "w-[min(72rem,calc(100vw-2rem))] max-w-none",
+            "w-[min(72rem,calc(100vw-2rem))] max-w-none sm:max-w-none",
             "-translate-x-1/2 -translate-y-1/2 flex-col",
             "overflow-hidden rounded-xl border shadow-2xl outline-none",
           )}
           style={{
             zIndex: "var(--z-dev-beacon-diagnostics-content)",
           }}
-          onWheelCapture={(event) => {
+          onWheel={(event) => {
             event.stopPropagation();
           }}
-          onTouchMoveCapture={(event) => {
+          onTouchMove={(event) => {
             event.stopPropagation();
           }}
           showCloseButton={false}
@@ -206,35 +203,13 @@ function CiDevBeaconJsonViewerDialog({
             </DialogClose>
           </header>
 
-          <div
-            className="min-h-0 flex-1 overflow-hidden"
-            onWheel={(event) => {
-              event.stopPropagation();
-            }}
-            onTouchMove={(event) => {
-              event.stopPropagation();
-            }}
-          >
-            <Editor
-              height="100%"
-              language="json"
-              value={formattedValue}
-              theme={resolvedTheme === "dark" ? "vs-dark" : "light"}
-              loading={
-                <div className="text-muted-foreground flex h-full items-center justify-center text-sm">
-                  Loading JSON editor…
-                </div>
-              }
+          <div className="min-h-0 flex-1 overflow-hidden">
+            <CiCodeEditor
+              content={formattedValue}
               options={{
                 readOnly: true,
                 domReadOnly: true,
-                automaticLayout: true,
-                minimap: {
-                  enabled: false,
-                },
                 folding: true,
-                lineNumbers: "on",
-                scrollBeyondLastLine: false,
                 wordWrap: "on",
                 fontSize: 13,
                 tabSize: 2,

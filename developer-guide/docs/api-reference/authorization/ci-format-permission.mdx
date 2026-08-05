@@ -1,0 +1,25 @@
+---
+title: ciFormatPermission
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 40
+---
+
+# ciFormatPermission()
+
+Formats a resource and action as one dot-delimited permission string.
+
+## Signature
+
+```ts
+function ciFormatPermission(resource: string, action: string): string;
+```
+
+```ts
+ciFormatPermission("identity.users", "read");
+// "identity.users.read"
+```
+
+The helper performs concatenation only. It does not validate identifiers or prove the resource/action pair is
+registered. The ARBAC request model keeps `resource` and `action` separate; use this form for route metadata,
+configuration migration, logging, or compact permission notation.

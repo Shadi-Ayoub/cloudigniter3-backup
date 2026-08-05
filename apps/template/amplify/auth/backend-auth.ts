@@ -5,6 +5,7 @@ import {
   type AuthAccessBuilder,
   type AmplifyAuthProps,
 } from "@aws-amplify/backend-auth";
+import { CI_CORE_ROLES_BY_PRECEDENCE } from "@cloudigniter/core/lib";
 
 import { customBackendAuth } from "../custom/auth";
 
@@ -34,14 +35,9 @@ const backendAuth: AmplifyAuthProps = {
     ...customBackendAuth.triggers,
   },
   groups: [
-    "USER",
-    "DEVELOPER",
+    ...CI_CORE_ROLES_BY_PRECEDENCE,
     ...customGroups,
-    "ADMIN",
-    "SUPER_ADMIN",
-    "SYSTEM_ADMIN",
-    "SYSTEM_SUPER_ADMIN",
-  ], // Order impact precedence!
+  ], // Cognito assigns lower (higher-priority) precedence to earlier groups.
   senders: customBackendAuth.senders,
   userAttributes: { ...customBackendAuth.userAttributes },
   multifactor: customBackendAuth.multifactor,

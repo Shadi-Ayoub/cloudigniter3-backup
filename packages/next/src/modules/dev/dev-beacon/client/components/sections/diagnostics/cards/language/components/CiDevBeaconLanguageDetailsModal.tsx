@@ -1,14 +1,14 @@
 "use client";
 
 import * as React from "react";
-import dynamic from "next/dynamic";
-import { CircleX, FileJson2, FileSearch, Loader2, X } from "lucide-react";
+import { CircleX, FileJson2, FileSearch, X } from "lucide-react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 
 import {
   Alert,
   AlertDescription,
   AlertTitle,
+  CiCodeEditor,
   ScrollArea,
   Skeleton,
   cn,
@@ -19,18 +19,6 @@ import type {
   CiDevBeaconLanguageMessagesResponse,
   CiLocaleDirection,
 } from "@cloudigniter/core/types";
-
-const MonacoEditor = dynamic(
-  () => import("@monaco-editor/react").then((module) => module.default),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="flex h-full items-center justify-center">
-        <Loader2 className="size-5 animate-spin text-muted-foreground" />
-      </div>
-    ),
-  },
-);
 
 const CiAccessibleDialogTitle =
   DialogPrimitive.Title as React.ComponentType<React.PropsWithChildren>;
@@ -481,18 +469,12 @@ export function CiDevBeaconLanguageDetailsModal({
 
               {!isLoading && !error && data ? (
                 <div className="min-h-0 flex-1">
-                  <MonacoEditor
-                    height="100%"
-                    language="json"
-                    value={selectedJson}
+                  <CiCodeEditor
+                    content={selectedJson}
                     options={{
                       readOnly: true,
                       domReadOnly: true,
-                      automaticLayout: true,
-                      minimap: { enabled: false },
-                      scrollBeyondLastLine: false,
                       wordWrap: "on",
-                      lineNumbers: "on",
                       folding: true,
                       renderValidationDecorations: "off",
                     }}

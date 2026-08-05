@@ -11,9 +11,9 @@ interface LayoutInterface {
   children: React.ReactNode;
 }
 export default async function CPLayout({ children }: LayoutInterface) {
-  const config = await appBootstrap();
+  const context = await appBootstrap();
   // throw new Error(`Main Menu Config: ${JSON.stringify(config)}`);
-  return <CiLayout config={config}>{children}</CiLayout>;
+  return <CiLayout context={context}>{children}</CiLayout>;
 }
 // const x = {
 //   ciConfig: {
