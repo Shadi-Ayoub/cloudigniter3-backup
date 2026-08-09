@@ -2,7 +2,7 @@
 
 import { X } from "lucide-react";
 
-import type { CiNextContext } from "@ci-next/types";
+import type { CiRoutesMap } from "@cloudigniter/core/types";
 
 import {
   CiCodeEditor,
@@ -16,10 +16,8 @@ import {
   DialogTitle,
 } from "@cloudigniter/ui/client";
 
-type CiRouteDefinitions = NonNullable<CiNextContext["route"]>["routesDefinitions"];
-
 interface CiDevBeaconRouteDefinitionsModalProps {
-  routesDefinitions?: CiRouteDefinitions;
+  routesDefinitions?: CiRoutesMap;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }

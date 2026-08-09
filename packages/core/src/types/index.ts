@@ -235,7 +235,12 @@ export type {
 // ─────────────────────────────────────────────────────────────
 // main menu
 // ─────────────────────────────────────────────────────────────
-export type { CiMainMenuItem, CiMainMenuTarget, CiMenuItemProps, CiNavigationMenuProps } from "./main-menu-types";
+export type {
+  CiMainMenuItem,
+  CiMainMenuTarget,
+  CiMenuItemProps,
+  CiNavigationMenuProps,
+} from "./main-menu-types";
 
 // ─────────────────────────────────────────────────────────────
 // module
@@ -293,7 +298,11 @@ export type {
 // ─────────────────────────────────────────────────────────────
 // profile menu
 // ─────────────────────────────────────────────────────────────
-export type { CiProfileMenuItem, CiProfileMenuMessages, CiProfileMenuProps } from "./profile-menu";
+export type {
+  CiProfileMenuItem,
+  CiProfileMenuMessages,
+  CiProfileMenuProps,
+} from "./profile-menu";
 
 // ─────────────────────────────────────────────────────────────
 // result
@@ -328,12 +337,37 @@ export type {
 // ─────────────────────────────────────────────────────────────
 // scope
 // ─────────────────────────────────────────────────────────────
-export type { CiResolvedPathnameContext, CiResolvedScopeContext, CiScopeKind } from "./scope-types";
+export type {
+  CiResolvedPathnameContext,
+  CiResolvedScopeContext,
+  CiScopeKind,
+} from "./scope-types";
 
 // ─────────────────────────────────────────────────────────────
 // security
 // ─────────────────────────────────────────────────────────────
-export type { CiSecuritySettings } from "./security-types";
+export type {
+  CiSecurityActor,
+  CiSecurityAdministration,
+  CiSecurityAdministrationOptions,
+  CiSecurityAdministrationRepository,
+  CiSecurityAssignmentRecord,
+  CiSecurityAssignmentScope,
+  CiSecurityBaseRecord,
+  CiSecurityCapabilities,
+  CiSecurityEntryOrigin,
+  CiSecurityIdentityGroup,
+  CiSecurityIdentityGroupRecord,
+  CiSecurityMutationResult,
+  CiSecurityPermissionRecord,
+  CiSecurityRecord,
+  CiSecurityRecordKind,
+  CiSecurityRecordsByKind,
+  CiSecurityResourceRecord,
+  CiSecurityRoleRecord,
+  CiSecuritySettings,
+  CiSecurityStoredRoleAssignment,
+} from "./security-types";
 
 // ─────────────────────────────────────────────────────────────
 // settings
@@ -471,7 +505,12 @@ export type {
 // ─────────────────────────────────────────────────────────────
 // theme
 // ─────────────────────────────────────────────────────────────
-export type { CiClientThemeConfig, CiThemeAttributeStrategy, CiThemeConfig, CiThemeSettings } from "./theme-types";
+export type {
+  CiClientThemeConfig,
+  CiThemeAttributeStrategy,
+  CiThemeConfig,
+  CiThemeSettings,
+} from "./theme-types";
 
 // ─────────────────────────────────────────────────────────────
 // user

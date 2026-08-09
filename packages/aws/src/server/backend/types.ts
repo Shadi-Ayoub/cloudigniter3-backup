@@ -1,11 +1,14 @@
-import type { CiCoreAuth, CiCoreAuthParams } from './core-types/auth';
-import type { CiCoreRuntime } from './core-types/runtime';
-import type { CiEnvMap } from './core-types/env';
-import type { CiPlanOptions } from './core-types/plan';
+import type { CiCoreAuth, CiCoreAuthParams } from "./core-types/auth";
+import type { CiCoreRuntime } from "./core-types/runtime";
+import type { CiEnvMap } from "./core-types/env";
+import type { CiPlanOptions } from "./core-types/plan";
 
-import type { CiInlinePolicySpec, CiPolicyFragment } from './core-types/policy';
+import type { CiInlinePolicySpec, CiPolicyFragment } from "./core-types/policy";
 
-import type { CiPolicyStatementInput, CiPolicyStatementSpec } from './core-types/policy';
+import type {
+  CiPolicyStatementInput,
+  CiPolicyStatementSpec,
+} from "./core-types/policy";
 
 import type {
   CiCoreResources,
@@ -13,15 +16,22 @@ import type {
   CiBucketResourceState,
   CiUserPoolResourceState,
   CiApiResourceState,
-} from './resources/resource-types';
+} from "./resources/resource-types";
 
-import type { CiResourceModule, CiResourceEnvKeyAllowlist } from './resources/resource-module.types';
+import type {
+  CiResourceModule,
+  CiResourceEnvKeyAllowlist,
+} from "./resources/resource-module.types";
 
-import type { CiFunctionEnvMap } from './resources/env-map';
+import type { CiFunctionEnvMap } from "./resources/env-map";
 
-import type { CiCoreFunctionId } from './core-types/functions';
+import type { CiCoreFunctionId } from "./core-types/functions";
 
-import type { CiCoreTableKey, CiTableGrantAction, CiTableGrantSpec } from './core-types/tables';
+import type {
+  CiCoreTableKey,
+  CiTableGrantAction,
+  CiTableGrantSpec,
+} from "./core-types/tables";
 
 export type {
   CiCoreAuth,
@@ -55,7 +65,7 @@ export type CiPolicyBundle = {
 
 export type BivariantFn<Args extends unknown[], R> = {
   bivarianceHack(...args: Args): R;
-}['bivarianceHack'];
+}["bivarianceHack"];
 
 export type MinimalIamRole = {
   attachInlinePolicy: BivariantFn<[policy: unknown], void>;
@@ -81,6 +91,7 @@ export type ApplyArgs = {
   includeFunctions?: CiCoreFunctionId[];
   envKeyAllowlist?: Partial<Record<CiCoreFunctionId, readonly string[]>>;
   stripServices?: string[];
+  strict?: boolean;
 };
 
 export type PostBuildPlan = {

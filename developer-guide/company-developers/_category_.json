@@ -1,0 +1,8 @@
+{
+  "label": "CloudIgniter Developers",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Architecture and contribution guidance for developers building the CloudIgniter ecosystem."
+  }
+}

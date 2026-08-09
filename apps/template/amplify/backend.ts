@@ -4,6 +4,7 @@ import path from "node:path";
 
 import { ciPostBuild } from "./backend/ci-post-build";
 import { backendShape } from "./backend/types";
+import { ciConfigureCustomBackend } from "./custom/backend";
 
 // Enable loading environment variables from the .env file into process.env
 loadEnv({
@@ -13,3 +14,4 @@ loadEnv({
 const backend = defineBackend(backendShape);
 
 ciPostBuild(backend);
+ciConfigureCustomBackend({ backend });

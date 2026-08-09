@@ -1,30 +1,106 @@
 @layer components {
   .dashboard-container {
-    /* @apply flex h-full min-h-0 items-start justify-center; */
-    @apply flex justify-center;
-    /* padding-bottom: 0 !important;
-    margin-bottom: 0 !important;
-    min-height: 0 !important;
-    height: auto !important; */
+    @apply w-full;
   }
 
   .dashboard-grid {
-    @apply dark:bg-muted grid gap-x-5 gap-y-5 bg-gray-50 p-3 px-4 pb-0 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5;
+    @apply grid w-full grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3;
+  }
+
+  .dashboard-page {
+    @apply mx-auto w-full max-w-7xl space-y-6 px-1 sm:px-2;
+  }
+
+  .dashboard-hero {
+    @apply relative flex flex-col gap-5 overflow-hidden rounded-2xl border border-border bg-card px-5 py-6 shadow-sm sm:px-7 lg:flex-row lg:items-end lg:justify-between;
+  }
+
+  .dashboard-hero::after {
+    content: "";
+    @apply pointer-events-none absolute -top-16 -right-16 size-48 rounded-full bg-primary/8 blur-3xl;
+  }
+
+  .dashboard-hero-copy {
+    @apply relative z-raised max-w-3xl;
+  }
+
+  .dashboard-eyebrow {
+    @apply mb-2 text-xs font-semibold tracking-[0.16em] text-primary uppercase;
+  }
+
+  .dashboard-title {
+    @apply text-2xl font-semibold tracking-tight text-foreground sm:text-3xl;
+  }
+
+  .dashboard-description {
+    @apply mt-2 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base;
+  }
+
+  .dashboard-hero-aside {
+    @apply relative z-raised shrink-0;
   }
 
   .dashboard-card {
-    @apply border-secondary-700 bg-muted hover:bg-secondary-50 hover:shadow-secondary-100 hover:ring-secondary-500 dark:bg-muted hover:dark:bg-muted-950 hover:dark:ring-secondary-200 h-32 w-32 cursor-pointer rounded-lg shadow-md transition hover:border-0 hover:shadow-lg hover:ring-2 hover:dark:shadow-none hover:dark:ring-2;
+    @apply min-h-52 cursor-pointer overflow-hidden rounded-xl border border-border bg-card text-card-foreground shadow-sm transition-[transform,background-color,border-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background;
   }
 
   .dashboard-card-content {
-    @apply flex h-full flex-col items-center justify-center text-center;
+    @apply flex h-full min-h-52 flex-col p-5 text-start outline-none;
+  }
+
+  .dashboard-card-topline {
+    @apply flex w-full items-start gap-3;
   }
 
   .dashboard-card-icon {
-    @apply text-secondary-700 dark:text-secondary-400 text-4xl;
+    @apply grid size-11 shrink-0 place-items-center rounded-xl border border-border bg-muted text-2xl text-foreground;
+  }
+
+  .dashboard-card-security .dashboard-card-icon {
+    @apply border-primary/20 bg-primary/10 text-primary;
+  }
+
+  .dashboard-card-success .dashboard-card-icon {
+    @apply border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300;
+  }
+
+  .dashboard-card-warning .dashboard-card-icon {
+    @apply border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300;
+  }
+
+  .dashboard-card-badge {
+    @apply rounded-full border border-border bg-muted px-2 py-1 text-[0.6875rem] font-semibold tracking-wide text-muted-foreground uppercase;
+  }
+
+  .dashboard-card-arrow {
+    @apply ms-auto size-4 text-muted-foreground transition-transform duration-200;
+  }
+
+  .dashboard-card:hover .dashboard-card-arrow {
+    @apply translate-x-0.5 -translate-y-0.5 text-foreground rtl:-translate-x-0.5;
   }
 
   .dashboard-card-label {
-    @apply text-secondary-700 dark:text-secondary-400 mt-4 text-lg font-bold;
+    @apply mt-5 text-lg font-semibold tracking-tight text-card-foreground;
+  }
+
+  .dashboard-card-description {
+    @apply mt-1.5 line-clamp-3 text-sm leading-5 text-muted-foreground;
+  }
+
+  .dashboard-card-meta {
+    @apply mt-auto pt-4 text-xs font-medium text-muted-foreground;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dashboard-card,
+    .dashboard-card-arrow {
+      transition-duration: 0.01ms;
+    }
+
+    .dashboard-card:hover,
+    .dashboard-card:hover .dashboard-card-arrow {
+      transform: none;
+    }
   }
 }

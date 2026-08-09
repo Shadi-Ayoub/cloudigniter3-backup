@@ -32,6 +32,11 @@ export type {
 } from "./config-types";
 
 // ─────────────────────────────────────────────────────────────
+// context
+// ─────────────────────────────────────────────────────────────
+export type { CiResolveRequestContextFromRequestOptions } from "./context-types";
+
+// ─────────────────────────────────────────────────────────────
 // i18n
 // ─────────────────────────────────────────────────────────────
 export type { CiNextLocaleSwitcherProps } from "./i18n-types";
@@ -59,6 +64,14 @@ export type {
   CiThemeProviderProps,
   CiThemeSwitcherProps,
 } from "./theme-types";
+
+// ─────────────────────────────────────────────────────────────
+// security
+// ─────────────────────────────────────────────────────────────
+export type {
+  CiNextAwsSecurityAdministrationOptions,
+  CiNextSecurityAdministrationOptions,
+} from "./security-types";
 
 // ─────────────────────────────────────────────────────────────
 // ui

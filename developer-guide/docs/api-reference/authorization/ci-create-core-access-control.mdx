@@ -1,6 +1,6 @@
 ---
 title: ciCreateCoreAccessControl
-package: "@cloudigniter/core"
+package: "@cloudigniter/emberguard"
 availability: Shared
 sidebar_position: 2
 ---
@@ -34,8 +34,8 @@ Application-owned collections merge by `id`. A new entry must provide every requ
 protected under the same rules as `ciCreateAppAccessControl()`.
 
 ```ts title="src/custom/auth/app-access-control.ts" showLineNumbers
-import { ciCreateAppAccessControl } from "@cloudigniter/core/lib";
-import type { CiAccessControlLayer } from "@cloudigniter/core/types";
+import { ciCreateAppAccessControl } from "@cloudigniter/emberguard/lib";
+import type { CiAccessControlLayer } from "@cloudigniter/emberguard/types";
 
 const appLayer = {
   resources: [{

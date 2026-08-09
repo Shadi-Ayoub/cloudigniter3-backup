@@ -51,6 +51,7 @@
     "build:assets": "pnpm -v",
     "obfuscate": "node ../../scripts/ci-obfuscate-package.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --import=tsx --test __tests__/backend/*.test.ts",
     "check:package": "npm pack --dry-run",
     "dev": "tsup --watch",
     "typecheck:tools": "tsc -p tsconfig.tools.json --noEmit",
@@ -65,6 +66,7 @@
     "@aws-sdk/client-cognito-identity-provider": "^3.1023.0",
     "@aws-sdk/client-dynamodb": "^3.1022.0",
     "@aws-sdk/lib-dynamodb": "^3.1022.0",
+    "@cloudigniter/emberguard": "workspace:*",
     "aws-lambda": "^1.0.7",
     "deepmerge-ts": "^7.1.5"
   },

@@ -1,1 +1,1 @@
-export type CiDataTableDataMode = "client" | "server" | "hybrid" | "auto";
+export type { CiDataTableDataMode } from "./CiDataTableTypes";

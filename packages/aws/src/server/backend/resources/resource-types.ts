@@ -1,7 +1,6 @@
-export type CiTableResourceState = {
-  name: string;
-  arn: string;
-};
+import type { CiCoreTableInfo, CiCoreTables } from "../core-types/tables";
+
+export type CiTableResourceState = CiCoreTableInfo;
 
 export type CiBucketResourceState = {
   name: string;
@@ -28,11 +27,6 @@ export type CiAuthResourceState = {
   enabled: true;
 };
 
-export type CiCoreResources = {
-  // privateSettingsTable: CiTableResourceState;
-  // publicSettingsTable: CiTableResourceState;
-  // systemTable: CiTableResourceState;
-  userProfileTable: CiTableResourceState;
-  // userSettingsTable: CiTableResourceState;
+export type CiCoreResources = CiCoreTables & {
   auth: CiAuthResourceState;
 };

@@ -1,6 +1,6 @@
 ---
 title: CI_DEFAULT_ACCESS_CONTROL_DEFINITION
-package: "@cloudigniter/core"
+package: "@cloudigniter/emberguard"
 availability: Shared
 sidebar_position: 1
 ---
@@ -8,7 +8,7 @@ sidebar_position: 1
 # CI_DEFAULT_ACCESS_CONTROL_DEFINITION
 
 The runtime-frozen core catalog used as the first layer by `ciCreateAppAccessControl()`. Import it from
-`@cloudigniter/core/lib` when you need to inspect, validate, or display the built-in policy.
+`@cloudigniter/emberguard/lib` when you need to inspect, validate, or display the built-in policy.
 
 ```ts title="Core access-control definition" showLineNumbers
 const CI_DEFAULT_ACCESS_CONTROL_DEFINITION: CiAccessControlDefinition;
@@ -37,7 +37,7 @@ privilege cannot opt itself into core modification.
 import {
   CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
   ciCreateAuthorizer,
-} from "@cloudigniter/core/lib";
+} from "@cloudigniter/emberguard/lib";
 
 const authorizer = ciCreateAuthorizer(
   CI_DEFAULT_ACCESS_CONTROL_DEFINITION,

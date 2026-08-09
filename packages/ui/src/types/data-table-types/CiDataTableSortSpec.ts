@@ -1,1 +1,1 @@
-export type CiDataTableSortSpec = { id: string; desc: boolean };
+export type { CiDataTableSortSpec } from "./CiDataTableTypes";

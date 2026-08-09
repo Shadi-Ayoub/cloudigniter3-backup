@@ -1,8 +1,12 @@
-import { a } from '@aws-amplify/backend';
+import { a } from "@aws-amplify/backend";
 
-import { createCognitoUserHandler } from '../../auth/cognito-user/cognito-create-user/resource';
-import { getCognitoUserHandler } from '../../auth/cognito-user/cognito-get-user/resource';
-import { setCognitoUserPasswordHandler } from '../../auth/cognito-user/cognito-set-user-password/resource';
+import { CI_CORE_AMPLIFY_FUNCTION_RESOURCES } from "../../backend/ci-core-amplify-manifest";
+
+const {
+  createCognitoUserHandler,
+  getCognitoUserHandler,
+  setCognitoUserPasswordHandler,
+} = CI_CORE_AMPLIFY_FUNCTION_RESOURCES;
 
 const schemaCognitoUser = {
   GetCognitoUser: a
@@ -12,7 +16,7 @@ const schemaCognitoUser = {
     })
     .handler(a.handler.function(getCognitoUserHandler))
     .returns(a.json())
-    .authorization((allow) => [allow.group('SYSTEM_ADMIN')]),
+    .authorization((allow) => [allow.group("SYSTEM_ADMIN")]),
 
   CreateCognitoUser: a
     .mutation()
@@ -21,7 +25,7 @@ const schemaCognitoUser = {
     })
     .handler(a.handler.function(createCognitoUserHandler))
     .returns(a.json())
-    .authorization((allow) => [allow.group('SYSTEM_ADMIN')]),
+    .authorization((allow) => [allow.group("SYSTEM_ADMIN")]),
 
   SetCognitoUserPassword: a
     .mutation()
@@ -30,7 +34,7 @@ const schemaCognitoUser = {
     })
     .handler(a.handler.function(setCognitoUserPasswordHandler))
     .returns(a.json())
-    .authorization((allow) => [allow.group('SYSTEM_ADMIN')]),
+    .authorization((allow) => [allow.group("SYSTEM_ADMIN")]),
 };
 
 export default schemaCognitoUser;

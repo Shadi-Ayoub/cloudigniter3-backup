@@ -11,13 +11,9 @@ export interface AppRootWrapperProps extends PropsWithChildren {
 
 export function AppRootWrapper({ context, children }: AppRootWrapperProps) {
   return (
-    <>
-      {/* <CiDebugProbe {...context.debugProbe} /> */}
-
-      <CiNextRootWrapper context={context}>
-        <Kernel />
-        {children}
-      </CiNextRootWrapper>
-    </>
+    <CiNextRootWrapper context={context}>
+      <Kernel />
+      {children}
+    </CiNextRootWrapper>
   );
 }

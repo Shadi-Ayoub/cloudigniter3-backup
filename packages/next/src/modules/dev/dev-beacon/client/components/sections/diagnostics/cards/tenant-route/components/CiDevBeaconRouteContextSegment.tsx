@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Code2 } from "lucide-react";
+import type { CiRoutesMap } from "@cloudigniter/core/types";
 import { cn, Button } from "@cloudigniter/ui/client";
 import { CiDevBeaconCardRow, CiDevBeaconCardRowGrid } from "@ci-next/modules/dev/dev-beacon/client/components";
 import type { CiNextContext } from "@ci-next/types";
@@ -10,6 +11,7 @@ import { CiDevBeaconRouteDefinitionsModal } from "./CiDevBeaconRouteDefinitionsM
 interface CiDevBeaconRouteContextSegmentProps {
   route?: CiNextContext["route"];
   featurePathname?: CiNextContext["featurePathname"];
+  routesDefinitions?: CiRoutesMap;
 }
 
 const EMPTY_VALUE = "—";
@@ -18,7 +20,11 @@ function getDisplayValue(value?: string | null) {
   return value?.trim() || EMPTY_VALUE;
 }
 
-export function CiDevBeaconRouteContextSegment({ route, featurePathname }: CiDevBeaconRouteContextSegmentProps) {
+export function CiDevBeaconRouteContextSegment({
+  route,
+  featurePathname,
+  routesDefinitions,
+}: CiDevBeaconRouteContextSegmentProps) {
   const [isRouteDefinitionsOpen, setIsRouteDefinitionsOpen] = useState(false);
 
   const routeTitle = getDisplayValue(route?.title);
@@ -32,7 +38,6 @@ export function CiDevBeaconRouteContextSegment({ route, featurePathname }: CiDev
 
   const protectedRoute = route?.protected === undefined ? EMPTY_VALUE : route.protected ? "Yes" : "No";
 
-  const routesDefinitions = route?.routesDefinitions;
   const canShowRouteDefinitions = routesDefinitions != null;
 
   return (

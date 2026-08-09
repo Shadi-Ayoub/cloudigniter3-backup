@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import CiLayout from "@cloudigniter/next/layout/cp-standard";
-import { appBootstrap } from "@/kernel/server";
 
 export const metadata: Metadata = {
   title: "CloudIgniter Theme Tokens",
@@ -10,10 +8,6 @@ export const metadata: Metadata = {
 interface LayoutInterface {
   children: React.ReactNode;
 }
-export default async function ThemePresentationLayout({
-  children,
-}: LayoutInterface) {
-  const config = await appBootstrap();
-
-  return <CiLayout config={config}>{children}</CiLayout>;
+export default function ThemePresentationLayout({ children }: LayoutInterface) {
+  return children;
 }

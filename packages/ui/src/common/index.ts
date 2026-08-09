@@ -58,3 +58,8 @@ export {
 // icon
 // ─────────────────────────────────────────────────────────────
 export { CiIcon } from "./icon";
+
+// ─────────────────────────────────────────────────────────────
+// data table
+// ─────────────────────────────────────────────────────────────
+export { ciDataTableFeatures, type CiDataTableFeatures } from "./data-table";

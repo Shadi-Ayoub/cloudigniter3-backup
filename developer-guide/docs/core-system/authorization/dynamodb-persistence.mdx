@@ -6,8 +6,9 @@ sidebar_position: 10
 
 # DynamoDB Persistence
 
-The core package intentionally contains no DynamoDB types or clients. An adapter in `@cloudigniter/aws` or the
-application infrastructure layer should translate DynamoDB records into the core types.
+The Emberguard engine intentionally contains no DynamoDB client dependency. The AWS connector accepts a
+database/provider object from the application, then translates DynamoDB records into Emberguard catalog,
+assignment, custom-domain, and resource-inventory contracts.
 
 This chapter presents the recommended persistence strategy. It is an access-pattern design, not a requirement
 of the evaluator.

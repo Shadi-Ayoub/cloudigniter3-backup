@@ -19,8 +19,20 @@ export {
 
   // data table
   CiDataTable,
+  CiDataTableRowActions,
   CiDataTableRowActionsMenu,
   buildDataTableColumnsWithActions,
+  ciBuildDataTableExcelWorkbook,
+  ciClearDataTablePreferences,
+  ciCreateDataTableDataSource,
+  ciDefineDataTable,
+  ciDefineDataTableColumn,
+  ciExportDataTableToExcel,
+  ciGetDataTablePreferenceCookieName,
+  ciIsDataTableControlDisabled,
+  ciIsDataTableControlVisible,
+  ciLoadDataTablePreferences,
+  ciSaveDataTablePreferences,
 
   // dev beacon
   // CiDevBeaconClient,
@@ -228,6 +240,11 @@ export {
 // navigation
 // ─────────────────────────────────────────────────────────────
 export { CiNavigateWithLoader } from "./navigation";
+
+// ─────────────────────────────────────────────────────────────
+// security administration
+// ─────────────────────────────────────────────────────────────
+export { CiSecurityDataPage } from "./security";
 
 // ─────────────────────────────────────────────────────────────
 // page

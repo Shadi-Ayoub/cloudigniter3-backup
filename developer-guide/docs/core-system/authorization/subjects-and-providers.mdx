@@ -29,7 +29,7 @@ flowchart LR
   B --> D
   E[Trusted request scope] --> D
   D --> F[CiAuthorizationSubject]
-  F --> G["@cloudigniter/core authorizer"]
+  F --> G["@cloudigniter/emberguard authorizer"]
 ```
 
 The provider authenticates identity. It should not become the only place where application authorization rules
@@ -38,12 +38,12 @@ live, because provider groups usually lack tenant, Org Unit, resource, and actio
 ## Adapt a CloudIgniter user
 
 ```ts
-import { ciCreateAuthorizationSubject } from "@cloudigniter/core/lib";
+import { ciCreateAuthorizationSubject } from "@cloudigniter/emberguard/lib";
 import type {
   CiRoleAssignment,
   CiScopedPrivilege,
   CiUser,
-} from "@cloudigniter/core/types";
+} from "@cloudigniter/emberguard/types";
 
 export function createAppAuthorizationSubject(
   user: CiUser,
@@ -74,7 +74,7 @@ assignments:
 import {
   ciCreateRoleAssignmentsFromIdentityGroups,
   ciSystemAccessScope,
-} from "@cloudigniter/core/lib";
+} from "@cloudigniter/emberguard/lib";
 
 import { appAccessControl } from "@/custom/auth/app-access-control";
 
@@ -160,7 +160,7 @@ import {
   ciCreateRoleAssignments,
   ciGlobalAccessScope,
   ciSystemAccessScope,
-} from "@cloudigniter/core/lib";
+} from "@cloudigniter/emberguard/lib";
 
 const trustedSystemGroups = new Set([
   "SYSTEM_ADMIN",
@@ -238,7 +238,7 @@ Direct privileges model an exception assigned to one subject without changing a 
 import {
   ciCreateScopedPrivilege,
   ciTenantAccessScope,
-} from "@cloudigniter/core/lib";
+} from "@cloudigniter/emberguard/lib";
 
 const temporaryExportAccess = ciCreateScopedPrivilege(
   {
@@ -285,7 +285,7 @@ import {
   ciCreateAuthorizationSubject,
   ciCreateRoleAssignments,
   ciSystemAccessScope,
-} from "@cloudigniter/core/lib";
+} from "@cloudigniter/emberguard/lib";
 
 export async function resolveAuthorizationSubject(input: {
   user: CiUser;

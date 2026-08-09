@@ -21,6 +21,7 @@ export {
   ciCreateRoleAssignment,
   ciCreateRoleAssignments,
   ciCreateRoleAssignmentsFromIdentityGroups,
+  ciCreateSecurityAdministration,
   ciCreateScopedPrivilege,
   ciDefineAccessControl,
   ciFormatPermission,
@@ -36,5 +37,5 @@ export {
   ciSystemAccessScope,
   ciTenantAccessScope,
   ciValidateAccessControlDefinition,
-} from "./access-control";
-export { CI_DEFAULT_ACCESS_CONTROL_DEFINITION } from "./access-control";
+} from "@cloudigniter/emberguard/lib";
+export { CI_DEFAULT_ACCESS_CONTROL_DEFINITION } from "@cloudigniter/emberguard/lib";

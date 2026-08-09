@@ -1,0 +1,8 @@
+{
+  "label": "UI components",
+  "position": 7,
+  "link": {
+    "type": "generated-index",
+    "description": "Reusable CloudIgniter user-interface components and integration patterns."
+  }
+}

@@ -1,9 +1,2 @@
-export {
-  getUserProfileRecord,
-  type ProfileRecord,
-} from './auth/get-user-profile-record';
-
-export const extendedResources = {
-  // helloWorld,
-  // myExtraTable,
-};
+export * from "./backend";
+export { getUserProfileRecord, type ProfileRecord } from "./auth";

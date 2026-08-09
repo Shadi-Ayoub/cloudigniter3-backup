@@ -11,6 +11,9 @@ export {
 
   // org unit
   appGetOrgUnitLookupByPath,
+
+  // security
+  appCreateSecurityAdministration,
 } from "./system";
 
 //Settings

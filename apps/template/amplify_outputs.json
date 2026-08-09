@@ -70,6 +70,174 @@
     "model_introspection": {
       "version": 1,
       "models": {
+        "EmberguardAccess": {
+          "name": "EmberguardAccess",
+          "fields": {
+            "PK": {
+              "name": "PK",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "SK": {
+              "name": "SK",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "GSI1PK": {
+              "name": "GSI1PK",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "GSI1SK": {
+              "name": "GSI1SK",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "type": {
+              "name": "type",
+              "isArray": false,
+              "type": {
+                "enum": "EmberguardAccessItemType"
+              },
+              "isRequired": true,
+              "attributes": []
+            },
+            "tenantId": {
+              "name": "tenantId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "subjectId": {
+              "name": "subjectId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "roleId": {
+              "name": "roleId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "domainId": {
+              "name": "domainId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "resourceId": {
+              "name": "resourceId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "status": {
+              "name": "status",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "payload": {
+              "name": "payload",
+              "isArray": false,
+              "type": "AWSJSON",
+              "isRequired": false,
+              "attributes": []
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "isArray": false,
+              "type": "AWSDateTime",
+              "isRequired": false,
+              "attributes": []
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "isArray": false,
+              "type": "AWSDateTime",
+              "isRequired": false,
+              "attributes": []
+            },
+            "expiresAt": {
+              "name": "expiresAt",
+              "isArray": false,
+              "type": "AWSDateTime",
+              "isRequired": false,
+              "attributes": []
+            }
+          },
+          "syncable": true,
+          "pluralName": "EmberguardAccesses",
+          "attributes": [
+            {
+              "type": "model",
+              "properties": {}
+            },
+            {
+              "type": "key",
+              "properties": {
+                "fields": [
+                  "PK",
+                  "SK"
+                ]
+              }
+            },
+            {
+              "type": "key",
+              "properties": {
+                "name": "GSI1",
+                "queryField": "listEmberguardAccessByGSI1PKAndGSI1SK",
+                "fields": [
+                  "GSI1PK",
+                  "GSI1SK"
+                ]
+              }
+            },
+            {
+              "type": "auth",
+              "properties": {
+                "rules": [
+                  {
+                    "groupClaim": "cognito:groups",
+                    "provider": "userPools",
+                    "allow": "groups",
+                    "groups": [
+                      "SYSTEM_ADMIN"
+                    ],
+                    "operations": [
+                      "create",
+                      "update",
+                      "delete",
+                      "read"
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "primaryKeyInfo": {
+            "isCustomPrimaryKey": true,
+            "primaryKeyFieldName": "PK",
+            "sortKeyFieldNames": [
+              "SK"
+            ]
+          }
+        },
         "UserProfile": {
           "name": "UserProfile",
           "fields": {
@@ -247,7 +415,20 @@
           }
         }
       },
-      "enums": {},
+      "enums": {
+        "EmberguardAccessItemType": {
+          "name": "EmberguardAccessItemType",
+          "values": [
+            "ACCESS_DEFINITION",
+            "ACCESS_DOMAIN",
+            "ACCESS_RESOURCE",
+            "RESOURCE_INVENTORY",
+            "ROLE_ASSIGNMENT",
+            "CUSTOM_DOMAIN",
+            "AUDIT_EVENT"
+          ]
+        }
+      },
       "nonModels": {},
       "queries": {
         "GetCognitoUser": {
@@ -261,6 +442,62 @@
               "isArray": false,
               "type": "String",
               "isRequired": true
+            }
+          }
+        },
+        "GetEmberguardDefinition": {
+          "name": "GetEmberguardDefinition",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false
+            }
+          }
+        },
+        "ListEmberguardRoleAssignments": {
+          "name": "ListEmberguardRoleAssignments",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false
+            }
+          }
+        },
+        "ListEmberguardResourceInventory": {
+          "name": "ListEmberguardResourceInventory",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false
+            }
+          }
+        },
+        "ListEmberguardCustomDomains": {
+          "name": "ListEmberguardCustomDomains",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false
             }
           }
         }
@@ -293,6 +530,90 @@
               "isRequired": true
             }
           }
+        },
+        "SetEmberguardDefinition": {
+          "name": "SetEmberguardDefinition",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
+        "PutEmberguardRoleAssignment": {
+          "name": "PutEmberguardRoleAssignment",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
+        "DeleteEmberguardRoleAssignment": {
+          "name": "DeleteEmberguardRoleAssignment",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
+        "PutEmberguardResourceInventory": {
+          "name": "PutEmberguardResourceInventory",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
+        "PutEmberguardCustomDomain": {
+          "name": "PutEmberguardCustomDomain",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
+        "DeleteEmberguardCustomDomain": {
+          "name": "DeleteEmberguardCustomDomain",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
         }
       }
     }
@@ -300,7 +621,8 @@
   "version": "1.4",
   "custom": {
     "cloudigniter": {
-      "userProfileTableName": "UserProfile-fqsqohaocbgsbaazjeo2iw4lpm-NONE"
+      "userProfileTableName": "UserProfile-fqsqohaocbgsbaazjeo2iw4lpm-NONE",
+      "emberguardAccessTableName": "EmberguardAccess-fqsqohaocbgsbaazjeo2iw4lpm-NONE"
     }
   }
 }

@@ -3,19 +3,19 @@
   /* HEADER CONTENT         */
   /**************************/
   .ci-header-menu-button-rounded {
-    @apply hover:bg-muted dark:hover:bg-muted/80 dark:bg-muted dark:text-secondary-400 inline-flex !h-12 !w-12 items-center justify-center !rounded-full bg-gray-50 outline-0 transition-colors focus:ring-0 focus:outline-0;
+    @apply inline-flex h-12! w-12! items-center justify-center rounded-full! bg-surface-muted text-muted-foreground transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring;
   }
 
   .ci-round-button-fallback {
-    @apply bg-muted-50 dark:bg-muted relative flex h-[50px] w-[50px] items-center justify-center rounded-full border-none p-0;
+    @apply relative flex h-[50px] w-[50px] items-center justify-center rounded-full border-none bg-surface-muted p-0;
   }
 
   .ci-tabs-list {
-    @apply text-gray-500;
+    @apply text-muted-foreground;
   }
 
   .ci-main-header-dashboard-button {
-    @apply hover:bg-primary-800 focus:ring-primary-400 dark:bg-muted dark:ring-primary-400 dark:hover:bg-muted dark:hover:ring-primary-400 dark:focus:ring-primary-500 bg-primary-600 dark:text-primary-400 rounded-lg px-4 py-2 text-sm font-medium text-white shadow-md focus:ring-2 focus:ring-offset-2 focus:outline-none ltr:ml-8 rtl:mr-8 dark:ring-1;
+    @apply rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ltr:ml-8 rtl:mr-8;
   }
 
   .ci-main-header-user-box {

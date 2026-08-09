@@ -20,7 +20,7 @@ interface CiRouteDefinition {
 }
 ```
 
-This is metadata. `@cloudigniter/core` remains platform-neutral and does not automatically redirect or return an
+This is metadata. `@cloudigniter/emberguard` remains platform-neutral and does not automatically redirect or return an
 HTTP response. A Next.js or application adapter must enforce the requirement.
 
 ## Authentication versus route authorization
@@ -77,7 +77,7 @@ import type {
   CiAccessScope,
   CiAuthorizationSubject,
   CiRouteDefinition,
-} from "@cloudigniter/core/types";
+} from "@cloudigniter/emberguard/types";
 
 import { appAuthorizer } from "@/custom/auth/app-authorizer";
 
@@ -246,7 +246,7 @@ Treat catalog ownership as server-derived metadata. Use `ciGetAccessControlEntry
 import {
   ciCanOverrideCoreAccessControl,
   ciGetAccessControlEntryOrigin,
-} from "@cloudigniter/core/lib";
+} from "@cloudigniter/emberguard/lib";
 
 const origin = ciGetAccessControlEntryOrigin(reference);
 const canOverrideCore = ciCanOverrideCoreAccessControl(

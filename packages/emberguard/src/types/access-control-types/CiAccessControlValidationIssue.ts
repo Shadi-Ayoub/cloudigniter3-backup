@@ -1,0 +1,18 @@
+/** Structured catalog validation problem suitable for tooling and admin UIs. */
+export type CiAccessControlValidationIssue = {
+  severity: "error" | "warning";
+  code:
+    | "invalid-identifier"
+    | "duplicate-identifier"
+    | "invalid-precedence"
+    | "empty-list"
+    | "unknown-domain"
+    | "unknown-resource"
+    | "unknown-action"
+    | "unknown-role"
+    | "role-cycle"
+    | "unsupported-scope"
+    | "broad-wildcard";
+  path: string;
+  message: string;
+};

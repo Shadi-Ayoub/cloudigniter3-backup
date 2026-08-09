@@ -7,15 +7,15 @@ import {
 } from "@aws-amplify/backend-auth";
 import { CI_CORE_ROLES_BY_PRECEDENCE } from "@cloudigniter/core/lib";
 
-import { customBackendAuth } from "../custom/auth";
+import { customBackendAuth } from "../custom/backend";
 
-import {
-  // listCognitoUsers,
-  getCognitoUserHandler,
-  // deleteCognitoUser,
+import { CI_CORE_AMPLIFY_FUNCTION_RESOURCES } from "../backend/ci-core-amplify-manifest";
+
+const {
   createCognitoUserHandler,
+  getCognitoUserHandler,
   setCognitoUserPasswordHandler,
-} from "./cognito-user";
+} = CI_CORE_AMPLIFY_FUNCTION_RESOURCES;
 
 // import { createUserHandler } from '../functions/user/create-user/resource';
 // import { createUser, getUser } from '../functions/user';
@@ -34,10 +34,7 @@ const backendAuth: AmplifyAuthProps = {
     // postConfirmation,
     ...customBackendAuth.triggers,
   },
-  groups: [
-    ...CI_CORE_ROLES_BY_PRECEDENCE,
-    ...customGroups,
-  ], // Cognito assigns lower (higher-priority) precedence to earlier groups.
+  groups: [...CI_CORE_ROLES_BY_PRECEDENCE, ...customGroups], // Cognito assigns lower (higher-priority) precedence to earlier groups.
   senders: customBackendAuth.senders,
   userAttributes: { ...customBackendAuth.userAttributes },
   multifactor: customBackendAuth.multifactor,

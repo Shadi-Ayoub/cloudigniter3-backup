@@ -1,4 +1,5 @@
 import schemaCognitoUser from "./schema-cognito-user";
+import schemaEmberguard from "./schema-emberguard";
 // import schemaOU from './schema-ou';
 // import schemaSeeder from './schema-seeder';
 // import schemaSettings from './settings/schema-settings';
@@ -9,10 +10,11 @@ import schemaCognitoUser from "./schema-cognito-user";
 // import schemaTenant from './schema-tenant';
 import schemaUser from "./schema-user";
 
-import extendedSchemas from "../../custom/data/schemata";
+import { customDataSchemas } from "../../custom/backend";
 
 const coreSchemas = {
   ...schemaCognitoUser,
+  ...schemaEmberguard,
   // ...schemaOU,
   // ...schemaSeeder,
   // ...schemaSettings,
@@ -24,4 +26,4 @@ const coreSchemas = {
   ...schemaUser,
 };
 
-export { coreSchemas, extendedSchemas };
+export { coreSchemas, customDataSchemas as extendedSchemas };

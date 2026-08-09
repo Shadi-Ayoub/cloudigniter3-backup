@@ -2,18 +2,22 @@ import * as iam from "aws-cdk-lib/aws-iam";
 
 import {
   ciApplyCorePostBuildPlan,
+  ciCreateAmplifyCoreRuntime,
   ciCreateCorePostBuildPlan,
 } from "@cloudigniter/aws/server/backend";
 
 import { ciGetAuthStack } from "./auth";
 import { ciGetDataStack } from "./data";
-import { ciGetRuntimeStack } from "./runtime";
 import type { CiBackend } from "./types";
 
 export function ciPostBuild(backend: CiBackend) {
   const data = ciGetDataStack(backend);
   const auth = ciGetAuthStack(backend);
-  const runtime = ciGetRuntimeStack(backend, { auth, data });
+  const runtime = ciCreateAmplifyCoreRuntime({
+    region: backend.stack.region,
+    envMode: process.env.CI_ENV_MODE,
+    tables: data.tables,
+  });
 
   const plan = ciCreateCorePostBuildPlan(
     runtime,
@@ -31,26 +35,25 @@ export function ciPostBuild(backend: CiBackend) {
 
   ciApplyCorePostBuildPlan(plan, {
     iamModule: iam,
-    functions: auth.functions,
-    includeFunctions: [...auth.CI_AUTH_FUNCS_IDS],
-    envKeyAllowlist: auth.envKeyAllowlist,
-    stripServices: ["dynamodb"],
-  });
-
-  ciApplyCorePostBuildPlan(plan, {
-    iamModule: iam,
-    functions: data.functions,
-    includeFunctions: [...data.CI_DATA_FUNCS_IDS],
-    envKeyAllowlist: data.envKeyAllowlist,
+    functions: {
+      ...auth.functions,
+      ...data.functions,
+    },
+    includeFunctions: [...auth.CI_AUTH_FUNCS_IDS, ...data.CI_DATA_FUNCS_IDS],
+    envKeyAllowlist: {
+      ...auth.envKeyAllowlist,
+      ...data.envKeyAllowlist,
+    },
     applyTableGrants: true,
     tableArns: data.tableArns,
+    strict: true,
   });
 
-  // This makes the physical table name available in amplify_outputs.json.
+  // Publish manifest-declared backend outputs to amplify_outputs.json.
   backend.addOutput({
     custom: {
       cloudigniter: {
-        userProfileTableName: data.tables.userProfileTable.name,
+        ...data.outputs,
       },
     },
   });

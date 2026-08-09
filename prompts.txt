@@ -1,0 +1,51 @@
+// ARBAC UI and management
+
+
+
+
+// CiDataTable
+Implement a component that can be imported from @cloudigniter/ui based on TanStack table (see https://tanstack.com/table/latest and https://github.com/TanStack/table) to be used by the template application and Cloudigniter's users to list and manage objects like users, tenants, etc. consider the following capabilities of the component:
+- Allows selecting different formats having the simple table as the default.
+- Allows defining the columns with their names.
+- Allows defining the actions per row. It can offer three modes. List of icons/buttons to be displayed as the last field in each row (left-most for LTR and right-most for RTL), a drop-down menu, or a mix of horizontally aligned icons/buttons having the last one as the drop-down menu button/icon. The callback of each icon/button action is part of the definition.
+- Allows enabling the option of sorting per selected column. The sorting criteria and direction is part of the definition with a default criteria.
+- Allows enabling filtering the table based on the filter of the corresponding column.
+- Allows rows to be selected if table global actions and filters are defined for the table component.
+- Allows cell clicking (specified fields) to open a model or direct to another page.
+- Supports paging to list per page. The size of each page can also be decided via a drop-down button. The option to list "All" needs to be controlled for large tables.
+- Allows defining global action buttons at the top of the table to apply certain actions on the selected rows. A global action button can also perform a general action independent of any selection like for example generating an Excel report.
+- Allows defining drop-down filters to list items based on the selected filter criteria.
+- Works seamlessly with handlers that connects with the provider database/tables.
+- Allows controlling values displayed in cells like truncating large text shown in the table cells.
+- Provides out-of-the-box global action buttons like exporting the current table (considering active filters and sorting) into a downloadable Excel file.
+- Highlights the row upon mouse hover. This feature can be disabled within the component configuration.
+- Alternate background colour for rows by default (odd rows has a colour and even rows have a different colour. The table header has its own formatting like a dedicated background colour and text boldness strength)
+- Allow defining certain formats for selected columns cells value like making them bold or have a value displayed in a certain format (CSS class) based on a condition which can be a callback that returns a boolean value!
+- Takes the full container width by default utilising Flex rules to layout the columns. However, table width can be defined as a fixed number or a percentage.
+- Allows enabling columns width adjustment by the mouse to, for example, reveal truncated text.
+- Uses a cookie in the browser to retain the last adjustments by the page user like columns adjusted width, the last selected filter and page size.
+
+Provide all the needed helpers that can be imported to define/configure the table and connect to the data source using a defined structure for the component. So, we have the data, definition, and configuration. I am open to the best way to implement the component using the best practices out there.
+
+After you finish the implementation, add a section in the docusaurous user guide with extensive examples and scenarios.
+
+
+// Amplify
+
+Let's revise the dynamic Amplify backend building logic currently implemented in "/Volumes/Extreme-Pro/Nextjs-Projects/cloudigniter/cloudigniter3/packages/aws/src/server/backend" and "/Volumes/Extreme-Pro/Nextjs-Projects/cloudigniter/cloudigniter3/apps/template/amplify" as it is currently difficult to add to it. Adding resources and policies to the backend is ongoing and therefor it is important to be a smooth and clear operation. Currently, adding a handler or a DDB table to the core backend during the development of CloudIgniter require touching multiple files every time before running the sandbox/deploy command. May be a central manifest file where all execution files connect to it at resources build time. Propose an enhancement to the system before we proceed with adding the next set of core resources to the backend.
+
+// ARBAC backend
+
+Let's implement the logic and backend resources associated with the ARBAC system  we implemented so far in two phases:
+
+In phase 1, create a new package named @cloudigniter/emberguard. consider the following:
+- Move all the the core helpers and types we included in @cloudigniter/core to the new package. 
+- @cloudigniter/emberguard should provide all the contracts and tooling to manage ARBAC configuration and implementation in both server and client. Retain the folder layout/structure used in the other sibling packages like @cloudigniter/core and @cloudigniter/aws.
+- @cloudigniter/emberguard is provider based when it comes to storing and loading access information. Therefore it should contain the library per supported provider starting with AWS. Therefore, the concerned helpers/functions imported from this package and which interacts with the provider (say aws) serve as connecters and therefore need to have the provider object passed to them as an argument from the application. all the package relevant library need to be built based on this strategy. May be we can agree on the flow of having an object being instantiating from the main Emberguard class after passing the provider object to its constructor so all member functions use the corresponding provider related libraries under the hood.
+- update the docusaurous user guide accordingly.
+
+In phase 2:
+- Add all the necessary resources in the manifest in @cloudigniter/aws (it will be a dependency package and AWS will be the first supported provider) as well as the application template Amplify folder (schema, etc.).
+- Since most of the operations require Dynamodb interactions, it would be a good idea to revise the current DynamoDB class in @cloudigniter/aws to be used as a generic class for any database operation.
+- build the amplify data endpoints with the required function handlers to manage all aspects of the ARBAC system such as custom domains, resource inventory, assignment repository, etc. These will be linked later to the corresponding admin UIs dedicated for managing roles and access settings and user management.
+- Always consider the best security practices for cloud resources implementation when building the handler functions and tables.

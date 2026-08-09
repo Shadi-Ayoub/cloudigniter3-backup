@@ -1,7 +1,12 @@
 // ─────────────────────────────────────────────────────────────
 // amplify
 // ─────────────────────────────────────────────────────────────
-export { appAmplifyServerClient, appWithAmplify, ciIsAmplifyOutputsOk, ciIsSchemaOk } from "./amplify";
+export {
+  appAmplifyServerClient,
+  appWithAmplify,
+  ciIsAmplifyOutputsOk,
+  ciIsSchemaOk,
+} from "./amplify";
 
 // ─────────────────────────────────────────────────────────────
 // api
@@ -25,6 +30,9 @@ export {
 
   // api
   appPrepareServerApiRequest,
+
+  // Security
+  appCreateSecurityAdministration,
 } from "./api";
 
 // ─────────────────────────────────────────────────────────────
@@ -54,7 +62,11 @@ export {
 // ─────────────────────────────────────────────────────────────
 // i18n
 // ─────────────────────────────────────────────────────────────
-export { ciLoadRouteMessages, type CiLoadRouteMessagesOptions, type CiLoadRouteMessagesResult } from "./i18n";
+export {
+  ciLoadRouteMessages,
+  type CiLoadRouteMessagesOptions,
+  type CiLoadRouteMessagesResult,
+} from "./i18n";
 
 // ─────────────────────────────────────────────────────────────
 // lib

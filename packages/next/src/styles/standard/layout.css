@@ -1,6 +1,10 @@
 @layer components {
+  .ci-skip-link {
+    @apply z-overlay fixed top-2 start-2 -translate-y-16 rounded-md bg-primary px-4 py-2 font-semibold text-primary-foreground shadow-lg transition-transform duration-150 focus:translate-y-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  }
+
   .ci-body {
-    @apply dark:bg-muted h-dvh min-h-0 overflow-hidden bg-gray-50;
+    @apply h-dvh min-h-0 overflow-hidden bg-background;
   }
 
   /* .ci-main is the fixed inset frame: keep ONLY insets, NO padding */
@@ -19,7 +23,7 @@
   }
 
   .ci-main-header {
-    @apply h-primary-header-height border-muted-200 text-muted-900 dark:bg-muted/60 dark:text-muted-200 dark:border-muted-900 z-layout fixed inset-x-0 top-0 flex w-full items-center justify-between border-b bg-gray-50/60 shadow-md;
+    @apply h-primary-header-height z-layout fixed inset-x-0 top-0 flex w-full items-center justify-between border-b border-border bg-background/60 text-foreground shadow-md;
     margin-bottom: -1px; /* cancels the 1px border from scrollHeight */
   }
 
@@ -49,7 +53,7 @@
   }
 
   .ci-main-footer {
-    @apply text-foreground supports-[backdrop-filter]:bg-muted-200/60 dark:text-muted-300 supports-[backdrop-filter]:dark:bg-muted-950/60 h-footer-height z-layout fixed inset-x-0 bottom-0 left-0 flex w-full items-center justify-between px-8 shadow-md backdrop-blur;
+    @apply h-footer-height z-layout fixed inset-x-0 bottom-0 left-0 flex w-full items-center justify-between bg-background/60 px-8 text-foreground shadow-md backdrop-blur;
   }
 
   .ci-viewport-center {
@@ -71,6 +75,6 @@
   }
 
   .ci-main-login-footer {
-    @apply text-foreground dark:text-muted-300 supports-[backdrop-filter]:dark:bg-muted-950/60 h-footer-height z-layout fixed inset-x-0 bottom-0 left-0 flex w-full items-center justify-center px-8 shadow-md backdrop-blur supports-[backdrop-filter]:bg-gray-50/60;
+    @apply h-footer-height z-layout fixed inset-x-0 bottom-0 left-0 flex w-full items-center justify-center bg-background/60 px-8 text-foreground shadow-md backdrop-blur;
   }
 }

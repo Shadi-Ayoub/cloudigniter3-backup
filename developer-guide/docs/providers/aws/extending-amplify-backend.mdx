@@ -1,0 +1,96 @@
+---
+title: Extend the Amplify Backend
+sidebar_position: 1
+description: Add application-owned handlers, data models, permissions, and event integrations without modifying CloudIgniter core resources.
+---
+
+# Extend the Amplify backend
+
+CloudIgniter owns the core resources under `amplify/auth`, `amplify/data`,
+`amplify/functions`, and `amplify/backend`. Your application extensions belong
+under `amplify/custom`, whose central entry point is `amplify/custom/backend.ts`.
+Keeping this boundary makes framework upgrades easier and prevents custom
+resource keys from silently replacing core resources.
+
+## Add a Lambda handler
+
+Create the handler and its Amplify resource definition inside a feature folder,
+then register the factory once in `customBackendResources`.
+
+```ts title="amplify/custom/functions/send-invoice/resource.ts" showLineNumbers
+import { defineFunction } from "@aws-amplify/backend";
+
+export const sendInvoiceHandler = defineFunction({
+  name: "send-invoice",
+  entry: "./handler.ts",
+});
+```
+
+```ts title="amplify/custom/backend.ts" showLineNumbers
+import { sendInvoiceHandler } from "./functions/send-invoice/resource";
+
+export const customBackendResources = {
+  sendInvoiceHandler,
+};
+```
+
+Resource keys must be unique. Synthesis fails if a custom key collides with
+`auth`, `data`, or another CloudIgniter core resource.
+
+## Add an Amplify Data model
+
+Add application models to `amplify/custom/data/schemata/index.ts`. They are
+merged with the core schema before `defineData(...)` runs.
+
+```ts title="amplify/custom/data/schemata/index.ts" showLineNumbers
+import { a } from "@aws-amplify/backend";
+
+const customDataSchemas = {
+  Invoice: a
+    .model({
+      number: a.string().required(),
+      total: a.float().required(),
+    })
+    .authorization((allow) => [allow.authenticated()]),
+};
+
+export default customDataSchemas;
+```
+
+Amplify Data models provision DynamoDB tables automatically. For a standalone
+CDK table, define a custom resource factory, register it in
+`customBackendResources`, and connect it in the post-build hook.
+
+## Add permissions and event integrations
+
+Use `ciConfigureCustomBackend` after all Amplify constructs have been created.
+This is the correct place for CDK grants, Lambda environment variables, EventBridge
+rules, DynamoDB stream consumers, schedules, and custom outputs.
+
+```ts title="amplify/custom/backend.ts" showLineNumbers
+export function ciConfigureCustomBackend({ backend }) {
+  const worker = backend.sendInvoiceHandler.resources.lambda;
+  const table = backend.auditEventsTable.resources.table;
+
+  table.grantReadWriteData(worker);
+  worker.addEnvironment("AUDIT_TABLE_NAME", table.tableName);
+  worker.addEventSource(/* your CDK event source */);
+}
+```
+
+Keep dependencies one-directional. If a function is created in the Auth nested
+stack, do not inject a Data-stack resource token into it when Data already
+references Auth. That produces a CloudFormation nested-stack cycle. Put tightly
+coupled custom resources in the same stack or move the integration to a neutral
+custom stack.
+
+## Verify and deploy
+
+```sh title="Verify the template" showLineNumbers
+pnpm --dir apps/template test
+pnpm --dir apps/template typecheck
+npx ampx sandbox --profile your-profile
+```
+
+Never commit `.env` values, Amplify secrets, generated outputs, or account-specific
+ARNs. Use Amplify secrets and deployment configuration for sensitive values.

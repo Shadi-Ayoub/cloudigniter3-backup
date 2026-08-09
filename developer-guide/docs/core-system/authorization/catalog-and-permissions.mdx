@@ -89,7 +89,7 @@ limited to CRUD.
 A privilege is a serializable policy statement:
 
 ```ts
-import type { CiPrivilege } from "@cloudigniter/core/types";
+import type { CiPrivilege } from "@cloudigniter/emberguard/types";
 
 const approveInvoices: CiPrivilege = {
   id: "approve-invoices",
@@ -173,7 +173,7 @@ import {
   ciFormatPermission,
   ciMatchesPermission,
   ciParsePermission,
-} from "@cloudigniter/core/lib";
+} from "@cloudigniter/emberguard/lib";
 
 ciFormatPermission("identity.users", "read");
 // "identity.users.read"
@@ -211,7 +211,7 @@ entire security model.
 inspect structured issues without throwing:
 
 ```ts
-import { ciValidateAccessControlDefinition } from "@cloudigniter/core/lib";
+import { ciValidateAccessControlDefinition } from "@cloudigniter/emberguard/lib";
 
 const issues = ciValidateAccessControlDefinition(appAccessControl);
 
@@ -246,8 +246,8 @@ CloudIgniter ships `CI_DEFAULT_ACCESS_CONTROL_DEFINITION`. Build the resolved ap
 are runtime-frozen and protected from collisions:
 
 ```ts title="src/custom/auth/app-access-control.ts" showLineNumbers
-import { ciCreateAppAccessControl } from "@cloudigniter/core/lib";
-import type { CiAccessControlLayer } from "@cloudigniter/core/types";
+import { ciCreateAppAccessControl } from "@cloudigniter/emberguard/lib";
+import type { CiAccessControlLayer } from "@cloudigniter/emberguard/types";
 
 export const appAccessControlExtension = {
   resources: [
@@ -329,7 +329,7 @@ the resolved catalog:
 import {
   ciApplyCoreAccessControlOverrides,
   ciCreateCoreAccessControlOverride,
-} from "@cloudigniter/core/lib";
+} from "@cloudigniter/emberguard/lib";
 
 const override = ciCreateCoreAccessControlOverride({
   id: "core-override-2026-08-05-001",
@@ -378,7 +378,7 @@ invalidation are ready. The engine accepts serialized definitions, but dynamic p
 operational security feature—not merely a form.
 
 :::tip Recommended starting strategy
-Keep the protected core catalog in `@cloudigniter/core/lib`, application additions in application code, and
+Keep the protected core catalog in `@cloudigniter/emberguard/lib`, application additions in application code, and
 scoped assignments in DynamoDB. Add dynamic tenant roles and audited core overrides only through trusted
 server-side administration workflows.
 :::

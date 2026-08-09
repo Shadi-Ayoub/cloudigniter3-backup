@@ -73,6 +73,7 @@
     "clean": "rimraf dist .tsbuildinfo",
     "clean:maps": "node ../../scripts/ci-clean-dist-maps.mjs",
     "clean:dts": "node ../../scripts/ci-clean-dts-map.cjs",
+    "test": "tsx --tsconfig tsconfig.test.json --test __tests__/**/*.test.ts",
     "test:style": "node ./scripts/ci-test-style.mjs",
     "build": "pnpm --silent run build:dev",
     "build:dev": "node ../../scripts/ci-build-package.mjs dev",

@@ -3,17 +3,17 @@
    * PRIMARY SCALE
    * Main brand/action color family.
    * ====================================================================== */
-  --color-primary-50: var(--color-ci-blue-50);
-  --color-primary-100: var(--color-ci-blue-100);
-  --color-primary-200: var(--color-ci-blue-200);
-  --color-primary-300: var(--color-ci-blue-300);
-  --color-primary-400: var(--color-ci-blue-400);
-  --color-primary-500: var(--color-ci-blue-500);
-  --color-primary-600: var(--color-ci-blue-600);
-  --color-primary-700: var(--color-ci-blue-700);
-  --color-primary-800: var(--color-ci-blue-800);
-  --color-primary-900: var(--color-ci-blue-900);
-  --color-primary-950: var(--color-ci-blue-950);
+  --color-primary-50: oklch(97% 0.014 290);
+  --color-primary-100: oklch(93% 0.034 289);
+  --color-primary-200: oklch(87% 0.066 288);
+  --color-primary-300: oklch(78% 0.105 287);
+  --color-primary-400: oklch(68% 0.14 286);
+  --color-primary-500: oklch(59% 0.16 285);
+  --color-primary-600: oklch(51% 0.155 285);
+  --color-primary-700: oklch(44% 0.13 285);
+  --color-primary-800: oklch(37% 0.105 285);
+  --color-primary-900: oklch(31% 0.08 285);
+  --color-primary-950: oklch(22% 0.055 285);
 
   /* ========================================================================
    * SECONDARY SCALE

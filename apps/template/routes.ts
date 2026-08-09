@@ -21,10 +21,23 @@ export const routes: CiRoutesMap = {
     namespace: "dashboard",
     protected: true,
   },
-  "/dashboard/auth": {
-    title: "Manage Authorization",
-    namespace: "dashboard.auth",
+  "/dashboard/security": {
+    title: "Security Center",
+    namespace: "dashboard.security",
     protected: true,
+    access: {
+      resource: "platform.authorization",
+      action: "read",
+    },
+  },
+  "/dashboard/security/*": {
+    title: "Access Control Administration",
+    namespace: "dashboard.security",
+    protected: true,
+    access: {
+      resource: "platform.authorization",
+      action: "read",
+    },
   },
   "/dashboard/dev": {
     title: "Developer Toolbox",

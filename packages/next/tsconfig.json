@@ -20,8 +20,6 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
-    "__tests__/**/*.ts",
-    "__tests__/**/*.tsx",
     "vitest.d.ts"
   ],
   "exclude": [

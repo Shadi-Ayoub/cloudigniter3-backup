@@ -47,7 +47,7 @@ import {
   ciOrgUnitAccessScope,
   ciSystemAccessScope,
   ciTenantAccessScope,
-} from "@cloudigniter/core/lib";
+} from "@cloudigniter/emberguard/lib";
 
 const system = ciSystemAccessScope();
 const globalScope = ciGlobalAccessScope();
@@ -99,7 +99,7 @@ request reports Finance in `ancestorOrgUnitIds`.
 import {
   ciCreateRoleAssignment,
   ciTenantAccessScope,
-} from "@cloudigniter/core/lib";
+} from "@cloudigniter/emberguard/lib";
 
 const tenantViewer = ciCreateRoleAssignment(
   "tenant-viewer",
@@ -151,7 +151,7 @@ Assignments are evaluated independently. The first does not grant access anywher
 When trusted provider groups have one known assignment scope, map them against the resolved catalog:
 
 ```ts title="Convert provider groups to assignments" showLineNumbers
-import { ciCreateRoleAssignmentsFromIdentityGroups } from "@cloudigniter/core/lib";
+import { ciCreateRoleAssignmentsFromIdentityGroups } from "@cloudigniter/emberguard/lib";
 
 const assignments = ciCreateRoleAssignmentsFromIdentityGroups(
   providerGroupNames,
@@ -230,7 +230,7 @@ the resolved ancestry before making decisions.
 Tests and adapters can use the same scope predicate as the engine:
 
 ```ts title="Check scope containment" showLineNumbers
-import { ciAccessScopeContains } from "@cloudigniter/core/lib";
+import { ciAccessScopeContains } from "@cloudigniter/emberguard/lib";
 
 ciAccessScopeContains(
   ciTenantAccessScope("tenant-123"),

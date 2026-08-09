@@ -5,8 +5,8 @@ import type * as Preset from "@docusaurus/preset-classic";
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: "My Site",
-  tagline: "Dinosaurs are cool",
+  title: "CloudIgniter Guides",
+  tagline: "Build and extend applications with CloudIgniter",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
@@ -64,21 +64,40 @@ const config: Config = {
     ],
   ],
 
+  plugins: [
+    [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "companyDevelopers",
+        path: "company-developers",
+        routeBasePath: "company-developers",
+        sidebarPath: "./company-sidebars.ts",
+      },
+    ],
+  ],
+
   themeConfig: {
     // Replace with your project's social card
     image: "img/docusaurus-social-card.jpg",
     navbar: {
-      title: "My Site",
+      title: "CloudIgniter",
       logo: {
-        alt: "My Site Logo",
+        alt: "CloudIgniter logo",
         src: "img/logo.svg",
       },
       items: [
         {
           type: "docSidebar",
-          sidebarId: "tutorialSidebar",
+          sidebarId: "userGuideSidebar",
           position: "left",
-          label: "Developer Manual",
+          label: "CloudIgniter Users",
+        },
+        {
+          type: "docSidebar",
+          docsPluginId: "companyDevelopers",
+          sidebarId: "cloudIgniterDevelopersSidebar",
+          position: "left",
+          label: "CloudIgniter Developers",
         },
         {
           type: "docSidebar",
@@ -137,7 +156,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} CloudIgniter. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,

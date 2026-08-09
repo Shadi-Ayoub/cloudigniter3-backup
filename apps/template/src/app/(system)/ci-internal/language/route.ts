@@ -9,14 +9,16 @@ import type { NextRequest } from "next/server";
 import {
   CI_DEFAULT_REQUEST_CONTEXT_COOKIE_NAME,
   CI_DEFAULT_REQUEST_CONTEXT_HEADER_NAME,
-  ciDeserializeRequestContext,
   ciGetLangDir,
   ciNormalizePathname,
   ciNormalizeThrownError,
 } from "@cloudigniter/core/lib";
 
-import type { CiRequestContext, CiServerErrorPayload } from "@cloudigniter/core/types";
-import { ciGetServerLocale } from "@cloudigniter/next/server";
+import type { CiServerErrorPayload } from "@cloudigniter/core/types";
+import {
+  ciGetServerLocale,
+  ciResolveRequestContextFromRequest,
+} from "@cloudigniter/next/server";
 
 import config from "@/../cloudigniter.config";
 import { ciLoadRouteMessages } from "@/kernel/server";
@@ -34,15 +36,15 @@ function ciIsDevBeaconLanguageDiagnosticsEnabled(): boolean {
   return process.env.NODE_ENV !== "production";
 }
 
-// function ciGetRequestedPathname(request: NextRequest): string | null {
-//   const pathname = request.nextUrl.searchParams.get("pathname")?.trim();
+function ciGetRequestedPathname(request: NextRequest): string | null {
+  const pathname = request.nextUrl.searchParams.get("pathname")?.trim();
 
-//   if (!pathname || !pathname.startsWith("/") || pathname.startsWith("//")) {
-//     return null;
-//   }
+  if (!pathname || !pathname.startsWith("/") || pathname.startsWith("//")) {
+    return null;
+  }
 
-//   return ciNormalizePathname(pathname);
-// }
+  return ciNormalizePathname(pathname);
+}
 
 function ciIsServerErrorPayload(value: unknown): value is CiServerErrorPayload {
   if (!value || typeof value !== "object") {
@@ -136,38 +138,6 @@ function ciCreateLanguageDiagnosticsError(message: string): Error {
   );
 }
 
-function ciGetRequestContext(request: NextRequest): CiRequestContext {
-  const requestContextHeaderName =
-    config.request.context.requestContextHeaderName ?? CI_DEFAULT_REQUEST_CONTEXT_HEADER_NAME;
-
-  const requestContextCookieName =
-    config.request.context.requestContextCookieName ?? CI_DEFAULT_REQUEST_CONTEXT_COOKIE_NAME;
-
-  const serializedHeaderContext = request.headers.get(requestContextHeaderName);
-
-  const serializedCookieContext = request.cookies.get(requestContextCookieName)?.value;
-
-  const serializedRequestContext = serializedHeaderContext || serializedCookieContext;
-
-  if (!serializedRequestContext) {
-    throw ciCreateLanguageDiagnosticsError(
-      `The CloudIgniter request context is missing from both the ` +
-        `"${requestContextHeaderName}" header and the ` +
-        `"${requestContextCookieName}" cookie.`,
-    );
-  }
-
-  try {
-    return ciDeserializeRequestContext(serializedRequestContext);
-  } catch {
-    throw ciCreateLanguageDiagnosticsError(
-      `The CloudIgniter request context received through the ${
-        serializedHeaderContext ? "header" : "cookie"
-      } is invalid.`,
-    );
-  }
-}
-
 export async function GET(request: NextRequest) {
   if (!ciIsDevBeaconLanguageDiagnosticsEnabled()) {
     return new Response(null, {
@@ -176,24 +146,24 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  // const pathname = ciGetRequestedPathname(request);
+  const pathname = ciGetRequestedPathname(request);
 
-  // if (!pathname) {
-  //   return Response.json(
-  //     {
-  //       error: {
-  //         title: "Invalid Language Diagnostics Request!",
-  //         message: 'The "pathname" query parameter must be a valid absolute pathname.',
-  //         severity: "critical",
-  //         showRetry: false,
-  //       } satisfies CiServerErrorPayload,
-  //     },
-  //     {
-  //       status: 400,
-  //       headers: responseHeaders,
-  //     },
-  //   );
-  // }
+  if (!pathname) {
+    return Response.json(
+      {
+        error: {
+          title: "Invalid Language Diagnostics Request!",
+          message: 'The "pathname" query parameter must be a valid absolute pathname.',
+          severity: "critical",
+          showRetry: false,
+        } satisfies CiServerErrorPayload,
+      },
+      {
+        status: 400,
+        headers: responseHeaders,
+      },
+    );
+  }
 
   const detail = request.nextUrl.searchParams.get("detail") ?? "summary";
 
@@ -230,7 +200,24 @@ export async function GET(request: NextRequest) {
 
     stage = "resolving request context";
 
-    const requestContext = ciGetRequestContext(request);
+    const requestContext = ciResolveRequestContextFromRequest({
+      request,
+      pathname,
+      headerName:
+        config.request.context.requestContextHeaderName ??
+        CI_DEFAULT_REQUEST_CONTEXT_HEADER_NAME,
+      cookieName:
+        config.request.context.requestContextCookieName ??
+        CI_DEFAULT_REQUEST_CONTEXT_COOKIE_NAME,
+      preferredSource: "cookie",
+    });
+
+    if (!requestContext) {
+      throw ciCreateLanguageDiagnosticsError(
+        `No resolved request context matches the requested pathname "${pathname}".`,
+      );
+    }
+
     const route = requestContext.route;
 
     if (!route) {

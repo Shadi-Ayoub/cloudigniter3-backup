@@ -1,0 +1,1204 @@
+{
+  "communities": {
+    "0": [
+      "template_src_app_layout",
+      "template_src_app_layout_approotlayout",
+      "template_src_app_layout_copy",
+      "template_src_app_layout_copy_approotlayout",
+      "template_src_app_layout_copy_dynamic",
+      "template_src_app_layout_copy_inter",
+      "template_src_app_layout_copy_revalidate",
+      "template_src_app_layout_dynamic",
+      "template_src_app_layout_revalidate",
+      "template_src_app_system_ci_internal_org_unit_lookup_route",
+      "template_src_app_system_ci_internal_org_unit_lookup_route_get",
+      "template_src_app_system_ci_internal_org_unit_lookup_route_runtime",
+      "template_src_app_system_ci_internal_tenant_lookup_route",
+      "template_src_app_system_ci_internal_tenant_lookup_route_get",
+      "template_src_app_system_ci_internal_tenant_lookup_route_runtime",
+      "template_src_kernel_server_api_app_prepare_server_api_request",
+      "template_src_kernel_server_api_app_prepare_server_api_request_appprepareserverapirequest",
+      "template_src_kernel_server_api_app_server_client_appserverclient",
+      "template_src_kernel_server_api_index",
+      "template_src_kernel_server_api_system_get_lambda_parameters",
+      "template_src_kernel_server_api_system_get_lambda_parameters_config",
+      "template_src_kernel_server_api_system_get_lambda_parameters_getlambdaparameters",
+      "template_src_kernel_server_api_system_index",
+      "template_src_kernel_server_api_system_org_unit_app_get_org_unit_lookup_by_path",
+      "template_src_kernel_server_api_system_org_unit_app_get_org_unit_lookup_by_path_appgetorgunitlookupbypath",
+      "template_src_kernel_server_api_system_seeder_app_seed",
+      "template_src_kernel_server_api_system_seeder_app_seed_appseed",
+      "template_src_kernel_server_api_system_seeder_app_seed_seederresponse",
+      "template_src_kernel_server_api_system_seeder_app_seeder_service",
+      "template_src_kernel_server_api_system_seeder_app_seeder_service_appclearitem",
+      "template_src_kernel_server_api_system_seeder_app_seeder_service_appseeditem",
+      "template_src_kernel_server_api_system_seeder_app_seeder_service_rationale_19",
+      "template_src_kernel_server_api_system_seeder_app_seeder_service_rationale_40",
+      "template_src_kernel_server_api_system_seeder_app_seeder_service_rationale_50",
+      "template_src_kernel_server_api_system_seeder_app_seeder_service_seedresult",
+      "template_src_kernel_server_api_system_tenant_app_create_tenant",
+      "template_src_kernel_server_api_system_tenant_app_create_tenant_appcreatetenant",
+      "template_src_kernel_server_api_system_tenant_app_get_tenant",
+      "template_src_kernel_server_api_system_tenant_app_get_tenant_appgettenant",
+      "template_src_kernel_server_api_system_tenant_app_get_tenant_by_slug",
+      "template_src_kernel_server_api_system_tenant_app_get_tenant_by_slug_appgettenantbyslug",
+      "template_src_kernel_server_api_system_tenant_app_get_tenant_lookup_by_slug",
+      "template_src_kernel_server_api_system_tenant_app_get_tenant_lookup_by_slug_appgettenantlookupbyslug",
+      "template_src_kernel_server_api_system_tenant_app_get_tenant_lookup_by_slug_ci_mock_tenants",
+      "template_src_kernel_server_api_system_tenant_app_get_tenant_lookup_by_slug_cicreatemocktenant",
+      "template_src_kernel_server_api_system_tenant_app_get_tenant_lookup_by_slug_cimocktenant",
+      "template_src_kernel_server_api_system_tenant_app_list_tenants",
+      "template_src_kernel_server_api_system_tenant_app_list_tenants_applisttenants",
+      "template_src_kernel_server_api_system_tenant_app_seed_tenants",
+      "template_src_kernel_server_api_system_tenant_app_seed_tenants_appseedtenants",
+      "template_src_kernel_server_api_system_tenant_app_update_tenant",
+      "template_src_kernel_server_api_system_tenant_app_update_tenant_appupdatetenant",
+      "template_src_kernel_server_auth_app_get_dev_beacon_access",
+      "template_src_kernel_server_auth_app_get_dev_beacon_access_appgetdevbeaconaccess",
+      "template_src_kernel_server_auth_app_get_dev_beacon_actor",
+      "template_src_kernel_server_auth_app_get_dev_beacon_actor_appgetdevbeaconactor",
+      "template_src_kernel_server_auth_index",
+      "template_src_kernel_server_components_index",
+      "template_src_kernel_server_components_kernel",
+      "template_src_kernel_server_components_kernel_kernel",
+      "template_src_kernel_server_index",
+      "template_src_kernel_server_lib_index",
+      "template_src_kernel_server_root_appresolverootlayoutcontext",
+      "template_src_kernel_server_root_appresolverootlayoutcontext_appresolverootlayoutcontext",
+      "template_src_kernel_server_root_appresolverootlayoutcontext_inter",
+      "template_src_kernel_server_root_approotwrapper",
+      "template_src_kernel_server_root_approotwrapper_approotwrapper",
+      "template_src_kernel_server_root_approotwrapper_approotwrapperprops",
+      "template_src_kernel_server_root_index",
+      "template_src_kernel_server_settings_app_get_settings",
+      "template_src_kernel_server_settings_app_get_settings_appgetsettings",
+      "template_src_kernel_server_settings_app_get_settings_settings",
+      "template_src_kernel_server_settings_index"
+    ],
+    "1": [
+      "template_amplify_auth_cognito_user_cognito_create_user_handler",
+      "template_amplify_auth_cognito_user_cognito_create_user_handler_handler",
+      "template_amplify_auth_cognito_user_cognito_get_user_handler",
+      "template_amplify_auth_cognito_user_cognito_get_user_handler_handler",
+      "template_amplify_auth_cognito_user_cognito_set_user_password_handler",
+      "template_amplify_auth_cognito_user_cognito_set_user_password_handler_handler",
+      "template_amplify_auth_post_confirmation_resource",
+      "template_amplify_auth_post_confirmation_resource_postconfirmation",
+      "template_amplify_custom_data_schemata_index",
+      "template_amplify_custom_data_schemata_index_extendedschemas",
+      "template_amplify_data_resource",
+      "template_amplify_data_resource_schema",
+      "template_amplify_data_resource_schemadata",
+      "template_amplify_data_schemata_index",
+      "template_amplify_data_schemata_index_coreschemas",
+      "template_amplify_data_schemata_schema_cognito_user_schemacognitouser",
+      "template_amplify_data_schemata_schema_user",
+      "template_amplify_data_schemata_schema_user_schemauser",
+      "template_src_kernel_server_amplify_app_amplify_server_client",
+      "template_src_kernel_server_amplify_app_amplify_server_client_appamplifyserverclient",
+      "template_src_kernel_server_amplify_app_amplify_server_client_config",
+      "template_src_kernel_server_amplify_app_with_amplify",
+      "template_src_kernel_server_amplify_app_with_amplify_appwithamplify",
+      "template_src_kernel_server_amplify_app_with_amplify_config",
+      "template_src_kernel_server_amplify_app_with_amplify_runwithamplifyservercontext",
+      "template_src_kernel_server_amplify_ci_is_amplify_outputs_ok",
+      "template_src_kernel_server_amplify_ci_is_amplify_outputs_ok_ciisamplifyoutputsok",
+      "template_src_kernel_server_amplify_ci_is_schema_ok",
+      "template_src_kernel_server_amplify_ci_is_schema_ok_amplifyoutputs",
+      "template_src_kernel_server_amplify_ci_is_schema_ok_ciisschemaok",
+      "template_src_kernel_server_amplify_index",
+      "template_src_kernel_server_api_app_server_client",
+      "template_src_kernel_server_api_app_server_client_cicreateserverclient",
+      "template_src_kernel_server_api_app_server_client_config",
+      "template_src_kernel_server_api_system_settings_save_settings",
+      "template_src_kernel_server_api_system_settings_save_settings_config",
+      "template_src_kernel_server_api_system_settings_save_settings_savesettings",
+      "template_src_kernel_server_bootstrap_app_bootstrap",
+      "template_src_kernel_server_bootstrap_ci_get_server_status",
+      "template_src_kernel_server_bootstrap_ci_get_server_status_cigetserverstatus",
+      "template_src_kernel_server_bootstrap_ci_get_server_status_config",
+      "template_src_kernel_server_bootstrap_index",
+      "template_src_kernel_server_config_app_get_all_server_config_appgetallserverconfig",
+      "template_src_kernel_server_settings_delete_adapters_build_tenant_models_facade",
+      "template_src_kernel_server_settings_delete_adapters_build_tenant_models_facade_buildtenantmodelsfacade",
+      "template_src_kernel_server_settings_delete_adapters_build_tenant_models_facade_dataclient"
+    ],
+    "2": [
+      "template_src_app_ci_global_ci_global_dashboard_page",
+      "template_src_app_ci_global_ci_global_dashboard_page_citenantplaceholderpage",
+      "template_src_app_ci_global_ci_global_dashboard_page_citenantplaceholderpageprops",
+      "template_src_app_ci_global_ci_global_layout",
+      "template_src_app_ci_global_ci_global_layout_cigloballayout",
+      "template_src_app_ci_tenant_ci_tenant_dashboard_page",
+      "template_src_app_ci_tenant_ci_tenant_dashboard_page_citenantplaceholderpage",
+      "template_src_app_ci_tenant_ci_tenant_dashboard_page_citenantplaceholderpageprops",
+      "template_src_app_ci_tenant_ci_tenant_layout",
+      "template_src_app_ci_tenant_ci_tenant_layout_citenantlayout",
+      "template_src_app_page",
+      "template_src_app_page_homepage",
+      "template_src_app_system_create_account_layout",
+      "template_src_app_system_create_account_layout_layoutinterface",
+      "template_src_app_system_create_account_layout_loginlayout",
+      "template_src_app_system_create_account_layout_metadata",
+      "template_src_app_system_create_account_page",
+      "template_src_app_system_create_account_page_createaccountpage",
+      "template_src_app_system_dashboard_layout",
+      "template_src_app_system_dashboard_layout_cplayout",
+      "template_src_app_system_dashboard_layout_layoutinterface",
+      "template_src_app_system_dashboard_layout_metadata",
+      "template_src_app_system_dashboard_page",
+      "template_src_app_system_dashboard_page_cphomepage",
+      "template_src_app_system_dashboard_setup",
+      "template_src_app_system_dashboard_setup_setup",
+      "template_src_app_system_dashboard_theme_layout",
+      "template_src_app_system_dashboard_theme_layout_layoutinterface",
+      "template_src_app_system_dashboard_theme_layout_metadata",
+      "template_src_app_system_dashboard_theme_layout_themepresentationlayout",
+      "template_src_app_system_dashboard_theme_page",
+      "template_src_app_system_dashboard_theme_page_themepresentationpage",
+      "template_src_app_system_login_layout",
+      "template_src_app_system_login_layout_layoutinterface",
+      "template_src_app_system_login_layout_loginlayout",
+      "template_src_app_system_login_layout_metadata",
+      "template_src_app_system_login_page",
+      "template_src_app_system_login_page_loginpage",
+      "template_src_kernel_server_bootstrap_app_bootstrap_appbootstrap"
+    ],
+    "3": [
+      "template_amplify_auth_backend_auth",
+      "template_amplify_auth_backend_auth_backendauth",
+      "template_amplify_auth_backend_auth_backendauthaccess",
+      "template_amplify_auth_cognito_user_cognito_create_user_resource",
+      "template_amplify_auth_cognito_user_cognito_create_user_resource_createcognitouserhandler",
+      "template_amplify_auth_cognito_user_cognito_get_user_resource",
+      "template_amplify_auth_cognito_user_cognito_get_user_resource_getcognitouserhandler",
+      "template_amplify_auth_cognito_user_cognito_set_user_password_resource",
+      "template_amplify_auth_cognito_user_cognito_set_user_password_resource_setcognitouserpasswordhandler",
+      "template_amplify_auth_cognito_user_index",
+      "template_amplify_auth_post_confirmation_config",
+      "template_amplify_auth_post_confirmation_handler",
+      "template_amplify_auth_post_confirmation_handler_client",
+      "template_amplify_auth_post_confirmation_handler_handler",
+      "template_amplify_auth_resource",
+      "template_amplify_auth_resource_amplifyauthresource",
+      "template_amplify_auth_resource_auth",
+      "template_amplify_backend_backend_core",
+      "template_amplify_backend_backend_core_corebackendkeys",
+      "template_amplify_backend_backend_core_corebackendresources",
+      "template_amplify_backend_backend_core_coreresources",
+      "template_amplify_backend_plugins_ci_loader",
+      "template_amplify_backend_plugins_ci_loader_ciloadmergedbackendresources",
+      "template_amplify_backend_plugins_ci_loader_extendedresources",
+      "template_amplify_custom_auth_custom_backend_auth",
+      "template_amplify_custom_auth_custom_backend_auth_custombackendauth",
+      "template_amplify_custom_auth_get_user_profile_record",
+      "template_amplify_custom_auth_get_user_profile_record_cicreateprofilerecord",
+      "template_amplify_custom_auth_get_user_profile_record_ciisrecord",
+      "template_amplify_custom_auth_get_user_profile_record_getuserprofilerecord",
+      "template_amplify_custom_auth_get_user_profile_record_profilerecord",
+      "template_amplify_custom_auth_index",
+      "template_amplify_custom_index",
+      "template_amplify_custom_index_extendedresources",
+      "template_amplify_data_resource_data",
+      "template_amplify_data_schemata_schema_cognito_user",
+      "template_amplify_delete_backend"
+    ],
+    "4": [
+      "aws_amplify_backend",
+      "aws_amplify_backend_auth",
+      "aws_amplify_backend_cli",
+      "aws_amplify_backend_function",
+      "aws_amplify_data_schema",
+      "aws_amplify_plugin_types",
+      "aws_cdk_lib",
+      "cloudigniter_core",
+      "cloudigniter_next",
+      "cloudigniter_ui",
+      "rimraf",
+      "template_package_devdependencies",
+      "template_package_devdependencies_aws_amplify_backend",
+      "template_package_devdependencies_aws_amplify_backend_auth",
+      "template_package_devdependencies_aws_amplify_backend_cli",
+      "template_package_devdependencies_aws_amplify_backend_function",
+      "template_package_devdependencies_aws_amplify_data_schema",
+      "template_package_devdependencies_aws_amplify_plugin_types",
+      "template_package_devdependencies_aws_cdk_lib",
+      "template_package_devdependencies_cloudigniter_aws",
+      "template_package_devdependencies_cloudigniter_core",
+      "template_package_devdependencies_cloudigniter_next",
+      "template_package_devdependencies_cloudigniter_ui",
+      "template_package_devdependencies_rimraf",
+      "template_package_devdependencies_tsx",
+      "template_package_devdependencies_types_aws_lambda",
+      "template_package_devdependencies_types_node",
+      "template_package_devdependencies_types_react",
+      "template_package_devdependencies_types_react_dom",
+      "template_package_devdependencies_typescript",
+      "tsx",
+      "types_aws_lambda",
+      "types_node",
+      "types_react",
+      "types_react_dom",
+      "typescript"
+    ],
+    "5": [
+      "template_src_app_system_ci_internal_language_route",
+      "template_src_app_system_ci_internal_language_route_cicreatelanguagediagnosticserror",
+      "template_src_app_system_ci_internal_language_route_cigeterrorpayload",
+      "template_src_app_system_ci_internal_language_route_cigetrequestcontext",
+      "template_src_app_system_ci_internal_language_route_ciisdevbeaconlanguagediagnosticsenabled",
+      "template_src_app_system_ci_internal_language_route_ciisservererrorpayload",
+      "template_src_app_system_ci_internal_language_route_dynamic",
+      "template_src_app_system_ci_internal_language_route_get",
+      "template_src_app_system_ci_internal_language_route_responseheaders",
+      "template_src_app_system_ci_internal_language_route_revalidate",
+      "template_src_app_system_ci_internal_language_route_runtime",
+      "template_src_custom_locales_index",
+      "template_src_kernel_server_i18n_index",
+      "template_src_kernel_server_i18n_messages",
+      "template_src_kernel_server_i18n_messages_cicreatecriticali18nerror",
+      "template_src_kernel_server_i18n_messages_cicreatefilediagnostic",
+      "template_src_kernel_server_i18n_messages_ciflattenmessages",
+      "template_src_kernel_server_i18n_messages_ciismessagerecord",
+      "template_src_kernel_server_i18n_messages_cilanguagemessageentry",
+      "template_src_kernel_server_i18n_messages_cilanguagemessagefilediagnostic",
+      "template_src_kernel_server_i18n_messages_cilanguagemessagefilestatus",
+      "template_src_kernel_server_i18n_messages_cilanguagemessagesdiagnostics",
+      "template_src_kernel_server_i18n_messages_cilanguagemessagesource",
+      "template_src_kernel_server_i18n_messages_cilanguagesourcemessages",
+      "template_src_kernel_server_i18n_messages_ciloadcoremessages",
+      "template_src_kernel_server_i18n_messages_ciloadcustommessages",
+      "template_src_kernel_server_i18n_messages_ciloadedmessagefile",
+      "template_src_kernel_server_i18n_messages_ciloadroutemessages",
+      "template_src_kernel_server_i18n_messages_ciloadroutemessagesoptions",
+      "template_src_kernel_server_i18n_messages_ciloadroutemessagesresult",
+      "template_src_kernel_server_i18n_messages_cilocalemessagesregistry",
+      "template_src_kernel_server_i18n_messages_cimergemessages",
+      "template_src_kernel_server_i18n_messages_coremessages",
+      "template_src_kernel_server_i18n_messages_custommessages",
+      "template_src_kernel_server_i18n_request",
+      "template_src_kernel_server_i18n_request_cicreaterequestconfigerror"
+    ],
+    "6": [
+      "aws_amplify",
+      "aws_amplify_adapter_nextjs",
+      "aws_amplify_ui_react",
+      "aws_lambda",
+      "deepmerge_ts",
+      "dotenv",
+      "lucide_react",
+      "next",
+      "next_intl",
+      "next_themes",
+      "postcss",
+      "react",
+      "react_dom",
+      "tailwindcss",
+      "tailwindcss_animate",
+      "tailwindcss_postcss",
+      "template_package_dependencies",
+      "template_package_dependencies_aws_amplify",
+      "template_package_dependencies_aws_amplify_adapter_nextjs",
+      "template_package_dependencies_aws_amplify_ui_react",
+      "template_package_dependencies_aws_lambda",
+      "template_package_dependencies_deepmerge_ts",
+      "template_package_dependencies_dotenv",
+      "template_package_dependencies_lucide_react",
+      "template_package_dependencies_next",
+      "template_package_dependencies_next_intl",
+      "template_package_dependencies_next_themes",
+      "template_package_dependencies_postcss",
+      "template_package_dependencies_react",
+      "template_package_dependencies_react_dom",
+      "template_package_dependencies_tailwindcss",
+      "template_package_dependencies_tailwindcss_animate",
+      "template_package_dependencies_tailwindcss_postcss",
+      "template_package_dependencies_zod",
+      "zod"
+    ],
+    "7": [
+      "template_src_custom_authenticator_amplify_authenticator_custom_props",
+      "template_src_custom_authenticator_amplify_authenticator_custom_props_appauthenticatorpagemode",
+      "template_src_custom_authenticator_amplify_authenticator_custom_props_authenticatorheader",
+      "template_src_custom_authenticator_amplify_authenticator_custom_props_buildamplifyauthenticatorcustomprops",
+      "template_src_custom_authenticator_amplify_authenticator_custom_props_buildamplifyauthenticatorcustompropsoptions",
+      "template_src_custom_authenticator_amplify_authenticator_custom_props_copy",
+      "template_src_custom_authenticator_amplify_authenticator_custom_props_copy_authenticatorheader",
+      "template_src_custom_authenticator_amplify_authenticator_custom_props_copy_buildamplifyauthenticatorcustomprops",
+      "template_src_custom_authenticator_amplify_authenticator_custom_props_signupformfields",
+      "template_src_custom_authenticator_amplify_authenticator_custom_props_signupheader",
+      "template_src_custom_authenticator_app_login_page_content",
+      "template_src_custom_authenticator_app_login_page_content_apploginpagecontent",
+      "template_src_custom_authenticator_apploginpageshell",
+      "template_src_custom_authenticator_apploginpageshell_apploginpageshell",
+      "template_src_custom_authenticator_apploginpageshell_highlighticons",
+      "template_src_custom_authenticator_apploginpageshell_signupstepicons",
+      "template_src_custom_authenticator_build_custom_amplify_authenticator_theme_from_tokens",
+      "template_src_custom_authenticator_build_custom_amplify_authenticator_theme_from_tokens_buildcustomamplifyauthenticatorthemeoverride",
+      "template_src_custom_authenticator_index",
+      "template_src_kernel_client_amplify_app_amplify_client_config",
+      "template_src_kernel_client_amplify_app_amplify_client_config_appamplifyclientconfig",
+      "template_src_kernel_client_amplify_app_amplify_client_config_config",
+      "template_src_kernel_client_amplify_index",
+      "template_src_kernel_client_auth_app_default_authenticator_style_theme",
+      "template_src_kernel_client_auth_app_default_authenticator_style_theme_appdefaultauthenticatorstyletheme",
+      "template_src_kernel_client_auth_apploginpageclientwrapper",
+      "template_src_kernel_client_auth_apploginpageclientwrapper_amplifyoutputs",
+      "template_src_kernel_client_auth_apploginpageclientwrapper_apploginpageclientwrapper",
+      "template_src_kernel_client_auth_apploginpageclientwrapper_apploginpageclientwrapperinterface",
+      "template_src_kernel_client_auth_index",
+      "template_src_kernel_client_data_app_data_client",
+      "template_src_kernel_client_data_app_data_client_appdataclient",
+      "template_src_kernel_client_data_index",
+      "template_src_kernel_client_index"
+    ],
+    "8": [
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_ciareresolutionsnapshotsequal",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_cibuildslugprobepath",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_cicheckarea",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_cicheckoutcome",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_cicheckupresponse",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_cicreateareasummary",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_cicreatecheckup",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_cicreateconfigurationfailurecheckup",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_cicreateexpectedorgunitsnapshot",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_cicreatefailedcheck",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_cicreateproberequest",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_cicreatetenantprobesnapshot",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_cidevresolutioncheck",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_cigetorgunitprobescenarios",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_cigetrequestpathname",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_cigetroothost",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_ciorgunitprobeexpectedcontext",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_ciorgunitprobescenario",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_cirequestlike",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_ciruncheck",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_cirunorgunitprobe",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_ciruntenantprobe",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_ciruntenantresolutioncheckup",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_cisnapshotorgunitresolution",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_cisnapshottenantcontext",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_citenantprobeexpected",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_dynamic",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_get",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_revalidate",
+      "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_runtime"
+    ],
+    "9": [
+      "template_cloudigniter_config",
+      "template_delete_cloudigniter_config",
+      "template_routes",
+      "template_routes_routes",
+      "template_src_app_global_error",
+      "template_src_app_global_error_config",
+      "template_src_app_global_error_globalerror",
+      "template_src_app_global_error_inter",
+      "template_src_kernel_server_config_delete_app_get_server_core_config",
+      "template_src_kernel_server_config_delete_app_get_server_core_config_appgetservercoreconfig",
+      "template_src_kernel_server_config_delete_app_get_server_core_config_ciconfig",
+      "template_src_kernel_server_i18n_request_copy",
+      "template_src_kernel_server_i18n_request_copy_ciiscustomlocalekey",
+      "template_src_kernel_server_i18n_request_copy_ciloadcustommessages",
+      "template_src_kernel_server_i18n_request_copy_cimessageloader",
+      "template_src_kernel_server_i18n_request_copy_cimessagemodule",
+      "template_src_kernel_types_appnexawspageconfig",
+      "template_src_kernel_types_appnexawspageconfig_appnextawspageconfig",
+      "template_src_kernel_types_appnextawsresolvedconfig",
+      "template_src_kernel_types_appnextawsresolvedconfig_appnextawsresolvedconfig",
+      "template_src_kernel_types_appsystemstatus",
+      "template_src_kernel_types_appsystemstatus_appsystemstatus",
+      "template_src_kernel_types_appsystemstatusitem",
+      "template_src_kernel_types_appsystemstatusitem_appsystemstatusitem",
+      "template_src_kernel_types_apptemplatepageconfig",
+      "template_src_kernel_types_apptemplatepageconfig_apptemplatepageconfig",
+      "template_src_kernel_types_apptemplatesystemstatuschecklist",
+      "template_src_kernel_types_apptemplatesystemstatuschecklist_apptemplatesystemstatuschecklist",
+      "template_src_kernel_types_index"
+    ],
+    "10": [
+      "cloudigniter_config_ts",
+      "ref_cloudigniter_config_ts_next_json",
+      "ref_next_env_d_ts",
+      "ref_next_types_ts",
+      "ref_node_modules",
+      "ref_packages_aws_src",
+      "ref_packages_core_src",
+      "ref_packages_next_src",
+      "ref_packages_ui_src",
+      "ref_ts",
+      "ref_tsx",
+      "template_package_devdependencies_cloudigniter_config_ts",
+      "template_tsconfig",
+      "template_tsconfig_compileroptions",
+      "template_tsconfig_compileroptions_composite",
+      "template_tsconfig_compileroptions_declaration",
+      "template_tsconfig_compileroptions_declarationmap",
+      "template_tsconfig_compileroptions_jsx",
+      "template_tsconfig_compileroptions_noemit",
+      "template_tsconfig_compileroptions_paths",
+      "template_tsconfig_compileroptions_plugins",
+      "template_tsconfig_exclude",
+      "template_tsconfig_extends",
+      "template_tsconfig_include",
+      "template_tsconfig_paths_ci_aws",
+      "template_tsconfig_paths_ci_core",
+      "template_tsconfig_paths_ci_next",
+      "template_tsconfig_paths_ci_ui"
+    ],
+    "11": [
+      "template_src_custom_auth_app_access_control",
+      "template_src_custom_auth_app_access_control_appaccesscontrol",
+      "template_src_custom_auth_app_access_control_appaccesscontrolextension",
+      "template_src_custom_auth_app_authorizer",
+      "template_src_custom_auth_app_authorizer_appauthorizer",
+      "template_src_custom_auth_index",
+      "template_src_custom_index",
+      "template_src_custom_routes_index",
+      "template_src_custom_routes_routes",
+      "template_src_custom_routes_routes_customroutes",
+      "template_src_custom_settings_default_values",
+      "template_src_custom_settings_default_values_extendedsettingsdefaultvalues",
+      "template_src_custom_settings_index",
+      "template_src_custom_settings_types_appprivateextendedsettings",
+      "template_src_custom_settings_types_appprivateextendedsettings_appprivateextendedsettings",
+      "template_src_custom_settings_types_apppublicextendedsettings",
+      "template_src_custom_settings_types_apppublicextendedsettings_apppublicextendedsettings",
+      "template_src_custom_settings_types_appsettings",
+      "template_src_custom_settings_types_appsettings_appsettings",
+      "template_src_custom_settings_types_appuserextendedsettings",
+      "template_src_custom_settings_types_appuserextendedsettings_appuserextendedsettings",
+      "template_src_custom_settings_types_index",
+      "template_src_custom_settings_zod_schema",
+      "template_src_custom_settings_zod_schema_extendedsettingsformvalues",
+      "template_src_custom_settings_zod_schema_extendedsettingszodschema",
+      "template_src_kernel_lib_app_get_routes",
+      "template_src_kernel_lib_app_get_routes_appgetroutes",
+      "template_src_kernel_lib_index"
+    ],
+    "12": [
+      "ref_amplify",
+      "ref_amplify_generated",
+      "ref_node",
+      "ref_scripts_ts",
+      "template_amplify_tsconfig",
+      "template_amplify_tsconfig_compileroptions",
+      "template_amplify_tsconfig_compileroptions_esmoduleinterop",
+      "template_amplify_tsconfig_compileroptions_module",
+      "template_amplify_tsconfig_compileroptions_moduleresolution",
+      "template_amplify_tsconfig_compileroptions_paths",
+      "template_amplify_tsconfig_compileroptions_skiplibcheck",
+      "template_amplify_tsconfig_exclude",
+      "template_amplify_tsconfig_extends",
+      "template_amplify_tsconfig_json_ref_tsconfig_json",
+      "template_amplify_tsconfig_paths_amplify",
+      "template_amplify_tsconfig_tools",
+      "template_amplify_tsconfig_tools_compileroptions",
+      "template_amplify_tsconfig_tools_compileroptions_noemit",
+      "template_amplify_tsconfig_tools_compileroptions_types",
+      "template_amplify_tsconfig_tools_exclude",
+      "template_amplify_tsconfig_tools_extends",
+      "template_amplify_tsconfig_tools_include"
+    ],
+    "13": [
+      "template_package",
+      "template_package_name",
+      "template_package_private",
+      "template_package_scripts",
+      "template_package_scripts_bootstrap_root",
+      "template_package_scripts_build",
+      "template_package_scripts_check",
+      "template_package_scripts_clean",
+      "template_package_scripts_dev",
+      "template_package_scripts_lint",
+      "template_package_scripts_sandbox",
+      "template_package_scripts_sandbox_bootstrap",
+      "template_package_scripts_sandbox_debug",
+      "template_package_scripts_sso",
+      "template_package_scripts_start",
+      "template_package_scripts_typecheck",
+      "template_package_scripts_typecheck_tools",
+      "template_package_version"
+    ],
+    "14": [
+      "template_amplify_backend",
+      "template_amplify_backend_auth",
+      "template_amplify_backend_auth_cigetauthstack",
+      "template_amplify_backend_auth_ciprepareuserpool",
+      "template_amplify_backend_backend",
+      "template_amplify_backend_ci_pick_env_key_allowlist_for_functions",
+      "template_amplify_backend_ci_pick_env_key_allowlist_for_functions_cipickenvkeyallowlistforfunctions",
+      "template_amplify_backend_ci_post_build",
+      "template_amplify_backend_ci_post_build_cipostbuild",
+      "template_amplify_backend_data",
+      "template_amplify_backend_data_cigetdatastack",
+      "template_amplify_backend_data_cirequiredatatable",
+      "template_amplify_backend_runtime",
+      "template_amplify_backend_runtime_cigetruntimestack",
+      "template_amplify_backend_types",
+      "template_amplify_backend_types_backendshape",
+      "template_amplify_backend_types_cibackend"
+    ],
+    "15": [
+      "template_src_app_system_ci_internal_trace_append_route",
+      "template_src_app_system_ci_internal_trace_append_route_dynamic",
+      "template_src_app_system_ci_internal_trace_append_route_post",
+      "template_src_app_system_ci_internal_trace_append_route_runtime",
+      "template_src_custom_theme_customtheme",
+      "template_src_custom_theme_customtheme_appthemeproviderprops",
+      "template_src_custom_theme_index",
+      "template_src_kernel_server_config_app_get_all_server_config",
+      "template_src_kernel_server_config_app_get_all_server_config_amplifyoutputs",
+      "template_src_kernel_server_config_app_get_core_config",
+      "template_src_kernel_server_config_app_get_core_config_amplifyoutputs",
+      "template_src_kernel_server_config_app_get_core_config_appgetcoreconfig",
+      "template_src_kernel_server_config_index",
+      "template_src_proxy",
+      "template_src_proxy_config",
+      "template_src_proxy_proxy"
+    ],
+    "16": [
+      "template_src_custom_settings_ci_settings_registry",
+      "template_src_custom_settings_ci_settings_registry_cibuildservicesettingsregistry",
+      "template_src_custom_settings_ci_settings_registry_cibuildsettingsregistry",
+      "template_src_custom_settings_ci_settings_registry_citemplatesettingsregistry",
+      "template_src_custom_settings_ci_settings_registry_citemplatesettingsregistryentry",
+      "template_src_custom_settings_ci_settings_registry_notificationssettingsschema",
+      "template_src_kernel_server_api_system_settings_app_get_settings",
+      "template_src_kernel_server_api_system_settings_app_get_settings_cibuildmergedsettingsfromhandleroutput",
+      "template_src_kernel_server_api_system_settings_app_get_settings_cicollectscopesettingids",
+      "template_src_kernel_server_api_system_settings_app_get_settings_cigetsettings",
+      "template_src_kernel_server_api_system_settings_app_get_settings_cimergesettingsgroup",
+      "template_src_kernel_server_api_system_settings_app_get_settings_cipersistedsettingsscope",
+      "template_src_kernel_server_api_system_settings_app_get_settings_ciresolvescopeids",
+      "template_src_kernel_server_api_system_settings_app_get_settings_cisettingsid",
+      "template_src_kernel_server_api_system_settings_app_get_settings_ciuniqueids",
+      "template_src_kernel_server_api_system_settings_app_get_settings_ciunwrapgetsettingshandlerresponse"
+    ],
+    "17": [
+      "template_src_kernel_server_settings_delete_adapters_amplify_model_facade_types",
+      "template_src_kernel_server_settings_delete_adapters_amplify_model_facade_types_amplifymodelfacade",
+      "template_src_kernel_server_settings_delete_adapters_amplify_model_facade_types_getresult",
+      "template_src_kernel_server_settings_delete_adapters_amplify_model_facade_types_listpage",
+      "template_src_kernel_server_settings_delete_adapters_amplify_model_facade_types_mutationresult",
+      "template_src_kernel_server_settings_delete_adapters_amplify_tenant_settings_repo",
+      "template_src_kernel_server_settings_delete_adapters_amplify_tenant_settings_repo_assert_no_errors",
+      "template_src_kernel_server_settings_delete_adapters_amplify_tenant_settings_repo_create_amplify_tenant_settings_repo",
+      "template_src_kernel_server_settings_delete_adapters_amplify_tenant_settings_repo_model_for",
+      "template_src_kernel_server_settings_delete_adapters_amplify_tenant_settings_repo_tenantsettingsmodelsfacade",
+      "template_src_kernel_server_settings_delete_adapters_amplify_tenant_settings_repo_to_record_view",
+      "template_src_kernel_server_settings_delete_adapters_amplify_tenant_settings_shapes",
+      "template_src_kernel_server_settings_delete_adapters_amplify_tenant_settings_shapes_tenantsettingscreateinput",
+      "template_src_kernel_server_settings_delete_adapters_amplify_tenant_settings_shapes_tenantsettingsitem",
+      "template_src_kernel_server_settings_delete_adapters_amplify_tenant_settings_shapes_tenantsettingsprimarykey"
+    ],
+    "18": [
+      "template_src_custom_delete_amplify_delete_authenticator_configurations",
+      "template_src_custom_delete_amplify_delete_authenticator_configurations_config",
+      "template_src_custom_delete_amplify_delete_authenticator_customization",
+      "template_src_custom_delete_amplify_delete_authenticator_customization_components",
+      "template_src_custom_delete_amplify_delete_authenticator_customization_formfields",
+      "template_src_custom_delete_amplify_delete_authenticator_props",
+      "template_src_custom_delete_amplify_delete_authenticator_props_authenticatorprops",
+      "template_src_custom_delete_amplify_delete_authenticator_services",
+      "template_src_custom_delete_amplify_delete_authenticator_services_services"
+    ],
+    "19": [
+      "template_src_custom_delete_amplify_auth_custom_backend_auth",
+      "template_src_custom_delete_amplify_auth_custom_backend_auth_custombackendauth",
+      "template_src_custom_delete_amplify_auth_get_user_profile_record",
+      "template_src_custom_delete_amplify_auth_get_user_profile_record_getuserprofilerecord",
+      "template_src_custom_delete_amplify_auth_get_user_profile_record_profilerecord",
+      "template_src_custom_delete_amplify_auth_index",
+      "template_src_custom_delete_amplify_index",
+      "template_src_custom_delete_amplify_index_extendedresources"
+    ],
+    "20": [
+      "template_src_app_system_ci_internal_trace_route",
+      "template_src_app_system_ci_internal_trace_route_delete",
+      "template_src_app_system_ci_internal_trace_route_dynamic",
+      "template_src_app_system_ci_internal_trace_route_get",
+      "template_src_app_system_ci_internal_trace_route_runtime",
+      "template_src_app_system_ci_internal_trace_route_tailfilebybytes",
+      "template_src_app_system_ci_internal_trace_route_takelastlines"
+    ],
+    "21": [
+      "template_src_kernel_server_settings_sanitize_settings_for_client",
+      "template_src_kernel_server_settings_sanitize_settings_for_client_droptoplevel",
+      "template_src_kernel_server_settings_sanitize_settings_for_client_isplainobject",
+      "template_src_kernel_server_settings_sanitize_settings_for_client_picktoplevel",
+      "template_src_kernel_server_settings_sanitize_settings_for_client_safegetbool",
+      "template_src_kernel_server_settings_sanitize_settings_for_client_sanitizeoptions",
+      "template_src_kernel_server_settings_sanitize_settings_for_client_sanitizesettingsforclient"
+    ],
+    "22": [
+      "template_src_app_delete_layout",
+      "template_src_app_delete_layout_dynamic",
+      "template_src_app_delete_layout_inter",
+      "template_src_app_delete_layout_revalidate",
+      "template_src_app_delete_layout_rootlayout"
+    ],
+    "23": [
+      "template_src_app_system_ci_internal_auth_session_route",
+      "template_src_app_system_ci_internal_auth_session_route_dynamic",
+      "template_src_app_system_ci_internal_auth_session_route_post",
+      "template_src_app_system_ci_internal_auth_session_route_runtime",
+      "template_src_app_system_ci_internal_auth_session_route_runwithamplifyservercontext"
+    ],
+    "24": [
+      "template_src_custom_settings_ci_settings_registry_copy",
+      "template_src_custom_settings_ci_settings_registry_copy_cibuildsettingsregistry",
+      "template_src_custom_settings_ci_settings_registry_copy_cisettingsregistrymap",
+      "template_src_custom_settings_ci_settings_registry_copy_cloudigniter_next_types",
+      "template_src_custom_settings_ci_settings_registry_copy_notificationssettingsschema"
+    ],
+    "25": [
+      "template_src_app_system_ci_internal_delete_tracebeacontab",
+      "template_src_app_system_ci_internal_delete_tracebeacontab_event",
+      "template_src_app_system_ci_internal_delete_tracebeacontab_gettracebeacontab",
+      "template_src_app_system_ci_internal_delete_tracebeacontab_tracetab"
+    ],
+    "26": [
+      "template_src_custom_settings_delete_settings_extension",
+      "template_src_custom_settings_delete_settings_extension_cloudigniter_next_server",
+      "template_src_custom_settings_delete_settings_extension_registercustomsettings",
+      "template_src_custom_settings_delete_settings_extension_settingsregistrymap"
+    ],
+    "27": [
+      "template_src_kernel_server_api_users_app_get_current_user",
+      "template_src_kernel_server_api_users_app_get_current_user_appgetcurrentuser",
+      "template_src_kernel_server_api_users_app_get_current_user_config",
+      "template_src_kernel_server_api_users_index"
+    ],
+    "28": [
+      "template_src_kernel_server_build_shield",
+      "template_src_kernel_server_build_shield_buildshield",
+      "template_src_kernel_server_build_shield_buildshieldinput",
+      "template_src_kernel_server_build_shield_shield"
+    ],
+    "29": [
+      "template_src_kernel_server_config_app_build_server_page_config",
+      "template_src_kernel_server_config_app_build_server_page_config_appbuildserverpageconfig",
+      "template_src_kernel_server_config_app_build_server_page_config_buildpageconfiginput",
+      "template_src_kernel_server_config_app_build_server_page_config_extractmainmenu"
+    ],
+    "30": [
+      "template_amplify_scripts_bootstrap_root_user",
+      "template_amplify_scripts_bootstrap_root_user_approot",
+      "template_amplify_scripts_bootstrap_root_user_cireadoption"
+    ],
+    "31": [
+      "template_next_config",
+      "template_next_config_nextconfig",
+      "template_next_config_withnextintl"
+    ],
+    "32": [
+      "template_src_custom_authenticator_delete_amplify_authenticator_custom_props_copy",
+      "template_src_custom_authenticator_delete_amplify_authenticator_custom_props_copy_amplifyauthenticatorcustomprops",
+      "template_src_custom_authenticator_delete_amplify_authenticator_custom_props_copy_header"
+    ],
+    "33": [
+      "template_src_custom_delete_amplify_delete_authenticator_authenticatorstyletheme",
+      "template_src_custom_delete_amplify_delete_authenticator_authenticatorstyletheme_authenticatorstyle",
+      "template_src_custom_delete_amplify_delete_authenticator_authenticatorstyletheme_tokens"
+    ],
+    "34": [
+      "template_amplify_backend_delete_delete_attach_policies",
+      "template_amplify_backend_delete_delete_attach_policies_attachpolicies"
+    ],
+    "35": [
+      "template_amplify_backend_delete_delete_ddb_tables",
+      "template_amplify_backend_delete_delete_ddb_tables_gettables"
+    ],
+    "36": [
+      "template_amplify_backend_delete_delete_env_keys",
+      "template_amplify_backend_delete_delete_env_keys_env"
+    ],
+    "37": [
+      "template_amplify_backend_delete_delete_lambda_functions",
+      "template_amplify_backend_delete_delete_lambda_functions_getfunctions"
+    ],
+    "38": [
+      "template_amplify_backend_delete_delete_lib",
+      "template_amplify_backend_delete_delete_lib_readconfigjson"
+    ],
+    "39": [
+      "template_amplify_package",
+      "template_amplify_package_type"
+    ],
+    "40": [
+      "template_next_env_d",
+      "template_next_env_d_rationale_5"
+    ],
+    "41": [
+      "template_postcss_config",
+      "template_postcss_config_config"
+    ],
+    "42": [
+      "template_src_app_not_found",
+      "template_src_app_not_found_notfound"
+    ],
+    "43": [
+      "template_src_custom_authenticator_delete_delete_authenticatorcomponentsstyle",
+      "template_src_custom_authenticator_delete_delete_authenticatorcomponentsstyle_components"
+    ],
+    "44": [
+      "template_src_custom_authenticator_delete_delete_authenticatorformfields",
+      "template_src_custom_authenticator_delete_delete_authenticatorformfields_formfields"
+    ],
+    "45": [
+      "template_src_custom_delete_amplify_data_schemata_index",
+      "template_src_custom_delete_amplify_data_schemata_index_extendedschemas"
+    ],
+    "46": [
+      "template_src_custom_icons_app_icon_registry",
+      "template_src_custom_icons_app_icon_registry_appiconregistry"
+    ],
+    "47": [
+      "template_src_kernel_server_bootstrap_delete_ci_bootstrap",
+      "template_src_kernel_server_bootstrap_delete_ci_bootstrap_cibootstrap"
+    ],
+    "48": [
+      "template_src_kernel_server_bootstrap_delete_ci_prepare_config",
+      "template_src_kernel_server_bootstrap_delete_ci_prepare_config_ciprepareconfig"
+    ],
+    "49": [
+      "template_src_kernel_server_settings_build_settings_deps",
+      "template_src_kernel_server_settings_build_settings_deps_buildsettingsdeps"
+    ],
+    "50": [
+      "template_src_kernel_server_settings_seed_core_settings",
+      "template_src_kernel_server_settings_seed_core_settings_seedcoresettings"
+    ],
+    "51": [
+      "template_src_kernel_types_delete_appconfig",
+      "template_src_kernel_types_delete_appconfig_appconfig"
+    ],
+    "52": [
+      "template_src_kernel_types_delete_appcontext",
+      "template_src_kernel_types_delete_appcontext_appcontext"
+    ],
+    "53": [
+      "template_src_kernel_types_delete_appcoreconfig",
+      "template_src_kernel_types_delete_appcoreconfig_appcoreconfig"
+    ],
+    "54": [
+      "template_src_kernel_types_delete_approotlayoutcontext",
+      "template_src_kernel_types_delete_approotlayoutcontext_approotlayoutcontext"
+    ],
+    "55": [
+      "template_amplify_data_schemata_schema_ou"
+    ],
+    "56": [
+      "template_amplify_data_schemata_schema_seeder"
+    ],
+    "57": [
+      "template_amplify_data_schemata_schema_system"
+    ],
+    "58": [
+      "template_amplify_data_schemata_schema_tenant"
+    ],
+    "59": [
+      "template_amplify_data_schemata_settings_schema_private_settings"
+    ],
+    "60": [
+      "template_amplify_data_schemata_settings_schema_public_settings"
+    ],
+    "61": [
+      "template_amplify_data_schemata_settings_schema_settings"
+    ],
+    "62": [
+      "template_amplify_data_schemata_settings_schema_user_settings"
+    ],
+    "63": [
+      "template_amplify_functions_system_get_lambda_parameters_handler"
+    ],
+    "64": [
+      "template_amplify_functions_system_get_lambda_parameters_resource"
+    ],
+    "65": [
+      "template_amplify_functions_system_ou_create_ou_handler"
+    ],
+    "66": [
+      "template_amplify_functions_system_ou_create_ou_resource"
+    ],
+    "67": [
+      "template_amplify_functions_system_ou_delete_ou_handler"
+    ],
+    "68": [
+      "template_amplify_functions_system_ou_delete_ou_resource"
+    ],
+    "69": [
+      "template_amplify_functions_system_ou_get_ou_handler"
+    ],
+    "70": [
+      "template_amplify_functions_system_ou_get_ou_resource"
+    ],
+    "71": [
+      "template_amplify_functions_system_ou_list_ous_handler"
+    ],
+    "72": [
+      "template_amplify_functions_system_ou_list_ous_resource"
+    ],
+    "73": [
+      "template_amplify_functions_system_ou_update_ou_handler"
+    ],
+    "74": [
+      "template_amplify_functions_system_ou_update_ou_resource"
+    ],
+    "75": [
+      "template_amplify_functions_system_seeder_clear_seeder_handler"
+    ],
+    "76": [
+      "template_amplify_functions_system_seeder_clear_seeder_resource"
+    ],
+    "77": [
+      "template_amplify_functions_system_settings_get_settings_handler"
+    ],
+    "78": [
+      "template_amplify_functions_system_settings_get_settings_resource"
+    ],
+    "79": [
+      "template_amplify_functions_system_settings_set_settings_handler"
+    ],
+    "80": [
+      "template_amplify_functions_system_settings_set_settings_resource"
+    ],
+    "81": [
+      "template_amplify_functions_system_tenant_create_tenant_handler"
+    ],
+    "82": [
+      "template_amplify_functions_system_tenant_create_tenant_resource"
+    ],
+    "83": [
+      "template_amplify_functions_system_tenant_delete_tenant_handler"
+    ],
+    "84": [
+      "template_amplify_functions_system_tenant_delete_tenant_resource"
+    ],
+    "85": [
+      "template_amplify_functions_system_tenant_get_tenant_by_slug_handler"
+    ],
+    "86": [
+      "template_amplify_functions_system_tenant_get_tenant_by_slug_resource"
+    ],
+    "87": [
+      "template_amplify_functions_system_tenant_get_tenant_handler"
+    ],
+    "88": [
+      "template_amplify_functions_system_tenant_get_tenant_lookup_by_slug_handler"
+    ],
+    "89": [
+      "template_amplify_functions_system_tenant_get_tenant_lookup_by_slug_resource"
+    ],
+    "90": [
+      "template_amplify_functions_system_tenant_get_tenant_resource"
+    ],
+    "91": [
+      "template_amplify_functions_system_tenant_list_tenants_handler"
+    ],
+    "92": [
+      "template_amplify_functions_system_tenant_list_tenants_resource"
+    ],
+    "93": [
+      "template_amplify_functions_system_tenant_seed_tenants_handler"
+    ],
+    "94": [
+      "template_amplify_functions_system_tenant_seed_tenants_resource"
+    ],
+    "95": [
+      "template_amplify_functions_system_tenant_update_tenant_handler"
+    ],
+    "96": [
+      "template_amplify_functions_system_tenant_update_tenant_resource"
+    ],
+    "97": [
+      "template_amplify_functions_user_create_user_handler"
+    ],
+    "98": [
+      "template_amplify_functions_user_create_user_resource"
+    ],
+    "99": [
+      "template_amplify_functions_user_get_user_handler"
+    ],
+    "100": [
+      "template_amplify_functions_user_get_user_resource"
+    ],
+    "101": [
+      "template_amplify_functions_user_index"
+    ],
+    "102": [
+      "template_src_custom_delete_amplify_delete_authenticator_i18n"
+    ],
+    "103": [
+      "template_src_kernel_old_delete_create_server"
+    ],
+    "104": [
+      "template_src_kernel_old_delete_delete_clientconfig"
+    ],
+    "105": [
+      "template_src_kernel_old_delete_delete_get_settings"
+    ],
+    "106": [
+      "template_src_kernel_old_delete_delete_serverconfig"
+    ],
+    "107": [
+      "template_src_kernel_old_delete_index"
+    ],
+    "108": [
+      "template_src_kernel_old_delete_kernel_copy_2"
+    ],
+    "109": [
+      "template_src_kernel_old_delete_protectedroot"
+    ],
+    "110": [
+      "template_src_kernel_server_amplify_server_status"
+    ],
+    "111": [
+      "template_src_kernel_server_api_system_delete_get_settings"
+    ],
+    "112": [
+      "template_src_kernel_server_api_system_settings_index"
+    ],
+    "113": [
+      "template_src_kernel_server_api_users_create_user"
+    ],
+    "114": [
+      "template_src_kernel_server_api_users_get_user"
+    ],
+    "115": [
+      "template_src_kernel_server_get_policy"
+    ]
+  },
+  "cohesion": {
+    "0": 0.05403348554033485,
+    "1": 0.0647342995169082,
+    "2": 0.07017543859649122,
+    "3": 0.1036036036036036,
+    "4": 0.05714285714285714,
+    "5": 0.08888888888888889,
+    "6": 0.05714285714285714,
+    "7": 0.10160427807486631,
+    "8": 0.12903225806451613,
+    "9": 0.09852216748768473,
+    "10": 0.07142857142857142,
+    "11": 0.14814814814814814,
+    "12": 0.09090909090909091,
+    "13": 0.1111111111111111,
+    "14": 0.3235294117647059,
+    "15": 0.16666666666666666,
+    "16": 0.16666666666666666,
+    "17": 0.17142857142857143,
+    "18": 0.3333333333333333,
+    "19": 0.39285714285714285,
+    "20": 0.38095238095238093,
+    "21": 0.5238095238095238,
+    "22": 0.4,
+    "23": 0.4,
+    "24": 0.4,
+    "25": 0.5,
+    "26": 0.5,
+    "27": 0.6666666666666666,
+    "28": 0.5,
+    "29": 0.6666666666666666,
+    "30": 0.6666666666666666,
+    "31": 0.6666666666666666,
+    "32": 0.6666666666666666,
+    "33": 0.6666666666666666,
+    "34": 1.0,
+    "35": 1.0,
+    "36": 1.0,
+    "37": 1.0,
+    "38": 1.0,
+    "39": 1.0,
+    "40": 1.0,
+    "41": 1.0,
+    "42": 1.0,
+    "43": 1.0,
+    "44": 1.0,
+    "45": 1.0,
+    "46": 1.0,
+    "47": 1.0,
+    "48": 1.0,
+    "49": 1.0,
+    "50": 1.0,
+    "51": 1.0,
+    "52": 1.0,
+    "53": 1.0,
+    "54": 1.0,
+    "55": 1.0,
+    "56": 1.0,
+    "57": 1.0,
+    "58": 1.0,
+    "59": 1.0,
+    "60": 1.0,
+    "61": 1.0,
+    "62": 1.0,
+    "63": 1.0,
+    "64": 1.0,
+    "65": 1.0,
+    "66": 1.0,
+    "67": 1.0,
+    "68": 1.0,
+    "69": 1.0,
+    "70": 1.0,
+    "71": 1.0,
+    "72": 1.0,
+    "73": 1.0,
+    "74": 1.0,
+    "75": 1.0,
+    "76": 1.0,
+    "77": 1.0,
+    "78": 1.0,
+    "79": 1.0,
+    "80": 1.0,
+    "81": 1.0,
+    "82": 1.0,
+    "83": 1.0,
+    "84": 1.0,
+    "85": 1.0,
+    "86": 1.0,
+    "87": 1.0,
+    "88": 1.0,
+    "89": 1.0,
+    "90": 1.0,
+    "91": 1.0,
+    "92": 1.0,
+    "93": 1.0,
+    "94": 1.0,
+    "95": 1.0,
+    "96": 1.0,
+    "97": 1.0,
+    "98": 1.0,
+    "99": 1.0,
+    "100": 1.0,
+    "101": 1.0,
+    "102": 1.0,
+    "103": 1.0,
+    "104": 1.0,
+    "105": 1.0,
+    "106": 1.0,
+    "107": 1.0,
+    "108": 1.0,
+    "109": 1.0,
+    "110": 1.0,
+    "111": 1.0,
+    "112": 1.0,
+    "113": 1.0,
+    "114": 1.0,
+    "115": 1.0
+  },
+  "gods": [
+    {
+      "id": "template_src_kernel_server_bootstrap_app_bootstrap_appbootstrap",
+      "label": "appBootstrap",
+      "degree": 33
+    },
+    {
+      "id": "template_package_scripts",
+      "label": "scripts",
+      "degree": 14
+    },
+    {
+      "id": "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_ciruntenantresolutioncheckup",
+      "label": "ciRunTenantResolutionCheckup()",
+      "degree": 14
+    },
+    {
+      "id": "template_amplify_data_resource_schema",
+      "label": "Schema",
+      "degree": 13
+    },
+    {
+      "id": "template_src_kernel_server_api_app_prepare_server_api_request_appprepareserverapirequest",
+      "label": "appPrepareServerApiRequest()",
+      "degree": 12
+    },
+    {
+      "id": "template_src_kernel_server_api_app_server_client_appserverclient",
+      "label": "appServerClient",
+      "degree": 11
+    },
+    {
+      "id": "template_src_kernel_server_i18n_messages_ciloadroutemessages",
+      "label": "ciLoadRouteMessages()",
+      "degree": 11
+    },
+    {
+      "id": "template_src_kernel_server_auth_app_get_dev_beacon_actor_appgetdevbeaconactor",
+      "label": "appGetDevBeaconActor()",
+      "degree": 9
+    },
+    {
+      "id": "template_src_kernel_server_config_app_get_core_config_appgetcoreconfig",
+      "label": "appGetCoreConfig()",
+      "degree": 9
+    },
+    {
+      "id": "template_src_app_system_ci_internal_dev_beacon_tenant_resolution_checkup_route_ciruntenantprobe",
+      "label": "ciRunTenantProbe()",
+      "degree": 8
+    }
+  ],
+  "surprises": [
+    {
+      "source": "handler()",
+      "target": "getUserProfileRecord()",
+      "source_files": [
+        "template/amplify/auth/post-confirmation/handler.ts",
+        "template/amplify/custom/auth/get-user-profile-record.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "peripheral node `handler()` unexpectedly reaches hub `getUserProfileRecord()`"
+    },
+    {
+      "source": "include",
+      "target": "@cloudigniter/config-ts",
+      "source_files": [
+        "template/tsconfig.json",
+        "template/package.json"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "extends",
+      "why": "peripheral node `@cloudigniter/config-ts` unexpectedly reaches hub `include`"
+    },
+    {
+      "source": "CiTenantPlaceholderPage()",
+      "target": "appBootstrap",
+      "source_files": [
+        "template/src/app/(ci-global)/ci-global/dashboard/page.tsx",
+        "template/src/kernel/server/bootstrap/app-bootstrap.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "peripheral node `CiTenantPlaceholderPage()` unexpectedly reaches hub `appBootstrap`"
+    },
+    {
+      "source": "CiGlobalLayout()",
+      "target": "appBootstrap",
+      "source_files": [
+        "template/src/app/(ci-global)/ci-global/layout.tsx",
+        "template/src/kernel/server/bootstrap/app-bootstrap.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "peripheral node `CiGlobalLayout()` unexpectedly reaches hub `appBootstrap`"
+    },
+    {
+      "source": "CiTenantPlaceholderPage()",
+      "target": "appBootstrap",
+      "source_files": [
+        "template/src/app/(ci-tenant)/ci-tenant/dashboard/page.tsx",
+        "template/src/kernel/server/bootstrap/app-bootstrap.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "peripheral node `CiTenantPlaceholderPage()` unexpectedly reaches hub `appBootstrap`"
+    }
+  ],
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
+}

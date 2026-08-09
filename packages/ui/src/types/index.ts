@@ -23,14 +23,38 @@ export type {
 // data table
 // ─────────────────────────────────────────────────────────────
 export {
+  type CiDataTableAction,
+  type CiDataTableCellContext,
+  type CiDataTableColumnDef,
+  type CiDataTableColumnMeta,
+  type CiDataTableConfig,
+  type CiDataTableCursorConfig,
   type CiDataTableCursorDataSource,
   type CiDataTableCursorPage,
   type CiDataTableCursorQuery,
   type CiDataTableDataMode,
-  type CiDataTableAction,
-  type CiDataTableCursorConfig,
+  type CiDataTableDataSource,
+  type CiDataTableDefinition,
+  type CiDataTableExcelColumn,
+  type CiDataTableExcelConfig,
+  type CiDataTableExcelExportOptions,
+  type CiDataTableFilter,
+  type CiDataTableFilterOption,
+  type CiDataTableFilterSpec,
+  type CiDataTableFilterValue,
+  type CiDataTableFormat,
+  type CiDataTableFormatOption,
+  type CiDataTableGlobalAction,
+  type CiDataTableGlobalActionContext,
   type CiDataTableInterface,
+  type CiDataTableInformation,
+  type CiDataTablePage,
   type CiDataTablePageCache,
+  type CiDataTablePageSize,
+  type CiDataTablePersistenceConfig,
+  type CiDataTablePreferences,
+  type CiDataTableQuery,
+  type CiDataTableRowActionContext,
   type CiDataTableRowActionsMenuProps,
   type CiDataTableSortSpec,
 } from "./data-table-types";
@@ -47,6 +71,11 @@ export {
 // shadcn
 // ─────────────────────────────────────────────────────────────
 export type { BorderBeamProps } from "./shadcn-types";
+
+// ─────────────────────────────────────────────────────────────
+// security administration
+// ─────────────────────────────────────────────────────────────
+export type { CiSecurityDataPageProps } from "./security-types";
 
 // ─────────────────────────────────────────────────────────────
 // smart form

@@ -101,24 +101,24 @@ export function CiPage({
   ) : null;
 
   return (
-    <CiPageShell
-      scrollContainerRef={scrollContainerRef}
-      isLoginPage={isLoginPage}
-      showBreadcrumbs={showBreadcrumbs}
-      layoutHasHeader={layoutHasHeader}
-      layoutHasFooter={layoutHasFooter}
-      breadcrumbsSlot={breadcrumbsSlot}
-      headerSlot={headerSlot}
-      loaderSlot={<CiPageLoader />}
+    <NextIntlClientProvider
+      locale={context.config?.appResolvedCoreConfig.locale}
+      messages={
+        setup.messages ?? context.config?.appNextResolvedConfig.messages
+      }
     >
-      <NextIntlClientProvider
-        locale={context.config?.appResolvedCoreConfig.locale}
-        messages={
-          setup.messages ?? context.config?.appNextResolvedConfig.messages
-        }
+      <CiPageShell
+        scrollContainerRef={scrollContainerRef}
+        isLoginPage={isLoginPage}
+        showBreadcrumbs={showBreadcrumbs}
+        layoutHasHeader={layoutHasHeader}
+        layoutHasFooter={layoutHasFooter}
+        breadcrumbsSlot={breadcrumbsSlot}
+        headerSlot={headerSlot}
+        loaderSlot={<CiPageLoader />}
       >
         {children}
-      </NextIntlClientProvider>
-    </CiPageShell>
+      </CiPageShell>
+    </NextIntlClientProvider>
   );
 }

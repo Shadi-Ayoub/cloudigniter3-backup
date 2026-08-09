@@ -12,12 +12,19 @@ export {
 // ─────────────────────────────────────────────────────────────
 // context
 // ─────────────────────────────────────────────────────────────
-export { ciGetRequestContext } from "./context";
+export {
+  ciGetRequestContext,
+  ciResolveRequestContextFromRequest,
+} from "./context";
 
 // ─────────────────────────────────────────────────────────────
 // cookie
 // ─────────────────────────────────────────────────────────────
-export { ciGetCookies, ciGetNextServerCookie, ciSetNextServerCookie } from "./cookie";
+export {
+  ciGetCookies,
+  ciGetNextServerCookie,
+  ciSetNextServerCookie,
+} from "./cookie";
 
 // ─────────────────────────────────────────────────────────────
 // dev
@@ -45,6 +52,14 @@ export {
 export { ciGetEnvMode } from "./env";
 
 // ─────────────────────────────────────────────────────────────
+// EmberGuard
+// ─────────────────────────────────────────────────────────────
+export {
+  ciCreateNextAwsSecurityAdministration,
+  ciCreateNextSecurityAdministration,
+} from "./emberguard";
+
+// ─────────────────────────────────────────────────────────────
 // header
 // ─────────────────────────────────────────────────────────────
 export { ciGetHeaders } from "./header";
@@ -57,13 +72,22 @@ export { ciGetServerLocale, ciResolveLocale, ciSetServerLocale } from "./i18n";
 // ─────────────────────────────────────────────────────────────
 // org unit
 // ─────────────────────────────────────────────────────────────
-export { ciGetOrgUnitContext, ciResolveOrgUnitContext, ciResolveOrgUnit } from "./org-unit";
+export {
+  ciGetOrgUnitContext,
+  ciResolveOrgUnitContext,
+  ciResolveOrgUnit,
+} from "./org-unit";
 
 // TBD
 // ─────────────────────────────────────────────────────────────
 // settings
 // ─────────────────────────────────────────────────────────────
-export { ciDeleteSettings, ciGetSettings, ciInitializeSettingsIfMissing, ciSetSettings } from "./settings";
+export {
+  ciDeleteSettings,
+  ciGetSettings,
+  ciInitializeSettingsIfMissing,
+  ciSetSettings,
+} from "./settings";
 ///////
 
 // ─────────────────────────────────────────────────────────────

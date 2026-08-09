@@ -10,9 +10,9 @@ CloudIgniter authorization answers one question:
 
 > **May this authenticated subject perform this action on this resource in this scope?**
 
-The implementation lives in `@cloudigniter/core`. It does not import Next.js, AWS, Cognito, DynamoDB, or any
-other provider SDK. Applications and provider adapters supply plain TypeScript data; the core engine produces a
-deterministic authorization decision.
+The implementation lives in `@cloudigniter/emberguard`. It does not import Next.js, AWS, Cognito, DynamoDB, or any
+other provider SDK. Applications and provider adapters supply plain TypeScript data; the engine produces a
+deterministic authorization decision. `@cloudigniter/core` re-exports the current API as a compatibility bridge.
 
 This guide starts with a small tenant role and gradually builds toward Org Unit inheritance, explicit denies,
 route enforcement, direct exceptions, DynamoDB persistence, and production testing.
@@ -146,7 +146,7 @@ import {
   ciCreateAppAuthorizer,
   ciDefineAccessControl,
   ciTenantAccessScope,
-} from "@cloudigniter/core/lib";
+} from "@cloudigniter/emberguard/lib";
 ```
 
 Import types from the types surface:
@@ -157,7 +157,7 @@ import type {
   CiAccessControlLayer,
   CiAuthorizationDecision,
   CiAuthorizationSubject,
-} from "@cloudigniter/core/types";
+} from "@cloudigniter/emberguard/types";
 ```
 
 ## Recommended learning path

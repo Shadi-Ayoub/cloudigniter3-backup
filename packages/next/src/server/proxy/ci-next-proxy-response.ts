@@ -175,7 +175,7 @@ export async function ciNextProxyResponse({
    */
   const resolvedRequestContext: CiRequestContext = {
     ...unresolvedRequestContext,
-    route: { ...routeResult.route, routesDefinitions: routes },
+    route: routeResult.route,
   };
 
   // -------------------------------------------------------

@@ -1,7 +1,10 @@
-import type { ColumnDef } from "@tanstack/react-table";
 import type { CiTenantHtmlTableRow } from "@cloudigniter/core/types";
+import type { CiDataTableColumnDef } from "@cloudigniter/ui/types";
 
-export const tenantColumns: ColumnDef<CiTenantHtmlTableRow>[] = [
+export const tenantColumns: CiDataTableColumnDef<
+  CiTenantHtmlTableRow,
+  unknown
+>[] = [
   {
     accessorKey: "name",
     header: "CiTenant",

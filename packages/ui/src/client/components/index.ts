@@ -28,8 +28,20 @@ export {
 // ─────────────────────────────────────────────────────────────
 export {
   CiDataTable,
+  CiDataTableRowActions,
   CiDataTableRowActionsMenu,
   buildDataTableColumnsWithActions,
+  ciBuildDataTableExcelWorkbook,
+  ciClearDataTablePreferences,
+  ciCreateDataTableDataSource,
+  ciDefineDataTable,
+  ciDefineDataTableColumn,
+  ciExportDataTableToExcel,
+  ciGetDataTablePreferenceCookieName,
+  ciIsDataTableControlDisabled,
+  ciIsDataTableControlVisible,
+  ciLoadDataTablePreferences,
+  ciSaveDataTablePreferences,
 } from "./data-table";
 
 // ─────────────────────────────────────────────────────────────

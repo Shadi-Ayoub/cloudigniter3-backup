@@ -12,7 +12,7 @@ decision; the enforcement point decides how to stop execution or hide a capabili
 ## Create and reuse an authorizer
 
 ```ts
-import { ciCreateAppAuthorizer } from "@cloudigniter/core/lib";
+import { ciCreateAppAuthorizer } from "@cloudigniter/emberguard/lib";
 
 import { appAccessControl } from "./app-access-control";
 
@@ -99,7 +99,7 @@ Define the HTTP or framework error in the application layer, not in core:
 import type {
   CiAccessScope,
   CiAuthorizationSubject,
-} from "@cloudigniter/core/types";
+} from "@cloudigniter/emberguard/types";
 
 import { appAuthorizer } from "@/custom/auth/app-authorizer";
 
@@ -172,7 +172,7 @@ One-shot equivalents are available when retaining an authorizer is inconvenient:
 import {
   ciAuthorize,
   ciCan,
-} from "@cloudigniter/core/lib";
+} from "@cloudigniter/emberguard/lib";
 
 const decision = ciAuthorize(request, appAccessControl);
 const allowed = ciCan(request, appAccessControl);

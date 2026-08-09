@@ -15,6 +15,7 @@ import {
   ciCreateCoreAccessControl,
   ciCreateRoleAssignment,
   ciCreateRoleAssignmentsFromIdentityGroups,
+  ciCreateSecurityAdministration,
   ciCreateScopedPrivilege,
   ciDefineAccessControl,
   ciFormatPermission,
@@ -1005,4 +1006,8 @@ test("creates application authorizers in core with or without app extensions", (
     true,
   );
   assert.deepEqual(ciCreateCoreAccessControl(), ciCreateAppAccessControl());
+});
+
+test("exposes security administration through the core public facade", () => {
+  assert.equal(typeof ciCreateSecurityAdministration, "function");
 });

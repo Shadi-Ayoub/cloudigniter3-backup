@@ -8,3 +8,9 @@ coverage
 .env
 .env.*
 .amplify
+graphify-out/cost.json        # local only
+# graphify-out/cache/         # optional: commit for speed, skip to keep repo small
+
+# Local AI/tooling state
+# .codex/
+# .agents/

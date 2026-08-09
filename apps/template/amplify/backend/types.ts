@@ -1,14 +1,11 @@
 import { defineBackend } from "@aws-amplify/backend";
+import { ciMergeAmplifyBackendResources } from "@cloudigniter/aws/server/backend";
 
-// import { ENV } from '@cloudigniter/next/server/backend';
-import { ciLoadMergedBackendResources } from "./plugins/ci-loader";
+import { customBackendResources } from "../custom/backend";
+import { coreResources } from "./backend-core";
 
-export const backendShape = ciLoadMergedBackendResources();
+export const backendShape = ciMergeAmplifyBackendResources(
+  coreResources,
+  customBackendResources,
+);
 export type CiBackend = ReturnType<typeof defineBackend<typeof backendShape>>;
-export type {
-  CiEnvKey,
-  CiEnvAllowList,
-} from "@cloudigniter/aws/server/backend";
-
-// export type EnvKey = (typeof ENV)[keyof typeof ENV];
-// export type EnvAllowList = readonly EnvKey[];

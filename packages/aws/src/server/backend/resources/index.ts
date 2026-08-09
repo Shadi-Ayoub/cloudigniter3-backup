@@ -16,6 +16,7 @@ export {
 export {
   CI_RESOURCE_MODULES,
   CI_RESOURCE_IDS,
+  CI_CORE_BACKEND_MANIFEST,
   CORE_FUNCS_IDS,
   resourceEnvKeyAllowlist,
   ciResolveResourceEnvValues,
@@ -24,13 +25,23 @@ export {
 } from "./resource-registry";
 
 export { ciCreateResourceModule } from "./resource-module.helpers";
+export {
+  ciCompileBackendManifest,
+  ciDefineBackendManifest,
+} from "./backend-manifest";
 export { ciBuildEnvMapFromAllowlist, type CiFunctionEnvMap } from "./env-map";
 export { ciMergePolicyFragments } from "./policy-fragment";
 
 export type {
   CiResourceModule,
   CiResourceEnvKeyAllowlist,
+  CiBackendModuleStatus,
 } from "./resource-module.types";
+
+export type {
+  CiBackendManifestInput,
+  CiCompiledBackendManifest,
+} from "./backend-manifest";
 
 export type {
   CiCoreResources,

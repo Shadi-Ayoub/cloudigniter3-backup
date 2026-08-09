@@ -32,7 +32,11 @@ export function CiDevBeaconTenantRouteCard({ context }: CiTenantRouteCardProps) 
       tooltipAriaLabel="About tenant and route context"
       maxHeight="32rem"
     >
-      <CiDevBeaconRouteContextSegment route={context.route} featurePathname={context.featurePathname} />
+      <CiDevBeaconRouteContextSegment
+        route={context.route}
+        featurePathname={context.featurePathname}
+        routesDefinitions={context.config.appCoreConfig.routes}
+      />
 
       <CiDevBeaconCardRowSeparator />
 

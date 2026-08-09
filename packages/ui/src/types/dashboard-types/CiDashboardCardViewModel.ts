@@ -4,6 +4,10 @@ export type CiDashboardCardViewModel = {
   id: string;
   route: string;
   label: string;
+  description?: string;
+  meta?: string;
+  badge?: string;
+  tone?: "default" | "security" | "success" | "warning";
   icon?: ReactNode;
   className?: string;
   contentClassName?: string;

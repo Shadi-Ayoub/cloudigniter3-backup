@@ -1,0 +1,800 @@
+---
+sidebar_position: 1
+title: Data table
+description: Define, configure, and connect CloudIgniter's TanStack-based object-management table.
+---
+
+# Data table
+
+`CiDataTable` is the reusable object-management table for users, tenants, roles, audit records, and other row-oriented data. It is built on the feature-based TanStack Table v9 API (currently v9.1.0) and exported directly from `@cloudigniter/ui`.
+
+The public API deliberately separates three concerns:
+
+1. **Data** is either a local array or a provider-backed `source`.
+2. **Definition** contains columns, row actions, global actions, filters, and row identity.
+3. **Configuration** contains presentation and behavior such as formats, page sizes, resizing, export, and persistence.
+
+This separation lets an application reuse one definition with local test data, an API route, DynamoDB, SQL, or another provider without rewriting its columns and actions.
+
+For the complete field-by-field contract, defaults, callback contexts, and helper signatures, see the [`CiDataTable` API Reference](../api-reference/components/ci-data-table.mdx).
+
+## Quick start
+
+The smallest table needs rows and a definition. The simple table format, global search, striped rows, hover highlighting, paging, column resizing, and Excel export are enabled by default.
+
+```tsx title="app/users/users-table.tsx" showLineNumbers
+"use client";
+
+import { CiDataTable, ciDefineDataTable } from "@cloudigniter/ui";
+
+type UserRow = {
+  id: string;
+  name: string;
+  email: string;
+  status: "active" | "suspended";
+};
+
+const definition = ciDefineDataTable<UserRow>({
+  getRowId: (user) => user.id,
+  columns: [
+    { accessorKey: "name", header: "Name" },
+    { accessorKey: "email", header: "Email" },
+    { accessorKey: "status", header: "Status" },
+  ],
+});
+
+export function UsersTable({ users }: { users: UserRow[] }) {
+  return (
+    <CiDataTable
+      title="Users"
+      description="Manage user accounts and access."
+      definition={definition}
+      data={users}
+    />
+  );
+}
+```
+
+Native TanStack v9 `ColumnDef` options remain available, including `accessorKey`, `accessorFn`, `cell`, `sortFn`, `filterFn`, `size`, `minSize`, `maxSize`, and feature enablement flags. The component registers only the features it uses.
+
+:::tip Continue with the TanStack documentation
+
+`CiDataTableColumnDef` extends TanStack Table, so the native properties keep their TanStack meaning. Use the [Column Definitions Guide](https://tanstack.com/table/latest/docs/guide/column-defs) and [Column Definition API](https://tanstack.com/table/latest/docs/api/core/column-def) for those inherited properties; use this guide for CloudIgniter's `meta.ciDataTable`, actions, providers, export, and persistence extensions.
+
+:::
+
+For advanced column-helper composition, import the same stable feature map used by the component:
+
+```tsx title="app/users/user-columns.tsx" showLineNumbers
+import { createColumnHelper } from "@tanstack/react-table";
+import { ciDataTableFeatures } from "@cloudigniter/ui";
+
+const column = createColumnHelper<typeof ciDataTableFeatures, UserRow>();
+
+export const userColumns = column.columns([
+  column.accessor("name", { header: "Name" }),
+  column.accessor("email", { header: "Email" }),
+]);
+```
+
+## Rich columns
+
+Add CloudIgniter behavior under `meta.ciDataTable`. Metadata can truncate a value, compute a CSS class, make a cell clickable, define a header filter, give the card/export view a plain-text label, or override the exported value.
+
+```tsx title="app/users/user-table-definition.tsx" showLineNumbers
+import { ciDefineDataTable } from "@cloudigniter/ui";
+
+type UserRow = {
+  id: string;
+  name: string;
+  email: string;
+  status: "active" | "suspended";
+  createdAt: string;
+};
+
+export const userTable = ciDefineDataTable<UserRow>({
+  getRowId: (user) => user.id,
+  columns: [
+    {
+      accessorKey: "name",
+      header: "Name",
+      meta: {
+        ciDataTable: {
+          label: "User name",
+          className: "font-semibold",
+          clickable: {
+            href: ({ row }) => `/dashboard/users/${row.id}`,
+            ariaLabel: ({ row }) => `Open ${row.name}`,
+          },
+        },
+      },
+    },
+    {
+      accessorKey: "email",
+      header: "Email",
+      meta: {
+        ciDataTable: {
+          truncate: { maxWidth: 240, showTitle: true },
+        },
+      },
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      meta: {
+        ciDataTable: {
+          className: ({ value }) =>
+            value === "active"
+              ? "font-bold text-emerald-700 dark:text-emerald-400"
+              : "font-bold text-amber-700 dark:text-amber-400",
+          filter: {
+            type: "select",
+            placeholder: "All statuses",
+            options: [
+              { id: "active", label: "Active" },
+              { id: "suspended", label: "Suspended" },
+            ],
+          },
+        },
+      },
+    },
+    {
+      accessorKey: "createdAt",
+      header: "Created",
+      cell: ({ getValue }) => new Date(String(getValue())).toLocaleDateString(),
+      meta: {
+        ciDataTable: {
+          export: {
+            header: "Created at",
+            value: (user) => user.createdAt,
+          },
+        },
+      },
+    },
+  ],
+});
+```
+
+Use `clickable.onClick` instead of `href` to open application state such as a modal or side sheet.
+
+```tsx title="app/users/modal-cell.tsx" showLineNumbers
+{
+  accessorKey: "name",
+  header: "Name",
+  meta: {
+    ciDataTable: {
+      clickable: {
+        onClick: ({ row }) => setUserInModal(row),
+        ariaLabel: ({ row }) => `Preview ${row.name}`,
+      },
+    },
+  },
+}
+```
+
+## Row actions
+
+Each action owns its callback and can control visibility or disabled state per record. Use `hideWhen` when a matching record must not expose the action and `disableWhen` when the action should remain discoverable but unavailable. Both conditions are applied consistently in button, menu, and mixed modes. `display: "icon"` produces an accessible icon-only button; the label becomes its accessible name and keyboard-accessible tooltip.
+
+```tsx title="app/tenants/tenant-actions.tsx" showLineNumbers
+import { Eye, Pencil, Trash2 } from "lucide-react";
+
+const rowActions = [
+  {
+    id: "view",
+    label: "View tenant",
+    icon: <Eye />,
+    display: "icon" as const,
+    onSelect: (tenant: TenantRow) => router.push(`/tenants/${tenant.id}`),
+  },
+  {
+    id: "edit",
+    label: "Edit tenant",
+    icon: <Pencil />,
+    display: "icon" as const,
+    disableWhen: (tenant: TenantRow) => tenant.isSystem,
+    onSelect: (tenant: TenantRow) => openEditor(tenant),
+  },
+  {
+    id: "delete",
+    label: "Delete tenant",
+    icon: <Trash2 />,
+    variant: "destructive" as const,
+    hideWhen: (tenant: TenantRow) => tenant.isSystem,
+    onSelect: (tenant: TenantRow) => deleteTenant(tenant.id),
+  },
+];
+```
+
+The same condition resolution is exported for custom action renderers:
+
+```tsx title="app/tenants/custom-action-state.ts" showLineNumbers
+import {
+  ciIsDataTableControlDisabled,
+  ciIsDataTableControlVisible,
+} from "@cloudigniter/ui";
+
+const shouldRender = ciIsDataTableControlVisible(action, tenant);
+const disabled = ciIsDataTableControlDisabled(action, tenant);
+```
+
+### Built-in record information
+
+Add `definition.information` to render the built-in Info control before every other row action. In tooltip mode it reveals concise information on mouse hover, keyboard focus, or tap/click. In dialog mode it opens an accessible modal for richer record details. The control remains first even when all other actions are placed in a drop-down menu.
+
+```tsx title="app/users/information-tooltip.tsx" showLineNumbers
+const userDefinition = ciDefineDataTable<UserRow>({
+  columns,
+  information: {
+    mode: "tooltip",
+    label: "User information",
+    content: (user) => `${user.name} · ${user.email}`,
+    hideWhen: (user) => user.status === "deleted",
+  },
+});
+```
+
+Use dialog mode for structured content:
+
+```tsx title="app/tenants/information-dialog.tsx" showLineNumbers
+const tenantDefinition = ciDefineDataTable<TenantRow>({
+  columns,
+  information: {
+    mode: "dialog",
+    display: "icon", // "button" also shows the label beside the Info icon
+    label: "Tenant information",
+    title: (tenant) => tenant.name,
+    description: (tenant) => `Tenant ID: ${tenant.id}`,
+    content: (tenant) => (
+      <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2">
+        <dt>Region</dt>
+        <dd>{tenant.region}</dd>
+        <dt>Users</dt>
+        <dd>{tenant.usersCount}</dd>
+      </dl>
+    ),
+    disableWhen: (tenant) => tenant.status === "provisioning",
+  },
+});
+```
+
+`information` accepts the same `hideWhen` and `disableWhen` record predicates as ordinary row actions. Tooltip content should stay brief; use dialog mode for interactive, multiline, or sensitive detail presentations.
+
+Choose one of three presentation modes in configuration:
+
+```tsx title="app/tenants/action-mode-examples.tsx" showLineNumbers
+// Every visible action is an inline icon/button.
+const buttons = { rowActions: { mode: "buttons" as const } };
+
+// One menu button opens a drop-down containing every ordinary action.
+const menu = { rowActions: { mode: "menu" as const } };
+
+// Two inline actions followed by an overflow menu.
+const mixed = {
+  rowActions: { mode: "mixed" as const, inlineCount: 2 },
+};
+```
+
+The action column is placed at inline-start: left-most in LTR and right-most in RTL. When configured, the built-in Info control is always its first button and the overflow menu follows it.
+
+## Sorting and filters
+
+Sorting is enabled per TanStack column and can start with one or more criteria. Disable it for a column with `enableSorting: false`.
+
+```tsx title="app/users/table-sorting.ts" showLineNumbers
+const config = {
+  sorting: {
+    enabled: true,
+    initial: [
+      { id: "status", desc: false },
+      { id: "name", desc: false },
+    ],
+  },
+};
+```
+
+There are two filter placements:
+
+- `meta.ciDataTable.filter` renders below the corresponding column heading.
+- `definition.filters` renders compact text/select filters in the top toolbar.
+
+Both update the same TanStack column-filter state and are sent to provider handlers.
+
+```tsx title="app/users/toolbar-filters.ts" showLineNumbers
+const definition = ciDefineDataTable<UserRow>({
+  columns,
+  filters: [
+    {
+      id: "status",
+      label: "Account status",
+      allLabel: "All statuses",
+      options: [
+        { id: "active", label: "Active" },
+        { id: "suspended", label: "Suspended" },
+      ],
+      defaultValue: "active",
+    },
+    {
+      id: "email",
+      label: "Email contains",
+      type: "text",
+      placeholder: "Filter email...",
+    },
+  ],
+});
+```
+
+Global search is enabled by default. Disable it or adjust provider debounce as follows:
+
+```tsx title="app/users/filtering-config.ts" showLineNumbers
+const config = {
+  filtering: {
+    global: true,
+    debounceMs: 350,
+  },
+};
+```
+
+## Selection and global actions
+
+Selection turns on automatically when a global action uses selected rows. It can also be forced with `selection.enabled`. A header checkbox selects the current page; a row predicate can protect system records.
+
+Global actions declare whether selection is `required`, `optional`, or `none`. The default is `required`.
+
+```tsx title="app/users/global-actions.tsx" showLineNumbers
+import { Mail, UserX } from "lucide-react";
+
+const definition = ciDefineDataTable<UserRow>({
+  getRowId: (user) => user.id,
+  columns,
+  globalActions: [
+    {
+      id: "suspend",
+      label: "Suspend selected",
+      icon: <UserX />,
+      selection: "required",
+      variant: "destructive",
+      onSelect: async ({ selectedRows, clearSelection, refresh }) => {
+        await suspendUsers(selectedRows.map((user) => user.id));
+        clearSelection();
+        refresh();
+      },
+    },
+    {
+      id: "send-reminders",
+      label: "Send reminders",
+      icon: <Mail />,
+      selection: "optional",
+      onSelect: ({ selectedRows }) => sendReminders(selectedRows),
+    },
+    {
+      id: "create-user",
+      label: "Create user",
+      selection: "none",
+      onSelect: () => openCreateUserModal(),
+    },
+  ],
+});
+
+const config = {
+  selection: {
+    enableRow: (user: UserRow) => user.id !== "system-user",
+  },
+};
+```
+
+For provider-backed tables, selected row objects are scoped to loaded rows. If a workflow needs durable cross-page selection, store selected IDs in the application and pass them to its bulk-action handler.
+
+## Pagination and the All option
+
+Client data uses TanStack page models. Provider data uses the returned cursor where present, while also sending `pageIndex` for offset/page-number handlers.
+
+```tsx title="app/users/pagination-config.ts" showLineNumbers
+const smallTableConfig = {
+  pagination: {
+    pageSize: 25,
+    pageSizeOptions: [10, 25, 50, 100],
+    allowAll: true,
+  },
+};
+
+const largeTableConfig = {
+  pagination: {
+    pageSize: 50,
+    pageSizeOptions: [25, 50, 100],
+    allowAll: false,
+  },
+};
+```
+
+Keep `allowAll` disabled for large datasets. If a provider table enables it, its `fetchPage` handler must explicitly support `query.pageSize === "all"` and enforce a safe server limit.
+
+## Provider-backed data
+
+Use `ciCreateDataTableDataSource` to adapt any provider or database handler. The component aborts stale requests as users filter or sort and caches visited pages in hybrid mode.
+
+```tsx title="app/users/users-provider-table.tsx" showLineNumbers
+"use client";
+
+import { CiDataTable, ciCreateDataTableDataSource } from "@cloudigniter/ui";
+
+const source = ciCreateDataTableDataSource<UserRow>({
+  fetchPage: async (query, signal) => {
+    const response = await fetch("/api/users/query", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(query),
+      signal,
+    });
+    if (!response.ok) throw new Error("Unable to load users.");
+    return response.json() as Promise<{
+      rows: UserRow[];
+      totalRowCount?: number;
+      nextCursor?: string | null;
+    }>;
+  },
+
+  // Used for an all-filtered Excel export. Apply the same filters/sorting.
+  fetchAll: async (query, signal) => {
+    const response = await fetch("/api/users/export-query", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(query),
+      signal,
+    });
+    if (!response.ok) throw new Error("Unable to prepare the export.");
+    return response.json() as Promise<UserRow[]>;
+  },
+});
+
+export function UsersProviderTable() {
+  return (
+    <CiDataTable
+      definition={userTable}
+      source={source}
+      config={{
+        mode: "hybrid",
+        pagination: { pageSize: 50, pageSizeOptions: [25, 50, 100] },
+        cacheKey: "users-v1",
+        maxCachedPages: 8,
+        prefetchNextPage: true,
+      }}
+    />
+  );
+}
+```
+
+The handler receives this structure:
+
+```ts title="CiDataTableQuery shape" showLineNumbers
+type CiDataTableQuery = {
+  globalFilter?: string;
+  filters: Array<{
+    id: string;
+    value: string | number | boolean | unknown[] | null;
+  }>;
+  sorting: Array<{ id: string; desc: boolean }>;
+  pageIndex: number;
+  pageSize: number | "all";
+  cursor?: string | null;
+  direction?: "next" | "prev";
+  format: "table" | "compact" | "cards";
+};
+```
+
+Never interpolate incoming column IDs directly into SQL. Map allowed UI IDs to known provider fields, validate filter values, cap page size, and sign or encode cursors on the server.
+
+```ts title="app/api/users/query/route.ts" showLineNumbers
+import { NextResponse } from "next/server";
+import type { CiDataTableQuery } from "@cloudigniter/ui";
+
+const sortFields = {
+  name: "display_name",
+  email: "email",
+  createdAt: "created_at",
+} as const;
+
+export async function POST(request: Request) {
+  const query = (await request.json()) as CiDataTableQuery;
+  const requestedSize = query.pageSize === "all" ? 500 : query.pageSize;
+  const limit = Math.min(Math.max(requestedSize, 1), 500);
+  const primarySort = query.sorting[0];
+  const providerSort = primarySort
+    ? sortFields[primarySort.id as keyof typeof sortFields] ?? "display_name"
+    : "display_name";
+
+  const page = await usersRepository.list({
+    search: query.globalFilter,
+    filters: query.filters,
+    sortField: providerSort,
+    descending: primarySort?.desc ?? false,
+    limit,
+    cursor: query.cursor,
+  });
+
+  return NextResponse.json({
+    rows: page.items,
+    nextCursor: page.nextCursor,
+    totalRowCount: page.total,
+  });
+}
+```
+
+### DynamoDB cursor scenario
+
+Encode `LastEvaluatedKey` as an opaque cursor in the provider layer. The table maintains the cursor stack needed for Previous navigation.
+
+```ts title="server/users-dynamodb-source.ts" showLineNumbers
+const page = await documentClient.send(
+  new QueryCommand({
+    TableName: USERS_TABLE,
+    IndexName: "byStatusAndName",
+    KeyConditionExpression: "#status = :status",
+    ExpressionAttributeNames: { "#status": "status" },
+    ExpressionAttributeValues: { ":status": activeStatus },
+    Limit: query.pageSize === "all" ? 500 : query.pageSize,
+    ExclusiveStartKey: query.cursor
+      ? JSON.parse(Buffer.from(query.cursor, "base64url").toString("utf8"))
+      : undefined,
+    ScanIndexForward: query.sorting[0]?.desc !== true,
+  })
+);
+
+return {
+  rows: page.Items ?? [],
+  nextCursor: page.LastEvaluatedKey
+    ? Buffer.from(JSON.stringify(page.LastEvaluatedKey)).toString("base64url")
+    : null,
+};
+```
+
+## Excel export
+
+The default **Export Excel** button creates a real `.xlsx` workbook with:
+
+- active client filters and sorting;
+- a bold, colored header row;
+- frozen headers and Excel auto-filters;
+- alternating row fills and bounded column widths;
+- typed number and boolean cells;
+- text values kept as text, so a value beginning with `=` is not executed as a formula.
+
+For client data, the default scope is every filtered/sorted row, before pagination. For provider data, `source.fetchAll` supplies every matching row; when it is absent, export safely falls back to the current page.
+
+```tsx title="app/users/excel-config.ts" showLineNumbers
+const config = {
+  excelExport: {
+    enabled: true,
+    label: "Download user report",
+    fileName: "users-report.xlsx",
+    sheetName: "Users",
+    scope: "all-filtered" as const, // or "current-page" / "selected"
+  },
+};
+```
+
+Disable the built-in button with `excelExport: false`. A custom global action can call the same export through its context.
+
+```tsx title="app/users/custom-export-action.tsx" showLineNumbers
+{
+  id: "download",
+  label: "Download",
+  selection: "none",
+  onSelect: ({ exportExcel }) => exportExcel(),
+}
+```
+
+The standalone helper is useful outside the component.
+
+```ts title="lib/export-audit-events.ts" showLineNumbers
+import { ciExportDataTableToExcel } from "@cloudigniter/ui";
+
+await ciExportDataTableToExcel({
+  rows: auditEvents,
+  columns: [
+    { id: "time", header: "Time", value: (event) => event.createdAt },
+    { id: "actor", header: "Actor", value: (event) => event.actorName },
+    { id: "event", header: "Event", value: (event) => event.action },
+  ],
+  fileName: "audit-events.xlsx",
+  sheetName: "Audit events",
+});
+```
+
+## Formats, size, and resizing
+
+The default configuration exposes only the simple table. Add compact and card formats to let each user choose a view.
+
+```tsx title="app/users/view-and-size-config.ts" showLineNumbers
+const config = {
+  formats: [
+    { id: "table", label: "Table" },
+    { id: "compact", label: "Compact" },
+    { id: "cards", label: "Cards" },
+  ],
+  defaultFormat: "table" as const,
+  width: "100%", // A pixel number and any valid CSS width are also accepted.
+  columnResizing: true,
+  stripedRows: true,
+  hoverHighlight: true,
+};
+```
+
+Table and compact rows use a fluid layout across the container. TanStack `size`, `minSize`, and `maxSize` establish relative widths. Drag a header separator to resize or double-click it to reset the column. Card format becomes one, two, or three columns as the container grows.
+
+## Browser preference cookie
+
+Persistence is opt-in and requires a stable key per table/page. Preferences are stored in a compact `SameSite=Lax` browser cookie, so no user table data or selected rows are retained.
+
+```tsx title="app/users/persistence-config.ts" showLineNumbers
+const config = {
+  persistence: {
+    key: "admin-users-v2",
+    cookieName: "ci-admin-users", // optional
+    maxAgeDays: 365,
+    columnWidths: true,
+    filters: true,
+    pageSize: true,
+    format: true,
+  },
+};
+```
+
+The helper functions are exported for a settings/reset control:
+
+```tsx title="app/users/reset-table-preferences.tsx" showLineNumbers
+import { ciClearDataTablePreferences } from "@cloudigniter/ui";
+
+function ResetTablePreferences() {
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        ciClearDataTablePreferences({ key: "admin-users-v2" });
+        window.location.reload();
+      }}
+    >
+      Reset table layout
+    </button>
+  );
+}
+```
+
+Use a version suffix in the persistence key when making incompatible column/filter changes. Cookies are size-limited, so persist only the built-in compact preferences rather than application data.
+
+## RTL and localization
+
+Set `direction="rtl"` or `direction="ltr"`. Inline alignment, action placement, pagination chevrons, and clickable cell text follow the selected direction.
+
+Every built-in UI label can be overridden:
+
+```tsx title="app/users/arabic-table-config.ts" showLineNumbers
+const config = {
+  labels: {
+    search: "بحث...",
+    loading: "جار التحميل...",
+    noResults: "لا توجد نتائج.",
+    actions: "الإجراءات",
+    selected: "محدد",
+    previousPage: "الصفحة السابقة",
+    nextPage: "الصفحة التالية",
+    page: "صفحة",
+    rowsPerPage: "صفوف في الصفحة",
+    allRows: "الكل",
+    viewFormat: "طريقة العرض",
+    exportExcel: "تصدير إلى Excel",
+    selectAll: "تحديد كل صفوف الصفحة",
+    selectRow: "تحديد الصف",
+  },
+};
+
+<CiDataTable
+  direction="rtl"
+  definition={definition}
+  data={users}
+  config={config}
+/>;
+```
+
+## Loading, errors, and empty content
+
+Provider request states are handled automatically. Local/parent workflows can provide their own state as well.
+
+```tsx title="app/users/table-states.tsx" showLineNumbers
+<CiDataTable
+  definition={definition}
+  data={users}
+  loading={isRefreshing}
+  error={loadError ? "Users could not be loaded." : undefined}
+  emptyState={
+    <div>
+      <p>No users match these filters.</p>
+      <button type="button" onClick={clearApplicationFilters}>
+        Clear filters
+      </button>
+    </div>
+  }
+/>
+```
+
+## Complete management-table configuration
+
+This scenario combines the typical capabilities for a tenant or user management page.
+
+```tsx title="app/tenants/tenants-table.tsx" showLineNumbers
+"use client";
+
+import {
+  CiDataTable,
+  ciDefineDataTable,
+  type CiDataTableConfig,
+} from "@cloudigniter/ui";
+
+const tenantDefinition = ciDefineDataTable<TenantRow>({
+  getRowId: (tenant) => tenant.id,
+  columns: tenantColumns,
+  information: {
+    mode: "dialog",
+    label: "Tenant information",
+    title: (tenant) => tenant.name,
+    content: (tenant) => <TenantSummary tenant={tenant} />,
+  },
+  filters: tenantFilters,
+  rowActions: tenantRowActions,
+  globalActions: tenantGlobalActions,
+});
+
+const tenantConfig: CiDataTableConfig<TenantRow> = {
+  mode: "hybrid",
+  formats: [
+    { id: "table", label: "Table" },
+    { id: "compact", label: "Compact" },
+    { id: "cards", label: "Cards" },
+  ],
+  sorting: { initial: [{ id: "name", desc: false }] },
+  filtering: { global: true, debounceMs: 300 },
+  pagination: {
+    pageSize: 25,
+    pageSizeOptions: [10, 25, 50, 100],
+    allowAll: false,
+  },
+  selection: { enableRow: (tenant) => !tenant.isSystem },
+  rowActions: { mode: "mixed", inlineCount: 2 },
+  columnResizing: true,
+  hoverHighlight: true,
+  stripedRows: true,
+  width: "100%",
+  excelExport: {
+    fileName: "tenants.xlsx",
+    sheetName: "Tenants",
+    scope: "all-filtered",
+  },
+  persistence: {
+    key: "tenant-management-v1",
+    columnWidths: true,
+    filters: true,
+    pageSize: true,
+    format: true,
+  },
+  cacheKey: "tenants",
+  maxCachedPages: 5,
+  prefetchNextPage: true,
+};
+
+export function TenantsTable() {
+  return (
+    <CiDataTable
+      title="Tenants"
+      description="Manage tenant lifecycle and access."
+      definition={tenantDefinition}
+      source={tenantSource}
+      config={tenantConfig}
+      searchPlaceholder="Search tenants..."
+      onQueryChange={(query) => analytics.track("tenant_table_query", query)}
+      onSelectionChange={(rows) =>
+        setSelectedTenantIds(rows.map((row) => row.id))
+      }
+    />
+  );
+}
+```

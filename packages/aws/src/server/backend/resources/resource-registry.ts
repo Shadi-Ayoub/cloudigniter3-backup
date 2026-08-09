@@ -1,29 +1,73 @@
-import { deepmerge } from 'deepmerge-ts';
+import { deepmerge } from "deepmerge-ts";
 
-import type { CiPlanOptions } from '../core-types/plan';
-import type { CiCoreFunctionId } from '../core-types/functions';
-import type { CiPolicyFragment } from '../core-types/policy';
-import { CI_ENV } from '../env/env.keys';
-import { ciBuildEnvMapFromAllowlist, ciMergeEnvMaps, type CiFunctionEnvMap } from './env-map';
-import { ciMergePolicyFragments } from './policy-fragment';
-import type { CiResourceEnvKeyAllowlist, CiResourceModule, CiResourceModuleContext } from './resource-module.types';
-import type { CiCoreResources } from './resource-types';
-import { ciMakeRuntimeCommonPolicies } from '../policy/ci-make-runtime-common-policies';
+import type { CiPlanOptions } from "../core-types/plan";
+import type { CiCoreFunctionId } from "../core-types/functions";
+import type { CiPolicyFragment } from "../core-types/policy";
+import { CI_ENV } from "../env/env.keys";
+import {
+  ciBuildEnvMapFromAllowlist,
+  ciMergeEnvMaps,
+  type CiFunctionEnvMap,
+} from "./env-map";
+import { ciMergePolicyFragments } from "./policy-fragment";
+import type {
+  CiResourceEnvKeyAllowlist,
+  CiResourceModule,
+  CiResourceModuleContext,
+} from "./resource-module.types";
+import type { CiCoreResources } from "./resource-types";
+import { ciMakeRuntimeCommonPolicies } from "../policy/ci-make-runtime-common-policies";
 
-import { CI_DATA_RESOURCE_MODULES } from './data';
-import { ciAuthResourceModule } from './auth';
+import {
+  ciEmberguardAccessTableResourceModule,
+  ciUserProfileTableResourceModule,
+} from "./data";
+import { ciAuthResourceModule } from "./auth";
+import { ciDefineBackendManifest } from "./backend-manifest";
 
-export const CI_RESOURCE_MODULES = [...CI_DATA_RESOURCE_MODULES, ciAuthResourceModule] as const;
+/** Single package-side registration point for active core backend modules. */
+export const CI_CORE_BACKEND_MANIFEST = ciDefineBackendManifest({
+  modules: [
+    ciEmberguardAccessTableResourceModule,
+    ciUserProfileTableResourceModule,
+    ciAuthResourceModule,
+  ] as const,
+});
 
-export const CI_RESOURCE_IDS = CI_RESOURCE_MODULES.map((module) => module.id) as readonly string[];
+/** @deprecated Prefer `CI_CORE_BACKEND_MANIFEST.modules`. */
+export const CI_RESOURCE_MODULES = CI_CORE_BACKEND_MANIFEST.modules;
 
-export const CORE_FUNCS_IDS = Array.from(
-  new Set(CI_RESOURCE_MODULES.flatMap((module) => module.handlers))
-) as readonly CiCoreFunctionId[];
+/** @deprecated Prefer `CI_CORE_BACKEND_MANIFEST.moduleIds`. */
+export const CI_RESOURCE_IDS = CI_CORE_BACKEND_MANIFEST.moduleIds;
 
-const CI_GLOBAL_RESOURCE_ENV_KEYS = [CI_ENV.CI_REGION, CI_ENV.CI_ENV_MODE] as const;
+/** @deprecated Prefer `CI_CORE_BACKEND_MANIFEST.handlerIds`. */
+export const CORE_FUNCS_IDS = CI_CORE_BACKEND_MANIFEST.handlerIds;
 
-function ciBuildGlobalEnvKeyAllowlist(handlers: readonly CiCoreFunctionId[]): CiResourceEnvKeyAllowlist {
+type CiErasedResourceModule = CiResourceModule<
+  keyof CiCoreResources & string,
+  string,
+  CiCoreFunctionId,
+  never
+>;
+
+/**
+ * Erase a registered module's correlated state only at the heterogeneous
+ * execution boundary. Module definitions retain their exact ID/state pairing.
+ */
+function ciEraseRegisteredModuleState(
+  module: (typeof CI_CORE_BACKEND_MANIFEST.modules)[number],
+): CiErasedResourceModule {
+  return module as unknown as CiErasedResourceModule;
+}
+
+const CI_GLOBAL_RESOURCE_ENV_KEYS = [
+  CI_ENV.CI_REGION,
+  CI_ENV.CI_ENV_MODE,
+] as const;
+
+function ciBuildGlobalEnvKeyAllowlist(
+  handlers: readonly CiCoreFunctionId[],
+): CiResourceEnvKeyAllowlist {
   return handlers.reduce<CiResourceEnvKeyAllowlist>((acc, handler) => {
     acc[handler] = [...CI_GLOBAL_RESOURCE_ENV_KEYS];
     return acc;
@@ -46,10 +90,11 @@ function ciBuildModuleContext<
     envMode: string;
     options: CiPlanOptions;
     extra?: Record<string, unknown>;
-  }
+  },
 ): CiResourceModuleContext<TState> {
   return {
     resource: input.resources[module.id] as TState,
+    resources: input.resources,
     region: input.region,
     envMode: input.envMode,
     options: input.options,
@@ -73,7 +118,7 @@ function ciResolveModuleEnvValues<
     envMode: string;
     options: CiPlanOptions;
     extra?: Record<string, unknown>;
-  }
+  },
 ): Record<string, string> {
   return module.resolveEnvValues(ciBuildModuleContext(module, input));
 }
@@ -94,7 +139,7 @@ function ciResolveModuleEnvMap<
     envMode: string;
     options: CiPlanOptions;
     extra?: Record<string, unknown>;
-  }
+  },
 ): CiFunctionEnvMap {
   if (!module.resolveEnvMap) return {};
   return module.resolveEnvMap(ciBuildModuleContext(module, input));
@@ -116,10 +161,11 @@ function ciResolveModulePolicies<
     envMode: string;
     options: CiPlanOptions;
     extra?: Record<string, unknown>;
-  }
+  },
 ): CiPolicyFragment {
   return module.resolvePolicies({
     resource: input.resources[module.id] as TState,
+    resources: input.resources,
     region: input.region,
     envMode: input.envMode,
     options: input.options,
@@ -129,8 +175,11 @@ function ciResolveModulePolicies<
 
 export const resourceEnvKeyAllowlist = [
   ciBuildGlobalEnvKeyAllowlist(CORE_FUNCS_IDS),
-  ...CI_RESOURCE_MODULES.map((module) => module.envKeyAllowlist),
-].reduce<CiResourceEnvKeyAllowlist>((acc, current) => deepmerge(acc, current), {});
+  CI_CORE_BACKEND_MANIFEST.envKeyAllowlist,
+].reduce<CiResourceEnvKeyAllowlist>(
+  (acc, current) => deepmerge(acc, current),
+  {},
+);
 
 export function ciResolveResourceEnvValues(input: {
   resources: CiCoreResources;
@@ -144,9 +193,24 @@ export function ciResolveResourceEnvValues(input: {
     [CI_ENV.CI_ENV_MODE]: input.envMode,
   };
 
-  const resourceEnvValues = CI_RESOURCE_MODULES.map((module) => ciResolveModuleEnvValues(module, input)).reduce<
-    Record<string, string>
-  >((acc, current) => deepmerge(acc, current), {});
+  const resourceEnvValues: Record<string, string> = {};
+
+  for (const module of CI_CORE_BACKEND_MANIFEST.modules) {
+    const resolved = ciResolveModuleEnvValues(
+      ciEraseRegisteredModuleState(module),
+      input,
+    );
+
+    for (const [key, value] of Object.entries(resolved)) {
+      const currentValue = resourceEnvValues[key];
+      if (currentValue !== undefined && currentValue !== value) {
+        throw new Error(
+          `Backend modules resolved conflicting values for environment key "${key}".`,
+        );
+      }
+      resourceEnvValues[key] = value;
+    }
+  }
 
   return deepmerge(globalEnvValues, resourceEnvValues);
 }
@@ -160,9 +224,14 @@ export function ciBuildResourceEnvMap(input: {
 }): CiFunctionEnvMap {
   const flatEnvValues = ciResolveResourceEnvValues(input);
 
-  const allowlistEnvMap = ciBuildEnvMapFromAllowlist(resourceEnvKeyAllowlist, flatEnvValues);
+  const allowlistEnvMap = ciBuildEnvMapFromAllowlist(
+    resourceEnvKeyAllowlist,
+    flatEnvValues,
+  );
 
-  const overlayMaps = CI_RESOURCE_MODULES.map((module) => ciResolveModuleEnvMap(module, input));
+  const overlayMaps = CI_CORE_BACKEND_MANIFEST.modules.map((module) =>
+    ciResolveModuleEnvMap(ciEraseRegisteredModuleState(module), input),
+  );
 
   return ciMergeEnvMaps(allowlistEnvMap, ...overlayMaps);
 }
@@ -176,6 +245,8 @@ export function ciBuildResourcePolicyFragment(input: {
 }): CiPolicyFragment {
   return ciMergePolicyFragments([
     ciMakeRuntimeCommonPolicies(),
-    ...CI_RESOURCE_MODULES.map((module) => ciResolveModulePolicies(module, input)),
+    ...CI_CORE_BACKEND_MANIFEST.modules.map((module) =>
+      ciResolveModulePolicies(ciEraseRegisteredModuleState(module), input),
+    ),
   ]);
 }

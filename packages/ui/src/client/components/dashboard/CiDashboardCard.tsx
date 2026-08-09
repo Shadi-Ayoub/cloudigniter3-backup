@@ -1,6 +1,7 @@
 "use client";
 
 import type { CiDashboardCardProps } from "@ci-ui/types";
+import { ArrowUpRight } from "lucide-react";
 import { CiIcon } from "@ci-ui/common";
 
 import { CiNavigateWithLoader } from "../../navigation";
@@ -12,6 +13,10 @@ export function CiDashboardCard({
   route,
   icon,
   label,
+  description,
+  meta,
+  badge,
+  tone = "default",
   className,
   contentClassName,
   iconClassName,
@@ -26,7 +31,9 @@ export function CiDashboardCard({
   return (
     <Card
       id={String(id)}
-      className={["dashboard-card", className].filter(Boolean).join(" ")}
+      className={["dashboard-card", `dashboard-card-${tone}`, className]
+        .filter(Boolean)
+        .join(" ")}
     >
       <CiNavigateWithLoader
         href={route}
@@ -40,20 +47,28 @@ export function CiDashboardCard({
         refreshRoute={refreshRoute}
         onNavigateStart={onNavigateStart}
       >
-        <span
-          className={["dashboard-card-icon", iconClassName]
-            .filter(Boolean)
-            .join(" ")}
-        >
-          <CiIcon name={icon} />
+        <span className="dashboard-card-topline">
+          <span
+            className={["dashboard-card-icon", iconClassName]
+              .filter(Boolean)
+              .join(" ")}
+          >
+            <CiIcon name={icon} />
+          </span>
+          {badge ? <span className="dashboard-card-badge">{badge}</span> : null}
+          <ArrowUpRight aria-hidden="true" className="dashboard-card-arrow" />
         </span>
-        <div
+        <span
           className={["dashboard-card-label", labelClassName]
             .filter(Boolean)
             .join(" ")}
         >
           {label}
-        </div>
+        </span>
+        {description ? (
+          <span className="dashboard-card-description">{description}</span>
+        ) : null}
+        {meta ? <span className="dashboard-card-meta">{meta}</span> : null}
       </CiNavigateWithLoader>
     </Card>
   );

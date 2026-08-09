@@ -1,6 +1,6 @@
 ---
 title: ciCreateAppAccessControl
-package: "@cloudigniter/core"
+package: "@cloudigniter/emberguard"
 availability: Shared
 sidebar_position: 2
 ---
@@ -24,8 +24,8 @@ Later layers may refine application-owned entries by stable `id`. `SYSTEM_SUPER_
 covering `platform.authorization.core.override` are reserved.
 
 ```ts title="src/custom/auth/app-access-control.ts" showLineNumbers
-import { ciCreateAppAccessControl } from "@cloudigniter/core/lib";
-import type { CiAccessControlLayer } from "@cloudigniter/core/types";
+import { ciCreateAppAccessControl } from "@cloudigniter/emberguard/lib";
+import type { CiAccessControlLayer } from "@cloudigniter/emberguard/types";
 
 export const appAccessControlExtension = {
   resources: [{
@@ -39,7 +39,7 @@ export const appAccessControl = ciCreateAppAccessControl(
 );
 ```
 
-The factory belongs to `@cloudigniter/core`; the extension remains application-owned. Attempts to redefine a
+The factory belongs to `@cloudigniter/emberguard`; the extension remains application-owned. Attempts to redefine a
 core entry throw before the resolved catalog is returned.
 
 Use [`ciMergeAccessControlDefinitions()`](./ci-merge-access-control-definitions) when the core defaults must not

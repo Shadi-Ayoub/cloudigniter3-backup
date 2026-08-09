@@ -36,7 +36,7 @@ import {
   ciCreateAuthorizer,
   ciCreateRoleAssignment,
   ciTenantAccessScope,
-} from "@cloudigniter/core/lib";
+} from "@cloudigniter/emberguard/lib";
 
 import { appAccessControl } from "./app-access-control";
 
@@ -174,7 +174,7 @@ silently changing security semantics.
 ```ts
 import {
   ciValidateAccessControlDefinition,
-} from "@cloudigniter/core/lib";
+} from "@cloudigniter/emberguard/lib";
 
 const issues = ciValidateAccessControlDefinition(appAccessControl);
 const errors = issues.filter((issue) => issue.severity === "error");
@@ -266,8 +266,8 @@ Check catalog-version and subject-assignment cache invalidation. Do not key comp
 The core package currently uses:
 
 ```bash
-pnpm --filter @cloudigniter/core check
-pnpm --filter @cloudigniter/core test
+pnpm --filter @cloudigniter/emberguard check
+pnpm --filter @cloudigniter/emberguard test
 ```
 
 Application authorization suites should run in the application's normal test pipeline as well.

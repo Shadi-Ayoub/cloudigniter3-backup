@@ -22,6 +22,7 @@ export {
   ciCreateRoleAssignment,
   ciCreateRoleAssignments,
   ciCreateRoleAssignmentsFromIdentityGroups,
+  ciCreateSecurityAdministration,
   ciCreateScopedPrivilege,
   ciDefineAccessControl,
   ciFormatPermission,
@@ -147,7 +148,11 @@ export {
 // ─────────────────────────────────────────────────────────────
 // module
 // ─────────────────────────────────────────────────────────────
-export { ciCollectModulePackageDependencies, ciResolveModuleGraph, CiModuleError } from "./module";
+export {
+  ciCollectModulePackageDependencies,
+  ciResolveModuleGraph,
+  CiModuleError,
+} from "./module";
 
 // ─────────────────────────────────────────────────────────────
 // namespace

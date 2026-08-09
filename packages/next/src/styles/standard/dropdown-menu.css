@@ -4,11 +4,11 @@
   }
 
   .ci-menu-item {
-    @apply bg-muted-50 text-muted-950 dark:bg-muted-950 dark:text-muted-50 hover:bg-muted-200 hover:dark:bg-secondary-300 hover:dark:text-muted-800 flex cursor-pointer items-center gap-2 border-0 px-3 py-2 ring-0 outline-none hover:border-0 hover:ring-0 hover:outline-none focus:border-0 focus:ring-0 focus:outline-none;
+    @apply flex cursor-pointer items-center gap-2 border-0 bg-popover px-3 py-2 text-popover-foreground outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-2 focus-visible:outline-ring;
   }
 
   .ci-menu-content {
-    @apply bg-muted-50 text-muted-950 dark:bg-muted-950 dark:text-muted-50 z-menu w-auto min-w-max;
+    @apply z-menu w-auto min-w-max bg-popover text-popover-foreground;
   }
 
   .ci-menu-item-check-icon {

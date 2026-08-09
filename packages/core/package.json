@@ -70,6 +70,7 @@
     "typescript": "^6.0.2"
   },
   "dependencies": {
+    "@cloudigniter/emberguard": "workspace:*",
     "@tanstack/react-table": "^8.21.3",
     "antd": "^6.3.5",
     "deepmerge-ts": "^7.1.5",

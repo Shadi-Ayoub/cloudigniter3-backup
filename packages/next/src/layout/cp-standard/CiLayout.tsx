@@ -37,7 +37,10 @@ export default function CiLayout({
   //////////////////////////////////////////////////////////////////////////////////////////////////
   return (
     <CiPageWrapper context={context} protect={protect}>
-      <main className="ci-main">
+      <a className="ci-skip-link" href="#ci-main-content">
+        Skip to main content
+      </a>
+      <main id="ci-main-content" className="ci-main" tabIndex={-1}>
         <CiHeader context={context}>
           <CiMainHeaderNavigationBox context={context} />
           <CiNextHeaderLogo

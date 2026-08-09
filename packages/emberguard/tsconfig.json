@@ -1,0 +1,21 @@
+{
+  "extends": "@cloudigniter/config-ts/ci-pkg-base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "types": ["node"],
+    "paths": {
+      "@ci-emberguard/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "__tests__/**/*.ts", "__tests__/**/*.tsx"],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "scripts",
+    "src/**/old/**",
+    ".*/**/*",
+    "**/*.mjs",
+    "**/*.cjs",
+    "coverage"
+  ]
+}

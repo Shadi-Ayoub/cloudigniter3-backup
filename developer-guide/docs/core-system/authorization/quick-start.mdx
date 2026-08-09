@@ -9,14 +9,17 @@ sidebar_position: 2
 This example extends CloudIgniter's default catalog with a support role, then gives one support agent permission
 to read users in one tenant and all of that tenant's Org Units.
 
+New authorization code should import from `@cloudigniter/emberguard`. The older `@cloudigniter/core` exports are
+kept as a compatibility bridge.
+
 ## 1. Create the catalog
 
 Create an application-owned authorization file. A common location is
 `src/custom/auth/app-access-control.ts`.
 
 ```ts title="src/custom/auth/app-access-control.ts" showLineNumbers
-import { ciCreateAppAccessControl } from "@cloudigniter/core/lib";
-import type { CiAccessControlLayer } from "@cloudigniter/core/types";
+import { ciCreateAppAccessControl } from "@cloudigniter/emberguard/lib";
+import type { CiAccessControlLayer } from "@cloudigniter/emberguard/types";
 
 export const appAccessControlExtension = {
   roles: [
@@ -61,7 +64,7 @@ For a standalone catalog that intentionally does not use the CloudIgniter defaul
 import {
   ciCreateRoleAssignment,
   ciTenantAccessScope,
-} from "@cloudigniter/core/lib";
+} from "@cloudigniter/emberguard/lib";
 
 const tenantScope = ciTenantAccessScope("tenant-123");
 
@@ -85,7 +88,7 @@ Changing `descendants` to `exact` would allow checks at the tenant itself but no
 ## 3. Create an authorization subject
 
 ```ts
-import { ciCreateAuthorizationSubject } from "@cloudigniter/core/lib";
+import { ciCreateAuthorizationSubject } from "@cloudigniter/emberguard/lib";
 
 const subject = ciCreateAuthorizationSubject(
   {
@@ -102,7 +105,7 @@ only needs a stable ID, authentication state, and resolved grants.
 ## 4. Create the authorizer
 
 ```ts title="src/custom/auth/app-authorizer.ts"
-import { ciCreateAppAuthorizer } from "@cloudigniter/core/lib";
+import { ciCreateAppAuthorizer } from "@cloudigniter/emberguard/lib";
 
 import { appAccessControl } from "./app-access-control";
 
@@ -115,7 +118,7 @@ cache the authorizer by policy version.
 ## 5. Authorize an operation
 
 ```ts
-import { ciOrgUnitAccessScope } from "@cloudigniter/core/lib";
+import { ciOrgUnitAccessScope } from "@cloudigniter/emberguard/lib";
 
 import { appAuthorizer } from "@/custom/auth/app-authorizer";
 

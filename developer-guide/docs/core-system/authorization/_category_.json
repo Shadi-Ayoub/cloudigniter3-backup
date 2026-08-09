@@ -4,6 +4,6 @@
   "link": {
     "type": "generated-index",
     "title": "CloudIgniter Authorization (ARBAC)",
-    "description": "Design, implement, persist, enforce, and test scoped role-based authorization with @cloudigniter/core."
+    "description": "Design, implement, persist, enforce, and test scoped role-based authorization with @cloudigniter/emberguard."
   }
 }

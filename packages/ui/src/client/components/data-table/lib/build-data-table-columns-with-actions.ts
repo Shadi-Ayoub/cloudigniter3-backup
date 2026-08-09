@@ -1,15 +1,19 @@
-import type { ColumnDef, CellContext } from "@tanstack/react-table";
+import type { CellContext, ColumnDef, RowData } from "@tanstack/react-table";
+import type { CiDataTableFeatures } from "@ci-ui/common";
 import type { CiDataTableAction } from "@ci-ui/types";
 
-export function buildDataTableColumnsWithActions<TData, TValue>(args: {
-  columns: ColumnDef<TData, TValue>[];
+export function buildDataTableColumnsWithActions<
+  TData extends RowData,
+  TValue
+>(args: {
+  columns: ColumnDef<CiDataTableFeatures, TData, TValue>[];
   rowActions?: CiDataTableAction<TData>[];
   renderActionsCell: (
-    ctx: CellContext<TData, unknown>,
-    actions: CiDataTableAction<TData>[],
+    ctx: CellContext<CiDataTableFeatures, TData, TValue>,
+    actions: CiDataTableAction<TData>[]
   ) => React.ReactNode;
   actionsHeader?: string;
-}): ColumnDef<TData, TValue>[] {
+}): ColumnDef<CiDataTableFeatures, TData, TValue>[] {
   const {
     columns,
     rowActions,
@@ -20,12 +24,12 @@ export function buildDataTableColumnsWithActions<TData, TValue>(args: {
   if (!rowActions?.length) return columns;
 
   return [
-    ...columns,
     {
       id: "__actions__",
       header: () => actionsHeader,
-      cell: (ctx) => renderActionsCell(ctx as any, rowActions),
+      cell: (ctx) => renderActionsCell(ctx, rowActions),
       enableSorting: false,
-    } as ColumnDef<TData, TValue>,
+    } as ColumnDef<CiDataTableFeatures, TData, TValue>,
+    ...columns,
   ];
 }

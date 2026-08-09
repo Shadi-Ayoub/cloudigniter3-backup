@@ -41,7 +41,7 @@ export function CiDevBeaconLanguageCard({
       try {
         const requestUrl = new URL(endpoint, window.location.origin);
 
-        // requestUrl.searchParams.set("pathname", pathname);
+        requestUrl.searchParams.set("pathname", pathname);
         requestUrl.searchParams.set("locale", locale);
         requestUrl.searchParams.set("detail", "messages");
 
@@ -110,9 +110,9 @@ export function CiDevBeaconLanguageCard({
             Shows the locale, text direction, translation namespace, and message resolution statistics for the current
             route. The diagnostics endpoint{" "}
             <code className="rounded bg-black/10 px-1 py-0.5 font-mono text-xs dark:bg-white/10">{endpoint}</code> reads
-            the CloudIgniter request context from the configured request header when available, otherwise it falls back
-            to the request-context cookie. This cookie fallback is required because internal endpoints bypass the
-            application proxy, and browser fetch requests do not inherit the page’s server-side request headers.
+            both CloudIgniter request-context transports and accepts only a resolved context matching the current
+            pathname. Cookie correlation is required because internal endpoints bypass the application proxy, and
+            browser fetch requests do not inherit the page’s server-side request headers.
           </>
         }
         tooltipAriaLabel="About language diagnostics"

@@ -32,6 +32,8 @@ export function ciPreparePolicy(
     extra,
   });
 
+  ciAssertSingleDynamoPermissionSource(merged);
+
   const normalizedPolicyDocument = ciNormalizePolicyBundle(
     ciBuildPolicyBundleFromFragments(merged, resources),
   );
@@ -42,6 +44,38 @@ export function ciPreparePolicy(
     tableGrants: merged.tableGrants ?? [],
     normalizedPolicyDocument,
   };
+}
+
+/**
+ * Prevent a handler from receiving DynamoDB permissions through both inline
+ * policies and table grants. Resource modules must choose one representation.
+ */
+export function ciAssertSingleDynamoPermissionSource(
+  fragment: CiPolicyFragment,
+): void {
+  const inlineDynamoHandlers = new Set(
+    (fragment.inlinePolicies ?? [])
+      .filter((policy) =>
+        policy.statements.some((statement) =>
+          statement.actions.some((action) => action.startsWith("dynamodb:")),
+        ),
+      )
+      .map((policy) => policy.for),
+  );
+
+  const duplicateHandlers = [
+    ...new Set(
+      (fragment.tableGrants ?? [])
+        .map((grant) => grant.for)
+        .filter((handlerId) => inlineDynamoHandlers.has(handlerId)),
+    ),
+  ];
+
+  if (duplicateHandlers.length > 0) {
+    throw new Error(
+      `Handlers must not mix inline DynamoDB policies with table grants: ${duplicateHandlers.join(", ")}.`,
+    );
+  }
 }
 
 export function ciMergePolicyFragments(
@@ -137,22 +171,12 @@ export function ciMapTableGrantToBundleStatement(
   };
 }
 
+/** Resolve a logical table-grant key to its concrete runtime resource. */
 export function ciResolveTableInfoFromResources(
   table: CiTableGrantSpec["table"],
   resources: CiCoreResources,
 ) {
-  switch (table) {
-    // case "privateSettingsTable":
-    //   return resources.privateSettingsTable;
-    // case "publicSettingsTable":
-    //   return resources.publicSettingsTable;
-    // case "systemTable":
-    //   return resources.systemTable;
-    case "userProfileTable":
-      return resources.userProfileTable;
-    // case "userSettingsTable":
-    //   return resources.userSettingsTable;
-  }
+  return resources[table];
 }
 
 export function ciExpandTableGrantActions(

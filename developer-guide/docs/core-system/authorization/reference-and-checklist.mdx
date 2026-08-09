@@ -6,8 +6,11 @@ sidebar_position: 12
 
 # API Reference and Production Checklist
 
-This page summarizes the implemented `@cloudigniter/core` authorization surface. Import helpers from
-`@cloudigniter/core/lib` and types from `@cloudigniter/core/types`.
+This page summarizes the implemented `@cloudigniter/emberguard` authorization surface. Import helpers from
+`@cloudigniter/emberguard/lib` and types from `@cloudigniter/emberguard/types`.
+
+`@cloudigniter/core` continues to re-export the same helpers for compatibility, but new authorization code should
+depend on Emberguard directly.
 
 For exact signatures and per-helper examples, open the
 [Authorization API Reference](/docs/api-reference/authorization/ci-create-app-authorizer).
@@ -192,8 +195,9 @@ src/
     └── ... protected pages and handlers
 ```
 
-Provider adapters and DynamoDB repositories may live in the AWS package or the application's server layer. The
-catalog and decision engine remain in core-compatible code.
+Provider adapters and repositories are exposed through the `Emberguard` facade. Construct it with a provider,
+for example `ciCreateAwsEmberguardProvider({ database, tables })`, then use its member functions to load
+definitions, assignments, custom domains, and resource inventory through the provider repository.
 
 ## Production checklist
 
@@ -304,7 +308,8 @@ No. Return a generic forbidden result and keep policy evidence in trusted logs.
 
 ### Where should DynamoDB code live?
 
-In `@cloudigniter/aws` or the application's server infrastructure. `@cloudigniter/core` remains provider-neutral.
+In the AWS provider connector or the application's server infrastructure. The Emberguard engine remains
+provider-neutral; only provider modules know how records are stored and loaded.
 
 ## Further reading
 

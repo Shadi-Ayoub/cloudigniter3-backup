@@ -39,6 +39,7 @@ export {
 // dynamodb
 // ─────────────────────────────────────────────────────────────
 export {
+  Database,
   Dynamodb,
   ciWithDdbClient,
   // type CiBatchWriteItemsBody,
@@ -53,6 +54,14 @@ export {
   // type CiTransactWriteOp,
   // type CiTransactWriteOptions,
 } from "./dynamodb";
+
+// ─────────────────────────────────────────────────────────────
+// EmberGuard
+// ─────────────────────────────────────────────────────────────
+export {
+  ciCreateAwsEmberguardAdministrationRepository,
+  ciResolveAwsCognitoIdentityGroups,
+} from "./emberguard";
 
 // ─────────────────────────────────────────────────────────────
 // lambda

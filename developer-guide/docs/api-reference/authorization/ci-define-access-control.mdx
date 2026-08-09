@@ -1,6 +1,6 @@
 ---
 title: ciDefineAccessControl
-package: "@cloudigniter/core"
+package: "@cloudigniter/emberguard"
 availability: Shared
 sidebar_position: 4
 ---
@@ -19,8 +19,8 @@ function ciDefineAccessControl<
 ```
 
 ```ts
-import { ciDefineAccessControl } from "@cloudigniter/core/lib";
-import type { CiAccessControlDefinition } from "@cloudigniter/core/types";
+import { ciDefineAccessControl } from "@cloudigniter/emberguard/lib";
+import type { CiAccessControlDefinition } from "@cloudigniter/emberguard/types";
 
 export const isolatedCatalog = ciDefineAccessControl({
   domains: [{ id: "documents", title: "Documents" }],

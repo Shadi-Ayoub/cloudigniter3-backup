@@ -1,15 +1,7 @@
-/* 🚀 cloudigniter-standard.css*/
-@plugin "tailwindcss-animate";
-
 @import "tailwindcss";
-
-@custom-variant dark (&:where(.dark, .dark *));
-
-/* Order is important! */
 @import "./theme.css";
 @import "./base.css";
 @import "./main.css";
-
 @import "./about-border-beam.css";
 @import "./data-table.css";
 @import "./dashboard.css";
@@ -27,3 +19,8 @@
 @import "./spinner.css";
 @import "./theme-switcher.css";
 @import "./tooltip.css";
+
+/* CloudIgniter standard stylesheet. Imports must precede all other rules. */
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:where(.dark, .dark *));

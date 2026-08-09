@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test": "node --import=tsx --test amplify/backend/__tests__/*.test.ts",
     "typecheck": "tsc --noEmit",
     "typecheck:tools": "tsc -p amplify/tsconfig.tools.json --noEmit",
     "check": "pnpm run typecheck",

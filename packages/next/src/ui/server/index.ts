@@ -1,7 +1,11 @@
 // ─────────────────────────────────────────────────────────────
 // dashboard
 // ─────────────────────────────────────────────────────────────
-export { CiNextDashboardPage } from "./dashboard";
+export {
+  CiNextDashboardOverview,
+  CiNextDashboardPage,
+  type CiNextDashboardOverviewProps,
+} from "./dashboard";
 
 // ─────────────────────────────────────────────────────────────
 // dev

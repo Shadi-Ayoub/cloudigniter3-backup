@@ -4,10 +4,11 @@ import { ArnFormat, Stack } from "aws-cdk-lib";
 import {
   type CiCoreAuth,
   type CiCoreFunctionId,
-  ciAuthResourceModule,
+  ciPickEnvKeyAllowlistForFunctions,
+  ciResolveAmplifyFunctionLambdas,
+  resourceEnvKeyAllowlist,
 } from "@cloudigniter/aws/server/backend";
-
-import { ciPickEnvKeyAllowlistForFunctions } from "./ci-pick-env-key-allowlist-for-functions";
+import { CI_CORE_AMPLIFY_AUTH_FUNCTION_BINDINGS } from "./ci-core-amplify-manifest";
 import type { CiBackend } from "./types";
 
 export const ciGetAuthStack = (backend: CiBackend) => {
@@ -18,19 +19,17 @@ export const ciGetAuthStack = (backend: CiBackend) => {
     userPoolArnParam: "/cloudigniter/auth/userPoolArn",
   };
 
-  const functions = {
-    ciCreateCognitoUserHandler:
-      backend.createCognitoUserHandler.resources.lambda,
-    ciGetCognitoUserHandler: backend.getCognitoUserHandler.resources.lambda,
-  };
-
-  const CI_AUTH_FUNCS_IDS = ciAuthResourceModule.handlers.filter(
-    (fnId): fnId is keyof typeof functions & CiCoreFunctionId =>
-      fnId in functions,
+  const functions = ciResolveAmplifyFunctionLambdas(
+    backend,
+    CI_CORE_AMPLIFY_AUTH_FUNCTION_BINDINGS,
   );
 
+  const CI_AUTH_FUNCS_IDS = Object.keys(
+    CI_CORE_AMPLIFY_AUTH_FUNCTION_BINDINGS,
+  ) as (keyof typeof functions & CiCoreFunctionId)[];
+
   const envKeyAllowlist = ciPickEnvKeyAllowlistForFunctions(
-    ciAuthResourceModule.envKeyAllowlist,
+    resourceEnvKeyAllowlist,
     functions,
   );
 

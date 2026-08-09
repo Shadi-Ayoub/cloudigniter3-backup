@@ -48,4 +48,4 @@ export type {
   CiScopePropagation,
   CiSystemAccessScope,
   CiTenantAccessScope,
-} from "./access-control-types";
+} from "@cloudigniter/emberguard/types";

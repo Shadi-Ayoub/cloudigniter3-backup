@@ -8,6 +8,14 @@ export { ciAuthResourceModule } from "./resources/auth";
 // ─────────────────────────────────────────────────────────────
 export { CI_DATA_RESOURCE_MODULES } from "./resources";
 
+export {
+  CI_CORE_BACKEND_MANIFEST,
+  resourceEnvKeyAllowlist,
+  ciCompileBackendManifest,
+  ciCreateResourceModule,
+  ciDefineBackendManifest,
+} from "./resources";
+
 // ─────────────────────────────────────────────────────────────
 // env
 // ─────────────────────────────────────────────────────────────
@@ -32,6 +40,18 @@ export {
   ciGetCognitoUserHandler,
   ciSetCognitoUserPasswordHandler,
   ciUpdateCognitoUserHandler,
+
+  // emberguard
+  ciDeleteEmberguardCustomDomainHandler,
+  ciDeleteEmberguardRoleAssignmentHandler,
+  ciGetEmberguardDefinitionHandler,
+  ciListEmberguardCustomDomainsHandler,
+  ciListEmberguardResourceInventoryHandler,
+  ciListEmberguardRoleAssignmentsHandler,
+  ciPutEmberguardCustomDomainHandler,
+  ciPutEmberguardResourceInventoryHandler,
+  ciPutEmberguardRoleAssignmentHandler,
+  ciSetEmberguardDefinitionHandler,
 } from "./handlers";
 
 // ─────────────────────────────────────────────────────────────
@@ -41,6 +61,11 @@ export {
   ciApplyCorePostBuildPlan,
   ciCreateCorePostBuildPlan,
 } from "./post-build";
+
+// ─────────────────────────────────────────────────────────────
+// Amplify manifest compiler
+// ─────────────────────────────────────────────────────────────
+export * from "./amplify";
 
 // ─────────────────────────────────────────────────────────────
 // root user
@@ -105,4 +130,7 @@ export type {
   CiResourceModule,
   CiResourceEnvKeyAllowlist,
   CiFunctionEnvMap,
+  CiBackendManifestInput,
+  CiBackendModuleStatus,
+  CiCompiledBackendManifest,
 } from "./resources";

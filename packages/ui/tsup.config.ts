@@ -14,6 +14,6 @@ export default defineConfig(async () =>
   ciCreateTsupConfig({
     mode: "ui",
     external: externalPackages,
-    clientDirectiveTargets: ["dist/client/index.js"],
-  }),
+    clientDirectiveTargets: ["dist/index.js", "dist/client/index.js"],
+  })
 );

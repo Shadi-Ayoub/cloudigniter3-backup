@@ -4,7 +4,7 @@
   }
 
   .ci-dt-container {
-    @apply bg-muted-50 overflow-auto rounded-lg shadow-md;
+    @apply overflow-auto rounded-lg border border-border bg-card shadow-sm;
   }
 
   .ci-dt-table {
@@ -12,11 +12,11 @@
   }
 
   .ci-dt-header {
-    @apply bg-muted-400 dark:bg-muted-950 z-raised sticky top-0 backdrop-blur-md;
+    @apply z-raised sticky top-0 bg-surface-muted text-foreground backdrop-blur-md;
   }
 
   .ci-dt-tbody {
-    @apply border-muted-100 dark:border-muted-700 divide-y;
+    @apply divide-y divide-border;
   }
 
   .ci-dt-th {
@@ -24,29 +24,29 @@
   }
 
   .ci-dt-cell {
-    @apply border-b border-gray-100 px-6 py-4 text-sm whitespace-nowrap dark:border-gray-500;
+    @apply border-b border-border px-6 py-4 text-sm whitespace-nowrap;
     @apply bg-transparent;
   }
 
   .ci-dt-row {
-    @apply hover:bg-secondary-200 dark:bg-muted-700 dark:hover:bg-muted-500 bg-white transition-colors duration-150;
-    @apply data-[state=selected]:bg-secondary-400;
+    @apply bg-card transition-colors duration-150 hover:bg-accent;
+    @apply data-[state=selected]:bg-primary-100 dark:data-[state=selected]:bg-primary-900;
   }
 
   .ci-dt-new-row {
-    @apply animate-pulse bg-yellow-100;
+    @apply animate-pulse bg-warning-surface;
   }
 
   .ci-dt-pagination-button {
-    @apply bg-muted/40 rounded border-[1px] text-sm font-medium;
+    @apply rounded border border-border bg-surface-muted text-sm font-medium;
   }
 
   .ci-dt-pagination-button.active {
-    @apply bg-muted text-muted-50;
+    @apply bg-primary text-primary-foreground;
   }
 
   .ci-dt-sort-indicator-active {
-    @apply bg-secondary-600;
+    @apply bg-primary;
   }
 
   .ci-dt-muted {

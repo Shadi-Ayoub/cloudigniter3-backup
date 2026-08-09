@@ -1,0 +1,200 @@
+{
+  "communities": {
+    "0": [
+      "clsx",
+      "docusaurus_core",
+      "docusaurus_preset_classic",
+      "docusaurus_theme_mermaid",
+      "lucide_react",
+      "mdx_js_react",
+      "package_dependencies",
+      "package_dependencies_clsx",
+      "package_dependencies_docusaurus_core",
+      "package_dependencies_docusaurus_preset_classic",
+      "package_dependencies_docusaurus_theme_mermaid",
+      "package_dependencies_lucide_react",
+      "package_dependencies_mdx_js_react",
+      "package_dependencies_prism_react_renderer",
+      "package_dependencies_react",
+      "package_dependencies_react_dom",
+      "prism_react_renderer",
+      "react",
+      "react_dom"
+    ],
+    "1": [
+      "autoprefixer",
+      "docusaurus_module_type_aliases",
+      "docusaurus_types",
+      "package_devdependencies",
+      "package_devdependencies_autoprefixer",
+      "package_devdependencies_docusaurus_module_type_aliases",
+      "package_devdependencies_docusaurus_types",
+      "package_devdependencies_postcss",
+      "package_devdependencies_postcss_import",
+      "package_devdependencies_tailwindcss",
+      "package_devdependencies_tailwindcss_typography",
+      "package_devdependencies_typescript",
+      "postcss",
+      "postcss_import",
+      "tailwindcss",
+      "tailwindcss_typography",
+      "typescript"
+    ],
+    "2": [
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_clear",
+      "package_scripts_deploy",
+      "package_scripts_docusaurus",
+      "package_scripts_serve",
+      "package_scripts_start",
+      "package_scripts_swizzle",
+      "package_scripts_typecheck",
+      "package_scripts_write_heading_ids",
+      "package_scripts_write_translations"
+    ],
+    "3": [
+      "docusaurus_tsconfig",
+      "package_devdependencies_docusaurus_tsconfig",
+      "ref_build",
+      "ref_docusaurus",
+      "tsconfig",
+      "tsconfig_compileroptions",
+      "tsconfig_compileroptions_paths",
+      "tsconfig_exclude",
+      "tsconfig_extends"
+    ],
+    "4": [
+      "package_browserslist",
+      "package_browserslist_development",
+      "package_browserslist_production",
+      "ref_0_5",
+      "ref_last_3_chrome_version",
+      "ref_last_3_firefox_version",
+      "ref_last_5_safari_version",
+      "ref_not_dead",
+      "ref_not_op_mini_all"
+    ],
+    "5": [
+      "src_components_homepagefeatures_index",
+      "src_components_homepagefeatures_index_feature",
+      "src_components_homepagefeatures_index_featureitem",
+      "src_components_homepagefeatures_index_featurelist",
+      "src_components_homepagefeatures_index_homepagefeatures",
+      "src_pages_index",
+      "src_pages_index_home",
+      "src_pages_index_homepageheader"
+    ],
+    "6": [
+      "package",
+      "package_engines",
+      "package_engines_node",
+      "package_name",
+      "package_private",
+      "package_version"
+    ],
+    "7": [
+      "src_components_imagewrapper_index",
+      "src_components_imagewrapper_index_imagesize",
+      "src_components_imagewrapper_index_imagewrapper",
+      "src_components_imagewrapper_index_imagewrapperprops",
+      "src_components_imagewrapper_index_sizeclassmap"
+    ],
+    "8": [
+      "src_components_codeblock_index",
+      "src_components_codeblock_index_codeblock",
+      "src_components_codeblock_index_customcodeblockprops"
+    ],
+    "9": [
+      "docusaurus_config",
+      "docusaurus_config_config"
+    ],
+    "10": [
+      "scripts_backup",
+      "scripts_backup_sh__entry"
+    ],
+    "11": [
+      "sidebars",
+      "sidebars_sidebars"
+    ],
+    "12": [
+      "postcss_config"
+    ],
+    "13": [
+      "tailwind_config"
+    ]
+  },
+  "cohesion": {
+    "0": 0.10526315789473684,
+    "1": 0.11764705882352941,
+    "2": 0.18181818181818182,
+    "3": 0.2222222222222222,
+    "4": 0.2222222222222222,
+    "5": 0.2857142857142857,
+    "6": 0.3333333333333333,
+    "7": 0.4,
+    "8": 0.6666666666666666,
+    "9": 1.0,
+    "10": 1.0,
+    "11": 1.0,
+    "12": 1.0,
+    "13": 1.0
+  },
+  "gods": [
+    {
+      "id": "package_scripts",
+      "label": "scripts",
+      "degree": 11
+    },
+    {
+      "id": "package_browserslist_production",
+      "label": "production",
+      "degree": 4
+    },
+    {
+      "id": "package_browserslist_development",
+      "label": "development",
+      "degree": 4
+    },
+    {
+      "id": "package_browserslist",
+      "label": "browserslist",
+      "degree": 3
+    },
+    {
+      "id": "tsconfig_exclude",
+      "label": "exclude",
+      "degree": 3
+    },
+    {
+      "id": "package_dependencies_docusaurus_core",
+      "label": "@docusaurus/core",
+      "degree": 2
+    },
+    {
+      "id": "package_dependencies_docusaurus_preset_classic",
+      "label": "@docusaurus/preset-classic",
+      "degree": 2
+    },
+    {
+      "id": "package_dependencies_docusaurus_theme_mermaid",
+      "label": "@docusaurus/theme-mermaid",
+      "degree": 2
+    },
+    {
+      "id": "package_dependencies_mdx_js_react",
+      "label": "@mdx-js/react",
+      "degree": 2
+    },
+    {
+      "id": "package_dependencies_clsx",
+      "label": "clsx",
+      "degree": 2
+    }
+  ],
+  "surprises": [],
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
+}

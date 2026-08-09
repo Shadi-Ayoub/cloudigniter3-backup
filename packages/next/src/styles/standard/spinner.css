@@ -1,6 +1,6 @@
 @layer components {
   .spinner-box {
-    @apply dark:bg-muted/50 z-overlay-1 fixed inset-0 flex items-center justify-center bg-white/50 backdrop-blur-sm;
+    @apply z-overlay-1 fixed inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm;
   }
 
   .spinner-inner {
@@ -8,10 +8,10 @@
   }
 
   .spinner-animation {
-    @apply h-16 w-16 animate-spin rounded-full border-4 border-blue-500 border-t-transparent;
+    @apply h-16 w-16 animate-spin rounded-full border-4 border-primary border-t-transparent;
   }
 
   .spinner-label {
-    @apply mt-4 text-gray-700 dark:text-gray-200;
+    @apply mt-4 text-muted-foreground;
   }
 }

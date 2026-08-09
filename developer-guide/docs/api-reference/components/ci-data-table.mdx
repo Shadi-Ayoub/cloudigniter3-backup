@@ -1,0 +1,1158 @@
+---
+title: CiDataTable
+sidebar_position: 1
+description: Complete API reference for defining, configuring, and connecting CloudIgniter data tables.
+---
+
+# `CiDataTable`
+
+`CiDataTable` is CloudIgniter's client-side object-management table. It combines a typed CloudIgniter contract with TanStack Table v9.1 and is exported from `@cloudigniter/ui`.
+
+Use it for users, tenants, roles, audit records, provider resources, and other row-oriented data that needs sorting, filtering, actions, selection, paging, export, or multiple visual formats.
+
+:::tip TanStack Table foundation
+
+`CiDataTable` adds CloudIgniter's management-table workflow and presentation layer to TanStack Table. Start with the [TanStack Table documentation](https://tanstack.com/table/latest) to understand the underlying headless table model, then use this reference for the CloudIgniter extensions and defaults.
+
+:::
+
+## Import and runtime requirements
+
+`CiDataTable` uses React state, browser events, dialogs, tooltips, downloads, and optional cookies. The file that renders it must therefore be a Client Component.
+
+```tsx title="Required client boundary and imports" showLineNumbers
+"use client";
+
+import {
+  CiDataTable,
+  ciCreateDataTableDataSource,
+  ciDefineDataTable,
+  ciDefineDataTableColumn,
+  type CiDataTableConfig,
+  type CiDataTableDefinition,
+} from "@cloudigniter/ui";
+```
+
+The table row type must be an object or array accepted by TanStack's `RowData` constraint. Application object types such as `TenantRow` and `UserRow` are the normal choice.
+
+## Composition model
+
+The API separates three responsibilities:
+
+| Responsibility | Input              | Purpose                                                                                                                    |
+| -------------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| Data           | `data` or `source` | Supplies local rows or connects a provider handler.                                                                        |
+| Definition     | `definition`       | Declares columns, record information, filters, row actions, global actions, and row identity.                              |
+| Configuration  | `config`           | Controls execution mode, formats, sorting, filtering, paging, selection, layout, export, caching, labels, and persistence. |
+
+The recommended pattern is to define stable `definition` and `config` objects outside the rendering component, then provide either `data` or `source`.
+
+```tsx title="Recommended composition pattern" showLineNumbers
+const definition = ciDefineDataTable<TenantRow>({
+  columns: tenantColumns,
+  getRowId: (tenant) => tenant.id,
+});
+
+const config: CiDataTableConfig<TenantRow> = {
+  mode: "hybrid",
+  pagination: { pageSize: 25 },
+};
+
+export function TenantTable() {
+  return (
+    <CiDataTable
+      definition={definition}
+      source={tenantSource}
+      config={config}
+    />
+  );
+}
+```
+
+## Component signature
+
+```ts title="CiDataTable component contract" showLineNumbers
+type CiDataTableInterface<TData extends RowData, TValue = unknown> = {
+  title?: string;
+  description?: string;
+  definition?: CiDataTableDefinition<TData>;
+  columns?: CiDataTableColumnDef<TData, TValue>[];
+  data?: TData[];
+  source?: CiDataTableDataSource<TData>;
+  rowActions?: CiDataTableAction<TData>[];
+  searchPlaceholder?: string;
+  className?: string;
+  config?: CiDataTableConfig<TData>;
+  direction?: CiLocaleDirection;
+  loading?: boolean;
+  error?: ReactNode;
+  emptyState?: ReactNode;
+  onQueryChange?: (query: CiDataTableQuery) => void;
+  onSelectionChange?: (rows: TData[]) => void;
+};
+```
+
+### Props
+
+| Prop                | Type                                    | Default                | Description                                                                                               |
+| ------------------- | --------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------- |
+| `title`             | `string`                                | None                   | Optional heading rendered above the toolbar. It also supplies the default Excel file and sheet names.     |
+| `description`       | `string`                                | None                   | Supporting text rendered below `title`.                                                                   |
+| `definition`        | `CiDataTableDefinition<TData>`          | None                   | Recommended reusable definition containing columns and table operations.                                  |
+| `columns`           | `CiDataTableColumnDef<TData, TValue>[]` | `[]`                   | Direct column shorthand for a small one-off table. Ignored when `definition.columns` exists.              |
+| `data`              | `TData[]`                               | `[]`                   | Local rows used in client mode. A provider `source` takes precedence unless mode is explicitly `client`.  |
+| `source`            | `CiDataTableDataSource<TData>`          | None                   | Provider adapter for server or hybrid operation.                                                          |
+| `rowActions`        | `CiDataTableAction<TData>[]`            | `[]`                   | Direct row-action shorthand. Ignored when `definition.rowActions` exists.                                 |
+| `searchPlaceholder` | `string`                                | `config.labels.search` | Overrides the global-search input placeholder only.                                                       |
+| `className`         | `string`                                | None                   | Additional classes for the outer `<section>`.                                                             |
+| `config`            | `CiDataTableConfig<TData>`              | Built-in defaults      | Presentation and execution behavior.                                                                      |
+| `direction`         | `"ltr" \| "rtl"`                        | Inherited              | Applies direction to the component. Actions are placed at logical inline-start.                           |
+| `loading`           | `boolean`                               | `false`                | Adds a parent-controlled loading state to any provider loading state.                                     |
+| `error`             | `ReactNode`                             | None                   | Parent-controlled error content. When supplied, it takes precedence over internal provider/action errors. |
+| `emptyState`        | `ReactNode`                             | `"No results."`        | Replaces the standard empty result content.                                                               |
+| `onQueryChange`     | `(query) => void`                       | None                   | Called whenever the normalized table query changes.                                                       |
+| `onSelectionChange` | `(rows) => void`                        | None                   | Called with currently selected row objects when selection or loaded rows change.                          |
+
+At least one of `definition.columns` or `columns` is required in practice. Prefer `definition` when the table needs information, toolbar filters, global actions, stable row identity, or a reusable contract.
+
+## Definition API
+
+Use `ciDefineDataTable` to validate the definition while preserving row inference.
+
+```ts title="CiDataTableDefinition" showLineNumbers
+type CiDataTableDefinition<TData extends RowData> = {
+  columns: CiDataTableColumnDef<TData, unknown>[];
+  information?: CiDataTableInformation<TData>;
+  rowActions?: CiDataTableAction<TData>[];
+  globalActions?: CiDataTableGlobalAction<TData>[];
+  filters?: CiDataTableFilter<TData>[];
+  getRowId?: (row: TData, index: number) => string;
+};
+```
+
+| Field           | Required    | Description                                                                                               |
+| --------------- | ----------- | --------------------------------------------------------------------------------------------------------- |
+| `columns`       | Yes         | Native TanStack v9 column definitions extended with `meta.ciDataTable`.                                   |
+| `information`   | No          | Built-in first-position Info control for a tooltip or modal dialog.                                       |
+| `rowActions`    | No          | Record-specific buttons or menu entries.                                                                  |
+| `globalActions` | No          | Toolbar actions that can use selected rows or act independently.                                          |
+| `filters`       | No          | Text or select filters rendered in the top toolbar.                                                       |
+| `getRowId`      | Recommended | Produces stable row identity for selection and rerendering. Use a database ID rather than an array index. |
+
+### Precedence rules
+
+- `definition.columns` takes precedence over the top-level `columns` prop.
+- `definition.rowActions` takes precedence over the top-level `rowActions` prop.
+- Information, toolbar filters, global actions, and `getRowId` are available through `definition` only.
+- The built-in information control and actions column are rendered when either `information` or `rowActions` is defined.
+
+## Column API
+
+`CiDataTableColumnDef<TData, TValue>` is a TanStack Table v9 `ColumnDef` using CloudIgniter's explicit feature set. Native options remain available, including:
+
+- `accessorKey` and `accessorFn`;
+- `id`, `header`, and `cell`;
+- `enableSorting`, `sortFn`, and sorting behavior;
+- `enableColumnFilter` and `filterFn`;
+- `size`, `minSize`, `maxSize`, and `enableResizing`.
+
+:::tip Inherited column properties
+
+CloudIgniter extends TanStack's column definition rather than replacing it. See the TanStack [Column Definitions Guide](https://tanstack.com/table/latest/docs/guide/column-defs) and [Column Definition API](https://tanstack.com/table/latest/docs/api/core/column-def) for native accessors, renderers, sorting, filtering, sizing, and feature flags. Properties under `meta.ciDataTable` are the CloudIgniter-specific additions documented below.
+
+:::
+
+```tsx title="Column definition example" showLineNumbers
+import {
+  ciDefineDataTableColumn,
+  type CiDataTableColumnDef,
+} from "@cloudigniter/ui";
+
+const statusColumn = ciDefineDataTableColumn<TenantRow, string>({
+  accessorKey: "status",
+  header: "Status",
+  enableSorting: true,
+  meta: {
+    ciDataTable: {
+      label: "Tenant status",
+      className: ({ value }) =>
+        value === "active" ? "font-semibold" : "text-muted-foreground",
+    },
+  },
+});
+
+const columns: CiDataTableColumnDef<TenantRow, unknown>[] = [statusColumn];
+```
+
+### `meta.ciDataTable`
+
+```ts title="CiDataTableColumnMeta" showLineNumbers
+type CiDataTableColumnMeta<TData, TValue = unknown> = {
+  label?: string;
+  className?:
+    | string
+    | ((context: CiDataTableCellContext<TData, TValue>) => string | undefined);
+  headerClassName?: string;
+  truncate?:
+    | boolean
+    | number
+    | { maxWidth?: number | string; showTitle?: boolean };
+  clickable?: {
+    onClick?: (context: CiDataTableCellContext<TData, TValue>) => void;
+    href?: (context: CiDataTableCellContext<TData, TValue>) => string;
+    ariaLabel?: (context: CiDataTableCellContext<TData, TValue>) => string;
+  };
+  filter?: {
+    type?: "text" | "select";
+    placeholder?: string;
+    options?: CiDataTableFilterOption[];
+  };
+  export?: boolean | { header?: string; value?: (row: TData) => unknown };
+};
+```
+
+| Field                 | Behavior                                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------------------- |
+| `label`               | Plain-text name used by card layout and as an Excel-header fallback.                                    |
+| `className`           | Static cell classes or a callback evaluated with the row, cell value, and column ID.                    |
+| `headerClassName`     | Additional classes for the table header cell.                                                           |
+| `truncate: true`      | Applies ellipsis behavior and exposes the complete value as native title text.                          |
+| `truncate: number`    | Truncates and uses the number as the maximum width.                                                     |
+| `truncate.maxWidth`   | Accepts a number or CSS width string.                                                                   |
+| `truncate.showTitle`  | Defaults to `true`; set to `false` to suppress the full-value title.                                    |
+| `clickable.href`      | Renders the cell content as an accessible link. It takes precedence if both `href` and `onClick` exist. |
+| `clickable.onClick`   | Renders a button suitable for opening application state such as a dialog or sheet.                      |
+| `clickable.ariaLabel` | Supplies a row-specific accessible name for the link or button.                                         |
+| `filter`              | Adds a filter directly beneath this column's heading.                                                   |
+| `export: false`       | Excludes the column from built-in export.                                                               |
+| `export.header`       | Overrides the exported column heading.                                                                  |
+| `export.value`        | Produces an export-safe value independently from rendered cell content.                                 |
+
+The callback context is:
+
+```ts title="CiDataTableCellContext" showLineNumbers
+type CiDataTableCellContext<TData, TValue = unknown> = {
+  row: TData;
+  value: TValue;
+  columnId: string;
+};
+```
+
+## Built-in record information
+
+`definition.information` renders an Info icon or labeled button before ordinary row actions. It remains a separate first control in `menu` mode and does not count toward `rowActions.inlineCount` in `mixed` mode.
+
+```ts title="CiDataTableInformation" showLineNumbers
+type CiDataTableInformation<TData> = {
+  mode?: "tooltip" | "dialog";
+  display?: "icon" | "button";
+  label?: string;
+  title?: ReactNode | ((row: TData) => ReactNode);
+  description?: ReactNode | ((row: TData) => ReactNode);
+  content: ReactNode | ((row: TData) => ReactNode);
+  dialogClassName?: string;
+  hideWhen?: (row: TData) => boolean;
+  disableWhen?: (row: TData) => boolean;
+};
+```
+
+| Field             | Default                | Description                                                                                          |
+| ----------------- | ---------------------- | ---------------------------------------------------------------------------------------------------- |
+| `mode`            | `"tooltip"`            | Tooltip opens on hover, keyboard focus, or click/tap. Dialog opens on click/tap.                     |
+| `display`         | `"icon"`               | Icon-only control or icon plus `label`.                                                              |
+| `label`           | `"Record information"` | Accessible name and default dialog title.                                                            |
+| `title`           | `label`                | Dialog title; may depend on the current row.                                                         |
+| `description`     | None                   | Optional dialog description; may depend on the current row.                                          |
+| `content`         | Required               | Tooltip or dialog body, either static or row-dependent.                                              |
+| `dialogClassName` | None                   | Additional classes for dialog content.                                                               |
+| `hideWhen`        | `false`                | Hides the control when the predicate returns `true`.                                                 |
+| `disableWhen`     | `false`                | Disables the control when the predicate returns `true`. Disabled controls do not reveal information. |
+
+The control is visible unless `hideWhen(row)` returns `true`. It is disabled when `disableWhen(row)` returns `true`.
+
+```tsx title="Tooltip and dialog information examples" showLineNumbers
+const tooltipInformation = {
+  mode: "tooltip" as const,
+  label: "User information",
+  content: (user: UserRow) => `${user.name} · ${user.email}`,
+};
+
+const dialogInformation = {
+  mode: "dialog" as const,
+  label: "Tenant information",
+  title: (tenant: TenantRow) => tenant.name,
+  description: (tenant: TenantRow) => `Tenant ID: ${tenant.id}`,
+  content: (tenant: TenantRow) => <TenantSummary tenant={tenant} />,
+};
+```
+
+## Row actions
+
+```ts title="CiDataTableAction" showLineNumbers
+type CiDataTableAction<TData> = {
+  id: string;
+  label: string;
+  icon?: ReactNode;
+  display?: "button" | "icon";
+  variant?: "default" | "destructive";
+  hideWhen?: (row: TData) => boolean;
+  disableWhen?: (row: TData) => boolean;
+  onSelect: (
+    row: TData,
+    context?: CiDataTableRowActionContext<TData>
+  ) => void | Promise<void>;
+};
+```
+
+| Field         | Required | Default/behavior                                                                                                 |
+| ------------- | -------- | ---------------------------------------------------------------------------------------------------------------- |
+| `id`          | Yes      | Stable action ID; unique within the row-action list.                                                             |
+| `label`       | Yes      | Visible text or accessible name and tooltip for an icon-only action.                                             |
+| `icon`        | No       | React icon shown before the label or by itself.                                                                  |
+| `display`     | No       | Defaults to labeled button behavior. `"icon"` becomes icon-only when `icon` is also supplied.                    |
+| `variant`     | No       | Ordinary actions use a ghost button/menu item; `"destructive"` receives destructive styling and menu separation. |
+| `hideWhen`    | No       | Hides the action when `true`.                                                                                    |
+| `disableWhen` | No       | Keeps the action visible but unavailable when `true`.                                                            |
+| `onSelect`    | Yes      | Invoked with the row and table context. May be synchronous or asynchronous.                                      |
+
+The callback context is:
+
+```ts title="CiDataTableRowActionContext" showLineNumbers
+type CiDataTableRowActionContext<TData> = {
+  row: TData;
+  query: CiDataTableQuery;
+  refresh: () => void;
+};
+```
+
+Call `refresh()` after a mutation to clear hybrid cache entries and reload the active provider query. Row action handlers should surface their own success/error feedback and confirm destructive operations where appropriate.
+
+```tsx title="Conditional row actions" showLineNumbers
+const tenantRowActions = [
+  {
+    id: "edit",
+    label: "Edit tenant",
+    icon: <Pencil />,
+    display: "icon" as const,
+    disableWhen: (tenant: TenantRow) => tenant.isSystem,
+    onSelect: (tenant: TenantRow) => openEditor(tenant),
+  },
+  {
+    id: "delete",
+    label: "Delete tenant",
+    icon: <Trash2 />,
+    variant: "destructive" as const,
+    hideWhen: (tenant: TenantRow) => tenant.isSystem,
+    onSelect: async (tenant: TenantRow, context) => {
+      if (!window.confirm(`Delete ${tenant.name}?`)) return;
+      await deleteTenant(tenant.id);
+      context?.refresh();
+    },
+  },
+];
+```
+
+## Global actions and selection
+
+Global actions render in the top toolbar and receive the current query plus selected rows.
+
+```ts title="CiDataTableGlobalAction" showLineNumbers
+type CiDataTableGlobalAction<TData> = {
+  id: string;
+  label: string;
+  icon?: ReactNode;
+  variant?: "default" | "outline" | "secondary" | "ghost" | "destructive";
+  selection?: "required" | "optional" | "none";
+  isVisible?: (context: CiDataTableGlobalActionContext<TData>) => boolean;
+  isDisabled?: (context: CiDataTableGlobalActionContext<TData>) => boolean;
+  onSelect: (
+    context: CiDataTableGlobalActionContext<TData>
+  ) => void | Promise<void>;
+};
+```
+
+| Field        | Default      | Description                                                               |
+| ------------ | ------------ | ------------------------------------------------------------------------- |
+| `id`         | Required     | Stable ID used for busy state.                                            |
+| `label`      | Required     | Button label.                                                             |
+| `icon`       | None         | Optional leading icon. A spinner replaces it while the action is running. |
+| `variant`    | `"outline"`  | Standard CloudIgniter button variant.                                     |
+| `selection`  | `"required"` | Whether selection is required, optional, or irrelevant.                   |
+| `isVisible`  | `true`       | Evaluated against the complete global-action context.                     |
+| `isDisabled` | `false`      | Additional context-dependent disabled state.                              |
+| `onSelect`   | Required     | Runs with busy feedback. Rejected promises are rendered as table errors.  |
+
+Selection behavior by mode:
+
+| `selection`  | Selection column          | Button state                                 | Typical use                                              |
+| ------------ | ------------------------- | -------------------------------------------- | -------------------------------------------------------- |
+| `"required"` | Enabled automatically     | Disabled until one or more rows are selected | Suspend or delete selected rows.                         |
+| `"optional"` | Enabled automatically     | Available with zero or more selected rows    | Send reminders to selected rows or use a fallback group. |
+| `"none"`     | Does not enable selection | Independent of selection                     | Create a record or generate a report.                    |
+
+`config.selection.enabled` explicitly overrides automatic selection. Setting it to `false` while a required action exists leaves that action disabled because no rows can be selected.
+
+```ts title="CiDataTableGlobalActionContext" showLineNumbers
+type CiDataTableGlobalActionContext<TData> = {
+  selectedRows: TData[];
+  query: CiDataTableQuery;
+  clearSelection: () => void;
+  refresh: () => void;
+  exportExcel: () => Promise<void>;
+};
+```
+
+Use `clearSelection()` after a successful bulk mutation, `refresh()` to invalidate provider cache, and `exportExcel()` to reuse the configured built-in export from a custom action.
+
+## Filters
+
+There are two filter locations:
+
+- `definition.filters` renders filters in the top toolbar.
+- `column.meta.ciDataTable.filter` renders filters beneath the corresponding heading.
+
+Both update the same column-filter state and are included in `CiDataTableQuery.filters`.
+
+```ts title="CiDataTableFilter" showLineNumbers
+type CiDataTableFilter<TData extends RowData> = {
+  id: string;
+  label: string;
+  type?: "select" | "text";
+  placeholder?: string;
+  allLabel?: string;
+  options?: CiDataTableFilterOption[];
+  defaultValue?: CiDataTableFilterValue;
+  filterFn?: FilterFnOption<CiDataTableFeatures, TData>;
+};
+
+type CiDataTableFilterOption = {
+  id: string | number | boolean;
+  label: string;
+};
+
+type CiDataTableFilterValue =
+  | string
+  | number
+  | boolean
+  | Array<string | number>
+  | null;
+```
+
+| Field          | Default             | Description                                                                                    |
+| -------------- | ------------------- | ---------------------------------------------------------------------------------------------- |
+| `id`           | Required            | Must match the target TanStack column ID.                                                      |
+| `label`        | Required            | Accessible name for the toolbar control.                                                       |
+| `type`         | `"select"`          | Text filters use `includesString`; select filters use `equals` unless `filterFn` overrides it. |
+| `placeholder`  | `label`             | Control placeholder.                                                                           |
+| `allLabel`     | Localized `"All"`   | Label for clearing a toolbar select filter.                                                    |
+| `options`      | `[]`                | Typed select options. Number and boolean identity is preserved.                                |
+| `defaultValue` | None                | Initial filter entry. `undefined` and `null` do not create an initial filter.                  |
+| `filterFn`     | Derived from `type` | Native TanStack filter function or a registered filter-function name.                          |
+
+Global search is separate from column filters. It is enabled by default and stored as `query.globalFilter` after the configured debounce.
+
+## Configuration API
+
+```ts title="CiDataTableConfig" showLineNumbers
+type CiDataTableConfig<TData = unknown> = {
+  mode?: "client" | "server" | "hybrid" | "auto";
+  formats?: CiDataTableFormatOption[];
+  defaultFormat?: "table" | "compact" | "cards";
+  sorting?: {
+    enabled?: boolean;
+    initial?: CiDataTableSortSpec[];
+  };
+  filtering?: {
+    global?: boolean;
+    debounceMs?: number;
+  };
+  pagination?: {
+    enabled?: boolean;
+    pageSize?: number;
+    pageSizeOptions?: number[];
+    allowAll?: boolean;
+  };
+  selection?: {
+    enabled?: boolean;
+    enableRow?: (row: TData) => boolean;
+  };
+  rowActions?: {
+    mode?: "buttons" | "menu" | "mixed";
+    inlineCount?: number;
+    header?: string;
+  };
+  columnResizing?: boolean;
+  hoverHighlight?: boolean;
+  stripedRows?: boolean;
+  width?: number | string;
+  labels?: Partial<CiDataTableLabels>;
+  persistence?: CiDataTablePersistenceConfig;
+  excelExport?: boolean | CiDataTableExcelConfig;
+  maxCachedPages?: number;
+  prefetchNextPage?: boolean;
+  cacheKey?: string;
+};
+```
+
+### Execution modes
+
+| Mode                | Data owner         | Filtering/sorting/paging                                                         | Page cache |
+| ------------------- | ------------------ | -------------------------------------------------------------------------------- | ---------- |
+| `"client"`          | `data`             | TanStack processes rows in the browser. A supplied `source` is ignored.          | No         |
+| `"server"`          | `source.fetchPage` | The provider receives every active query and returns processed rows.             | No         |
+| `"hybrid"`          | `source.fetchPage` | Provider processing plus a browser cache of recently visited query/page results. | Yes        |
+| `"auto"` or omitted | Inferred           | Client when `source` is absent; hybrid when `source` exists.                     | Inferred   |
+
+If `source` is absent, the effective mode is always client, even when `mode` is set to `server` or `hybrid`.
+
+### Formats
+
+```ts title="Format configuration" showLineNumbers
+type CiDataTableFormat = "table" | "compact" | "cards";
+
+type CiDataTableFormatOption = {
+  id: CiDataTableFormat;
+  label: string;
+};
+```
+
+| Option          | Default                             | Description                                                                         |
+| --------------- | ----------------------------------- | ----------------------------------------------------------------------------------- |
+| `formats`       | `[{ id: "table", label: "Table" }]` | Available layouts. The selector appears only when more than one format is supplied. |
+| `defaultFormat` | First configured format             | Initial format. It should be present in `formats`.                                  |
+| `"table"`       | Default                             | Standard semantic table.                                                            |
+| `"compact"`     | Opt-in                              | Same semantic table with denser cell padding.                                       |
+| `"cards"`       | Opt-in                              | Responsive card grid using the same cells and actions.                              |
+
+### Sorting and filtering configuration
+
+| Option                 | Default | Description                                                                                  |
+| ---------------------- | ------- | -------------------------------------------------------------------------------------------- |
+| `sorting.enabled`      | `true`  | Enables sortable column interactions. Columns can still opt out with `enableSorting: false`. |
+| `sorting.initial`      | `[]`    | Initial priority-ordered sort rules.                                                         |
+| `filtering.global`     | `true`  | Shows global search. It does not disable column or toolbar filters.                          |
+| `filtering.debounceMs` | `250`   | Delay before global search updates client filtering or provider queries.                     |
+
+```ts title="CiDataTableSortSpec" showLineNumbers
+type CiDataTableSortSpec = {
+  id: string;
+  desc: boolean;
+};
+```
+
+:::tip Sorting and filtering behavior
+
+For the native mechanics inherited by column definitions, see TanStack's [Sorting Guide](https://tanstack.com/table/latest/docs/guide/sorting), [Column Filtering Guide](https://tanstack.com/table/latest/docs/guide/column-filtering), and [Filtering Guide](https://tanstack.com/table/latest/docs/guide/filters). `CiDataTable` manages those states for you and exposes their normalized values through `CiDataTableQuery`.
+
+:::
+
+### Pagination configuration
+
+| Option                       | Default             | Description                                                                                                      |
+| ---------------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `pagination.enabled`         | `true`              | Controls rendering of the pagination footer.                                                                     |
+| `pagination.pageSize`        | `25`                | Initial page size.                                                                                               |
+| `pagination.pageSizeOptions` | `[10, 25, 50, 100]` | Numeric options shown in the page-size selector.                                                                 |
+| `pagination.allowAll`        | `false`             | Adds the `"All"` option. Keep disabled for large/provider-backed data unless the provider enforces a safe limit. |
+
+Changing the page size resets page index, cursor navigation, and selected rows. `pageSize: "all"` is sent to provider handlers only when the user selects the enabled All option.
+
+### Selection configuration
+
+| Option                | Default   | Description                                                                                                                                |
+| --------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `selection.enabled`   | Automatic | Explicitly enables or disables row selection. Without an override, selection is enabled when any global action is not `selection: "none"`. |
+| `selection.enableRow` | All rows  | Returns whether a specific record may be selected.                                                                                         |
+
+The header checkbox selects the current page. For provider tables, selected row objects are scoped to loaded rows; applications needing cross-page selection should maintain stable selected IDs separately.
+
+:::tip TanStack feature details
+
+Read the TanStack references for [Pagination](https://tanstack.com/table/latest/docs/guide/pagination), [Row Selection](https://tanstack.com/table/latest/docs/api/features/row-selection), and [Column Sizing](https://tanstack.com/table/latest/docs/guide/column-sizing) when you need to understand the native state and row-model behavior behind these `CiDataTable` options.
+
+:::
+
+### Row-action layout configuration
+
+| Option                   | Default               | Description                                                                                                                              |
+| ------------------------ | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `rowActions.mode`        | `"menu"`              | `"buttons"` renders every visible action inline; `"menu"` puts ordinary actions in one drop-down; `"mixed"` combines both.               |
+| `rowActions.inlineCount` | `2`                   | Number of ordinary actions shown before overflow in mixed mode. Negative values normalize to zero. Information does not count toward it. |
+| `rowActions.header`      | Localized `"Actions"` | Action-column heading.                                                                                                                   |
+
+The action column is always logical inline-start: left-most in LTR and right-most in RTL.
+
+### Layout and interaction configuration
+
+| Option           | Default  | Description                                                                                              |
+| ---------------- | -------- | -------------------------------------------------------------------------------------------------------- |
+| `columnResizing` | `true`   | Enables pointer/touch resize handles. Double-clicking a handle resets that column.                       |
+| `hoverHighlight` | `true`   | Highlights rows/cards on hover.                                                                          |
+| `stripedRows`    | `true`   | Alternates row/card surface colors.                                                                      |
+| `width`          | `"100%"` | Outer width. A number is converted to pixels; a string accepts a CSS width such as `"80%"` or `"64rem"`. |
+
+### Provider cache configuration
+
+| Option             | Default     | Description                                                                                                                 |
+| ------------------ | ----------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `cacheKey`         | `"default"` | Namespace separating hybrid caches for different logical tables.                                                            |
+| `maxCachedPages`   | `5`         | Maximum hybrid query/page results retained. Values below one normalize to one.                                              |
+| `prefetchNextPage` | `false`     | Opportunistically fetches and caches the next cursor page when available. Prefetch errors do not replace active-page state. |
+
+These options affect hybrid mode only. Calling an action context's `refresh()` clears the cache before reloading.
+
+## Built-in labels
+
+Override any label through `config.labels`. Unspecified labels retain their defaults.
+
+| Key            | Default                          | Used by                                                  |
+| -------------- | -------------------------------- | -------------------------------------------------------- |
+| `search`       | `"Search..."`                    | Global search accessible label and fallback placeholder. |
+| `loading`      | `"Loading..."`                   | Loading state.                                           |
+| `noResults`    | `"No results."`                  | Default empty state.                                     |
+| `actions`      | `"Actions"`                      | Action header and menu accessible label.                 |
+| `selected`     | `"selected"`                     | Selection count.                                         |
+| `previousPage` | `"Previous page"`                | Previous-button accessible label.                        |
+| `nextPage`     | `"Next page"`                    | Next-button accessible label.                            |
+| `page`         | `"Page"`                         | Page indicator.                                          |
+| `rowsPerPage`  | `"Rows per page"`                | Page-size label.                                         |
+| `allRows`      | `"All"`                          | Clear-filter and All-page-size option.                   |
+| `viewFormat`   | `"View format"`                  | Format selector accessible label.                        |
+| `exportExcel`  | `"Export Excel"`                 | Default export button.                                   |
+| `selectAll`    | `"Select all rows on this page"` | Header checkbox accessible label.                        |
+| `selectRow`    | `"Select row"`                   | Row checkbox accessible label.                           |
+
+For localized applications, pass translated labels and set `direction` consistently with the active locale.
+
+## Data-source API
+
+Use `ciCreateDataTableDataSource` to preserve row inference.
+
+```ts title="CiDataTableDataSource" showLineNumbers
+type CiDataTableDataSource<TData> = {
+  fetchPage: (
+    query: CiDataTableQuery,
+    signal?: AbortSignal
+  ) => Promise<CiDataTablePage<TData>>;
+  fetchAll?: (
+    query: Omit<CiDataTableQuery, "cursor" | "pageIndex" | "pageSize">,
+    signal?: AbortSignal
+  ) => Promise<TData[]>;
+};
+```
+
+### `fetchPage`
+
+`fetchPage` is required for provider mode. The component:
+
+- calls it after active query changes;
+- aborts stale active-page requests through `AbortSignal`;
+- displays rejected request messages in the table error region;
+- caches successful pages only in hybrid mode;
+- may call it without a signal for optional next-page prefetch.
+
+### `fetchAll`
+
+`fetchAll` is optional and used by `all-filtered` provider exports. The query excludes page index, page size, and cursor but retains active global search, column filters, sorting, and format.
+
+When `fetchAll` is absent, an all-filtered provider export safely falls back to the current provider page.
+
+### Query contract
+
+```ts title="CiDataTableQuery" showLineNumbers
+type CiDataTableQuery = {
+  globalFilter?: string;
+  filters: CiDataTableFilterSpec[];
+  sorting: CiDataTableSortSpec[];
+  pageIndex: number;
+  pageSize: number | "all";
+  cursor?: string | null;
+  direction?: "next" | "prev";
+  format: "table" | "compact" | "cards";
+};
+
+type CiDataTableFilterSpec = {
+  id: string;
+  value: CiDataTableFilterValue;
+};
+```
+
+Column IDs are application input: map them to an allowlist of provider fields rather than interpolating them directly into SQL or expressions.
+
+### Page contract
+
+```ts title="CiDataTablePage" showLineNumbers
+type CiDataTablePage<TData> = {
+  rows: TData[];
+  totalRowCount?: number;
+  nextCursor?: string | null;
+};
+```
+
+| Field           | Description                                                                   |
+| --------------- | ----------------------------------------------------------------------------- |
+| `rows`          | Already processed rows for the active provider query/page.                    |
+| `totalRowCount` | Optional total matching count used for page-count and next-page calculations. |
+| `nextCursor`    | Opaque cursor for forward navigation.                                         |
+
+For cursor providers, return opaque signed/encoded cursors rather than exposing raw database state to the browser. Previous-page navigation uses the component's local cursor stack.
+
+## Excel export
+
+The built-in export action is enabled by default. Configure or disable it through `config.excelExport`.
+
+```ts title="CiDataTableExcelConfig" showLineNumbers
+type CiDataTableExcelConfig = {
+  enabled?: boolean;
+  label?: string;
+  fileName?: string;
+  sheetName?: string;
+  scope?: "all-filtered" | "current-page" | "selected";
+};
+```
+
+| Field       | Default                           | Description                                                               |
+| ----------- | --------------------------------- | ------------------------------------------------------------------------- |
+| `enabled`   | `true`                            | Set to `false`, or set `excelExport: false`, to hide the built-in action. |
+| `label`     | Localized `"Export Excel"`        | Button label.                                                             |
+| `fileName`  | Slugified `title` or `table.xlsx` | Download name; `.xlsx` is normalized by the helper.                       |
+| `sheetName` | `title` or `"Data"`               | Excel sheet name, sanitized and limited to 31 characters.                 |
+| `scope`     | `"all-filtered"`                  | Rows included in the workbook.                                            |
+
+Scope behavior:
+
+| Scope            | Client mode                                | Provider mode                                       |
+| ---------------- | ------------------------------------------ | --------------------------------------------------- |
+| `"current-page"` | Current filtered/sorted page               | Current returned page                               |
+| `"selected"`     | Selected loaded rows                       | Selected loaded rows                                |
+| `"all-filtered"` | All filtered/sorted rows before pagination | `source.fetchAll`, or current page when unavailable |
+
+The generated workbook has frozen and styled headers, alternating row fills, auto-filters, bounded widths, typed number/boolean cells, and text-safe string output.
+
+## Browser preference persistence
+
+Persistence is opt-in. It stores presentation preferences, never table records or selected rows.
+
+```ts title="CiDataTablePersistenceConfig" showLineNumbers
+type CiDataTablePersistenceConfig = {
+  key: string;
+  cookieName?: string;
+  maxAgeDays?: number;
+  columnWidths?: boolean;
+  filters?: boolean;
+  pageSize?: boolean;
+  format?: boolean;
+};
+
+type CiDataTablePreferences = {
+  columnWidths?: Record<string, number>;
+  filters?: CiDataTableFilterSpec[];
+  globalFilter?: string;
+  pageSize?: number | "all";
+  format?: "table" | "compact" | "cards";
+};
+```
+
+| Field          | Default                | Description                                             |
+| -------------- | ---------------------- | ------------------------------------------------------- |
+| `key`          | Required               | Stable per-table/page identifier.                       |
+| `cookieName`   | `ci-data-table-${key}` | Optional explicit cookie name.                          |
+| `maxAgeDays`   | `365`                  | Cookie lifetime; values below one normalize to one day. |
+| `columnWidths` | `true`                 | Persist adjusted TanStack column sizes.                 |
+| `filters`      | `true`                 | Persist column/toolbar filters and global search.       |
+| `pageSize`     | `true`                 | Persist selected page size, including All.              |
+| `format`       | `true`                 | Persist table/compact/cards selection.                  |
+
+Cookies use `Path=/`, `SameSite=Lax`, and `Secure` on HTTPS. Sorting, selected rows, data, cursors, and cache contents are not persisted.
+
+Use a versioned key when changing incompatible columns or filter IDs:
+
+```ts title="Versioned preference key" showLineNumbers
+const persistence = {
+  key: "tenant-management-v2",
+  columnWidths: true,
+  filters: true,
+  pageSize: true,
+  format: true,
+};
+```
+
+## Public helpers
+
+All helpers below are exported from `@cloudigniter/ui`.
+
+### Definition helpers
+
+```ts title="Definition helper signatures" showLineNumbers
+function ciDefineDataTable<TData extends RowData>(
+  definition: CiDataTableDefinition<TData>
+): CiDataTableDefinition<TData>;
+
+function ciDefineDataTableColumn<TData extends RowData, TValue = unknown>(
+  column: CiDataTableColumnDef<TData, TValue>
+): CiDataTableColumnDef<TData, TValue>;
+
+function ciCreateDataTableDataSource<TData>(
+  source: CiDataTableDataSource<TData>
+): CiDataTableDataSource<TData>;
+```
+
+These functions return their input unchanged. Their purpose is compile-time validation and generic inference.
+
+### Conditional-control helpers
+
+```ts title="Conditional action helper signatures" showLineNumbers
+function ciIsDataTableControlVisible<TData>(
+  control: CiDataTableConditionalControl<TData>,
+  row: TData
+): boolean;
+
+function ciIsDataTableControlDisabled<TData>(
+  control: CiDataTableConditionalControl<TData>,
+  row: TData
+): boolean;
+```
+
+Use them when building a custom action renderer that must apply the component's `hideWhen` and `disableWhen` rules consistently.
+
+### Preference helpers
+
+```ts title="Preference helper signatures" showLineNumbers
+function ciGetDataTablePreferenceCookieName(
+  config: CiDataTablePersistenceConfig
+): string;
+
+function ciLoadDataTablePreferences(
+  config: CiDataTablePersistenceConfig
+): CiDataTablePreferences | null;
+
+function ciSaveDataTablePreferences(
+  config: CiDataTablePersistenceConfig,
+  preferences: CiDataTablePreferences
+): void;
+
+function ciClearDataTablePreferences(
+  config: CiDataTablePersistenceConfig
+): void;
+```
+
+`ciGetDataTablePreferenceCookieName` is universal. When `document` is unavailable, loading returns `null` while saving and clearing are safe no-ops.
+
+### Excel helpers
+
+```ts title="Excel helper signatures" showLineNumbers
+function ciBuildDataTableExcelWorkbook<TData>(
+  options: CiDataTableExcelExportOptions<TData>
+): Uint8Array;
+
+function ciExportDataTableToExcel<TData>(
+  options: CiDataTableExcelExportOptions<TData>
+): Promise<void>;
+
+type CiDataTableExcelExportOptions<TData> = {
+  rows: TData[];
+  columns: Array<{
+    id: string;
+    header: string;
+    value: (row: TData) => unknown;
+    width?: number;
+  }>;
+  fileName?: string;
+  sheetName?: string;
+};
+```
+
+`ciBuildDataTableExcelWorkbook` can run without a browser. `ciExportDataTableToExcel` requires `document` because it initiates a download. At least one export column is required.
+
+### TanStack feature map
+
+`ciDataTableFeatures` and `CiDataTableFeatures` expose the exact TanStack v9 features registered by the component:
+
+- column and global filtering with `includesString` and `equals`;
+- sorting;
+- pagination;
+- row selection;
+- column sizing and interactive resizing.
+
+Use the feature map with TanStack's v9 column helper when composing advanced typed columns.
+
+```tsx title="TanStack v9 column helper" showLineNumbers
+import { createColumnHelper } from "@tanstack/react-table";
+import { ciDataTableFeatures } from "@cloudigniter/ui";
+
+const column = createColumnHelper<typeof ciDataTableFeatures, TenantRow>();
+
+export const tenantColumns = column.columns([
+  column.accessor("name", { header: "Tenant" }),
+  column.accessor("status", { header: "Status" }),
+]);
+```
+
+Applications importing `createColumnHelper` directly should declare a compatible `@tanstack/react-table` v9 dependency.
+
+:::tip Advanced TanStack composition
+
+The [React Table adapter documentation](https://tanstack.com/table/latest/docs/framework/react) explains React integration, while the [TanStack Table examples](https://tanstack.com/table/latest/docs/framework/examples) demonstrate advanced column and feature composition. Use `ciDataTableFeatures` whenever TanStack's v9 helper asks for the feature map.
+
+:::
+
+### Lower-level action-column helper
+
+`buildDataTableColumnsWithActions` prepends a display column to an existing TanStack v9 column array. It is intended for custom renderers; `CiDataTable` builds its own action column automatically.
+
+```ts title="buildDataTableColumnsWithActions signature" showLineNumbers
+function buildDataTableColumnsWithActions<TData extends RowData, TValue>(args: {
+  columns: ColumnDef<CiDataTableFeatures, TData, TValue>[];
+  rowActions?: CiDataTableAction<TData>[];
+  renderActionsCell: (
+    context: CellContext<CiDataTableFeatures, TData, TValue>,
+    actions: CiDataTableAction<TData>[]
+  ) => ReactNode;
+  actionsHeader?: string;
+}): ColumnDef<CiDataTableFeatures, TData, TValue>[];
+```
+
+When `rowActions` is empty or omitted, the original column array is returned unchanged. `actionsHeader` defaults to `"Actions"`.
+
+## Standalone action components
+
+`CiDataTableRowActions` and `CiDataTableRowActionsMenu` are also exported for custom table renderers. Most applications should prefer `definition.rowActions` and `config.rowActions` so behavior remains integrated with query refresh and the Info control.
+
+```ts title="CiDataTableRowActionsMenuProps" showLineNumbers
+type CiDataTableRowActionsMenuProps<TData> = {
+  row: TData;
+  actions: CiDataTableAction<TData>[];
+  context?: CiDataTableRowActionContext<TData>;
+  triggerLabel?: ReactNode;
+  triggerAriaLabel?: string;
+  className?: string;
+  align?: "start" | "center" | "end";
+  minWidthClassName?: string;
+};
+```
+
+Menu defaults are `triggerAriaLabel: "Row actions"`, `align: "end"`, and `minWidthClassName: "min-w-[180px]"`.
+
+`CiDataTableRowActions` accepts the row, ordinary actions, optional information definition, action callback context, presentation mode, mixed-mode inline count, and menu label. It is exported for integrated custom cell renderers, but its prop type is intentionally inferred rather than exported as a separate public type.
+
+## Complete tenant-management example
+
+The following composition brings together the component, definition, provider, and configuration contracts documented above.
+
+```tsx title="app/tenants/TenantsTable.tsx" showLineNumbers
+"use client";
+
+import { Pencil, ShieldBan, Trash2 } from "lucide-react";
+import {
+  CiDataTable,
+  ciCreateDataTableDataSource,
+  ciDefineDataTable,
+  type CiDataTableAction,
+  type CiDataTableColumnDef,
+  type CiDataTableConfig,
+  type CiDataTableFilter,
+  type CiDataTableGlobalAction,
+} from "@cloudigniter/ui";
+
+type TenantRow = {
+  id: string;
+  name: string;
+  region: string;
+  status: "active" | "suspended";
+  isSystem: boolean;
+};
+
+const tenantColumns: CiDataTableColumnDef<TenantRow>[] = [
+  {
+    accessorKey: "name",
+    header: "Tenant",
+    meta: {
+      ciDataTable: {
+        label: "Tenant",
+        className: "font-semibold",
+        clickable: {
+          href: ({ row }) => `/tenants/${row.id}`,
+          ariaLabel: ({ row }) => `Open ${row.name}`,
+        },
+      },
+    },
+  },
+  { accessorKey: "region", header: "Region" },
+  {
+    accessorKey: "status",
+    header: "Status",
+    meta: {
+      ciDataTable: {
+        filter: {
+          type: "select",
+          options: [
+            { id: "active", label: "Active" },
+            { id: "suspended", label: "Suspended" },
+          ],
+        },
+      },
+    },
+  },
+];
+
+const tenantFilters: CiDataTableFilter<TenantRow>[] = [
+  {
+    id: "region",
+    label: "Region",
+    options: [
+      { id: "UAE", label: "United Arab Emirates" },
+      { id: "GLOBAL", label: "Global" },
+    ],
+  },
+];
+
+const tenantRowActions: CiDataTableAction<TenantRow>[] = [
+  {
+    id: "edit",
+    label: "Edit tenant",
+    icon: <Pencil />,
+    display: "icon",
+    disableWhen: (tenant) => tenant.isSystem,
+    onSelect: (tenant) => openTenantEditor(tenant),
+  },
+  {
+    id: "delete",
+    label: "Delete tenant",
+    icon: <Trash2 />,
+    variant: "destructive",
+    hideWhen: (tenant) => tenant.isSystem,
+    onSelect: (tenant) => deleteTenant(tenant.id),
+  },
+];
+
+const tenantGlobalActions: CiDataTableGlobalAction<TenantRow>[] = [
+  {
+    id: "suspend",
+    label: "Suspend selected",
+    icon: <ShieldBan />,
+    selection: "required",
+    onSelect: async ({ selectedRows, clearSelection, refresh }) => {
+      await suspendTenants(selectedRows.map((tenant) => tenant.id));
+      clearSelection();
+      refresh();
+    },
+  },
+];
+
+const tenantDefinition = ciDefineDataTable<TenantRow>({
+  getRowId: (tenant) => tenant.id,
+  columns: tenantColumns,
+  information: {
+    mode: "dialog",
+    label: "Tenant information",
+    title: (tenant) => tenant.name,
+    content: (tenant) => <TenantSummary tenant={tenant} />,
+  },
+  filters: tenantFilters,
+  rowActions: tenantRowActions,
+  globalActions: tenantGlobalActions,
+});
+
+const tenantSource = ciCreateDataTableDataSource<TenantRow>({
+  fetchPage: async (query, signal) => {
+    const response = await fetch("/api/tenants/query", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(query),
+      signal,
+    });
+    if (!response.ok) throw new Error("Unable to load tenants.");
+    return response.json();
+  },
+  fetchAll: async (query, signal) => {
+    const response = await fetch("/api/tenants/export", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(query),
+      signal,
+    });
+    if (!response.ok) throw new Error("Unable to export tenants.");
+    return response.json();
+  },
+});
+
+const tenantConfig: CiDataTableConfig<TenantRow> = {
+  mode: "hybrid",
+  formats: [
+    { id: "table", label: "Table" },
+    { id: "compact", label: "Compact" },
+    { id: "cards", label: "Cards" },
+  ],
+  sorting: { initial: [{ id: "name", desc: false }] },
+  filtering: { global: true, debounceMs: 300 },
+  pagination: {
+    pageSize: 25,
+    pageSizeOptions: [10, 25, 50, 100],
+    allowAll: false,
+  },
+  selection: { enableRow: (tenant) => !tenant.isSystem },
+  rowActions: { mode: "mixed", inlineCount: 2 },
+  columnResizing: true,
+  hoverHighlight: true,
+  stripedRows: true,
+  width: "100%",
+  excelExport: {
+    fileName: "tenants.xlsx",
+    sheetName: "Tenants",
+    scope: "all-filtered",
+  },
+  persistence: {
+    key: "tenant-management-v1",
+    columnWidths: true,
+    filters: true,
+    pageSize: true,
+    format: true,
+  },
+  cacheKey: "tenants",
+  maxCachedPages: 5,
+  prefetchNextPage: true,
+};
+
+export function TenantsTable() {
+  return (
+    <CiDataTable
+      title="Tenants"
+      description="Manage tenant lifecycle and access."
+      definition={tenantDefinition}
+      source={tenantSource}
+      config={tenantConfig}
+      searchPlaceholder="Search tenants..."
+      onQueryChange={(query) => analytics.track("tenant_table_query", query)}
+      onSelectionChange={(rows) =>
+        setSelectedTenantIds(rows.map((row) => row.id))
+      }
+    />
+  );
+}
+```
+
+## Defaults summary
+
+| Capability          | Default                                       |
+| ------------------- | --------------------------------------------- |
+| Effective data mode | Client without `source`; hybrid with `source` |
+| Format              | Simple table only                             |
+| Sorting             | Enabled, no initial rules                     |
+| Global search       | Enabled, 250 ms debounce                      |
+| Pagination          | Enabled, 25 rows, options 10/25/50/100        |
+| All page size       | Disabled                                      |
+| Selection           | Automatic from global-action requirements     |
+| Row actions         | Drop-down menu, mixed inline count 2          |
+| Information         | Tooltip, icon-only, when configured           |
+| Column resizing     | Enabled                                       |
+| Hover highlight     | Enabled                                       |
+| Alternating rows    | Enabled                                       |
+| Width               | `100%`                                        |
+| Excel export        | Enabled, all filtered rows                    |
+| Hybrid page cache   | Five pages                                    |
+| Next-page prefetch  | Disabled                                      |
+| Preference cookie   | Disabled until `persistence` is supplied      |
+
+## Related guide
+
+See [Data table](../../ui-components/data-table.mdx) for scenario-focused guidance, provider examples, DynamoDB cursor patterns, RTL configuration, and common management-table recipes.

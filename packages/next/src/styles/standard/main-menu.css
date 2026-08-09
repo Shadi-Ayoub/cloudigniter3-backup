@@ -1,14 +1,14 @@
 @layer components {
   .ci-main-menu-trigger {
-    @apply flex h-10 w-10 items-center justify-center rounded-lg bg-gray-200 transition hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700;
+    @apply flex h-10 w-10 items-center justify-center rounded-lg bg-surface-muted text-foreground transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring;
   }
 
   .ci-main-menu-icon {
-    @apply h-6 w-6 text-gray-900 dark:text-white;
+    @apply h-6 w-6 text-foreground;
   }
 
   .ci-main-menu-box {
-    @apply z-menu absolute top-12 left-0 w-64 rounded-lg bg-white p-2 shadow-lg dark:bg-gray-900;
+    @apply z-menu absolute top-12 left-0 w-64 rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-lg;
   }
 
   .ci-main-menu-box-inner {
@@ -24,18 +24,18 @@
   }
 
   .ci-main-menu-item-content {
-    @apply flex w-full items-center gap-2 rounded-md p-2 hover:bg-gray-100 dark:hover:bg-gray-800;
+    @apply flex w-full items-center gap-2 rounded-md p-2 transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-2 focus-visible:outline-ring;
   }
 
   .ci-main-menu-item-icon {
-    @apply h-5 w-5 text-gray-600 dark:text-gray-300;
+    @apply h-5 w-5 text-muted-foreground;
   }
 
   .ci-main-menu-item-active {
-    @apply bg-gray-200 font-semibold dark:bg-gray-900;
+    @apply bg-accent font-semibold text-accent-foreground;
   }
   .ci-main-menu-submenu-button {
-    @apply rounded-md p-2 hover:bg-gray-200 dark:hover:bg-gray-700;
+    @apply rounded-md p-2 transition-colors hover:bg-accent focus-visible:outline-2 focus-visible:outline-ring;
   }
 
   .ci-main-menu-submenu-button-icon {
@@ -43,6 +43,6 @@
   }
 
   .ci-main-menu-submenu-box {
-    @apply mt-1 ml-4 border-l border-gray-300 pl-2 dark:border-gray-700;
+    @apply mt-1 ml-4 border-l border-border pl-2;
   }
 }
