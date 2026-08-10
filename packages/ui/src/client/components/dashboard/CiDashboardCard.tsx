@@ -1,11 +1,20 @@
 "use client";
 
 import type { CiDashboardCardProps } from "@ci-ui/types";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Info } from "lucide-react";
 import { CiIcon } from "@ci-ui/common";
 
 import { CiNavigateWithLoader } from "../../navigation";
-import { Card } from "../shadcn";
+import {
+  Card,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  Button,
+} from "../shadcn";
 
 /** Provider-neutral dashboard card with injectable navigation behavior. */
 export function CiDashboardCard({
@@ -31,13 +40,17 @@ export function CiDashboardCard({
   return (
     <Card
       id={String(id)}
-      className={["dashboard-card", `dashboard-card-${tone}`, className]
+      className={[
+        "dashboard-card relative",
+        `dashboard-card-${tone}`,
+        className,
+      ]
         .filter(Boolean)
         .join(" ")}
     >
       <CiNavigateWithLoader
         href={route}
-        className={["dashboard-card-content", contentClassName]
+        className={["dashboard-card-content pb-14", contentClassName]
           .filter(Boolean)
           .join(" ")}
         refresh={refresh}
@@ -70,6 +83,28 @@ export function CiDashboardCard({
         ) : null}
         {meta ? <span className="dashboard-card-meta">{meta}</span> : null}
       </CiNavigateWithLoader>
+      {description ? (
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="absolute end-3 bottom-3 size-11 rounded-full text-muted-foreground hover:text-foreground"
+              aria-label={`More information about ${label}`}
+            >
+              <Info aria-hidden="true" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{label}</DialogTitle>
+              <DialogDescription>{description}</DialogDescription>
+            </DialogHeader>
+            {/* A future user-guide link can be added below the description. */}
+          </DialogContent>
+        </Dialog>
+      ) : null}
     </Card>
   );
 }

@@ -16,7 +16,7 @@ const CodeBlock = ({ title, children }: CustomCodeBlockProps) => {
           {title}
         </div>
       )}
-      <DocusaurusCodeBlock className="m-0 p-0">{children}</DocusaurusCodeBlock>
+      <DocusaurusCodeBlock className="m-0 p-0" children={children} />
     </div>
   );
 };

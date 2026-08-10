@@ -1550,8 +1550,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docusaurus.config.ts": {
-    "mtime": 1786345851.73,
-    "ast_hash": "be1f75c4d8567a631dc23a12ac02a45f",
+    "mtime": 1786343194.12,
+    "ast_hash": "fcf3faac53282bcc415aa37cc58fa437",
     "semantic_hash": ""
   },
   "developer-guide/package.json": {
@@ -2875,8 +2875,8 @@
     "semantic_hash": ""
   },
   "packages/core/package.json": {
-    "mtime": 1786346614.43,
-    "ast_hash": "c1dbc817e140bb360e1c831641a677f2",
+    "mtime": 1786165106.99,
+    "ast_hash": "e3625d9fb5eab7b8438cf50354d6a899",
     "semantic_hash": ""
   },
   "packages/core/rollup.config.js": {
@@ -3355,8 +3355,8 @@
     "semantic_hash": ""
   },
   "packages/core/src/lib/icon/ci-icon-registry.ts": {
-    "mtime": 1786346614.21,
-    "ast_hash": "a476cd8dd33dfe1388ff3bb8aba5c6a5",
+    "mtime": 1781424976.59,
+    "ast_hash": "a787bb7b7c29f9bde4fefe87ad9addcc",
     "semantic_hash": ""
   },
   "packages/core/src/lib/icon/ci-resolve-icon.ts": {
@@ -10935,18 +10935,13 @@
     "semantic_hash": ""
   },
   "developer-guide/scripts/prepare-skills-docs.ts": {
-    "mtime": 1786346061.35,
-    "ast_hash": "910168e96f259b99adf1569f67e44275",
+    "mtime": 1786343109.45,
+    "ast_hash": "373c3bee7f6c6c530f15fcc491ed20cf",
     "semantic_hash": ""
   },
   "developer-guide/skills-sidebars.ts": {
-    "mtime": 1786345035.97,
-    "ast_hash": "9a4ef84c07f0706f51cc11f016ed6a6b",
-    "semantic_hash": ""
-  },
-  "packages/core/__tests__/icon/ci-resolve-icon.test.ts": {
-    "mtime": 1786346614.35,
-    "ast_hash": "3c2fc5bce6d488c96fbd7d7a68a0e326",
+    "mtime": 1786343109.5,
+    "ast_hash": "dd689af11e7304fe4ff9a6367c9ea2e6",
     "semantic_hash": ""
   }
 }

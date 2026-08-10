@@ -1,0 +1,123 @@
+---
+title: Developer Guide Authoring Workflow
+description: Keep user guidance, contributor architecture, and public API reference synchronized with CloudIgniter changes.
+sidebar_position: 1
+---
+
+# Developer guide authoring workflow
+
+CloudIgniter treats documentation as part of implementation. A product change is
+complete only when the affected guide content describes the behavior that ships.
+
+The repository skill
+`.agents/skills/cloudigniter-guide-authoring/SKILL.md` defines the authoring and
+validation workflow used by Codex. Its section-specific references keep each
+audience focused:
+
+| Guide surface | Source directory | Audience and purpose |
+| --- | --- | --- |
+| CloudIgniter Users | `developer-guide/docs` outside `api-reference` | Application developers learning concepts, setup, configuration, supported workflows, and troubleshooting |
+| CloudIgniter Developers | `developer-guide/company-developers` | Contributors maintaining packages, providers, architecture, runtime boundaries, and extension workflows |
+| API Reference | `developer-guide/docs/api-reference` | Developers looking up exact public imports, signatures, fields, defaults, constraints, and runtime requirements |
+| Skills | `.agents/skills` and `.codex/skills` (generated into the Skills tab) | Codex and maintainers reviewing reusable instructions; source content is authoritative outside the guide |
+
+## Route documentation by impact
+
+One implementation can require more than one documentation treatment.
+
+```mermaid
+flowchart TD
+  Change[Implemented change]
+  Change --> Behavior{Application-facing behavior?}
+  Behavior -->|yes| Users[CloudIgniter Users]
+  Change --> Public{Public contract?}
+  Public -->|yes| API[API Reference]
+  Change --> Architecture{Architecture or contributor workflow?}
+  Architecture -->|yes| Developers[CloudIgniter Developers]
+  Users --> CrossLinks[Cross-link related pages]
+  API --> CrossLinks
+  Developers --> CrossLinks
+  CrossLinks --> Validate[Typecheck and build the guide]
+```
+
+Typical routing:
+
+- A new public feature needs task-oriented user guidance and exact API reference.
+- A provider feature needs application setup guidance, contributor-facing provider architecture, and reference pages for public adapters or contracts.
+- A configuration change needs updated user setup, typed contract reference, and internal resolution documentation when wiring changes.
+- An architecture change needs contributor documentation and the matching `cloudigniter-development` skill reference; update user guidance when the workflow also changes.
+- A deprecation or removal needs migration guidance and removal of stale imports and examples across every surface.
+
+## Verify source before writing
+
+Use current code as the source of truth. Existing guide pages can be stale even
+when their MDX builds successfully.
+
+Inspect, in order:
+
+1. package `exports` maps and canonical barrels;
+2. types, implementation, and configuration schemas;
+3. tests that establish defaults, errors, denial, and edge cases;
+4. supported application/template consumers;
+5. focused repository architecture references;
+6. existing guide coverage.
+
+Do not document a helper as public unless an intentional package entry point
+exports it. Do not teach application developers to use deep `src` imports or
+internal capability packages when a public facade owns the contract.
+
+## Author the guide surfaces differently
+
+### CloudIgniter Users
+
+Lead with the outcome. Explain prerequisites, the minimum mental model, setup,
+a runnable example, important defaults, security or lifecycle constraints,
+troubleshooting, and the next useful step. Link to API pages for exhaustive
+field-level details.
+
+### CloudIgniter Developers
+
+Lead with ownership and boundaries. Explain responsibility, dependency direction,
+the end-to-end flow, extension points, registrations and exports, invariants,
+failure modes, and the validation chain. Link to user workflows and public
+contracts instead of duplicating them.
+
+### API Reference
+
+Document only intentionally public contracts. Include the exact package and
+import path, runtime classification, TypeScript signature or type shape,
+parameters and defaults, return behavior, errors or side effects, a minimal
+example, compatibility status, and related guidance.
+
+## Completion checklist
+
+Before completing a product change:
+
+- search all guide surfaces for the changed symbols and terminology;
+- update every affected page, category, index, and cross-link;
+- verify examples and imports against current exports and types;
+- verify defaults, runtime boundaries, provider assumptions, and failure behavior;
+- synchronize contributor architecture with the relevant
+  `.agents/skills/cloudigniter-development/references` file;
+- run the implementation's focused tests;
+- run the guide checks:
+
+```bash
+pnpm --filter developer-guide typecheck
+pnpm --filter developer-guide build
+```
+
+If a change is internal and preserves documented behavior, record why no page
+needed an edit. Do not create artificial documentation churn, but never skip the
+impact review.
+
+## Improve the workflow as it evolves
+
+When authoring reveals a recurring gap, propose a focused improvement. Useful
+examples include an API-export inventory check, stricter broken-link handling,
+section templates, terminology linting, clearer sidebar ownership, or executable
+code examples. Add the improvement to the authoring skill when it is a reusable
+rule rather than a one-off preference.
+### Skills
+
+The Skills tab is a generated, read-only view of skill `SKILL.md` files. Do not edit generated files or duplicate them in this guide. Skill changes normally flow from their source folders without a separate guide edit; if a skill itself can be improved, update it in its owning folder and rebuild the guide.

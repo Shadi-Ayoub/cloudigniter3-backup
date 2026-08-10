@@ -372,12 +372,14 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
   const columns = useMemo<
     ColumnDef<CiDataTableFeatures, TData, unknown>[]
   >(() => {
-    const displayColumns: ColumnDef<CiDataTableFeatures, TData, unknown>[] = [];
+    const leadingColumns: ColumnDef<CiDataTableFeatures, TData, unknown>[] = [];
+    const trailingColumns: ColumnDef<CiDataTableFeatures, TData, unknown>[] =
+      [];
 
     if (rowActions.length || information) {
       const menuWidth = information ? (rowActions.length ? 128 : 72) : 64;
       const buttonWidth = information ? 240 : 180;
-      displayColumns.push({
+      trailingColumns.push({
         id: ACTIONS_COLUMN_ID,
         header: config?.rowActions?.header ?? labels.actions,
         size: rowActionMode === "menu" ? menuWidth : buttonWidth,
@@ -401,7 +403,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
     }
 
     if (selectionEnabled) {
-      displayColumns.push({
+      leadingColumns.push({
         id: SELECTION_COLUMN_ID,
         header: ({ table }) => (
           <Checkbox
@@ -435,8 +437,8 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
       });
     }
 
-    // Display columns are first so they sit at inline-start: left in LTR, right in RTL.
-    return [...displayColumns, ...filteredBaseColumns];
+    // Selection stays at inline-start; row actions sit at inline-end in both LTR and RTL.
+    return [...leadingColumns, ...filteredBaseColumns, ...trailingColumns];
   }, [
     config?.rowActions?.header,
     filteredBaseColumns,
@@ -927,6 +929,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                     key={header.id}
                     className={cn(
                       "relative h-auto min-w-0 px-3 py-2 text-start align-middle font-semibold text-foreground",
+                      header.column.id === ACTIONS_COLUMN_ID && "text-end",
                       meta?.headerClassName
                     )}
                     style={getCellStyle(header)}
@@ -1085,6 +1088,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                     className={cn(
                       "min-w-0 text-start align-middle",
                       compact ? "px-2 py-1.5" : "px-3 py-2.5",
+                      cell.column.id === ACTIONS_COLUMN_ID && "text-end",
                       getCellClassName(cell)
                     )}
                     style={getCellStyle(cell)}
@@ -1174,7 +1178,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                 })}
               </dl>
               {actionCell ? (
-                <div className="mt-4 border-t pt-3">
+                <div className="mt-4 flex justify-end border-t pt-3">
                   {renderCell(actionCell)}
                 </div>
               ) : null}

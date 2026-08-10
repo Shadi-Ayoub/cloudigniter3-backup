@@ -24,12 +24,12 @@ export function buildDataTableColumnsWithActions<
   if (!rowActions?.length) return columns;
 
   return [
+    ...columns,
     {
       id: "__actions__",
       header: () => actionsHeader,
       cell: (ctx) => renderActionsCell(ctx, rowActions),
       enableSorting: false,
     } as ColumnDef<CiDataTableFeatures, TData, TValue>,
-    ...columns,
   ];
 }

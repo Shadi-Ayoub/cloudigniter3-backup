@@ -1,3 +1,21 @@
+I want to describe the layout of page rendering architecture in cloudigniter in the cloudigniter-development architecture.
+
+One step that is being used by the root layout, internal layouts, and page components is what I call "bootstrapping" which resolves the corresponding context needed to pass to the corresponding wrappers.
+
+The root layout bootstrap via the helper apps/template/src/kernel/server/root/appResolveRootLayoutContext.ts which provides the resolved properties for the <html> and <body> tags. and also uses the component apps/template/src/kernel/server/root/AppRootWrapper.tsx that provides the <NextIntlClientProvider> provider and the <DevBeacon> component to children components.
+
+The root page and internal layout components bootstrap via apps/template/src/kernel/server/bootstrap/app-bootstrap.ts to resolve the system context.
+
+Internal layout components pass the context to <CiLayout> that provide the skeleton of the HTML page with the layout structure components like the header, Container, and the footer after wrapping the structure with the theme provider, debug prob provider, AntdRegistry provider. It also adds the <CiFeedbackProvider> and <CiInitialLoader> components inside the wrapping providers with the children. Using <CiLayout> guarantee a consistent behaviour for all pages as well as guarantee the availability of the system capabilities to all pages.
+
+internal pages pass the resolved context to <CiPage> which wraps the page content with the page content structure and scrolling capability as well as wrapping the content with the <NextIntlClientProvider> provider again after the layout doing the same.
+
+Update the skill accordingly
+
+
+
+In case I modify the architecture of the Cloudigniter platform and skip updating the skill, add the repository instruction to update the relevant SKILL architecture file according to the new update.
+
 // ARBAC UI and management
 
 

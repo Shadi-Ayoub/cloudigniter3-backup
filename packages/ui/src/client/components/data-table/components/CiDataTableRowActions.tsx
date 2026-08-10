@@ -51,7 +51,7 @@ export function CiDataTableRowActions<TData>({
   if (!visible.length && !informationControl) return null;
   if (mode === "menu") {
     return (
-      <div className="flex items-center gap-2 whitespace-nowrap">
+      <div className="flex items-center justify-end gap-2 whitespace-nowrap">
         {informationControl}
         {visible.length ? (
           <CiDataTableRowActionsMenu
@@ -69,7 +69,7 @@ export function CiDataTableRowActions<TData>({
   const overflow = mode === "mixed" ? visible.slice(inlineCount) : [];
 
   return (
-    <div className="flex items-center gap-2 whitespace-nowrap">
+    <div className="flex items-center justify-end gap-2 whitespace-nowrap">
       {informationControl}
       {inline.map((action) => {
         const disabled = ciIsDataTableControlDisabled(action, row);

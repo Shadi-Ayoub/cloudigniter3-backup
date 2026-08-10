@@ -1,4 +1,4 @@
 packages:
+  - "developer-guide"
   - "apps/*"
   - "packages/*"
-  - "modules/*"

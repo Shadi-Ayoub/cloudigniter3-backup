@@ -4,9 +4,9 @@
     { "path": "./packages/config-ts" },
     { "path": "./packages/aws" },
     { "path": "./packages/core" },
+    { "path": "./packages/emberguard" },
     { "path": "./packages/next" },
     { "path": "./packages/ui" },
-    { "path": "./modules/auth" },
     { "path": "./apps/template" },
     
   ]

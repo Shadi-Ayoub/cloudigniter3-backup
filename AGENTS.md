@@ -653,7 +653,33 @@ For each architecture change:
 
 Do not consider an architecture-changing implementation complete while the relevant repository skill still describes the previous architecture.
 
-## 27. Trace the Application Request Lifecycle
+## 27. Keep the Developer Guide Synchronized
+
+Treat `developer-guide` as part of the product, not as optional follow-up work.
+
+Use the `cloudigniter-guide-authoring` repository skill whenever a change adds, modifies, fixes, deprecates, or removes:
+
+- an application-facing capability or workflow;
+- a public API, type, component, hook, class, constant, or package entry point;
+- configuration, defaults, environment variables, or runtime behavior;
+- package architecture, request/rendering lifecycle, provider integration, or extension rules;
+- user-facing UI behavior or operational/troubleshooting guidance.
+
+For every product change:
+
+1. Inspect the implementation, public exports, types, tests, and current guide coverage.
+2. Identify all affected audiences: CloudIgniter Users, CloudIgniter Developers, and API Reference. The Skills tab is special: it is generated from `.agents/skills` and `.codex/skills`, so do not copy skill files into `developer-guide` or require a guide edit for every skill change. Update a source skill only when Codex identifies a concrete improvement; update the guide when the Skills navigation or staging mechanism changes.
+3. Update every affected guide page in the same change.
+4. Update category metadata, indexes, navigation, and cross-links when discoverability changes.
+5. Validate exact imports, signatures, defaults, runtime boundaries, examples, and failure behavior against source.
+6. Run `pnpm --filter developer-guide typecheck` and `pnpm --filter developer-guide build`.
+7. Report the guide pages and audiences updated.
+
+A product-change task is not complete while its affected guide content still describes the previous behavior. When a change is genuinely internal and preserves all documented behavior, still perform the documentation-impact review and state the concrete reason no guide page changed.
+
+When guide work exposes a recurring gap, suggest a focused improvement to the `cloudigniter-guide-authoring` skill, navigation, templates, validation, or API-coverage workflow. Implement the improvement when it is contained and directly relevant; otherwise report it as a follow-up.
+
+## 28. Trace the Application Request Lifecycle
 
 Treat the following as one connected application lifecycle:
 

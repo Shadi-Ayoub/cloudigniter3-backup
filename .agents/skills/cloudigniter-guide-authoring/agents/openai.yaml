@@ -1,0 +1,4 @@
+interface:
+  display_name: "CloudIgniter Guide Authoring"
+  short_description: "Keep product guides and API reference in sync"
+  default_prompt: "Use $cloudigniter-guide-authoring to update the appropriate CloudIgniter developer-guide sections for this change."

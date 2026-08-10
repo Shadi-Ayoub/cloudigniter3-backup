@@ -48,7 +48,7 @@
     "obfuscate": "node ../../scripts/ci-obfuscate-package.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "check:package": "npm pack --dry-run",
-    "test": "node --import=tsx --test __tests__/auth/access-control.test.ts",
+    "test": "node --import=tsx --test __tests__/auth/access-control.test.ts __tests__/icon/ci-resolve-icon.test.ts",
     "dev": "tsup --watch",
     "typecheck:tools": "tsc -p tsconfig.tools.json --noEmit",
     "check": "pnpm run typecheck && pnpm run typecheck:tools",

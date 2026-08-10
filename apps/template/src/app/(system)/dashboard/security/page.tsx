@@ -7,7 +7,7 @@ import { appBootstrap, appCreateSecurityAdministration } from "@/kernel/server";
 export const metadata: Metadata = {
   title: "Security Center | CloudIgniter",
   description:
-    "Manage CloudIgniter roles, permissions, resources, assignments, and provider mappings.",
+    "Manage the CloudIgniter access-control catalog, roles, privileges, scoped assignments, and identity-provider mappings. For example, define and enforce tenant-scoped access to identity.users.",
 };
 
 /** Renders the ARBAC security center and its management destinations. */
@@ -33,7 +33,7 @@ export default async function SecurityPage() {
       icon: "ci:badge-account-outline",
       label: "Roles",
       description:
-        "Define reusable responsibilities, inheritance, and precedence without duplicating policy.",
+        "A role is a stable, named set of privileges associated with an application responsibility. Roles may inherit other roles to compose policy without duplication; when highest-precedence evaluation is enabled, lower numeric values represent stronger precedence. Example: the built-in ADMIN role inherits USER and declares allow privileges for identity.users.read and identity.users.update at global, tenant, and Org Unit scopes.",
       meta: `${records.role.length} effective roles`,
       route: "/dashboard/security/roles",
       tone: "security",
@@ -43,7 +43,7 @@ export default async function SecurityPage() {
       icon: "ci:key-outline",
       label: "Permissions",
       description:
-        "Review allowed and denied resource actions and their permitted scope boundaries.",
+        "A permission is a serializable privilege statement attached to a role. It combines a stable identifier, an allow or deny effect, a registered resource, an action, and the scope kinds where it may match. Example: the ADMIN privilege read-users allows the read action on identity.users for global, tenant, and Org Unit requests; the concrete boundary is supplied by the role assignment.",
       meta: `${records.permission.length} policy statements`,
       route: "/dashboard/security/permissions",
       tone: "security",
@@ -53,7 +53,7 @@ export default async function SecurityPage() {
       icon: "ci:account-key-outline",
       label: "Assignments",
       description:
-        "Grant roles to subjects at system, global, tenant, or organizational-unit scope.",
+        "A role assignment binds an authenticated subject to a catalog role at a system, global, tenant, or Org Unit scope. Its propagation policy controls whether the grant is exact or extends to descendant scopes, and an optional validity window can make it time-bound. Example: assigning ADMIN to subject user-123 at Tenant A with exact propagation enables its identity.users.read privilege only for Tenant A requests.",
       meta: `${records.assignment.length} scoped assignments`,
       route: "/dashboard/security/assignments",
     },
@@ -62,7 +62,7 @@ export default async function SecurityPage() {
       icon: "ci:shape-outline",
       label: "Resource catalog",
       description:
-        "Maintain the stable domains, resources, actions, and scope support used by policy checks.",
+        "The resource catalog is the authoritative vocabulary used by authorization checks. Each stable resource belongs to a domain and declares its supported actions, scope kinds, and sensitive operations; unknown resources and actions are rejected before privilege evaluation. Example: identity.users belongs to the identity domain and registers read, create, update, delete, and assign-role actions across its supported scopes.",
       meta: `${records.resource.length} protected resources`,
       route: "/dashboard/security/resources",
     },
@@ -71,7 +71,7 @@ export default async function SecurityPage() {
       icon: "ci:account-multiple-check-outline",
       label: "Identity groups",
       description:
-        "Inspect provider-group mappings and detect precedence or catalog drift before it affects access.",
+        "Identity-group mappings translate trusted provider group claims into roles from the resolved CloudIgniter catalog. The catalog remains authoritative for privileges and precedence, while the adapter detects missing roles and precedence drift. Example: map the Amazon Cognito group ci-admins to ADMIN, whose catalog privileges allow identity.users.read and identity.users.update within the assignment scope established by the application.",
       meta: `${mappedGroups}/${records["identity-group"].length} AWS groups aligned`,
       badge: "AWS adapter",
       route: "/dashboard/security/identity-groups",

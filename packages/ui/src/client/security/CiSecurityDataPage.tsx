@@ -121,7 +121,7 @@ function createSecurityDraft(kind: CiSecurityRecordKind): CiSecurityRecord {
 function getRecordSummary(record: CiSecurityRecord): string {
   switch (record.kind) {
     case "role":
-      return `${record.permissionCount} permissions · precedence ${record.precedence}`;
+      return `${record.permissionCount} permissions`;
     case "permission":
       return `${record.roleId} · ${record.effect} ${record.resource}.${record.action}`;
     case "resource":
@@ -230,6 +230,18 @@ function buildSecurityColumns(
   };
 
   const aspectColumns: CiDataTableColumnDef<CiSecurityRecord, unknown>[] = [];
+  if (kind === "role") {
+    aspectColumns.push({
+      id: "precedence",
+      accessorFn: (row) => (row.kind === "role" ? row.precedence : 0),
+      header: "Precedence",
+      meta: {
+        ciDataTable: {
+          className: "font-medium tabular-nums",
+        },
+      },
+    });
+  }
   if (kind === "permission") {
     aspectColumns.push(
       {
@@ -736,7 +748,9 @@ export function CiSecurityDataPage({
       { id: "compact", label: "Compact" },
       { id: "cards", label: "Cards" },
     ],
-    sorting: { initial: [{ id: "title", desc: false }] },
+    sorting: {
+      initial: [{ id: kind === "role" ? "precedence" : "title", desc: false }],
+    },
     pagination: {
       pageSize: 25,
       pageSizeOptions: [10, 25, 50, 100],
@@ -770,7 +784,7 @@ export function CiSecurityDataPage({
 
   return (
     <main className="mx-auto w-full max-w-7xl space-y-4 px-1 sm:px-2">
-      <header className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6 lg:flex-row lg:items-end lg:justify-between">
+      <header className="flex flex-col gap-4 rounded-2xl border border-primary/20 bg-primary/5 p-5 shadow-sm dark:bg-primary/10 sm:p-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-3xl">
           <div className="mb-2 flex items-center gap-2 text-xs font-semibold tracking-[0.14em] text-primary uppercase">
             <ShieldCheck className="size-4" /> Access governance
@@ -809,8 +823,6 @@ export function CiSecurityDataPage({
       ) : null}
 
       <CiDataTable
-        title={title}
-        description={`${description} Use search, filters, and export to review the effective policy.`}
         definition={definition}
         data={records}
         config={config}
