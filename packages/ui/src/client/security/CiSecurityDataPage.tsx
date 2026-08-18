@@ -1,12 +1,24 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
-import { LockKeyhole, Pencil, Plus, ShieldCheck, Trash2 } from "lucide-react";
+import {
+  CirclePause,
+  CirclePlay,
+  FolderTree,
+  LockKeyhole,
+  Pencil,
+  Plus,
+  RefreshCw,
+  ShieldCheck,
+  Trash2,
+} from "lucide-react";
 import {
   Alert,
   AlertDescription,
   Badge,
   Button,
+  CiAlert,
+  CiAlertDialog,
   CiDataTable,
   Dialog,
   DialogContent,
@@ -22,18 +34,34 @@ import {
   SelectTrigger,
   SelectValue,
   Textarea,
+  ciNormalizeClientThrownError,
   ciDefineDataTable,
 } from "@ci-ui/client";
-import type {
-  CiAccessScopeKind,
-  CiSecurityRecord,
-  CiSecurityRecordKind,
-} from "@cloudigniter/core/types";
 import type {
   CiDataTableColumnDef,
   CiDataTableConfig,
   CiSecurityDataPageProps,
 } from "@ci-ui/types";
+import {
+  CI_ACCESS_CONTROL_KEBAB_IDENTIFIER_PATTERN,
+  ciIsAccessControlKebabIdentifier,
+} from "@cloudigniter/core/lib";
+import type {
+  CiAccessScopeKind,
+  CiRoleStatus,
+  CiSecurityRecord,
+  CiSecurityRecordKind,
+  CiSecurityRoleRecord,
+} from "@cloudigniter/core/types";
+import { CiSearchableChipMultiSelect } from "./CiSearchableChipMultiSelect";
+import { CiResourceDomainsDialog } from "./CiResourceDomainsDialog";
+import {
+  ciIsSecurityIdentifierLocked,
+  ciIsSecurityIdentifierInputAllowed,
+  ciUpdateSecurityEditorSessionDraft,
+  type CiSecurityEditorSession,
+} from "./ci-security-editor-session";
+import { ciGetAvailableInheritedRoleOptions } from "./ci-security-role-options";
 
 /** Converts a machine identifier into a readable fallback label. */
 function humanizeIdentifier(value: string): string {
@@ -42,19 +70,50 @@ function humanizeIdentifier(value: string): string {
     .replaceAll(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
-/** Parses a comma-delimited list into supported access-scope kinds. */
-function parseScopeKinds(value: string): CiAccessScopeKind[] {
-  /** Narrows one form value to a supported scope kind. */
-  const isScopeKind = (item: string): item is CiAccessScopeKind =>
-    item === "system" ||
-    item === "global" ||
-    item === "tenant" ||
-    item === "orgUnit";
-  return value
-    .split(",")
-    .map((item) => item.trim())
-    .filter(isScopeKind);
+/** Formats a count with a readable singular or plural label. */
+function formatCount(count: number, singularLabel: string): string {
+  return `${count} ${singularLabel}${count === 1 ? "" : "s"}`;
 }
+
+const ACCESS_SCOPE_KIND_OPTIONS: ReadonlyArray<{
+  id: CiAccessScopeKind;
+  label: string;
+}> = [
+  { id: "system", label: "System" },
+  { id: "global", label: "Global" },
+  { id: "tenant", label: "Tenant" },
+  { id: "orgUnit", label: "Org unit" },
+];
+
+const OTHER_ACTION_VALUE = "__other_action__";
+
+/** Common action verbs provide consistent defaults across resource catalogs. */
+const COMMON_ACTION_OPTIONS = [
+  "approve",
+  "archive",
+  "assign",
+  "cancel",
+  "create",
+  "delete",
+  "download",
+  "execute",
+  "export",
+  "get",
+  "import",
+  "invite",
+  "list",
+  "manage",
+  "publish",
+  "read",
+  "restore",
+  "search",
+  "share",
+  "submit",
+  "update",
+  "upload",
+  "view",
+  "write",
+] as const;
 
 /** Creates a safe application-owned draft for the selected security aspect. */
 function createSecurityDraft(kind: CiSecurityRecordKind): CiSecurityRecord {
@@ -73,8 +132,12 @@ function createSecurityDraft(kind: CiSecurityRecordKind): CiSecurityRecord {
         ...base,
         kind,
         precedence: 50,
-        inherits: ["USER"],
+        inherits: ["user"],
+        privileges: [],
         permissionCount: 0,
+        directUserCount: 0,
+        inheritedUserCount: 0,
+        status: "active",
       };
     case "permission":
       return {
@@ -121,7 +184,13 @@ function createSecurityDraft(kind: CiSecurityRecordKind): CiSecurityRecord {
 function getRecordSummary(record: CiSecurityRecord): string {
   switch (record.kind) {
     case "role":
-      return `${record.permissionCount} permissions`;
+      return `${formatCount(
+        record.permissionCount,
+        "permission"
+      )} · ${formatCount(
+        record.directUserCount,
+        "direct user"
+      )} · ${formatCount(record.inheritedUserCount, "user")} via inheritance`;
     case "permission":
       return `${record.roleId} · ${record.effect} ${record.resource}.${record.action}`;
     case "resource":
@@ -140,13 +209,21 @@ function isSecurityDraftComplete(record: CiSecurityRecord | null): boolean {
     return false;
   switch (record.kind) {
     case "role":
-      return Boolean(record.id.trim() && record.title.trim());
+      return Boolean(
+        record.id.trim() &&
+          record.title.trim() &&
+          (record.origin !== "application" ||
+            ciIsAccessControlKebabIdentifier(record.id))
+      );
     case "permission":
       return Boolean(
         record.id.trim() &&
+          (record.origin !== "application" ||
+            ciIsAccessControlKebabIdentifier(record.id)) &&
+          record.title.trim() &&
           record.roleId.trim() &&
           record.resource.trim() &&
-          record.action.trim() &&
+          ciIsAccessControlKebabIdentifier(record.action) &&
           record.scopeKinds.length
       );
     case "resource":
@@ -208,39 +285,66 @@ function buildSecurityColumns(
         {row.original.origin}
       </Badge>
     ),
-    meta: {
-      ciDataTable: {
-        filter: {
-          type: "select",
-          options: [
-            { id: "core", label: "Core" },
-            { id: "application", label: "Application" },
-            { id: "provider", label: "Provider" },
-          ],
-        },
-      },
-    },
   };
 
   const summary: CiDataTableColumnDef<CiSecurityRecord, unknown> = {
     id: "summary",
     header: "Details",
     accessorFn: (record) => getRecordSummary(record),
+    cell: ({ row }) => {
+      const record = row.original;
+      if (record.kind !== "role") return getRecordSummary(record);
+
+      return (
+        <div className="grid min-w-44 gap-1 text-sm leading-5">
+          <div>{formatCount(record.permissionCount, "permission")}</div>
+          <div>{formatCount(record.directUserCount, "direct user")}</div>
+          <div>
+            {formatCount(record.inheritedUserCount, "user")} via inheritance
+          </div>
+        </div>
+      );
+    },
     meta: { ciDataTable: { truncate: { maxWidth: 440, showTitle: true } } },
   };
 
   const aspectColumns: CiDataTableColumnDef<CiSecurityRecord, unknown>[] = [];
   if (kind === "role") {
-    aspectColumns.push({
-      id: "precedence",
-      accessorFn: (row) => (row.kind === "role" ? row.precedence : 0),
-      header: "Precedence",
-      meta: {
-        ciDataTable: {
-          className: "font-medium tabular-nums",
+    aspectColumns.push(
+      {
+        id: "status",
+        accessorFn: (row) => (row.kind === "role" ? row.status : ""),
+        header: "Status",
+        cell: ({ row }) => {
+          const status =
+            row.original.kind === "role"
+              ? row.original.status ?? "active"
+              : "active";
+          return (
+            <Badge
+              variant="outline"
+              className={
+                status === "active"
+                  ? "border-success-border bg-success-surface text-success-surface-foreground"
+                  : "border-warning-border bg-warning-surface text-warning-surface-foreground"
+              }
+            >
+              {status === "active" ? "Active" : "Suspended"}
+            </Badge>
+          );
         },
       },
-    });
+      {
+        id: "precedence",
+        accessorFn: (row) => (row.kind === "role" ? row.precedence : 0),
+        header: "Precedence",
+        meta: {
+          ciDataTable: {
+            className: "font-medium tabular-nums",
+          },
+        },
+      }
+    );
   }
   if (kind === "permission") {
     aspectColumns.push(
@@ -301,20 +405,104 @@ function CiSecurityRecordEditor({
   draft,
   reason,
   roleOptions = [],
+  privilegeOptions = [],
   resourceOptions = [],
+  resourceDomains = [],
+  isExisting,
   onChange,
   onReasonChange,
 }: {
   draft: CiSecurityRecord;
   reason: string;
   roleOptions?: CiSecurityDataPageProps["roleOptions"];
+  privilegeOptions?: CiSecurityDataPageProps["privilegeOptions"];
   resourceOptions?: CiSecurityDataPageProps["resourceOptions"];
+  resourceDomains?: CiSecurityDataPageProps["resourceDomains"];
+  isExisting: boolean;
   onChange: (next: CiSecurityRecord) => void;
   onReasonChange: (next: string) => void;
 }) {
+  const [identifierVisited, setIdentifierVisited] = useState(false);
+  const [identifierEntryError, setIdentifierEntryError] = useState<
+    string | null
+  >(null);
+  const [isCustomActionSelected, setIsCustomActionSelected] = useState(false);
+  const [actionEntryError, setActionEntryError] = useState<string | null>(null);
   const set = (values: Partial<CiSecurityRecord>) =>
     onChange({ ...draft, ...values } as CiSecurityRecord);
-  const isExisting = !draft.id.startsWith("new-");
+  const availableInheritedRoleOptions = useMemo(
+    () =>
+      draft.kind === "role"
+        ? ciGetAvailableInheritedRoleOptions(
+            draft.id,
+            draft.inherits,
+            roleOptions
+          )
+        : [],
+    [draft, roleOptions]
+  );
+  const availablePrivilegeOptions = useMemo(() => {
+    if (draft.kind !== "role") return [];
+    const selectedPrivilegeIds = new Set(
+      draft.privileges.map((privilege) => privilege.id)
+    );
+    return privilegeOptions.filter(
+      (option) => !selectedPrivilegeIds.has(option.privilege.id)
+    );
+  }, [draft, privilegeOptions]);
+  const editableKebabIdentifier =
+    !isExisting &&
+    draft.origin === "application" &&
+    (draft.kind === "role" || draft.kind === "permission");
+  const displayedIdentifier = draft.id.startsWith("new-") ? "" : draft.id;
+  const identifierFormatError =
+    identifierVisited &&
+    editableKebabIdentifier &&
+    displayedIdentifier.length > 0 &&
+    !ciIsAccessControlKebabIdentifier(displayedIdentifier)
+      ? "Start with a lowercase letter and use only lowercase letters, digits, and single hyphens."
+      : null;
+  const identifierError = identifierEntryError ?? identifierFormatError;
+  const actionOptions = useMemo(() => {
+    if (draft.kind !== "permission") return [];
+    const resource = resourceOptions.find(
+      (option) => option.id === draft.resource
+    );
+    const actions = [...COMMON_ACTION_OPTIONS, ...(resource?.actions ?? [])];
+    // Retain a legacy wildcard while editing an existing permission, but do not
+    // offer it for new permissions.
+    if (draft.action === "*" && !actions.includes("*")) actions.push("*");
+    return [...new Set(actions)].sort((left, right) =>
+      left.localeCompare(right)
+    );
+  }, [draft, resourceOptions]);
+  const actionIsKnown =
+    draft.kind === "permission" && actionOptions.includes(draft.action);
+  const actionIsCustom =
+    draft.kind === "permission" &&
+    !actionIsKnown &&
+    (isCustomActionSelected || (isExisting && draft.action.length > 0));
+  const actionFormatError =
+    draft.kind === "permission" &&
+    actionIsCustom &&
+    draft.action.length > 0 &&
+    !ciIsAccessControlKebabIdentifier(draft.action)
+      ? "Start with a lowercase letter and use only lowercase letters, digits, and single hyphens."
+      : null;
+  const actionError = actionEntryError ?? actionFormatError;
+
+  const updateIdentifier = (value: string) => {
+    if (editableKebabIdentifier && !ciIsSecurityIdentifierInputAllowed(value)) {
+      setIdentifierVisited(true);
+      setIdentifierEntryError(
+        "That character is not allowed. Start with a lowercase letter and use only lowercase letters, digits, and single hyphens."
+      );
+      return;
+    }
+
+    setIdentifierEntryError(null);
+    set({ id: value });
+  };
 
   return (
     <div className="grid gap-5 py-2 [&_button[role=combobox]]:min-h-11 [&_input]:min-h-11 [&_textarea]:min-h-24">
@@ -322,14 +510,35 @@ function CiSecurityRecordEditor({
         <Label htmlFor="security-id">Stable identifier</Label>
         <Input
           id="security-id"
-          value={draft.id.startsWith("new-") ? "" : draft.id}
+          value={displayedIdentifier}
           disabled={isExisting}
-          onChange={(event) => set({ id: event.target.value.trim() })}
+          pattern={
+            editableKebabIdentifier
+              ? CI_ACCESS_CONTROL_KEBAB_IDENTIFIER_PATTERN
+              : undefined
+          }
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
+          aria-invalid={identifierError ? true : undefined}
+          aria-describedby="security-id-guidance"
+          onChange={(event) => updateIdentifier(event.target.value)}
+          onBlur={() => setIdentifierVisited(true)}
           placeholder="lowercase-stable-id"
         />
-        <p className="text-xs text-muted-foreground">
-          Identifiers are referenced by assignments and audit records and cannot
-          be renamed later.
+        <p
+          id="security-id-guidance"
+          className={
+            identifierError
+              ? "text-xs text-destructive"
+              : "text-xs text-muted-foreground"
+          }
+          role={identifierError ? "alert" : undefined}
+        >
+          {identifierError ??
+            (editableKebabIdentifier
+              ? "Use lowercase kebab case, beginning with a letter—for example, invoice-approver or reviewer2. IDs cannot be renamed later."
+              : "Identifiers are referenced by assignments and audit records and cannot be renamed later.")}
         </p>
       </div>
 
@@ -345,50 +554,110 @@ function CiSecurityRecordEditor({
       ) : null}
 
       {draft.kind === "role" ? (
-        <>
-          <div className="grid gap-2 sm:grid-cols-2">
-            <div className="grid gap-2">
-              <Label htmlFor="security-precedence">Precedence</Label>
-              <Input
-                id="security-precedence"
-                type="number"
-                min={1}
-                value={draft.precedence}
-                onChange={(event) =>
-                  set({ precedence: Number(event.target.value) })
-                }
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="security-inherits">Inherited roles</Label>
-              <Input
-                id="security-inherits"
-                value={draft.inherits.join(", ")}
-                onChange={(event) =>
-                  set({
-                    inherits: event.target.value
-                      .split(",")
-                      .map((value) => value.trim())
-                      .filter(Boolean),
-                  })
-                }
-                placeholder="USER, EDITOR"
-              />
-            </div>
+        <div className="grid gap-5">
+          <div className="grid gap-2">
+            <Label htmlFor="security-precedence">Precedence</Label>
+            <Input
+              id="security-precedence"
+              type="number"
+              min={1}
+              value={draft.precedence}
+              onChange={(event) =>
+                set({ precedence: Number(event.target.value) })
+              }
+            />
           </div>
-        </>
+
+          <div className="grid gap-2">
+            <Label htmlFor="security-inherits-search">Inherited roles</Label>
+            <CiSearchableChipMultiSelect
+              id="security-inherits-search"
+              label="Inherited roles"
+              placeholder="Select inherited roles…"
+              showAllOptions
+              options={availableInheritedRoleOptions.map((option) => ({
+                id: option.id,
+                label: option.label,
+                description:
+                  option.inherits.length > 0
+                    ? `Directly inherits ${option.inherits.join(", ")}`
+                    : "No inherited roles",
+              }))}
+              selectedItems={draft.inherits.map((roleId) => ({
+                id: roleId,
+                label:
+                  roleOptions.find((option) => option.id === roleId)?.label ??
+                  roleId,
+              }))}
+              emptyMessage="No cycle-safe roles match this search."
+              onAdd={(option) =>
+                set({ inherits: [...draft.inherits, option.id] })
+              }
+              onRemove={(roleId) =>
+                set({
+                  inherits: draft.inherits.filter((id) => id !== roleId),
+                })
+              }
+            />
+            <p className="text-xs leading-5 text-muted-foreground">
+              Only direct inheritance is shown as chips. Roles that already
+              inherit this role are excluded to prevent cycles.
+            </p>
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="security-privileges-search">Privileges</Label>
+            <CiSearchableChipMultiSelect
+              id="security-privileges-search"
+              label="Privileges"
+              placeholder="Select privileges…"
+              showAllOptions
+              options={availablePrivilegeOptions}
+              selectedItems={draft.privileges.map((privilege) => ({
+                id: privilege.id,
+                label: privilege.title,
+              }))}
+              emptyMessage="No unselected privileges match this search."
+              onAdd={(option) => {
+                const selected = privilegeOptions.find(
+                  (candidate) => candidate.id === option.id
+                );
+                if (!selected) return;
+                const privileges = [
+                  ...draft.privileges,
+                  {
+                    ...selected.privilege,
+                    scopeKinds: [...selected.privilege.scopeKinds],
+                  },
+                ];
+                set({ privileges, permissionCount: privileges.length });
+              }}
+              onRemove={(privilegeId) => {
+                const privileges = draft.privileges.filter(
+                  (privilege) => privilege.id !== privilegeId
+                );
+                set({ privileges, permissionCount: privileges.length });
+              }}
+            />
+            <p className="text-xs leading-5 text-muted-foreground">
+              Selecting an existing privilege copies its complete policy
+              statement into this role. Remove a chip to detach it.
+            </p>
+          </div>
+        </div>
       ) : null}
 
       {draft.kind === "permission" ? (
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="grid gap-2">
+        <div className="grid gap-4">
+          <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(10rem,0.55fr)]">
+            <div className="grid min-w-0 gap-2">
             <Label>Role</Label>
             <Select
               value={draft.roleId}
               disabled={isExisting}
               onValueChange={(value) => set({ roleId: value })}
             >
-              <SelectTrigger>
+              <SelectTrigger className="w-full min-w-0">
                 <SelectValue placeholder="Select a role" />
               </SelectTrigger>
               <SelectContent>
@@ -400,7 +669,7 @@ function CiSecurityRecordEditor({
               </SelectContent>
             </Select>
           </div>
-          <div className="grid gap-2">
+            <div className="grid gap-2">
             <Label>Effect</Label>
             <Select
               value={draft.effect}
@@ -416,12 +685,29 @@ function CiSecurityRecordEditor({
                 <SelectItem value="deny">Deny</SelectItem>
               </SelectContent>
             </Select>
+            </div>
           </div>
+          <div className="grid gap-4 sm:grid-cols-2">
           <div className="grid gap-2">
             <Label>Resource</Label>
             <Select
               value={draft.resource}
-              onValueChange={(value) => set({ resource: value })}
+              onValueChange={(value) => {
+                const nextActions = [
+                  ...COMMON_ACTION_OPTIONS,
+                  ...(resourceOptions.find((option) => option.id === value)
+                    ?.actions ?? []),
+                ].sort((left, right) => left.localeCompare(right));
+                set({
+                  resource: value,
+                  action:
+                    draft.action === "*" || nextActions?.includes(draft.action)
+                      ? draft.action
+                      : (nextActions?.[0] ?? ""),
+                });
+                setIsCustomActionSelected(false);
+                setActionEntryError(null);
+              }}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select a resource" />
@@ -436,25 +722,104 @@ function CiSecurityRecordEditor({
             </Select>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="security-action">Action</Label>
-            <Input
-              id="security-action"
-              value={draft.action}
-              onChange={(event) => set({ action: event.target.value.trim() })}
-              placeholder="read"
-            />
+            <Label>Action</Label>
+            <Select
+              value={
+                actionIsKnown
+                  ? draft.action
+                  : actionIsCustom
+                    ? OTHER_ACTION_VALUE
+                    : ""
+              }
+              onValueChange={(value) => {
+                const isOther = value === OTHER_ACTION_VALUE;
+                setIsCustomActionSelected(isOther);
+                setActionEntryError(null);
+                set({ action: isOther ? "" : value });
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select an action" />
+              </SelectTrigger>
+              <SelectContent>
+                {actionOptions.map((action) => (
+                  <SelectItem key={action} value={action}>
+                    {action}
+                  </SelectItem>
+                ))}
+                <SelectItem value={OTHER_ACTION_VALUE}>Other</SelectItem>
+              </SelectContent>
+            </Select>
+            {actionIsCustom ? (
+              <>
+                <Input
+                  id="security-action"
+                  value={draft.action}
+                  pattern={CI_ACCESS_CONTROL_KEBAB_IDENTIFIER_PATTERN}
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  aria-invalid={actionError ? true : undefined}
+                  aria-describedby="security-action-guidance"
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    if (!ciIsSecurityIdentifierInputAllowed(value)) {
+                      setActionEntryError(
+                        "That character is not allowed. Start with a lowercase letter and use only lowercase letters, digits, and single hyphens."
+                      );
+                      return;
+                    }
+                    setActionEntryError(null);
+                    set({ action: value });
+                  }}
+                  placeholder="new-action"
+                />
+                <p
+                  id="security-action-guidance"
+                  className={
+                    actionError
+                      ? "text-xs text-destructive"
+                      : "text-xs text-muted-foreground"
+                  }
+                  role={actionError ? "alert" : undefined}
+                >
+                  {actionError ??
+                    "Use lowercase kebab case, beginning with a letter—for example, export-report."}
+                </p>
+              </>
+            ) : null}
           </div>
-          <div className="grid gap-2 sm:col-span-2">
+          </div>
+          <div className="grid gap-2">
             <Label htmlFor="security-scopes">Permitted scope kinds</Label>
-            <Input
+            <CiSearchableChipMultiSelect
               id="security-scopes"
-              value={draft.scopeKinds.join(", ")}
-              onChange={(event) =>
+              label="Permitted scope kinds"
+              placeholder="Select a scope kind…"
+              showAllOptions
+              options={ACCESS_SCOPE_KIND_OPTIONS.filter(
+                (option) => !draft.scopeKinds.includes(option.id)
+              )}
+              selectedItems={draft.scopeKinds.map((scopeKind) => ({
+                id: scopeKind,
+                label:
+                  ACCESS_SCOPE_KIND_OPTIONS.find(
+                    (option) => option.id === scopeKind
+                  )?.label ?? scopeKind,
+              }))}
+              emptyMessage="All supported scope kinds are selected."
+              onAdd={(option) =>
                 set({
-                  scopeKinds: parseScopeKinds(event.target.value),
+                  scopeKinds: [...draft.scopeKinds, option.id as CiAccessScopeKind],
                 })
               }
-              placeholder="tenant, orgUnit"
+              onRemove={(scopeKind) =>
+                set({
+                  scopeKinds: draft.scopeKinds.filter(
+                    (item) => item !== scopeKind
+                  ),
+                })
+              }
             />
           </div>
         </div>
@@ -464,11 +829,32 @@ function CiSecurityRecordEditor({
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="grid gap-2">
             <Label htmlFor="security-domain">Domain</Label>
-            <Input
-              id="security-domain"
+            <Select
               value={draft.domainId}
-              onChange={(event) => set({ domainId: event.target.value.trim() })}
-            />
+              onValueChange={(value) => set({ domainId: value })}
+            >
+              <SelectTrigger id="security-domain" className="w-full min-w-0">
+                <SelectValue placeholder="Select a domain" />
+              </SelectTrigger>
+              <SelectContent>
+                {resourceDomains.map((domain) => (
+                  <SelectItem
+                    key={domain.id}
+                    value={domain.id}
+                    disabled={
+                      domain.status === "suspended" &&
+                      draft.domainId !== domain.id
+                    }
+                  >
+                    {domain.title} ({domain.id})
+                    {domain.status === "suspended" ? " — suspended" : ""}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              Suspended domains cannot accept new resources.
+            </p>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="security-actions">Actions</Label>
@@ -487,12 +873,32 @@ function CiSecurityRecordEditor({
           </div>
           <div className="grid gap-2 sm:col-span-2">
             <Label htmlFor="resource-scopes">Scope kinds</Label>
-            <Input
+            <CiSearchableChipMultiSelect
               id="resource-scopes"
-              value={draft.scopeKinds.join(", ")}
-              onChange={(event) =>
+              label="Scope kinds"
+              placeholder="Select a scope kind…"
+              showAllOptions
+              options={ACCESS_SCOPE_KIND_OPTIONS.filter(
+                (option) => !draft.scopeKinds.includes(option.id)
+              )}
+              selectedItems={draft.scopeKinds.map((scopeKind) => ({
+                id: scopeKind,
+                label:
+                  ACCESS_SCOPE_KIND_OPTIONS.find(
+                    (option) => option.id === scopeKind
+                  )?.label ?? scopeKind,
+              }))}
+              emptyMessage="All supported scope kinds are selected."
+              onAdd={(option) =>
                 set({
-                  scopeKinds: parseScopeKinds(event.target.value),
+                  scopeKinds: [...draft.scopeKinds, option.id as CiAccessScopeKind],
+                })
+              }
+              onRemove={(scopeKind) =>
+                set({
+                  scopeKinds: draft.scopeKinds.filter(
+                    (item) => item !== scopeKind
+                  ),
                 })
               }
             />
@@ -642,16 +1048,44 @@ export function CiSecurityDataPage({
   capabilities,
   providerLabel,
   roleOptions,
+  privilegeOptions,
   resourceOptions,
+  resourceDomains,
   onSave,
   onDelete,
+  onSetRoleStatus,
+  onCreateResourceDomain,
+  onSetResourceDomainStatus,
 }: CiSecurityDataPageProps) {
-  const [draft, setDraft] = useState<CiSecurityRecord | null>(null);
+  const [editorSession, setEditorSession] =
+    useState<CiSecurityEditorSession | null>(null);
+  const draft = editorSession?.draft ?? null;
+  const isExisting = editorSession
+    ? ciIsSecurityIdentifierLocked(editorSession)
+    : false;
   const [reason, setReason] = useState("");
   const [feedback, setFeedback] = useState<{
     ok: boolean;
     message: string;
   } | null>(null);
+  const [editorFeedback, setEditorFeedback] = useState<{
+    ok: boolean;
+    message: string;
+  } | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<CiSecurityRecord | null>(
+    null
+  );
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [roleStatusTarget, setRoleStatusTarget] =
+    useState<CiSecurityRoleRecord | null>(null);
+  const [nextRoleStatus, setNextRoleStatus] =
+    useState<CiRoleStatus>("suspended");
+  const [roleStatusReason, setRoleStatusReason] = useState("");
+  const [roleStatusDialogOpen, setRoleStatusDialogOpen] = useState(false);
+  const [isChangingRoleStatus, setIsChangingRoleStatus] = useState(false);
+  const [resourceDomainsDialogOpen, setResourceDomainsDialogOpen] =
+    useState(false);
   const [isPending, startTransition] = useTransition();
   const canManage =
     kind === "assignment"
@@ -671,12 +1105,7 @@ export function CiSecurityDataPage({
           mode: "dialog",
           label: "View details",
           title: (record) => record.title || humanizeIdentifier(record.id),
-          description: (record) => getRecordSummary(record),
-          content: (record) => (
-            <pre className="max-h-80 overflow-auto rounded-lg bg-muted p-4 text-xs leading-5">
-              {JSON.stringify(record, null, 2)}
-            </pre>
-          ),
+          description: (record) => record.description,
         },
         filters: [
           {
@@ -699,10 +1128,33 @@ export function CiSecurityDataPage({
             disableWhen: (record) =>
               !canManage ||
               (record.origin === "core" && !capabilities.canManageCore),
+                  onSelect: (record) => {
+                    setFeedback(null);
+                    setEditorFeedback(null);
+                    setReason("");
+                    setEditorSession({ mode: "edit", draft: record });
+            },
+          },
+          {
+            id: "suspend-role",
+            label: "Suspend role",
+            icon: <CirclePause />,
+            variant: "destructive",
+            hideWhen: (record) =>
+              !onSetRoleStatus ||
+              record.kind !== "role" ||
+              (record.status ?? "active") === "suspended" ||
+              record.id === "system-super-admin",
+            disableWhen: (record) =>
+              !canManage ||
+              (record.origin === "core" && !capabilities.canManageCore),
             onSelect: (record) => {
+              if (record.kind !== "role" || !onSetRoleStatus) return;
               setFeedback(null);
-              setReason("");
-              setDraft(record);
+              setRoleStatusReason("");
+              setRoleStatusTarget(record);
+              setNextRoleStatus("suspended");
+              setRoleStatusDialogOpen(true);
             },
           },
           {
@@ -713,33 +1165,79 @@ export function CiSecurityDataPage({
             hideWhen: (record) => record.origin === "core" || !onDelete,
             disableWhen: () => !canManage,
             onSelect: (record) => {
-              if (
-                !onDelete ||
-                !window.confirm(`Delete ${record.title || record.id}?`)
-              )
-                return;
-              startTransition(async () => setFeedback(await onDelete(record)));
+              if (!onDelete) return;
+              setFeedback(null);
+              setDeleteTarget(record);
+              setDeleteDialogOpen(true);
+            },
+          },
+          {
+            id: "restore-role",
+            label: "Restore role",
+            icon: <CirclePlay />,
+            hideWhen: (record) =>
+              !onSetRoleStatus ||
+              record.kind !== "role" ||
+              (record.status ?? "active") !== "suspended",
+            disableWhen: (record) =>
+              !canManage ||
+              (record.origin === "core" && !capabilities.canManageCore),
+            onSelect: (record) => {
+              if (record.kind !== "role" || !onSetRoleStatus) return;
+              setFeedback(null);
+              setRoleStatusReason("");
+              setRoleStatusTarget(record);
+              setNextRoleStatus("active");
+              setRoleStatusDialogOpen(true);
             },
           },
         ],
-        globalActions:
-          onSave && canManage
+        globalActions: [
+          ...(kind === "resource" && resourceDomains
+            ? [
+                {
+                  id: "manage-resource-domains",
+                  label: "Resource domains",
+                  icon: <FolderTree />,
+                  selection: "none" as const,
+                  onSelect: () => {
+                    setFeedback(null);
+                    setResourceDomainsDialogOpen(true);
+                  },
+                },
+              ]
+            : []),
+          ...(onSave && canManage
             ? [
                 {
                   id: "create",
                   label: `New ${kind.replace("identity-", "")}`,
                   icon: <Plus />,
-                  selection: "none",
+                  selection: "none" as const,
                   onSelect: () => {
                     setFeedback(null);
+                    setEditorFeedback(null);
                     setReason("");
-                    setDraft(createSecurityDraft(kind));
+                    setEditorSession({
+                      mode: "create",
+                      draft: createSecurityDraft(kind),
+                    });
                   },
                 },
               ]
-            : [],
+            : []),
+        ],
       }),
-    [canManage, capabilities.canManageCore, columns, kind, onDelete, onSave]
+    [
+      canManage,
+      capabilities.canManageCore,
+      columns,
+      kind,
+      onDelete,
+      onSave,
+      onSetRoleStatus,
+      resourceDomains,
+    ]
   );
 
   const config: CiDataTableConfig<CiSecurityRecord> = {
@@ -756,14 +1254,21 @@ export function CiSecurityDataPage({
       pageSizeOptions: [10, 25, 50, 100],
       allowAll: true,
     },
-    rowActions: { mode: "mixed", inlineCount: 1 },
+    rowActions: { mode: "mixed", inlineCount: 1, reserveSpace: true },
     selection: { enabled: false },
     persistence: {
       key: `ci-security-${kind}`,
       columnWidths: true,
-      filters: true,
+      // Security administration should always reopen with the complete catalog.
+      // Persisted owner/search filters can otherwise make a successful create
+      // look as though it disappeared after the route refreshes.
+      filters: false,
       pageSize: true,
       format: true,
+    },
+    labels: {
+      loading: `Loading ${title.toLowerCase()}. Please wait...`,
+      noResults: `No ${title.toLowerCase()} match the current view.`,
     },
     excelExport: {
       fileName: `cloudigniter-${kind}.xlsx`,
@@ -777,9 +1282,39 @@ export function CiSecurityDataPage({
     if (!draft || !onSave) return;
     startTransition(async () => {
       const result = await onSave(draft, reason || undefined);
-      setFeedback(result);
-      if (result.ok) setDraft(null);
+      setEditorFeedback(result);
+      if (result.ok) setEditorSession(null);
     });
+  };
+
+  /** Deletes the selected record after acknowledgement in the alert dialog. */
+  const confirmDelete = async () => {
+    if (!deleteTarget || !onDelete) return;
+
+    setIsDeleting(true);
+    try {
+      setFeedback(await onDelete(deleteTarget));
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  /** Applies a reasoned suspension or restoration through the server adapter. */
+  const confirmRoleStatusChange = async () => {
+    if (!roleStatusTarget || !onSetRoleStatus) return;
+
+    setIsChangingRoleStatus(true);
+    try {
+      const result = await onSetRoleStatus(
+        roleStatusTarget.id,
+        nextRoleStatus,
+        roleStatusReason.trim()
+      );
+      if (!result.ok) throw new Error(result.message);
+      setFeedback(result);
+    } finally {
+      setIsChangingRoleStatus(false);
+    }
   };
 
   return (
@@ -808,9 +1343,13 @@ export function CiSecurityDataPage({
       </header>
 
       {feedback ? (
-        <Alert variant={feedback.ok ? "default" : "destructive"}>
-          <AlertDescription>{feedback.message}</AlertDescription>
-        </Alert>
+        <CiAlert
+          variant={feedback.ok ? "success" : "error"}
+          title={feedback.ok ? "Success" : "Action failed"}
+          onDismiss={() => setFeedback(null)}
+        >
+          {feedback.message}
+        </CiAlert>
       ) : null}
       {!capabilities.canManageCore ? (
         <Alert>
@@ -827,19 +1366,112 @@ export function CiSecurityDataPage({
         data={records}
         config={config}
         searchPlaceholder={`Search ${title.toLowerCase()}...`}
-        loading={isPending}
+        loading={isPending || isDeleting || isChangingRoleStatus}
+      />
+
+      <CiAlertDialog
+        open={roleStatusDialogOpen}
+        onOpenChange={(open) => {
+          if (!isChangingRoleStatus) setRoleStatusDialogOpen(open);
+        }}
+        variant={nextRoleStatus === "suspended" ? "destructive" : "default"}
+        icon={
+          nextRoleStatus === "suspended" ? (
+            <CirclePause aria-hidden />
+          ) : (
+            <CirclePlay aria-hidden />
+          )
+        }
+        title={`${
+          nextRoleStatus === "suspended" ? "Suspend" : "Restore"
+        } role “${roleStatusTarget?.title ?? roleStatusTarget?.id ?? ""}”?`}
+        description={
+          nextRoleStatus === "suspended"
+            ? "The role will immediately stop granting access, including privileges reached through its inheritance path. Assignments and policy configuration remain intact for investigation and later restoration."
+            : "The role will immediately resume granting its configured privileges through existing assignments and inheritance paths."
+        }
+        confirmLabel={
+          nextRoleStatus === "suspended" ? "Suspend role" : "Restore role"
+        }
+        pendingLabel={
+          nextRoleStatus === "suspended"
+            ? "Suspending role…"
+            : "Restoring role…"
+        }
+        confirmDisabled={!roleStatusReason.trim()}
+        pending={isChangingRoleStatus}
+        onConfirm={confirmRoleStatusChange}
+        onConfirmError={(error) => {
+          setFeedback({
+            ok: false,
+            message: ciNormalizeClientThrownError(error).message,
+          });
+        }}
+      >
+        <div className="grid gap-2">
+          {roleStatusTarget?.id === capabilities.actorRole &&
+          nextRoleStatus === "suspended" ? (
+            <p className="rounded-lg border border-warning-border bg-warning-surface p-3 text-warning-surface-foreground">
+              This is your primary role. Suspending it may remove your access on
+              the next authorization check.
+            </p>
+          ) : null}
+          <Label htmlFor="role-status-reason">Reason</Label>
+          <Textarea
+            id="role-status-reason"
+            required
+            value={roleStatusReason}
+            onChange={(event) => setRoleStatusReason(event.target.value)}
+            placeholder="Reference the incident, investigation, or approval for this change."
+          />
+          <p className="text-xs text-muted-foreground">
+            The actor, timestamp, and this reason are stored with the latest
+            role status change.
+          </p>
+        </div>
+      </CiAlertDialog>
+
+      <CiAlertDialog
+        open={deleteDialogOpen}
+        onOpenChange={(open) => {
+          if (!isDeleting) setDeleteDialogOpen(open);
+        }}
+        variant="destructive"
+        icon={<Trash2 aria-hidden />}
+        title={`Delete ${kind.replace("identity-", "")} “${
+          deleteTarget?.title || deleteTarget?.id || "selected record"
+        }”?`}
+        description={`This permanently removes the ${
+          deleteTarget?.origin ?? "application"
+        }-owned ${kind.replace("identity-", "")} “${
+          deleteTarget?.id ?? ""
+        }”. Existing access relationships that reference it may be affected. This action cannot be undone.`}
+        confirmLabel={`Delete ${kind.replace("identity-", "")}`}
+        pendingLabel={`Deleting ${kind.replace("identity-", "")}…`}
+        pending={isDeleting}
+        onConfirm={confirmDelete}
+        onConfirmError={(error) => {
+          setFeedback({
+            ok: false,
+            message: ciNormalizeClientThrownError(error).message,
+          });
+          setDeleteDialogOpen(false);
+        }}
       />
 
       <Dialog
-        open={draft !== null}
+        open={editorSession !== null}
         onOpenChange={(open) => {
-          if (!open && !isPending) setDraft(null);
+          if (!open && !isPending) setEditorSession(null);
         }}
       >
-        <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
+        <DialogContent
+          className="flex max-h-[90dvh] flex-col overflow-hidden sm:max-w-2xl"
+          aria-busy={isPending}
+        >
           <DialogHeader>
             <DialogTitle>
-              {draft?.id.startsWith("new-") ? "Create" : "Edit"}{" "}
+              {editorSession?.mode === "create" ? "Create" : "Edit"}{" "}
               {kind.replace("identity-", "")}
             </DialogTitle>
             <DialogDescription>
@@ -847,22 +1479,42 @@ export function CiSecurityDataPage({
               effective policy is updated.
             </DialogDescription>
           </DialogHeader>
-          {draft ? (
-            <CiSecurityRecordEditor
-              draft={draft}
-              reason={reason}
-              roleOptions={roleOptions}
-              resourceOptions={resourceOptions}
-              onChange={setDraft}
-              onReasonChange={setReason}
-            />
+          {editorFeedback ? (
+            <CiAlert
+              variant={editorFeedback.ok ? "success" : "error"}
+              title={editorFeedback.ok ? "Success" : "Unable to save changes"}
+              onDismiss={() => setEditorFeedback(null)}
+            >
+              {editorFeedback.message}
+            </CiAlert>
           ) : null}
-          <DialogFooter>
+          {draft ? (
+            <div className="min-h-0 flex-1 overflow-y-auto pe-1">
+              <CiSecurityRecordEditor
+                draft={draft}
+                reason={reason}
+                roleOptions={roleOptions}
+                privilegeOptions={privilegeOptions}
+                resourceOptions={resourceOptions}
+                resourceDomains={resourceDomains}
+                isExisting={isExisting}
+                onChange={(nextDraft) =>
+                  setEditorSession((current) =>
+                    current
+                      ? ciUpdateSecurityEditorSessionDraft(current, nextDraft)
+                      : null
+                  )
+                }
+                onReasonChange={setReason}
+              />
+            </div>
+          ) : null}
+          <DialogFooter className="!mx-0 !mb-0 shrink-0">
             <Button
               variant="outline"
               className="min-h-11"
               disabled={isPending}
-              onClick={() => setDraft(null)}
+              onClick={() => setEditorSession(null)}
             >
               Cancel
             </Button>
@@ -879,8 +1531,44 @@ export function CiSecurityDataPage({
               {isPending ? "Saving…" : "Save changes"}
             </Button>
           </DialogFooter>
+          {isPending ? (
+            <div className="absolute inset-0 z-50 flex items-center justify-center rounded-[inherit] bg-background/85 px-6 text-center supports-backdrop-filter:backdrop-blur-[2px]">
+              <div
+                role="status"
+                aria-live="polite"
+                className="flex max-w-sm items-center gap-3 rounded-xl border bg-background/95 px-5 py-4 text-sm font-medium text-foreground shadow-lg"
+              >
+                <RefreshCw
+                  className="size-5 shrink-0 animate-spin"
+                  aria-hidden
+                />
+                <span>
+                  {editorSession?.mode === "create"
+                    ? `Creating the new ${kind.replace(
+                        "identity-",
+                        ""
+                      )}. Please wait...`
+                    : `Saving the ${kind.replace(
+                        "identity-",
+                        ""
+                      )}. Please wait...`}
+                </span>
+              </div>
+            </div>
+          ) : null}
         </DialogContent>
       </Dialog>
+
+      {kind === "resource" ? (
+        <CiResourceDomainsDialog
+          open={resourceDomainsDialogOpen}
+          onOpenChange={setResourceDomainsDialogOpen}
+          domains={resourceDomains ?? []}
+          capabilities={capabilities}
+          onCreate={onCreateResourceDomain}
+          onSetStatus={onSetResourceDomainStatus}
+        />
+      ) : null}
     </main>
   );
 }

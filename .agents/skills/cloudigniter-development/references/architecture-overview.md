@@ -23,6 +23,10 @@ packages/emberguard
 
 packages/ui
     reusable presentation primitives and shared UI behavior
+
+packages/cli
+    application/system CLI plus workspace-gated maintainer CLI
+    shared command, terminal, process, and build-tooling infrastructure
 ```
 
 The diagram describes responsibility. Confirm actual package dependencies before adding an import and never introduce a cycle merely to mimic the diagram.
@@ -36,6 +40,7 @@ The diagram describes responsibility. Confirm actual package dependencies before
 - Never make a package depend on `apps/template`.
 - Keep reusable UI out of the template and application-specific content out of reusable UI.
 - Treat runtime boundaries as architecture: browser code must not transitively import server-only modules, credentials, filesystem APIs, or server SDKs.
+- Keep CLI workers provider-neutral by resolving provider capabilities from the target application; do not create a dependency cycle between `packages/cli` and runtime/provider packages.
 
 ## Template boundary
 
@@ -43,10 +48,10 @@ The diagram describes responsibility. Confirm actual package dependencies before
 
 - `next.config.ts` and other framework composition;
 - the application `proxy.ts` entry point and matcher;
-- application route definitions;
+- thin route composition, with application-owned definitions under `src/custom`;
 - application/provider selection and configuration;
 - application-specific locale registries and overrides;
-- route/page composition and replaceable application content.
+- core/default route and page composition; application-owned pages use a scoped `(ci-custom)` tree.
 
 It must not accumulate reusable:
 
@@ -62,6 +67,21 @@ Use this test when editing the template:
 
 If another CloudIgniter application would need substantially the same implementation, place it in the appropriate package and let the template delegate to it.
 
+### Core versus custom ownership
+
+The template has two owners. CloudIgniter owns template-core entry points and default composition; application developers own only the explicit custom seams:
+
+```text
+amplify/custom/**
+src/custom/**
+src/app/(ci-global)/ci-global/(ci-custom)/**
+src/app/(ci-tenant)/ci-tenant/(ci-custom)/**
+```
+
+Do not add application-owned pages under `(system)` or application/provider implementation beside core schemas, functions, routes, or kernel code. A template-core file may import a custom registry/hook only as a thin strict composition bridge. It remains core-managed, contains no application business logic, and rejects collisions rather than allowing custom code to shadow core.
+
+Application-facing generators may update only their registered resource folders and explicitly generated registries within these seams. They must reject core/manual/generated key and filesystem-path collisions before mutation. Read [template-core-custom-boundary.md](template-core-custom-boundary.md) for the complete ownership, rollback, and upgrade contract.
+
 ## Configuration boundary
 
 Use application configuration to select or customize reusable capabilities. Packages may accept configuration, contracts, adapters, callbacks, or providers; they must not import the template to discover values.
@@ -70,7 +90,7 @@ Keep configuration responsibilities distinct:
 
 - `next.config.ts`: Next.js build/framework/plugin composition;
 - `cloudigniter.config.ts`: application CloudIgniter capability configuration;
-- `routes.ts`: application route registry and metadata;
+- `routes.ts`: thin core/custom route composition; application metadata is registered under `src/custom`;
 - `proxy.ts`: request-time application entry point that supplies configuration to reusable Next.js handling.
 
 Do not move request-time business logic into `next.config.ts`, and do not use framework configuration as a second CloudIgniter configuration store.
@@ -88,6 +108,9 @@ Reconsider the design when you find:
 - server imports reachable from a client entry point;
 - route registries, complete configuration, or message catalogs serialized into request context;
 - a template entry point containing reusable orchestration instead of delegating to a package.
+- application-owned implementation outside `amplify/custom`, `src/custom`, or a scoped `(ci-custom)` route tree;
+- a generator patching manual registries, core bridges, or an unregistered existing file;
+- object spreads or merge order that let a custom/generated route, schema, or backend key silently replace another owner.
 
 ## Preferred end state
 

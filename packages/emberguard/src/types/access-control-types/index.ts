@@ -42,8 +42,16 @@ export type { CiIdentityGroupRoleResolutionOptions } from "./CiIdentityGroupRole
 export type { CiPrivilege } from "./CiPrivilege";
 export type { CiPrivilegeEffect } from "./CiPrivilegeEffect";
 export type { CiResourceDefinition } from "./CiResourceDefinition";
-export type { CiResourceDomainDefinition } from "./CiResourceDomainDefinition";
+export type {
+  CiResourceDomainDefinition,
+  CiResourceDomainStatus,
+  CiResourceDomainStatusChange,
+} from "./CiResourceDomainDefinition";
 export type { CiRoleAssignment } from "./CiRoleAssignment";
-export type { CiRoleDefinition } from "./CiRoleDefinition";
+export type {
+  CiRoleDefinition,
+  CiRoleStatus,
+  CiRoleStatusChange,
+} from "./CiRoleDefinition";
 export type { CiScopedPrivilege } from "./CiScopedPrivilege";
 export type { CiScopePropagation } from "./CiScopePropagation";

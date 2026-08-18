@@ -1,6 +1,6 @@
 ---
 title: ciResolvePrimaryRole
-package: "@cloudigniter/emberguard"
+package: "@cloudigniter/core"
 availability: Shared
 sidebar_position: 44
 ---
@@ -15,21 +15,18 @@ and diagnostics; it does not perform ARBAC authorization.
 ```ts
 function ciResolvePrimaryRole(
   roles: readonly string[],
-  rolePrecedence?: Readonly<Record<string, number>>,
+  rolePrecedence?: Readonly<Record<string, number>>
 ): string | null;
 ```
 
-The default map is `CI_CORE_ROLE_PRECEDENCE`. Matching is case-insensitive, output is normalized to uppercase,
-and lower non-negative finite numbers are stronger. Unknown roles cannot become primary. Equal precedence keeps
+The default map is `CI_CORE_ROLE_PRECEDENCE`. Matching is case-sensitive, output preserves the canonical
+lowercase kebab ID, and lower non-negative finite numbers are stronger. Unknown roles cannot become primary. Equal precedence keeps
 the first assigned role.
 
 ```ts
-ciResolvePrimaryRole(["USER", "ADMIN"]); // "ADMIN"
+ciResolvePrimaryRole(["user", "admin"]); // "admin"
 
-ciResolvePrimaryRole(
-  ["viewer", "owner"],
-  { VIEWER: 50, OWNER: 10 },
-); // "OWNER"
+ciResolvePrimaryRole(["viewer", "owner"], { viewer: 50, owner: 10 }); // "owner"
 ```
 
 Primary role selection does not create inheritance or discard other memberships. The authorizer evaluates all

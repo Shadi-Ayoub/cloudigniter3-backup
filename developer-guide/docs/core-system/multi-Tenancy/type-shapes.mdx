@@ -129,12 +129,12 @@ Key traits:
 ```ts title="TenantDdbTableItem type"
 export type TenantDdbTableItem = TenantBase & {
   /**
-   * DynamoDB keys (single-table design).
-   * Note: your table may use either:
-   * - PK="TENANT#<id>", SK="META"
-   * - or PK="TENANT", SK="TENANT#<id>"
+   * DynamoDB keys in the System bounded-context table.
+   * Build these with ciBuildTableKeys(), for example:
+   * - PK="CI#SYSTEM#TENANT#<id>", SK="CI#META"
    *
-   * Always follow the implementation of the server utility you are using.
+   * The provider owns the access-pattern segments; packages/core owns the
+   * namespace and key-construction rules.
    */
   PK: string;
   SK: string;
@@ -172,6 +172,7 @@ export type TenantDdbTableItem = TenantBase & {
 
 - Do not pass `TenantDdbTableItem` into React components.
 - Do not expose `PK`/`SK` in public API contracts unless you are building an admin-only internal tool.
+- Do not construct the keys manually; use `ciBuildTableKeys()` from `@cloudigniter/core/lib`.
 - Always map this type to `Tenant` (domain) or `TenantHtmlTableRow` (UI list) before returning it from
   app-facing functions.
 

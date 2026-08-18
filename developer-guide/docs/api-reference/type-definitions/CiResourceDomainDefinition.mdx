@@ -1,0 +1,66 @@
+---
+title: CiResourceDomainDefinition
+description: Define an authorization resource domain and its active or suspended lifecycle state.
+sidebar_position: 3
+---
+
+# `CiResourceDomainDefinition`
+
+`CiResourceDomainDefinition` is the provider-neutral catalog contract for a group of related authorization
+resources. Import it and its status contracts from the core public types entry point:
+
+```ts
+import type {
+  CiResourceDomainDefinition,
+  CiResourceDomainStatus,
+  CiResourceDomainStatusChange,
+} from "@cloudigniter/core/types";
+```
+
+```ts
+type CiResourceDomainStatus = "active" | "suspended";
+
+type CiResourceDomainStatusChange = {
+  changedAt: string;
+  changedBy: string;
+  reason: string;
+};
+
+type CiResourceDomainDefinition = {
+  id: string;
+  title: string;
+  description?: string;
+  status?: CiResourceDomainStatus;
+  statusChange?: CiResourceDomainStatusChange;
+};
+```
+
+| Field          | Required    | Meaning                                                                                         |
+| -------------- | ----------- | ----------------------------------------------------------------------------------------------- |
+| `id`           | Yes         | Stable lowercase kebab identifier beginning with a letter.                                      |
+| `title`        | Yes         | Human-readable domain name used in administration UI.                                           |
+| `description`  | No          | Explanation of the resources grouped by the domain.                                             |
+| `status`       | No          | Runtime availability. Omitted status is treated as `active`.                                    |
+| `statusChange` | Conditional | Actor, ISO timestamp, and non-empty reason for the latest transition; required while suspended. |
+
+```ts
+const billingDomain = {
+  id: "billing-operations",
+  title: "Billing operations",
+  description: "Invoices, payment methods, and billing approvals.",
+  status: "suspended",
+  statusChange: {
+    changedAt: "2026-08-18T09:30:00.000Z",
+    changedBy: "incident-commander",
+    reason: "Pause billing authorization during the controls review.",
+  },
+} satisfies CiResourceDomainDefinition;
+```
+
+A suspended domain remains in the catalog, but the authorizer denies every resource in it with the
+`suspended-domain` decision reason before evaluating actions, scopes, or privileges. Restoration preserves the
+same stable domain and resource relationships. The `platform` core domain is protected from suspension because
+it contains the administration recovery path.
+
+See [Catalog and Permission Design](/docs/core-system/authorization/catalog-and-permissions) and
+[`CiSecurityDataPage`](../components/ci-security-data-page.mdx).

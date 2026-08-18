@@ -1,23 +1,32 @@
 ---
 title: DynamoDB Table Structure
+description: Store tenant and Org Unit control-plane records in CloudIgniter's bounded-context System table.
 sidebar_position: 5
 ---
 
 # DynamoDB Table Structure
 
-CloudIgniter uses a **single-table design** for system-level entities.
+CloudIgniter uses one table per security and operational bounded context. The `System` table uses single-table
+modeling for related control-plane entities; it is not a shared table for every CloudIgniter capability.
+
+Authorization roles, privileges, and assignments remain in the dedicated `EmberguardAccess` table. User
+profiles and data with different public/private access, lifecycle, throughput, stream, or restore requirements
+remain in their appropriate boundaries. See the
+[DynamoDB bounded-context strategy](/company-developers/persistence/dynamodb-strategy).
 
 ### System Table Overview
 
 Example table name: `System`
 
-The table stores:
+The table stores related control-plane records such as:
 
 - Tenants
-- Roles
-- Permissions
-- Settings
-- Relationships
+- Org Units
+- tenant/Org Unit relationships
+- system metadata with the same administrative and operational boundary
+
+Do not add roles, permissions, public settings, profiles, or sustained audit events to this table merely to
+reduce table count.
 
 ### Tenant Item Shape
 
@@ -26,14 +35,14 @@ A tenant is stored as a single DynamoDB item.
 **Primary Keys**
 
 ```text
-PK = TENANT#<tenantId>
-SK = META
+PK = CI#SYSTEM#TENANT#<tenantId>
+SK = CI#META
 ```
 
 ```json title="Example Item"
 {
-  "PK": "TENANT#school-abu-dhabi",
-  "SK": "META",
+  "PK": "CI#SYSTEM#TENANT#school-abu-dhabi",
+  "SK": "CI#META",
   "id": "school-abu-dhabi",
   "type": "TENANT",
   "status": "active",
@@ -55,9 +64,15 @@ SK = META
 
 ### Access Patterns
 
-| Use Case             | Key Pattern                                      |
-| -------------------- | ------------------------------------------------ |
-| Get tenant by ID     | `PK = TENANT#<id>`                               |
-| List all tenants     | `PK begins_with TENANT#` (via GSI or scan tools) |
-| Update tenant status | `PK + SK = META`                                 |
-| Audit/tracing        | Logged separately, never embedded                |
+| Use Case             | Key Pattern                                                      |
+| -------------------- | ---------------------------------------------------------------- |
+| Get tenant by ID     | Exact `PK = CI#SYSTEM#TENANT#<id>` and `SK = CI#META`            |
+| List tenants         | A named, paginated tenant-list index or materialized collection  |
+| Update tenant status | Exact key plus a condition on the current version or state       |
+| Audit/tracing        | A separate audit/event boundary when retention or volume differs |
+
+Never implement tenant listing with a request-path table scan. Define the access pattern and index projection
+before adding the index, including its storage and write-amplification cost.
+
+All PK, SK, and index keys must use the public core table-key helpers described in the
+[CloudIgniter table-key convention](/docs/library/dynamodb/table-key-convention).

@@ -75,12 +75,29 @@ Use `packages/next` when a component intrinsically depends on Next.js navigation
 Own application composition:
 
 - framework entry points including `next.config.ts` and `proxy.ts`;
-- application CloudIgniter configuration and route definitions;
+- application CloudIgniter configuration and thin route composition, with application route definitions under `src/custom`;
 - provider selection;
 - custom locale registries and overrides;
-- pages, layouts, and application-specific adapters/content.
+- core/default pages and layouts; application-specific adapters/content use the explicit custom seams.
+
+Treat the list above as responsibility, not permission to mix ownership in one file. Application-owned route definitions/adapters/content use the custom seams below; root entry points and default system pages remain template core.
 
 The template should demonstrate consumption of package APIs. When an app-local implementation is reusable, extract the behavior before integrating it.
+
+Within the template, CloudIgniter owns core entry points/default composition and application developers own only `amplify/custom/**`, `src/custom/**`, and scoped `(ci-custom)` page trees. Root route, Amplify data, and Amplify backend files may remain thin core-managed bridges that strictly compose custom registries/hooks. Do not put user business logic in those bridges or allow duplicate custom keys to override core.
+
+Application-facing generators retain ownership only over their registered entity folders and generated registries inside the custom seams. A collision with core, manual custom, another generated resource, or an unregistered path is an error, not a precedence rule. See [template-core-custom-boundary.md](template-core-custom-boundary.md).
+
+### `packages/cli`
+
+Own reusable command-line product behavior:
+
+- the public `ci` executable for application and system operations;
+- the workspace-gated `ci-dev` executable for maintainers;
+- command parsing, help, prompts, terminal feedback, error normalization, and subprocess policy;
+- reusable package build and quality workers and tooling exports.
+
+Keep application/provider configuration in the target application and package-specific build configuration in the package it configures. Resolve provider APIs from the target application rather than making the generic CLI depend on a provider package.
 
 ## Ownership decision table
 
@@ -92,6 +109,7 @@ The template should demonstrate consumption of package APIs. When an app-local i
 | Uses AWS/Cognito/Amplify-specific APIs or structures?                     | `packages/aws`        |
 | Reusable presentation with no application knowledge?                      | `packages/ui`         |
 | Selects, configures, or composes capabilities for this application?       | `apps/template`       |
+| Reusable command parsing, terminal UX, subprocess, or workspace tooling?   | `packages/cli`        |
 
 If a feature spans rows, split it across layers rather than assigning the entire feature to the first file that needs it.
 

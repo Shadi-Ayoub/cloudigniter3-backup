@@ -19,10 +19,12 @@ import { ciAssertValidAccessControlDefinition } from "./ci-validate-access-contr
 /** Returns whether a time-bounded grant is active at the supplied instant. */
 function isGrantActive(
   grant: { validFrom?: string; expiresAt?: string },
-  now: number,
+  now: number
 ): boolean {
-  const validFrom = grant.validFrom === undefined ? null : Date.parse(grant.validFrom);
-  const expiresAt = grant.expiresAt === undefined ? null : Date.parse(grant.expiresAt);
+  const validFrom =
+    grant.validFrom === undefined ? null : Date.parse(grant.validFrom);
+  const expiresAt =
+    grant.expiresAt === undefined ? null : Date.parse(grant.expiresAt);
 
   if (validFrom !== null && (!Number.isFinite(validFrom) || now < validFrom)) {
     return false;
@@ -32,7 +34,9 @@ function isGrantActive(
 }
 
 /** Orders matching evidence deterministically for logs, tests, and admin tooling. */
-function sortMatches(matches: readonly CiAuthorizationMatch[]): CiAuthorizationMatch[] {
+function sortMatches(
+  matches: readonly CiAuthorizationMatch[]
+): CiAuthorizationMatch[] {
   return [...matches].sort((left, right) => {
     if (left.source !== right.source) {
       return left.source === "direct" ? -1 : 1;
@@ -56,7 +60,7 @@ function sortMatches(matches: readonly CiAuthorizationMatch[]): CiAuthorizationM
 /** Creates a consistent deny result for a non-policy authorization failure. */
 function deny(
   reason: CiAuthorizationDecision["reason"],
-  evaluatedRoleIds: readonly string[] = [],
+  evaluatedRoleIds: readonly string[] = []
 ): CiAuthorizationDecision {
   return {
     allowed: false,
@@ -71,7 +75,7 @@ function deny(
 /** Selects the privilege evidence that determines the final result. */
 function selectDecidingMatches(
   matches: readonly CiAuthorizationMatch[],
-  algorithm: NonNullable<CiAuthorizerOptions["combiningAlgorithm"]>,
+  algorithm: NonNullable<CiAuthorizerOptions["combiningAlgorithm"]>
 ): readonly CiAuthorizationMatch[] {
   if (algorithm === "deny-overrides") {
     const denies = matches.filter((match) => match.privilege.effect === "deny");
@@ -81,12 +85,15 @@ function selectDecidingMatches(
   }
 
   const highestPrecedence = Math.min(
-    ...matches.map((match) => match.precedence ?? Number.NEGATIVE_INFINITY),
+    ...matches.map((match) => match.precedence ?? Number.NEGATIVE_INFINITY)
   );
   const highestTier = matches.filter(
-    (match) => (match.precedence ?? Number.NEGATIVE_INFINITY) === highestPrecedence,
+    (match) =>
+      (match.precedence ?? Number.NEGATIVE_INFINITY) === highestPrecedence
   );
-  const denies = highestTier.filter((match) => match.privilege.effect === "deny");
+  const denies = highestTier.filter(
+    (match) => match.privilege.effect === "deny"
+  );
 
   return denies.length > 0
     ? denies
@@ -95,14 +102,14 @@ function selectDecidingMatches(
 
 /** Compiles inherited privileges once for efficient repeated checks. */
 function compileRolePrivileges(
-  roles: ReadonlyMap<string, CiRoleDefinition>,
+  roles: ReadonlyMap<string, CiRoleDefinition>
 ): ReadonlyMap<string, readonly CiResolvedRolePrivilege[]> {
   const compiled = new Map<string, readonly CiResolvedRolePrivilege[]>();
 
   /** Resolves one role and all of its inherited privilege declarations. */
   function resolve(
     roleId: string,
-    visiting: ReadonlySet<string>,
+    visiting: ReadonlySet<string>
   ): readonly CiResolvedRolePrivilege[] {
     const cached = compiled.get(roleId);
 
@@ -116,15 +123,17 @@ function compileRolePrivileges(
 
     const role = roles.get(roleId);
 
-    if (!role) {
+    if (!role || role.status === "suspended") {
       return [];
     }
 
     const nextVisiting = new Set(visiting).add(roleId);
-    const privileges: CiResolvedRolePrivilege[] = role.privileges.map((privilege) => ({
-      privilege,
-      privilegeRoleId: role.id,
-    }));
+    const privileges: CiResolvedRolePrivilege[] = role.privileges.map(
+      (privilege) => ({
+        privilege,
+        privilegeRoleId: role.id,
+      })
+    );
 
     for (const inheritedRoleId of role.inherits ?? []) {
       privileges.push(...resolve(inheritedRoleId, nextVisiting));
@@ -142,7 +151,10 @@ function compileRolePrivileges(
 }
 
 /** Checks whether one privilege applies to the requested resource/action/scope. */
-function privilegeMatches(privilege: CiPrivilege, request: CiAuthorizationRequest): boolean {
+function privilegeMatches(
+  privilege: CiPrivilege,
+  request: CiAuthorizationRequest
+): boolean {
   return (
     privilege.scopeKinds.includes(request.scope.kind) &&
     ciMatchesAuthorizationPattern(privilege.resource, request.resource) &&
@@ -160,13 +172,18 @@ function privilegeMatches(privilege: CiPrivilege, request: CiAuthorizationReques
  */
 export function ciCreateAuthorizer(
   definition: CiAccessControlDefinition,
-  options: CiAuthorizerOptions = {},
+  options: CiAuthorizerOptions = {}
 ): CiAuthorizer {
   if (options.validateDefinition !== false) {
     ciAssertValidAccessControlDefinition(definition);
   }
 
-  const resources = new Map(definition.resources.map((resource) => [resource.id, resource]));
+  const resources = new Map(
+    definition.resources.map((resource) => [resource.id, resource])
+  );
+  const domains = new Map(
+    definition.domains.map((domain) => [domain.id, domain])
+  );
   const roles = new Map(definition.roles.map((role) => [role.id, role]));
   const compiledRolePrivileges = compileRolePrivileges(roles);
   const algorithm = options.combiningAlgorithm ?? "deny-overrides";
@@ -178,6 +195,10 @@ export function ciCreateAuthorizer(
 
     if (!resource) {
       return deny("unknown-resource");
+    }
+
+    if (domains.get(resource.domainId)?.status === "suspended") {
+      return deny("suspended-domain");
     }
 
     if (!resource.actions.some((action) => action.id === request.action)) {
@@ -195,6 +216,7 @@ export function ciCreateAuthorizer(
     const now = clock().getTime();
     const evaluatedRoleIds: string[] = [];
     const matches: CiAuthorizationMatch[] = [];
+    let hasSuspendedScopedRole = false;
 
     for (const assignment of request.subject.roleAssignments) {
       const role = roles.get(assignment.roleId);
@@ -202,8 +224,17 @@ export function ciCreateAuthorizer(
       if (
         !role ||
         !isGrantActive(assignment, now) ||
-        !ciAccessScopeContains(assignment.scope, request.scope, assignment.propagation)
+        !ciAccessScopeContains(
+          assignment.scope,
+          request.scope,
+          assignment.propagation
+        )
       ) {
+        continue;
+      }
+
+      if (role.status === "suspended") {
+        hasSuspendedScopedRole = true;
         continue;
       }
 
@@ -233,7 +264,7 @@ export function ciCreateAuthorizer(
         !ciAccessScopeContains(
           directPrivilege.scope,
           request.scope,
-          directPrivilege.propagation,
+          directPrivilege.propagation
         ) ||
         !privilegeMatches(directPrivilege.privilege, request)
       ) {
@@ -257,19 +288,25 @@ export function ciCreateAuthorizer(
             ciAccessScopeContains(
               directPrivilege.scope,
               request.scope,
-              directPrivilege.propagation,
-            ),
+              directPrivilege.propagation
+            )
         );
 
       return deny(
-        hasScopedGrant ? "no-matching-privilege" : "no-role-assignment",
-        evaluatedRoleIds,
+        hasScopedGrant
+          ? "no-matching-privilege"
+          : hasSuspendedScopedRole
+          ? "suspended-role"
+          : "no-role-assignment",
+        evaluatedRoleIds
       );
     }
 
     const sortedMatches = sortMatches(matches);
     const decidingMatches = selectDecidingMatches(sortedMatches, algorithm);
-    const allowed = decidingMatches.every((match) => match.privilege.effect === "allow");
+    const allowed = decidingMatches.every(
+      (match) => match.privilege.effect === "allow"
+    );
 
     return {
       allowed,
@@ -295,7 +332,7 @@ export function ciCreateAuthorizer(
           subject: request.subject,
           scope: request.scope,
           ...requirement,
-        }),
+        })
       )
     );
   }
@@ -309,7 +346,7 @@ export function ciCreateAuthorizer(
           subject: request.subject,
           scope: request.scope,
           ...requirement,
-        }),
+        })
       )
     );
   }
@@ -331,7 +368,7 @@ export function ciCreateAuthorizer(
  */
 export function ciCreateAppAuthorizer(
   definition: CiAccessControlDefinition = CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
-  options: CiAuthorizerOptions = {},
+  options: CiAuthorizerOptions = {}
 ): CiAuthorizer {
   return ciCreateAuthorizer(definition, options);
 }
@@ -340,7 +377,7 @@ export function ciCreateAppAuthorizer(
 export function ciAuthorize(
   request: CiAuthorizationRequest,
   definition: CiAccessControlDefinition,
-  options: CiAuthorizerOptions = {},
+  options: CiAuthorizerOptions = {}
 ): CiAuthorizationDecision {
   return ciCreateAuthorizer(definition, options).authorize(request);
 }
@@ -349,7 +386,7 @@ export function ciAuthorize(
 export function ciCan(
   request: CiAuthorizationRequest,
   definition: CiAccessControlDefinition,
-  options: CiAuthorizerOptions = {},
+  options: CiAuthorizerOptions = {}
 ): boolean {
   return ciCreateAuthorizer(definition, options).can(request);
 }
@@ -358,7 +395,7 @@ export function ciCan(
 export function ciCanAny(
   request: CiAuthorizationBatchRequest,
   definition: CiAccessControlDefinition,
-  options: CiAuthorizerOptions = {},
+  options: CiAuthorizerOptions = {}
 ): boolean {
   return ciCreateAuthorizer(definition, options).canAny(request);
 }
@@ -367,7 +404,7 @@ export function ciCanAny(
 export function ciCanAll(
   request: CiAuthorizationBatchRequest,
   definition: CiAccessControlDefinition,
-  options: CiAuthorizerOptions = {},
+  options: CiAuthorizerOptions = {}
 ): boolean {
   return ciCreateAuthorizer(definition, options).canAll(request);
 }

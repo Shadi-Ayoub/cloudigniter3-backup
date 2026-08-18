@@ -28,6 +28,7 @@ import type { CiDataConfig } from "./CiDataConfig";
 export type CiCoreConfig = {
   request: CiRequestConfig;
 
+  /** Authentication UI/provider and EmberGuard authorization configuration. */
   auth: CiAuthConfig;
 
   data: CiDataConfig;

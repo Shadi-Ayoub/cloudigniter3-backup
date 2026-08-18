@@ -1,6 +1,6 @@
 ---
 title: ciValidateAccessControlDefinition
-package: "@cloudigniter/emberguard"
+package: "@cloudigniter/core"
 availability: Shared
 sidebar_position: 5
 ---
@@ -14,12 +14,14 @@ administration tooling that needs to display every problem at once.
 
 ```ts
 function ciValidateAccessControlDefinition(
-  definition: CiAccessControlDefinition,
+  definition: CiAccessControlDefinition
 ): readonly CiAccessControlValidationIssue[];
 ```
 
 Each issue contains `severity`, `code`, `path`, and `message`. Errors include malformed or duplicate IDs,
-unknown references, empty action/scope lists, invalid precedence, unsupported scopes, and inheritance cycles.
+missing or blank privilege titles, unknown references, empty action/scope lists, invalid precedence, unsupported
+scopes, and inheritance cycles. Domain, action, privilege, and every role ID—including core roles—must use
+lowercase kebab case and start with a letter. Resource IDs may use lowercase dotted capability segments.
 A broad `*` resource plus `*` action produces a reviewable warning rather than an error.
 
 ```ts

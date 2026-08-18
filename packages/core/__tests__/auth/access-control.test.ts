@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  CI_ACCESS_CONTROL_KEBAB_IDENTIFIER_PATTERN,
+  CI_CORE_ROLES_BY_PRECEDENCE,
   CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
   ciApplyCoreAccessControlOverrides,
   ciCanAll,
@@ -22,12 +24,14 @@ import {
   ciGlobalAccessScope,
   ciGetAccessControlEntryOrigin,
   ciIsCoreAccessControlEntry,
+  ciIsAccessControlKebabIdentifier,
   ciMatchesAuthorizationPattern,
   ciMatchesPermission,
   ciMergeAccessControlDefinitions,
   ciOrgUnitAccessScope,
   ciParsePermission,
   ciResolveIdentityGroupRoles,
+  ciResolvePrimaryRole,
   ciSystemAccessScope,
   ciTenantAccessScope,
   ciValidateAccessControlDefinition,
@@ -35,7 +39,9 @@ import {
 import type {
   CiAccessControlDefinition,
   CiAuthorizationSubject,
+  CiEmberguardConfig,
   CiPrivilege,
+  CiRoleDefinition,
 } from "@ci-core/types";
 
 const definition = ciDefineAccessControl({
@@ -74,6 +80,7 @@ const definition = ciDefineAccessControl({
       privileges: [
         {
           id: "read-users",
+          title: "Read users",
           effect: "allow",
           resource: "identity.users",
           action: "read",
@@ -89,6 +96,7 @@ const definition = ciDefineAccessControl({
       privileges: [
         {
           id: "update-users",
+          title: "Update users",
           effect: "allow",
           resource: "identity.users",
           action: "update",
@@ -103,6 +111,7 @@ const definition = ciDefineAccessControl({
       privileges: [
         {
           id: "deny-user-updates",
+          title: "Deny user updates",
           effect: "deny",
           resource: "identity.users",
           action: "update",
@@ -117,6 +126,7 @@ const definition = ciDefineAccessControl({
       privileges: [
         {
           id: "all-access",
+          title: "All access",
           effect: "allow",
           resource: "*",
           action: "*",
@@ -127,6 +137,64 @@ const definition = ciDefineAccessControl({
   ],
 } as const satisfies CiAccessControlDefinition);
 
+test("exposes access-control kebab identifier validation through core", () => {
+  assert.equal(
+    CI_ACCESS_CONTROL_KEBAB_IDENTIFIER_PATTERN,
+    "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+  );
+  assert.equal(ciIsAccessControlKebabIdentifier("invoice-approver"), true);
+  assert.equal(ciIsAccessControlKebabIdentifier("2_invoice approver"), false);
+});
+
+test("exposes lowercase kebab IDs for every core role", () => {
+  assert.deepEqual(CI_CORE_ROLES_BY_PRECEDENCE, [
+    "system-super-admin",
+    "system-admin",
+    "super-admin",
+    "admin",
+    "developer",
+    "user",
+  ]);
+  assert.equal(ciResolvePrimaryRole(["user", "admin"]), "admin");
+  assert.equal(ciResolvePrimaryRole(["ADMIN"]), null);
+  assert.throws(
+    () => ciCreateRoleAssignment("ADMIN", ciSystemAccessScope(), "exact"),
+    /lowercase kebab case/
+  );
+});
+
+test("rejects non-kebab role and privilege IDs through the core validator", () => {
+  const invalidIdentifiers = {
+    ...definition,
+    roles: [
+      {
+        ...definition.roles[0],
+        id: "2_InvoiceApprover",
+        privileges: [
+          { ...definition.roles[0].privileges[0], id: "Read Invoices" },
+        ],
+      },
+    ],
+  } satisfies CiAccessControlDefinition;
+  const issues = ciValidateAccessControlDefinition(invalidIdentifiers);
+
+  assert.equal(
+    issues.some(
+      (issue) =>
+        issue.code === "invalid-identifier" && issue.path === "roles[0].id"
+    ),
+    true
+  );
+  assert.equal(
+    issues.some(
+      (issue) =>
+        issue.code === "invalid-identifier" &&
+        issue.path === "roles[0].privileges[0].id"
+    ),
+    true
+  );
+});
+
 /** Creates the minimal authenticated user used by subject adapter tests. */
 function authenticatedUser(): { id: string; authenticated: true } {
   return { id: "user-1", authenticated: true };
@@ -135,30 +203,60 @@ function authenticatedUser(): { id: string; authenticated: true } {
 /** Creates an authorization subject from a list of role assignments. */
 function subject(
   roleAssignments: CiAuthorizationSubject["roleAssignments"],
-  directPrivileges: CiAuthorizationSubject["directPrivileges"] = [],
+  directPrivileges: CiAuthorizationSubject["directPrivileges"] = []
 ): CiAuthorizationSubject {
-  return ciCreateAuthorizationSubject(authenticatedUser(), roleAssignments, directPrivileges);
+  return ciCreateAuthorizationSubject(
+    authenticatedUser(),
+    roleAssignments,
+    directPrivileges
+  );
 }
 
 test("formats, parses, and matches dot-delimited permissions", () => {
-  assert.equal(ciFormatPermission("identity.users", "read"), "identity.users.read");
+  assert.equal(
+    ciFormatPermission("identity.users", "read"),
+    "identity.users.read"
+  );
   assert.deepEqual(ciParsePermission("identity.users.read"), {
     resource: "identity.users",
     action: "read",
   });
-  assert.equal(ciMatchesPermission("identity.*.*", "identity.users.delete"), true);
-  assert.equal(ciMatchesPermission("forum.posts.*", "forum.posts.comments.delete"), true);
-  assert.equal(ciMatchesPermission("identity.users.read", "identity.users.update"), false);
-  assert.equal(ciMatchesAuthorizationPattern("identity.*", "identity.users.profile"), true);
-  assert.equal(ciMatchesAuthorizationPattern("identity.*.read", "identity.users.read"), true);
-  assert.equal(ciMatchesAuthorizationPattern("identity.*.read", "identity.users.profile.read"), false);
+  assert.equal(
+    ciMatchesPermission("identity.*.*", "identity.users.delete"),
+    true
+  );
+  assert.equal(
+    ciMatchesPermission("forum.posts.*", "forum.posts.comments.delete"),
+    true
+  );
+  assert.equal(
+    ciMatchesPermission("identity.users.read", "identity.users.update"),
+    false
+  );
+  assert.equal(
+    ciMatchesAuthorizationPattern("identity.*", "identity.users.profile"),
+    true
+  );
+  assert.equal(
+    ciMatchesAuthorizationPattern("identity.*.read", "identity.users.read"),
+    true
+  );
+  assert.equal(
+    ciMatchesAuthorizationPattern(
+      "identity.*.read",
+      "identity.users.profile.read"
+    ),
+    false
+  );
 });
 
 test("inherits role privileges and propagates a tenant assignment to Org Units", () => {
   const authorizer = ciCreateAuthorizer(definition);
   const tenant = ciTenantAccessScope("tenant-a");
   const orgUnit = ciOrgUnitAccessScope("tenant-a", "finance");
-  const actor = subject([ciCreateRoleAssignment("editor", tenant, "descendants")]);
+  const actor = subject([
+    ciCreateRoleAssignment("editor", tenant, "descendants"),
+  ]);
 
   const inherited = authorizer.authorize({
     subject: actor,
@@ -177,7 +275,98 @@ test("inherits role privileges and propagates a tenant assignment to Org Units",
       action: "update",
       scope: orgUnit,
     }),
-    true,
+    true
+  );
+});
+
+test("suspended roles grant no access and interrupt inherited privileges", () => {
+  const suspendedDefinition: CiAccessControlDefinition = {
+    ...definition,
+    roles: definition.roles.map((role) =>
+      role.id === "viewer"
+        ? {
+            ...role,
+            status: "suspended" as const,
+            statusChange: {
+              changedAt: "2026-08-12T08:00:00.000Z",
+              changedBy: "incident-commander",
+              reason: "Investigating compromised viewer credentials.",
+            },
+          }
+        : role
+    ),
+  };
+  const authorizer = ciCreateAuthorizer(suspendedDefinition);
+  const tenant = ciTenantAccessScope("tenant-a");
+
+  const suspendedDecision = authorizer.authorize({
+    subject: subject([ciCreateRoleAssignment("viewer", tenant, "descendants")]),
+    resource: "identity.users",
+    action: "read",
+    scope: tenant,
+  });
+  assert.equal(suspendedDecision.allowed, false);
+  assert.equal(suspendedDecision.reason, "suspended-role");
+  assert.deepEqual(suspendedDecision.evaluatedRoleIds, []);
+
+  const editor = subject([
+    ciCreateRoleAssignment("editor", tenant, "descendants"),
+  ]);
+  assert.equal(
+    authorizer.can({
+      subject: editor,
+      resource: "identity.users",
+      action: "update",
+      scope: tenant,
+    }),
+    true
+  );
+  assert.equal(
+    authorizer.authorize({
+      subject: editor,
+      resource: "identity.users",
+      action: "read",
+      scope: tenant,
+    }).reason,
+    "no-matching-privilege"
+  );
+});
+
+test("suspended resource domains deny every resource while preserving the catalog", () => {
+  const suspendedDefinition: CiAccessControlDefinition = {
+    ...definition,
+    domains: definition.domains.map((domain) =>
+      domain.id === "identity"
+        ? {
+            ...domain,
+            status: "suspended" as const,
+            statusChange: {
+              changedAt: "2026-08-18T08:00:00.000Z",
+              changedBy: "incident-commander",
+              reason: "Contain identity operations during an incident.",
+            },
+          }
+        : domain
+    ),
+  };
+  const authorizer = ciCreateAuthorizer(suspendedDefinition);
+  const tenant = ciTenantAccessScope("tenant-a");
+  const decision = authorizer.authorize({
+    subject: subject([
+      ciCreateRoleAssignment("editor", tenant, "descendants"),
+    ]),
+    resource: "identity.users",
+    action: "update",
+    scope: tenant,
+  });
+
+  assert.equal(decision.allowed, false);
+  assert.equal(decision.reason, "suspended-domain");
+  assert.equal(
+    suspendedDefinition.resources.some(
+      (resource) => resource.id === "identity.users"
+    ),
+    true
   );
 });
 
@@ -210,7 +399,7 @@ test("propagates Org Unit grants only through the supplied ancestor chain", () =
     ciCreateRoleAssignment(
       "viewer",
       ciOrgUnitAccessScope("tenant-a", "division"),
-      "descendants",
+      "descendants"
     ),
   ]);
 
@@ -221,7 +410,7 @@ test("propagates Org Unit grants only through the supplied ancestor chain", () =
       action: "read",
       scope: ciOrgUnitAccessScope("tenant-a", "team", ["division"]),
     }),
-    true,
+    true
   );
   assert.equal(
     authorizer.can({
@@ -230,7 +419,7 @@ test("propagates Org Unit grants only through the supplied ancestor chain", () =
       action: "read",
       scope: ciOrgUnitAccessScope("tenant-a", "other-team", ["other-division"]),
     }),
-    false,
+    false
   );
 });
 
@@ -246,11 +435,17 @@ test("uses deny-overrides by default and can use highest role precedence", () =>
     action: "update",
     scope: tenant,
   } as const;
+  const emberguardConfig = {
+    accessControl: {
+      combiningAlgorithm: "highest-precedence",
+    },
+  } as const satisfies CiEmberguardConfig;
 
   const safeDecision = ciCreateAuthorizer(definition).authorize(request);
-  const precedenceDecision = ciCreateAuthorizer(definition, {
-    combiningAlgorithm: "highest-precedence",
-  }).authorize(request);
+  const precedenceDecision = ciCreateAuthorizer(
+    definition,
+    emberguardConfig.accessControl
+  ).authorize(request);
 
   assert.equal(safeDecision.allowed, false);
   assert.equal(safeDecision.reason, "explicit-deny");
@@ -262,6 +457,7 @@ test("treats direct privileges as the highest tier in precedence mode", () => {
   const tenant = ciTenantAccessScope("tenant-a");
   const directAllow: CiPrivilege = {
     id: "temporary-update-exception",
+    title: "Temporary update exception",
     effect: "allow",
     resource: "identity.users",
     action: "update",
@@ -269,7 +465,7 @@ test("treats direct privileges as the highest tier in precedence mode", () => {
   };
   const actor = subject(
     [ciCreateRoleAssignment("blocked-editor", tenant, "exact")],
-    [ciCreateScopedPrivilege(directAllow, tenant, "exact")],
+    [ciCreateScopedPrivilege(directAllow, tenant, "exact")]
   );
   const request = {
     subject: actor,
@@ -280,8 +476,10 @@ test("treats direct privileges as the highest tier in precedence mode", () => {
 
   assert.equal(ciCreateAuthorizer(definition).can(request), false);
   assert.equal(
-    ciCreateAuthorizer(definition, { combiningAlgorithm: "highest-precedence" }).can(request),
-    true,
+    ciCreateAuthorizer(definition, {
+      combiningAlgorithm: "highest-precedence",
+    }).can(request),
+    true
   );
 });
 
@@ -306,7 +504,7 @@ test("excludes expired and not-yet-active grants using an injectable clock", () 
       action: "read",
       scope: tenant,
     }).reason,
-    "no-role-assignment",
+    "no-role-assignment"
   );
 });
 
@@ -316,9 +514,13 @@ test("denies unknown requests and unauthenticated subjects by default", () => {
   const actor = subject([ciCreateRoleAssignment("viewer", tenant, "exact")]);
 
   assert.equal(
-    authorizer.authorize({ subject: actor, resource: "missing", action: "read", scope: tenant })
-      .reason,
-    "unknown-resource",
+    authorizer.authorize({
+      subject: actor,
+      resource: "missing",
+      action: "read",
+      scope: tenant,
+    }).reason,
+    "unknown-resource"
   );
   assert.equal(
     authorizer.authorize({
@@ -327,7 +529,7 @@ test("denies unknown requests and unauthenticated subjects by default", () => {
       action: "publish",
       scope: tenant,
     }).reason,
-    "unknown-action",
+    "unknown-action"
   );
   assert.equal(
     authorizer.authorize({
@@ -336,20 +538,28 @@ test("denies unknown requests and unauthenticated subjects by default", () => {
       action: "read",
       scope: tenant,
     }).reason,
-    "unauthenticated",
+    "unauthenticated"
   );
 });
 
 test("keeps system grants separate from global cross-tenant grants", () => {
   const authorizer = ciCreateAuthorizer(definition);
   const systemActor = subject([
-    ciCreateRoleAssignment("system-admin", ciSystemAccessScope(), "descendants"),
+    ciCreateRoleAssignment(
+      "system-admin",
+      ciSystemAccessScope(),
+      "descendants"
+    ),
   ]);
   const exactGlobalActor = subject([
     ciCreateRoleAssignment("system-admin", ciGlobalAccessScope(), "exact"),
   ]);
   const propagatedGlobalActor = subject([
-    ciCreateRoleAssignment("system-admin", ciGlobalAccessScope(), "descendants"),
+    ciCreateRoleAssignment(
+      "system-admin",
+      ciGlobalAccessScope(),
+      "descendants"
+    ),
   ]);
 
   assert.equal(
@@ -359,7 +569,7 @@ test("keeps system grants separate from global cross-tenant grants", () => {
       action: "update",
       scope: ciSystemAccessScope(),
     }),
-    true,
+    true
   );
   assert.equal(
     authorizer.can({
@@ -368,7 +578,7 @@ test("keeps system grants separate from global cross-tenant grants", () => {
       action: "delete",
       scope: ciTenantAccessScope("tenant-a"),
     }),
-    false,
+    false
   );
   assert.equal(
     authorizer.can({
@@ -377,7 +587,7 @@ test("keeps system grants separate from global cross-tenant grants", () => {
       action: "delete",
       scope: ciGlobalAccessScope(),
     }),
-    true,
+    true
   );
   assert.equal(
     authorizer.can({
@@ -386,7 +596,7 @@ test("keeps system grants separate from global cross-tenant grants", () => {
       action: "delete",
       scope: ciOrgUnitAccessScope("tenant-b", "finance"),
     }),
-    true,
+    true
   );
   assert.equal(
     authorizer.can({
@@ -395,7 +605,7 @@ test("keeps system grants separate from global cross-tenant grants", () => {
       action: "delete",
       scope: ciTenantAccessScope("tenant-a"),
     }),
-    false,
+    false
   );
   assert.equal(
     authorizer.can({
@@ -404,7 +614,7 @@ test("keeps system grants separate from global cross-tenant grants", () => {
       action: "delete",
       scope: ciTenantAccessScope("tenant-a"),
     }),
-    true,
+    true
   );
   assert.equal(
     authorizer.can({
@@ -413,7 +623,7 @@ test("keeps system grants separate from global cross-tenant grants", () => {
       action: "update",
       scope: ciSystemAccessScope(),
     }),
-    false,
+    false
   );
 });
 
@@ -426,20 +636,38 @@ test("supports any/all capability checks and rejects empty requirement batches",
     { resource: "identity.users", action: "update" },
   ];
 
-  assert.equal(authorizer.canAny({ subject: actor, scope: tenant, requirements }), true);
-  assert.equal(authorizer.canAll({ subject: actor, scope: tenant, requirements }), false);
-  assert.equal(authorizer.canAny({ subject: actor, scope: tenant, requirements: [] }), false);
-  assert.equal(authorizer.canAll({ subject: actor, scope: tenant, requirements: [] }), false);
-  assert.equal(ciCanAny({ subject: actor, scope: tenant, requirements }, definition), true);
-  assert.equal(ciCanAll({ subject: actor, scope: tenant, requirements }, definition), false);
+  assert.equal(
+    authorizer.canAny({ subject: actor, scope: tenant, requirements }),
+    true
+  );
+  assert.equal(
+    authorizer.canAll({ subject: actor, scope: tenant, requirements }),
+    false
+  );
+  assert.equal(
+    authorizer.canAny({ subject: actor, scope: tenant, requirements: [] }),
+    false
+  );
+  assert.equal(
+    authorizer.canAll({ subject: actor, scope: tenant, requirements: [] }),
+    false
+  );
+  assert.equal(
+    ciCanAny({ subject: actor, scope: tenant, requirements }, definition),
+    true
+  );
+  assert.equal(
+    ciCanAll({ subject: actor, scope: tenant, requirements }, definition),
+    false
+  );
 });
 
 test("returns structured validation errors and non-blocking wildcard warnings", () => {
   assert.equal(
     ciValidateAccessControlDefinition(definition).some(
-      (issue) => issue.code === "broad-wildcard" && issue.severity === "warning",
+      (issue) => issue.code === "broad-wildcard" && issue.severity === "warning"
     ),
-    true,
+    true
   );
 
   const invalid: CiAccessControlDefinition = {
@@ -460,44 +688,153 @@ test("returns structured validation errors and non-blocking wildcard warnings", 
   };
   const issues = ciValidateAccessControlDefinition(invalid);
 
-  assert.equal(issues.some((issue) => issue.code === "unknown-domain"), true);
-  assert.equal(issues.some((issue) => issue.code === "empty-list"), true);
-  assert.equal(issues.some((issue) => issue.code === "role-cycle"), true);
+  assert.equal(
+    issues.some((issue) => issue.code === "unknown-domain"),
+    true
+  );
+  assert.equal(
+    issues.some((issue) => issue.code === "empty-list"),
+    true
+  );
+  assert.equal(
+    issues.some((issue) => issue.code === "role-cycle"),
+    true
+  );
+
+  const untitledPrivilege = {
+    ...definition,
+    roles: definition.roles.map((role, index) =>
+      index === 0
+        ? {
+            ...role,
+            privileges: role.privileges.map((privilege, privilegeIndex) =>
+              privilegeIndex === 0 ? { ...privilege, title: " " } : privilege
+            ),
+          }
+        : role
+    ),
+  };
+  assert.equal(
+    ciValidateAccessControlDefinition(untitledPrivilege).some(
+      (issue) => issue.code === "invalid-title" && issue.path.endsWith(".title")
+    ),
+    true
+  );
+
+  const suspendedWithoutMetadata: CiAccessControlDefinition = {
+    ...definition,
+    roles: definition.roles.map((role, index) =>
+      index === 0 ? { ...role, status: "suspended" as const } : role
+    ),
+  };
+  assert.equal(
+    ciValidateAccessControlDefinition(suspendedWithoutMetadata).some(
+      (issue) => issue.code === "invalid-role-status"
+    ),
+    true
+  );
+
+  const suspendedPlatformDomain: CiAccessControlDefinition = {
+    ...definition,
+    domains: definition.domains.map((domain) =>
+      domain.id === "platform"
+        ? {
+            ...domain,
+            status: "suspended" as const,
+            statusChange: {
+              changedAt: "2026-08-18T10:00:00.000Z",
+              changedBy: "system-super-admin",
+              reason: "Unsafe recovery-path test.",
+            },
+          }
+        : domain
+    ),
+  };
+  assert.equal(
+    ciValidateAccessControlDefinition(suspendedPlatformDomain).some(
+      (issue) =>
+        issue.code === "invalid-domain-status" &&
+        issue.message.includes("recovery path")
+    ),
+    true
+  );
 });
 
 test("provides a valid default CloudIgniter access-control catalog", () => {
   const errors = ciValidateAccessControlDefinition(
-    CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
+    CI_DEFAULT_ACCESS_CONTROL_DEFINITION
   ).filter((issue) => issue.severity === "error");
 
   assert.deepEqual(errors, []);
   assert.equal(
     CI_DEFAULT_ACCESS_CONTROL_DEFINITION.roles.some(
-      (role) => role.id === "SYSTEM_SUPER_ADMIN" && role.precedence === 0,
+      (role) => role.id === "system-super-admin" && role.precedence === 0
     ),
-    true,
+    true
   );
   assert.equal(
     CI_DEFAULT_ACCESS_CONTROL_DEFINITION.resources.some(
-      (resource) => resource.id === "platform.authorization.core",
+      (resource) => resource.id === "platform.authorization.core"
     ),
-    true,
+    true
   );
   assert.equal(
     CI_DEFAULT_ACCESS_CONTROL_DEFINITION.resources
       .find((resource) => resource.id === "identity.users")
       ?.scopeKinds.includes("global"),
-    true,
+    true
   );
   assert.equal(
     CI_DEFAULT_ACCESS_CONTROL_DEFINITION.roles
-      .find((role) => role.id === "SYSTEM_SUPER_ADMIN")
-      ?.privileges.find((privilege) => privilege.id === "full-platform-access")
-      ?.scopeKinds.includes("global"),
-    true,
+      .find((role) => role.id === "system-super-admin")
+      ?.privileges.find(
+        (privilege) => privilege.id === "override-core-access-control"
+      )
+      ?.scopeKinds.includes("system"),
+    true
   );
   assert.equal(Object.isFrozen(CI_DEFAULT_ACCESS_CONTROL_DEFINITION), true);
-  assert.equal(Object.isFrozen(CI_DEFAULT_ACCESS_CONTROL_DEFINITION.roles), true);
+  assert.equal(
+    Object.isFrozen(CI_DEFAULT_ACCESS_CONTROL_DEFINITION.roles),
+    true
+  );
+});
+
+test("keeps technical and business core-role inheritance separate", () => {
+  const roles = new Map<string, CiRoleDefinition>(
+    CI_DEFAULT_ACCESS_CONTROL_DEFINITION.roles.map((role) => [role.id, role])
+  );
+  const technicalAdministrator = subject([
+    ciCreateRoleAssignment(
+      "system-admin",
+      ciGlobalAccessScope(),
+      "descendants"
+    ),
+  ]);
+  const authorizer = ciCreateAuthorizer(CI_DEFAULT_ACCESS_CONTROL_DEFINITION);
+
+  assert.deepEqual(roles.get("admin")?.inherits, ["user"]);
+  assert.deepEqual(roles.get("super-admin")?.inherits, ["admin"]);
+  assert.deepEqual(roles.get("system-admin")?.inherits, ["user"]);
+  assert.deepEqual(roles.get("system-super-admin")?.inherits, ["system-admin"]);
+  assert.equal(
+    authorizer.can({
+      subject: technicalAdministrator,
+      resource: "platform.dashboard",
+      action: "read",
+      scope: ciTenantAccessScope("tenant-a"),
+    }),
+    true
+  );
+  assert.equal(
+    authorizer.can({
+      subject: technicalAdministrator,
+      resource: "identity.users",
+      action: "update",
+      scope: ciTenantAccessScope("tenant-a"),
+    }),
+    false
+  );
 });
 
 test("extends core access control without redefining core entries", () => {
@@ -510,13 +847,14 @@ test("extends core access control without redefining core entries", () => {
     ],
     roles: [
       {
-        id: "APP_ADMIN",
+        id: "app-admin",
         title: "Application administrator",
         precedence: 25,
-        inherits: ["ADMIN"],
+        inherits: ["admin"],
         privileges: [
           {
             id: "suspend-users",
+            title: "Suspend users",
             effect: "allow",
             resource: "identity.users",
             action: "suspend",
@@ -528,16 +866,24 @@ test("extends core access control without redefining core entries", () => {
   } as const;
   const originalExtension = JSON.stringify(extension);
   const merged = ciCreateAppAccessControl(extension);
-  const users = merged.resources.find((resource) => resource.id === "identity.users");
-  const appAdmin = merged.roles.find((role) => role.id === "APP_ADMIN");
+  const users = merged.resources.find(
+    (resource) => resource.id === "identity.users"
+  );
+  const appAdmin = merged.roles.find((role) => role.id === "app-admin");
 
   assert.equal(users?.title, "User administration");
-  assert.equal(users?.actions.some((action) => action.id === "read"), true);
-  assert.equal(users?.actions.some((action) => action.id === "suspend"), true);
-  assert.deepEqual(appAdmin?.inherits, ["ADMIN"]);
+  assert.equal(
+    users?.actions.some((action) => action.id === "read"),
+    true
+  );
+  assert.equal(
+    users?.actions.some((action) => action.id === "suspend"),
+    true
+  );
+  assert.deepEqual(appAdmin?.inherits, ["admin"]);
   assert.equal(
     appAdmin?.privileges.some((privilege) => privilege.id === "suspend-users"),
-    true,
+    true
   );
   assert.equal(JSON.stringify(extension), originalExtension);
 });
@@ -548,14 +894,14 @@ test("rejects application collisions with core-owned entries", () => {
       ciCreateAppAccessControl({
         domains: [{ id: "platform", title: "Renamed platform" }],
       }),
-    /cannot override core domain/,
+    /cannot override core domain/
   );
   assert.throws(
     () =>
       ciCreateAppAccessControl({
         resources: [{ id: "identity.users", title: "People" }],
       }),
-    /cannot override core resource/,
+    /cannot override core resource/
   );
   assert.throws(
     () =>
@@ -567,14 +913,14 @@ test("rejects application collisions with core-owned entries", () => {
           },
         ],
       }),
-    /cannot override core action/,
+    /cannot override core action/
   );
   assert.throws(
     () =>
       ciCreateAppAccessControl({
-        roles: [{ id: "ADMIN", title: "Renamed administrator" }],
+        roles: [{ id: "admin", title: "Renamed administrator" }],
       }),
-    /cannot override core role/,
+    /cannot override core role/
   );
 });
 
@@ -592,27 +938,28 @@ test("allows later layers to refine only application-owned entries", () => {
       ],
       roles: [
         {
-          id: "REPORT_READER",
+          id: "report-reader",
           title: "Report reader",
           precedence: 45,
-          inherits: ["USER"],
+          inherits: ["user"],
           privileges: [],
         },
       ],
     },
     {
       resources: [{ id: "platform.reports", title: "Platform reports" }],
-      roles: [{ id: "REPORT_READER", title: "Platform report reader" }],
-    },
+      roles: [{ id: "report-reader", title: "Platform report reader" }],
+    }
   );
 
   assert.equal(
-    merged.resources.find((resource) => resource.id === "platform.reports")?.title,
-    "Platform reports",
+    merged.resources.find((resource) => resource.id === "platform.reports")
+      ?.title,
+    "Platform reports"
   );
   assert.equal(
-    merged.roles.find((role) => role.id === "REPORT_READER")?.title,
-    "Platform report reader",
+    merged.roles.find((role) => role.id === "report-reader")?.title,
+    "Platform report reader"
   );
 });
 
@@ -622,12 +969,13 @@ test("prevents application roles from acquiring the core override capability", (
       ciCreateAppAccessControl({
         roles: [
           {
-            id: "CORE_EDITOR",
+            id: "core-editor",
             title: "Core editor",
             precedence: 5,
             privileges: [
               {
                 id: "override-core",
+                title: "Override core access control",
                 effect: "allow",
                 resource: "platform.authorization.core",
                 action: "override",
@@ -637,29 +985,29 @@ test("prevents application roles from acquiring the core override capability", (
           },
         ],
       }),
-    /cannot grant the core override capability/,
+    /cannot grant the core override capability/
   );
   assert.throws(
     () =>
       ciCreateAppAccessControl({
         roles: [
           {
-            id: "INHERITED_SYSTEM_SUPER_ADMIN",
+            id: "inherited-system-super-admin",
             title: "Inherited system super administrator",
             precedence: 1,
-            inherits: ["SYSTEM_SUPER_ADMIN"],
+            inherits: ["system-super-admin"],
             privileges: [],
           },
         ],
       }),
-    /cannot inherit SYSTEM_SUPER_ADMIN/,
+    /cannot inherit system-super-admin/
   );
 });
 
 test("reports core ownership for future administration UIs", () => {
   assert.equal(
     ciIsCoreAccessControlEntry({ kind: "domain", domainId: "identity" }),
-    true,
+    true
   );
   assert.equal(
     ciIsCoreAccessControlEntry({
@@ -667,7 +1015,7 @@ test("reports core ownership for future administration UIs", () => {
       resourceId: "identity.users",
       actionId: "read",
     }),
-    true,
+    true
   );
   assert.equal(
     ciGetAccessControlEntryOrigin({
@@ -675,52 +1023,56 @@ test("reports core ownership for future administration UIs", () => {
       resourceId: "identity.users",
       actionId: "suspend",
     }),
-    "application",
+    "application"
   );
 });
 
 test("restricts audited core overrides to directly assigned system super administrators", () => {
   const systemScope = ciSystemAccessScope();
   const systemAdmin = subject([
-    ciCreateRoleAssignment("SYSTEM_ADMIN", systemScope, "exact"),
+    ciCreateRoleAssignment("system-admin", systemScope, "exact"),
   ]);
   const systemSuperAdmin = subject([
-    ciCreateRoleAssignment("SYSTEM_SUPER_ADMIN", systemScope, "exact"),
+    ciCreateRoleAssignment("system-super-admin", systemScope, "exact"),
   ]);
-  const directOverride = subject([], [
-    ciCreateScopedPrivilege(
-      {
-        id: "direct-core-override",
-        effect: "allow",
-        resource: "platform.authorization.core",
-        action: "override",
-        scopeKinds: ["system"],
-      },
-      systemScope,
-      "exact",
-    ),
-  ]);
+  const directOverride = subject(
+    [],
+    [
+      ciCreateScopedPrivilege(
+        {
+          id: "direct-core-override",
+          title: "Direct core access-control override",
+          effect: "allow",
+          resource: "platform.authorization.core",
+          action: "override",
+          scopeKinds: ["system"],
+        },
+        systemScope,
+        "exact"
+      ),
+    ]
+  );
 
   assert.equal(
     ciCanOverrideCoreAccessControl(
       systemAdmin,
-      CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
+      CI_DEFAULT_ACCESS_CONTROL_DEFINITION
     ),
-    false,
+    false
   );
   assert.equal(
     ciCanOverrideCoreAccessControl(
       directOverride,
-      CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
+      CI_DEFAULT_ACCESS_CONTROL_DEFINITION
     ),
-    false,
+    false
   );
   assert.equal(
     ciCanOverrideCoreAccessControl(
       systemSuperAdmin,
-      CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
+      CI_DEFAULT_ACCESS_CONTROL_DEFINITION
     ),
-    true,
+    true
   );
 
   assert.throws(
@@ -735,7 +1087,7 @@ test("restricts audited core overrides to directly assigned system super adminis
           domains: [{ id: "identity", title: "Identity directory" }],
         },
       }),
-    /Only a directly assigned SYSTEM_SUPER_ADMIN/,
+    /Only a directly assigned system-super-admin/
   );
 
   const override = ciCreateCoreAccessControlOverride(
@@ -749,11 +1101,11 @@ test("restricts audited core overrides to directly assigned system super adminis
         domains: [{ id: "identity", title: "Identity directory" }],
       },
     },
-    { clock: () => new Date("2026-08-05T12:00:00.000Z") },
+    { clock: () => new Date("2026-08-05T12:00:00.000Z") }
   );
   const resolved = ciApplyCoreAccessControlOverrides(
     CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
-    [override],
+    [override]
   );
 
   assert.equal(override.actorId, "user-1");
@@ -763,24 +1115,44 @@ test("restricts audited core overrides to directly assigned system super adminis
   assert.equal(Object.isFrozen(override.layer), true);
   assert.equal(
     resolved.domains.find((domain) => domain.id === "identity")?.title,
-    "Identity directory",
+    "Identity directory"
   );
   assert.equal(
     CI_DEFAULT_ACCESS_CONTROL_DEFINITION.domains.find(
-      (domain) => domain.id === "identity",
+      (domain) => domain.id === "identity"
     )?.title,
-    "Identity and access",
+    "Identity and access"
   );
 });
 
 test("rejects core overrides that target application entries or weaken bootstrap access", () => {
   const systemSuperAdmin = subject([
     ciCreateRoleAssignment(
-      "SYSTEM_SUPER_ADMIN",
+      "system-super-admin",
       ciSystemAccessScope(),
-      "exact",
+      "exact"
     ),
   ]);
+
+  assert.throws(
+    () =>
+      ciCreateCoreAccessControlOverride({
+        id: "override-admin-lanes",
+        expectedRevision: 0,
+        reason: "Attempt to merge technical and business administration.",
+        subject: systemSuperAdmin,
+        currentDefinition: CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
+        layer: {
+          roles: [
+            {
+              id: "system-admin",
+              inherits: ["super-admin"],
+            },
+          ],
+        },
+      }),
+    /must preserve separation between technical and business administrator roles/
+  );
 
   assert.throws(
     () =>
@@ -792,19 +1164,19 @@ test("rejects core overrides that target application entries or weaken bootstrap
         currentDefinition: ciCreateAppAccessControl({
           roles: [
             {
-              id: "APP_ADMIN",
+              id: "app-admin",
               title: "Application administrator",
               precedence: 25,
-              inherits: ["ADMIN"],
+              inherits: ["admin"],
               privileges: [],
             },
           ],
         }),
         layer: {
-          roles: [{ id: "APP_ADMIN", title: "Renamed role" }],
+          roles: [{ id: "app-admin", title: "Renamed role" }],
         },
       }),
-    /cannot target application role/,
+    /cannot target application role/
   );
 
   assert.throws(
@@ -818,15 +1190,13 @@ test("rejects core overrides that target application entries or weaken bootstrap
         layer: {
           roles: [
             {
-              id: "SYSTEM_SUPER_ADMIN",
-              privileges: [
-                { id: "full-platform-access", action: "read" },
-              ],
+              id: "system-super-admin",
+              privileges: [{ id: "override-core-access-control", action: "read" }],
             },
           ],
         },
       }),
-    /must preserve SYSTEM_SUPER_ADMIN bootstrap access/,
+    /must preserve system-super-admin bootstrap access/
   );
 
   assert.throws(
@@ -840,18 +1210,14 @@ test("rejects core overrides that target application entries or weaken bootstrap
         layer: {
           roles: [
             {
-              id: "SYSTEM_SUPER_ADMIN",
-              privileges: [
-                {
-                  id: "full-platform-access",
-                  scopeKinds: ["system", "tenant", "orgUnit"],
-                },
-              ],
+              id: "system-super-admin",
+              privileges: [],
+              privilegesMode: "replace",
             },
           ],
         },
       }),
-    /must preserve SYSTEM_SUPER_ADMIN bootstrap access/,
+    /must preserve system-super-admin bootstrap access/
   );
 });
 
@@ -878,6 +1244,7 @@ test("replaces value arrays while merging nested catalog collections", () => {
           privileges: [
             {
               id: "read-files",
+              title: "Read files",
               effect: "allow",
               resource: "documents.files",
               action: "read",
@@ -890,14 +1257,36 @@ test("replaces value arrays while merging nested catalog collections", () => {
     {
       resources: [{ id: "documents.files", scopeKinds: ["tenant"] }],
       roles: [{ id: "editor", inherits: [] }],
-    },
+    }
   );
 
   assert.deepEqual(
-    merged.resources.find((resource) => resource.id === "documents.files")?.scopeKinds,
-    ["tenant"],
+    merged.resources.find((resource) => resource.id === "documents.files")
+      ?.scopeKinds,
+    ["tenant"]
   );
-  assert.deepEqual(merged.roles.find((role) => role.id === "editor")?.inherits, []);
+  assert.deepEqual(
+    merged.roles.find((role) => role.id === "editor")?.inherits,
+    []
+  );
+});
+
+test("replaces a role privilege set only when explicitly requested", () => {
+  const merged = ciMergeAccessControlDefinitions(definition, {
+    roles: [
+      {
+        id: "viewer",
+        privileges: [],
+        privilegesMode: "replace",
+      },
+    ],
+  });
+
+  assert.deepEqual(
+    merged.roles.find((role) => role.id === "viewer")?.privileges,
+    []
+  );
+  assert.equal("privilegesMode" in (merged.roles[0] ?? {}), false);
 });
 
 test("rejects incomplete entries introduced by a merge layer", () => {
@@ -906,7 +1295,7 @@ test("rejects incomplete entries introduced by a merge layer", () => {
       ciMergeAccessControlDefinitions({
         domains: [{ id: "billing" }],
       }),
-    /requires a title/,
+    /requires a title/
   );
   assert.throws(
     () =>
@@ -918,37 +1307,37 @@ test("rejects incomplete entries introduced by a merge layer", () => {
           },
         ],
       }),
-    /action .* requires a title/,
+    /action .* requires a title/
   );
   assert.throws(
     () =>
       ciCreateAppAccessControl({
         roles: [
           {
-            id: "ARCHIVER",
+            id: "archiver",
             title: "Archiver",
             precedence: 35,
             privileges: [{ id: "archive-users" }],
           },
         ],
       }),
-    /privilege .* requires effect, resource, and action/,
+    /privilege .* requires title, effect, resource, and action/
   );
 });
 
 test("maps identity-provider groups to known roles and ignores unrelated groups", () => {
   assert.deepEqual(
     ciResolveIdentityGroupRoles(
-      ["tenant-admins", "unrelated", "tenant-admins", "USER", "ignored"],
+      ["tenant-admins", "unrelated", "tenant-admins", "user", "ignored"],
       CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
       {
         roleMap: {
-          "tenant-admins": "ADMIN",
+          "tenant-admins": "admin",
           ignored: null,
         },
-      },
+      }
     ),
-    ["ADMIN", "USER"],
+    ["admin", "user"]
   );
 });
 
@@ -958,9 +1347,9 @@ test("can reject unknown identity groups in strict administrative workflows", ()
       ciResolveIdentityGroupRoles(
         ["missing-group"],
         CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
-        { unknownGroupStrategy: "throw" },
+        { unknownGroupStrategy: "throw" }
       ),
-    /unknown access-control role/,
+    /unknown access-control role/
   );
 });
 
@@ -971,7 +1360,7 @@ test("creates usable scoped assignments from identity-provider groups", () => {
     CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
     tenant,
     "descendants",
-    { roleMap: { "tenant-admins": "ADMIN" } },
+    { roleMap: { "tenant-admins": "admin" } }
   );
   const actor = subject(assignments);
 
@@ -982,7 +1371,7 @@ test("creates usable scoped assignments from identity-provider groups", () => {
       action: "update",
       scope: ciOrgUnitAccessScope("tenant-a", "finance"),
     }),
-    true,
+    true
   );
 });
 
@@ -998,12 +1387,15 @@ test("creates application authorizers in core with or without app extensions", (
   });
   const extendedAuthorizer = ciCreateAppAuthorizer(extendedDefinition);
 
-  assert.equal(defaultAuthorizer.definition, CI_DEFAULT_ACCESS_CONTROL_DEFINITION);
   assert.equal(
-    extendedAuthorizer.definition.resources.find(
-      (resource) => resource.id === "platform.dashboard",
-    )?.actions.some((action) => action.id === "summarize"),
-    true,
+    defaultAuthorizer.definition,
+    CI_DEFAULT_ACCESS_CONTROL_DEFINITION
+  );
+  assert.equal(
+    extendedAuthorizer.definition.resources
+      .find((resource) => resource.id === "platform.dashboard")
+      ?.actions.some((action) => action.id === "summarize"),
+    true
   );
   assert.deepEqual(ciCreateCoreAccessControl(), ciCreateAppAccessControl());
 });

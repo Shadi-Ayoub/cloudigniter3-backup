@@ -1,9 +1,15 @@
 import type {
   CiAccessControlDefinition,
   CiSecurityAdministrationRepository,
+  CiSecurityRoleCountersById,
   CiSecurityStoredRoleAssignment,
 } from "@cloudigniter/emberguard/types";
-import { ciAssertValidAccessControlDefinition } from "@cloudigniter/emberguard/lib";
+import {
+  CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
+  ciAssertValidAccessControlDefinition,
+  ciIsAccessControlKebabIdentifier,
+  ciMigrateLegacyPrivilegeTitles,
+} from "@cloudigniter/emberguard/lib";
 import type { CiAwsEmberguardGraphqlOperations } from "../../types";
 
 /** Returns true when a value is a non-null object. */
@@ -50,8 +56,11 @@ function isStoredRoleAssignment(
     typeof value.id === "string" &&
     typeof value.subjectId === "string" &&
     typeof value.roleId === "string" &&
+    ciIsAccessControlKebabIdentifier(value.roleId) &&
     (value.propagation === "exact" || value.propagation === "descendants") &&
     isAssignmentScope(value.scope) &&
+    (value.tenantId === undefined || typeof value.tenantId === "string") &&
+    (value.validFrom === undefined || typeof value.validFrom === "string") &&
     (value.expiresAt === undefined || typeof value.expiresAt === "string")
   );
 }
@@ -96,12 +105,20 @@ function unwrapGraphqlBody(response: unknown): unknown {
   ) {
     if (parsed.ok === false || parsed.statusCode >= 400) {
       const body = parsed.body;
+      const details = isRecord(body) ? body.details : undefined;
+      const detailMessage = isRecord(details)
+        ? typeof details.message === "string"
+          ? details.message
+          : undefined
+        : undefined;
+      const bodyRecord = isRecord(body) ? body : undefined;
       const message =
-        isRecord(body) && typeof body.message === "string"
-          ? body.message
-          : isRecord(body) && typeof body.error === "string"
-          ? body.error
-          : "The EmberGuard data request failed.";
+        detailMessage ??
+        (bodyRecord && typeof bodyRecord.message === "string"
+          ? bodyRecord.message
+          : bodyRecord && typeof bodyRecord.error === "string"
+          ? bodyRecord.error
+          : "The EmberGuard data request failed.");
       throw new Error(message);
     }
     return parsed.body;
@@ -120,8 +137,48 @@ function readDefinitionBody(
   if (!isAccessControlDefinition(body.definition)) {
     throw new Error("The EmberGuard provider returned an invalid definition.");
   }
-  ciAssertValidAccessControlDefinition(body.definition);
-  return body.definition;
+  const definition = ciMigrateLegacyPrivilegeTitles(
+    body.definition,
+    CI_DEFAULT_ACCESS_CONTROL_DEFINITION
+  );
+  ciAssertValidAccessControlDefinition(definition);
+  return definition;
+}
+
+/** Reads the persisted role-counter projection from a provider response. */
+function readRoleCountersBody(response: unknown): CiSecurityRoleCountersById {
+  const body = unwrapGraphqlBody(response);
+  if (!isRecord(body) || !isRecord(body.roleCounters)) {
+    throw new Error("The EmberGuard provider returned no role counters.");
+  }
+  for (const [roleId, counters] of Object.entries(body.roleCounters)) {
+    const permissionCount = isRecord(counters)
+      ? counters.permissionCount
+      : undefined;
+    const directUserCount = isRecord(counters)
+      ? counters.directUserCount
+      : undefined;
+    const inheritedUserCount = isRecord(counters)
+      ? counters.inheritedUserCount
+      : undefined;
+    if (
+      !roleId ||
+      typeof permissionCount !== "number" ||
+      typeof directUserCount !== "number" ||
+      typeof inheritedUserCount !== "number" ||
+      !Number.isSafeInteger(permissionCount) ||
+      !Number.isSafeInteger(directUserCount) ||
+      !Number.isSafeInteger(inheritedUserCount) ||
+      permissionCount < 0 ||
+      directUserCount < 0 ||
+      inheritedUserCount < 0
+    ) {
+      throw new Error(
+        "The EmberGuard provider returned invalid role counters."
+      );
+    }
+  }
+  return body.roleCounters as CiSecurityRoleCountersById;
 }
 
 /** Reads role assignments from a provider response body. */
@@ -133,7 +190,9 @@ function readAssignmentsBody(
     return [];
   }
   if (!body.assignments.every(isStoredRoleAssignment)) {
-    throw new Error("The EmberGuard provider returned invalid role assignments.");
+    throw new Error(
+      "The EmberGuard provider returned invalid role assignments."
+    );
   }
   return body.assignments;
 }
@@ -147,27 +206,45 @@ function readAssignmentsBody(
 export function ciCreateAwsEmberguardAdministrationRepository(
   operations: CiAwsEmberguardGraphqlOperations
 ): CiSecurityAdministrationRepository {
+  let stateRequest: Promise<unknown> | undefined;
+  const loadState = () => (stateRequest ??= operations.getDefinition());
+  const invalidateState = () => {
+    stateRequest = undefined;
+  };
+
   return {
     async getAccessControlDefinition() {
-      return readDefinitionBody(await operations.getDefinition());
+      return readDefinitionBody(await loadState());
+    },
+    async getRoleCounters() {
+      return readRoleCountersBody(await loadState());
     },
     async saveAccessControlDefinition(definition) {
+      ciAssertValidAccessControlDefinition(definition);
       unwrapGraphqlBody(
         await operations.saveDefinition(JSON.stringify({ definition }))
       );
+      invalidateState();
     },
     async listRoleAssignments() {
       return readAssignmentsBody(await operations.listRoleAssignments());
     },
     async putRoleAssignment(assignment) {
+      if (!ciIsAccessControlKebabIdentifier(assignment.roleId)) {
+        throw new Error(
+          `Role identifier "${assignment.roleId}" must use lowercase kebab case.`
+        );
+      }
       unwrapGraphqlBody(
         await operations.putRoleAssignment(JSON.stringify({ assignment }))
       );
+      invalidateState();
     },
     async deleteRoleAssignment(input) {
       unwrapGraphqlBody(
         await operations.deleteRoleAssignment(JSON.stringify(input))
       );
+      invalidateState();
     },
   };
 }

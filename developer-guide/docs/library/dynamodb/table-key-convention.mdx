@@ -1,0 +1,86 @@
+---
+title: CloudIgniter table-key convention
+description: Build traceable PK, SK, and secondary-index values with the canonical CI namespace and core helpers.
+sidebar_position: 1
+---
+
+# CloudIgniter table-key convention
+
+Every CloudIgniter-owned primary or secondary-index key begins with `CI#`. The namespace makes records
+recognizable in DynamoDB consoles, logs, traces, metrics, and support tooling when a bounded-context table
+contains several related entity kinds.
+
+The namespace does not imply one platform-wide table. CloudIgniter uses separate security and operational
+bounded contexts, with single-table modeling only inside a boundary whose access patterns and controls align.
+See the [DynamoDB bounded-context strategy](/company-developers/persistence/dynamodb-strategy).
+
+## Canonical grammar
+
+```text
+CI#<CAPABILITY>#<ENTITY_OR_COLLECTION>#<opaque identifiers or qualifiers...>
+```
+
+Apply the grammar to every `PK`, `SK`, `GSI1PK`, `GSI1SK`, and equivalent index key:
+
+- `CI` is injected by the helpers; do not pass it as a segment.
+- Structural segments use uppercase snake case, such as `EMBERGUARD`, `USER_PROFILE`, or `ROLE_ASSIGNMENT`.
+- Opaque IDs keep their original value. Key construction must not normalize domain identifiers.
+- `#` is reserved as the segment delimiter.
+- Segments must be non-empty, must not have surrounding whitespace, and must not contain `#`.
+
+Examples:
+
+| Record                           | PK                                      | SK                                  |
+| -------------------------------- | --------------------------------------- | ----------------------------------- |
+| User profile                     | `CI#TENANT#tenant-123#USER_PROFILES`    | `CI#USER_PROFILE#user-456`          |
+| Org Unit                         | `CI#TENANT#tenant-123#ORG_UNITS`        | `CI#ORG_UNIT#finance`               |
+| Role assignment                  | `CI#TENANT#tenant-123#ROLE_ASSIGNMENTS` | `CI#ROLE_ASSIGNMENT#assignment-789` |
+| Active access-control definition | `CI#EMBERGUARD#ACCESS_CONTROL`          | `CI#DEFINITION#ACTIVE`              |
+
+The segments after `CI` remain access-pattern decisions. Put ownership or tenancy early in a partition key when
+it defines isolation, then identify the collection or aggregate. Use the sort key to identify the item kind and
+stable record identity.
+
+## Build keys through core
+
+Use `ciBuildTableKey()` for a single primary or secondary-index value. Use `ciBuildTableKeys()` when creating a
+table item's `PK` and `SK` together.
+
+```ts
+import { ciBuildTableKey, ciBuildTableKeys } from "@cloudigniter/core/lib";
+
+const tenantId = "tenant-123";
+const userId = "user-456";
+const roleId = "tenant-admin";
+
+const userProfileKey = ciBuildTableKeys({
+  partition: ["TENANT", tenantId, "USER_PROFILES"],
+  sort: ["USER_PROFILE", userId],
+});
+
+const assignmentsByRoleIndex = ciBuildTableKey(
+  "TENANT",
+  tenantId,
+  "ROLE",
+  roleId,
+  "ASSIGNMENTS"
+);
+```
+
+Both helpers are runtime-neutral. Import their public input and result types from `@cloudigniter/core/types`.
+They throw `TypeError` when a segment would make the key ambiguous.
+
+## Changing an existing key
+
+A key rename changes an item's address; it is not an in-place update. Before production, update every reader,
+writer, query, fixture, and example in one cutover. Do not preserve a fallback or dual-write path for disposable
+development data; reset or reseed affected development tables when necessary.
+
+Once deployed data must be retained, design a release-specific migration before changing its address. Add a
+temporary compatibility read, backfill, or dual write only when that migration requires it.
+
+The active EmberGuard access-control definition now reads and writes only
+`CI#EMBERGUARD#ACCESS_CONTROL` / `CI#DEFINITION#ACTIVE`.
+
+See [`ciBuildTableKey()`](/docs/api-reference/shared-apis/ci-build-table-key) and
+[`ciBuildTableKeys()`](/docs/api-reference/shared-apis/ci-build-table-keys) for the public contracts.

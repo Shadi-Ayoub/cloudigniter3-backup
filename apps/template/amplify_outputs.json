@@ -18,32 +18,32 @@
     ],
     "groups": [
       {
-        "SYSTEM_SUPER_ADMIN": {
+        "system-super-admin": {
           "precedence": 0
         }
       },
       {
-        "SYSTEM_ADMIN": {
+        "system-admin": {
           "precedence": 1
         }
       },
       {
-        "SUPER_ADMIN": {
+        "super-admin": {
           "precedence": 2
         }
       },
       {
-        "ADMIN": {
+        "admin": {
           "precedence": 3
         }
       },
       {
-        "DEVELOPER": {
+        "developer": {
           "precedence": 4
         }
       },
       {
-        "USER": {
+        "user": {
           "precedence": 5
         }
       }
@@ -217,7 +217,7 @@
                     "provider": "userPools",
                     "allow": "groups",
                     "groups": [
-                      "SYSTEM_ADMIN"
+                      "system-super-admin"
                     ],
                     "operations": [
                       "create",
@@ -382,7 +382,7 @@
                     "provider": "userPools",
                     "allow": "groups",
                     "groups": [
-                      "SYSTEM_ADMIN"
+                      "system-admin"
                     ],
                     "operations": [
                       "create",
@@ -622,7 +622,8 @@
   "custom": {
     "cloudigniter": {
       "userProfileTableName": "UserProfile-fqsqohaocbgsbaazjeo2iw4lpm-NONE",
-      "emberguardAccessTableName": "EmberguardAccess-fqsqohaocbgsbaazjeo2iw4lpm-NONE"
+      "emberguardAccessTableName": "EmberguardAccess-fqsqohaocbgsbaazjeo2iw4lpm-NONE",
+      "emberguardAccessBootstrapFunctionName": "amplify-cloudignitertempl-getemberguarddefinitionh-Qk3fTK7pM4gz"
     }
   }
 }

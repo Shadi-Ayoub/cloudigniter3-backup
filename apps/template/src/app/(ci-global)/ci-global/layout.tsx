@@ -11,7 +11,7 @@ import { appBootstrap } from "@/kernel/server";
  * /t/global/dashboard -> /ci-global/dashboard
  */
 export default async function CiGlobalLayout({ children }: PropsWithChildren) {
-  const config = await appBootstrap();
-  // throw new Error(`Main Menu Config: ${JSON.stringify(config)}`);
-  return <CiLayout config={config}>{children}</CiLayout>;
+  const context = await appBootstrap();
+
+  return <CiLayout context={context}>{children}</CiLayout>;
 }

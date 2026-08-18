@@ -1,5 +1,5 @@
 import { defineConfig } from "tsup";
-import { ciCreateTsupConfig } from "../../scripts/build-steps/ci-tsup-config";
+import { ciCreateTsupConfig } from "@cloudigniter/cli/tooling/tsup";
 
 const externalPackages = [
   "react",
@@ -39,8 +39,7 @@ export default defineConfig(async () =>
 
 // import { defineConfig } from "tsup";
 // import { preserveDirectivesPlugin } from "esbuild-plugin-preserve-directives";
-// import { getAllEntries } from "../../scripts/build-steps/ci-entries.mjs";
-// import { ciInjectUseClient } from "../../scripts/build-steps/ci-inject-use-client.mjs";
+// import { getAllEntries } from "@cloudigniter/cli/tooling/entries";
 
 // const isProduction = process.env.NODE_ENV === "production";
 

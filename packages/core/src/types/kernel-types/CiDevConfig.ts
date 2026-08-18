@@ -12,7 +12,7 @@ export type CiDevConfig = {
        * Keep false until Attribute Role-based Access Control is implemented.
        *
        * When true, production access still requires an authenticated user
-       * with the DEVELOPER role.
+       * with the developer role.
        */
       allowProduction: boolean;
 

@@ -23,7 +23,7 @@
 //     })
 //     .handler(a.handler.function(createOrgUnitHandler))
 //     .returns(a.json())
-//     .authorization((allow) => [allow.group('SYSTEM_ADMIN')]),
+//     .authorization((allow) => [allow.group('system-admin')]),
 
 //   deleteOrgUnit: a
 //     .mutation()
@@ -32,7 +32,7 @@
 //     })
 //     .handler(a.handler.function(deleteOrgUnitHandler))
 //     .returns(a.json())
-//     .authorization((allow) => [allow.group('SYSTEM_ADMIN')]),
+//     .authorization((allow) => [allow.group('system-admin')]),
 
 //   updateOrgUnit: a
 //     .mutation()
@@ -41,7 +41,7 @@
 //     })
 //     .handler(a.handler.function(updateOrgUnitHandler))
 //     .returns(a.json())
-//     .authorization((allow) => [allow.group('SYSTEM_ADMIN')]),
+//     .authorization((allow) => [allow.group('system-admin')]),
 
 //   listOrgUnits: a
 //     .mutation()
@@ -50,7 +50,7 @@
 //     })
 //     .handler(a.handler.function(listOrgUnitsHandler))
 //     .returns(a.json())
-//     .authorization((allow) => [allow.group('SYSTEM_ADMIN')]),
+//     .authorization((allow) => [allow.group('system-admin')]),
 // };
 
 // export default schemaOU;

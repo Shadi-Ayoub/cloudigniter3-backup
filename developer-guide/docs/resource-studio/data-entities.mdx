@@ -1,0 +1,104 @@
+---
+title: Create and manage a Data Entity
+description: Define fields, authorization, indexes, scope, and a generated management route in Resource Studio.
+sidebar_position: 2
+---
+
+Run Resource Studio from the application root, define a Data Entity in the browser, and apply the generated file transaction. Generation is local and offline: saving a Data Entity does not sign in to AWS and does not run an Amplify sandbox.
+
+```bash
+pnpm exec ci resources studio
+```
+
+The browser opens by default on an operating-system-assigned loopback port. Pass `--no-open` to print the secured URL without opening it or `--port=<number>` to request a fixed port. You may also preselect `--profile=<name>` and a 1–15 character `--identifier=<value>` for later explicit deployment; neither option makes generation contact AWS.
+
+The Studio URL is bound to the local machine and contains a one-use bootstrap credential that expires after five minutes. Exchanging it creates an `HttpOnly` cookie-backed session with a fixed eight-hour lifetime; activity does not extend that deadline. Restart `ci resources studio` when either credential has expired. Treat the URL like a local development credential: do not expose it through a public tunnel, share it, or leave the Studio running on an untrusted workstation.
+
+## Define the identity and route
+
+For a book-management example, enter:
+
+| Setting | Example | Rule |
+| --- | --- | --- |
+| Data Entity name | `Book` | PascalCase, singular, and a valid TypeScript/GraphQL identifier. |
+| Plural name | `Books` | PascalCase and used for generated API/component names. |
+| Data Entity ID | `book` | Lowercase kebab-case and stable for the entity's generated folder. |
+| Tenant scope | `tenant` | Choose `tenant` or `global`; the server enforces the selected scope. |
+| Management path | `/dashboard/books` | Static absolute logical path with no route parameters or scope transport prefix. |
+| Management title | `Manage Books` | Page metadata, page heading, and breadcrumb label. |
+
+The default Data Store choice is **New Amplify managed table**. **Existing table** is visible as a future capability but is unavailable in V1 because an Amplify schema fragment cannot safely attach a managed model to an arbitrary table.
+
+## Add custom fields
+
+Add at least one application field. Resource Studio accepts the AWS Amplify scalar types below:
+
+| ModelFieldType | Typical manager input | Additional V1 validation |
+| --- | --- | --- |
+| `ID`, `String`, `AWSIPAddress` | Text | `String` supports minimum/maximum length, prefix, suffix, and pattern validation. |
+| `Int`, `Float`, `AWSTimestamp` | Number | `Int` and `Float` support greater-than/greater-or-equal/less-than/less-or-equal validation. |
+| `Boolean` | Boolean control | — |
+| `AWSDate` | Date | — |
+| `AWSTime` | Time | — |
+| `AWSDateTime` | Date and time | — |
+| `AWSEmail` | Email | — |
+| `AWSJSON` | JSON editor | — |
+| `AWSPhone` | Telephone text | — |
+| `AWSURL` | URL | — |
+
+Each field also has a label, required flag, array flag, array-item required flag, and optional default where Amplify supports it. Scalar validation is not available on array fields in Resource Studio V1. Reserved system fields (`PK`, `SK`, `id`, `ciScopeKey`, `ciSortKey`, `createdAt`, and `updatedAt`) cannot be declared as custom fields.
+
+Changing a required flag, field type, default, or array shape after deployment is a schema migration decision. Review existing records and the Amplify deployment plan before applying it; local code generation cannot make existing DynamoDB values compatible.
+
+## Define authorization
+
+Authorization is model-level Amplify Data authorization. A rule selects one strategy, optional provider/claim/field settings, and one or more of `create`, `read`, `update`, and `delete`.
+
+V1 exposes these Amplify strategies:
+
+- signed-in users: `authenticated`;
+- unauthenticated identities: `guest`;
+- API-key callers: `publicApiKey`;
+- record owner: `owner`;
+- owner in a scalar or array field: `ownerDefinedIn`, `ownersDefinedIn`;
+- one or more fixed groups: `group`, `groups`;
+- group names in a scalar or array field: `groupDefinedIn`, `groupsDefinedIn`;
+- function authorization: `custom`.
+
+Field-based owner/group rules must point to a compatible `String` field: scalar strategies require a scalar and plural strategies require an array. Providers and identity/group claims are shown only where Amplify supports them. Fixed `group` needs exactly one group; fixed `groups` needs one or more.
+
+If you add no rule, Resource Studio uses an administration-oriented default that grants all four operations to the `system-admin` and `system-super-admin` groups. Review this default against the groups actually configured by your application. Broad authenticated, guest, or API-key access is never implied by the Tenant scope; routing scope and data authorization are separate controls.
+
+## Add secondary indexes only for a query
+
+Resource Studio always reserves one GSI named `byScope`, with `ciScopeKey` as its partition key and `ciSortKey` as its sort key. The generated management page uses this index for a bounded, paginated list Query.
+
+You can add up to 19 custom GSIs. For each index, specify:
+
+- a scalar, DynamoDB-key-compatible partition field;
+- optional scalar sort fields;
+- a unique index name and generated query-field name;
+- `KEYS_ONLY`, `INCLUDE`, or `ALL` projection;
+- included non-key attributes when using `INCLUDE`.
+
+Every GSI serves a named access pattern and increases write amplification, storage, deployment time, and operational cost. `ALL` is convenient but is the most expensive projection for wide records. A GSI is eventually consistent and must not be used as proof of a current authorization grant or revocation.
+
+:::danger Review index and schema changes before deployment
+
+Amplify sandbox GSI changes can replace a managed DynamoDB table. Treat sandbox records as disposable, inspect the Amplify plan/output, and export or back up any data that matters before adding, removing, or changing an index. Resource Studio's file rollback does not restore DynamoDB records.
+
+:::
+
+## Apply and update
+
+Review the generated-file preview, then apply it. Resource Studio writes the descriptor, schema, management page, server actions, and shared generated registries in one local file transaction. Logical management paths are globally unique in the route map even when two entities select different Tenant scopes. A duplicate generated model, route, list-query name, reserved core/manual route or model, unowned target file, or unsafe path fails before a transaction is prepared. Strict route and schema composition remains a second collision check when the application loads.
+
+To update an entity, open its descriptor in Studio, change the supported settings, review the complete regenerated diff, and apply another transaction. Shared registries are rebuilt from all descriptors, so the update remains deterministic. Keep the Data Entity ID stable unless you intend to drop one resource and create another.
+
+After local generation, validate the application before deploying:
+
+```bash
+pnpm typecheck
+```
+
+Use the exact application validation scripts adopted by your repository in addition to this baseline. Deployment is a separate, explicit step described in [Deployment, drop, and rollback](./deployment-and-rollback).

@@ -16,7 +16,7 @@ const schemaCognitoUser = {
     })
     .handler(a.handler.function(getCognitoUserHandler))
     .returns(a.json())
-    .authorization((allow) => [allow.group("SYSTEM_ADMIN")]),
+    .authorization((allow) => [allow.group("system-admin")]),
 
   CreateCognitoUser: a
     .mutation()
@@ -25,7 +25,7 @@ const schemaCognitoUser = {
     })
     .handler(a.handler.function(createCognitoUserHandler))
     .returns(a.json())
-    .authorization((allow) => [allow.group("SYSTEM_ADMIN")]),
+    .authorization((allow) => [allow.group("system-admin")]),
 
   SetCognitoUserPassword: a
     .mutation()
@@ -34,7 +34,7 @@ const schemaCognitoUser = {
     })
     .handler(a.handler.function(setCognitoUserPasswordHandler))
     .returns(a.json())
-    .authorization((allow) => [allow.group("SYSTEM_ADMIN")]),
+    .authorization((allow) => [allow.group("system-admin")]),
 };
 
 export default schemaCognitoUser;

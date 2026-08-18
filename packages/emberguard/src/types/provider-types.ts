@@ -4,6 +4,15 @@ import type {
   CiResourceDomainDefinition,
   CiRoleAssignment,
 } from "./access-control-types";
+import type { CiSecurityRoleCountersById } from "./security-administration-types";
+
+/** Definition and its mutation-maintained administration projection. */
+export type CiEmberguardAccessControlState = {
+  definition: CiAccessControlDefinition;
+  roleCounters: CiSecurityRoleCountersById;
+  /** Optimistic-concurrency revision for definition and projection writes. */
+  revision: number;
+};
 
 export type CiEmberguardProviderName = "aws" | (string & {});
 
@@ -39,8 +48,15 @@ export type CiEmberguardCustomDomainRecord = {
 };
 
 export type CiEmberguardRepository = {
-  getAccessControlDefinition(): Promise<CiAccessControlDefinition | null>;
-  saveAccessControlDefinition(definition: CiAccessControlDefinition): Promise<void>;
+  getAccessControlState(): Promise<CiEmberguardAccessControlState | null>;
+  initializeAccessControlState(state: CiEmberguardAccessControlState): Promise<{
+    state: CiEmberguardAccessControlState;
+    created: boolean;
+  }>;
+  saveAccessControlState(
+    state: CiEmberguardAccessControlState,
+    expectedRevision: number
+  ): Promise<void>;
 
   listResourceDomains(): Promise<readonly CiResourceDomainDefinition[]>;
   putResourceDomain(domain: CiResourceDomainDefinition): Promise<void>;
@@ -54,14 +70,25 @@ export type CiEmberguardRepository = {
     tenantId?: string;
     domainId?: string;
   }): Promise<readonly CiEmberguardResourceInventoryRecord[]>;
-  putResourceInventoryRecord(record: CiEmberguardResourceInventoryRecord): Promise<void>;
+  putResourceInventoryRecord(
+    record: CiEmberguardResourceInventoryRecord
+  ): Promise<void>;
 
   listRoleAssignments(input: {
     subjectId?: string;
     tenantId?: string;
   }): Promise<readonly CiEmberguardStoredRoleAssignment[]>;
-  putRoleAssignment(assignment: CiEmberguardStoredRoleAssignment): Promise<void>;
-  deleteRoleAssignment(input: { id: string; subjectId: string }): Promise<void>;
+  putRoleAssignmentWithAccessControlState(
+    assignment: CiEmberguardStoredRoleAssignment,
+    state: CiEmberguardAccessControlState,
+    expectedRevision: number,
+    previousAssignment?: CiEmberguardStoredRoleAssignment
+  ): Promise<void>;
+  deleteRoleAssignmentWithAccessControlState(
+    input: { id: string; subjectId: string },
+    state: CiEmberguardAccessControlState,
+    expectedRevision: number
+  ): Promise<void>;
 
   listCustomDomains(input?: {
     tenantId?: string;

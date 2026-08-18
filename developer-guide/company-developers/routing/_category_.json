@@ -1,0 +1,8 @@
+{
+  "label": "Routing",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "Request routing, Tenant-scope enforcement, and Next.js route-tree architecture."
+  }
+}

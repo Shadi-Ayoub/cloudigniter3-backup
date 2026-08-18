@@ -1,0 +1,168 @@
+---
+title: CiDataEntityManager
+sidebar_position: 2
+description: Public component and type contracts for provider-neutral data entity management.
+---
+
+# `CiDataEntityManager`
+
+`CiDataEntityManager<TRecord>` is a client component exported from `@cloudigniter/ui/client`. It builds a
+provider-neutral create/edit form from field metadata, augments a `CiDataTable` definition with CRUD actions,
+reports mutation outcomes, and confirms deletion through `CiAlertDialog`.
+
+```tsx
+import { CiDataEntityManager, CiDataTable } from "@cloudigniter/ui/client";
+import type {
+  CiDataEntityField,
+  CiDataEntityManagerProps,
+  CiDataEntityMutationResult,
+} from "@cloudigniter/ui/types";
+```
+
+The component does not import an AWS, Amplify, SQL, or Next.js server runtime. Applications inject a local
+`data` array or `CiDataTableDataSource`, plus trusted mutation callbacks.
+
+## Component contract
+
+```ts
+type CiDataEntityManagerProps<TRecord extends RowData> = {
+  title: string;
+  description?: string;
+  entityLabel: string;
+  entityPluralLabel: string;
+  fields: readonly CiDataEntityField<TRecord>[];
+  data?: TRecord[];
+  source?: CiDataTableDataSource<TRecord>;
+  getRowId: (record: TRecord, index: number) => string;
+  tableProps?: CiDataEntityManagerTableOverrides<TRecord>;
+  renderTable: (props: CiDataEntityManagerTableProps<TRecord>) => ReactNode;
+  onCreate?: CiDataEntityCreateCallback<TRecord>;
+  onUpdate?: CiDataEntityUpdateCallback<TRecord>;
+  onDelete?: CiDataEntityDeleteCallback<TRecord>;
+  createInitialValues?: Partial<TRecord> | (() => Partial<TRecord>);
+  canCreate?: boolean;
+  canUpdate?: boolean | ((record: TRecord) => boolean);
+  canDelete?: boolean | ((record: TRecord) => boolean);
+  getRecordLabel?: (record: TRecord) => string;
+  renderDeleteDescription?: (record: TRecord) => ReactNode;
+  labels?: CiDataEntityManagerLabels;
+  className?: string;
+};
+```
+
+| Prop                               | Default                             | Behavior                                                                                                                       |
+| ---------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `title`, `description`             | `description` omitted               | Passed to the rendered table.                                                                                                  |
+| `entityLabel`, `entityPluralLabel` | Required                            | Supply action, dialog, pending, and outcome copy.                                                                              |
+| `fields`                           | Required                            | Drives generated columns and the create/edit editor.                                                                           |
+| `data`                             | `[]`                                | Static client-mode records.                                                                                                    |
+| `source`                           | None                                | Provider-backed table paging and refresh.                                                                                      |
+| `getRowId`                         | Required                            | Stable identity for mutable records; array indexes are unsafe.                                                                 |
+| `tableProps`                       | None                                | Applies table definition and presentation extensions without replacing manager-owned CRUD actions.                             |
+| `renderTable`                      | Required                            | Receives complete `CiDataTableInterface<TRecord>` props. The normal implementation is `(props) => <CiDataTable {...props} />`. |
+| `onCreate`, `onUpdate`, `onDelete` | None                                | Each omitted callback removes its corresponding built-in action.                                                               |
+| `createInitialValues`              | Field defaults                      | Merged over field defaults each time create opens. A function produces a fresh value per session.                              |
+| `canCreate`                        | `true`                              | Disables create without removing its discoverable action.                                                                      |
+| `canUpdate`, `canDelete`           | `true`                              | Boolean or record predicate used by the corresponding row action.                                                              |
+| `getRecordLabel`                   | First non-empty string/number field | Names the edit and delete target.                                                                                              |
+| `renderDeleteDescription`          | Permanent-delete warning            | Provides record-specific consequence copy.                                                                                     |
+| `labels`                           | English semantic defaults           | Overrides action, dialog, pending, success, and error copy.                                                                    |
+
+`tableProps` omits `title`, `description`, `data`, `source`, legacy `columns`, and legacy `rowActions`, because
+those values have dedicated manager inputs. Its optional `definition` may provide columns, filters,
+information, and extra row/global actions. The manager uses generated field columns only when
+`definition.columns` is absent. It prepends Edit, appends Delete, prepends Create to global actions, and forces
+the authoritative `getRowId` prop.
+
+The default row-action configuration is mixed mode with one inline action and reserved action space. A caller
+may override it through `tableProps.config.rowActions`.
+
+## Field metadata
+
+```ts
+type CiDataEntityFieldType = "string" | "number" | "boolean" | "json";
+
+type CiDataEntityStringInput =
+  "text" | "textarea" | "email" | "url" | "date" | "time" | "datetime-local";
+
+type CiDataEntityFieldBase<TRecord extends RowData> = {
+  name: Extract<keyof TRecord, string>;
+  label: string;
+  required?: boolean;
+  array?: boolean;
+  itemsRequired?: boolean;
+  description?: string;
+  placeholder?: string;
+  defaultValue?: unknown | (() => unknown);
+  readOnly?: boolean;
+  readOnlyOnUpdate?: boolean;
+  validate?: (
+    value: unknown,
+    values: Partial<TRecord>,
+    mode: "create" | "edit",
+  ) => string | undefined;
+};
+```
+
+`CiDataEntityField<TRecord>` is a discriminated union on `valueKind`:
+
+- string fields add `valueKind: "string"` and optional `inputKind`;
+- number fields add `valueKind: "number"` and optional `min`, `max`, and `step`;
+- boolean fields add `valueKind: "boolean"`;
+- JSON fields add `valueKind: "json"`.
+
+String date/time inputs return strings; the package does not impose a provider timestamp type. Arrays are
+entered as JSON and checked against the declared item kind. `required` rejects a blank scalar or empty array,
+while `itemsRequired` rejects `null` array members. Custom validation runs after all fields are parsed, so it
+can compare values.
+
+## Mutation callbacks and results
+
+```ts
+type CiDataEntityMutationResult<TRecord> =
+  | { ok: true; message?: string; record?: TRecord }
+  | { ok: false; message: string };
+
+type CiDataEntityCreateCallback<TRecord extends RowData> = (
+  values: Partial<TRecord>,
+) =>
+  | void
+  | CiDataEntityMutationResult<TRecord>
+  | Promise<void | CiDataEntityMutationResult<TRecord>>;
+
+type CiDataEntityUpdateCallback<TRecord extends RowData> = (
+  record: TRecord,
+  values: Partial<TRecord>,
+) =>
+  | void
+  | CiDataEntityMutationResult<TRecord>
+  | Promise<void | CiDataEntityMutationResult<TRecord>>;
+
+type CiDataEntityDeleteCallback<TRecord extends RowData> = (
+  record: TRecord,
+) =>
+  | void
+  | CiDataEntityMutationResult<TRecord>
+  | Promise<void | CiDataEntityMutationResult<TRecord>>;
+```
+
+Returning `void` means success and uses the default success copy. `{ ok: false }` and thrown values keep the
+active editor or confirmation open and render a semantic error. Successful callbacks announce success and
+invoke the refresh function supplied by the table action context.
+
+Callbacks run in the browser-facing component even when the function is a Next.js Server Action. They must not
+trust the supplied record, tenant identifiers, protected keys, or authorization decisions. The server adapter
+must resolve those values authoritatively.
+
+## Accessibility and interaction
+
+- Every control has a visible associated label; required fields include text for screen readers.
+- Validation appears next to the field and focus moves to the first invalid control.
+- Dialog actions are disabled while pending, and progress has a polite live status.
+- Delete always uses `CiAlertDialog`; the component never calls `window.alert`, `window.confirm`, or
+  `window.prompt`.
+- Mutation failures stay in the active dialog so the record and entered values remain available for recovery.
+- The generated table definition uses stable action order and reserved row-action space.
+
+See [Data entity manager](../../ui-components/data-entity-manager.mdx) for an end-to-end composition and the
+[`CiDataTable` reference](./ci-data-table.mdx) for provider source, query, definition, and configuration details.

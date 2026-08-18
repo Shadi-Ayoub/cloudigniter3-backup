@@ -59,16 +59,6 @@ const tenantTable = ciDefineDataTable<CiTenantHtmlTableRow>({
     label: "Tenant information",
     title: (tenant) => tenant.name,
     description: (tenant) => `Tenant ID: ${tenant.tenantId}`,
-    content: (tenant) => (
-      <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2">
-        <dt className="text-muted-foreground">Region</dt>
-        <dd>{tenant.region}</dd>
-        <dt className="text-muted-foreground">Type</dt>
-        <dd>{tenant.type}</dd>
-        <dt className="text-muted-foreground">Users</dt>
-        <dd>{tenant.usersCount}</dd>
-      </dl>
-    ),
   },
   columns: [
     {

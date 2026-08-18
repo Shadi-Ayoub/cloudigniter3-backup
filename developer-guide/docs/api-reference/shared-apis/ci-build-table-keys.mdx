@@ -1,0 +1,43 @@
+---
+title: ciBuildTableKeys
+description: Build a canonical CI-prefixed PK and SK pair for a CloudIgniter-owned table item.
+sidebar_position: 4
+---
+
+# `ciBuildTableKeys()`
+
+`ciBuildTableKeys()` constructs a table item's primary key pair through the canonical CloudIgniter convention.
+
+```ts
+import { ciBuildTableKeys } from "@cloudigniter/core/lib";
+import type { CiBuildTableKeysInput, CiTableKeys } from "@cloudigniter/core/types";
+
+function ciBuildTableKeys(input: CiBuildTableKeysInput): CiTableKeys;
+
+type CiBuildTableKeysInput = {
+  partition: readonly [string, ...string[]];
+  sort: readonly [string, ...string[]];
+};
+
+type CiTableKeys = {
+  PK: string;
+  SK: string;
+};
+```
+
+```ts
+const key = ciBuildTableKeys({
+  partition: ["EMBERGUARD", "ACCESS_CONTROL"],
+  sort: ["DEFINITION", "ACTIVE"],
+});
+
+// {
+//   PK: "CI#EMBERGUARD#ACCESS_CONTROL",
+//   SK: "CI#DEFINITION#ACTIVE",
+// }
+```
+
+The helper calls [`ciBuildTableKey()`](./ci-build-table-key) for both values and therefore has the same segment
+validation and `TypeError` behavior. See the
+[table-key convention](/docs/library/dynamodb/table-key-convention) for structural naming, tenancy, and legacy
+migration rules.

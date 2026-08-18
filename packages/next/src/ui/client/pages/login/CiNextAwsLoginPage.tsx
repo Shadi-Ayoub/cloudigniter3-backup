@@ -18,6 +18,7 @@ import {
 import { Amplify } from "aws-amplify";
 
 import { CiConsolePrint } from "@cloudigniter/core/client";
+import { useCiPageLoaderStore } from "@cloudigniter/ui/client";
 import type { CiAuthUiConfig } from "@cloudigniter/core/types";
 import type { CiAmplifyOutputs } from "@cloudigniter/aws/types";
 
@@ -84,6 +85,7 @@ export function CiNextAwsLoginPage({
         ) : (
           authenticator
         )}
+        <LoginRedirector loadingText={authenticatorConfig.custom?.loadingText} />
       </Authenticator.Provider>
 
       <CiConsolePrint
@@ -95,24 +97,31 @@ export function CiNextAwsLoginPage({
   );
 }
 
-function LoginRedirector() {
+function LoginRedirector({ loadingText }: { loadingText?: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { route } = useAuthenticator((ctx) => [ctx.route]);
+  const setLoading = useCiPageLoaderStore((state) => state.setLoading);
   const redirectedRef = useRef(false);
 
-  const next = useMemo(
-    () => searchParams.get("next") || "/dashboard",
-    [searchParams],
-  );
+  const next = useMemo(() => {
+    const requestedNext = searchParams.get("next");
+
+    // Keep post-login navigation within this application. The server applies
+    // the same safeguard for already-authenticated visits to /login.
+    return requestedNext?.startsWith("/") && !requestedNext.startsWith("//")
+      ? requestedNext
+      : "/dashboard";
+  }, [searchParams]);
 
   useEffect(() => {
     if (route !== "authenticated") return;
     if (redirectedRef.current) return;
 
     redirectedRef.current = true;
+    setLoading(true, loadingText ?? "Signing you in. Please wait.");
     router.replace(next);
-  }, [route, next, router]);
+  }, [route, next, router, setLoading, loadingText]);
 
   return null;
 }

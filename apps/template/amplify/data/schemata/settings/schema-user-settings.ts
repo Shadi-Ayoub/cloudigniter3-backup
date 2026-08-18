@@ -43,7 +43,7 @@
 //         .to(['create', 'read', 'update', 'delete']),
 
 //       // Admin override
-//       allow.group('SYSTEM_ADMIN').to(['create', 'read', 'update', 'delete']),
+//       allow.group('system-admin').to(['create', 'read', 'update', 'delete']),
 
 //       // Fallback (optional): if you can't do owner rules yet, enable authenticated read/write
 //       // and enforce "userId === currentUser.sub" in your resolver/lambda.

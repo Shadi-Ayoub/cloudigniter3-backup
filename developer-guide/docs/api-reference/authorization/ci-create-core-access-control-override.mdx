@@ -14,7 +14,7 @@ Authorizes and creates one immutable, versioned core catalog override record.
 ```ts title="ciCreateCoreAccessControlOverride signature" showLineNumbers
 function ciCreateCoreAccessControlOverride(
   input: CiCreateCoreAccessControlOverrideInput,
-  options?: CiCreateCoreAccessControlOverrideOptions,
+  options?: CiCreateCoreAccessControlOverrideOptions
 ): CiCoreAccessControlOverride;
 ```
 
@@ -33,7 +33,7 @@ const override = ciCreateCoreAccessControlOverride({
 
 The helper:
 
-- requires a directly assigned system-scoped `SYSTEM_SUPER_ADMIN`;
+- requires a directly assigned system-scoped `system-super-admin`;
 - permits only core-owned targets;
 - validates the prospective resolved catalog;
 - preserves bootstrap access and the core-administration resource;

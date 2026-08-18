@@ -1,0 +1,46 @@
+---
+title: ciIsAccessControlKebabIdentifier
+description: Validate access-control IDs against CloudIgniter's lowercase kebab convention.
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 18
+---
+
+# `ciIsAccessControlKebabIdentifier`
+
+`ciIsAccessControlKebabIdentifier` is a runtime-neutral validator for domain, action, role, and privilege IDs.
+
+```ts
+import {
+  CI_ACCESS_CONTROL_KEBAB_IDENTIFIER_PATTERN,
+  ciIsAccessControlKebabIdentifier,
+} from "@cloudigniter/core/lib";
+```
+
+## Signature
+
+```ts
+const CI_ACCESS_CONTROL_KEBAB_IDENTIFIER_PATTERN =
+  "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$";
+
+function ciIsAccessControlKebabIdentifier(value: string): boolean;
+```
+
+The identifier must start with a lowercase letter. Remaining characters may be lowercase letters or digits,
+with single hyphens separating non-empty segments.
+
+```ts
+ciIsAccessControlKebabIdentifier("invoice-approver"); // true
+ciIsAccessControlKebabIdentifier("reviewer2"); // true
+ciIsAccessControlKebabIdentifier("2nd-reviewer"); // false
+ciIsAccessControlKebabIdentifier("Invoice_Approver"); // false
+```
+
+`CI_ACCESS_CONTROL_KEBAB_IDENTIFIER_PATTERN` contains the same rule without JavaScript regex delimiters, so it
+can be supplied directly to an HTML `pattern` attribute.
+
+The convention applies equally to core and application roles. Resource capability IDs use a separate lowercase
+dot-delimited namespace such as `billing.invoices`.
+
+See [Access-Control Catalog](../../core-system/authorization/catalog-and-permissions.mdx) for the complete naming
+strategy.

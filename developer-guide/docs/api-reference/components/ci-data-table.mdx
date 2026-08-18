@@ -243,17 +243,29 @@ type CiDataTableCellContext<TData, TValue = unknown> = {
 `definition.information` renders an Info icon or labeled button before ordinary row actions. It remains a separate first control in `menu` mode and does not count toward `rowActions.inlineCount` in `mixed` mode.
 
 ```ts title="CiDataTableInformation" showLineNumbers
-type CiDataTableInformation<TData> = {
-  mode?: "tooltip" | "dialog";
+type CiDataTableInformationBase<TData> = {
   display?: "icon" | "button";
   label?: string;
   title?: ReactNode | ((row: TData) => ReactNode);
   description?: ReactNode | ((row: TData) => ReactNode);
-  content: ReactNode | ((row: TData) => ReactNode);
   dialogClassName?: string;
   hideWhen?: (row: TData) => boolean;
   disableWhen?: (row: TData) => boolean;
 };
+
+type CiDataTableInformation<TData> = CiDataTableInformationBase<TData> &
+  (
+    | {
+        mode?: "tooltip";
+        content: ReactNode | ((row: TData) => ReactNode);
+        record?: never;
+      }
+    | {
+        mode: "dialog";
+        record?: (row: TData) => unknown;
+        content?: never;
+      }
+  );
 ```
 
 | Field             | Default                | Description                                                                                          |
@@ -262,8 +274,9 @@ type CiDataTableInformation<TData> = {
 | `display`         | `"icon"`               | Icon-only control or icon plus `label`.                                                              |
 | `label`           | `"Record information"` | Accessible name and default dialog title.                                                            |
 | `title`           | `label`                | Dialog title; may depend on the current row.                                                         |
-| `description`     | None                   | Optional dialog description; may depend on the current row.                                          |
-| `content`         | Required               | Tooltip or dialog body, either static or row-dependent.                                              |
+| `description`     | None                   | Optional Description-tab content; whitespace-only text is treated as absent.                         |
+| `record`          | Current row            | Optional dialog projection used by the nested Details and formatted JSON views.                      |
+| `content`         | Required in tooltip    | Tooltip body, either static or row-dependent; unavailable in dialog mode.                            |
 | `dialogClassName` | None                   | Additional classes for dialog content.                                                               |
 | `hideWhen`        | `false`                | Hides the control when the predicate returns `true`.                                                 |
 | `disableWhen`     | `false`                | Disables the control when the predicate returns `true`. Disabled controls do not reveal information. |
@@ -282,9 +295,19 @@ const dialogInformation = {
   label: "Tenant information",
   title: (tenant: TenantRow) => tenant.name,
   description: (tenant: TenantRow) => `Tenant ID: ${tenant.id}`,
-  content: (tenant: TenantRow) => <TenantSummary tenant={tenant} />,
+  record: (tenant: TenantRow) => ({
+    id: tenant.id,
+    region: tenant.region,
+    users: { count: tenant.usersCount },
+  }),
 };
 ```
+
+Dialog mode renders the record through three tabs: Description, Details, and JSON. Details recursively indents
+objects and arrays beneath their parent label. Description is selected initially when it is meaningful;
+otherwise it is disabled and Details is selected. JSON is formatted in a read-only text area. The extracted
+`CiDataTableRecordInformationDialog` component is also exported from `@cloudigniter/ui/client` for another
+CloudIgniter-owned control that needs the same presentation.
 
 ## Row actions
 
@@ -574,11 +597,12 @@ Read the TanStack references for [Pagination](https://tanstack.com/table/latest/
 
 ### Row-action layout configuration
 
-| Option                   | Default               | Description                                                                                                                              |
-| ------------------------ | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `rowActions.mode`        | `"menu"`              | `"buttons"` renders every visible action inline; `"menu"` puts ordinary actions in one drop-down; `"mixed"` combines both.               |
-| `rowActions.inlineCount` | `2`                   | Number of ordinary actions shown before overflow in mixed mode. Negative values normalize to zero. Information does not count toward it. |
-| `rowActions.header`      | Localized `"Actions"` | Action-column heading.                                                                                                                   |
+| Option                    | Default               | Description                                                                                                                              |
+| ------------------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `rowActions.mode`         | `"menu"`              | `"buttons"` renders every visible action inline; `"menu"` puts ordinary actions in one drop-down; `"mixed"` combines both.               |
+| `rowActions.inlineCount`  | `2`                   | Number of ordinary actions shown before overflow in mixed mode. Negative values normalize to zero. Information does not count toward it. |
+| `rowActions.header`       | Localized `"Actions"` | Action-column heading.                                                                                                                   |
+| `rowActions.reserveSpace` | `false`               | Reserves non-interactive action slots when row predicates hide controls, preserving alignment without rendering fake disabled actions.   |
 
 The action column is always logical inline-start: left-most in LTR and right-most in RTL.
 
@@ -1046,7 +1070,8 @@ const tenantDefinition = ciDefineDataTable<TenantRow>({
     mode: "dialog",
     label: "Tenant information",
     title: (tenant) => tenant.name,
-    content: (tenant) => <TenantSummary tenant={tenant} />,
+    description: (tenant) => tenant.description,
+    record: (tenant) => tenant,
   },
   filters: tenantFilters,
   rowActions: tenantRowActions,
@@ -1133,25 +1158,26 @@ export function TenantsTable() {
 
 ## Defaults summary
 
-| Capability          | Default                                       |
-| ------------------- | --------------------------------------------- |
-| Effective data mode | Client without `source`; hybrid with `source` |
-| Format              | Simple table only                             |
-| Sorting             | Enabled, no initial rules                     |
-| Global search       | Enabled, 250 ms debounce                      |
-| Pagination          | Enabled, 25 rows, options 10/25/50/100        |
-| All page size       | Disabled                                      |
-| Selection           | Automatic from global-action requirements     |
-| Row actions         | Drop-down menu, mixed inline count 2          |
-| Information         | Tooltip, icon-only, when configured           |
-| Column resizing     | Enabled                                       |
-| Hover highlight     | Enabled                                       |
-| Alternating rows    | Enabled                                       |
-| Width               | `100%`                                        |
-| Excel export        | Enabled, all filtered rows                    |
-| Hybrid page cache   | Five pages                                    |
-| Next-page prefetch  | Disabled                                      |
-| Preference cookie   | Disabled until `persistence` is supplied      |
+| Capability           | Default                                                       |
+| -------------------- | ------------------------------------------------------------- |
+| Effective data mode  | Client without `source`; hybrid with `source`                 |
+| Format               | Simple table only                                             |
+| Sorting              | Enabled, no initial rules                                     |
+| Global search        | Enabled, 250 ms debounce                                      |
+| Pagination           | Enabled, 25 rows, options 10/25/50/100                        |
+| All page size        | Disabled                                                      |
+| Selection            | Automatic from global-action requirements                     |
+| Row actions          | Drop-down menu, mixed inline count 2                          |
+| Row action alignment | Natural; enable `reserveSpace` when visibility differs by row |
+| Information          | Tooltip, icon-only, when configured                           |
+| Column resizing      | Enabled                                                       |
+| Hover highlight      | Enabled                                                       |
+| Alternating rows     | Enabled                                                       |
+| Width                | `100%`                                                        |
+| Excel export         | Enabled, all filtered rows                                    |
+| Hybrid page cache    | Five pages                                                    |
+| Next-page prefetch   | Disabled                                                      |
+| Preference cookie    | Disabled until `persistence` is supplied                      |
 
 ## Related guide
 

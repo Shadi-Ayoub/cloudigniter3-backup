@@ -237,6 +237,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
     0,
     config?.rowActions?.inlineCount ?? 2
   );
+  const reserveRowActionSpace = config?.rowActions?.reserveSpace ?? false;
   const selectionEnabled =
     config?.selection?.enabled ??
     globalActions.some((action) => (action.selection ?? "required") !== "none");
@@ -397,6 +398,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
             mode={rowActionMode}
             inlineCount={rowActionInlineCount}
             menuLabel={labels.actions}
+            reserveSpace={reserveRowActionSpace}
           />
         ),
       });
@@ -451,6 +453,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
     rowActionInlineCount,
     rowActionMode,
     rowActions,
+    reserveRowActionSpace,
     selectionEnabled,
   ]);
 
@@ -910,15 +913,48 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
 
   const visibleRows = table.getRowModel().rows;
 
+  /** Covers only the active data surface while preserving its dimensions. */
+  const renderLoadingOverlay = () =>
+    isLoading ? (
+      <div className="absolute inset-0 z-20 flex min-h-28 items-center justify-center rounded-[inherit] bg-background/80 px-4 text-center supports-backdrop-filter:backdrop-blur-[2px]">
+        <div
+          role="status"
+          aria-live="polite"
+          className="flex items-center gap-2 rounded-full border bg-background/95 px-4 py-2 text-sm font-medium text-foreground shadow-sm"
+        >
+          <RefreshCw className="size-4 animate-spin" aria-hidden />
+          <span>{labels.loading}</span>
+        </div>
+      </div>
+    ) : null;
+
+  const renderEmptyState = () =>
+    emptyState ?? (
+      <div className="relative flex min-h-44 items-center justify-center overflow-hidden px-4 text-center">
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute text-6xl font-semibold tracking-tight text-muted-foreground/10 select-none"
+        >
+          Empty
+        </span>
+        <div role="status" className="relative">
+          <p className="font-medium text-foreground">No records yet</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Records will appear here when they are available.
+          </p>
+        </div>
+      </div>
+    );
+
   /** Renders table and compact formats with shared semantic markup. */
   const renderTableFormat = (compact: boolean) => (
-    <div className="bg-background overflow-hidden rounded-xl border">
+    <div className="relative min-h-28 overflow-hidden rounded-xl border bg-background">
       <Table className="w-full table-fixed">
         <TableHeader className="bg-muted/70">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
               key={headerGroup.id}
-              className="flex hover:bg-transparent"
+              className="flex w-full hover:bg-transparent"
             >
               {headerGroup.headers.map((header) => {
                 const sorted = header.column.getIsSorted();
@@ -1056,26 +1092,13 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
           ))}
         </TableHeader>
         <TableBody>
-          {isLoading ? (
-            <TableRow>
-              <TableCell
-                colSpan={columns.length}
-                className="text-muted-foreground h-28 w-full text-center"
-              >
-                <RefreshCw
-                  className="me-2 inline size-4 animate-spin"
-                  aria-hidden
-                />
-                {labels.loading}
-              </TableCell>
-            </TableRow>
-          ) : visibleRows.length ? (
+          {visibleRows.length ? (
             visibleRows.map((row, rowIndex) => (
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() ? "selected" : undefined}
                 className={cn(
-                  "flex",
+                  "flex w-full",
                   stripedRows && rowIndex % 2 === 0
                     ? "bg-muted/25"
                     : "bg-background",
@@ -1099,97 +1122,97 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
               </TableRow>
             ))
           ) : (
-            <TableRow>
+            <TableRow className="flex w-full">
               <TableCell
                 colSpan={columns.length}
-                className="text-muted-foreground h-28 w-full text-center"
+                className="w-full"
+                style={{ flex: "1 0 100%", width: "100%" }}
               >
-                {emptyState ?? labels.noResults}
+                {renderEmptyState()}
               </TableCell>
             </TableRow>
           )}
         </TableBody>
       </Table>
+      {renderLoadingOverlay()}
     </div>
   );
 
   /** Renders responsive cards using the same TanStack rows and cell renderers. */
   const renderCardsFormat = () => (
-    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
-      {isLoading ? (
-        <div className="text-muted-foreground col-span-full rounded-xl border p-8 text-center">
-          <RefreshCw className="me-2 inline size-4 animate-spin" aria-hidden />
-          {labels.loading}
-        </div>
-      ) : visibleRows.length ? (
-        visibleRows.map((row, rowIndex) => {
-          const actionCell = row
-            .getAllCells()
-            .find((cell) => cell.column.id === ACTIONS_COLUMN_ID);
-          const selectionCell = row
-            .getAllCells()
-            .find((cell) => cell.column.id === SELECTION_COLUMN_ID);
-          const dataCells = row
-            .getAllCells()
-            .filter(
-              (cell) =>
-                cell.column.id !== ACTIONS_COLUMN_ID &&
-                cell.column.id !== SELECTION_COLUMN_ID
-            );
-          return (
-            <article
-              key={row.id}
-              data-state={row.getIsSelected() ? "selected" : undefined}
-              className={cn(
-                "rounded-xl border p-4 transition-colors data-[state=selected]:bg-muted",
-                stripedRows && rowIndex % 2 === 0
-                  ? "bg-muted/25"
-                  : "bg-background",
-                hoverHighlight && "hover:bg-accent/60"
-              )}
-            >
-              {selectionCell ? (
-                <div className="mb-3">{renderCell(selectionCell)}</div>
-              ) : null}
-              <dl className="space-y-3">
-                {dataCells.map((cell) => {
-                  const meta = getColumnMeta(cell.column.columnDef);
-                  return (
-                    <div
-                      key={cell.id}
-                      className="grid grid-cols-[minmax(6rem,0.4fr)_1fr] gap-3"
-                    >
-                      <dt className="text-muted-foreground text-sm font-medium">
-                        {meta?.label ??
-                          (typeof cell.column.columnDef.header === "string"
-                            ? cell.column.columnDef.header
-                            : cell.column.id)}
-                      </dt>
-                      <dd
-                        className={cn(
-                          "min-w-0 text-sm",
-                          getCellClassName(cell)
-                        )}
+    <div className="relative min-h-28 rounded-xl">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+        {visibleRows.length ? (
+          visibleRows.map((row, rowIndex) => {
+            const actionCell = row
+              .getAllCells()
+              .find((cell) => cell.column.id === ACTIONS_COLUMN_ID);
+            const selectionCell = row
+              .getAllCells()
+              .find((cell) => cell.column.id === SELECTION_COLUMN_ID);
+            const dataCells = row
+              .getAllCells()
+              .filter(
+                (cell) =>
+                  cell.column.id !== ACTIONS_COLUMN_ID &&
+                  cell.column.id !== SELECTION_COLUMN_ID
+              );
+            return (
+              <article
+                key={row.id}
+                data-state={row.getIsSelected() ? "selected" : undefined}
+                className={cn(
+                  "rounded-xl border p-4 transition-colors data-[state=selected]:bg-muted",
+                  stripedRows && rowIndex % 2 === 0
+                    ? "bg-muted/25"
+                    : "bg-background",
+                  hoverHighlight && "hover:bg-accent/60"
+                )}
+              >
+                {selectionCell ? (
+                  <div className="mb-3">{renderCell(selectionCell)}</div>
+                ) : null}
+                <dl className="space-y-3">
+                  {dataCells.map((cell) => {
+                    const meta = getColumnMeta(cell.column.columnDef);
+                    return (
+                      <div
+                        key={cell.id}
+                        className="grid grid-cols-[minmax(6rem,0.4fr)_1fr] gap-3"
                       >
-                        {renderCell(cell)}
-                      </dd>
-                    </div>
-                  );
-                })}
-              </dl>
-              {actionCell ? (
-                <div className="mt-4 flex justify-end border-t pt-3">
-                  {renderCell(actionCell)}
-                </div>
-              ) : null}
-            </article>
-          );
-        })
-      ) : (
-        <div className="text-muted-foreground col-span-full rounded-xl border p-8 text-center">
-          {emptyState ?? labels.noResults}
-        </div>
-      )}
+                        <dt className="text-muted-foreground text-sm font-medium">
+                          {meta?.label ??
+                            (typeof cell.column.columnDef.header === "string"
+                              ? cell.column.columnDef.header
+                              : cell.column.id)}
+                        </dt>
+                        <dd
+                          className={cn(
+                            "min-w-0 text-sm",
+                            getCellClassName(cell)
+                          )}
+                        >
+                          {renderCell(cell)}
+                        </dd>
+                      </div>
+                    );
+                  })}
+                </dl>
+                {actionCell ? (
+                  <div className="mt-4 flex justify-end border-t pt-3">
+                    {renderCell(actionCell)}
+                  </div>
+                ) : null}
+              </article>
+            );
+          })
+        ) : (
+          <div className="col-span-full rounded-xl border">
+            {renderEmptyState()}
+          </div>
+        )}
+      </div>
+      {renderLoadingOverlay()}
     </div>
   );
 

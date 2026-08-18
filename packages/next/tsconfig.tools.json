@@ -1,0 +1,12 @@
+{
+  "extends": "@cloudigniter/config-ts/node.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "rootDir": "../..",
+    "noEmit": true,
+    "tsBuildInfoFile": "node_modules/.cache/tsconfig.tools.tsbuildinfo"
+  },
+  "include": ["tsup.config.ts"],
+  "exclude": ["dist", "node_modules"]
+}

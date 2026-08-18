@@ -1,0 +1,56 @@
+---
+title: ciBuildTenantPublicPathname
+description: Build the browser-visible pathname for a logical CloudIgniter feature route and Tenant context.
+sidebar_position: 5
+---
+
+# `ciBuildTenantPublicPathname()`
+
+`ciBuildTenantPublicPathname()` is a runtime-neutral helper that converts a
+logical feature pathname into the public pathname used by CloudIgniter Tenant
+routing.
+
+```ts
+import { ciBuildTenantPublicPathname } from "@cloudigniter/core/lib";
+import type {
+  CiBuildTenantPublicPathnameInput,
+  CiTenantContext,
+} from "@cloudigniter/core/types";
+
+function ciBuildTenantPublicPathname(
+  input: CiBuildTenantPublicPathnameInput,
+): string;
+```
+
+```ts
+interface CiBuildTenantPublicPathnameInput {
+  featurePathname: string;
+  tenant: Pick<CiTenantContext, "mode" | "scope" | "slug">;
+  tenantBasePath?: string;
+}
+```
+
+## Behavior
+
+| Context                          | Result for `/dashboard/books` |
+| -------------------------------- | ----------------------------- |
+| Slug Tenant `acme`, default base | `/t/acme/dashboard/books`     |
+| Slug Global, default base        | `/t/global/dashboard/books`   |
+| Slug Tenant `acme`, empty base   | `/acme/dashboard/books`       |
+| Subdomain Tenant or Global       | `/dashboard/books`            |
+| System                           | `/dashboard/books`            |
+
+`tenantBasePath` defaults to `/t`. The helper normalizes duplicate and trailing
+slashes and removes query strings or fragments because its result is a
+pathname. Preserve search parameters separately when navigation requires them.
+In subdomain mode it does not construct or change a host; callers switching
+between Tenant hosts must resolve the destination origin separately.
+
+A slug-routed Tenant requires a non-empty, route-safe `tenant.slug`. The helper
+throws `TypeError` when it is missing or contains `/`. Global slug routing uses
+the reserved `global` segment and does not require a Tenant slug.
+
+This helper constructs navigation only. It does not validate Tenant existence,
+grant authorization, or make client-provided Tenant context trustworthy. See
+[Routing modes](/docs/core-system/multi-Tenancy/configuration/routing-modes) and
+[`CiRouteDefinition`](../type-definitions/CiRouteDefinition).

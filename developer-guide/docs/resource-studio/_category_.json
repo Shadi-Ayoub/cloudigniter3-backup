@@ -1,0 +1,8 @@
+{
+  "label": "Resource Studio",
+  "position": 5,
+  "link": {
+    "type": "generated-index",
+    "description": "Generate application-owned data entities, Amplify models, and scoped management pages, then deploy or roll them back deliberately."
+  }
+}

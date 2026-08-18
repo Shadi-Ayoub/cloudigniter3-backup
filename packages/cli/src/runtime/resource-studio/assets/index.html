@@ -1,0 +1,877 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="CloudIgniter Resource Studio for local Data Entity generation and Amplify sandbox deployment."
+    />
+    <title>Resource Studio | CloudIgniter</title>
+    <link rel="stylesheet" href="/studio.css" />
+    <script src="/studio.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#studio-main">Skip to editor</a>
+
+    <header class="topbar">
+      <div class="brand" aria-label="CloudIgniter Resource Studio">
+        <span class="brand__mark" aria-hidden="true">CI</span>
+        <span>
+          <strong>Resource Studio</strong>
+          <span class="brand__subline">CloudIgniter local workspace</span>
+        </span>
+      </div>
+      <div class="topbar__status">
+        <span id="session-status" class="status-pill" data-status="pending">
+          Connecting
+        </span>
+        <button id="shutdown-button" class="button button--quiet" type="button">
+          Close Studio
+        </button>
+      </div>
+    </header>
+
+    <div class="studio-shell">
+      <aside class="entity-sidebar" aria-labelledby="entities-heading">
+        <div class="sidebar__heading">
+          <div>
+            <p class="eyebrow">Application resources</p>
+            <h1 id="entities-heading">Data Entities</h1>
+          </div>
+          <button
+            id="new-entity-button"
+            class="button button--primary"
+            type="button"
+          >
+            New
+          </button>
+        </div>
+
+        <label class="search-control" for="entity-search">
+          <span>Filter entities</span>
+          <input
+            id="entity-search"
+            type="search"
+            placeholder="Search by name or ID"
+            autocomplete="off"
+          />
+        </label>
+
+        <div id="entity-empty" class="empty-state" hidden>
+          <strong>No Data Entities yet</strong>
+          <p>
+            Create one to generate its schema, management route, and create,
+            read, update, delete, and list client.
+          </p>
+        </div>
+        <ul
+          id="entity-list"
+          class="entity-list"
+          aria-label="Data Entities"
+        ></ul>
+
+        <section class="history-card" aria-labelledby="history-heading">
+          <div class="section-heading section-heading--compact">
+            <div>
+              <p class="eyebrow">Transaction history</p>
+              <h2 id="history-heading">Recent changes</h2>
+            </div>
+            <button
+              id="undo-button"
+              class="button button--secondary"
+              type="button"
+            >
+              Undo latest local change
+            </button>
+          </div>
+          <ol id="history-list" class="history-list"></ol>
+          <p id="history-empty" class="muted-copy">
+            No Resource Studio changes yet.
+          </p>
+        </section>
+      </aside>
+
+      <main id="studio-main" class="studio-main" tabindex="-1">
+        <section
+          id="fatal-panel"
+          class="notice notice--danger"
+          role="alert"
+          hidden
+        >
+          <div>
+            <strong>Resource Studio could not connect</strong>
+            <p id="fatal-message"></p>
+          </div>
+          <button
+            id="retry-button"
+            class="button button--secondary"
+            type="button"
+          >
+            Retry
+          </button>
+        </section>
+
+        <section class="deployment-panel" aria-labelledby="deployment-heading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Explicit cloud action</p>
+              <h2 id="deployment-heading">AWS Amplify sandbox</h2>
+              <p class="section-copy">
+                Artifact edits stay local until you explicitly deploy one
+                sandbox run.
+              </p>
+            </div>
+            <span id="aws-status" class="status-pill" data-status="neutral">
+              Not checked
+            </span>
+          </div>
+
+          <div class="deployment-grid">
+            <label for="aws-profile">
+              <span>AWS profile <span aria-hidden="true">*</span></span>
+              <input
+                id="aws-profile"
+                name="profile"
+                type="text"
+                maxlength="128"
+                autocomplete="off"
+                placeholder="company-development"
+              />
+              <small
+                >Used by STS, SSO login, and the one-shot sandbox
+                command.</small
+              >
+            </label>
+            <label for="sandbox-identifier">
+              <span>Sandbox identifier <span aria-hidden="true">*</span></span>
+              <input
+                id="sandbox-identifier"
+                name="identifier"
+                type="text"
+                required
+                maxlength="15"
+                pattern="[A-Za-z0-9-]{1,15}"
+                autocomplete="off"
+              />
+              <small
+                >Stable local value; 1–15 letters, numbers, or hyphens.</small
+              >
+            </label>
+          </div>
+
+          <div class="deployment-actions" aria-label="AWS actions">
+            <button
+              id="preflight-button"
+              class="button button--secondary"
+              type="button"
+            >
+              Check AWS access
+            </button>
+            <button
+              id="sso-button"
+              class="button button--secondary"
+              type="button"
+            >
+              Refresh SSO login
+            </button>
+            <button
+              id="deploy-button"
+              class="button button--primary"
+              type="button"
+            >
+              Deploy once
+            </button>
+          </div>
+          <p id="node-runtime-note" class="runtime-note"></p>
+          <section
+            id="verified-deployment-target"
+            class="verified-target"
+            aria-labelledby="verified-target-heading"
+            hidden
+          >
+            <div>
+              <p class="eyebrow">Short-lived deployment intent</p>
+              <h3 id="verified-target-heading">Verified AWS target</h3>
+            </div>
+            <dl class="verified-target__details">
+              <div>
+                <dt>Account</dt>
+                <dd id="verified-account"></dd>
+              </div>
+              <div>
+                <dt>Region</dt>
+                <dd id="verified-region"></dd>
+              </div>
+              <div class="verified-target__arn">
+                <dt>Caller ARN</dt>
+                <dd id="verified-arn"></dd>
+              </div>
+              <div>
+                <dt>Expires</dt>
+                <dd><time id="verified-expiry"></time></dd>
+              </div>
+            </dl>
+            <p>
+              Deploy is enabled only while this target, profile, identifier, and
+              local generated plan remain unchanged.
+            </p>
+          </section>
+          <p id="aws-result" class="inline-result" aria-live="polite">
+            Local undo restores files only. Reversing a deployed change requires
+            another explicit one-shot deploy.
+          </p>
+        </section>
+
+        <section id="warning-panel" class="notice notice--warning" hidden>
+          <div>
+            <strong>Planner notices</strong>
+            <ul id="warning-list"></ul>
+          </div>
+        </section>
+
+        <section class="editor-panel" aria-labelledby="editor-heading">
+          <div class="editor-header">
+            <div>
+              <p id="editor-mode" class="eyebrow">Create resource</p>
+              <h2 id="editor-heading">New Data Entity</h2>
+              <p class="section-copy">
+                Define one application concept. CloudIgniter plans its backend
+                model and front-end management route together.
+              </p>
+            </div>
+            <span class="provider-badge">AWS Amplify Data</span>
+          </div>
+
+          <form id="entity-form" novalidate>
+            <div
+              id="form-errors"
+              class="notice notice--danger"
+              role="alert"
+              tabindex="-1"
+              hidden
+            >
+              <div>
+                <strong>Review the highlighted fields</strong>
+                <ul id="form-error-list"></ul>
+              </div>
+            </div>
+
+            <fieldset class="form-section">
+              <legend>Identity and route</legend>
+              <p class="form-section__copy">
+                IDs are immutable after creation. Routes must be static
+                lowercase kebab-case paths.
+              </p>
+
+              <div class="form-grid form-grid--three">
+                <label for="entity-id">
+                  <span>Entity ID <span aria-hidden="true">*</span></span>
+                  <input
+                    id="entity-id"
+                    name="id"
+                    type="text"
+                    required
+                    pattern="[a-z][a-z0-9]*(?:-[a-z0-9]+)*"
+                    autocomplete="off"
+                    aria-describedby="entity-id-help"
+                  />
+                  <small id="entity-id-help"
+                    >Lowercase kebab-case, for example <code>book</code>.</small
+                  >
+                </label>
+                <label for="entity-name">
+                  <span>Model name <span aria-hidden="true">*</span></span>
+                  <input
+                    id="entity-name"
+                    name="name"
+                    type="text"
+                    required
+                    pattern="[A-Z][A-Za-z0-9]*"
+                    autocomplete="off"
+                  />
+                  <small
+                    >PascalCase singular, for example <code>Book</code>.</small
+                  >
+                </label>
+                <label for="entity-plural-name">
+                  <span>Plural name <span aria-hidden="true">*</span></span>
+                  <input
+                    id="entity-plural-name"
+                    name="pluralName"
+                    type="text"
+                    required
+                    pattern="[A-Z][A-Za-z0-9]*"
+                    autocomplete="off"
+                  />
+                  <small
+                    >PascalCase display plural, for example
+                    <code>Books</code>.</small
+                  >
+                </label>
+              </div>
+
+              <div class="form-grid form-grid--two">
+                <label for="entity-scope">
+                  <span
+                    >Application scope <span aria-hidden="true">*</span></span
+                  >
+                  <select id="entity-scope" name="scope" required>
+                    <option value="tenant">
+                      Tenant — records isolated by tenant
+                    </option>
+                    <option value="global">
+                      Global — shared application records
+                    </option>
+                  </select>
+                  <small
+                    >Controls route placement and the managed list
+                    partition.</small
+                  >
+                </label>
+                <label for="data-store">
+                  <span>Data store</span>
+                  <select
+                    id="data-store"
+                    disabled
+                    aria-describedby="data-store-help"
+                  >
+                    <option value="managed-model">
+                      New Amplify managed table
+                    </option>
+                    <option value="existing-table">
+                      Existing table — planned for a later adapter
+                    </option>
+                  </select>
+                  <small id="data-store-help"
+                    >Resource Studio V1 safely supports managed models
+                    only.</small
+                  >
+                </label>
+              </div>
+
+              <label for="entity-description">
+                <span>Description</span>
+                <textarea
+                  id="entity-description"
+                  name="description"
+                  rows="2"
+                  maxlength="500"
+                ></textarea>
+              </label>
+
+              <div class="form-grid form-grid--two">
+                <label for="management-path">
+                  <span
+                    >Management route <span aria-hidden="true">*</span></span
+                  >
+                  <input
+                    id="management-path"
+                    name="managementPath"
+                    type="text"
+                    required
+                    pattern="/(?:[a-z0-9]+(?:-[a-z0-9]+)*)(?:/[a-z0-9]+(?:-[a-z0-9]+)*)*"
+                    autocomplete="off"
+                  />
+                  <small
+                    >Custom static route, for example
+                    <code>/dashboard/books</code>.</small
+                  >
+                </label>
+                <label for="management-title">
+                  <span>Page title <span aria-hidden="true">*</span></span>
+                  <input
+                    id="management-title"
+                    name="managementTitle"
+                    type="text"
+                    required
+                    maxlength="100"
+                    autocomplete="off"
+                  />
+                </label>
+              </div>
+            </fieldset>
+
+            <section
+              class="system-section"
+              aria-labelledby="system-fields-heading"
+            >
+              <div class="section-heading section-heading--compact">
+                <div>
+                  <h3 id="system-fields-heading">CloudIgniter system fields</h3>
+                  <p class="section-copy">
+                    Locked fields are generated consistently for every entity.
+                  </p>
+                </div>
+                <span class="locked-badge">Read only</span>
+              </div>
+              <dl id="system-fields" class="system-fields">
+                <div>
+                  <dt>PK</dt>
+                  <dd>String · required</dd>
+                </div>
+                <div>
+                  <dt>SK</dt>
+                  <dd>String · required</dd>
+                </div>
+                <div>
+                  <dt>id</dt>
+                  <dd>ID · required</dd>
+                </div>
+                <div>
+                  <dt>ciScopeKey</dt>
+                  <dd>String · required</dd>
+                </div>
+                <div>
+                  <dt>ciSortKey</dt>
+                  <dd>String · required</dd>
+                </div>
+                <div>
+                  <dt>createdAt</dt>
+                  <dd>AWSDateTime · automatic</dd>
+                </div>
+                <div>
+                  <dt>updatedAt</dt>
+                  <dd>AWSDateTime · automatic</dd>
+                </div>
+              </dl>
+              <p class="muted-copy">
+                Create, read, update, delete, and list use the generated Amplify
+                model client.
+              </p>
+            </section>
+
+            <section
+              class="form-section"
+              aria-labelledby="custom-fields-heading"
+            >
+              <div class="section-heading">
+                <div>
+                  <h3 id="custom-fields-heading">Custom fields</h3>
+                  <p class="section-copy">
+                    Add the fields that describe this application concept.
+                  </p>
+                </div>
+                <button
+                  id="add-field-button"
+                  class="button button--secondary"
+                  type="button"
+                >
+                  Add field
+                </button>
+              </div>
+              <div id="fields-list" class="repeater-list"></div>
+              <p id="fields-empty" class="empty-inline" hidden>
+                No custom fields. Add at least one field for a useful Data
+                Entity.
+              </p>
+            </section>
+
+            <details class="form-section disclosure" open>
+              <summary>
+                <span>
+                  <strong>Authorization</strong>
+                  <small>Amplify model rules and allowed CRUD operations</small>
+                </span>
+              </summary>
+              <div class="disclosure__content">
+                <div class="section-heading section-heading--compact">
+                  <p class="section-copy">
+                    Rules are combined by Amplify. Start with least privilege
+                    and expand deliberately.
+                  </p>
+                  <button
+                    id="add-auth-button"
+                    class="button button--secondary"
+                    type="button"
+                  >
+                    Add rule
+                  </button>
+                </div>
+                <div id="auth-list" class="repeater-list"></div>
+                <p id="auth-empty" class="empty-inline" hidden>
+                  No explicit rules. CloudIgniter will apply its core
+                  administrator default.
+                </p>
+              </div>
+            </details>
+
+            <details class="form-section disclosure">
+              <summary>
+                <span>
+                  <strong>Secondary indexes</strong>
+                  <small
+                    >Optional bounded query paths in addition to PK/SK</small
+                  >
+                </span>
+              </summary>
+              <div class="disclosure__content">
+                <div class="notice notice--info">
+                  <p>
+                    CloudIgniter reserves one managed
+                    <code>byScope</code> index. You can add up to 19 custom
+                    indexes using scalar DynamoDB-compatible fields.
+                  </p>
+                </div>
+                <div class="section-heading section-heading--compact">
+                  <p class="section-copy">
+                    Choose keys from the system or custom fields above.
+                  </p>
+                  <button
+                    id="add-index-button"
+                    class="button button--secondary"
+                    type="button"
+                  >
+                    Add index
+                  </button>
+                </div>
+                <datalist id="field-name-options"></datalist>
+                <div id="indexes-list" class="repeater-list"></div>
+                <p id="indexes-empty" class="empty-inline">
+                  No custom indexes.
+                </p>
+              </div>
+            </details>
+
+            <div class="editor-actions">
+              <button
+                id="reset-form-button"
+                class="button button--quiet"
+                type="button"
+              >
+                Reset
+              </button>
+              <button
+                id="drop-entity-button"
+                class="button button--danger"
+                type="button"
+                hidden
+              >
+                Drop Data Entity
+              </button>
+              <button
+                id="save-entity-button"
+                class="button button--primary"
+                type="submit"
+              >
+                Create Data Entity
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <section class="activity-panel" aria-labelledby="activity-heading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Machine-local lifecycle log</p>
+              <h2 id="activity-heading">Activity</h2>
+            </div>
+            <button
+              id="refresh-logs-button"
+              class="button button--secondary"
+              type="button"
+            >
+              Refresh logs
+            </button>
+          </div>
+          <ol id="activity-list" class="activity-list"></ol>
+          <p id="activity-empty" class="empty-inline">
+            No AWS lifecycle events yet.
+          </p>
+        </section>
+      </main>
+    </div>
+
+    <dialog
+      id="confirm-dialog"
+      class="confirm-dialog"
+      aria-labelledby="confirm-title"
+    >
+      <form method="dialog">
+        <p class="eyebrow">Confirm destructive action</p>
+        <h2 id="confirm-title">Drop Data Entity?</h2>
+        <p id="confirm-message"></p>
+        <div class="dialog-actions">
+          <button
+            id="confirm-cancel"
+            class="button button--secondary"
+            value="cancel"
+            autofocus
+          >
+            Cancel
+          </button>
+          <button
+            id="confirm-action"
+            class="button button--danger"
+            value="confirm"
+          >
+            Drop entity
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <div
+      id="toast"
+      class="toast"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+      hidden
+    ></div>
+
+    <template id="field-template">
+      <article class="repeater-card field-row">
+        <div class="repeater-card__heading">
+          <h4>Field <span class="row-number"></span></h4>
+          <button class="button button--quiet remove-row" type="button">
+            Remove field
+          </button>
+        </div>
+        <div class="form-grid form-grid--three">
+          <label>
+            <span>Field name <span aria-hidden="true">*</span></span>
+            <input
+              class="field-name"
+              type="text"
+              required
+              pattern="[A-Za-z_][A-Za-z0-9_]*"
+              autocomplete="off"
+            />
+          </label>
+          <label>
+            <span>Display label</span>
+            <input class="field-label" type="text" autocomplete="off" />
+          </label>
+          <label>
+            <span>AWS ModelFieldType <span aria-hidden="true">*</span></span>
+            <select class="field-type" required></select>
+          </label>
+        </div>
+        <div class="option-row" role="group" aria-label="Field modifiers">
+          <label class="check-control"
+            ><input class="field-required" type="checkbox" />
+            <span>Required</span></label
+          >
+          <label class="check-control"
+            ><input class="field-array" type="checkbox" />
+            <span>Array</span></label
+          >
+          <label class="check-control"
+            ><input class="field-items-required" type="checkbox" />
+            <span>Array items required</span></label
+          >
+        </div>
+        <label>
+          <span>Default value</span>
+          <input class="field-default" type="text" autocomplete="off" />
+          <small
+            >Use JSON for arrays and AWSJSON; use true or false for
+            Boolean.</small
+          >
+        </label>
+        <details class="nested-disclosure validation-disclosure">
+          <summary>Validation rules</summary>
+          <div class="form-grid form-grid--validation">
+            <label
+              ><span>Minimum length</span
+              ><input
+                class="validation-min-length"
+                type="number"
+                min="0"
+                step="1"
+                inputmode="numeric"
+            /></label>
+            <label
+              ><span>Maximum length</span
+              ><input
+                class="validation-max-length"
+                type="number"
+                min="0"
+                step="1"
+                inputmode="numeric"
+            /></label>
+            <label
+              ><span>Starts with</span
+              ><input class="validation-starts-with" type="text"
+            /></label>
+            <label
+              ><span>Ends with</span
+              ><input class="validation-ends-with" type="text"
+            /></label>
+            <label
+              ><span>Matches expression</span
+              ><input class="validation-matches" type="text"
+            /></label>
+            <label
+              ><span>Greater than</span
+              ><input
+                class="validation-gt"
+                type="number"
+                step="any"
+                inputmode="decimal"
+            /></label>
+            <label
+              ><span>Greater than or equal</span
+              ><input
+                class="validation-gte"
+                type="number"
+                step="any"
+                inputmode="decimal"
+            /></label>
+            <label
+              ><span>Less than</span
+              ><input
+                class="validation-lt"
+                type="number"
+                step="any"
+                inputmode="decimal"
+            /></label>
+            <label
+              ><span>Less than or equal</span
+              ><input
+                class="validation-lte"
+                type="number"
+                step="any"
+                inputmode="decimal"
+            /></label>
+          </div>
+          <small class="validation-help"
+            >String rules apply to scalar String fields; numeric rules apply to
+            Int and Float.</small
+          >
+        </details>
+      </article>
+    </template>
+
+    <template id="auth-template">
+      <article class="repeater-card auth-row">
+        <div class="repeater-card__heading">
+          <h4>Rule <span class="row-number"></span></h4>
+          <button class="button button--quiet remove-row" type="button">
+            Remove rule
+          </button>
+        </div>
+        <div class="form-grid form-grid--three">
+          <label>
+            <span>Strategy <span aria-hidden="true">*</span></span>
+            <select class="auth-strategy" required></select>
+          </label>
+          <label class="auth-provider-wrap">
+            <span>Provider</span>
+            <select class="auth-provider"></select>
+          </label>
+          <label class="auth-field-wrap">
+            <span>Model field</span>
+            <input
+              class="auth-field"
+              type="text"
+              list="field-name-options"
+              autocomplete="off"
+            />
+          </label>
+        </div>
+        <div class="form-grid form-grid--three">
+          <label class="auth-groups-wrap">
+            <span>Groups</span>
+            <input class="auth-groups" type="text" autocomplete="off" />
+            <small>Comma-separated core or custom group names.</small>
+          </label>
+          <label class="auth-identity-claim-wrap">
+            <span>Identity claim</span>
+            <input class="auth-identity-claim" type="text" autocomplete="off" />
+          </label>
+          <label class="auth-group-claim-wrap">
+            <span>Group claim</span>
+            <input class="auth-group-claim" type="text" autocomplete="off" />
+          </label>
+        </div>
+        <fieldset class="operations-fieldset">
+          <legend>Allowed operations</legend>
+          <div class="option-row">
+            <label class="check-control"
+              ><input type="checkbox" value="create" checked />
+              <span>Create</span></label
+            >
+            <label class="check-control"
+              ><input type="checkbox" value="read" checked />
+              <span>Read / list</span></label
+            >
+            <label class="check-control"
+              ><input type="checkbox" value="update" checked />
+              <span>Update</span></label
+            >
+            <label class="check-control"
+              ><input type="checkbox" value="delete" checked />
+              <span>Delete</span></label
+            >
+          </div>
+        </fieldset>
+      </article>
+    </template>
+
+    <template id="index-template">
+      <article class="repeater-card index-row">
+        <div class="repeater-card__heading">
+          <h4>Index <span class="row-number"></span></h4>
+          <button class="button button--quiet remove-row" type="button">
+            Remove index
+          </button>
+        </div>
+        <div class="form-grid form-grid--three">
+          <label>
+            <span>Index name <span aria-hidden="true">*</span></span>
+            <input
+              class="index-name"
+              type="text"
+              required
+              pattern="[A-Za-z_][A-Za-z0-9_]*"
+              autocomplete="off"
+            />
+          </label>
+          <label>
+            <span>Query field <span aria-hidden="true">*</span></span>
+            <input
+              class="index-query-field"
+              type="text"
+              required
+              pattern="[A-Za-z_][A-Za-z0-9_]*"
+              autocomplete="off"
+            />
+          </label>
+          <label>
+            <span>Projection</span>
+            <select class="index-projection">
+              <option value="ALL">ALL</option>
+              <option value="KEYS_ONLY">KEYS_ONLY</option>
+              <option value="INCLUDE">INCLUDE</option>
+            </select>
+          </label>
+        </div>
+        <div class="form-grid form-grid--two">
+          <label>
+            <span>Partition key <span aria-hidden="true">*</span></span>
+            <input
+              class="index-partition-key"
+              type="text"
+              required
+              list="field-name-options"
+              autocomplete="off"
+            />
+          </label>
+          <label>
+            <span>Sort keys</span>
+            <input class="index-sort-keys" type="text" autocomplete="off" />
+            <small>Comma-separated, in key order.</small>
+          </label>
+        </div>
+        <label class="index-attributes-wrap">
+          <span>Included non-key attributes</span>
+          <input class="index-attributes" type="text" autocomplete="off" />
+          <small>Required for INCLUDE; comma-separated.</small>
+        </label>
+      </article>
+    </template>
+  </body>
+</html>

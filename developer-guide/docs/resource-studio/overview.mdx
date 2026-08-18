@@ -1,0 +1,89 @@
+---
+title: Resource Studio overview
+description: Understand the Data Entity terminology, generated backend and frontend artifacts, Tenant scopes, and V1 boundaries.
+sidebar_position: 1
+---
+
+Resource Studio turns an application-level data definition into both an AWS Amplify Data model and an administration page. For example, a `Book` definition produces a managed data store, typed create/read/update/delete/list operations, and a `CiDataTable`-based Books manager.
+
+Resource Studio is an application-developer feature exposed through `ci`. It does not have a `ci-dev` variant: CloudIgniter contributors add platform-owned entities in the package that owns the capability instead of generating them into the application template.
+
+## Terminology
+
+V1 uses these names consistently:
+
+| Term | Meaning |
+| --- | --- |
+| **Resource Studio** | The local browser tool that defines, generates, deploys, drops, and rolls back application resources. |
+| **Resource** | A generated unit managed by Resource Studio. A Data Entity is the first resource kind; later versions can add functions and other kinds. |
+| **Data Entity** | The application-level definition of one record type, such as `Book`, including its fields, authorization, indexes, scope, and management route. |
+| **Data Record** | One stored instance of a Data Entity, such as one book. |
+| **Data Store** | The persistence resource behind the Data Entity. V1 creates an Amplify-managed model and DynamoDB table. |
+| **Management Page** | The generated Tenant- or Global-scoped page where an administrator can create, list, read, update, and delete records. |
+
+Use **Data Entity** for the schema-level concept and **Data Record** for an individual value. “Data model” is reserved for the lower-level Amplify model when the distinction matters.
+
+## What V1 generates
+
+For a Data Entity whose ID is `book`, name is `Book`, plural name is `Books`, Tenant scope is `tenant`, and logical management path is `/dashboard/books`, Resource Studio owns these application files:
+
+```text
+amplify/custom/data/schemata/
+├── data-entities/book/
+│   ├── entity.ci.json
+│   └── schema.generated.ts
+└── registry.generated.ts
+
+src/app/(ci-tenant)/ci-tenant/(ci-custom)/dashboard/books/
+├── page.tsx
+├── CiBooksManager.tsx
+└── actions.generated.ts
+
+src/custom/routes/resource-studio.generated.ts
+```
+
+The descriptor is the portable source for later Studio edits. The schema defines the Amplify model, the manager renders `CiDataEntityManager` with `CiDataTable`, and the server actions use the generated Amplify Data client operations. The generated route registry is merged into the application's routes through the core/custom composition seam.
+
+Do not edit a generated file directly. Re-open the Data Entity in Resource Studio and regenerate it. Put unrelated hand-written schemas and routes in the adjacent manual custom registries; Resource Studio does not rewrite those files.
+
+## Scope and public routes
+
+Every Data Entity is either `tenant` or `global` scoped. Resource Studio never generates a Data Entity page beneath `(system)`.
+
+| Scope | Generated App Router tree | Example browser URL |
+| --- | --- | --- |
+| Tenant | `src/app/(ci-tenant)/ci-tenant/(ci-custom)/dashboard/books` | `/t/acme/dashboard/books` |
+| Global | `src/app/(ci-global)/ci-global/(ci-custom)/dashboard/books` | `/t/global/dashboard/books` |
+
+The management path entered in Studio is the logical feature path, such as `/dashboard/books`. The form suggests `/dashboard/<plural-kebab-case>` and lets you replace it with another static absolute path. Do not enter `/ci-tenant`, `/ci-global`, or a public `/t/...` prefix; CloudIgniter's proxy adds the correct internal and public scope transport.
+
+The `(ci-custom)` route group does not add a URL segment. It marks the generated page as application-owned so a template upgrade can distinguish it from CloudIgniter core pages. The route definition is protected and limited to the selected Tenant scope. EmberGuard policy generation is intentionally deferred beyond V1.
+
+## Data and key conventions
+
+Resource Studio supplies these fields and does not let the form redefine them:
+
+- `PK` and `SK`, used as the Amplify model identifier;
+- `id`, the application record identifier;
+- `ciScopeKey` and `ciSortKey`, used by the bounded list query;
+- Amplify-managed `createdAt` and `updatedAt` timestamps.
+
+Generated server actions construct every persisted key with CloudIgniter's canonical `CI#...` table-key helpers and re-resolve the request's Tenant scope on the server. Tenant identifiers and key fields are not accepted from the browser.
+
+Listing uses the generated `byScope` GSI and a paginated Query operation. It does not use a request-path DynamoDB Scan. GSI reads are eventually consistent, so the management list can briefly lag a successful write.
+
+## V1 boundaries
+
+Resource Studio V1 deliberately supports a narrow, reviewable path:
+
+- AWS Amplify Gen 2 `a.model(...)` data stores only;
+- one new Amplify-managed model/table per generated Data Entity;
+- native Amplify Data create, get, update, delete, and GSI-backed list operations;
+- Tenant- or Global-scoped Next.js management pages;
+- application-owned output under `amplify/custom`, `src/custom`, and scoped `(ci-custom)` route trees.
+
+V1 does **not** attach a model to an arbitrary existing DynamoDB table, add fields to a hand-written or core model, generate CRUD Lambda functions, generate EmberGuard resources/policies, or expose a `ci-dev` generation command. Native Amplify Data operations are the supported CRUD-and-list implementation; a Lambda is not an automatic requirement for those operations.
+
+The generated action names reflect model semantics: create calls Amplify `.create`, reads call `.get`, changes call `.update`, deletion calls `.delete`, and listing calls the named scope GSI Query. Resource Studio does not invent ambiguous `SET`/`PUT` Lambda names for these operations.
+
+Continue with [Create and manage a Data Entity](./data-entities), then read [Deployment, drop, and rollback](./deployment-and-rollback) before applying a sandbox change. Tooling authors can look up the [Resource Studio compiler APIs](../api-reference/build-time-apis/resource-studio-compilers).

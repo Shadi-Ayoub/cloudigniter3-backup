@@ -234,7 +234,15 @@ const userDefinition = ciDefineDataTable<UserRow>({
 });
 ```
 
-Use dialog mode for structured content:
+Use dialog mode for the built-in record viewer. It opens with three keyboard-accessible tabs above the content
+area:
+
+- **Description** shows a non-empty `description` and is disabled when no meaningful description is available.
+- **Details** shows nested `label: value` fields, indenting arrays and objects beneath their parent.
+- **JSON** shows the projected record as formatted, read-only JSON.
+
+Description is the initial view when available; otherwise Details is selected. The complete row is displayed by
+default. Use `record` to project out fields that should not appear or to supply a more useful display shape.
 
 ```tsx title="app/tenants/information-dialog.tsx" showLineNumbers
 const tenantDefinition = ciDefineDataTable<TenantRow>({
@@ -245,20 +253,19 @@ const tenantDefinition = ciDefineDataTable<TenantRow>({
     label: "Tenant information",
     title: (tenant) => tenant.name,
     description: (tenant) => `Tenant ID: ${tenant.id}`,
-    content: (tenant) => (
-      <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2">
-        <dt>Region</dt>
-        <dd>{tenant.region}</dd>
-        <dt>Users</dt>
-        <dd>{tenant.usersCount}</dd>
-      </dl>
-    ),
+    record: (tenant) => ({
+      id: tenant.id,
+      region: tenant.region,
+      users: { count: tenant.usersCount },
+    }),
     disableWhen: (tenant) => tenant.status === "provisioning",
   },
 });
 ```
 
-`information` accepts the same `hideWhen` and `disableWhen` record predicates as ordinary row actions. Tooltip content should stay brief; use dialog mode for interactive, multiline, or sensitive detail presentations.
+`information` accepts the same `hideWhen` and `disableWhen` record predicates as ordinary row actions. Tooltip
+content should stay brief. Dialog records already exist in the browser row, but the projection should still
+exclude fields that the user does not need to inspect.
 
 Choose one of three presentation modes in configuration:
 
@@ -271,11 +278,20 @@ const menu = { rowActions: { mode: "menu" as const } };
 
 // Two inline actions followed by an overflow menu.
 const mixed = {
-  rowActions: { mode: "mixed" as const, inlineCount: 2 },
+  rowActions: {
+    mode: "mixed" as const,
+    inlineCount: 2,
+    reserveSpace: true,
+  },
 };
 ```
 
 The action column is placed at inline-start: left-most in LTR and right-most in RTL. When configured, the built-in Info control is always its first button and the overflow menu follows it.
+
+Use `reserveSpace: true` when permissions, ownership, lifecycle state, or row type make actions visible on some
+rows but not others. The shared renderer inserts non-interactive spacing for hidden controls, keeping data and
+action columns aligned without displaying misleading disabled icons. Keep action order stable across rows and
+use `disableWhen` only when an unavailable action should remain discoverable.
 
 ## Sorting and filters
 
@@ -699,6 +715,10 @@ const config = {
 ## Loading, errors, and empty content
 
 Provider request states are handled automatically. Local/parent workflows can provide their own state as well.
+Loading covers only the active table/card surface with a backdrop, spinner, and live status message. Existing
+rows, dimensions, and semantic table headings remain mounted, avoiding layout shift and the appearance that
+data was deleted during refresh. An empty table still renders its headings and places the empty message in one
+full-width body cell.
 
 ```tsx title="app/users/table-states.tsx" showLineNumbers
 <CiDataTable
@@ -716,6 +736,16 @@ Provider request states are handled automatically. Local/parent workflows can pr
   }
 />
 ```
+
+Use specific `config.labels.loading` and `config.labels.noResults` copy for the page. Distinguish a genuinely
+empty dataset from a filtered-empty result, and offer a filter-reset action through `emptyState` when useful.
+For create/update/delete workflows, keep the previous data visible, pass the pending state through `loading`,
+then refresh only after success. Pair the table with `CiAlert` for semantic success/error feedback and
+`CiAlertDialog` for destructive or high-impact confirmation; do not use browser-native alert or confirm APIs.
+
+After a successful mutation, reset incompatible paging or filtering when necessary. If restoring persisted
+filters could make a newly created record appear missing, deliberately disable filter persistence for that
+management page.
 
 ## Complete management-table configuration
 
@@ -737,7 +767,8 @@ const tenantDefinition = ciDefineDataTable<TenantRow>({
     mode: "dialog",
     label: "Tenant information",
     title: (tenant) => tenant.name,
-    content: (tenant) => <TenantSummary tenant={tenant} />,
+    description: (tenant) => tenant.description,
+    record: (tenant) => tenant,
   },
   filters: tenantFilters,
   rowActions: tenantRowActions,
@@ -759,7 +790,7 @@ const tenantConfig: CiDataTableConfig<TenantRow> = {
     allowAll: false,
   },
   selection: { enableRow: (tenant) => !tenant.isSystem },
-  rowActions: { mode: "mixed", inlineCount: 2 },
+  rowActions: { mode: "mixed", inlineCount: 2, reserveSpace: true },
   columnResizing: true,
   hoverHighlight: true,
   stripedRows: true,

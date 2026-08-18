@@ -48,7 +48,7 @@ import type {
 export function createAppAuthorizationSubject(
   user: CiUser,
   roleAssignments: readonly CiRoleAssignment[],
-  directPrivileges: readonly CiScopedPrivilege[] = [],
+  directPrivileges: readonly CiScopedPrivilege[] = []
 ) {
   return ciCreateAuthorizationSubject(
     {
@@ -56,7 +56,7 @@ export function createAppAuthorizationSubject(
       authenticated: user.authenticated,
     },
     roleAssignments,
-    directPrivileges,
+    directPrivileges
   );
 }
 ```
@@ -85,11 +85,11 @@ const systemAssignments = ciCreateRoleAssignmentsFromIdentityGroups(
   "exact",
   {
     roleMap: {
-      "cloudigniter-users": "USER",
-      "cloudigniter-system-admins": "SYSTEM_ADMIN",
+      "cloudigniter-users": "user",
+      "cloudigniter-system-admins": "system-admin",
       "billing-readers": null, // Belongs to another application.
     },
-  },
+  }
 );
 ```
 
@@ -110,7 +110,7 @@ as authoritative for role precedence and privileges:
 ```ts
 const cognitoGroups = Array.isArray(payload["cognito:groups"])
   ? payload["cognito:groups"].filter(
-      (value): value is string => typeof value === "string",
+      (value): value is string => typeof value === "string"
     )
   : [];
 
@@ -121,11 +121,11 @@ const assignments = ciCreateRoleAssignmentsFromIdentityGroups(
   "exact",
   {
     roleMap: {
-      "ci-users": "USER",
-      "ci-developers": "DEVELOPER",
-      "ci-system-admins": "SYSTEM_ADMIN",
+      "ci-users": "user",
+      "ci-developers": "developer",
+      "ci-system-admins": "system-admin",
     },
-  },
+  }
 );
 ```
 
@@ -162,19 +162,16 @@ import {
   ciSystemAccessScope,
 } from "@cloudigniter/emberguard/lib";
 
-const trustedSystemGroups = new Set([
-  "SYSTEM_ADMIN",
-  "SYSTEM_SUPER_ADMIN",
-]);
+const trustedSystemGroups = new Set(["system-admin", "system-super-admin"]);
 
 const systemRoleIds = user.roles.filter((roleId) =>
-  trustedSystemGroups.has(roleId),
+  trustedSystemGroups.has(roleId)
 );
 
 const systemAssignments = ciCreateRoleAssignments(
   systemRoleIds,
   ciSystemAccessScope(),
-  "exact",
+  "exact"
 );
 ```
 
@@ -185,7 +182,7 @@ cross-tenant access, create a separately reviewed global assignment:
 const globalAssignments = ciCreateRoleAssignments(
   systemRoleIds,
   ciGlobalAccessScope(),
-  "descendants",
+  "descendants"
 );
 ```
 
@@ -211,7 +208,7 @@ export async function loadTenantSubject(input: {
   if (!input.user.authenticated || !input.user.id) {
     return ciCreateAuthorizationSubject(
       { id: input.user.id, authenticated: false },
-      [],
+      []
     );
   }
 
@@ -220,10 +217,7 @@ export async function loadTenantSubject(input: {
     tenantId: input.tenantId,
   });
 
-  return ciCreateAuthorizationSubject(
-    input.user,
-    roleAssignments,
-  );
+  return ciCreateAuthorizationSubject(input.user, roleAssignments);
 }
 ```
 
@@ -243,6 +237,7 @@ import {
 const temporaryExportAccess = ciCreateScopedPrivilege(
   {
     id: "temporary-report-export",
+    title: "Temporary report export",
     effect: "allow",
     resource: "reporting.reports",
     action: "export",
@@ -252,7 +247,7 @@ const temporaryExportAccess = ciCreateScopedPrivilege(
   "exact",
   {
     expiresAt: "2026-08-05T12:00:00.000Z",
-  },
+  }
 );
 ```
 
@@ -268,9 +263,9 @@ metadata in the persistence layer, even though audit fields are outside the core
 
 ## How direct privileges combine
 
-| Algorithm | Behavior |
-| --- | --- |
-| `deny-overrides` | Direct and role privileges are all evaluated; any matching deny wins. |
+| Algorithm            | Behavior                                                                       |
+| -------------------- | ------------------------------------------------------------------------------ |
+| `deny-overrides`     | Direct and role privileges are all evaluated; any matching deny wins.          |
 | `highest-precedence` | Matching direct privileges form the highest tier; denies win inside that tier. |
 
 Direct user privileges remain subject to the same combining algorithm, including the safer explicit-deny
@@ -295,14 +290,14 @@ export async function resolveAuthorizationSubject(input: {
   if (!input.user.authenticated || !input.user.id) {
     return ciCreateAuthorizationSubject(
       { id: input.user.id, authenticated: false },
-      [],
+      []
     );
   }
 
   const systemAssignments = ciCreateRoleAssignments(
     input.user.roles.filter(isTrustedSystemGroup),
     ciSystemAccessScope(),
-    "exact",
+    "exact"
   );
 
   const scopedAssignments = input.tenantId
@@ -312,10 +307,10 @@ export async function resolveAuthorizationSubject(input: {
       })
     : [];
 
-  return ciCreateAuthorizationSubject(
-    input.user,
-    [...systemAssignments, ...scopedAssignments],
-  );
+  return ciCreateAuthorizationSubject(input.user, [
+    ...systemAssignments,
+    ...scopedAssignments,
+  ]);
 }
 ```
 

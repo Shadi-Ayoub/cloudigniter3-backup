@@ -1,4 +1,4 @@
-import { ENTRY_KIND } from "../../../scripts/build-steps/ci-entries.mjs";
+import { ENTRY_KIND } from "@cloudigniter/cli/tooling/entries";
 
 /** Defines the public and recursively expanded UI package build entries. */
 export const ciEntriesConfig = {

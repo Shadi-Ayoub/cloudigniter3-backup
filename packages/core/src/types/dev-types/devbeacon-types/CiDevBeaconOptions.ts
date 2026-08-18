@@ -14,7 +14,7 @@ export type CiDevBeaconOptions = {
   /**
    * Role required to access the Dev Beacon.
    *
-   * Defaults to "DEVELOPER".
+   * Defaults to "developer".
    */
   requiredRoles?: string[];
 };

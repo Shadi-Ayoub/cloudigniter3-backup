@@ -1,0 +1,320 @@
+---
+title: CLI command reference
+description: Reference every ci and ci-dev command, option, working-directory requirement, side effect, and maintainer use case.
+sidebar_position: 2
+---
+
+CloudIgniter publishes two executable surfaces from `@cloudigniter/cli`: `ci` for supported application and system operations, and `ci-dev` for private monorepo maintenance. This page is the complete contributor-facing command catalog. Application developers can use the shorter [public CLI guide](/docs/cli/overview).
+
+## Invocation model
+
+Run public commands from a consuming application with `pnpm exec`:
+
+```bash
+pnpm exec ci --help
+```
+
+Within the CloudIgniter workspace, package scripts resolve the workspace binary directly:
+
+```bash
+ci-dev package build --mode=dev
+```
+
+`ci-dev` must discover a private workspace whose root package is named `cloudigniter` and contains `packages/cli`. The guard prevents accidental execution in consumer projects; it is not an authorization control.
+
+The previous executable names, `cloudigniter` and `cloudigniter-dev`, are no longer published. Update shell scripts, CI workflows, and external automation to use `ci` and `ci-dev`.
+
+## Command inventory
+
+| Command | Scope | Purpose |
+| --- | --- | --- |
+| `ci resources studio` | Application | Open the local Resource Studio for transactional generation, explicit AWS SSO refresh/sandbox deployment, forward drop, and conflict-safe local undo. |
+| `ci modules validate` | Application | Validate application module structure, manifests, dependency declarations, and runtime boundaries. |
+| `ci amplify bootstrap access-control` | Application/AWS | Create or reconcile the configured access-control data through the application's AWS provider. |
+| `ci amplify bootstrap root-user` | Application/AWS | Create or reconcile the configured root user and its profile. |
+| `ci amplify sandbox bootstrap` | Application/AWS | Run a one-shot Amplify sandbox, then bootstrap access control and the root user. |
+| `ci amplify sandbox deploy` | Application/AWS | Verify the generated plan and exact AWS target, then run one explicit Amplify sandbox deployment. |
+| `ci-dev package build` | Current package | Run the package-owned development or production build pipeline. |
+| `ci-dev package switch` | Current package | Switch package exports and TypeScript mappings between source and distribution files. |
+| `ci-dev package clean-maps` | Current package | Remove generated source maps beneath `dist`. |
+| `ci-dev package clean-dts` | Current package | Remove generated declarations outside `dist` while preserving dependencies. |
+| `ci-dev package obfuscate` | Current package | Obfuscate JavaScript runtime files beneath `dist`. |
+| `ci-dev package build-assets` | Current package | Compile style themes and copy locale assets into `dist`. |
+| `ci-dev quality scan-client-directives` | Current package | Detect compiled client-only code that lacks a `"use client"` directive. |
+| `ci-dev quality list-client-files` | Current package | List source files that contain React-client or browser-only signals. |
+| `ci-dev next build-theme` | `packages/next` | Regenerate the deterministic combined CloudIgniter theme stylesheet. |
+| `ci-dev next test-style` | `packages/next` | Compile one style entry as a focused Tailwind validation. |
+| `ci-dev modules validate` | Workspace | Validate core or user module conventions and dependency graphs. |
+| `ci-dev modules sync` | Workspace | Synchronize module-declared dependencies into `packages/next/package.json`, or check for drift. |
+
+## Public `ci` commands
+
+### `ci resources studio`
+
+Starts Resource Studio for the target application and opens its loopback-only browser URL in an interactive local session.
+
+```bash
+pnpm exec ci resources studio \
+  --profile=developer1 \
+  --identifier=ci-books
+```
+
+The command owns orchestration, local HTTP/session security, transaction history, and shell-free AWS CLI/Amplify subprocesses. It resolves the AWS and Next.js generation planners through the target application's installed CloudIgniter packages; `packages/cli` does not acquire a static provider dependency.
+
+Generation remains local and offline. The browser exposes distinct, user-initiated actions for `aws sts get-caller-identity`, `aws sso login --profile <profile>`, and `ampx sandbox --once`. SSO refresh automatically repeats identity and Region verification rather than treating a successful login as deployment approval. Closing the Studio does not imply a deployment or rollback. Applied transaction journals remain under `.cloudigniter/local/resource-studio/transactions` until the application developer removes the local state deliberately.
+
+The one-use bootstrap token expires after five minutes and can establish one `HttpOnly` cookie-backed session. The session has a fixed eight-hour lifetime. Studio access checks create single-use deployment intents with a ten-minute lifetime, bound to the profile, sandbox identifier, AWS account, caller ARN and identity, resolved Region, and hash of the exact generated plan. The confirmation dialog displays the verified account, caller ARN, Region, profile, and identifier. Deployment consumes the intent, re-hashes the generated plan, repeats STS and Region resolution, and fails before `ampx` on any drift or expiry.
+
+Region resolution uses `AWS_REGION`, then `AWS_DEFAULT_REGION`, then `aws configure get region --profile <profile>`. The verified value is passed to `ampx` as both Region environment variables. Lifecycle persistence excludes credential-bearing object fields and also redacts common authorization, token, password, API-key, AWS-key, secret, and JWT patterns embedded in strings. This is defense in depth, not a reason to send secrets through Studio inputs or logs.
+
+- `--app-root=<path>` selects the application (default: current directory).
+- `--workspace-root=<path>` overrides package-resolution workspace discovery.
+- `--profile=<name>` preselects the explicit AWS target but is not used for offline generation.
+- `--identifier=<value>` preselects the stable Amplify sandbox identifier and accepts 1–15 letters, numbers, or hyphens. Resource Studio derives a stable application-local default when omitted.
+- `--port=<number>` requests a localhost port; omitting it lets the operating system assign an available port.
+- `--no-open` prints the secured URL without opening the default browser; the browser opens by default.
+- `--verbose` enables CLI diagnostic error detail.
+
+The local reversal action is **Undo latest local change**. It restores exact tracked before-images only when no target has drifted. **Drop Data Entity** is different: it applies a new forward transaction that removes the resource and regenerates shared registries. After either operation changes a definition that was deployed, AWS requires another explicit compensating one-shot sandbox deployment; cloud state and data are not byte-exactly rolled back.
+
+Resource Studio is intentionally a `ci` command only. Do not add it to the `ci-dev` catalog: CloudIgniter-owned resources are implemented natively in their owning package, while Resource Studio writes application-owned files into the custom template seams.
+
+See the application-facing [Resource Studio guide](/docs/resource-studio/overview) for the generated files, schema limits, scope behavior, cloud warnings, and exact rollback guarantee.
+
+### `ci amplify sandbox deploy`
+
+Runs the Resource Studio deployment safety path without starting the browser:
+
+```bash
+pnpm exec ci amplify sandbox deploy \
+  --app-root=. \
+  --profile=developer1 \
+  --identifier=ci-books \
+  --no-interactive
+```
+
+The command is an explicit cloud mutation, not a generation follow-up. In non-interactive mode both `--profile` and `--identifier` are required; no persisted Studio selection substitutes for them. The worker verifies the supported Node.js LTS runtime before initializing local deployment state, computes and validates the generated-plan hash, performs STS and Region preflight, and prints the account, ARN, and Region. It then computes the plan hash again and consumes the resulting intent through the same deploy runtime used by Studio, which repeats identity/Region checks and pins the Region before `ampx sandbox --once`.
+
+V1 deployment supports Node.js LTS majors 22 and 24. The command does not run `aws sso login`; expired credentials fail preflight and require an explicit SSO refresh before retry. A changed generated plan, target selection, caller identity, account, ARN, or Region fails before Amplify starts.
+
+### `ci modules validate`
+
+Validates application-owned modules. The validator checks allowed root entries, manifest shape and export conventions, runtime folders, type exports, module dependency graphs, and package dependency declarations. A missing application modules directory is treated as “nothing to validate” rather than an error.
+
+```bash
+pnpm exec ci modules validate \
+  --app-root=. \
+  --root=src/modules \
+  --no-interactive
+```
+
+- `--app-root=<path>` selects the consuming application; it defaults to the current directory.
+- `--workspace-root=<path>` overrides pnpm-workspace discovery and package resolution.
+- `--root=<path>` selects the modules directory. It is resolved from the workspace root, so root package scripts should pass the workspace-relative application path.
+
+### `ci amplify bootstrap access-control`
+
+Loads the application's `@cloudigniter/aws/server/backend` entry point and creates or reconciles the configured access-control definition. It operates against AWS and can modify persisted resources.
+
+```bash
+pnpm exec ci amplify bootstrap access-control \
+  --profile=developer1 \
+  --no-interactive
+```
+
+Use `--profile=<name>` to select an AWS profile. Without it, the worker uses the default AWS credential chain; an interactive terminal may prompt for the optional profile.
+
+### `ci amplify bootstrap root-user`
+
+Loads the AWS provider from the target application, creates or verifies the configured root identity, and repairs the corresponding profile data when required.
+
+```bash
+pnpm exec ci amplify bootstrap root-user \
+  --profile=developer1 \
+  --no-interactive
+```
+
+Review the application's root-user configuration and the selected AWS account before execution. Re-running the command is intended to reconcile the configured state rather than create an unrelated identity.
+
+### `ci amplify sandbox bootstrap`
+
+Runs `ampx sandbox --once` from the application root. After the sandbox completes successfully, it executes access-control bootstrap followed by root-user bootstrap.
+
+```bash
+pnpm exec ci amplify sandbox bootstrap \
+  --profile=developer1 \
+  --no-interactive
+```
+
+The bootstrap workers do not run when sandbox creation fails. This command has the combined AWS side effects of all three operations and should not be used as a read-only validation command.
+
+## Maintainer `ci-dev package` commands
+
+Package commands use the current working directory as their package scope. Run them from a package that owns the corresponding local configuration and source layout.
+
+### `ci-dev package build --mode=dev|prod`
+
+Loads `scripts/ci-build-package.config.mjs` from the current package and executes the configured build steps in order. Development and production modes may use different steps, source mappings, obfuscation, or cleanup rules.
+
+```bash
+cd packages/core
+ci-dev package build --mode=dev
+```
+
+`--mode` accepts `dev` or `prod`. An interactive terminal can prompt when it is omitted, but package scripts and CI must pass it explicitly.
+
+### `ci-dev package switch --target=src|dist`
+
+Rewrites the current package's exports and related TypeScript mappings using `scripts/ci-switch-sources.config.mjs` and its optional mapping file. Use `src` for workspace development and `dist` for built-package consumption.
+
+```bash
+cd packages/aws
+ci-dev package switch --target=dist
+```
+
+This command edits package configuration. Review the resulting manifest and TypeScript configuration before committing changes.
+
+### `ci-dev package clean-maps`
+
+Removes `dist/**/*.map` from the current package. Pass `--verbose` to list individual removed files in addition to the summary.
+
+```bash
+cd packages/ui
+ci-dev package clean-maps
+```
+
+### `ci-dev package clean-dts`
+
+Recursively removes generated `.d.ts` and `.d.ts.map` files from the current package while skipping `dist` and `node_modules`. It is intended to recover from declarations accidentally emitted into source directories.
+
+```bash
+cd packages/next
+ci-dev package clean-dts
+```
+
+This is destructive to declaration files outside `dist`; do not run it in a package that intentionally stores authored declarations alongside source.
+
+### `ci-dev package obfuscate`
+
+Obfuscates `.js`, `.cjs`, and `.mjs` runtime files beneath the current package's `dist`. It merges package-local `obfuscator.config.json` values over the CLI defaults and fails when `dist` does not exist.
+
+```bash
+cd packages/core
+ci-dev package obfuscate --verbose
+```
+
+The command rewrites distribution files in place. Source files, declarations, maps, JSON, and CSS are not obfuscated.
+
+### `ci-dev package build-assets`
+
+Compiles each `src/styles/<theme>/style.css` with the package-local Tailwind CLI, copies theme source assets, and copies JSON/declaration locale assets from `src/locales` to `dist/locales`.
+
+```bash
+cd packages/next
+ci-dev package build-assets
+```
+
+The command recreates `dist/styles` and updates locale assets beneath `dist`; it is normally a package build step rather than a standalone application command.
+
+## Maintainer `ci-dev quality` commands
+
+### `ci-dev quality scan-client-directives`
+
+Scans compiled JavaScript beneath the current package's `dist` for React client APIs, browser globals, and known client-only packages. Files with those signals must begin with `"use client"`; offenders make the command exit nonzero.
+
+```bash
+cd packages/next
+ci-dev quality scan-client-directives
+```
+
+Run this after compilation. An empty or absent `dist` produces no offenders, so it is not a substitute for the package build itself.
+
+### `ci-dev quality list-client-files [--root=<path>]`
+
+Scans TypeScript and JavaScript source files and lists files containing client-component or browser-only signals. It is a diagnostic inventory and does not rewrite directives.
+
+```bash
+cd packages/ui
+ci-dev quality list-client-files --root=src
+```
+
+`--root` is relative to the current package and defaults to `src`. A single positional path is also accepted for compatibility, but new automation should use the explicit flag.
+
+## Maintainer `ci-dev next` commands
+
+### `ci-dev next build-theme`
+
+Walks `src/styles/standard/theme`, orders theme folders deterministically, and combines their CSS into `theme.generated.css`. Run it from `packages/next` whenever modular theme sources change.
+
+```bash
+cd packages/next
+ci-dev next build-theme
+```
+
+The generated file is replaced on every run and must not be edited manually.
+
+### `ci-dev next test-style [--style=<name>]`
+
+Compiles `src/styles/<name>/style.css` through Tailwind and writes the focused result to `tmp.css`. It defaults to the `standard` style.
+
+```bash
+cd packages/next
+ci-dev next test-style --style=standard
+```
+
+Use this for fast style validation; the package's full build remains the authoritative distribution check.
+
+## Maintainer `ci-dev modules` commands
+
+### `ci-dev modules validate [--kind=core|user] [--root=<path>]`
+
+Runs the module validator inside the private workspace. `--kind=core` validates `packages/next/src/modules` by default, while `--kind=user` validates `apps/template/src/modules`. `--root` overrides either directory and is resolved from the workspace root.
+
+```bash
+ci-dev modules validate --kind=core --workspace-root=.
+```
+
+The default kind is `core`. Validation is read-only and returns a nonzero exit code when module layout, exports, manifests, runtime boundaries, dependency graphs, or package declarations are invalid.
+
+### `ci-dev modules sync [--check]`
+
+Collects package dependencies declared by core module manifests and synchronizes them into `packages/next/package.json`. Without `--check`, it writes missing or changed entries, sorts dependency sections, and runs a filtered `pnpm install`.
+
+```bash
+ci-dev modules sync --workspace-root=.
+ci-dev modules sync --check --workspace-root=.
+```
+
+Use `--check` in CI: it performs no manifest write or install and fails when synchronization would be required.
+
+## Global options and exit codes
+
+| Option | Executable | Meaning |
+| --- | --- | --- |
+| `--app-root=<path>` | `ci` | Select the target application; defaults to the current directory. |
+| `--workspace-root=<path>` | Both | Override workspace discovery and package resolution. |
+| `--profile=<name>` | `ci` | Select an AWS profile for explicit Resource Studio and Amplify operations; it is not needed for local generation. |
+| `--identifier=<value>` | `ci` | Select a 1–15 character Amplify sandbox identifier for Resource Studio or an explicit headless deployment. |
+| `--port=<number>` | `ci` | Request a Resource Studio loopback port; the default is an operating-system-assigned available port. |
+| `--no-open` | `ci` | Print the secured Resource Studio URL without opening a browser. |
+| `--root=<path>` | Both | Select a command-specific module or source root. |
+| `--no-interactive` | `ci` | Disable prompts; required for predictable public automation. |
+| `--verbose`, `-v` | Both | Include diagnostic details and worker file inventories where supported. |
+| `--clear` | Both | Clear the terminal only when stdout is a TTY. |
+| `--help` | Both | Print the executable's command catalog. |
+| `--version` | Both | Print the `@cloudigniter/cli` version. |
+
+Exit code `0` means success, `1` means an operational or validation failure, `2` means invalid usage or an invalid developer workspace, and `130` means an interactive prompt was cancelled. A subprocess may preserve a more specific nonzero status.
+
+## Validation when adding or changing commands
+
+1. Keep application operations under `ci` and monorepo-only operations under `ci-dev`.
+2. Add or update strict parser flags and help text.
+3. Test public help visibility, maintainer workspace rejection, invalid input, and exit codes.
+4. Exercise the worker from its real package working directory.
+5. Update root, package, and template scripts together.
+6. Run `pnpm --filter @cloudigniter/cli check` and `pnpm --filter @cloudigniter/cli check:package`.
+7. Typecheck at least one package that consumes a changed tooling export.
+8. Search the repository and guide for stale executable names.
+
+See [CLI architecture and command design](./cli-architecture) for ownership, dispatch, terminal UX, and subprocess invariants.

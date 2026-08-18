@@ -58,7 +58,7 @@
 //     .secondaryIndexes((index) => [index('tenantId').name('byTenant')])
 //     .authorization((allow) => [
 //       allow.publicApiKey().to(['read']),
-//       allow.group('SYSTEM_ADMIN').to(['create', 'read', 'update', 'delete']),
+//       allow.group('system-admin').to(['create', 'read', 'update', 'delete']),
 //     ]),
 // };
 

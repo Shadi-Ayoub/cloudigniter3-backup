@@ -1,0 +1,141 @@
+---
+title: Resource Studio compiler APIs
+description: Normalize AWS Data Entity descriptors and deterministically plan Amplify schema and scoped Next.js management artifacts.
+sidebar_position: 2
+---
+
+# Resource Studio compiler APIs
+
+Resource Studio exposes pure build-time compilers from the provider and framework packages. They validate plain data and return text-file plans; they do not read or write the filesystem, start a server, run AWS commands, or deploy resources.
+
+The supported composition is:
+
+```text
+raw descriptors
+  → ciNormalizeAwsDataEntityDescriptor
+  → ciPlanAwsDataEntities
+      ├── Amplify schema files and descriptor registry
+      └── frontend plan
+            → ciPlanNextDataEntities
+                → scoped pages, manager/actions, and route registry
+```
+
+## Imports
+
+```ts
+import {
+  CI_AWS_RESOURCE_STUDIO_CAPABILITIES,
+  ciNormalizeAwsDataEntityDescriptor,
+  ciPlanAwsDataEntities,
+  type CiAwsDataEntityDescriptor,
+  type CiAwsDataEntityFrontendPlan,
+  type CiResourceStudioGeneratedFile,
+} from "@cloudigniter/aws/server/backend";
+
+import { ciPlanNextDataEntities } from "@cloudigniter/next/lib";
+```
+
+These are build-time/server imports. Do not include either compiler in a browser bundle.
+
+## `CI_AWS_RESOURCE_STUDIO_CAPABILITIES`
+
+The frozen capability catalog is the source for a provider-neutral Studio form. Its `schemaVersion` is `1` and `provider` is `"aws-amplify"`. It describes:
+
+- `scopes`: Tenant and Global;
+- CloudIgniter system fields and which timestamps are implicit;
+- generated Amplify model-client operations and `lambdas: false`;
+- available and unavailable Data Store modes;
+- Amplify scalar field types, modifiers, and validation rules;
+- authorization strategies, compatible providers/field shapes/claims, and operations;
+- suggested core groups;
+- GSI projections, the 19 custom-index limit, and the reserved list index.
+
+Treat the catalog as read-only and render unavailable capabilities as unavailable. Do not infer support from an Amplify API that is absent from this catalog.
+
+## `ciNormalizeAwsDataEntityDescriptor()`
+
+```ts
+function ciNormalizeAwsDataEntityDescriptor(
+  value: unknown,
+): CiAwsDataEntityDescriptor;
+```
+
+The normalizer validates untrusted form/JSON input and returns the canonical V1 descriptor:
+
+```ts
+type CiAwsDataEntityDescriptor = {
+  schemaVersion: 1;
+  kind: "data-entity";
+  provider: "aws-amplify";
+  id: string;
+  name: string;
+  pluralName: string;
+  scope: "global" | "tenant";
+  description: string;
+  dataStore: {
+    mode: "managed-model";
+    modelName: string;
+    identifier: readonly ["PK", "SK"];
+  };
+  managementPage: { path: string; title: string };
+  fields: CiAwsDataEntityField[];
+  authorization: CiAwsDataEntityAuthorizationRule[];
+  secondaryIndexes: CiAwsDataEntitySecondaryIndex[];
+};
+```
+
+V1 requires a kebab-case ID, PascalCase singular/plural names, one or more custom fields, `tenant` or `global` scope, and a static lowercase kebab-case management path. The model name is the entity name and the identifier is fixed to `PK`/`SK`.
+
+The normalizer fills canonical metadata, labels/descriptions/titles, missing flags, typed defaults, and the administration-oriented default authorization. It validates field-based authorization shapes, providers/claims/groups, numeric/string validation, and DynamoDB-compatible custom GSI keys. Invalid input throws `Error` with a field-specific message.
+
+## `ciPlanAwsDataEntities()`
+
+```ts
+function ciPlanAwsDataEntities(input: {
+  descriptors: readonly unknown[];
+}): {
+  descriptors: CiAwsDataEntityDescriptor[];
+  files: CiResourceStudioGeneratedFile[];
+  frontend: CiAwsDataEntityFrontendPlan[];
+  warnings: string[];
+};
+```
+
+The planner normalizes and sorts descriptors by ID, then rejects duplicate IDs, model names, logical management routes, and generated list-query names. It returns:
+
+- one canonical `entity.ci.json` and `schema.generated.ts` plan per entity;
+- the aggregate `amplify/custom/data/schemata/registry.generated.ts` plan;
+- the normalized framework-facing plan consumed by `ciPlanNextDataEntities()`;
+- review warnings for custom GSI changes, guest/public authorization, and custom authorization whose Lambda authorizer remains application-managed.
+
+Each generated file has `path`, text `content`, `ownership: "generated"`, and an optional `resourceId`. The schema always uses `PK`/`SK`, the managed `byScope` GSI, native Amplify model operations, and model authorization. It never emits a CRUD Lambda.
+
+## `ciPlanNextDataEntities()`
+
+```ts
+function ciPlanNextDataEntities(input: {
+  entities: readonly CiAwsDataEntityFrontendPlan[];
+}): {
+  files: Array<{
+    path: string;
+    content: string;
+    ownership: "generated";
+    resourceId?: string;
+  }>;
+};
+```
+
+The Next.js planner validates and sorts the AWS frontend plans. For every entity it returns plans for:
+
+- `page.tsx` beneath the selected `(ci-tenant)` or `(ci-global)` internal route and its `(ci-custom)` ownership group;
+- a `Ci<Plural>Manager.tsx` that composes `CiDataEntityManager` and `CiDataTable`;
+- `actions.generated.ts` with server-revalidated scope, canonical keys, native model create/get/update/delete, and paginated GSI Query list;
+- the aggregate `src/custom/routes/resource-studio.generated.ts` route map with `protected: true` and the selected `tenantScopes` value.
+
+Invalid identifiers, scope, or static management paths throw `Error`. The compiler does not check the filesystem or establish ownership of an existing path; the Resource Studio orchestrator must perform generated-ownership, collision, drift, and transaction checks before applying the returned files.
+
+## Determinism and application
+
+Given equivalent normalized descriptors, both planners return files in stable entity-ID order. Consumers must apply the complete AWS and Next.js plans together, keep the two generated aggregate registries, and remove files that existed in the previous complete plan but not the next one.
+
+Do not write planner results directly with unrestricted filesystem calls. Use a confined transaction that validates every target against the prior generated plan and rejects unowned files. See the [Resource Studio workflow](../../resource-studio/data-entities) and [local undo guarantee](../../resource-studio/deployment-and-rollback#undo-latest-local-change).

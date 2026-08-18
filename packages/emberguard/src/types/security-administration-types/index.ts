@@ -16,6 +16,12 @@ export type {
   CiSecurityRecordKind,
   CiSecurityRecordsByKind,
   CiSecurityResourceRecord,
+  CiSecurityResourceDomainRecord,
+  CiCreateSecurityResourceDomainInput,
+  CiSetSecurityResourceDomainStatusInput,
   CiSecurityRoleRecord,
+  CiSecurityRoleCounters,
+  CiSecurityRoleCountersById,
+  CiSetSecurityRoleStatusInput,
   CiSecurityStoredRoleAssignment,
 } from "./CiSecurityAdministrationTypes";

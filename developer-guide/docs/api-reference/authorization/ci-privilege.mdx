@@ -1,0 +1,55 @@
+---
+title: CiPrivilege
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 2
+---
+
+# CiPrivilege
+
+Defines one human-readable allow or deny statement in an access-control role. Import the public contract from
+`@cloudigniter/core/types`.
+
+```ts
+type CiPrivilege = {
+  id: string;
+  title: string;
+  effect: "allow" | "deny";
+  resource: string;
+  action: string;
+  scopeKinds: readonly CiAccessScopeKind[];
+  description?: string;
+};
+```
+
+| Field | Requirement |
+| --- | --- |
+| `id` | Stable policy identifier used for persistence, matching evidence, and audit records. |
+| `title` | Required, non-empty human-readable label used by forms, selectors, tables, and audit displays. |
+| `effect` | Whether a matching statement allows or denies access. |
+| `resource` | Registered resource identifier or supported wildcard pattern. |
+| `action` | Registered action identifier or `*`. |
+| `scopeKinds` | Non-empty list of scope kinds where the privilege may match. |
+| `description` | Optional longer explanation for administrators. |
+
+```ts
+import type { CiPrivilege } from "@cloudigniter/core/types";
+
+const approveInvoices = {
+  id: "approve-invoices",
+  title: "Invoice approver",
+  effect: "allow",
+  resource: "billing.invoices",
+  action: "approve",
+  scopeKinds: ["tenant", "orgUnit"],
+  description: "Allows invoice approval within the assigned boundary.",
+} as const satisfies CiPrivilege;
+```
+
+Keep `id` stable when changing presentation copy. `title` may evolve with product language and must not be used
+as an authorization or persistence key. Complete privileges require a title; `CiPrivilegeLayer` leaves it
+optional only when overriding an existing privilege that already supplies one. A new merged privilege without a
+non-empty title is rejected.
+
+See [Catalog and Permission Design](/docs/core-system/authorization/catalog-and-permissions) for naming and
+wildcard guidance.

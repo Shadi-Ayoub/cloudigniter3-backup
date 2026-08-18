@@ -8,14 +8,14 @@
 //     .arguments({})
 //     .handler(a.handler.function(getLambdaParametersHandler))
 //     .returns(a.json())
-//     .authorization((allow) => [allow.group('DEVELOPER')]),
+//     .authorization((allow) => [allow.group('developer')]),
 //   // System: a
 //   //   .model({
 //   //     id: a.id().required(),
 //   //     data: a.string().required(),
 //   //   })
 //   //   .identifier(['id']) // Not the default auto-generated id
-//   //   .authorization((allow) => [allow.group('SYSTEM_ADMIN')]),
+//   //   .authorization((allow) => [allow.group('system-admin')]),
 
 //   /**
 //    * Single-table design:
@@ -78,9 +78,9 @@
 //       index('GSI2PK').sortKeys(['GSI2SK']).name('GSI2'),
 //     ])
 //     .authorization((allow) => [
-//       allow.group('SYSTEM_ADMIN'), // full CRUD by platform/system admins
+//       allow.group('system-admin'), // full CRUD by platform/system admins
 //       // optionally allow read-only for other groups:
-//       // allow.group('ADMIN').to(['read']),
+//       // allow.group('admin').to(['read']),
 //     ]),
 // };
 

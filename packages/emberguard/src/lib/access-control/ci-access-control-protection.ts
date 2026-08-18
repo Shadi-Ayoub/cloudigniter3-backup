@@ -11,7 +11,7 @@ import { ciMatchesAuthorizationPattern } from "./ci-authorization-pattern";
 /** Returns the matching resource from a complete access-control definition. */
 function findResource(
   definition: CiAccessControlDefinition,
-  resourceId: string,
+  resourceId: string
 ): CiResourceDefinition | undefined {
   return definition.resources.find((resource) => resource.id === resourceId);
 }
@@ -19,7 +19,7 @@ function findResource(
 /** Returns the matching role from a complete access-control definition. */
 function findRole(
   definition: CiAccessControlDefinition,
-  roleId: string,
+  roleId: string
 ): CiRoleDefinition | undefined {
   return definition.roles.find((role) => role.id === roleId);
 }
@@ -27,26 +27,30 @@ function findRole(
 /** Returns whether a stable entry reference belongs to the supplied definition. */
 export function ciDefinitionContainsAccessControlEntry(
   definition: CiAccessControlDefinition,
-  reference: CiAccessControlEntryReference,
+  reference: CiAccessControlEntryReference
 ): boolean {
   switch (reference.kind) {
     case "domain":
-      return definition.domains.some((domain) => domain.id === reference.domainId);
+      return definition.domains.some(
+        (domain) => domain.id === reference.domainId
+      );
     case "resource":
-      return definition.resources.some((resource) => resource.id === reference.resourceId);
+      return definition.resources.some(
+        (resource) => resource.id === reference.resourceId
+      );
     case "action":
       return Boolean(
         findResource(definition, reference.resourceId)?.actions.some(
-          (action) => action.id === reference.actionId,
-        ),
+          (action) => action.id === reference.actionId
+        )
       );
     case "role":
       return definition.roles.some((role) => role.id === reference.roleId);
     case "privilege":
       return Boolean(
         findRole(definition, reference.roleId)?.privileges.some(
-          (privilege) => privilege.id === reference.privilegeId,
-        ),
+          (privilege) => privilege.id === reference.privilegeId
+        )
       );
   }
 }
@@ -54,18 +58,20 @@ export function ciDefinitionContainsAccessControlEntry(
 /** Throws when an application layer attempts to redefine a core-owned entry. */
 export function ciAssertAppAccessControlLayerDoesNotOverrideCore(
   coreDefinition: CiAccessControlDefinition,
-  layer: CiAccessControlLayer,
+  layer: CiAccessControlLayer
 ): void {
-  const coreDomainIds = new Set(coreDefinition.domains.map((domain) => domain.id));
+  const coreDomainIds = new Set(
+    coreDefinition.domains.map((domain) => domain.id)
+  );
   const coreResources = new Map(
-    coreDefinition.resources.map((resource) => [resource.id, resource]),
+    coreDefinition.resources.map((resource) => [resource.id, resource])
   );
   const coreRoleIds = new Set(coreDefinition.roles.map((role) => role.id));
 
   for (const domain of layer.domains ?? []) {
     if (coreDomainIds.has(domain.id)) {
       throw new Error(
-        `Application access-control layer cannot override core domain "${domain.id}".`,
+        `Application access-control layer cannot override core domain "${domain.id}".`
       );
     }
   }
@@ -78,21 +84,25 @@ export function ciAssertAppAccessControlLayerDoesNotOverrideCore(
     }
 
     const changedResourceFields = Object.keys(resource).filter(
-      (field) => field !== "id" && field !== "actions",
+      (field) => field !== "id" && field !== "actions"
     );
 
     if (changedResourceFields.length > 0) {
       throw new Error(
-        `Application access-control layer cannot override core resource "${resource.id}" fields: ${changedResourceFields.join(", ")}.`,
+        `Application access-control layer cannot override core resource "${
+          resource.id
+        }" fields: ${changedResourceFields.join(", ")}.`
       );
     }
 
-    const coreActionIds = new Set(coreResource.actions.map((action) => action.id));
+    const coreActionIds = new Set(
+      coreResource.actions.map((action) => action.id)
+    );
 
     for (const action of resource.actions ?? []) {
       if (coreActionIds.has(action.id)) {
         throw new Error(
-          `Application access-control layer cannot override core action "${resource.id}.${action.id}".`,
+          `Application access-control layer cannot override core action "${resource.id}.${action.id}".`
         );
       }
     }
@@ -101,7 +111,7 @@ export function ciAssertAppAccessControlLayerDoesNotOverrideCore(
   for (const role of layer.roles ?? []) {
     if (coreRoleIds.has(role.id)) {
       throw new Error(
-        `Application access-control layer cannot override core role "${role.id}". Create an application role that inherits it instead.`,
+        `Application access-control layer cannot override core role "${role.id}". Create an application role that inherits it instead.`
       );
     }
   }
@@ -110,18 +120,22 @@ export function ciAssertAppAccessControlLayerDoesNotOverrideCore(
 /** Throws unless every target in a core override layer is owned by the core. */
 export function ciAssertCoreAccessControlOverrideTargets(
   coreDefinition: CiAccessControlDefinition,
-  layer: CiAccessControlLayer,
+  layer: CiAccessControlLayer
 ): void {
-  const coreDomainIds = new Set(coreDefinition.domains.map((domain) => domain.id));
-  const coreResources = new Map(
-    coreDefinition.resources.map((resource) => [resource.id, resource]),
+  const coreDomainIds = new Set(
+    coreDefinition.domains.map((domain) => domain.id)
   );
-  const coreRoles = new Map(coreDefinition.roles.map((role) => [role.id, role]));
+  const coreResources = new Map(
+    coreDefinition.resources.map((resource) => [resource.id, resource])
+  );
+  const coreRoles = new Map(
+    coreDefinition.roles.map((role) => [role.id, role])
+  );
 
   for (const domain of layer.domains ?? []) {
     if (!coreDomainIds.has(domain.id)) {
       throw new Error(
-        `Core access-control override cannot target application domain "${domain.id}".`,
+        `Core access-control override cannot target application domain "${domain.id}".`
       );
     }
   }
@@ -131,16 +145,18 @@ export function ciAssertCoreAccessControlOverrideTargets(
 
     if (!coreResource) {
       throw new Error(
-        `Core access-control override cannot target application resource "${resource.id}".`,
+        `Core access-control override cannot target application resource "${resource.id}".`
       );
     }
 
-    const coreActionIds = new Set(coreResource.actions.map((action) => action.id));
+    const coreActionIds = new Set(
+      coreResource.actions.map((action) => action.id)
+    );
 
     for (const action of resource.actions ?? []) {
       if (!coreActionIds.has(action.id)) {
         throw new Error(
-          `Core access-control override cannot target application action "${resource.id}.${action.id}".`,
+          `Core access-control override cannot target application action "${resource.id}.${action.id}".`
         );
       }
     }
@@ -151,18 +167,18 @@ export function ciAssertCoreAccessControlOverrideTargets(
 
     if (!coreRole) {
       throw new Error(
-        `Core access-control override cannot target application role "${role.id}".`,
+        `Core access-control override cannot target application role "${role.id}".`
       );
     }
 
     const corePrivilegeIds = new Set(
-      coreRole.privileges.map((privilege) => privilege.id),
+      coreRole.privileges.map((privilege) => privilege.id)
     );
 
     for (const privilege of role.privileges ?? []) {
       if (!corePrivilegeIds.has(privilege.id)) {
         throw new Error(
-          `Core access-control override cannot target application privilege "${role.id}.${privilege.id}".`,
+          `Core access-control override cannot target application privilege "${role.id}.${privilege.id}".`
         );
       }
     }
@@ -170,38 +186,44 @@ export function ciAssertCoreAccessControlOverrideTargets(
 }
 
 /** Returns whether a partial layer contains at least one effective field change. */
-export function ciAccessControlLayerHasChanges(layer: CiAccessControlLayer): boolean {
+export function ciAccessControlLayerHasChanges(
+  layer: CiAccessControlLayer
+): boolean {
   return (
-    (layer.domains ?? []).some((domain) => Object.keys(domain).some((key) => key !== "id")) ||
+    (layer.domains ?? []).some((domain) =>
+      Object.keys(domain).some((key) => key !== "id")
+    ) ||
     (layer.resources ?? []).some(
       (resource) =>
-        Object.keys(resource).some((key) => key !== "id" && key !== "actions") ||
+        Object.keys(resource).some(
+          (key) => key !== "id" && key !== "actions"
+        ) ||
         (resource.actions ?? []).some((action) =>
-          Object.keys(action).some((key) => key !== "id"),
-        ),
+          Object.keys(action).some((key) => key !== "id")
+        )
     ) ||
     (layer.roles ?? []).some(
       (role) =>
         Object.keys(role).some((key) => key !== "id" && key !== "privileges") ||
         (role.privileges ?? []).some((privilege) =>
-          Object.keys(privilege).some((key) => key !== "id"),
-        ),
+          Object.keys(privilege).some((key) => key !== "id")
+        )
     )
   );
 }
 
-/** Throws when any role other than SYSTEM_SUPER_ADMIN can reach the override capability. */
+/** Throws when any role other than system-super-admin can reach the override capability. */
 export function ciAssertExclusiveCoreOverrideRole(
-  definition: CiAccessControlDefinition,
+  definition: CiAccessControlDefinition
 ): void {
   const roles = new Map(definition.roles.map((role) => [role.id, role]));
 
-  /** Returns whether one inheritance path reaches SYSTEM_SUPER_ADMIN. */
+  /** Returns whether one inheritance path reaches system-super-admin. */
   function inheritsSystemSuperAdmin(
     roleId: string,
-    visited: ReadonlySet<string>,
+    visited: ReadonlySet<string>
   ): boolean {
-    if (roleId === "SYSTEM_SUPER_ADMIN") {
+    if (roleId === "system-super-admin") {
       return true;
     }
 
@@ -211,18 +233,18 @@ export function ciAssertExclusiveCoreOverrideRole(
 
     const nextVisited = new Set(visited).add(roleId);
     return (roles.get(roleId)?.inherits ?? []).some((inheritedRoleId) =>
-      inheritsSystemSuperAdmin(inheritedRoleId, nextVisited),
+      inheritsSystemSuperAdmin(inheritedRoleId, nextVisited)
     );
   }
 
   for (const role of definition.roles) {
-    if (role.id === "SYSTEM_SUPER_ADMIN") {
+    if (role.id === "system-super-admin") {
       continue;
     }
 
     if (inheritsSystemSuperAdmin(role.id, new Set())) {
       throw new Error(
-        `Access-control role "${role.id}" cannot inherit SYSTEM_SUPER_ADMIN.`,
+        `Access-control role "${role.id}" cannot inherit system-super-admin.`
       );
     }
 
@@ -232,14 +254,14 @@ export function ciAssertExclusiveCoreOverrideRole(
         privilege.scopeKinds.includes("system") &&
         ciMatchesAuthorizationPattern(
           privilege.resource,
-          "platform.authorization.core",
+          "platform.authorization.core"
         ) &&
-        ciMatchesAuthorizationPattern(privilege.action, "override"),
+        ciMatchesAuthorizationPattern(privilege.action, "override")
     );
 
     if (grantsCoreOverride) {
       throw new Error(
-        `Access-control role "${role.id}" cannot grant the core override capability.`,
+        `Access-control role "${role.id}" cannot grant the core override capability.`
       );
     }
   }

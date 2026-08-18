@@ -17,13 +17,13 @@ For exact signatures and per-helper examples, open the
 
 ## Catalog helpers
 
-| Helper | Purpose |
-| --- | --- |
-| `ciCreateAppAccessControl(...layers)` | Merge application additions with protected core defaults and validate. |
-| `ciMergeAccessControlDefinitions(...layers)` | Unrestricted low-level merge for standalone or controlled internal use. |
-| `ciDefineAccessControl(definition)` | Validate a catalog and preserve its literal TypeScript type. |
-| `ciValidateAccessControlDefinition(definition)` | Return structured errors and warnings. |
-| `ciAssertValidAccessControlDefinition(definition)` | Throw when at least one validation error exists. |
+| Helper                                             | Purpose                                                                 |
+| -------------------------------------------------- | ----------------------------------------------------------------------- |
+| `ciCreateAppAccessControl(...layers)`              | Merge application additions with protected core defaults and validate.  |
+| `ciMergeAccessControlDefinitions(...layers)`       | Unrestricted low-level merge for standalone or controlled internal use. |
+| `ciDefineAccessControl(definition)`                | Validate a catalog and preserve its literal TypeScript type.            |
+| `ciValidateAccessControlDefinition(definition)`    | Return structured errors and warnings.                                  |
+| `ciAssertValidAccessControlDefinition(definition)` | Throw when at least one validation error exists.                        |
 
 ```ts title="Define a standalone catalog" showLineNumbers
 const definition = ciDefineAccessControl({
@@ -35,24 +35,24 @@ const definition = ciDefineAccessControl({
 
 ## Core ownership and override helpers
 
-| Helper | Purpose |
-| --- | --- |
-| `ciIsCoreAccessControlEntry(reference)` | Identify an entry owned by CloudIgniter core. |
-| `ciGetAccessControlEntryOrigin(reference)` | Return `core` or `application` for administration UI metadata. |
-| `ciCanOverrideCoreAccessControl(subject, definition?)` | Require a direct system-scoped `SYSTEM_SUPER_ADMIN` assignment. |
-| `ciCreateCoreAccessControlOverride(input, options?)` | Validate and create an immutable, audited override record. |
-| `ciApplyCoreAccessControlOverrides(definition, overrides)` | Replay a consecutive override history over a resolved catalog. |
+| Helper                                                     | Purpose                                                         |
+| ---------------------------------------------------------- | --------------------------------------------------------------- |
+| `ciIsCoreAccessControlEntry(reference)`                    | Identify an entry owned by CloudIgniter core.                   |
+| `ciGetAccessControlEntryOrigin(reference)`                 | Return `core` or `application` for administration UI metadata.  |
+| `ciCanOverrideCoreAccessControl(subject, definition?)`     | Require a direct system-scoped `system-super-admin` assignment. |
+| `ciCreateCoreAccessControlOverride(input, options?)`       | Validate and create an immutable, audited override record.      |
+| `ciApplyCoreAccessControlOverrides(definition, overrides)` | Replay a consecutive override history over a resolved catalog.  |
 
 ## Authorizer helpers
 
-| Helper | Purpose |
-| --- | --- |
-| `ciCreateAuthorizer(definition, options?)` | Compile a reusable authorizer. |
+| Helper                                         | Purpose                                                           |
+| ---------------------------------------------- | ----------------------------------------------------------------- |
+| `ciCreateAuthorizer(definition, options?)`     | Compile a reusable authorizer.                                    |
 | `ciCreateAppAuthorizer(definition?, options?)` | Compile the resolved app catalog, defaulting to the core catalog. |
-| `ciAuthorize(request, definition, options?)` | One-shot decision with evidence. |
-| `ciCan(request, definition, options?)` | One-shot boolean check. |
-| `ciCanAny(batch, definition, options?)` | One-shot any-of check. |
-| `ciCanAll(batch, definition, options?)` | One-shot all-of check. |
+| `ciAuthorize(request, definition, options?)`   | One-shot decision with evidence.                                  |
+| `ciCan(request, definition, options?)`         | One-shot boolean check.                                           |
+| `ciCanAny(batch, definition, options?)`        | One-shot any-of check.                                            |
+| `ciCanAll(batch, definition, options?)`        | One-shot all-of check.                                            |
 
 The authorizer instance exposes:
 
@@ -66,41 +66,41 @@ authorizer.definition;
 
 ## Scope helpers
 
-| Helper | Result |
-| --- | --- |
-| `ciSystemAccessScope()` | `{ kind: "system" }` |
-| `ciGlobalAccessScope()` | `{ kind: "global" }` |
-| `ciTenantAccessScope(tenantId)` | Tenant scope |
-| `ciOrgUnitAccessScope(tenantId, orgUnitId, ancestors?)` | Org Unit scope |
-| `ciAccessScopeContains(grant, request, propagation)` | Scope containment boolean |
+| Helper                                                  | Result                    |
+| ------------------------------------------------------- | ------------------------- |
+| `ciSystemAccessScope()`                                 | `{ kind: "system" }`      |
+| `ciGlobalAccessScope()`                                 | `{ kind: "global" }`      |
+| `ciTenantAccessScope(tenantId)`                         | Tenant scope              |
+| `ciOrgUnitAccessScope(tenantId, orgUnitId, ancestors?)` | Org Unit scope            |
+| `ciAccessScopeContains(grant, request, propagation)`    | Scope containment boolean |
 
 ## Assignment and subject helpers
 
-| Helper | Purpose |
-| --- | --- |
-| `ciCreateRoleAssignment(roleId, scope, propagation, window?)` | Create one scoped role assignment. |
-| `ciCreateRoleAssignments(roleIds, scope, propagation, window?)` | Map several role IDs to one scope. |
-| `ciResolveIdentityGroupRoles(groups, definition, options?)` | Map provider group names to known catalog roles. |
-| `ciCreateRoleAssignmentsFromIdentityGroups(groups, definition, scope, propagation, options?)` | Adapt provider groups into scoped assignments. |
-| `ciCreateScopedPrivilege(privilege, scope, propagation, window?)` | Create a direct subject privilege. |
-| `ciCreateAuthorizationSubject(user, assignments, direct?)` | Adapt authenticated identity data. |
+| Helper                                                                                        | Purpose                                          |
+| --------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `ciCreateRoleAssignment(roleId, scope, propagation, window?)`                                 | Create one scoped role assignment.               |
+| `ciCreateRoleAssignments(roleIds, scope, propagation, window?)`                               | Map several role IDs to one scope.               |
+| `ciResolveIdentityGroupRoles(groups, definition, options?)`                                   | Map provider group names to known catalog roles. |
+| `ciCreateRoleAssignmentsFromIdentityGroups(groups, definition, scope, propagation, options?)` | Adapt provider groups into scoped assignments.   |
+| `ciCreateScopedPrivilege(privilege, scope, propagation, window?)`                             | Create a direct subject privilege.               |
+| `ciCreateAuthorizationSubject(user, assignments, direct?)`                                    | Adapt authenticated identity data.               |
 
 ## Permission helpers
 
-| Helper | Purpose |
-| --- | --- |
-| `ciFormatPermission(resource, action)` | Produce `resource.action`. |
-| `ciParsePermission(permission)` | Split the final segment into resource and action. |
-| `ciMatchesPermission(pattern, permission)` | Match a full dot-delimited permission pattern. |
-| `ciMatchesAuthorizationPattern(pattern, value)` | Match dot-segment wildcard patterns. |
+| Helper                                          | Purpose                                           |
+| ----------------------------------------------- | ------------------------------------------------- |
+| `ciFormatPermission(resource, action)`          | Produce `resource.action`.                        |
+| `ciParsePermission(permission)`                 | Split the final segment into resource and action. |
+| `ciMatchesPermission(pattern, permission)`      | Match a full dot-delimited permission pattern.    |
+| `ciMatchesAuthorizationPattern(pattern, value)` | Match dot-segment wildcard patterns.              |
 
 ## Role precedence helpers
 
-| Helper/constant | Purpose |
-| --- | --- |
-| `CI_CORE_ROLE_PRECEDENCE` | Canonical precedence for CloudIgniter core roles. |
-| `CI_CORE_ROLES_BY_PRECEDENCE` | Core roles ordered strongest to weakest. |
-| `ciResolvePrimaryRole(roles, map?)` | Resolve the strongest known role ID. |
+| Helper/constant                     | Purpose                                           |
+| ----------------------------------- | ------------------------------------------------- |
+| `CI_CORE_ROLE_PRECEDENCE`           | Canonical precedence for CloudIgniter core roles. |
+| `CI_CORE_ROLES_BY_PRECEDENCE`       | Core roles ordered strongest to weakest.          |
+| `ciResolvePrimaryRole(roles, map?)` | Resolve the strongest known role ID.              |
 
 ## Main types
 
@@ -120,6 +120,8 @@ CiResourceDomainDefinition
 CiResourceDefinition
 CiActionDefinition
 CiRoleDefinition
+CiRoleStatus
+CiRoleStatusChange
 CiPrivilege
 CiPrivilegeEffect
 CiAccessControlValidationIssue
@@ -196,7 +198,7 @@ src/
 ```
 
 Provider adapters and repositories are exposed through the `Emberguard` facade. Construct it with a provider,
-for example `ciCreateAwsEmberguardProvider({ database, tables })`, then use its member functions to load
+for example `ciCreateAwsEmberguardProvider({ database, tables, keys })`, then use its member functions to load
 definitions, assignments, custom domains, and resource inventory through the provider repository.
 
 ## Production checklist
@@ -215,13 +217,13 @@ definitions, assignments, custom domains, and resource inventory through the pro
 
 ### Core overrides
 
-- [ ] Only a directly assigned, system-scoped `SYSTEM_SUPER_ADMIN` can create an override.
+- [ ] Only a directly assigned, system-scoped `system-super-admin` can create an override.
 - [ ] The mutation endpoint enforces step-up authentication.
 - [ ] Every override records an actor, reason, timestamp, and consecutive revision.
 - [ ] Persistence uses an atomic condition on `expectedRevision`.
 - [ ] The effective diff and affected grants are reviewed before confirmation.
 - [ ] Existing audit records are immutable; restoration creates a new record.
-- [ ] The last active `SYSTEM_SUPER_ADMIN` assignment cannot be removed.
+- [ ] The last active `system-super-admin` assignment cannot be removed.
 
 ### Assignments
 

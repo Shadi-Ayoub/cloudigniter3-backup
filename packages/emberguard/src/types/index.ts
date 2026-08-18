@@ -1,6 +1,7 @@
 export type { CiEmberguardCoreRole } from "../lib/ci-role-precedence";
 export type {
   CiEmberguardCustomDomainRecord,
+  CiEmberguardAccessControlState,
   CiEmberguardOptions,
   CiEmberguardProvider,
   CiEmberguardProviderName,

@@ -1,0 +1,31 @@
+---
+title: ciMigrateLegacyPrivilegeTitles
+description: Supply titles missing from privileges persisted before the title field became required.
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 19
+---
+
+# `ciMigrateLegacyPrivilegeTitles`
+
+This runtime-neutral compatibility helper is exported from `@cloudigniter/core/lib`:
+
+```ts
+import { ciMigrateLegacyPrivilegeTitles } from "@cloudigniter/core/lib";
+```
+
+## Signature
+
+```ts
+function ciMigrateLegacyPrivilegeTitles(
+  definition: CiAccessControlDefinition,
+  titleCatalog?: CiAccessControlDefinition
+): CiAccessControlDefinition;
+```
+
+The helper supplies titles only when the `title` field is absent from a persisted privilege. It prefers a
+matching title from the optional configured catalog and otherwise derives a deterministic label from the stable
+privilege ID. Explicitly blank or otherwise invalid titles remain unchanged so strict validation reports them.
+
+Role IDs, inheritance references, and role assignments are never normalized. They must already follow the
+lowercase kebab identifier contract.

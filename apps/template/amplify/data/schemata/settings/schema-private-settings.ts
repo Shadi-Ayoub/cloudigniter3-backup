@@ -12,7 +12,7 @@
 //     .identifier(['tenantId', 'key'])
 //     .secondaryIndexes((index) => [index('tenantId').name('byTenant')])
 //     .authorization((allow) => [
-//       allow.group('SYSTEM_ADMIN').to(['create', 'read', 'update', 'delete']),
+//       allow.group('system-admin').to(['create', 'read', 'update', 'delete']),
 //       // optionally: allow.authenticated().to(['read'])  (if any logged-in user can read private settings)
 //     ]),
 // };

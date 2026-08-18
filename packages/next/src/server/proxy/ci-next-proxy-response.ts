@@ -97,11 +97,11 @@ export async function ciNextProxyResponse({
    * Remove both the default and configured header names before writing the
    * authoritative proxy-generated context and namespace.
    */
-  // requestHeaders.delete(CI_DEFAULT_REQUEST_CONTEXT_HEADER_NAME);
+  requestHeaders.delete(CI_DEFAULT_REQUEST_CONTEXT_HEADER_NAME);
 
-  // requestHeaders.delete(requestContextHeaderName);
+  requestHeaders.delete(requestContextHeaderName);
 
-  // requestHeaders.set(requestContextHeaderName, serializedUnresolvedRequestContext);
+  requestHeaders.set(requestContextHeaderName, serializedUnresolvedRequestContext);
 
   // -------------------------------------------------------
   // Tenant or Org Unit information-page response
@@ -144,6 +144,7 @@ export async function ciNextProxyResponse({
     request,
     pathnameNormalized: tenantResult.featurePathname,
     routes,
+    tenantScope: tenantResult.tenant.scope,
   });
 
   // -------------------------------------------------------

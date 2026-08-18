@@ -2,6 +2,7 @@ import type { CiPageSetup } from "@cloudigniter/core/types";
 import { CiPage } from "@cloudigniter/next/client";
 import { CiThemePresentationPage } from "@cloudigniter/next/ui/client";
 import { appBootstrap } from "@/kernel/server";
+import { dashboardBreadcrumbChildren } from "../breadcrumb-menu";
 
 export default async function ThemePresentationPage() {
   const context = await appBootstrap();
@@ -9,8 +10,13 @@ export default async function ThemePresentationPage() {
   const pageSetup: CiPageSetup = {
     showPageHeader: false,
     showBreadcrumbs: true,
+    withBreadcrumbChildrenMenu: true,
     breadcrumbs: [
-      { i18nKey: "common.dashboard", href: "/dashboard" },
+      {
+        i18nKey: "common.dashboard",
+        href: "/dashboard",
+        children: dashboardBreadcrumbChildren,
+      },
       { i18nKey: "theme.themePresentationLabel" },
     ],
     includeHomeInBreadcrumbs: true,

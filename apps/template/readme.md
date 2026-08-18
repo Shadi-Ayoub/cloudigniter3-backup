@@ -1,38 +1,24 @@
-# Notes
+# CloudIgniter template tooling
 
-Because the "scripts/modules/ci-install-module-dependencies.mjs" script imports TypeScript
-manifests and a TypeScript core library, run it through the tsx loader:
-
-```json
-{
-  "scripts": {
-    "modules:install": "node --import=tsx scripts/modules/ci-install-module-dependencies.mjs",
-    "modules:check": "node --import=tsx scripts/modules/ci-install-module-dependencies.mjs --check"
-  },
-  "devDependencies": {
-    "tsx": "catalog:"
-  }
-}
-```
-
-Node’s documentation recommends `tsx` when full TypeScript loading behavior is required.
-[Node.js TypeScript documentation](https://nodejs.org/api/typescript.html)
+Application and system operations are provided by `@cloudigniter/cli`. The template invokes the public `ci` executable rather than owning duplicate scripts.
 
 ## Usage
 
 ```bash
-pnpm modules:install
+pnpm resources:studio
+pnpm bootstrap:access-control
+pnpm bootstrap:root
+pnpm sandbox:bootstrap
 ```
 
-## CI Validation
+Resource Studio generates application-owned backend and management-page code
+offline. AWS SSO refresh and one-shot sandbox deployment are separate, explicit
+actions inside the Studio.
+
+Validate application modules from the monorepo root with the public CLI alias:
 
 ```bash
-pnpm modules:check
+pnpm modules:validate:user
 ```
 
-The script updates `packages/next/package.json`, then runs a filtered pnpm installation. pnpm officially
-supports filtered installation and all four package dependency sections used above.
-[pnpm install](https://pnpm.io/cli/install), [pnpm add](https://pnpm.io/cli/add).
-
-Do not execute the installer automatically during application startup or package `postinstall`. It should be
-an explicit development/build-maintenance command because it modifies `package.json` and the workspace lockfile.
+Framework module dependency synchronization is intentionally separated into the maintainer-only `ci-dev` executable. Do not run synchronization during application startup or `postinstall`; it can update package manifests and the workspace lockfile.

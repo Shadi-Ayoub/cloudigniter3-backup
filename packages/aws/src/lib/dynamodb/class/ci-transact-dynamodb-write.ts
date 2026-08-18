@@ -34,6 +34,11 @@ type CiPutTransactWriteOp = {
   key: CiKey;
   item: CiAnyItem;
   existence?: Extract<CiDynamoExistenceMode, "any" | "insertOnly">;
+  condition?: {
+    expression: string;
+    names?: Record<string, string>;
+    values?: Record<string, any>;
+  };
 };
 
 type CiUpdateTransactWriteOp = {
@@ -96,7 +101,7 @@ export async function transactWrite(
     tableName: string;
     items: CiTransactWriteOp[];
     returnConsumedCapacity?: "NONE" | "TOTAL" | "INDEXES";
-  },
+  }
 ): Promise<CiTransactWriteResult> {
   const { tableName, items, returnConsumedCapacity = "NONE" } = opts;
 
@@ -107,18 +112,32 @@ export async function transactWrite(
       if (item.mode === "put") {
         const existence = ciBuildDynamoExistenceCondition(
           item.key,
-          item.existence ?? "any",
+          item.existence ?? "any"
         );
+
+        const conditionExpressions = [
+          existence.expression,
+          item.condition?.expression,
+        ].filter((value): value is string => Boolean(value));
+        const names = {
+          ...(existence.names ?? {}),
+          ...(item.condition?.names ?? {}),
+        };
 
         return {
           Put: {
             TableName: tableName,
             Item: { ...item.item, ...item.key },
-            ConditionExpression: existence.expression,
-            ExpressionAttributeNames:
-              existence.names && Object.keys(existence.names).length
-                ? existence.names
+            ConditionExpression:
+              conditionExpressions.length > 0
+                ? conditionExpressions
+                    .map((expression) => `(${expression})`)
+                    .join(" AND ")
                 : undefined,
+            ExpressionAttributeNames: Object.keys(names).length
+              ? names
+              : undefined,
+            ExpressionAttributeValues: item.condition?.values,
           },
         };
       }
@@ -126,7 +145,7 @@ export async function transactWrite(
       if (item.mode === "delete") {
         const existence = ciBuildDynamoExistenceCondition(
           item.key,
-          item.existence ?? "any",
+          item.existence ?? "any"
         );
 
         return {
@@ -145,7 +164,7 @@ export async function transactWrite(
       const update = ciBuildUpdateExpression(item.update?.set);
       const existence = ciBuildDynamoExistenceCondition(
         item.key,
-        item.existence ?? "any",
+        item.existence ?? "any"
       );
 
       const names = {
@@ -171,7 +190,7 @@ export async function transactWrite(
       new TransactWriteCommand({
         TransactItems: transactItems,
         ReturnConsumedCapacity: returnConsumedCapacity,
-      }),
+      })
     );
 
     return {

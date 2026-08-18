@@ -7,6 +7,7 @@ import {
 } from "@cloudigniter/aws/server/backend";
 
 import { ciGetAuthStack } from "./auth";
+import { ciCreateCloudIgniterBackendOutputs } from "./ci-cloudigniter-backend-outputs";
 import { ciGetDataStack } from "./data";
 import type { CiBackend } from "./types";
 
@@ -49,12 +50,9 @@ export function ciPostBuild(backend: CiBackend) {
     strict: true,
   });
 
-  // Publish manifest-declared backend outputs to amplify_outputs.json.
-  backend.addOutput({
-    custom: {
-      cloudigniter: {
-        ...data.outputs,
-      },
-    },
+  return ciCreateCloudIgniterBackendOutputs({
+    tableOutputs: data.outputs,
+    emberguardAccessBootstrapFunctionName:
+      data.functions.ciGetEmberguardDefinitionHandler.functionName,
   });
 }

@@ -26,13 +26,16 @@ flowchart LR
 
 ### Domain
 
-A domain groups related resources for ownership and administration. It is not itself an access decision.
+A domain groups related resources for ownership and administration. Active domains do not add a separate
+privilege requirement, but suspending a domain immediately denies every authorization request for its resources.
+The resource definitions and privileges remain intact so an administrator can restore the domain later.
 
 ```ts
 const domain = {
   id: "billing",
   title: "Billing",
   description: "Invoices, payments, refunds, and billing configuration.",
+  status: "active",
 };
 ```
 
@@ -45,6 +48,12 @@ learning
 reporting
 platform
 ```
+
+The Resources Catalog page exposes **Resource domains** as a focused management dialog. It lists domains by
+display name, creates application-owned domains, and suspends or restores eligible domains with a required
+reason. The actor, timestamp, and reason are stored in `statusChange`. The `platform` domain cannot be suspended
+because it contains the access-control recovery path. Suspended domains remain visible but cannot be selected
+for a new resource.
 
 ### Resource
 
@@ -74,12 +83,12 @@ the same tenant.
 
 Actions describe business operations. Prefer precise names over generic `manage` permissions.
 
-| Prefer | Avoid | Reason |
-| --- | --- | --- |
-| `approve` | `write` | Approval may require a special role. |
-| `refund` | `update` | A refund is financially sensitive. |
-| `publish` | `edit` | Publishing affects visibility. |
-| `invite` | `create` | Inviting a user has identity-provider effects. |
+| Prefer    | Avoid    | Reason                                         |
+| --------- | -------- | ---------------------------------------------- |
+| `approve` | `write`  | Approval may require a special role.           |
+| `refund`  | `update` | A refund is financially sensitive.             |
+| `publish` | `edit`   | Publishing affects visibility.                 |
+| `invite`  | `create` | Inviting a user has identity-provider effects. |
 
 Common actions such as `read`, `create`, `update`, and `delete` are useful, but an application should not be
 limited to CRUD.
@@ -89,10 +98,11 @@ limited to CRUD.
 A privilege is a serializable policy statement:
 
 ```ts
-import type { CiPrivilege } from "@cloudigniter/emberguard/types";
+import type { CiPrivilege } from "@cloudigniter/core/types";
 
 const approveInvoices: CiPrivilege = {
   id: "approve-invoices",
+  title: "Invoice approver",
   effect: "allow",
   resource: "billing.invoices",
   action: "approve",
@@ -104,6 +114,7 @@ const approveInvoices: CiPrivilege = {
 Every privilege has:
 
 - a stable `id` for storage and audit records;
+- a required human-readable `title` for forms, selectors, and displays;
 - an `allow` or `deny` effect;
 - a resource pattern;
 - an action pattern;
@@ -111,9 +122,34 @@ Every privilege has:
 
 The concrete tenant or Org Unit belongs to the assignment, not the privilege.
 
+:::note Existing catalogs
+`title` is now part of every complete privilege definition. CloudIgniter's persisted-catalog read paths migrate
+an absent legacy title from the matching configured catalog privilege. Unknown custom privileges receive a
+deterministic label derived from their ID, so catalogs saved before this field existed remain loadable. Review
+and save the catalog to persist those recovered or generated labels.
+
+Explicitly blank titles are not migrated and still fail validation. Add non-empty titles to application source
+definitions and correct blank or malformed persisted values. IDs remain unchanged and continue to be the
+authorization, persistence, and audit keys.
+:::
+
 ## Naming rules
 
-Use lowercase IDs for domains, resources, actions, and privileges. Resources may contain dotted segments.
+Role and privilege IDs—including CloudIgniter's core role IDs—must use lowercase kebab case. They must start with a lowercase letter and
+may then contain only lowercase letters, digits, and single hyphens between non-empty segments.
+
+| ID                  | Valid | Reason                                              |
+| ------------------- | ----- | --------------------------------------------------- |
+| `invoice-approver`  | Yes   | Starts with a letter and uses lowercase kebab case. |
+| `reviewer2`         | Yes   | Digits are allowed after the first letter.          |
+| `2nd-reviewer`      | No    | The first character is a digit.                     |
+| `Invoice-Approver`  | No    | Uppercase letters are not allowed.                  |
+| `invoice_approver`  | No    | Underscores are not allowed.                        |
+| `invoice approver`  | No    | Spaces are not allowed.                             |
+| `invoice--approver` | No    | Hyphens cannot create empty segments.               |
+
+Domain and action IDs follow the same lowercase kebab rule. Resources may contain lowercase dotted capability
+segments, so their namespace is separate from the kebab-only domain, action, role, and privilege convention.
 
 ```text
 identity.users
@@ -122,9 +158,6 @@ billing.invoices
 billing.payment-methods
 platform.settings
 ```
-
-Role IDs may also use CloudIgniter's existing uppercase core-role convention, but lowercase kebab case is easier
-to use consistently in application catalogs.
 
 Keep IDs immutable after release. Titles and descriptions may change; IDs appear in assignments, audit records,
 cache keys, and persistence indexes.
@@ -138,6 +171,7 @@ const privileges = [
   // Every registered action on exactly identity.users.
   {
     id: "manage-users",
+    title: "Manage users",
     effect: "allow",
     resource: "identity.users",
     action: "*",
@@ -147,6 +181,7 @@ const privileges = [
   // Read registered resources below identity.
   {
     id: "read-identity-domain",
+    title: "Read identity data",
     effect: "allow",
     resource: "identity.*",
     action: "read",
@@ -181,10 +216,7 @@ ciFormatPermission("identity.users", "read");
 ciParsePermission("identity.users.read");
 // { resource: "identity.users", action: "read" }
 
-ciMatchesPermission(
-  "forum.posts.*",
-  "forum.posts.comments.delete",
-);
+ciMatchesPermission("forum.posts.*", "forum.posts.comments.delete");
 // true
 ```
 
@@ -195,12 +227,12 @@ Permission strings are useful for configuration UIs and compact displays. The ev
 
 Before creating roles, list the application's protected capabilities:
 
-| Domain | Resource | Action | Scopes | Sensitive? |
-| --- | --- | --- | --- | --- |
-| identity | `identity.users` | `read` | tenant, Org Unit | No |
-| identity | `identity.users` | `invite` | tenant | Yes |
-| billing | `billing.invoices` | `approve` | tenant, Org Unit | Yes |
-| platform | `platform.settings` | `update` | system | Yes |
+| Domain   | Resource            | Action    | Scopes           | Sensitive? |
+| -------- | ------------------- | --------- | ---------------- | ---------- |
+| identity | `identity.users`    | `read`    | tenant, Org Unit | No         |
+| identity | `identity.users`    | `invite`  | tenant           | Yes        |
+| billing  | `billing.invoices`  | `approve` | tenant, Org Unit | Yes        |
+| platform | `platform.settings` | `update`  | system           | Yes        |
 
 This inventory helps identify missing checks and prevents one oversized `admin.*` permission from becoming the
 entire security model.
@@ -228,6 +260,7 @@ for (const issue of issues) {
 Validation detects:
 
 - invalid or duplicate identifiers;
+- invalid domain or role status metadata;
 - empty action or scope lists;
 - unknown domains, resources, actions, and inherited roles;
 - invalid precedence values;
@@ -246,27 +279,26 @@ CloudIgniter ships `CI_DEFAULT_ACCESS_CONTROL_DEFINITION`. Build the resolved ap
 are runtime-frozen and protected from collisions:
 
 ```ts title="src/custom/auth/app-access-control.ts" showLineNumbers
-import { ciCreateAppAccessControl } from "@cloudigniter/emberguard/lib";
-import type { CiAccessControlLayer } from "@cloudigniter/emberguard/types";
+import { ciCreateAppAccessControl } from "@cloudigniter/core/lib";
+import type { CiAccessControlLayer } from "@cloudigniter/core/types";
 
 export const appAccessControlExtension = {
   resources: [
     {
       id: "identity.users",
-      actions: [
-        { id: "suspend", title: "Suspend user", sensitive: true },
-      ],
+      actions: [{ id: "suspend", title: "Suspend user", sensitive: true }],
     },
   ],
   roles: [
     {
-      id: "APP_ADMIN",
+      id: "application-admin",
       title: "Application administrator",
       precedence: 25,
-      inherits: ["ADMIN"],
+      inherits: ["admin"],
       privileges: [
         {
           id: "suspend-users",
+          title: "Suspend users",
           effect: "allow",
           resource: "identity.users",
           action: "suspend",
@@ -278,12 +310,12 @@ export const appAccessControlExtension = {
 } as const satisfies CiAccessControlLayer;
 
 export const appAccessControl = ciCreateAppAccessControl(
-  appAccessControlExtension,
+  appAccessControlExtension
 );
 ```
 
 Applications may extend a core resource with a new action, as above, but cannot redefine the resource or one
-of its core actions. Create a custom role that inherits `ADMIN` instead of adding privileges to `ADMIN`.
+of its core actions. Create a custom role that inherits `admin` instead of adding privileges to `admin`.
 
 Feature modules may follow the main application layer. They can refine application-owned entries but remain
 unable to redefine core-owned entries:
@@ -291,7 +323,7 @@ unable to redefine core-owned entries:
 ```ts title="src/custom/auth/app-access-control.ts" showLineNumbers
 const resolvedAccessControl = ciCreateAppAccessControl(
   appAccessControlExtension,
-  featureModuleAccessControlLayer,
+  featureModuleAccessControlLayer
 );
 ```
 
@@ -307,14 +339,14 @@ flowchart LR
 
 The protected application merge follows these ownership rules:
 
-| Entry | Application behavior |
-| --- | --- |
-| Core domain | Read-only; new resources may reference it |
-| Core resource | Read-only; new application actions may be added beneath it |
-| Core action | Read-only |
-| Core role and privilege | Read-only; a new application role may inherit a core role other than `SYSTEM_SUPER_ADMIN` |
-| Application-owned entry | Later application layers may merge it by stable `id` |
-| New entry | Appended in layer order and must include all required fields |
+| Entry                   | Application behavior                                                                      |
+| ----------------------- | ----------------------------------------------------------------------------------------- |
+| Core domain             | Read-only; new resources may reference it                                                 |
+| Core resource           | Read-only; new application actions may be added beneath it                                |
+| Core action             | Read-only                                                                                 |
+| Core role and privilege | Read-only; a new application role may inherit a core role other than `system-super-admin` |
+| Application-owned entry | Later application layers may merge it by stable `id`                                      |
+| New entry               | Appended in layer order and must include all required fields                              |
 
 `ciMergeAccessControlDefinitions()` remains the low-level unrestricted merge primitive for standalone catalogs
 and the audited core-override implementation. Do not use it to bypass the application ownership guard.
@@ -322,7 +354,7 @@ and the audited core-override implementation. Do not use it to bypass the applic
 ### Audited core overrides
 
 A core edit never mutates `CI_DEFAULT_ACCESS_CONTROL_DEFINITION`. A directly assigned
-`SYSTEM_SUPER_ADMIN` creates a versioned override record, and the application replays the persisted history over
+`system-super-admin` creates a versioned override record, and the application replays the persisted history over
 the resolved catalog:
 
 ```ts title="src/kernel/server/auth/create-core-override.ts" showLineNumbers
@@ -344,15 +376,15 @@ const override = ciCreateCoreAccessControlOverride({
 
 const effectiveAccessControl = ciApplyCoreAccessControlOverrides(
   appAccessControl,
-  [override],
+  [override]
 );
 ```
 
 The creator verifies the dedicated `platform.authorization.core.override` capability and requires the subject
-to hold `SYSTEM_SUPER_ADMIN` directly at system scope. Direct privileges and roles that merely inherit
-`SYSTEM_SUPER_ADMIN` do not qualify; application composition rejects that inheritance and any non-core role that
+to hold `system-super-admin` directly at system scope. Direct privileges and roles that merely inherit
+`system-super-admin` do not qualify; application composition rejects that inheritance and any non-core role that
 grants the override capability. Override records carry the actor, reason, timestamp, and consecutive revision
-metadata. Bootstrap access for `SYSTEM_SUPER_ADMIN` and the core-administration resource cannot be weakened.
+metadata. Bootstrap access for `system-super-admin` and the core-administration resource cannot be weakened.
 
 Persist override records with an atomic condition on `expectedRevision`. The helper creates the record and
 validates the prospective catalog; the persistence adapter remains responsible for the conditional write,

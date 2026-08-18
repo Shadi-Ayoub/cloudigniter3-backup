@@ -6,7 +6,7 @@ export default function RolesPage() {
     <SecurityAspectPage
       kind="role"
       title="Roles"
-      description="Create focused application roles, review inheritance and precedence, and protect platform-owned responsibilities from accidental changes."
+      description="Create focused application roles, review inheritance and precedence, and temporarily suspend a role during incident investigation without deleting its assignments."
     />
   );
 }

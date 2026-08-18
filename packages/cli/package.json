@@ -1,0 +1,54 @@
+{
+  "name": "@cloudigniter/cli",
+  "version": "0.0.1",
+  "description": "Professional command-line tooling for CloudIgniter applications and maintainers.",
+  "type": "module",
+  "bin": {
+    "ci": "./bin/ci.mjs",
+    "ci-dev": "./bin/ci-dev.mjs"
+  },
+  "exports": {
+    "./runtime/resource-file-transaction": {
+      "types": "./src/runtime/ci-resource-file-transaction.d.mts",
+      "import": "./src/runtime/ci-resource-file-transaction.mjs"
+    },
+    "./types": {
+      "types": "./src/types/index.d.mts",
+      "import": "./src/types/index.mjs"
+    },
+    "./tooling/entries": "./src/tooling/ci-entries.mjs",
+    "./tooling/inject-use-client": "./src/tooling/ci-inject-use-client.mjs",
+    "./tooling/tsup": "./src/tooling/ci-tsup-config.ts"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test __tests__/*.test.mjs",
+    "check": "pnpm run typecheck && pnpm run test",
+    "check:package": "npm pack --dry-run"
+  },
+  "dependencies": {
+    "enquirer": "^2.4.1",
+    "execa": "^9.6.1",
+    "fast-glob": "^3.3.3",
+    "javascript-obfuscator": "^5.4.1",
+    "jsonc-parser": "^3.3.1",
+    "meow": "^14.1.0",
+    "ora": "^9.4.1",
+    "picocolors": "^1.1.1",
+    "tsx": "^4.23.1",
+    "typescript": "^6.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "esbuild": "^0.28.0",
+    "tsup": "^8.5.1"
+  }
+}

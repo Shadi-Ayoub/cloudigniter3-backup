@@ -1,0 +1,8 @@
+{
+  "label": "Template architecture",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Ownership, upgrade, and composition boundaries between CloudIgniter packages, template core code, and application-owned custom code."
+  }
+}

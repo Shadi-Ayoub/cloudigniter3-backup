@@ -18,4 +18,10 @@ export interface CiBreadcrumbItem {
 
   /** Force current state even when the item is not the last item. */
   current?: boolean;
+
+  /**
+   * Routes directly beneath this item. When enabled on `CiBreadcrumbs`, these
+   * are shown in its shortcut menu.
+   */
+  children?: CiBreadcrumbItem[];
 }

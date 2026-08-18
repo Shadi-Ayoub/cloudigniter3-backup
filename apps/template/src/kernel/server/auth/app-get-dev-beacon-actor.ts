@@ -10,6 +10,6 @@ import type { CiDevBeaconActor } from "@cloudigniter/core/types";
 export async function appGetDevBeaconActor(): Promise<CiDevBeaconActor> {
   return {
     authenticated: true,
-    roles: ["DEVELOPER"],
+    roles: ["developer"],
   };
 }

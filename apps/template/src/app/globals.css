@@ -24,7 +24,7 @@
 | Keep these entries intact when upgrading or customizing the application.
 |
 */
-@source "../../../../packages/core/src/**/*.{ts,tsx}";
 @source "../../../../packages/aws/src/**/*.{ts,tsx}";
+@source "../../../../packages/core/src/**/*.{ts,tsx}";
 @source "../../../../packages/next/src/**/*.{ts,tsx}";
 @source "../../../../packages/ui/src/**/*.{ts,tsx}";

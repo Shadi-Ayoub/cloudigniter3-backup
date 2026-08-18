@@ -63,9 +63,25 @@ export {
 } from "./post-build";
 
 // ─────────────────────────────────────────────────────────────
+// access-control bootstrap
+// ─────────────────────────────────────────────────────────────
+export {
+  ciBootstrapAccessControl,
+  ciBootstrapAccessControlFromAmplifyApp,
+  type CiBootstrapAccessControlFromAmplifyAppInput,
+  type CiBootstrapAccessControlInput,
+  type CiBootstrapAccessControlResult,
+} from "./access-control";
+
+// ─────────────────────────────────────────────────────────────
 // Amplify manifest compiler
 // ─────────────────────────────────────────────────────────────
 export * from "./amplify";
+
+// ─────────────────────────────────────────────────────────────
+// Resource Studio provider compiler
+// ─────────────────────────────────────────────────────────────
+export * from "./resource-studio";
 
 // ─────────────────────────────────────────────────────────────
 // root user

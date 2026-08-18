@@ -126,17 +126,21 @@ function mergeRoles(
   );
 
   for (const role of layer) {
+    const { privilegesMode, ...roleFields } = role;
     const current = merged.get(role.id);
     merged.set(role.id, {
       ...current,
-      ...role,
+      ...roleFields,
       ...(role.inherits
         ? { inherits: [...role.inherits] }
         : current?.inherits
           ? { inherits: [...current.inherits] }
           : {}),
       privileges: role.privileges
-        ? mergePrivileges(current?.privileges ?? [], role.privileges)
+        ? mergePrivileges(
+            privilegesMode === "replace" ? [] : (current?.privileges ?? []),
+            role.privileges,
+          )
         : [...(current?.privileges ?? [])],
     } as CiRoleDefinition);
   }
@@ -186,12 +190,14 @@ function assertMergedDefinitionShape(definition: CiAccessControlDefinition): voi
 
     for (const privilege of role.privileges) {
       if (
+        typeof privilege.title !== "string" ||
+        privilege.title.trim().length === 0 ||
         (privilege.effect !== "allow" && privilege.effect !== "deny") ||
         typeof privilege.resource !== "string" ||
         typeof privilege.action !== "string"
       ) {
         throw new Error(
-          `Access-control privilege "${role.id}.${privilege.id}" requires effect, resource, and action fields.`,
+          `Access-control privilege "${role.id}.${privilege.id}" requires title, effect, resource, and action fields.`,
         );
       }
     }
@@ -203,7 +209,8 @@ function assertMergedDefinitionShape(definition: CiAccessControlDefinition): voi
  *
  * Domains, resources, actions, roles, and privileges are merged by `id`. The
  * latest defined scalar wins. Value arrays such as `scopeKinds` and `inherits`
- * replace earlier arrays instead of being concatenated.
+ * replace earlier arrays instead of being concatenated. A role layer can set
+ * `privilegesMode` to `replace` when it represents a complete privilege set.
  */
 export function ciMergeAccessControlDefinitions(
   ...layers: readonly (CiAccessControlLayer | null | undefined)[]

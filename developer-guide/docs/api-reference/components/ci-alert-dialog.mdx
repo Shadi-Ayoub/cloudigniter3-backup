@@ -1,0 +1,102 @@
+---
+title: CiAlertDialog
+sidebar_position: 2
+description: Accessible, theme-aware confirmation dialogs for consequential and destructive client actions.
+---
+
+# `CiAlertDialog`
+
+`CiAlertDialog` is CloudIgniter's acknowledgement-driven client feedback component. It wraps the Shadcn Base UI alert-dialog primitive with semantic variants, standard media icons, asynchronous confirmation handling, themed actions, and pending-state dismissal protection.
+
+## Imports and runtime
+
+Render the component inside a Client Component:
+
+```tsx
+import { CiAlertDialog } from "@cloudigniter/ui/client";
+import type {
+  CiAlertDialogProps,
+  CiAlertDialogSize,
+  CiAlertDialogVariant,
+} from "@cloudigniter/ui/types";
+```
+
+## Props
+
+```ts
+type CiAlertDialogVariant = "default" | "warning" | "destructive";
+type CiAlertDialogSize = "default" | "sm";
+
+interface CiAlertDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  title: ReactNode;
+  description?: ReactNode;
+  children?: ReactNode;
+  variant?: CiAlertDialogVariant;
+  size?: CiAlertDialogSize;
+  confirmLabel?: ReactNode;
+  cancelLabel?: ReactNode;
+  pendingLabel?: ReactNode;
+  icon?: ReactNode | false;
+  confirmDisabled?: boolean;
+  pending?: boolean;
+  onConfirm: () => void | Promise<void>;
+  onCancel?: () => void;
+  onConfirmError?: (error: unknown) => void;
+  closeOnConfirm?: boolean;
+  className?: string;
+}
+```
+
+| Prop              | Required | Default      | Behavior                                                                                                          |
+| ----------------- | -------- | ------------ | ----------------------------------------------------------------------------------------------------------------- |
+| `open`            | Yes      | —            | Controls dialog visibility.                                                                                       |
+| `onOpenChange`    | Yes      | —            | Receives requested visibility changes. Close requests are ignored while confirmation is pending.                  |
+| `title`           | Yes      | —            | Supplies the accessible alert-dialog title. Phrase it as the decision being made.                                 |
+| `description`     | No       | None         | Explains consequences and supplies the accessible description.                                                    |
+| `children`        | No       | None         | Renders supporting content between the description and actions.                                                   |
+| `variant`         | No       | `"default"`  | Selects default, warning, or destructive icon/action treatment.                                                   |
+| `size`            | No       | `"default"`  | Selects the default or compact width preset.                                                                      |
+| `confirmLabel`    | No       | `"Continue"` | Labels the primary decision action.                                                                               |
+| `cancelLabel`     | No       | `"Cancel"`   | Labels the cancellation action.                                                                                   |
+| `pendingLabel`    | No       | `"Working…"` | Replaces `confirmLabel` while work is pending.                                                                    |
+| `icon`            | No       | Variant icon | Supplies custom media; pass `false` to omit the media block.                                                      |
+| `confirmDisabled` | No       | `false`      | Prevents confirmation until application prerequisites are satisfied.                                              |
+| `pending`         | No       | `false`      | Adds externally controlled pending state to the component's async state.                                          |
+| `onConfirm`       | Yes      | —            | Runs once per confirmation. A returned promise activates pending behavior.                                        |
+| `onCancel`        | No       | None         | Runs when the Cancel control is activated.                                                                        |
+| `onConfirmError`  | No       | None         | Receives a rejected confirmation value. The dialog remains open; without this callback, the rejection propagates. |
+| `closeOnConfirm`  | No       | `true`       | Closes the dialog after `onConfirm` completes successfully.                                                       |
+| `className`       | No       | None         | Extends the dialog content surface.                                                                               |
+
+## Accessibility and async behavior
+
+The underlying Base UI primitive provides modal semantics, focus trapping, focus restoration, and Escape handling. `CiAlertDialog` requires a title, supports a description, renders 44-pixel minimum mobile action targets, and prevents accidental dismissal during pending work.
+
+`onConfirm` errors are not converted into UI automatically. Use `onConfirmError` to route them into `CiAlert`, `ciNotify`, or another application feedback channel. A rejection keeps the confirmation open so the user does not lose context.
+
+## Low-level Shadcn composition
+
+Applications that require a composition not covered by `CiAlertDialog` can import these client primitives:
+
+```tsx
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogMedia,
+  AlertDialogOverlay,
+  AlertDialogPortal,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@cloudigniter/ui/client";
+```
+
+Prefer `CiAlertDialog` for ordinary confirmation workflows so semantic colors, pending behavior, and accessibility defaults remain consistent.
+
+See [Confirmation dialogs](../../ui-components/confirmation-dialogs.mdx) for the application workflow.

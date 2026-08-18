@@ -4,4 +4,5 @@ export type {
   CiEmberguardOptions,
   CiEmberguardProvider,
   CiEmberguardRepository,
+  CiEmberguardAccessControlState,
 } from "../types";

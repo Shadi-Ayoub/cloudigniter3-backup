@@ -13,5 +13,5 @@ loadEnv({
 
 const backend = defineBackend(backendShape);
 
-ciPostBuild(backend);
+backend.addOutput(ciPostBuild(backend));
 ciConfigureCustomBackend({ backend });

@@ -48,6 +48,8 @@ export type {
   CiCoreAccessControlOverride,
   CiCreateCoreAccessControlOverrideInput,
   CiCreateCoreAccessControlOverrideOptions,
+  CiEmberguardAccessControlConfig,
+  CiEmberguardConfig,
   CiGrantWindow,
   CiGlobalAccessScope,
   CiIdentityGroupRoleMappingOptions,
@@ -63,9 +65,13 @@ export type {
   CiResourceDefinitionLayer,
   CiResourceDomainDefinition,
   CiResourceDomainDefinitionLayer,
+  CiResourceDomainStatus,
+  CiResourceDomainStatusChange,
   CiRoleAssignment,
   CiRoleDefinition,
   CiRoleDefinitionLayer,
+  CiRoleStatus,
+  CiRoleStatusChange,
   CiScopedPrivilege,
   CiScopePropagation,
   CiSystemAccessScope,
@@ -364,7 +370,13 @@ export type {
   CiSecurityRecordKind,
   CiSecurityRecordsByKind,
   CiSecurityResourceRecord,
+  CiSecurityResourceDomainRecord,
+  CiCreateSecurityResourceDomainInput,
+  CiSetSecurityResourceDomainStatusInput,
   CiSecurityRoleRecord,
+  CiSecurityRoleCounters,
+  CiSecurityRoleCountersById,
+  CiSetSecurityRoleStatusInput,
   CiSecuritySettings,
   CiSecurityStoredRoleAssignment,
 } from "./security-types";
@@ -454,10 +466,17 @@ export type {
   CiSettingsGroupResult,
 } from "./settings-types";
 
+export type {
+  CiBuildTableKeysInput,
+  CiTableKeySegments,
+  CiTableKeys,
+} from "./table-types";
+
 // ─────────────────────────────────────────────────────────────
 // tenant
 // ─────────────────────────────────────────────────────────────
 export type {
+  CiBuildTenantPublicPathnameInput,
   // CiCreateTenantInterface,
   // CiCreateTenantApiInterface,
   // CiDeleteTenantInterface,

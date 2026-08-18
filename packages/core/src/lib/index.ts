@@ -4,6 +4,7 @@
 export {
   CI_CORE_ROLE_PRECEDENCE,
   CI_CORE_ROLES_BY_PRECEDENCE,
+  CI_ACCESS_CONTROL_KEBAB_IDENTIFIER_PATTERN,
   CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
   ciApplyCoreAccessControlOverrides,
   ciAccessScopeContains,
@@ -23,15 +24,18 @@ export {
   ciCreateRoleAssignments,
   ciCreateRoleAssignmentsFromIdentityGroups,
   ciCreateSecurityAdministration,
+  ciBuildSecurityRoleCounters,
   ciCreateScopedPrivilege,
   ciDefineAccessControl,
   ciFormatPermission,
   ciGlobalAccessScope,
   ciGetAccessControlEntryOrigin,
   ciIsCoreAccessControlEntry,
+  ciIsAccessControlKebabIdentifier,
   ciMatchesAuthorizationPattern,
   ciMatchesPermission,
   ciMergeAccessControlDefinitions,
+  ciMigrateLegacyPrivilegeTitles,
   ciOrgUnitAccessScope,
   ciParsePermission,
   ciResolvePrimaryRole,
@@ -201,6 +205,7 @@ export {
   ciGetRoutesMatcher,
   ciGetRouteSearchParams,
   ciGetRouteNamespace,
+  ciMergeRouteMaps,
   ciIsProtectedPath,
   ciIsRegisteredPath,
   ciMatchRoute,
@@ -241,10 +246,13 @@ export {
   CiUserSettingsFormSchema,
 } from "./settings";
 
+export { ciBuildTableKey, ciBuildTableKeys } from "./table";
+
 // ─────────────────────────────────────────────────────────────
 // tenant
 // ─────────────────────────────────────────────────────────────
 export {
+  ciBuildTenantPublicPathname,
   CI_DEFAULT_TENANT_ROUTING_OPTIONS,
 
   // constants

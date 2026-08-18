@@ -5,13 +5,18 @@ import type {
   CiPrivilege,
 } from "../../types";
 
+import { CI_ACCESS_CONTROL_KEBAB_IDENTIFIER_PATTERN } from "./ci-access-control-identifiers";
 import { ciMatchesAuthorizationPattern } from "./ci-authorization-pattern";
 
-const CI_AUTHORIZATION_IDENTIFIER = /^[A-Za-z][A-Za-z0-9]*(?:[._-][A-Za-z0-9]+)*$/;
-const CI_AUTHORIZATION_RESOURCE_IDENTIFIER = /^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)*$/;
-const CI_AUTHORIZATION_ACTION_IDENTIFIER = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
-const CI_AUTHORIZATION_RESOURCE_PATTERN = /^(?:[a-z][a-z0-9-]*|\*)(?:\.(?:[a-z][a-z0-9-]*|\*))*$/;
-const CI_AUTHORIZATION_ACTION_PATTERN = /^(?:[a-z][a-z0-9]*(?:-[a-z0-9]+)*|\*)$/;
+const CI_AUTHORIZATION_RESOURCE_IDENTIFIER =
+  /^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)*$/;
+const CI_AUTHORIZATION_KEBAB_IDENTIFIER = new RegExp(
+  CI_ACCESS_CONTROL_KEBAB_IDENTIFIER_PATTERN
+);
+const CI_AUTHORIZATION_RESOURCE_PATTERN =
+  /^(?:[a-z][a-z0-9-]*|\*)(?:\.(?:[a-z][a-z0-9-]*|\*))*$/;
+const CI_AUTHORIZATION_ACTION_PATTERN =
+  /^(?:[a-z][a-z0-9]*(?:-[a-z0-9]+)*|\*)$/;
 const CI_ACCESS_SCOPE_KINDS = new Set<CiAccessScopeKind>([
   "system",
   "global",
@@ -23,7 +28,7 @@ const CI_ACCESS_SCOPE_KINDS = new Set<CiAccessScopeKind>([
 function validateUniqueIdentifiers(
   identifiers: readonly string[],
   path: string,
-  issues: CiAccessControlValidationIssue[],
+  issues: CiAccessControlValidationIssue[]
 ): void {
   const seen = new Set<string>();
 
@@ -46,7 +51,7 @@ function validateIdentifier(
   identifier: string,
   path: string,
   issues: CiAccessControlValidationIssue[],
-  pattern: RegExp = CI_AUTHORIZATION_IDENTIFIER,
+  pattern: RegExp = CI_AUTHORIZATION_KEBAB_IDENTIFIER
 ): void {
   if (!pattern.test(identifier)) {
     issues.push({
@@ -58,11 +63,27 @@ function validateIdentifier(
   }
 }
 
+/** Validates a human-readable catalog label. */
+function validateTitle(
+  title: string,
+  path: string,
+  issues: CiAccessControlValidationIssue[]
+): void {
+  if (typeof title !== "string" || title.trim().length === 0) {
+    issues.push({
+      severity: "error",
+      code: "invalid-title",
+      path,
+      message: "A non-empty human-readable title is required.",
+    });
+  }
+}
+
 /** Validates a non-empty, unique list of access-scope kinds. */
 function validateScopeKinds(
   scopeKinds: readonly CiAccessScopeKind[],
   path: string,
-  issues: CiAccessControlValidationIssue[],
+  issues: CiAccessControlValidationIssue[]
 ): void {
   if (scopeKinds.length === 0) {
     issues.push({
@@ -92,21 +113,32 @@ function validatePrivilege(
   privilege: CiPrivilege,
   path: string,
   definition: CiAccessControlDefinition,
-  issues: CiAccessControlValidationIssue[],
+  issues: CiAccessControlValidationIssue[]
 ): void {
   validateIdentifier(privilege.id, `${path}.id`, issues);
+  validateTitle(privilege.title, `${path}.title`, issues);
   validateScopeKinds(privilege.scopeKinds, `${path}.scopeKinds`, issues);
 
   if (!CI_AUTHORIZATION_RESOURCE_PATTERN.test(privilege.resource)) {
-    validateIdentifier(privilege.resource, `${path}.resource`, issues, CI_AUTHORIZATION_RESOURCE_PATTERN);
+    validateIdentifier(
+      privilege.resource,
+      `${path}.resource`,
+      issues,
+      CI_AUTHORIZATION_RESOURCE_PATTERN
+    );
   }
 
   if (!CI_AUTHORIZATION_ACTION_PATTERN.test(privilege.action)) {
-    validateIdentifier(privilege.action, `${path}.action`, issues, CI_AUTHORIZATION_ACTION_PATTERN);
+    validateIdentifier(
+      privilege.action,
+      `${path}.action`,
+      issues,
+      CI_AUTHORIZATION_ACTION_PATTERN
+    );
   }
 
   const resources = definition.resources.filter((resource) =>
-    ciMatchesAuthorizationPattern(privilege.resource, resource.id),
+    ciMatchesAuthorizationPattern(privilege.resource, resource.id)
   );
 
   if (resources.length === 0) {
@@ -120,7 +152,9 @@ function validatePrivilege(
   }
 
   const actionExists = resources.some((resource) =>
-    resource.actions.some((action) => ciMatchesAuthorizationPattern(privilege.action, action.id)),
+    resource.actions.some((action) =>
+      ciMatchesAuthorizationPattern(privilege.action, action.id)
+    )
   );
 
   if (!actionExists) {
@@ -133,7 +167,9 @@ function validatePrivilege(
   }
 
   for (const scopeKind of privilege.scopeKinds) {
-    if (!resources.some((resource) => resource.scopeKinds.includes(scopeKind))) {
+    if (
+      !resources.some((resource) => resource.scopeKinds.includes(scopeKind))
+    ) {
       issues.push({
         severity: "error",
         code: "unsupported-scope",
@@ -148,7 +184,8 @@ function validatePrivilege(
       severity: "warning",
       code: "broad-wildcard",
       path,
-      message: "This privilege covers every registered resource and action, including future matches.",
+      message:
+        "This privilege covers every registered resource and action, including future matches.",
     });
   }
 }
@@ -156,7 +193,7 @@ function validatePrivilege(
 /** Detects inheritance cycles while allowing a role to inherit multiple parents. */
 function validateRoleCycles(
   definition: CiAccessControlDefinition,
-  issues: CiAccessControlValidationIssue[],
+  issues: CiAccessControlValidationIssue[]
 ): void {
   const roles = new Map(definition.roles.map((role) => [role.id, role]));
   const completed = new Set<string>();
@@ -173,7 +210,9 @@ function validateRoleCycles(
         severity: "error",
         code: "role-cycle",
         path: `roles.${roleId}.inherits`,
-        message: `Role inheritance cycle detected: ${[...path, roleId].join(" -> ")}.`,
+        message: `Role inheritance cycle detected: ${[...path, roleId].join(
+          " -> "
+        )}.`,
       });
       return;
     }
@@ -201,46 +240,103 @@ function validateRoleCycles(
  * Warnings do not prevent the catalog from being used; errors do.
  */
 export function ciValidateAccessControlDefinition(
-  definition: CiAccessControlDefinition,
+  definition: CiAccessControlDefinition
 ): readonly CiAccessControlValidationIssue[] {
   const issues: CiAccessControlValidationIssue[] = [];
 
   validateUniqueIdentifiers(
     definition.domains.map((domain) => domain.id),
     "domains",
-    issues,
+    issues
   );
   validateUniqueIdentifiers(
     definition.resources.map((resource) => resource.id),
     "resources",
-    issues,
+    issues
   );
   validateUniqueIdentifiers(
     definition.roles.map((role) => role.id),
     "roles",
-    issues,
+    issues
   );
 
   const domainIds = new Set(definition.domains.map((domain) => domain.id));
   const roleIds = new Set(definition.roles.map((role) => role.id));
 
   for (const [domainIndex, domain] of definition.domains.entries()) {
+    const path = `domains[${domainIndex}]`;
     validateIdentifier(
       domain.id,
-      `domains[${domainIndex}].id`,
+      `${path}.id`,
       issues,
-      CI_AUTHORIZATION_RESOURCE_IDENTIFIER,
+      CI_AUTHORIZATION_KEBAB_IDENTIFIER
     );
+
+    if (
+      domain.status !== undefined &&
+      domain.status !== "active" &&
+      domain.status !== "suspended"
+    ) {
+      issues.push({
+        severity: "error",
+        code: "invalid-domain-status",
+        path: `${path}.status`,
+        message: 'Resource-domain status must be either "active" or "suspended".',
+      });
+    }
+
+    const statusChangeIsValid =
+      domain.statusChange !== undefined &&
+      typeof domain.statusChange.changedAt === "string" &&
+      Number.isFinite(Date.parse(domain.statusChange.changedAt)) &&
+      typeof domain.statusChange.changedBy === "string" &&
+      domain.statusChange.changedBy.trim().length > 0 &&
+      typeof domain.statusChange.reason === "string" &&
+      domain.statusChange.reason.trim().length > 0;
+
+    if (domain.statusChange !== undefined && !statusChangeIsValid) {
+      issues.push({
+        severity: "error",
+        code: "invalid-domain-status",
+        path: `${path}.statusChange`,
+        message:
+          "Resource-domain status metadata requires a valid timestamp, actor identifier, and non-empty reason.",
+      });
+    }
+
+    if (domain.status === "suspended" && domain.statusChange === undefined) {
+      issues.push({
+        severity: "error",
+        code: "invalid-domain-status",
+        path: `${path}.statusChange`,
+        message: "A suspended resource domain requires status-change metadata.",
+      });
+    }
+
+    if (domain.id === "platform" && domain.status === "suspended") {
+      issues.push({
+        severity: "error",
+        code: "invalid-domain-status",
+        path: `${path}.status`,
+        message:
+          "The platform resource domain cannot be suspended because it contains the access-control recovery path.",
+      });
+    }
   }
 
   for (const [resourceIndex, resource] of definition.resources.entries()) {
     const path = `resources[${resourceIndex}]`;
-    validateIdentifier(resource.id, `${path}.id`, issues, CI_AUTHORIZATION_RESOURCE_IDENTIFIER);
+    validateIdentifier(
+      resource.id,
+      `${path}.id`,
+      issues,
+      CI_AUTHORIZATION_RESOURCE_IDENTIFIER
+    );
     validateScopeKinds(resource.scopeKinds, `${path}.scopeKinds`, issues);
     validateUniqueIdentifiers(
       resource.actions.map((action) => action.id),
       `${path}.actions`,
-      issues,
+      issues
     );
 
     if (!domainIds.has(resource.domainId)) {
@@ -266,7 +362,7 @@ export function ciValidateAccessControlDefinition(
         action.id,
         `${path}.actions[${actionIndex}].id`,
         issues,
-        CI_AUTHORIZATION_ACTION_IDENTIFIER,
+        CI_AUTHORIZATION_KEBAB_IDENTIFIER
       );
     }
   }
@@ -277,7 +373,7 @@ export function ciValidateAccessControlDefinition(
     validateUniqueIdentifiers(
       role.privileges.map((privilege) => privilege.id),
       `${path}.privileges`,
-      issues,
+      issues
     );
     validateUniqueIdentifiers(role.inherits ?? [], `${path}.inherits`, issues);
 
@@ -287,6 +383,47 @@ export function ciValidateAccessControlDefinition(
         code: "invalid-precedence",
         path: `${path}.precedence`,
         message: "Role precedence must be a finite, non-negative number.",
+      });
+    }
+
+    if (
+      role.status !== undefined &&
+      role.status !== "active" &&
+      role.status !== "suspended"
+    ) {
+      issues.push({
+        severity: "error",
+        code: "invalid-role-status",
+        path: `${path}.status`,
+        message: 'Role status must be either "active" or "suspended".',
+      });
+    }
+
+    const statusChangeIsValid =
+      role.statusChange !== undefined &&
+      typeof role.statusChange.changedAt === "string" &&
+      Number.isFinite(Date.parse(role.statusChange.changedAt)) &&
+      typeof role.statusChange.changedBy === "string" &&
+      role.statusChange.changedBy.trim().length > 0 &&
+      typeof role.statusChange.reason === "string" &&
+      role.statusChange.reason.trim().length > 0;
+
+    if (role.statusChange !== undefined && !statusChangeIsValid) {
+      issues.push({
+        severity: "error",
+        code: "invalid-role-status",
+        path: `${path}.statusChange`,
+        message:
+          "Role status metadata requires a valid timestamp, actor identifier, and non-empty reason.",
+      });
+    }
+
+    if (role.status === "suspended" && role.statusChange === undefined) {
+      issues.push({
+        severity: "error",
+        code: "invalid-role-status",
+        path: `${path}.statusChange`,
+        message: "A suspended role requires status-change metadata.",
       });
     }
 
@@ -302,7 +439,12 @@ export function ciValidateAccessControlDefinition(
     }
 
     for (const [privilegeIndex, privilege] of role.privileges.entries()) {
-      validatePrivilege(privilege, `${path}.privileges[${privilegeIndex}]`, definition, issues);
+      validatePrivilege(
+        privilege,
+        `${path}.privileges[${privilegeIndex}]`,
+        definition,
+        issues
+      );
     }
   }
 
@@ -312,24 +454,26 @@ export function ciValidateAccessControlDefinition(
 }
 
 /** Throws when an access-control catalog contains one or more validation errors. */
-export function ciAssertValidAccessControlDefinition(definition: CiAccessControlDefinition): void {
+export function ciAssertValidAccessControlDefinition(
+  definition: CiAccessControlDefinition
+): void {
   const errors = ciValidateAccessControlDefinition(definition).filter(
-    (issue) => issue.severity === "error",
+    (issue) => issue.severity === "error"
   );
 
   if (errors.length > 0) {
     throw new Error(
       `Invalid CloudIgniter access-control definition:\n${errors
         .map((issue) => `- ${issue.path}: ${issue.message}`)
-        .join("\n")}`,
+        .join("\n")}`
     );
   }
 }
 
 /** Defines and validates an access-control catalog while preserving literal types. */
-export function ciDefineAccessControl<const Definition extends CiAccessControlDefinition>(
-  definition: Definition,
-): Definition {
+export function ciDefineAccessControl<
+  const Definition extends CiAccessControlDefinition
+>(definition: Definition): Definition {
   ciAssertValidAccessControlDefinition(definition);
   return definition;
 }

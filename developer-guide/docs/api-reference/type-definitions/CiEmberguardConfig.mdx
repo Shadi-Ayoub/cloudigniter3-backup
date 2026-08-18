@@ -1,0 +1,59 @@
+---
+title: CiEmberguardConfig
+description: Configure provider-neutral EmberGuard access-control behavior in cloudigniter.config.ts.
+package: "@cloudigniter/core"
+availability: Shared
+sidebar_position: 3
+---
+
+# CiEmberguardConfig
+
+Public configuration for EmberGuard beneath the `auth` block of `cloudigniter.config.ts`.
+
+```ts
+import type {
+  CiEmberguardAccessControlConfig,
+  CiEmberguardConfig,
+} from "@cloudigniter/core/types";
+
+type CiEmberguardConfig = {
+  accessControl?: CiEmberguardAccessControlConfig;
+};
+
+type CiEmberguardAccessControlConfig = {
+  combiningAlgorithm?: "deny-overrides" | "highest-precedence";
+};
+```
+
+## Fields
+
+| Field | Required | Default | Description |
+| --- | --- | --- | --- |
+| `accessControl` | No | Authorizer defaults | Provider-neutral policy-evaluation settings. |
+| `accessControl.combiningAlgorithm` | No | `deny-overrides` | Determines how matching allow and deny privileges are combined. |
+
+`deny-overrides` evaluates every applicable privilege and denies when any match denies. `highest-precedence`
+selects direct privileges first or the numerically lowest matching role-precedence tier, then applies
+deny-overrides within that tier.
+
+## Configuration example
+
+```ts title="cloudigniter.config.ts" showLineNumbers
+export default {
+  auth: {
+    // Authentication configuration...
+    emberguard: {
+      accessControl: {
+        combiningAlgorithm: "highest-precedence",
+      },
+    },
+  },
+  // Remaining CloudIgniter configuration...
+};
+```
+
+The application composition layer passes `accessControl` to `ciCreateAppAuthorizer()`. The type contains no
+provider-specific claims, identity groups, or persistence configuration.
+
+See [cloudigniter.config.ts](/docs/core-system/configurations/cloudigniter.config.ts) and
+[Roles, Inheritance, and Precedence](/docs/core-system/authorization/roles-and-precedence).

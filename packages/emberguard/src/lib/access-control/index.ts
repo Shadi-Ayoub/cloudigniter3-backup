@@ -6,6 +6,10 @@ export {
   ciTenantAccessScope,
 } from "./ci-access-scope";
 export {
+  CI_ACCESS_CONTROL_KEBAB_IDENTIFIER_PATTERN,
+  ciIsAccessControlKebabIdentifier,
+} from "./ci-access-control-identifiers";
+export {
   ciFormatPermission,
   ciMatchesAuthorizationPattern,
   ciMatchesPermission,
@@ -34,6 +38,7 @@ export {
   ciIsCoreAccessControlEntry,
 } from "./ci-core-access-control";
 export { ciMergeAccessControlDefinitions } from "./ci-merge-access-control";
+export { ciMigrateLegacyPrivilegeTitles } from "./ci-migrate-legacy-privilege-titles";
 export {
   ciAuthorize,
   ciCan,

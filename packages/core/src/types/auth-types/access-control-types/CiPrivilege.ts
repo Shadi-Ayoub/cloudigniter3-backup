@@ -11,6 +11,8 @@ import type { CiPrivilegeEffect } from "./CiPrivilegeEffect";
 export type CiPrivilege = {
   /** Stable identifier used for storage, administration, and audit output. */
   id: string;
+  /** Human-readable label used in forms, catalogs, and audit displays. */
+  title: string;
   effect: CiPrivilegeEffect;
   resource: string;
   action: string;

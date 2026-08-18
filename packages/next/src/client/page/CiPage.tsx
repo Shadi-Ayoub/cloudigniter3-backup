@@ -42,6 +42,7 @@ export function CiPage({
     actions,
     showPageHeader = true,
     showBreadcrumbs = true,
+    withBreadcrumbChildrenMenu = false,
     layoutHasHeader = true,
     layoutHasFooter = true,
   } = setup;
@@ -85,6 +86,7 @@ export function CiPage({
         dir={context.config?.appResolvedCoreConfig.direction}
         className="ci-breadcrumb"
         withStructuredData={false}
+        withChildrenMenu={withBreadcrumbChildrenMenu}
       />
     </div>
   );

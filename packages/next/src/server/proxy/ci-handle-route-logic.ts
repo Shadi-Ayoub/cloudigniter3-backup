@@ -2,7 +2,13 @@ import type { NextRequest } from "next/server";
 
 import { ciGetRoutesMatcher } from "@cloudigniter/core/lib";
 
-import type { CiRoute, CiRoutesMap } from "@cloudigniter/core/types";
+import type {
+  CiRoute,
+  CiRouteInfoPageReason,
+  CiRoutePattern,
+  CiRoutesMap,
+  CiTenantScope,
+} from "@cloudigniter/core/types";
 
 import { ciCreateRoute } from "./helpers";
 
@@ -16,6 +22,15 @@ interface CiHandleRouteLogicInput {
   pathnameNormalized: string;
 
   routes: CiRoutesMap;
+
+  /**
+   * Tenant scope resolved earlier in the proxy pipeline.
+   *
+   * Optional for compatibility with callers resolving legacy routes that do
+   * not declare `tenantScopes`. A constrained route is rejected when the
+   * current scope is unavailable.
+   */
+  tenantScope?: CiTenantScope;
 }
 
 type CiHandleRouteLogicResult =
@@ -24,7 +39,8 @@ type CiHandleRouteLogicResult =
       route: null;
       details: {
         requestedPath: string;
-        reason: "route-not-registered";
+        reason: CiRouteInfoPageReason;
+        matchedPattern?: CiRoutePattern;
       };
     }
   | {
@@ -98,6 +114,7 @@ export async function ciHandleRouteLogic({
   request,
   pathnameNormalized,
   routes,
+  tenantScope,
 }: CiHandleRouteLogicInput): Promise<CiHandleRouteLogicResult> {
   const routesMatcher = ciGetRoutesMatcher(routes);
   const routeMatch = routesMatcher.resolve(pathnameNormalized);
@@ -109,6 +126,23 @@ export async function ciHandleRouteLogic({
       details: {
         requestedPath: pathnameNormalized,
         reason: "route-not-registered",
+      },
+    };
+  }
+
+  const allowedTenantScopes = routeMatch.definition.tenantScopes;
+
+  if (
+    allowedTenantScopes !== undefined &&
+    (tenantScope === undefined || !allowedTenantScopes.includes(tenantScope))
+  ) {
+    return {
+      action: "route-info",
+      route: null,
+      details: {
+        requestedPath: pathnameNormalized,
+        reason: "route-tenant-scope-not-allowed",
+        matchedPattern: routeMatch.matchedPattern,
       },
     };
   }

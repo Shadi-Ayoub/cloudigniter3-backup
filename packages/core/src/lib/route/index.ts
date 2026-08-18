@@ -3,6 +3,7 @@ export { ciCoreRoutes } from "./ci-core-routes";
 export { ciGetRoutes } from "./ci-get-routes";
 export { ciGetRouteSearchParams } from "./ci-get-route-search-params";
 export { ciGetRoutesMatcher } from "./ci-get-routes-matcher";
+export { ciMergeRouteMaps } from "./ci-merge-route-maps";
 export { ciGetRouteNamespace } from "./ci-get-route-namespace";
 export { ciIsProtectedPath } from "./ci-is-protected-path";
 export { ciIsRegisteredPath } from "./ci-is-registered-path";

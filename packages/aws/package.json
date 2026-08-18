@@ -36,28 +36,28 @@
     "src"
   ],
   "scripts": {
-    "switch:src": "node ../../scripts/ci-switch-sources.mjs src",
-    "switch:dist": "node ../../scripts/ci-switch-sources.mjs dist",
+    "switch:src": "ci-dev package switch --target=src",
+    "switch:dist": "ci-dev package switch --target=dist",
     "clean": "rimraf dist .tsbuildinfo",
-    "clean:maps": "node ../../scripts/ci-clean-dist-maps.mjs",
-    "clean:dts": "node ../../scripts/ci-clean-dts-map.cjs",
+    "clean:maps": "ci-dev package clean-maps",
+    "clean:dts": "ci-dev package clean-dts",
     "build": "pnpm run build:dev",
-    "build:dev": "node ../../scripts/ci-build-package.mjs dev",
-    "build:prod": "node ../../scripts/ci-build-package.mjs prod",
+    "build:dev": "ci-dev package build --mode=dev",
+    "build:prod": "ci-dev package build --mode=prod",
     "build:js": "tsup --config tsup.config.ts",
     "build:types:clean": "rm -rf dist/.types",
     "build:types": "NODE_OPTIONS=--max-old-space-size=12288 rollup -c rollup.config.js",
     "build:types:raw": "tsc -p tsconfig.build.json",
     "build:assets": "pnpm -v",
-    "obfuscate": "node ../../scripts/ci-obfuscate-package.mjs",
+    "obfuscate": "ci-dev package obfuscate",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "node --import=tsx --test __tests__/backend/*.test.ts",
     "check:package": "npm pack --dry-run",
     "dev": "tsup --watch",
     "typecheck:tools": "tsc -p tsconfig.tools.json --noEmit",
     "check": "pnpm run typecheck && pnpm run typecheck:tools",
-    "scan:client-directives": "node ../../scripts/ci-scan-missing-use-client.mjs",
-    "list:client-files": "node ../../scripts/ci-list-client-files.mjs"
+    "scan:client-directives": "ci-dev quality scan-client-directives",
+    "list:client-files": "ci-dev quality list-client-files"
   },
   "dependencies": {
     "@aws-amplify/ui-react": "^6.15.3",
@@ -65,7 +65,9 @@
     "@aws-sdk/client-cloudwatch-logs": "^3.1024.0",
     "@aws-sdk/client-cognito-identity-provider": "^3.1023.0",
     "@aws-sdk/client-dynamodb": "^3.1022.0",
+    "@aws-sdk/client-lambda": "^3.1079.0",
     "@aws-sdk/lib-dynamodb": "^3.1022.0",
+    "@cloudigniter/core": "workspace:*",
     "@cloudigniter/emberguard": "workspace:*",
     "aws-lambda": "^1.0.7",
     "deepmerge-ts": "^7.1.5"
@@ -75,8 +77,8 @@
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
+    "@cloudigniter/cli": "workspace:*",
     "@cloudigniter/config-ts": "workspace:*",
-    "@cloudigniter/core": "workspace:*",
     "aws-amplify": "^6.16.3",
     "@rollup/plugin-alias": "^6.0.0",
     "@smithy/types": "^4.13.1",

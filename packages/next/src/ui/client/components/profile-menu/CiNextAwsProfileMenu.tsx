@@ -95,7 +95,7 @@ export function CiNextAwsProfileMenu({
   );
 
   async function handleLogout(): Promise<void> {
-    setLoading(true);
+    setLoading(true, "Signing you out. Please wait.");
 
     try {
       logger.log({
@@ -113,7 +113,6 @@ export function CiNextAwsProfileMenu({
       });
 
       router.replace(logoutRedirectTo);
-      router.refresh();
     } catch (error) {
       logger.log({
         type: "auth",
@@ -130,9 +129,8 @@ export function CiNextAwsProfileMenu({
               },
       });
 
-      throw error;
-    } finally {
       setLoading(false);
+      throw error;
     }
   }
 

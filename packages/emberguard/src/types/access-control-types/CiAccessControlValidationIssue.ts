@@ -3,8 +3,11 @@ export type CiAccessControlValidationIssue = {
   severity: "error" | "warning";
   code:
     | "invalid-identifier"
+    | "invalid-title"
     | "duplicate-identifier"
     | "invalid-precedence"
+    | "invalid-domain-status"
+    | "invalid-role-status"
     | "empty-list"
     | "unknown-domain"
     | "unknown-resource"

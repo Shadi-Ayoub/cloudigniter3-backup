@@ -5,12 +5,27 @@ sidebar_position: 8
 
 # Client-Side Tenant Awareness
 
-On the client:
+Client navigation may use a serialized canonical Tenant context to construct a
+correct browser-visible pathname. It must not use that value as authorization
+evidence.
 
-- Tenant context is never trusted blindly
-- Tenant data is loaded via secured APIs
-- UI routing reacts to tenant availability and status
+```ts title="book-navigation.ts"
+import { ciBuildTenantPublicPathname } from "@cloudigniter/core/lib";
+import type { CiTenantContext } from "@cloudigniter/core/types";
 
-```ts title="Typical usage"
-const { tenant, isLoading, error } = useTenant();
+export function getBooksHref(tenant: CiTenantContext) {
+  return ciBuildTenantPublicPathname({
+    featurePathname: "/dashboard/books",
+    tenant,
+    tenantBasePath: "/t",
+  });
+}
 ```
+
+For a slug-routed `acme` Tenant this returns
+`/t/acme/dashboard/books`. For subdomain mode it returns
+`/dashboard/books`, because the host carries the Tenant selection.
+
+Server actions must independently resolve and validate the current request
+context. Never send a client-selected Tenant ID as the authority for a data
+partition.

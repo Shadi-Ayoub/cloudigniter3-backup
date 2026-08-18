@@ -177,6 +177,58 @@ test("does not grant DynamoDB access twice to the same handler", () => {
   assert.deepEqual(duplicatePermissionHandlers, []);
 });
 
+test("grants mutation handlers transactional projection permissions", () => {
+  const plan = createPlan();
+  for (const handlerId of [
+    "ciPutEmberguardRoleAssignmentHandler",
+    "ciDeleteEmberguardRoleAssignmentHandler",
+  ] as const) {
+    const actions = new Set(
+      plan.inlinePolicies
+        .filter((policy) => policy.for === handlerId)
+        .flatMap((policy) =>
+          policy.statements.flatMap((statement) => statement.actions),
+        ),
+    );
+    assert.equal(actions.has("dynamodb:GetItem"), true, handlerId);
+    assert.equal(actions.has("dynamodb:Query"), true, handlerId);
+    assert.equal(actions.has("dynamodb:PutItem"), true, handlerId);
+    assert.equal(actions.has("dynamodb:DeleteItem"), true, handlerId);
+    assert.equal(actions.has("dynamodb:TransactWriteItems"), true, handlerId);
+  }
+
+  const definitionActions = new Set(
+    plan.inlinePolicies
+      .filter((policy) => policy.for === "ciSetEmberguardDefinitionHandler")
+      .flatMap((policy) =>
+        policy.statements.flatMap((statement) => statement.actions),
+      ),
+  );
+  assert.equal(definitionActions.has("dynamodb:GetItem"), true);
+  assert.equal(definitionActions.has("dynamodb:Query"), true);
+  assert.equal(definitionActions.has("dynamodb:PutItem"), true);
+  assert.equal(definitionActions.has("dynamodb:DeleteItem"), false);
+  assert.equal(definitionActions.has("dynamodb:TransactWriteItems"), true);
+});
+
+test("allows the definition reader to initialize a missing state", () => {
+  const actions = new Set(
+    createPlan()
+      .inlinePolicies.filter(
+        (policy) => policy.for === "ciGetEmberguardDefinitionHandler",
+      )
+      .flatMap((policy) =>
+        policy.statements.flatMap((statement) => statement.actions),
+      ),
+  );
+
+  assert.equal(actions.has("dynamodb:GetItem"), true);
+  assert.equal(actions.has("dynamodb:Query"), true);
+  assert.equal(actions.has("dynamodb:PutItem"), true);
+  assert.equal(actions.has("dynamodb:TransactWriteItems"), false);
+  assert.equal(actions.has("dynamodb:Scan"), false);
+});
+
 test("rejects mixed DynamoDB permission representations", () => {
   assert.throws(
     () =>

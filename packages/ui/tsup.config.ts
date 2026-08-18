@@ -1,6 +1,6 @@
 import { defineConfig } from "tsup";
 
-import { ciCreateTsupConfig } from "../../scripts/build-steps/ci-tsup-config";
+import { ciCreateTsupConfig } from "@cloudigniter/cli/tooling/tsup";
 
 const externalPackages = [
   "react",

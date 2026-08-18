@@ -8,13 +8,20 @@ import type {
   CiScopePropagation,
 } from "../../types";
 
+import { ciIsAccessControlKebabIdentifier } from "./ci-access-control-identifiers";
+
 /** Creates a scoped role assignment with an explicit propagation policy. */
 export function ciCreateRoleAssignment(
   roleId: string,
   scope: CiAccessScope,
   propagation: CiScopePropagation,
-  window: CiGrantWindow = {},
+  window: CiGrantWindow = {}
 ): CiRoleAssignment {
+  if (!ciIsAccessControlKebabIdentifier(roleId)) {
+    throw new Error(
+      "Role identifiers must use lowercase kebab case, start with a letter, and contain only lowercase letters, digits, and single hyphens."
+    );
+  }
   return {
     roleId,
     scope,
@@ -28,9 +35,11 @@ export function ciCreateRoleAssignments(
   roleIds: readonly string[],
   scope: CiAccessScope,
   propagation: CiScopePropagation,
-  window: CiGrantWindow = {},
+  window: CiGrantWindow = {}
 ): readonly CiRoleAssignment[] {
-  return roleIds.map((roleId) => ciCreateRoleAssignment(roleId, scope, propagation, window));
+  return roleIds.map((roleId) =>
+    ciCreateRoleAssignment(roleId, scope, propagation, window)
+  );
 }
 
 /** Creates a direct subject privilege with an explicit access boundary. */
@@ -38,7 +47,7 @@ export function ciCreateScopedPrivilege(
   privilege: CiPrivilege,
   scope: CiAccessScope,
   propagation: CiScopePropagation,
-  window: CiGrantWindow = {},
+  window: CiGrantWindow = {}
 ): CiScopedPrivilege {
   return {
     privilege,
@@ -52,7 +61,7 @@ export function ciCreateScopedPrivilege(
 export function ciCreateAuthorizationSubject(
   user: { id: string; authenticated: boolean },
   roleAssignments: readonly CiRoleAssignment[],
-  directPrivileges: readonly CiScopedPrivilege[] = [],
+  directPrivileges: readonly CiScopedPrivilege[] = []
 ): CiAuthorizationSubject {
   return {
     id: user.id,

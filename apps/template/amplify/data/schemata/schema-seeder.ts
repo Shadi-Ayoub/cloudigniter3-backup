@@ -10,7 +10,7 @@
 //     })
 //     .handler(a.handler.function(clearSeederHandler))
 //     .returns(a.json())
-//     .authorization((allow) => [allow.group('DEVELOPER')]),
+//     .authorization((allow) => [allow.group('developer')]),
 // };
 
 // export default schemaSeeder;

@@ -22,10 +22,11 @@ export type CiResourceDefinitionLayer = Pick<CiResourceDefinition, "id"> &
     actions?: readonly CiActionDefinitionLayer[];
   };
 
-/** Partial role entry whose nested privileges are merged by identifier. */
+/** Partial role entry whose nested privileges merge by default or replace explicitly. */
 export type CiRoleDefinitionLayer = Pick<CiRoleDefinition, "id"> &
   Partial<Omit<CiRoleDefinition, "id" | "privileges">> & {
     privileges?: readonly CiPrivilegeLayer[];
+    privilegesMode?: "merge" | "replace";
   };
 
 /**

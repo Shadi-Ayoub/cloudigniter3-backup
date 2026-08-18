@@ -4,6 +4,7 @@ import type {
   CiAuthorizationSubject,
   CiAuthorizer,
   CiAuthorizerOptions,
+  CiEmberguardAccessControlState,
 } from "../types";
 import type {
   CiEmberguardCustomDomainRecord,
@@ -15,8 +16,30 @@ import type {
 
 import {
   CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
+  ciAssertValidAccessControlDefinition,
   ciCreateAuthorizer,
+  ciIsAccessControlKebabIdentifier,
+  ciMigrateLegacyPrivilegeTitles,
 } from "./access-control";
+import { ciBuildSecurityRoleCounters } from "./security-administration";
+
+/** Rejects role assignments that do not use the canonical identifier contract. */
+function assertCanonicalRoleId(roleId: string): void {
+  if (!ciIsAccessControlKebabIdentifier(roleId)) {
+    throw new Error(
+      `Role identifier "${roleId}" must use lowercase kebab case.`
+    );
+  }
+}
+
+/** Validates role identifiers returned by a persistence provider. */
+function assertCanonicalRoleAssignments(
+  assignments: readonly CiEmberguardStoredRoleAssignment[]
+): void {
+  for (const assignment of assignments) {
+    assertCanonicalRoleId(assignment.roleId);
+  }
+}
 
 export class Emberguard {
   readonly provider: CiEmberguardProvider;
@@ -25,9 +48,13 @@ export class Emberguard {
 
   private authorizer?: CiAuthorizer;
 
-  constructor(provider: CiEmberguardProvider, options: CiEmberguardOptions = {}) {
+  constructor(
+    provider: CiEmberguardProvider,
+    options: CiEmberguardOptions = {}
+  ) {
     this.provider = provider;
-    this.definition = options.definition ?? CI_DEFAULT_ACCESS_CONTROL_DEFINITION;
+    this.definition =
+      options.definition ?? CI_DEFAULT_ACCESS_CONTROL_DEFINITION;
   }
 
   getDefinition(): CiAccessControlDefinition {
@@ -44,7 +71,9 @@ export class Emberguard {
   }
 
   authorize(request: CiAuthorizationRequest, options?: CiAuthorizerOptions) {
-    const authorizer = options ? this.createAuthorizer(options) : this.getAuthorizer();
+    const authorizer = options
+      ? this.createAuthorizer(options)
+      : this.getAuthorizer();
     return authorizer.authorize(request);
   }
 
@@ -52,16 +81,53 @@ export class Emberguard {
     return this.authorize(request, options).allowed;
   }
 
-  async loadDefinition(): Promise<CiAccessControlDefinition> {
-    const stored = await this.provider.repository.getAccessControlDefinition();
-    if (stored) {
-      this.setDefinition(stored);
-    }
-    return this.definition;
+  async loadAccessControlState(): Promise<CiEmberguardAccessControlState> {
+    return (await this.ensureAccessControlState()).state;
   }
 
-  async saveDefinition(definition: CiAccessControlDefinition = this.definition): Promise<void> {
-    await this.provider.repository.saveAccessControlDefinition(definition);
+  /** Ensures that the canonical state exists and reports whether it was created. */
+  async ensureAccessControlState(): Promise<{
+    state: CiEmberguardAccessControlState;
+    created: boolean;
+  }> {
+    const stored = await this.provider.repository.getAccessControlState();
+    if (stored) {
+      return { state: this.useAccessControlState(stored), created: false };
+    }
+
+    const assignments = await this.listRoleAssignments({});
+    const initialized =
+      await this.provider.repository.initializeAccessControlState({
+        definition: this.definition,
+        roleCounters: ciBuildSecurityRoleCounters(this.definition, assignments),
+        revision: 0,
+      });
+    return {
+      state: this.useAccessControlState(initialized.state),
+      created: initialized.created,
+    };
+  }
+
+  async loadDefinition(): Promise<CiAccessControlDefinition> {
+    return (await this.loadAccessControlState()).definition;
+  }
+
+  async saveDefinition(
+    definition: CiAccessControlDefinition = this.definition
+  ): Promise<void> {
+    ciAssertValidAccessControlDefinition(definition);
+    const [state, assignments] = await Promise.all([
+      this.loadAccessControlState(),
+      this.listRoleAssignments({}),
+    ]);
+    await this.provider.repository.saveAccessControlState(
+      {
+        definition,
+        roleCounters: ciBuildSecurityRoleCounters(definition, assignments),
+        revision: state.revision + 1,
+      },
+      state.revision
+    );
     this.setDefinition(definition);
   }
 
@@ -75,6 +141,7 @@ export class Emberguard {
       subjectId: input.subjectId,
       tenantId: input.tenantId,
     });
+    assertCanonicalRoleAssignments(roleAssignments);
 
     return {
       id: input.subjectId,
@@ -84,16 +151,65 @@ export class Emberguard {
     };
   }
 
-  listRoleAssignments(input: { subjectId?: string; tenantId?: string }) {
-    return this.provider.repository.listRoleAssignments(input);
+  async listRoleAssignments(input: { subjectId?: string; tenantId?: string }) {
+    const assignments = await this.provider.repository.listRoleAssignments(
+      input
+    );
+    assertCanonicalRoleAssignments(assignments);
+    return assignments;
   }
 
-  putRoleAssignment(assignment: CiEmberguardStoredRoleAssignment) {
-    return this.provider.repository.putRoleAssignment(assignment);
+  async putRoleAssignment(assignment: CiEmberguardStoredRoleAssignment) {
+    assertCanonicalRoleId(assignment.roleId);
+    const [state, assignments] = await Promise.all([
+      this.loadAccessControlState(),
+      this.listRoleAssignments({}),
+    ]);
+    const previousAssignment = assignments.find(
+      (current) => current.id === assignment.id
+    );
+    const nextAssignments = assignments.filter(
+      (current) => current.id !== assignment.id
+    );
+    nextAssignments.push(assignment);
+    const nextState = {
+      definition: state.definition,
+      roleCounters: ciBuildSecurityRoleCounters(
+        state.definition,
+        nextAssignments
+      ),
+      revision: state.revision + 1,
+    };
+    await this.provider.repository.putRoleAssignmentWithAccessControlState(
+      assignment,
+      nextState,
+      state.revision,
+      previousAssignment
+    );
   }
 
-  deleteRoleAssignment(input: { id: string; subjectId: string }) {
-    return this.provider.repository.deleteRoleAssignment(input);
+  async deleteRoleAssignment(input: { id: string; subjectId: string }) {
+    const [state, assignments] = await Promise.all([
+      this.loadAccessControlState(),
+      this.listRoleAssignments({}),
+    ]);
+    const nextAssignments = assignments.filter(
+      (assignment) =>
+        assignment.id !== input.id || assignment.subjectId !== input.subjectId
+    );
+    const nextState = {
+      definition: state.definition,
+      roleCounters: ciBuildSecurityRoleCounters(
+        state.definition,
+        nextAssignments
+      ),
+      revision: state.revision + 1,
+    };
+    await this.provider.repository.deleteRoleAssignmentWithAccessControlState(
+      input,
+      nextState,
+      state.revision
+    );
   }
 
   listResourceInventory(input?: { tenantId?: string; domainId?: string }) {
@@ -119,5 +235,25 @@ export class Emberguard {
   private getAuthorizer(): CiAuthorizer {
     this.authorizer ??= ciCreateAuthorizer(this.definition);
     return this.authorizer;
+  }
+
+  /** Validates and installs one persisted access-control state. */
+  private useAccessControlState(
+    stored: CiEmberguardAccessControlState
+  ): CiEmberguardAccessControlState {
+    const migrated = ciMigrateLegacyPrivilegeTitles(
+      stored.definition,
+      this.definition
+    );
+    ciAssertValidAccessControlDefinition(migrated);
+    if (!Number.isSafeInteger(stored.revision) || stored.revision < 0) {
+      throw new Error("The persisted access-control revision is invalid.");
+    }
+    this.setDefinition(migrated);
+    return {
+      definition: migrated,
+      roleCounters: stored.roleCounters,
+      revision: stored.revision,
+    };
   }
 }

@@ -5,12 +5,6 @@ import { Info } from "lucide-react";
 
 import {
   Button,
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -23,6 +17,7 @@ import {
   ciIsDataTableControlDisabled,
   ciIsDataTableControlVisible,
 } from "../lib/ci-data-table-actions";
+import { CiDataTableRecordInformationDialog } from "./CiDataTableRecordInformationDialog";
 
 type CiDataTableInformationControlProps<TData> = {
   row: TData;
@@ -65,26 +60,18 @@ export function CiDataTableInformationControl<TData>({
     </Button>
   );
 
-  if (mode === "dialog") {
+  if (information.mode === "dialog") {
     const title = resolveRecordNode(information.title, row) ?? label;
     const description = resolveRecordNode(information.description, row);
+    const record = information.record ? information.record(row) : row;
     return (
-      <Dialog>
-        <DialogTrigger asChild>{button}</DialogTrigger>
-        <DialogContent
-          className={cn("sm:max-w-lg", information.dialogClassName)}
-        >
-          <DialogHeader>
-            <DialogTitle>{title}</DialogTitle>
-            {description ? (
-              <DialogDescription>{description}</DialogDescription>
-            ) : null}
-          </DialogHeader>
-          <div className="min-w-0">
-            {resolveRecordNode(information.content, row)}
-          </div>
-        </DialogContent>
-      </Dialog>
+      <CiDataTableRecordInformationDialog
+        trigger={button}
+        title={title}
+        description={description}
+        record={record}
+        dialogClassName={information.dialogClassName}
+      />
     );
   }
 

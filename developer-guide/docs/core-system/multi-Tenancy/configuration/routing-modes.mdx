@@ -2,3 +2,75 @@
 title: Routing Modes
 sidebar_position: 2
 ---
+
+# Routing modes
+
+CloudIgniter keeps application feature routes independent from the mechanism
+used to select a Tenant. Register the logical route once, then place its Next.js
+page in the physical route tree for the scopes where it is available.
+
+## Scope-specific route trees
+
+```text
+apps/template/src/app/
+  (ci-global)/
+    ci-global/
+      dashboard/books/page.tsx
+  (ci-tenant)/
+    ci-tenant/
+      dashboard/books/page.tsx
+```
+
+The parenthesized directories are Next.js route groups and do not contribute a
+URL segment. The nested `ci-global` and `ci-tenant` directories are internal
+rewrite targets and must remain present.
+
+Register either page by its logical feature pathname:
+
+```ts title="apps/template/routes.ts"
+import type { CiRoutesMap } from "@cloudigniter/core/types";
+
+export const routes = {
+  "/dashboard/books": {
+    title: "Manage Books",
+    namespace: "dashboard.books",
+    protected: true,
+    tenantScopes: ["tenant"],
+  },
+} satisfies CiRoutesMap;
+```
+
+`tenantScopes` may contain `system`, `global`, or `tenant`. When omitted, the
+route remains available in every scope for backward compatibility. An empty
+array makes it unavailable in every scope. This is route availability, not
+authorization; backend data access must still enforce the canonical request
+scope.
+
+## Slug routing
+
+With `tenant.mode: "slug"` and `tenant.basePath: "/t"`, the proxy resolves and
+rewrites these URLs:
+
+| Browser-visible pathname    | Logical route      | Internal target              |
+| --------------------------- | ------------------ | ---------------------------- |
+| `/t/acme/dashboard/books`   | `/dashboard/books` | `/ci-tenant/dashboard/books` |
+| `/t/global/dashboard/books` | `/dashboard/books` | `/ci-global/dashboard/books` |
+
+## Subdomain routing
+
+In subdomain mode, the host carries the Tenant selection and the feature
+pathname stays unchanged:
+
+| Browser-visible request              | Logical route      | Internal target              |
+| ------------------------------------ | ------------------ | ---------------------------- |
+| `acme.example.com/dashboard/books`   | `/dashboard/books` | `/ci-tenant/dashboard/books` |
+| `global.example.com/dashboard/books` | `/dashboard/books` | `/ci-global/dashboard/books` |
+
+Application links must never point at `/ci-tenant` or `/ci-global`. Build a
+browser-visible pathname with
+[`ciBuildTenantPublicPathname()`](/docs/api-reference/shared-apis/ci-build-tenant-public-pathname).
+
+When a registered route is requested from a scope not listed in
+`tenantScopes`, the proxy stops before authentication and page rendering and
+uses the configured route-information response with reason
+`route-tenant-scope-not-allowed`.

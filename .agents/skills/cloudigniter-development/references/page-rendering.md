@@ -91,6 +91,19 @@ Keep application-specific root composition in `AppRootWrapper`; keep reusable Ne
 
 Route-group layouts such as `apps/template/src/app/(system)/dashboard/layout.tsx` call `appBootstrap()` and pass the resulting `CiNextContext` to the appropriate `CiLayout` variant.
 
+Tenant-aware application pages have two internal route roots:
+
+```text
+apps/template/src/app/(ci-global)/ci-global/
+apps/template/src/app/(ci-tenant)/ci-tenant/
+```
+
+Their layouts follow the same contract: call `appBootstrap()` and pass the
+returned value as `context` to `CiLayout`. Pages beneath those layouts call
+`appBootstrap()` and pass the same cached context to `CiPage`; they must not add
+a second `CiPageWrapper`. The proxy selects the physical tree after validating
+the logical route's declared Tenant scopes.
+
 Current layout variants live under `packages/next/src/layout/`, including `app-standard`, `cp-standard`, and `login-standard`. Each variant owns its visual skeleton, such as:
 
 - the main landmark and skip link where applicable;
@@ -200,14 +213,14 @@ When a rendered page lacks context, providers, translations, or expected structu
 
 ## 10. Source map
 
-| Responsibility | Primary source |
-| --- | --- |
-| Document shell | `apps/template/src/app/layout.tsx` |
-| Root context | `apps/template/src/kernel/server/root/appResolveRootLayoutContext.ts` |
-| Application root composition | `apps/template/src/kernel/server/root/AppRootWrapper.tsx` |
-| System bootstrap | `apps/template/src/kernel/server/bootstrap/app-bootstrap.ts` |
-| Reusable root providers | `packages/next/src/server/wrapper/CiNextRootWrapper.tsx` |
-| Layout variants | `packages/next/src/layout/*/CiLayout.tsx` |
-| Server layout wrapper | `packages/next/src/server/wrapper/CiPageWrapper.tsx` |
-| Shared client providers | `packages/next/src/client/wrapper/CiClientWrapper.tsx` |
-| Page-content shell | `packages/next/src/client/page/CiPage.tsx` |
+| Responsibility               | Primary source                                                        |
+| ---------------------------- | --------------------------------------------------------------------- |
+| Document shell               | `apps/template/src/app/layout.tsx`                                    |
+| Root context                 | `apps/template/src/kernel/server/root/appResolveRootLayoutContext.ts` |
+| Application root composition | `apps/template/src/kernel/server/root/AppRootWrapper.tsx`             |
+| System bootstrap             | `apps/template/src/kernel/server/bootstrap/app-bootstrap.ts`          |
+| Reusable root providers      | `packages/next/src/server/wrapper/CiNextRootWrapper.tsx`              |
+| Layout variants              | `packages/next/src/layout/*/CiLayout.tsx`                             |
+| Server layout wrapper        | `packages/next/src/server/wrapper/CiPageWrapper.tsx`                  |
+| Shared client providers      | `packages/next/src/client/wrapper/CiClientWrapper.tsx`                |
+| Page-content shell           | `packages/next/src/client/page/CiPage.tsx`                            |

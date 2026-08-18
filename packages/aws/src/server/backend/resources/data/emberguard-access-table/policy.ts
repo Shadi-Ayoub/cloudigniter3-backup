@@ -2,22 +2,23 @@ import type { CiPlanOptions, CiPolicyFragment } from "../../../types";
 import type { CiTableResourceState } from "../../resource-types";
 
 const readHandlers = [
-  "ciGetEmberguardDefinitionHandler",
   "ciListEmberguardRoleAssignmentsHandler",
   "ciListEmberguardResourceInventoryHandler",
   "ciListEmberguardCustomDomainsHandler",
 ] as const;
 
-const writeHandlers = [
-  "ciSetEmberguardDefinitionHandler",
-  "ciPutEmberguardRoleAssignmentHandler",
+const ordinaryWriteHandlers = [
   "ciPutEmberguardResourceInventoryHandler",
   "ciPutEmberguardCustomDomainHandler",
 ] as const;
 
-const deleteHandlers = [
-  "ciDeleteEmberguardRoleAssignmentHandler",
+const ordinaryDeleteHandlers = [
   "ciDeleteEmberguardCustomDomainHandler",
+] as const;
+
+const assignmentMutationHandlers = [
+  "ciPutEmberguardRoleAssignmentHandler",
+  "ciDeleteEmberguardRoleAssignmentHandler",
 ] as const;
 
 export function ciMakeEmberguardAccessTablePolicies(
@@ -42,7 +43,18 @@ export function ciMakeEmberguardAccessTablePolicies(
           },
         ],
       })),
-      ...writeHandlers.map((handlerId) => ({
+      {
+        for: "ciGetEmberguardDefinitionHandler",
+        id: "EmberguardAccessDdbReadOrInitialize",
+        statements: [
+          {
+            effect: "Allow" as const,
+            actions: ["dynamodb:GetItem", "dynamodb:Query", "dynamodb:PutItem"],
+            resources: [tables.emberguardAccess.arn],
+          },
+        ],
+      },
+      ...ordinaryWriteHandlers.map((handlerId) => ({
         for: handlerId,
         id: "EmberguardAccessDdbWrite",
         statements: [
@@ -53,13 +65,46 @@ export function ciMakeEmberguardAccessTablePolicies(
           },
         ],
       })),
-      ...deleteHandlers.map((handlerId) => ({
+      ...ordinaryDeleteHandlers.map((handlerId) => ({
         for: handlerId,
         id: "EmberguardAccessDdbDelete",
         statements: [
           {
             effect: "Allow" as const,
             actions: ["dynamodb:DeleteItem"],
+            resources: [tables.emberguardAccess.arn],
+          },
+        ],
+      })),
+      {
+        for: "ciSetEmberguardDefinitionHandler",
+        id: "EmberguardAccessDdbDefinitionWrite",
+        statements: [
+          {
+            effect: "Allow" as const,
+            actions: [
+              "dynamodb:GetItem",
+              "dynamodb:Query",
+              "dynamodb:PutItem",
+              "dynamodb:TransactWriteItems",
+            ],
+            resources: [tables.emberguardAccess.arn],
+          },
+        ],
+      },
+      ...assignmentMutationHandlers.map((handlerId) => ({
+        for: handlerId,
+        id: "EmberguardAccessDdbAssignmentTransaction",
+        statements: [
+          {
+            effect: "Allow" as const,
+            actions: [
+              "dynamodb:GetItem",
+              "dynamodb:Query",
+              "dynamodb:PutItem",
+              "dynamodb:DeleteItem",
+              "dynamodb:TransactWriteItems",
+            ],
             resources: [tables.emberguardAccess.arn],
           },
         ],

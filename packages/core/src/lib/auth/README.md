@@ -27,12 +27,12 @@ domains, resources, actions, roles, and privileges. `ciCreateAppAccessControl()`
 adds application entries while rejecting collisions with core-owned entries.
 Applications may add resources under core domains, add application actions to
 core resources, and create roles that inherit core roles other than
-`SYSTEM_SUPER_ADMIN`. No application role may grant the dedicated core-override
+`system-super-admin`. No application role may grant the dedicated core-override
 capability.
 
 Core changes are represented by immutable `CiCoreAccessControlOverride` audit
 records. `ciCreateCoreAccessControlOverride()` requires a directly assigned,
-system-scoped `SYSTEM_SUPER_ADMIN`, validates the prospective catalog, and
+system-scoped `system-super-admin`, validates the prospective catalog, and
 preserves the bootstrap administration path. Persistence adapters must use
 conditional revisions, step-up authentication, and immutable audit retention.
 
@@ -70,6 +70,7 @@ const accessControl = ciDefineAccessControl({
       privileges: [
         {
           id: "manage-users",
+          title: "Manage users",
           effect: "allow",
           resource: "identity.users",
           action: "*",
@@ -83,7 +84,7 @@ const accessControl = ciDefineAccessControl({
 const tenantScope = ciTenantAccessScope("tenant-123");
 const subject = ciCreateAuthorizationSubject(
   { id: "user-456", authenticated: true },
-  [ciCreateRoleAssignment("tenant-admin", tenantScope, "descendants")],
+  [ciCreateRoleAssignment("tenant-admin", tenantScope, "descendants")]
 );
 const authorizer = ciCreateAuthorizer(accessControl);
 
@@ -91,7 +92,9 @@ const decision = authorizer.authorize({
   subject,
   resource: "identity.users",
   action: "update",
-  scope: ciOrgUnitAccessScope("tenant-123", "org-unit-789", ["org-unit-parent"]),
+  scope: ciOrgUnitAccessScope("tenant-123", "org-unit-789", [
+    "org-unit-parent",
+  ]),
 });
 ```
 
@@ -122,11 +125,13 @@ const routes = {
   },
 };
 
-const allowed = !route.access || authorizer.can({
-  subject,
-  scope,
-  ...route.access,
-});
+const allowed =
+  !route.access ||
+  authorizer.can({
+    subject,
+    scope,
+    ...route.access,
+  });
 ```
 
 Use route metadata for page-level access such as `view` or `read`. Mutating API
@@ -145,15 +150,15 @@ consistency cannot accidentally grant access.
 
 Suggested item keys (`owner` is `SYSTEM`, `GLOBAL`, or `TENANT#<tenantId>`):
 
-| Entity | PK | SK |
-| --- | --- | --- |
-| Catalog version | `AUTHZ#<owner>#META` | `VERSION` |
-| Domain | `AUTHZ#<owner>#CATALOG` | `DOMAIN#<domainId>` |
-| Resource | `AUTHZ#<owner>#CATALOG` | `RESOURCE#<resourceId>` |
-| Role metadata | `AUTHZ#<owner>#ROLE#<roleId>` | `META` |
-| Role privilege | `AUTHZ#<owner>#ROLE#<roleId>` | `PRIVILEGE#<privilegeId>` |
-| Subject role assignment | `AUTHZ#<owner>#SUBJECT#<subjectId>` | `ASSIGNMENT#<scopeToken>#ROLE#<roleId>` |
-| Direct subject privilege | `AUTHZ#<owner>#SUBJECT#<subjectId>` | `DIRECT#<scopeToken>#<privilegeId>` |
+| Entity                   | PK                                  | SK                                      |
+| ------------------------ | ----------------------------------- | --------------------------------------- |
+| Catalog version          | `AUTHZ#<owner>#META`                | `VERSION`                               |
+| Domain                   | `AUTHZ#<owner>#CATALOG`             | `DOMAIN#<domainId>`                     |
+| Resource                 | `AUTHZ#<owner>#CATALOG`             | `RESOURCE#<resourceId>`                 |
+| Role metadata            | `AUTHZ#<owner>#ROLE#<roleId>`       | `META`                                  |
+| Role privilege           | `AUTHZ#<owner>#ROLE#<roleId>`       | `PRIVILEGE#<privilegeId>`               |
+| Subject role assignment  | `AUTHZ#<owner>#SUBJECT#<subjectId>` | `ASSIGNMENT#<scopeToken>#ROLE#<roleId>` |
+| Direct subject privilege | `AUTHZ#<owner>#SUBJECT#<subjectId>` | `DIRECT#<scopeToken>#<privilegeId>`     |
 
 Use canonical scope tokens such as `SYS`, `GLB`, `TEN#<tenantId>`, and
 `ORG#<tenantId>#<orgUnitId>`. Store `scope`, `propagation`, `validFrom`, and

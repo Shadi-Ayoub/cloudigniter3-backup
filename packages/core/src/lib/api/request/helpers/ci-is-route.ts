@@ -7,10 +7,19 @@ export function ciIsRoute(value: unknown): value is CiRoute {
     return false;
   }
 
+  const hasValidTenantScopes =
+    value.tenantScopes === undefined ||
+    (Array.isArray(value.tenantScopes) &&
+      value.tenantScopes.every(
+        (scope) =>
+          scope === "system" || scope === "global" || scope === "tenant",
+      ));
+
   return (
     typeof value.title === "string" &&
     typeof value.namespace === "string" &&
     typeof value.protected === "boolean" &&
+    hasValidTenantScopes &&
     typeof value.pathname === "string" &&
     typeof value.publicPathname === "string" &&
     typeof value.matchedPattern === "string" &&

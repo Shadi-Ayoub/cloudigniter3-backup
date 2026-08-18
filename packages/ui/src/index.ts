@@ -15,6 +15,8 @@ export {
 // ─────────────────────────────────────────────────────────────
 export {
   CiDataTable,
+  CiDataTableRecordInformationDialog,
+  type CiDataTableRecordInformationDialogProps,
   CiDataTableRowActions,
   CiDataTableRowActionsMenu,
   ciBuildDataTableExcelWorkbook,
@@ -30,6 +32,8 @@ export {
   ciSaveDataTablePreferences,
 } from "./client/components/data-table";
 
+export { CiDataEntityManager } from "./client/components/data-entity-manager";
+
 export { CiSecurityDataPage } from "./client/security";
 
 export type { CiDataTableConditionalControl } from "./client/components/data-table";
@@ -40,6 +44,24 @@ export {
 } from "./common/data-table";
 
 export type {
+  CiDataEntityBooleanField,
+  CiDataEntityCreateCallback,
+  CiDataEntityDeleteCallback,
+  CiDataEntityEditorMode,
+  CiDataEntityField,
+  CiDataEntityFieldBase,
+  CiDataEntityFieldType,
+  CiDataEntityJsonField,
+  CiDataEntityManagerLabels,
+  CiDataEntityManagerProps,
+  CiDataEntityManagerTableOverrides,
+  CiDataEntityManagerTableProps,
+  CiDataEntityManagerTableRenderer,
+  CiDataEntityMutationResult,
+  CiDataEntityNumberField,
+  CiDataEntityStringField,
+  CiDataEntityStringInput,
+  CiDataEntityUpdateCallback,
   CiDataTableAction,
   CiDataTableCellContext,
   CiDataTableColumnDef,

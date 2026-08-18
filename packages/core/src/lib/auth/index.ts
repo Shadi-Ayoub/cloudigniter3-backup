@@ -22,15 +22,18 @@ export {
   ciCreateRoleAssignments,
   ciCreateRoleAssignmentsFromIdentityGroups,
   ciCreateSecurityAdministration,
+  ciBuildSecurityRoleCounters,
   ciCreateScopedPrivilege,
   ciDefineAccessControl,
   ciFormatPermission,
   ciGlobalAccessScope,
   ciGetAccessControlEntryOrigin,
   ciIsCoreAccessControlEntry,
+  ciIsAccessControlKebabIdentifier,
   ciMatchesAuthorizationPattern,
   ciMatchesPermission,
   ciMergeAccessControlDefinitions,
+  ciMigrateLegacyPrivilegeTitles,
   ciOrgUnitAccessScope,
   ciParsePermission,
   ciResolveIdentityGroupRoles,
@@ -38,4 +41,7 @@ export {
   ciTenantAccessScope,
   ciValidateAccessControlDefinition,
 } from "@cloudigniter/emberguard/lib";
-export { CI_DEFAULT_ACCESS_CONTROL_DEFINITION } from "@cloudigniter/emberguard/lib";
+export {
+  CI_ACCESS_CONTROL_KEBAB_IDENTIFIER_PATTERN,
+  CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
+} from "@cloudigniter/emberguard/lib";

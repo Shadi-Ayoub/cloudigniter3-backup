@@ -1,0 +1,31 @@
+---
+title: ciBuildTableKey
+description: Build one canonical CI-prefixed CloudIgniter primary or secondary-index key value.
+sidebar_position: 3
+---
+
+# `ciBuildTableKey()`
+
+`ciBuildTableKey()` is a runtime-neutral helper for every CloudIgniter-owned `PK`, `SK`, or secondary-index key
+value.
+
+```ts
+import { ciBuildTableKey } from "@cloudigniter/core/lib";
+import type { CiTableKeySegments } from "@cloudigniter/core/types";
+
+function ciBuildTableKey(...segments: CiTableKeySegments): string;
+```
+
+It injects the `CI#` namespace, joins segments with `#`, and preserves opaque identifiers exactly.
+
+```ts
+const key = ciBuildTableKey("TENANT", "tenant-123", "USER_PROFILES");
+// "CI#TENANT#tenant-123#USER_PROFILES"
+```
+
+At least one segment is required. The function throws `TypeError` when a segment is empty, has surrounding
+whitespace, or contains the reserved `#` delimiter. Supply structural segments in uppercase snake case and do
+not include `CI` as a segment.
+
+Use [`ciBuildTableKeys()`](./ci-build-table-keys) to construct `PK` and `SK` together. See the
+[table-key convention](/docs/library/dynamodb/table-key-convention) for access-pattern and migration guidance.

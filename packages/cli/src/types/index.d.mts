@@ -1,0 +1,16 @@
+export type {
+  CiCreateResourceFileTransactionInput,
+  CiResourceFileAbsentState,
+  CiResourceFileApplyResult,
+  CiResourceFileChange,
+  CiResourceFileConflict,
+  CiResourceFileDelete,
+  CiResourceFilePresentState,
+  CiResourceFileRollbackResult,
+  CiResourceFileState,
+  CiResourceFileTransactionEntry,
+  CiResourceFileTransactionJournal,
+  CiResourceFileTransactionReference,
+  CiResourceFileTransactionStatus,
+  CiResourceFileWrite,
+} from "./resource-file-transaction-types.mjs";

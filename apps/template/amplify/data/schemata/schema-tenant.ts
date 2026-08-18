@@ -44,7 +44,7 @@
 //     })
 //     .handler(a.handler.function(createTenantHandler))
 //     .returns(a.json())
-//     .authorization((allow) => [allow.group('SYSTEM_ADMIN')]),
+//     .authorization((allow) => [allow.group('system-admin')]),
 
 //   deleteTenant: a
 //     .mutation()
@@ -53,7 +53,7 @@
 //     })
 //     .handler(a.handler.function(deleteTenantHandler))
 //     .returns(a.json())
-//     .authorization((allow) => [allow.group('SYSTEM_ADMIN')]),
+//     .authorization((allow) => [allow.group('system-admin')]),
 
 //   updateTenant: a
 //     .mutation()
@@ -62,7 +62,7 @@
 //     })
 //     .handler(a.handler.function(updateTenantHandler))
 //     .returns(a.json())
-//     .authorization((allow) => [allow.group('SYSTEM_ADMIN')]),
+//     .authorization((allow) => [allow.group('system-admin')]),
 
 //   listTenants: a
 //     .query()
@@ -71,7 +71,7 @@
 //     })
 //     .handler(a.handler.function(listTenantsHandler))
 //     .returns(a.json())
-//     .authorization((allow) => [allow.group('SYSTEM_ADMIN')]),
+//     .authorization((allow) => [allow.group('system-admin')]),
 
 //   seedTenants: a
 //     .mutation()
@@ -80,7 +80,7 @@
 //     })
 //     .handler(a.handler.function(seedTenantsHandler))
 //     .returns(a.json())
-//     .authorization((allow) => [allow.group('DEVELOPER')]),
+//     .authorization((allow) => [allow.group('developer')]),
 // };
 
 // export default schemaTenant;

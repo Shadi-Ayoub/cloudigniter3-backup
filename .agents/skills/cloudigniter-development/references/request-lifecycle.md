@@ -33,6 +33,7 @@ Incoming application request
             → resolve tenant and org unit
             → derive logical feature pathname
             → resolve registered route
+            → enforce the route's allowed Tenant scopes
             → enforce route/auth redirect decisions
             → build minimal CiRequestContext
             → inject same-request header
@@ -72,7 +73,7 @@ The next-intl registration is executable wiring, not incidental configuration:
 
 ```ts
 const withNextIntl = createNextIntlPlugin(
-  "./src/kernel/server/i18n/request.ts"
+  "./src/kernel/server/i18n/request.ts",
 );
 
 export default withNextIntl(nextConfig);
@@ -129,6 +130,8 @@ The proxy may construct an unresolved context with `route: null` after tenant re
 For a normal registered application request:
 
 - route resolution must complete before constructing the resolved context;
+- when `CiRouteDefinition.tenantScopes` is present, the resolved Tenant scope must be included before authentication or page rendering continues;
+- omitting `tenantScopes` preserves compatibility and allows the route in system, global, and tenant scopes;
 - the resolved route must include only request-specific route information;
 - the route registry must remain in application configuration and must never be copied into request context;
 - a registered page reaching i18n with `route: null` indicates a lifecycle defect.
@@ -138,6 +141,21 @@ Redirects and rewrites differ:
 - a rewrite can forward modified headers within the same request;
 - a redirect creates a new browser request and cannot forward the current request's injected headers;
 - cross-request state needed after a redirect must use an appropriate transport and be revalidated.
+
+Scope-specific pages use stable internal route roots while route registration
+continues to use the logical feature pathname:
+
+```text
+/t/global/dashboard/books → /ci-global/dashboard/books
+/t/acme/dashboard/books   → /ci-tenant/dashboard/books
+routes.ts key              → /dashboard/books
+```
+
+The parenthesized App Router groups `(ci-global)` and `(ci-tenant)` do not add
+URL segments. Their nested `ci-global` and `ci-tenant` directories are required
+because they are the targets of the proxy rewrite. Use
+`ciBuildTenantPublicPathname()` when application UI needs a browser-visible
+pathname for a logical feature route; do not link to either internal prefix.
 
 ## 5. Request-context transport
 
@@ -255,16 +273,17 @@ Do not generalize this diagnostic cookie strategy into authentication or authori
 
 ## 9. Ownership and change rules
 
-| Concern                                         | Owner                                                  |
-| ----------------------------------------------- | ------------------------------------------------------ |
-| Next.js plugin/build composition                | `apps/template/next.config.ts`                         |
-| Application proxy entry and matcher             | `apps/template/src/proxy.ts`                           |
-| Reusable Next.js proxy/context algorithms       | `packages/next`                                        |
-| Generic request-context contracts/serialization | `packages/core`                                        |
-| Application route registry                      | `apps/template/routes.ts` or application configuration |
-| Generic namespace resolution                    | `packages/core` when runtime-neutral                   |
-| Reusable Next.js i18n integration               | `packages/next`                                        |
-| Application locale registry and overrides       | `apps/template`                                        |
+| Concern                                              | Owner                                                  |
+| ---------------------------------------------------- | ------------------------------------------------------ |
+| Next.js plugin/build composition                     | `apps/template/next.config.ts`                         |
+| Application proxy entry and matcher                  | `apps/template/src/proxy.ts`                           |
+| Reusable Next.js proxy/context algorithms            | `packages/next`                                        |
+| Generic request-context contracts/serialization      | `packages/core`                                        |
+| Application route registry                           | manual/generated definitions under `apps/template/src/custom/routes`; thin composition in `apps/template/routes.ts` |
+| Route Tenant-scope contract and public-path building | `packages/core`                                        |
+| Generic namespace resolution                         | `packages/core` when runtime-neutral                   |
+| Reusable Next.js i18n integration                    | `packages/next`                                        |
+| Application locale registry and overrides            | `apps/template`                                        |
 
 When a task starts in a template entry point, retain only application selection/configuration there and extract reusable logic to its owner.
 

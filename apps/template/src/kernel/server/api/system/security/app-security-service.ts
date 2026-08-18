@@ -2,6 +2,7 @@ import "server-only";
 
 import { ciCreateNextAwsSecurityAdministration } from "@cloudigniter/next/server";
 import type { CiNextContext } from "@cloudigniter/next/types";
+import type { CiAccessControlDefinition } from "@cloudigniter/core/types";
 
 import outputs from "@/../amplify_outputs.json";
 import { appAccessControl } from "@/custom/auth/app-access-control";
@@ -13,10 +14,13 @@ import { appServerClient } from "@/kernel/server/api/app-server-client";
  * Reusable ARBAC behavior is owned by EmberGuard/Core, AWS owns the provider
  * adapter, and the Next.js package binds both to the authenticated context.
  */
-export function appCreateSecurityAdministration(context: CiNextContext) {
+export function appCreateSecurityAdministration(
+  context: CiNextContext,
+  definition: CiAccessControlDefinition = appAccessControl,
+) {
   return ciCreateNextAwsSecurityAdministration({
     context,
-    definition: appAccessControl,
+    definition,
     amplifyOutputs: outputs,
     operations: {
       getDefinition: () =>

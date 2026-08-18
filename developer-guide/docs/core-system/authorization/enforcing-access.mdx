@@ -53,11 +53,7 @@ const request = {
   subject,
   resource: "billing.invoices",
   action: "approve",
-  scope: ciOrgUnitAccessScope(
-    "tenant-123",
-    "finance",
-    ["company"],
-  ),
+  scope: ciOrgUnitAccessScope("tenant-123", "finance", ["company"]),
 };
 ```
 
@@ -80,16 +76,17 @@ type CiAuthorizationDecision = {
 
 Stable decision reasons are:
 
-| Reason | Meaning |
-| --- | --- |
-| `allowed` | Matching policy resolved to allow. |
-| `explicit-deny` | A selected deny privilege blocked the operation. |
-| `unauthenticated` | Subject authentication or ID is missing. |
-| `unknown-resource` | Resource is not in the catalog. |
-| `unknown-action` | Action is not registered on the resource. |
-| `unsupported-scope` | Resource cannot be accessed in this scope kind. |
-| `no-role-assignment` | No active assignment/direct grant contains the request scope. |
-| `no-matching-privilege` | A scoped grant exists, but none covers the resource/action. |
+| Reason                  | Meaning                                                                                    |
+| ----------------------- | ------------------------------------------------------------------------------------------ |
+| `allowed`               | Matching policy resolved to allow.                                                         |
+| `explicit-deny`         | A selected deny privilege blocked the operation.                                           |
+| `unauthenticated`       | Subject authentication or ID is missing.                                                   |
+| `unknown-resource`      | Resource is not in the catalog.                                                            |
+| `unknown-action`        | Action is not registered on the resource.                                                  |
+| `unsupported-scope`     | Resource cannot be accessed in this scope kind.                                            |
+| `suspended-role`        | A matching scoped assignment points to a suspended role and no other scoped grant applies. |
+| `no-role-assignment`    | No active assignment/direct grant contains the request scope.                              |
+| `no-matching-privilege` | A scoped grant exists, but none covers the resource/action.                                |
 
 ## Build an application guard
 
@@ -169,10 +166,7 @@ const canApprove = appAuthorizer.can({
 One-shot equivalents are available when retaining an authorizer is inconvenient:
 
 ```ts
-import {
-  ciAuthorize,
-  ciCan,
-} from "@cloudigniter/emberguard/lib";
+import { ciAuthorize, ciCan } from "@cloudigniter/emberguard/lib";
 
 const decision = ciAuthorize(request, appAccessControl);
 const allowed = ciCan(request, appAccessControl);

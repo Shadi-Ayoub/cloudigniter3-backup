@@ -1,6 +1,6 @@
 ---
 title: ciAssertValidAccessControlDefinition
-package: "@cloudigniter/emberguard"
+package: "@cloudigniter/core"
 availability: Shared
 sidebar_position: 6
 ---
@@ -14,12 +14,12 @@ are accepted.
 
 ```ts
 function ciAssertValidAccessControlDefinition(
-  definition: CiAccessControlDefinition,
+  definition: CiAccessControlDefinition
 ): void;
 ```
 
 ```ts
-import { ciAssertValidAccessControlDefinition } from "@cloudigniter/emberguard/lib";
+import { ciAssertValidAccessControlDefinition } from "@cloudigniter/core/lib";
 
 ciAssertValidAccessControlDefinition(appAccessControl);
 startApplication();

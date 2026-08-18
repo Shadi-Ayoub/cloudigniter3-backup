@@ -52,11 +52,10 @@ import {
 const system = ciSystemAccessScope();
 const globalScope = ciGlobalAccessScope();
 const tenant = ciTenantAccessScope("tenant-123");
-const team = ciOrgUnitAccessScope(
-  "tenant-123",
-  "payroll-team",
-  ["company", "finance"],
-);
+const team = ciOrgUnitAccessScope("tenant-123", "payroll-team", [
+  "company",
+  "finance",
+]);
 ```
 
 ## Exact versus descendant propagation
@@ -67,12 +66,12 @@ Every assignment requires an explicit propagation rule:
 type CiScopePropagation = "exact" | "descendants";
 ```
 
-| Assignment | `exact` contains | `descendants` contains |
-| --- | --- | --- |
-| System | System requests | System requests |
-| Global | Global requests | Global, tenant, and Org Unit requests across all tenants |
-| Tenant `A` | Tenant `A` requests | Tenant `A` and Org Units inside tenant `A` |
-| Org Unit `X` | Org Unit `X` | Org Unit `X` and requests whose ancestor list contains `X` |
+| Assignment   | `exact` contains    | `descendants` contains                                     |
+| ------------ | ------------------- | ---------------------------------------------------------- |
+| System       | System requests     | System requests                                            |
+| Global       | Global requests     | Global, tenant, and Org Unit requests across all tenants   |
+| Tenant `A`   | Tenant `A` requests | Tenant `A` and Org Units inside tenant `A`                 |
+| Org Unit `X` | Org Unit `X`        | Org Unit `X` and requests whose ancestor list contains `X` |
 
 A tenant or Org Unit assignment never crosses from one tenant to another. Only a global assignment can span
 tenants, and it never reaches system requests.
@@ -104,13 +103,13 @@ import {
 const tenantViewer = ciCreateRoleAssignment(
   "tenant-viewer",
   ciTenantAccessScope("tenant-123"),
-  "exact",
+  "exact"
 );
 
 const tenantAdmin = ciCreateRoleAssignment(
   "tenant-admin",
   ciTenantAccessScope("tenant-123"),
-  "descendants",
+  "descendants"
 );
 ```
 
@@ -118,9 +117,9 @@ Use an explicit global assignment for access across every tenant:
 
 ```ts title="Create a cross-tenant assignment" showLineNumbers
 const globalAdministrator = ciCreateRoleAssignment(
-  "SYSTEM_SUPER_ADMIN",
+  "system-super-admin",
   ciGlobalAccessScope(),
-  "descendants",
+  "descendants"
 );
 ```
 
@@ -134,12 +133,12 @@ const assignments = [
   ciCreateRoleAssignment(
     "invoice-approver",
     ciOrgUnitAccessScope("tenant-123", "finance"),
-    "descendants",
+    "descendants"
   ),
   ciCreateRoleAssignment(
     "invoice-approver",
     ciOrgUnitAccessScope("tenant-456", "head-office"),
-    "exact",
+    "exact"
   ),
 ];
 ```
@@ -163,7 +162,7 @@ const assignments = ciCreateRoleAssignmentsFromIdentityGroups(
       "app-viewers": "viewer",
       "app-beta-testers": "beta-tester",
     },
-  },
+  }
 );
 ```
 
@@ -183,7 +182,7 @@ const incidentSupport = ciCreateRoleAssignment(
   {
     validFrom: "2026-08-04T08:00:00.000Z",
     expiresAt: "2026-08-04T12:00:00.000Z",
-  },
+  }
 );
 ```
 
@@ -213,11 +212,11 @@ company
 ```
 
 ```ts title="Create a scope with ancestry" showLineNumbers
-const payrollAuditScope = ciOrgUnitAccessScope(
-  "tenant-123",
-  "payroll-audit",
-  ["company", "finance", "payroll"],
-);
+const payrollAuditScope = ciOrgUnitAccessScope("tenant-123", "payroll-audit", [
+  "company",
+  "finance",
+  "payroll",
+]);
 ```
 
 An assignment on `finance` with `descendants` now contains this request. An assignment on `operations` does not.
@@ -235,7 +234,7 @@ import { ciAccessScopeContains } from "@cloudigniter/emberguard/lib";
 ciAccessScopeContains(
   ciTenantAccessScope("tenant-123"),
   payrollAuditScope,
-  "descendants",
+  "descendants"
 );
 // true
 ```

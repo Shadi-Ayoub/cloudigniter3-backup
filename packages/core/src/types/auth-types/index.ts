@@ -7,6 +7,10 @@ export type { CiLoginOptions } from "./CiLoginOptions";
 export type { CiLogoutOptions } from "./CiLogoutOptions";
 export type { CiPublicAuthMode } from "./CiPublicAuthMode";
 export type {
+  CiEmberguardAccessControlConfig,
+  CiEmberguardConfig,
+} from "./emberguard-types";
+export type {
   CiAccessControlDefinition,
   CiAccessControlEntryOrigin,
   CiAccessControlEntryReference,
@@ -41,9 +45,13 @@ export type {
   CiResourceDefinitionLayer,
   CiResourceDomainDefinition,
   CiResourceDomainDefinitionLayer,
+  CiResourceDomainStatus,
+  CiResourceDomainStatusChange,
   CiRoleAssignment,
   CiRoleDefinition,
   CiRoleDefinitionLayer,
+  CiRoleStatus,
+  CiRoleStatusChange,
   CiScopedPrivilege,
   CiScopePropagation,
   CiSystemAccessScope,

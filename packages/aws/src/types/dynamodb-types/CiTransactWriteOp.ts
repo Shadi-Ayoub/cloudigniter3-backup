@@ -31,6 +31,13 @@ export type CiTransactWritePutOp = {
    * - "insertOnly" ensures item does not exist
    */
   existence?: Extract<CiDynamoExistenceMode, "any" | "insertOnly">;
+
+  /** Optional provider-owned invariant condition for the put. */
+  condition?: {
+    expression: string;
+    names?: Record<string, string>;
+    values?: Record<string, any>;
+  };
 };
 
 /**

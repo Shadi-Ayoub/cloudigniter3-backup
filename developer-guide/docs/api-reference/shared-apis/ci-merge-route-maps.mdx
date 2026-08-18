@@ -1,0 +1,56 @@
+---
+title: ciMergeRouteMaps
+description: Strictly compose independently owned CloudIgniter route maps without silent route replacement.
+sidebar_position: 5
+---
+
+# `ciMergeRouteMaps()`
+
+`ciMergeRouteMaps()` is a runtime-neutral, side-effect-free helper for composing core, manual custom, and generated route registries. It creates a new map and throws when the same route pattern is owned by more than one input.
+
+```ts
+import { ciMergeRouteMaps } from "@cloudigniter/core/lib";
+import type { CiRoutesMap } from "@cloudigniter/core/types";
+
+function ciMergeRouteMaps(...routeMaps: readonly CiRoutesMap[]): CiRoutesMap;
+```
+
+## Behavior
+
+- Input maps are read in argument and property-enumeration order and are not mutated.
+- Route definitions are copied by reference into a new top-level object.
+- Zero maps return an empty route map.
+- The helper compares exact pattern keys; it does not normalize pathnames or merge two definitions.
+- A duplicate throws `Error` with a `CloudIgniter route collision` message. There is no “last writer wins” precedence.
+
+```ts
+import { ciMergeRouteMaps } from "@cloudigniter/core/lib";
+import type { CiRoutesMap } from "@cloudigniter/core/types";
+
+const manualRoutes = {
+  "/reports": {
+    title: "Reports",
+    namespace: "reports",
+    protected: true,
+    tenantScopes: ["tenant"],
+  },
+} satisfies CiRoutesMap;
+
+const generatedRoutes = {
+  "/dashboard/books": {
+    title: "Manage Books",
+    namespace: "dashboard",
+    protected: true,
+    tenantScopes: ["tenant"],
+  },
+} satisfies CiRoutesMap;
+
+export const customRoutes = ciMergeRouteMaps(
+  manualRoutes,
+  generatedRoutes,
+);
+```
+
+Use `ciGetRoutes(customRoutes)` at the application's thin root composition entry to merge the resulting custom map with CloudIgniter core routes. A generated or application route that repeats a core key then fails through the same strict contract.
+
+See [Resource Studio's custom ownership boundary](/company-developers/architecture/core-custom-ownership) and [`CiRouteDefinition`](../type-definitions/CiRouteDefinition).

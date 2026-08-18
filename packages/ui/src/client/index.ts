@@ -17,8 +17,13 @@ export {
   ciResolveDashboardCardViewModels,
   ciResolveDashboardIcon,
 
+  // data entity manager
+  CiDataEntityManager,
+
   // data table
   CiDataTable,
+  CiDataTableRecordInformationDialog,
+  type CiDataTableRecordInformationDialogProps,
   CiDataTableRowActions,
   CiDataTableRowActionsMenu,
   buildDataTableColumnsWithActions,
@@ -83,6 +88,18 @@ export {
   AlertTitle,
   AlertDescription,
   AlertAction,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogMedia,
+  AlertDialogOverlay,
+  AlertDialogPortal,
+  AlertDialogTitle,
+  AlertDialogTrigger,
   Badge,
   BorderBeam,
   // type BorderBeamProps,
@@ -211,6 +228,10 @@ export {
 // feedback
 // ─────────────────────────────────────────────────────────────
 export {
+  // alert
+  CiAlert,
+  CiAlertDialog,
+
   // helpers
   ciNormalizeClientThrownError,
 

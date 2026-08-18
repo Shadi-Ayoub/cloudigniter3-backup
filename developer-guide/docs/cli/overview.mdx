@@ -1,0 +1,111 @@
+---
+title: CloudIgniter command-line toolkit
+description: Run Resource Studio, application validation, and AWS Amplify operations through the supported CloudIgniter CLI.
+sidebar_position: 1
+---
+
+The `@cloudigniter/cli` package provides the supported `ci` executable for application developers and system operators. It replaces application-local utility scripts with stable commands, shared help, consistent errors, and automation-safe flags.
+
+The application executable intentionally excludes CloudIgniter's own package build and release commands. Maintainers use a separate `ci-dev` executable documented in the [contributor command reference](/company-developers/tooling/cli-command-reference).
+
+:::note Command rename
+
+`ci` replaces the former `cloudigniter` command, and `ci-dev` replaces `cloudigniter-dev`. The old executable names are not aliases; update local scripts and CI configuration before upgrading `@cloudigniter/cli`.
+
+:::
+
+## Discover commands
+
+The application template already includes `@cloudigniter/cli` as a development dependency:
+
+```bash
+pnpm exec ci --help
+```
+
+Running `ci` without a command opens a guided menu in an interactive terminal. Scripts and CI should always provide the complete command and add `--no-interactive`.
+
+## Open Resource Studio
+
+From the application root:
+
+```bash
+pnpm exec ci resources studio
+```
+
+This starts a loopback-only browser workspace for application-owned resources. In V1, Resource Studio creates AWS Amplify Data Entities together with Tenant- or Global-scoped administration pages. Local generation is offline and transactional; it does not refresh AWS SSO or deploy a sandbox automatically.
+
+The browser opens by default on an operating-system-assigned localhost port. Use `--no-open` to print the secured URL without opening it, or `--port=<number>` to request a fixed local port. `--profile=<name>` and `--identifier=<value>` preselect the explicit deployment target; the Amplify sandbox identifier must contain 1–15 letters, numbers, or hyphens.
+
+The one-use bootstrap URL expires after five minutes, and its `HttpOnly` cookie-backed Studio session expires after eight hours. The Studio provides separate actions to check the selected AWS identity and Region, refresh an expired SSO session, and run one explicit `ampx sandbox --once` deployment. An SSO refresh automatically repeats the access check. Before enabling deploy, the Studio issues a short-lived, single-use intent bound to the profile, identifier, verified target, Region, and exact generated-plan hash; its confirmation dialog shows the verified account, caller ARN, Region, profile, and identifier. Deployment rechecks those bindings and pins the verified Region into `ampx`.
+
+Resource Studio also keeps machine-local before/after images so an unchanged generated transaction or testing session can be rolled back safely. Read the [Resource Studio overview](../resource-studio/overview) and [deployment and rollback contract](../resource-studio/deployment-and-rollback) before deploying a generated schema.
+
+## Deploy generated resources from the terminal
+
+Use the public headless command when you intentionally want one verified deployment without opening Resource Studio:
+
+```bash
+pnpm exec ci amplify sandbox deploy \
+  --profile=developer1 \
+  --identifier=ci-books \
+  --no-interactive
+```
+
+For non-interactive use, `--profile` and `--identifier` are required. The command verifies the current generated plan, resolves and prints the AWS account, caller ARN, and Region, rechecks the plan and target, pins that Region, and then runs one `ampx sandbox --once`. It never runs automatically after generation and does not refresh SSO. If STS reports expired credentials, run `aws sso login --profile developer1` and invoke the deploy command again.
+
+Deployment currently requires Node.js LTS major 22 or 24. An unsupported runtime disables deployment before local state or AWS setup, but it does not prevent offline Data Entity editing.
+
+## Validate application modules
+
+From the application root:
+
+```bash
+pnpm exec ci modules validate \
+  --root=src/modules \
+  --no-interactive
+```
+
+The command succeeds with a “nothing to validate” message when the application has no modules directory. Invalid manifests, dependency graphs, runtime boundaries, or package declarations return a nonzero exit code.
+
+## Bootstrap Amplify resources
+
+Create or verify the default access-control definition:
+
+```bash
+pnpm exec ci amplify bootstrap access-control \
+  --profile=developer1 \
+  --no-interactive
+```
+
+Create or verify the configured root user and repair its profile when needed:
+
+```bash
+pnpm exec ci amplify bootstrap root-user \
+  --profile=developer1 \
+  --no-interactive
+```
+
+Run a one-shot sandbox followed by both bootstrap operations:
+
+```bash
+pnpm exec ci amplify sandbox bootstrap \
+  --profile=developer1 \
+  --no-interactive
+```
+
+These commands can change AWS resources. Review the application configuration and AWS profile before running them. Omitting `--profile` uses the default AWS credential chain; an interactive terminal may prompt for a profile.
+
+## Global behavior
+
+- `--app-root=<path>` selects the application root; the current directory is the default.
+- `--workspace-root=<path>` overrides workspace discovery when package resolution must start elsewhere.
+- `--profile=<name>` selects the AWS profile used by explicit Resource Studio or Amplify operations; local generation does not use it.
+- `--identifier=<value>` selects the stable Amplify sandbox identifier used by Resource Studio or `ci amplify sandbox deploy` (1–15 letters, numbers, or hyphens).
+- `--port=<number>` selects the loopback port for Resource Studio; omitting it lets the operating system assign an available port.
+- `--no-open` leaves the browser closed and prints the secured Studio URL in the terminal.
+- `--no-interactive` disables prompts; headless sandbox deployment then requires both `--profile` and `--identifier`.
+- `--verbose` prints diagnostic stacks in addition to the actionable error summary.
+- `--clear` clears only an interactive terminal and is never implied.
+- Usage errors return exit code `2`; operational failures return `1`; a cancelled prompt returns `130`.
+
+Package scripts in `apps/template/package.json` provide short aliases such as `pnpm bootstrap:root` and `pnpm sandbox:bootstrap`.

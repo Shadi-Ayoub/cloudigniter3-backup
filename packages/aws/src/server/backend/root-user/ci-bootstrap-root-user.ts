@@ -12,12 +12,9 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 
 import { ciGetRootUserPasswordProblems } from "./ci-get-root-user-password-problems";
-import type {
-  CiBootstrapRootUserInput,
-  CiBootstrapRootUserResult,
-} from "./types";
+import type { CiBootstrapRootUserInput, CiBootstrapRootUserResult } from "./types";
 
-const CI_ROOT_USER_GROUPS = ["SYSTEM_ADMIN", "SYSTEM_SUPER_ADMIN"] as const;
+const CI_ROOT_USER_GROUPS = ["system-super-admin"] as const;
 
 function ciRequireNonEmptyString(value: string, field: string): string {
   const normalizedValue = value.trim();
@@ -29,20 +26,12 @@ function ciRequireNonEmptyString(value: string, field: string): string {
   return normalizedValue;
 }
 
-function ciGetCognitoAttribute(
-  user: AdminGetUserCommandOutput,
-  attributeName: string,
-): string | undefined {
-  return user.UserAttributes?.find(
-    (attribute) => attribute.Name === attributeName,
-  )?.Value;
+function ciGetCognitoAttribute(user: AdminGetUserCommandOutput, attributeName: string): string | undefined {
+  return user.UserAttributes?.find((attribute) => attribute.Name === attributeName)?.Value;
 }
 
 function ciIsUserNotFoundError(error: unknown): boolean {
-  return (
-    error instanceof UserNotFoundException ||
-    (error instanceof Error && error.name === "UserNotFoundException")
-  );
+  return error instanceof UserNotFoundException || (error instanceof Error && error.name === "UserNotFoundException");
 }
 
 async function ciGetCognitoRootUser(
@@ -72,36 +61,16 @@ async function ciGetCognitoRootUser(
  * The operation is convergent: rerunning it repairs missing groups or a missing
  * profile without resetting the password of an already confirmed user.
  */
-export async function ciBootstrapRootUser(
-  input: CiBootstrapRootUserInput,
-): Promise<CiBootstrapRootUserResult> {
+export async function ciBootstrapRootUser(input: CiBootstrapRootUserInput): Promise<CiBootstrapRootUserResult> {
   const region = ciRequireNonEmptyString(input.region, "region");
   const userPoolId = ciRequireNonEmptyString(input.userPoolId, "userPoolId");
-  const userProfileTableName = ciRequireNonEmptyString(
-    input.userProfileTableName,
-    "userProfileTableName",
-  );
-  const email = ciRequireNonEmptyString(
-    input.rootUser.email,
-    "rootUser.email",
-  ).toLowerCase();
-  const givenName = ciRequireNonEmptyString(
-    input.rootUser.givenName,
-    "rootUser.givenName",
-  );
-  const familyName = ciRequireNonEmptyString(
-    input.rootUser.familyName,
-    "rootUser.familyName",
-  );
-  const groups = input.groups?.length
-    ? Array.from(new Set(input.groups))
-    : [...CI_ROOT_USER_GROUPS];
+  const userProfileTableName = ciRequireNonEmptyString(input.userProfileTableName, "userProfileTableName");
+  const email = ciRequireNonEmptyString(input.rootUser.email, "rootUser.email").toLowerCase();
+  const givenName = ciRequireNonEmptyString(input.rootUser.givenName, "rootUser.givenName");
+  const familyName = ciRequireNonEmptyString(input.rootUser.familyName, "rootUser.familyName");
+  const groups = input.groups?.length ? Array.from(new Set(input.groups)) : [...CI_ROOT_USER_GROUPS];
   const cognitoClient = new CognitoIdentityProviderClient({ region });
-  let cognitoUser = await ciGetCognitoRootUser(
-    cognitoClient,
-    userPoolId,
-    email,
-  );
+  let cognitoUser = await ciGetCognitoRootUser(cognitoClient, userPoolId, email);
   const cognitoUserCreated = cognitoUser === null;
 
   if (!cognitoUser) {
@@ -123,28 +92,18 @@ export async function ciBootstrapRootUser(
   }
 
   if (!cognitoUser?.Username) {
-    throw new Error(
-      `[ciBootstrapRootUser] Cognito did not return the root user "${email}" after creation.`,
-    );
+    throw new Error(`[ciBootstrapRootUser] Cognito did not return the root user "${email}" after creation.`);
   }
 
   const username = cognitoUser.Username;
-  const passwordSet =
-    cognitoUserCreated || cognitoUser.UserStatus !== "CONFIRMED";
+  const passwordSet = cognitoUserCreated || cognitoUser.UserStatus !== "CONFIRMED";
 
   if (passwordSet) {
     const password = await input.passwordProvider();
-    const passwordProblems = ciGetRootUserPasswordProblems(
-      password,
-      input.passwordPolicy,
-    );
+    const passwordProblems = ciGetRootUserPasswordProblems(password, input.passwordPolicy);
 
     if (passwordProblems.length > 0) {
-      throw new Error(
-        `[ciBootstrapRootUser] The password must contain ${passwordProblems.join(
-          ", ",
-        )}.`,
-      );
+      throw new Error(`[ciBootstrapRootUser] The password must contain ${passwordProblems.join(", ")}.`);
     }
 
     await cognitoClient.send(
@@ -180,27 +139,16 @@ export async function ciBootstrapRootUser(
     );
   }
 
-  const refreshedUser = await ciGetCognitoRootUser(
-    cognitoClient,
-    userPoolId,
-    email,
-  );
+  const refreshedUser = await ciGetCognitoRootUser(cognitoClient, userPoolId, email);
 
   if (!refreshedUser) {
-    throw new Error(
-      `[ciBootstrapRootUser] Cognito user "${email}" disappeared during bootstrap.`,
-    );
+    throw new Error(`[ciBootstrapRootUser] Cognito user "${email}" disappeared during bootstrap.`);
   }
 
-  const cognitoSub = ciRequireNonEmptyString(
-    ciGetCognitoAttribute(refreshedUser, "sub") ?? "",
-    "Cognito sub",
-  );
+  const cognitoSub = ciRequireNonEmptyString(ciGetCognitoAttribute(refreshedUser, "sub") ?? "", "Cognito sub");
   const profileOwner = `${cognitoSub}::${username}`;
   const now = new Date().toISOString();
-  const documentClient = DynamoDBDocumentClient.from(
-    new DynamoDBClient({ region }),
-  );
+  const documentClient = DynamoDBDocumentClient.from(new DynamoDBClient({ region }));
 
   await documentClient.send(
     new UpdateCommand({
@@ -214,8 +162,7 @@ export async function ciBootstrapRootUser(
         "#createdAt = if_not_exists(#createdAt, :now)",
         "#updatedAt = :now",
       ].join(", "),
-      ConditionExpression:
-        "attribute_not_exists(#userId) OR #profileOwner = :profileOwner",
+      ConditionExpression: "attribute_not_exists(#userId) OR #profileOwner = :profileOwner",
       ExpressionAttributeNames: {
         "#userId": "userId",
         "#username": "username",

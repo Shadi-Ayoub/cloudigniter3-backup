@@ -28,6 +28,12 @@ export default {
   },
   auth: {
     loginRoute: "/login",
+    emberguard: {
+      accessControl: {
+        // Safer default: any matching deny privilege overrides matching allows.
+        combiningAlgorithm: "deny-overrides",
+      },
+    },
     authUi: {
       // Merge with CI base theme or overwrite it with your custom theme
       custom: {
@@ -143,11 +149,11 @@ export default {
          * Keep false until Attribute Role-based Access Control is implemented.
          *
          * When true, production access still requires an authenticated user
-         * with the DEVELOPER role.
+         * with the developer role.
          */
         allowProduction: false,
 
-        requiredRoles: ["DEVELOPER"],
+        requiredRoles: ["developer"],
       },
     },
     traceLog: {

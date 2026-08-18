@@ -14,7 +14,12 @@ import type {
   CiSecurityRecord,
   CiSecurityRecordsByKind,
   CiSecurityResourceRecord,
+  CiSecurityResourceDomainRecord,
   CiSecurityRoleRecord,
+  CiSecurityRoleCountersById,
+  CiSetSecurityRoleStatusInput,
+  CiCreateSecurityResourceDomainInput,
+  CiSetSecurityResourceDomainStatusInput,
   CiSecurityStoredRoleAssignment,
 } from "../../types";
 
@@ -24,12 +29,14 @@ import {
   ciGetAccessControlEntryOrigin,
   ciIsCoreAccessControlEntry,
 } from "../access-control/ci-core-access-control";
+import { ciIsAccessControlKebabIdentifier } from "../access-control/ci-access-control-identifiers";
 import {
   ciCreateAuthorizationSubject,
   ciCreateRoleAssignments,
 } from "../access-control/ci-authorization-grants";
 import { ciCreateAuthorizer } from "../access-control/ci-create-authorizer";
 import { ciMatchesAuthorizationPattern } from "../access-control/ci-authorization-pattern";
+import { ciMigrateLegacyPrivilegeTitles } from "../access-control/ci-migrate-legacy-privilege-titles";
 import { ciMergeAccessControlDefinitions } from "../access-control/ci-merge-access-control";
 import { ciAssertValidAccessControlDefinition } from "../access-control/ci-validate-access-control";
 
@@ -64,7 +71,12 @@ function resolveSecurityCapabilities(
     canRead: can("read"),
     canManageApplication: can("manage"),
     canManageAssignments: can("manage"),
-    canManageCore: options.actor.roleIds.includes("SYSTEM_SUPER_ADMIN"),
+    canManageCore: authorizer.can({
+      subject,
+      scope: { kind: "system" },
+      resource: "platform.authorization.core",
+      action: "override",
+    }),
     actorRole: options.actor.primaryRole,
   };
 }
@@ -84,18 +96,32 @@ function getEntryState(
 /** Converts access-control roles into administration records. */
 function buildRoleRecords(
   definition: CiAccessControlDefinition,
-  capabilities: CiSecurityCapabilities
+  capabilities: CiSecurityCapabilities,
+  roleCounters: CiSecurityRoleCountersById
 ): CiSecurityRoleRecord[] {
-  return definition.roles.map((role) => ({
-    kind: "role",
-    id: role.id,
-    title: role.title,
-    description: role.description,
-    precedence: role.precedence,
-    inherits: [...(role.inherits ?? [])],
-    permissionCount: role.privileges.length,
-    ...getEntryState({ kind: "role", roleId: role.id }, capabilities),
-  }));
+  return definition.roles.map((role) => {
+    const counters = roleCounters[role.id];
+    if (!counters) {
+      throw new Error(`Missing persisted counters for role "${role.id}".`);
+    }
+
+    return {
+      kind: "role",
+      id: role.id,
+      title: role.title,
+      description: role.description,
+      status: role.status ?? "active",
+      statusChange: role.statusChange ? { ...role.statusChange } : undefined,
+      precedence: role.precedence,
+      inherits: [...(role.inherits ?? [])],
+      privileges: role.privileges.map((privilege) => ({
+        ...privilege,
+        scopeKinds: [...privilege.scopeKinds],
+      })),
+      ...counters,
+      ...getEntryState({ kind: "role", roleId: role.id }, capabilities),
+    };
+  });
 }
 
 /** Flattens role privileges into administration permission records. */
@@ -115,9 +141,7 @@ function buildPermissionRecords(
       return {
         kind: "permission" as const,
         id: privilege.id,
-        title:
-          privilege.description ??
-          `${privilege.effect} ${privilege.resource}.${privilege.action}`,
+        title: privilege.title,
         description: privilege.description,
         roleId: role.id,
         effect: privilege.effect,
@@ -154,6 +178,31 @@ function buildResourceRecords(
       capabilities
     ),
   }));
+}
+
+/** Converts resource domains into alphabetically ordered administration rows. */
+function buildResourceDomainRecords(
+  definition: CiAccessControlDefinition,
+  capabilities: CiSecurityCapabilities
+): CiSecurityResourceDomainRecord[] {
+  return definition.domains
+    .map((domain) => ({
+      id: domain.id,
+      title: domain.title,
+      description: domain.description,
+      status: domain.status ?? "active",
+      statusChange: domain.statusChange ? { ...domain.statusChange } : undefined,
+      resourceCount: definition.resources.filter(
+        (resource) => resource.domainId === domain.id
+      ).length,
+      ...getEntryState({ kind: "domain", domainId: domain.id }, capabilities),
+    }))
+    .sort(
+      (left, right) =>
+        left.title.localeCompare(right.title, undefined, {
+          sensitivity: "base",
+        }) || left.id.localeCompare(right.id)
+    );
 }
 
 /** Resolves a compact display identifier for an assignment scope. */
@@ -232,7 +281,7 @@ function buildIdentityGroupRecords(
     return {
       kind: "identity-group",
       id: group.id,
-      title: group.id.replaceAll("_", " "),
+      title: group.id.replaceAll(/[ _-]+/g, " "),
       description: role
         ? `Maps to ${role.title}`
         : "No matching CloudIgniter role",
@@ -309,7 +358,7 @@ function assertApplicationEntryDoesNotEscalateCore(
       roleId: string,
       visited: ReadonlySet<string>
     ): boolean => {
-      if (roleId === "SYSTEM_SUPER_ADMIN") return true;
+      if (roleId === "system-super-admin") return true;
       if (visited.has(roleId)) return false;
       const nextVisited = new Set(visited).add(roleId);
       return (inheritance.get(roleId) ?? []).some((inheritedRoleId) =>
@@ -319,24 +368,36 @@ function assertApplicationEntryDoesNotEscalateCore(
 
     if (reachesSystemSuperAdmin(record.id, new Set())) {
       throw new Error(
-        "Application roles cannot inherit SYSTEM_SUPER_ADMIN directly or indirectly."
+        "Application roles cannot inherit system-super-admin directly or indirectly."
       );
     }
   }
 
   if (
-    record.kind === "permission" &&
-    record.effect === "allow" &&
-    record.scopeKinds.includes("system") &&
-    ciMatchesAuthorizationPattern(
-      record.resource,
-      "platform.authorization.core"
-    ) &&
-    ciMatchesAuthorizationPattern(record.action, "override") &&
-    record.roleId !== "SYSTEM_SUPER_ADMIN"
+    (record.kind === "permission" &&
+      record.roleId !== "system-super-admin" &&
+      record.effect === "allow" &&
+      record.scopeKinds.includes("system") &&
+      ciMatchesAuthorizationPattern(
+        record.resource,
+        "platform.authorization.core"
+      ) &&
+      ciMatchesAuthorizationPattern(record.action, "override")) ||
+    (record.kind === "role" &&
+      record.id !== "system-super-admin" &&
+      record.privileges.some(
+        (privilege) =>
+          privilege.effect === "allow" &&
+          privilege.scopeKinds.includes("system") &&
+          ciMatchesAuthorizationPattern(
+            privilege.resource,
+            "platform.authorization.core"
+          ) &&
+          ciMatchesAuthorizationPattern(privilege.action, "override")
+      ))
   ) {
     throw new Error(
-      "Only SYSTEM_SUPER_ADMIN may grant the core override capability."
+      "Only system-super-admin may grant the core override capability."
     );
   }
 }
@@ -346,19 +407,36 @@ function assertSecurityRecordIsComplete(record: CiSecurityRecord): void {
   if (record.kind !== "assignment" && record.id.startsWith("new-")) {
     throw new Error("A stable identifier is required.");
   }
-  if (record.kind === "role" && (!record.id.trim() || !record.title.trim())) {
-    throw new Error("Role identifier and display name are required.");
+  if (
+    record.kind === "role" &&
+    (!record.id.trim() ||
+      !record.title.trim() ||
+      !Array.isArray(record.privileges))
+  ) {
+    throw new Error(
+      "Role identifier, display name, and privilege selection are required."
+    );
+  }
+  if (
+    record.origin === "application" &&
+    (record.kind === "role" || record.kind === "permission") &&
+    !ciIsAccessControlKebabIdentifier(record.id)
+  ) {
+    throw new Error(
+      "Application role and privilege identifiers must use lowercase kebab case, start with a letter, and contain only lowercase letters, digits, and single hyphens."
+    );
   }
   if (
     record.kind === "permission" &&
     (!record.id.trim() ||
+      !record.title.trim() ||
       !record.roleId.trim() ||
       !record.resource.trim() ||
       !record.action.trim() ||
       record.scopeKinds.length === 0)
   ) {
     throw new Error(
-      "Permission identifier, role, resource, action, and scopes are required."
+      "Permission identifier, display name, role, resource, action, and scopes are required."
     );
   }
   if (
@@ -375,15 +453,17 @@ function assertSecurityRecordIsComplete(record: CiSecurityRecord): void {
   }
   if (
     record.kind === "assignment" &&
-    (!record.subjectId.trim() || !record.roleId.trim())
+    (!record.subjectId.trim() ||
+      !ciIsAccessControlKebabIdentifier(record.roleId))
   ) {
-    throw new Error("Assignment subject and role are required.");
+    throw new Error(
+      "Assignment subject is required and its role must use lowercase kebab case."
+    );
   }
 }
 
 /** Converts an editable catalog record into a merge layer. */
 function buildAccessControlLayer(
-  current: CiAccessControlDefinition,
   record: Exclude<
     CiSecurityRecord,
     CiSecurityAssignmentRecord | CiSecurityIdentityGroupRecord
@@ -398,9 +478,10 @@ function buildAccessControlLayer(
           description: record.description,
           precedence: record.precedence,
           inherits: record.inherits,
-          privileges:
-            current.roles.find((role) => role.id === record.id)?.privileges ??
-            [],
+          privileges: record.privileges,
+          privilegesMode: "replace",
+          status: record.status,
+          statusChange: record.statusChange,
         },
       ],
     };
@@ -413,6 +494,7 @@ function buildAccessControlLayer(
           privileges: [
             {
               id: record.id,
+              title: record.title,
               description: record.description,
               effect: record.effect,
               resource: record.resource,
@@ -515,27 +597,35 @@ export function ciCreateSecurityAdministration(
   const subject = createSecuritySubject(options);
   const capabilities = resolveSecurityCapabilities(options, subject);
   const createId = options.createId ?? createRuntimeId;
+  const clock = options.clock ?? (() => new Date());
 
   /** Loads the persisted definition with the configured definition as fallback. */
   async function loadDefinition(): Promise<CiAccessControlDefinition> {
-    return (
+    return ciMigrateLegacyPrivilegeTitles(
       (await options.repository.getAccessControlDefinition()) ??
+        options.definition,
       options.definition
     );
   }
 
   /** Loads persisted scoped role assignments. */
-  function loadAssignments() {
+  async function loadAssignments() {
     return options.repository.listRoleAssignments();
+  }
+
+  /** Loads the mutation-maintained role-counter projection. */
+  async function loadRoleCounters() {
+    return options.repository.getRoleCounters();
   }
 
   /** Builds records for every security administration aspect. */
   function buildRecords(
     definition: CiAccessControlDefinition,
-    assignments: readonly CiSecurityStoredRoleAssignment[] = []
+    assignments: readonly CiSecurityStoredRoleAssignment[],
+    roleCounters: CiSecurityRoleCountersById
   ): CiSecurityRecordsByKind {
     return {
-      role: buildRoleRecords(definition, capabilities),
+      role: buildRoleRecords(definition, capabilities, roleCounters),
       permission: buildPermissionRecords(definition, capabilities),
       resource: buildResourceRecords(definition, capabilities),
       assignment: buildAssignmentRecords(assignments, capabilities),
@@ -546,20 +636,147 @@ export function ciCreateSecurityAdministration(
     };
   }
 
+  /** Builds the domain-management rows in deterministic alphabetical order. */
+  function buildResourceDomains(
+    definition: CiAccessControlDefinition
+  ): CiSecurityResourceDomainRecord[] {
+    return buildResourceDomainRecords(definition, capabilities);
+  }
+
+  /** Creates one application-owned resource domain in the active definition. */
+  async function createResourceDomain(
+    input: CiCreateSecurityResourceDomainInput
+  ): Promise<void> {
+    const id = input.id.trim();
+    const title = input.title.trim();
+    if (!ciIsAccessControlKebabIdentifier(id)) {
+      throw new Error(
+        "Resource-domain identifiers must use lowercase kebab case, start with a letter, and contain only lowercase letters, digits, and single hyphens."
+      );
+    }
+    if (!title) {
+      throw new Error("A resource-domain display name is required.");
+    }
+
+    const current = await loadDefinition();
+    const currentCapabilities = resolveSecurityCapabilities(
+      { ...options, definition: current },
+      subject
+    );
+    if (!currentCapabilities.canManageApplication) {
+      throw new Error("You cannot manage application access control.");
+    }
+    if (current.domains.some((domain) => domain.id === id)) {
+      throw new Error(`Resource domain "${id}" already exists.`);
+    }
+
+    const next = ciMergeAccessControlDefinitions(current, {
+      domains: [
+        {
+          id,
+          title,
+          description: input.description?.trim() || undefined,
+          status: "active",
+        },
+      ],
+    });
+    await options.repository.saveAccessControlDefinition(next);
+  }
+
+  /** Suspends or restores every authorization resource in one domain. */
+  async function setResourceDomainStatus(
+    input: CiSetSecurityResourceDomainStatusInput
+  ): Promise<void> {
+    const reason = input.reason.trim();
+    if (!reason) {
+      throw new Error("A reason is required to change a resource domain's status.");
+    }
+    if (input.status !== "active" && input.status !== "suspended") {
+      throw new Error(
+        'Resource-domain status must be either "active" or "suspended".'
+      );
+    }
+    if (input.domainId === "platform" && input.status === "suspended") {
+      throw new Error(
+        "The platform resource domain cannot be suspended because it contains the access-control recovery path."
+      );
+    }
+
+    const current = await loadDefinition();
+    const currentCapabilities = resolveSecurityCapabilities(
+      { ...options, definition: current },
+      subject
+    );
+    if (!currentCapabilities.canManageApplication) {
+      throw new Error("You cannot manage application access control.");
+    }
+    const domain = current.domains.find((item) => item.id === input.domainId);
+    if (!domain) {
+      throw new Error(`Unknown resource domain "${input.domainId}".`);
+    }
+
+    const reference = { kind: "domain", domainId: domain.id } as const;
+    const isCore = ciIsCoreAccessControlEntry(reference);
+    if (isCore && !currentCapabilities.canManageCore) {
+      throw new Error(
+        "Only a system super administrator can suspend or restore a core resource domain."
+      );
+    }
+    if ((domain.status ?? "active") === input.status) return;
+
+    const layer: CiAccessControlLayer = {
+      domains: [
+        {
+          id: domain.id,
+          status: input.status,
+          statusChange: {
+            changedAt: clock().toISOString(),
+            changedBy: options.actor.id,
+            reason,
+          },
+        },
+      ],
+    };
+    const next = isCore
+      ? ciApplyCoreAccessControlOverrides(current, [
+          ciCreateCoreAccessControlOverride({
+            id: createId(),
+            expectedRevision: 0,
+            reason,
+            subject,
+            currentDefinition: current,
+            layer,
+          }),
+        ])
+      : ciMergeAccessControlDefinitions(current, layer);
+    ciAssertValidAccessControlDefinition(next);
+    await options.repository.saveAccessControlDefinition(next);
+  }
+
   /** Validates and persists one editable administration record. */
   async function saveRecord(
     record: CiSecurityRecord,
     reason?: string
   ): Promise<void> {
-    assertCanManage(record, capabilities);
+    const current = await loadDefinition();
+    const currentCapabilities = resolveSecurityCapabilities(
+      { ...options, definition: current },
+      subject
+    );
+    assertCanManage(record, currentCapabilities);
     assertSecurityRecordIsComplete(record);
 
     if (record.kind === "assignment") {
+      const scope = buildAssignmentScope(record);
       await options.repository.putRoleAssignment({
         id: record.id.startsWith("new-") ? createId() : record.id,
         subjectId: record.subjectId,
         roleId: record.roleId,
-        scope: buildAssignmentScope(record),
+        scope,
+        tenantId:
+          scope.kind === "tenant" || scope.kind === "orgUnit"
+            ? scope.tenantId
+            : undefined,
         propagation: record.propagation,
         expiresAt: record.expiresAt,
       });
@@ -569,9 +786,28 @@ export function ciCreateSecurityAdministration(
       throw new Error("Identity-provider groups are read-only.");
     }
 
-    const current = await loadDefinition();
+    if (record.kind === "resource") {
+      const targetDomain = current.domains.find(
+        (domain) => domain.id === record.domainId
+      );
+      const currentResource = current.resources.find(
+        (resource) => resource.id === record.id
+      );
+      if (!targetDomain) {
+        throw new Error(`Unknown resource domain "${record.domainId}".`);
+      }
+      if (
+        targetDomain.status === "suspended" &&
+        currentResource?.domainId !== targetDomain.id
+      ) {
+        throw new Error(
+          `Resource domain "${targetDomain.id}" is suspended and cannot accept new resources.`
+        );
+      }
+    }
+
     assertApplicationEntryDoesNotEscalateCore(current, record);
-    const layer = buildAccessControlLayer(current, record);
+    const layer = buildAccessControlLayer(record);
     const reference = buildEntryReference(record);
     const isCore =
       record.origin === "core" || ciIsCoreAccessControlEntry(reference);
@@ -590,9 +826,82 @@ export function ciCreateSecurityAdministration(
     await options.repository.saveAccessControlDefinition(next);
   }
 
+  /** Suspends or restores a role without removing its assignments or policy. */
+  async function setRoleStatus(
+    input: CiSetSecurityRoleStatusInput
+  ): Promise<void> {
+    const reason = input.reason.trim();
+    if (!reason) {
+      throw new Error("A reason is required to change a role's status.");
+    }
+    if (input.status !== "active" && input.status !== "suspended") {
+      throw new Error('Role status must be either "active" or "suspended".');
+    }
+    if (input.roleId === "system-super-admin" && input.status === "suspended") {
+      throw new Error(
+        "The system-super-admin break-glass role cannot be suspended."
+      );
+    }
+
+    const current = await loadDefinition();
+    const currentCapabilities = resolveSecurityCapabilities(
+      { ...options, definition: current },
+      subject
+    );
+    if (!currentCapabilities.canManageApplication) {
+      throw new Error("You cannot manage application access control.");
+    }
+    const role = current.roles.find((item) => item.id === input.roleId);
+    if (!role) {
+      throw new Error(`Unknown role "${input.roleId}".`);
+    }
+
+    const reference = { kind: "role", roleId: role.id } as const;
+    const isCore = ciIsCoreAccessControlEntry(reference);
+    if (isCore && !currentCapabilities.canManageCore) {
+      throw new Error(
+        "Only a system super administrator can suspend or restore a core role."
+      );
+    }
+    if ((role.status ?? "active") === input.status) return;
+
+    const layer: CiAccessControlLayer = {
+      roles: [
+        {
+          id: role.id,
+          status: input.status,
+          statusChange: {
+            changedAt: clock().toISOString(),
+            changedBy: options.actor.id,
+            reason,
+          },
+        },
+      ],
+    };
+    const next = isCore
+      ? ciApplyCoreAccessControlOverrides(current, [
+          ciCreateCoreAccessControlOverride({
+            id: createId(),
+            expectedRevision: 0,
+            reason,
+            subject,
+            currentDefinition: current,
+            layer,
+          }),
+        ])
+      : ciMergeAccessControlDefinitions(current, layer);
+    ciAssertValidAccessControlDefinition(next);
+    await options.repository.saveAccessControlDefinition(next);
+  }
+
   /** Deletes one application-owned catalog record or role assignment. */
   async function deleteRecord(record: CiSecurityRecord): Promise<void> {
-    assertCanManage(record, capabilities);
+    const current = await loadDefinition();
+    const currentCapabilities = resolveSecurityCapabilities(
+      { ...options, definition: current },
+      subject
+    );
+    assertCanManage(record, currentCapabilities);
     if (record.origin === "core") {
       throw new Error(
         "Core entries cannot be deleted; create a reviewed override instead."
@@ -609,7 +918,6 @@ export function ciCreateSecurityAdministration(
       throw new Error("Identity-provider groups are read-only.");
     }
 
-    const current = await loadDefinition();
     await options.repository.saveAccessControlDefinition(
       removeCatalogRecord(current, record)
     );
@@ -619,8 +927,13 @@ export function ciCreateSecurityAdministration(
     capabilities,
     loadDefinition,
     loadAssignments,
+    loadRoleCounters,
     buildRecords,
+    buildResourceDomains,
+    createResourceDomain,
+    setResourceDomainStatus,
     saveRecord,
+    setRoleStatus,
     deleteRecord,
   };
 }

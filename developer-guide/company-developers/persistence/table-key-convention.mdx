@@ -1,0 +1,77 @@
+---
+title: Table-key governance
+description: Ownership, dependency, migration, and validation rules for CloudIgniter PK, SK, and index keys.
+sidebar_position: 2
+---
+
+# Table-key governance
+
+`packages/core` owns the runtime-neutral CloudIgniter table-key convention. Provider adapters own their access
+patterns, but they must express every new or migrated PK, SK, and secondary-index key through
+`ciBuildTableKey()` or `ciBuildTableKeys()` from `@cloudigniter/core/lib`.
+
+## Invariants
+
+- Every CloudIgniter-owned key value starts with `CI#`.
+- Structural segments use uppercase snake case; opaque identifiers remain unchanged.
+- Tenant or owner identity appears early in partition keys when it defines isolation.
+- Empty, padded, and delimiter-containing segments fail before a provider request is sent.
+- Callers never concatenate a parallel prefix or pass `CI` to the helper.
+- Primary and secondary-index keys follow the same convention.
+
+The short namespace keeps keys compact while making CloudIgniter data identifiable in provider consoles,
+request traces, consumed-capacity reports, logs, and operational dashboards.
+
+The namespace is not a platform-wide table strategy. CloudIgniter uses
+[bounded-context tables](./dynamodb-strategy); `CI#` keeps keys recognizable both in a dedicated capability table
+and in a table containing several related item types.
+
+## Dependency direction
+
+Core exports the builders through `@cloudigniter/core/lib` and the public contracts through
+`@cloudigniter/core/types`. A provider package may consume these entry points normally.
+
+Do not create a reverse dependency from an internal lower-level capability package to core. If a repository
+contract currently lives below the core facade, build the canonical key in an allowed integration/provider
+layer and inject the completed key into the repository. The active EmberGuard definition uses this pattern:
+
+```text
+packages/core table-key builder
+        ↓ consumed by
+packages/aws handler composition
+        ↓ injects canonical key into
+EmberGuard AWS repository contract
+```
+
+This keeps `emberguard → core` out of the package graph while still enforcing one public key builder.
+
+## Cutovers and deployed-data migrations
+
+Treat a key change as a data-address change. Before production, replace every reader, writer, query, fixture,
+and example atomically. Do not add fallback reads or dual writes for disposable development data; reset or
+reseed the affected tables instead.
+
+After data is deployed and must be retained, design a release-specific migration. Compatibility reads,
+backfills, or dual writes are temporary migration tools, not default repository behavior.
+
+The active access-control definition now uses:
+
+| Address   | PK                             | SK                     |
+| --------- | ------------------------------ | ---------------------- |
+| Canonical | `CI#EMBERGUARD#ACCESS_CONTROL` | `CI#DEFINITION#ACTIVE` |
+
+The repository reads and writes only this address.
+
+## Contributor checklist
+
+1. Define the partition access pattern and stable record identity.
+2. Build every primary and index key with core helpers.
+3. Add exact-string and invalid-segment tests at the core boundary.
+4. Test exact provider read and write keys and confirm a pre-production cutover leaves no legacy path.
+5. Update public examples and operational documentation.
+6. Typecheck core, the affected provider/capability package, and a consuming application.
+
+Application-facing guidance lives in the
+[CloudIgniter table-key convention](/docs/library/dynamodb/table-key-convention). Public signatures live in the
+[`ciBuildTableKey()`](/docs/api-reference/shared-apis/ci-build-table-key) and
+[`ciBuildTableKeys()`](/docs/api-reference/shared-apis/ci-build-table-keys) references.

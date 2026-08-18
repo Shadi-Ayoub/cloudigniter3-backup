@@ -32,7 +32,7 @@ export function ciCanAccessDevBeacon({
   }
 
   const requiredRoles = resolvedOptions.requiredRoles
-    .map((role) => role.trim().toUpperCase())
+    .map((role) => role.trim())
     .filter(Boolean);
 
   if (envMode !== "development" && requiredRoles.length === 0) {
@@ -43,11 +43,9 @@ export function ciCanAccessDevBeacon({
     return true;
   }
 
-  const normalizedRequiredRoles = new Set(
-    requiredRoles.map((role) => role.trim().toLowerCase()),
-  );
+  const normalizedRequiredRoles = new Set(requiredRoles);
 
   return actor.roles.some((actorRole) =>
-    normalizedRequiredRoles.has(actorRole.trim().toLowerCase()),
+    normalizedRequiredRoles.has(actorRole.trim())
   );
 }

@@ -173,16 +173,12 @@ export type CiDataTableAction<TData> = {
   ) => void | Promise<void>;
 };
 
-/** Configures the built-in, first-position record information control. */
-export type CiDataTableInformation<TData> = {
-  /** A hover/focus tooltip or a click-activated modal dialog. */
-  mode?: "tooltip" | "dialog";
+type CiDataTableInformationBase<TData> = {
   /** Icon-only by default; button also renders the label. */
   display?: "icon" | "button";
   label?: string;
   title?: ReactNode | ((row: TData) => ReactNode);
   description?: ReactNode | ((row: TData) => ReactNode);
-  content: ReactNode | ((row: TData) => ReactNode);
   dialogClassName?: string;
   hideWhen?: (row: TData) => boolean;
   disableWhen?: (row: TData) => boolean;
@@ -191,6 +187,24 @@ export type CiDataTableInformation<TData> = {
   /** @deprecated Prefer disableWhen for positive condition semantics. */
   isDisabled?: (row: TData) => boolean;
 };
+
+/** Configures the built-in, first-position record information control. */
+export type CiDataTableInformation<TData> = CiDataTableInformationBase<TData> &
+  (
+    | {
+        /** A hover/focus tooltip. */
+        mode?: "tooltip";
+        content: ReactNode | ((row: TData) => ReactNode);
+        record?: never;
+      }
+    | {
+        /** A click-activated, three-view record dialog. */
+        mode: "dialog";
+        /** Optional projection; the complete row is displayed by default. */
+        record?: (row: TData) => unknown;
+        content?: never;
+      }
+  );
 
 /** Describes the context provided to table-wide action callbacks. */
 export type CiDataTableGlobalActionContext<TData> = {
@@ -281,6 +295,8 @@ export type CiDataTableConfig<TData = unknown> = {
     mode?: "buttons" | "menu" | "mixed";
     inlineCount?: number;
     header?: string;
+    /** Keeps row-action controls aligned when visibility differs by row. */
+    reserveSpace?: boolean;
   };
   columnResizing?: boolean;
   hoverHighlight?: boolean;

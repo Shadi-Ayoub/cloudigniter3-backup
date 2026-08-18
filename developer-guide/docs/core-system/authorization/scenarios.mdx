@@ -20,14 +20,14 @@ const subject = ciCreateAuthorizationSubject(
     ciCreateRoleAssignment(
       "tenant-admin",
       ciTenantAccessScope("tenant-a"),
-      "descendants",
+      "descendants"
     ),
     ciCreateRoleAssignment(
       "tenant-viewer",
       ciTenantAccessScope("tenant-b"),
-      "descendants",
+      "descendants"
     ),
-  ],
+  ]
 );
 ```
 
@@ -73,23 +73,18 @@ Maya is a Grade 10 administrator:
 ```ts
 const grade10Assignment = ciCreateRoleAssignment(
   "org-unit-admin",
-  ciOrgUnitAccessScope(
-    "school-dubai",
-    "grade-10",
-    ["academic-affairs"],
-  ),
-  "descendants",
+  ciOrgUnitAccessScope("school-dubai", "grade-10", ["academic-affairs"]),
+  "descendants"
 );
 ```
 
 The Math request includes its ancestry:
 
 ```ts
-const mathScope = ciOrgUnitAccessScope(
-  "school-dubai",
-  "math-department",
-  ["academic-affairs", "grade-10"],
-);
+const mathScope = ciOrgUnitAccessScope("school-dubai", "math-department", [
+  "academic-affairs",
+  "grade-10",
+]);
 ```
 
 The assignment contains Math because `grade-10` appears in the request's ancestor IDs. It does not contain
@@ -112,6 +107,7 @@ const systemOperator = {
   privileges: [
     {
       id: "update-platform-settings",
+      title: "Update platform settings",
       effect: "allow",
       resource: "platform.settings",
       action: "update",
@@ -127,7 +123,7 @@ Assign it exactly at system scope:
 const assignment = ciCreateRoleAssignment(
   "system-operator",
   ciSystemAccessScope(),
-  "exact",
+  "exact"
 );
 ```
 
@@ -140,9 +136,9 @@ Only deliberately cross-tenant responsibilities should use global descendant pro
 
 ```ts title="Create an all-tenant assignment" showLineNumbers
 const assignment = ciCreateRoleAssignment(
-  "SYSTEM_SUPER_ADMIN",
+  "system-super-admin",
   ciGlobalAccessScope(),
-  "descendants",
+  "descendants"
 );
 ```
 
@@ -171,6 +167,7 @@ const supportAdmin = {
   privileges: [
     {
       id: "manage-users",
+      title: "Manage users",
       effect: "allow",
       resource: "identity.users",
       action: "*",
@@ -178,6 +175,7 @@ const supportAdmin = {
     },
     {
       id: "deny-user-deletion",
+      title: "Deny user deletion",
       effect: "deny",
       resource: "identity.users",
       action: "delete",
@@ -198,6 +196,7 @@ Leila needs report export permission for four hours during an audit:
 const exportException = ciCreateScopedPrivilege(
   {
     id: "audit-export-2026-08-04",
+    title: "Export audit reports",
     effect: "allow",
     resource: "reporting.reports",
     action: "export",
@@ -208,13 +207,13 @@ const exportException = ciCreateScopedPrivilege(
   {
     validFrom: "2026-08-04T08:00:00.000Z",
     expiresAt: "2026-08-04T12:00:00.000Z",
-  },
+  }
 );
 
 const subject = ciCreateAuthorizationSubject(
   { id: "user:leila", authenticated: true },
   normalAssignments,
-  [exportException],
+  [exportException]
 );
 ```
 
@@ -233,6 +232,7 @@ const paymentPreparer = {
   privileges: [
     {
       id: "prepare-payment",
+      title: "Prepare payments",
       effect: "allow",
       resource: "billing.payments",
       action: "prepare",
@@ -248,6 +248,7 @@ const paymentApprover = {
   privileges: [
     {
       id: "approve-payment",
+      title: "Approve payments",
       effect: "allow",
       resource: "billing.payments",
       action: "approve",
@@ -261,9 +262,7 @@ ARBAC evaluates whether each operation is permitted. The assignment administrati
 enforce a separation-of-duty rule if the same subject must never hold both roles:
 
 ```ts
-const mutuallyExclusiveRoles = [
-  ["payment-preparer", "payment-approver"],
-];
+const mutuallyExclusiveRoles = [["payment-preparer", "payment-approver"]];
 ```
 
 That constraint belongs in assignment creation and validation, not in every payment authorization request.
@@ -310,16 +309,16 @@ from the client as authoritative.
 
 ## Scenario selection guide
 
-| Requirement | Recommended mechanism |
-| --- | --- |
-| Same responsibility in many tenants | Reusable role plus separate tenant assignments |
-| Department hierarchy | Org Unit assignment with explicit descendant propagation |
-| Platform-only administration | System assignment with exact propagation |
-| Cross-tenant administration | Global assignment with descendants and carefully scoped privileges |
-| Remove one dangerous action | Explicit deny |
-| Temporary individual access | Direct privilege with `expiresAt` |
-| Mutually exclusive responsibilities | Assignment-administration constraint plus focused roles |
-| Tenant suspension | Lifecycle guard in addition to ARBAC |
-| Record ownership | Object-level service check in addition to ARBAC |
+| Requirement                         | Recommended mechanism                                              |
+| ----------------------------------- | ------------------------------------------------------------------ |
+| Same responsibility in many tenants | Reusable role plus separate tenant assignments                     |
+| Department hierarchy                | Org Unit assignment with explicit descendant propagation           |
+| Platform-only administration        | System assignment with exact propagation                           |
+| Cross-tenant administration         | Global assignment with descendants and carefully scoped privileges |
+| Remove one dangerous action         | Explicit deny                                                      |
+| Temporary individual access         | Direct privilege with `expiresAt`                                  |
+| Mutually exclusive responsibilities | Assignment-administration constraint plus focused roles            |
+| Tenant suspension                   | Lifecycle guard in addition to ARBAC                               |
+| Record ownership                    | Object-level service check in addition to ARBAC                    |
 
 Next: [DynamoDB Persistence](./dynamodb-persistence).

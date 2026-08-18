@@ -18,14 +18,16 @@ function ciGlobalAccessScope(): CiGlobalAccessScope;
 ## Return value
 
 ```ts title="Returned scope" showLineNumbers
-{ kind: "global" }
+{
+  kind: "global";
+}
 ```
 
 ```ts title="Create an all-tenant assignment" showLineNumbers
 const assignment = ciCreateRoleAssignment(
-  "SYSTEM_SUPER_ADMIN",
+  "system-super-admin",
   ciGlobalAccessScope(),
-  "descendants",
+  "descendants"
 );
 ```
 

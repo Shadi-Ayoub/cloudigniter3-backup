@@ -20,6 +20,7 @@ const roles = [
     privileges: [
       {
         id: "read-invoices",
+        title: "Read invoices",
         effect: "allow",
         resource: "billing.invoices",
         action: "read",
@@ -35,6 +36,7 @@ const roles = [
     privileges: [
       {
         id: "approve-invoices",
+        title: "Approve invoices",
         effect: "allow",
         resource: "billing.invoices",
         action: "approve",
@@ -64,6 +66,56 @@ flowchart BT
 - Cycles such as `a -> b -> a` are rejected by catalog validation.
 - An inherited privilege is evaluated using the precedence of the role that was assigned to the subject.
 - The decision evidence records both `assignedRoleId` and `privilegeRoleId`.
+
+## Temporarily suspend a role
+
+Use the role row menu on `/dashboard/security/roles` to suspend a role during an incident, investigation, or
+temporary operational hold. The confirmation requires a reason and stores the actor, timestamp, and reason for
+the latest status transition. The table keeps the role visible with a **Suspended** status so administrators can
+inspect and restore it.
+
+Suspension is reversible and does not delete assignments or policy configuration. While a role is suspended:
+
+- its direct privileges grant no access;
+- an assignment to it returns `suspended-role` when no other scoped grant applies;
+- it contributes no inherited privileges and does not bridge an inheritance path;
+- other active roles and direct subject privileges continue to evaluate normally.
+
+Restoring the role makes its configured grants effective again through the existing assignments. Restoration
+also requires a reason. There is no automatic expiry: an incident hold remains until an administrator restores
+it. The `system-super-admin` break-glass role cannot be suspended, and changing any other core role requires a
+directly assigned system super administrator.
+
+Catalogs that omit `status` are treated as active. Server enforcement must authorize against the persisted
+definition loaded from the provider; recreate a compiled authorizer whenever that definition changes.
+
+## Manage direct roles and privileges in the dashboard
+
+On `/dashboard/security/roles`, both the create and edit dialogs use searchable multi-select fields for direct
+inheritance and privileges. Start typing a title, stable ID, resource, or action to reveal matching suggestions,
+then select a result to add it as a chip. Use the chip's `X` button—or Backspace from an empty search field—to
+remove a direct selection.
+
+The stable identifier remains editable for the complete create session. After the role is saved, edit dialogs
+show that identifier as read-only because assignments and audit evidence may already reference it. New
+application role IDs must start with a lowercase letter and use lowercase kebab case, such as
+`invoice-approver` or `reviewer2`. The form shows a field-level correction message and disables Save for spaces,
+uppercase letters, underscores, leading digits, repeated hyphens, or other unsupported characters. Privilege
+IDs follow the same rule.
+
+The inheritance field displays direct parents only. It does not add chips for roles inherited transitively. For
+example, selecting `invoice-approver` does not also add `invoice-viewer`, even though the approver inherits the
+viewer. The effective policy still expands that relationship during authorization.
+
+To prevent cycles, suggestions exclude:
+
+- the role currently being edited;
+- roles already selected as direct parents;
+- any role that directly or transitively inherits the current role.
+
+The privilege selector copies the selected privilege's complete policy statement into the role. Removing a
+privilege chip removes that direct statement when the role is saved. Server-side catalog validation remains
+authoritative if a stale client or concurrent change produces an invalid inheritance graph.
 
 Example decision evidence for an approver using the inherited read permission:
 
@@ -154,9 +206,9 @@ editor, precedence 40: allow identity.users.update
 blocked-editor, precedence 60: deny identity.users.update
 ```
 
-| Algorithm | Result | Reason |
-| --- | --- | --- |
-| `deny-overrides` | Denied | Every applicable deny wins. |
+| Algorithm            | Result  | Reason                                                  |
+| -------------------- | ------- | ------------------------------------------------------- |
+| `deny-overrides`     | Denied  | Every applicable deny wins.                             |
 | `highest-precedence` | Allowed | `editor` has stronger precedence than `blocked-editor`. |
 
 Choose the algorithm at application design time. Do not switch algorithms per request unless two clearly
@@ -169,6 +221,7 @@ Explicit denies are useful for constraints that should remain visible in the pol
 ```ts
 {
   id: "prevent-user-deletion",
+  title: "Prevent user deletion",
   effect: "deny",
   resource: "identity.users",
   action: "delete",
@@ -228,23 +281,46 @@ privilege should be treated as a policy migration.
 Inheritance should express a real responsibility hierarchy. If two unrelated roles happen to share one
 privilege, define that privilege in both roles or introduce a meaningful shared base role.
 
+## Keep business and technical administration separate
+
+CloudIgniter's core administrator roles form two inheritance lanes:
+
+```mermaid
+flowchart TD
+  U[user]
+  U --> D[developer]
+  U --> A[admin]
+  A --> SA[super-admin]
+  U --> SYSA[system-admin]
+  SYSA --> SYSSA[system-super-admin]
+```
+
+- `admin` and `super-admin` represent application-business administration at global, tenant, or Org Unit
+  scopes.
+- `system-admin` and `system-super-admin` represent technical platform administration and protected bootstrap
+  duties.
+- `system-admin` inherits only `user`; it does not inherit `admin` or `super-admin`.
+- `system-super-admin` inherits `system-admin`. Its protected core-override capability still requires a direct,
+  system-scoped assignment.
+
+When one person needs both business and technical responsibilities, assign one role from each lane at the
+appropriate scopes. Do not connect the lanes through custom inheritance. Precedence remains a separate
+conflict-resolution mechanism and does not imply that one role inherits another.
+
 ## Existing CloudIgniter core-role helpers
 
-The default access-control definition includes the canonical `USER`, `DEVELOPER`, `ADMIN`, `SUPER_ADMIN`,
-`SYSTEM_ADMIN`, and `SYSTEM_SUPER_ADMIN` roles. CloudIgniter also exports their precedence map and the
+The default access-control definition includes the canonical `user`, `developer`, `admin`, `super-admin`,
+`system-admin`, and `system-super-admin` roles. CloudIgniter also exports their precedence map and the
 primary-role resolver:
 
 ```ts title="Resolve a core role's precedence" showLineNumbers
 import {
   CI_CORE_ROLE_PRECEDENCE,
   ciResolvePrimaryRole,
-} from "@cloudigniter/emberguard/lib";
+} from "@cloudigniter/core/lib";
 
-ciResolvePrimaryRole(
-  ["USER", "ADMIN"],
-  CI_CORE_ROLE_PRECEDENCE,
-);
-// "ADMIN"
+ciResolvePrimaryRole(["user", "admin"], CI_CORE_ROLE_PRECEDENCE);
+// "admin"
 ```
 
 `ciResolvePrimaryRole()` is useful for display, diagnostics, and adapting identity-provider groups. It does not
@@ -252,7 +328,10 @@ replace the scoped authorizer because it does not evaluate resource, action, or 
 
 Core roles and their privileges cannot be redefined by `ciCreateAppAccessControl()`. Create an application role
 that inherits the appropriate core role. A deliberate core change must use the audited override workflow, which
-is restricted to a directly assigned `SYSTEM_SUPER_ADMIN`.
+is restricted to a directly assigned `system-super-admin`.
+
+See [`ciIsAccessControlKebabIdentifier()`](/docs/api-reference/authorization/ci-is-access-control-kebab-identifier)
+for the identifier contract.
 
 See [`CI_DEFAULT_ACCESS_CONTROL_DEFINITION`](/docs/api-reference/authorization/default-access-control-definition)
 for the built-in resources and inheritance chain.

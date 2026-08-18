@@ -3,6 +3,7 @@ export const revalidate = 0; // no ISR cache
 
 import type { PropsWithChildren } from "react";
 import { AppRootWrapper, appResolveRootLayoutContext } from "@/kernel/server";
+import { AppAmplifyClientConfig } from "@/kernel/client";
 
 import "./globals.css"; // Always after importing AppRootWrapper so you can overwrite pre-defined CSS.
 
@@ -12,6 +13,7 @@ export default async function AppRootLayout({ children }: PropsWithChildren) {
   return (
     <html {...rootContext.htmlProps}>
       <body {...rootContext.bodyProps}>
+        <AppAmplifyClientConfig />
         <AppRootWrapper context={rootContext}>{children}</AppRootWrapper>
       </body>
     </html>

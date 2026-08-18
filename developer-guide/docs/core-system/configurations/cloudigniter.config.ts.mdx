@@ -1,5 +1,49 @@
 ---
 title: cloudigniter.config.ts
+description: Configure CloudIgniter authentication, EmberGuard authorization, routing, tenancy, localization, and application behavior.
 ---
 
 # cloudigniter.config.ts
+
+`cloudigniter.config.ts` is the application-owned configuration entry point. Its `auth` block configures both
+authentication and EmberGuard authorization.
+
+## Configure authentication and authorization
+
+```ts title="auth configuration" showLineNumbers
+import type { CiAuthConfig } from "@cloudigniter/core/types";
+
+const auth = {
+  loginRoute: "/login",
+  authUi: {
+    custom: {
+      merge: true,
+      loadingText: "Signing you in. Please wait...",
+    },
+  },
+  emberguard: {
+    accessControl: {
+      combiningAlgorithm: "deny-overrides",
+    },
+  },
+} satisfies CiAuthConfig;
+```
+
+Use this object as the `auth` property of the complete configuration exported from `cloudigniter.config.ts`.
+
+`auth.emberguard.accessControl.combiningAlgorithm` accepts:
+
+| Value | Behavior |
+| --- | --- |
+| `deny-overrides` | Default. Any matching deny privilege wins over matching allows. |
+| `highest-precedence` | Direct privileges or the strongest matching role-precedence tier decides; deny still wins within that tier. |
+
+The `emberguard` block and `combiningAlgorithm` are optional. Omitting them preserves the safer
+`deny-overrides` behavior. Use `highest-precedence` only when role precedence is intentionally the application’s
+conflict-resolution policy.
+
+The application authorizer receives `auth.emberguard.accessControl` when it is compiled. Keep provider-specific
+identity configuration under `providers`; EmberGuard configuration remains provider-neutral.
+
+See [Roles, Inheritance, and Precedence](../authorization/roles-and-precedence) for the policy model and
+[`CiEmberguardConfig`](/docs/api-reference/type-definitions/CiEmberguardConfig) for the complete public type.

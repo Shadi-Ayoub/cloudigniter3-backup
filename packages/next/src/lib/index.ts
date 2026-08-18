@@ -14,6 +14,11 @@ export { ciResolveAuthProvider } from "./auth/ci-resolve-auth-provider";
 export { ciIsExternalHref } from "./navigation";
 
 // ─────────────────────────────────────────────────────────────
+// Resource Studio build-time compiler
+// ─────────────────────────────────────────────────────────────
+export * from "./resource-studio";
+
+// ─────────────────────────────────────────────────────────────
 // theme
 // ─────────────────────────────────────────────────────────────
 export {

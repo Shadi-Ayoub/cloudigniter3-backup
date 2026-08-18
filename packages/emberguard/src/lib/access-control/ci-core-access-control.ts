@@ -3,7 +3,6 @@ import type {
   CiAccessControlEntryOrigin,
   CiAccessControlEntryReference,
   CiAccessControlLayer,
-  CiAccessScopeKind,
   CiAuthorizationSubject,
   CiCoreAccessControlOverride,
   CiCreateCoreAccessControlOverrideInput,
@@ -21,12 +20,6 @@ import { CI_DEFAULT_ACCESS_CONTROL_DEFINITION } from "./ci-default-access-contro
 import { ciMergeAccessControlDefinitions } from "./ci-merge-access-control";
 
 const CI_CORE_ACCESS_CONTROL_OVERRIDE_ID = /^[A-Za-z0-9][A-Za-z0-9._:-]*$/;
-const CI_CORE_BOOTSTRAP_SCOPE_KINDS: readonly CiAccessScopeKind[] = [
-  "system",
-  "global",
-  "tenant",
-  "orgUnit",
-];
 
 /** Recursively freezes an override audit record and its nested layer data. */
 function deepFreezeOverride<T>(value: T): T {
@@ -42,7 +35,9 @@ function deepFreezeOverride<T>(value: T): T {
 }
 
 /** Copies a serializable access-control layer before retaining it in audit data. */
-function cloneAccessControlLayer(layer: CiAccessControlLayer): CiAccessControlLayer {
+function cloneAccessControlLayer(
+  layer: CiAccessControlLayer
+): CiAccessControlLayer {
   return {
     ...(layer.domains
       ? { domains: layer.domains.map((domain) => ({ ...domain })) }
@@ -83,15 +78,42 @@ function cloneAccessControlLayer(layer: CiAccessControlLayer): CiAccessControlLa
 
 /** Throws when a resolved catalog weakens its core override bootstrap path. */
 function assertCoreOverrideBootstrapInvariants(
-  definition: CiAccessControlDefinition,
+  definition: CiAccessControlDefinition
 ): void {
   ciAssertExclusiveCoreOverrideRole(definition);
 
+  const roles = new Map(definition.roles.map((role) => [role.id, role]));
+
+  /** Returns whether one inheritance branch reaches either business-admin role. */
+  function inheritsBusinessAdministrator(
+    roleId: string,
+    visited: ReadonlySet<string>
+  ): boolean {
+    if (roleId === "admin" || roleId === "super-admin") {
+      return true;
+    }
+
+    if (visited.has(roleId)) {
+      return false;
+    }
+
+    const nextVisited = new Set(visited).add(roleId);
+    return (roles.get(roleId)?.inherits ?? []).some((inheritedRoleId) =>
+      inheritsBusinessAdministrator(inheritedRoleId, nextVisited)
+    );
+  }
+
+  if (inheritsBusinessAdministrator("system-admin", new Set())) {
+    throw new Error(
+      "Core access-control override must preserve separation between technical and business administrator roles."
+    );
+  }
+
   const managementResource = definition.resources.find(
-    (resource) => resource.id === "platform.authorization.core",
+    (resource) => resource.id === "platform.authorization.core"
   );
   const overrideAction = managementResource?.actions.find(
-    (action) => action.id === "override",
+    (action) => action.id === "override"
   );
 
   if (
@@ -102,29 +124,28 @@ function assertCoreOverrideBootstrapInvariants(
     overrideAction?.sensitive !== true
   ) {
     throw new Error(
-      "Core access-control override must preserve the system-only bootstrap administration resource.",
+      "Core access-control override must preserve the system-only bootstrap administration resource."
     );
   }
 
   const systemSuperAdmin = definition.roles.find(
-    (role) => role.id === "SYSTEM_SUPER_ADMIN",
+    (role) => role.id === "system-super-admin"
   );
-  const fullPlatformAccess = systemSuperAdmin?.privileges.find(
-    (privilege) => privilege.id === "full-platform-access",
+  const coreOverrideAccess = systemSuperAdmin?.privileges.find(
+    (privilege) => privilege.id === "override-core-access-control"
   );
 
   if (
     systemSuperAdmin?.precedence !== 0 ||
-    !systemSuperAdmin.inherits?.includes("SYSTEM_ADMIN") ||
-    fullPlatformAccess?.effect !== "allow" ||
-    fullPlatformAccess.resource !== "*" ||
-    fullPlatformAccess.action !== "*" ||
-    !CI_CORE_BOOTSTRAP_SCOPE_KINDS.every((scopeKind) =>
-      fullPlatformAccess.scopeKinds.includes(scopeKind),
-    )
+    !systemSuperAdmin.inherits?.includes("system-admin") ||
+    coreOverrideAccess?.effect !== "allow" ||
+    coreOverrideAccess.resource !== "platform.authorization.core" ||
+    coreOverrideAccess.action !== "override" ||
+    coreOverrideAccess.scopeKinds.length !== 1 ||
+    coreOverrideAccess.scopeKinds[0] !== "system"
   ) {
     throw new Error(
-      "Core access-control override must preserve SYSTEM_SUPER_ADMIN bootstrap access.",
+      "Core access-control override must preserve system-super-admin bootstrap access."
     );
   }
 }
@@ -141,7 +162,9 @@ function assertCoreOverrideRecord(record: CiCoreAccessControlOverride): void {
     record.previousRevision < 0 ||
     record.revision !== record.previousRevision + 1
   ) {
-    throw new Error("Core access-control override revisions must be consecutive integers.");
+    throw new Error(
+      "Core access-control override revisions must be consecutive integers."
+    );
   }
 
   if (record.schemaVersion !== 1) {
@@ -157,32 +180,36 @@ function assertCoreOverrideRecord(record: CiCoreAccessControlOverride): void {
   }
 
   if (!Number.isFinite(Date.parse(record.createdAt))) {
-    throw new Error("Core access-control override requires a valid creation timestamp.");
+    throw new Error(
+      "Core access-control override requires a valid creation timestamp."
+    );
   }
 
   ciAssertCoreAccessControlOverrideTargets(
     CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
-    record.layer,
+    record.layer
   );
 
   if (!ciAccessControlLayerHasChanges(record.layer)) {
-    throw new Error("Core access-control override must change at least one field.");
+    throw new Error(
+      "Core access-control override must change at least one field."
+    );
   }
 }
 
 /** Returns true when a reference identifies a CloudIgniter core catalog entry. */
 export function ciIsCoreAccessControlEntry(
-  reference: CiAccessControlEntryReference,
+  reference: CiAccessControlEntryReference
 ): boolean {
   return ciDefinitionContainsAccessControlEntry(
     CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
-    reference,
+    reference
   );
 }
 
 /** Resolves the ownership label used by access-control administration UIs. */
 export function ciGetAccessControlEntryOrigin(
-  reference: CiAccessControlEntryReference,
+  reference: CiAccessControlEntryReference
 ): CiAccessControlEntryOrigin {
   return ciIsCoreAccessControlEntry(reference) ? "core" : "application";
 }
@@ -190,7 +217,7 @@ export function ciGetAccessControlEntryOrigin(
 /** Checks the dedicated core-override capability and direct role assignment. */
 export function ciCanOverrideCoreAccessControl(
   subject: CiAuthorizationSubject,
-  definition: CiAccessControlDefinition = CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
+  definition: CiAccessControlDefinition = CI_DEFAULT_ACCESS_CONTROL_DEFINITION
 ): boolean {
   const decision = ciCreateAuthorizer(definition).authorize({
     subject,
@@ -204,8 +231,8 @@ export function ciCanOverrideCoreAccessControl(
     decision.matches.some(
       (match) =>
         match.source === "role" &&
-        match.assignedRoleId === "SYSTEM_SUPER_ADMIN" &&
-        match.privilegeRoleId === "SYSTEM_SUPER_ADMIN",
+        match.assignedRoleId === "system-super-admin" &&
+        match.privilegeRoleId === "system-super-admin"
     )
   );
 }
@@ -213,11 +240,11 @@ export function ciCanOverrideCoreAccessControl(
 /** Creates one authorized, versioned, immutable core override audit record. */
 export function ciCreateCoreAccessControlOverride(
   input: CiCreateCoreAccessControlOverrideInput,
-  options: CiCreateCoreAccessControlOverrideOptions = {},
+  options: CiCreateCoreAccessControlOverrideOptions = {}
 ): CiCoreAccessControlOverride {
   if (!ciCanOverrideCoreAccessControl(input.subject, input.currentDefinition)) {
     throw new Error(
-      "Only a directly assigned SYSTEM_SUPER_ADMIN can override core access control.",
+      "Only a directly assigned system-super-admin can override core access control."
     );
   }
 
@@ -236,7 +263,7 @@ export function ciCreateCoreAccessControlOverride(
 
   const prospectiveDefinition = ciMergeAccessControlDefinitions(
     input.currentDefinition,
-    record.layer,
+    record.layer
   );
   assertCoreOverrideBootstrapInvariants(prospectiveDefinition);
 
@@ -246,7 +273,7 @@ export function ciCreateCoreAccessControlOverride(
 /** Replays a complete, consecutive core override history over a resolved catalog. */
 export function ciApplyCoreAccessControlOverrides(
   definition: CiAccessControlDefinition,
-  overrides: readonly CiCoreAccessControlOverride[],
+  overrides: readonly CiCoreAccessControlOverride[]
 ): CiAccessControlDefinition {
   let resolvedDefinition = definition;
   let currentRevision = 0;
@@ -256,18 +283,20 @@ export function ciApplyCoreAccessControlOverrides(
     assertCoreOverrideRecord(override);
 
     if (overrideIds.has(override.id)) {
-      throw new Error(`Duplicate core access-control override ID "${override.id}".`);
+      throw new Error(
+        `Duplicate core access-control override ID "${override.id}".`
+      );
     }
 
     if (override.previousRevision !== currentRevision) {
       throw new Error(
-        `Core access-control override "${override.id}" expected revision ${override.previousRevision}, received ${currentRevision}.`,
+        `Core access-control override "${override.id}" expected revision ${override.previousRevision}, received ${currentRevision}.`
       );
     }
 
     resolvedDefinition = ciMergeAccessControlDefinitions(
       resolvedDefinition,
-      override.layer,
+      override.layer
     );
     assertCoreOverrideBootstrapInvariants(resolvedDefinition);
     overrideIds.add(override.id);

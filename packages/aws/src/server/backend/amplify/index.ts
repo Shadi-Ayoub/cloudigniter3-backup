@@ -15,6 +15,11 @@ export {
 } from "./ci-amplify-backend-manifest";
 
 export {
+  ciMergeAmplifyDataSchemas,
+  type CiAmplifyDataSchemaRecord,
+} from "./ci-merge-amplify-data-schemas";
+
+export {
   ciCreateAmplifyCoreRuntime,
   ciMergeAmplifyBackendResources,
   ciPickEnvKeyAllowlistForFunctions,

@@ -4,6 +4,12 @@
 export { ciNormalizeClientThrownError } from "./ci-normalize-client-thrown-error";
 
 // ─────────────────────────────────────────────────────────────
+// alert
+// ─────────────────────────────────────────────────────────────
+export { CiAlert } from "./CiAlert";
+export { CiAlertDialog } from "./CiAlertDialog";
+
+// ─────────────────────────────────────────────────────────────
 // notify
 // ─────────────────────────────────────────────────────────────
 export {

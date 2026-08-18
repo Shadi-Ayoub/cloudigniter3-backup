@@ -1,4 +1,5 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
+import { ciMergeAmplifyDataSchemas } from "@cloudigniter/aws/server/backend";
 
 import { coreSchemas, extendedSchemas } from "./schemata";
 // import { createUser } from '../functions/user';
@@ -10,7 +11,7 @@ adding a new "isDone" field as a boolean. The authorization rule below
 specifies that any unauthenticated user can "create", "read", "update", 
 and "delete" any "Todo" records.
 =========================================================================*/
-const schemaData = { ...coreSchemas, ...extendedSchemas };
+const schemaData = ciMergeAmplifyDataSchemas(coreSchemas, extendedSchemas);
 
 const schema = a.schema(schemaData);
 

@@ -1,6 +1,6 @@
 ---
 title: ciMergeAccessControlDefinitions
-package: "@cloudigniter/emberguard"
+package: "@cloudigniter/core"
 availability: Shared
 sidebar_position: 3
 ---
@@ -24,6 +24,7 @@ function ciMergeAccessControlDefinitions(
 | Domains, resources, roles | Merge by `id` |
 | Actions within a resource | Merge by `id` |
 | Privileges within a role | Merge by `id` |
+| Role privileges with `privilegesMode: "replace"` | Replace the complete direct privilege set |
 | Scalar fields | Latest defined value wins |
 | `scopeKinds`, `inherits` | Latest array replaces the earlier array |
 | New entries | Appended in layer order |
@@ -39,7 +40,21 @@ const resolved = ciMergeAccessControlDefinitions(baseCatalog, featureLayer, {
 });
 ```
 
-The helper throws if required fields are missing or final policy validation reports errors. Layers must come
+`privilegesMode` defaults to `"merge"`. Use `"replace"` only when the layer carries an authoritative complete
+selection, such as the trusted security-administration role editor:
+
+```ts
+{
+  roles: [{
+    id: "invoice-approver",
+    privilegesMode: "replace",
+    privileges: [approveInvoices],
+  }],
+}
+```
+
+The helper throws if required fields are missing or final policy validation reports errors. A newly introduced
+privilege must include a non-empty `title`; an override may omit it to retain the earlier title. Layers must come
 from trusted application configuration, not directly from a client request.
 
 This is an unrestricted low-level primitive: it does not protect CloudIgniter-owned IDs. Use

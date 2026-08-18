@@ -2,7 +2,12 @@ import type {
   CiAccessControlDefinition,
   CiAccessScope,
   CiAccessScopeKind,
+  CiPrivilege,
   CiRoleAssignment,
+  CiRoleStatus,
+  CiRoleStatusChange,
+  CiResourceDomainStatus,
+  CiResourceDomainStatusChange,
 } from "../access-control-types";
 
 export type CiSecurityEntryOrigin = "core" | "application" | "provider";
@@ -32,9 +37,33 @@ export type CiSecurityBaseRecord = {
 
 export type CiSecurityRoleRecord = CiSecurityBaseRecord & {
   kind: "role";
+  status?: CiRoleStatus;
+  statusChange?: CiRoleStatusChange;
   precedence: number;
   inherits: string[];
+  privileges: CiPrivilege[];
   permissionCount: number;
+  /** Unique users with a stored assignment to this exact role. */
+  directUserCount: number;
+  /** Unique users connected through a non-suspended inheritance path. */
+  inheritedUserCount: number;
+};
+
+/** Mutation-maintained counters displayed for one security role. */
+export type CiSecurityRoleCounters = {
+  permissionCount: number;
+  directUserCount: number;
+  inheritedUserCount: number;
+};
+
+/** Persisted role-counter projection keyed by stable role ID. */
+export type CiSecurityRoleCountersById = Record<string, CiSecurityRoleCounters>;
+
+/** Requests a deliberate, reasoned role suspension or restoration. */
+export type CiSetSecurityRoleStatusInput = {
+  roleId: string;
+  status: CiRoleStatus;
+  reason: string;
 };
 
 export type CiSecurityPermissionRecord = CiSecurityBaseRecord & {
@@ -53,6 +82,27 @@ export type CiSecurityResourceRecord = CiSecurityBaseRecord & {
   actions: string[];
   scopeKinds: CiAccessScopeKind[];
   sensitiveActionCount: number;
+};
+
+/** Resource-domain row shown in the catalog's domain-management dialog. */
+export type CiSecurityResourceDomainRecord = CiSecurityBaseRecord & {
+  status: CiResourceDomainStatus;
+  statusChange?: CiResourceDomainStatusChange;
+  resourceCount: number;
+};
+
+/** Creates one application-owned resource domain. */
+export type CiCreateSecurityResourceDomainInput = {
+  id: string;
+  title: string;
+  description?: string;
+};
+
+/** Requests a deliberate, reasoned domain suspension or restoration. */
+export type CiSetSecurityResourceDomainStatusInput = {
+  domainId: string;
+  status: CiResourceDomainStatus;
+  reason: string;
 };
 
 export type CiSecurityAssignmentRecord = CiSecurityBaseRecord & {
@@ -102,10 +152,13 @@ export type CiSecurityActor = {
 export type CiSecurityStoredRoleAssignment = CiRoleAssignment & {
   id: string;
   subjectId: string;
+  /** Denormalized tenant key used by provider assignment indexes. */
+  tenantId?: string;
 };
 
 export type CiSecurityAdministrationRepository = {
   getAccessControlDefinition(): Promise<CiAccessControlDefinition | null>;
+  getRoleCounters(): Promise<CiSecurityRoleCountersById>;
   saveAccessControlDefinition(
     definition: CiAccessControlDefinition
   ): Promise<void>;
@@ -126,17 +179,28 @@ export type CiSecurityAdministrationOptions = {
   repository: CiSecurityAdministrationRepository;
   identityGroups?: readonly CiSecurityIdentityGroup[];
   createId?: () => string;
+  clock?: () => Date;
 };
 
 export type CiSecurityAdministration = {
   readonly capabilities: CiSecurityCapabilities;
   loadDefinition(): Promise<CiAccessControlDefinition>;
+  loadRoleCounters(): Promise<CiSecurityRoleCountersById>;
   loadAssignments(): Promise<readonly CiSecurityStoredRoleAssignment[]>;
   buildRecords(
     definition: CiAccessControlDefinition,
-    assignments?: readonly CiSecurityStoredRoleAssignment[]
+    assignments: readonly CiSecurityStoredRoleAssignment[],
+    roleCounters: CiSecurityRoleCountersById
   ): CiSecurityRecordsByKind;
+  buildResourceDomains(
+    definition: CiAccessControlDefinition
+  ): CiSecurityResourceDomainRecord[];
+  createResourceDomain(input: CiCreateSecurityResourceDomainInput): Promise<void>;
+  setResourceDomainStatus(
+    input: CiSetSecurityResourceDomainStatusInput
+  ): Promise<void>;
   saveRecord(record: CiSecurityRecord, reason?: string): Promise<void>;
+  setRoleStatus(input: CiSetSecurityRoleStatusInput): Promise<void>;
   deleteRecord(record: CiSecurityRecord): Promise<void>;
 };
 

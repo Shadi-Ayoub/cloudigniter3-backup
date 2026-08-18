@@ -1,8 +1,11 @@
 export {
   CiDataTable,
+  CiDataTableRecordInformationDialog,
   CiDataTableRowActions,
   CiDataTableRowActionsMenu,
 } from "./components";
+
+export type { CiDataTableRecordInformationDialogProps } from "./components";
 
 export {
   buildDataTableColumnsWithActions,

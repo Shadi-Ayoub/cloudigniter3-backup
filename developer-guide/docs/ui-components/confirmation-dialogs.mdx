@@ -1,0 +1,84 @@
+---
+sidebar_position: 2
+title: Confirmation dialogs
+description: Confirm destructive or consequential actions with CloudIgniter's accessible alert dialog.
+---
+
+# Confirmation dialogs
+
+Use `CiAlertDialog` when an action is destructive, irreversible, or consequential enough to require an explicit acknowledgement. It replaces browser-native confirmation prompts with a theme-aware modal that traps focus, supports keyboard cancellation, names the decision, and can remain locked while asynchronous work completes.
+
+Import it from the browser-safe client entry point:
+
+```tsx
+"use client";
+
+import { useState } from "react";
+import { Trash2 } from "lucide-react";
+import {
+  Button,
+  CiAlert,
+  CiAlertDialog,
+  ciNormalizeClientThrownError,
+} from "@cloudigniter/ui/client";
+
+export function DeleteProject({
+  projectName,
+  deleteProject,
+}: {
+  projectName: string;
+  deleteProject: () => Promise<void>;
+}) {
+  const [open, setOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  return (
+    <>
+      {error ? (
+        <CiAlert
+          variant="error"
+          title="Deletion failed"
+          onDismiss={() => setError(null)}
+        >
+          {error}
+        </CiAlert>
+      ) : null}
+
+      <Button type="button" variant="destructive" onClick={() => setOpen(true)}>
+        Delete project
+      </Button>
+
+      <CiAlertDialog
+        open={open}
+        onOpenChange={setOpen}
+        variant="destructive"
+        icon={<Trash2 aria-hidden />}
+        title={`Delete “${projectName}”?`}
+        description="This action cannot be undone. Existing relationships may be affected."
+        confirmLabel="Delete project"
+        pendingLabel="Deleting project…"
+        onConfirm={deleteProject}
+        onConfirmError={(error) =>
+          setError(ciNormalizeClientThrownError(error).message)
+        }
+      />
+    </>
+  );
+}
+```
+
+The dialog enters its own pending state when `onConfirm` returns a promise. During that state both actions are disabled, the confirmation label changes to `pendingLabel`, and backdrop or Escape dismissal is ignored. After the promise resolves, the dialog closes by default. If it rejects, the dialog stays open and passes the thrown value to `onConfirmError`.
+
+Set `closeOnConfirm={false}` when the parent must decide when to close. Use the controlled `pending` prop when work begins outside `onConfirm`, and `confirmDisabled` when prerequisites have not been met.
+
+## Choosing the right feedback component
+
+| Need                                                             | Component                           |
+| ---------------------------------------------------------------- | ----------------------------------- |
+| Require a decision before a destructive or consequential action  | `CiAlertDialog`                     |
+| Show persistent success, information, warning, or error feedback | `CiAlert`                           |
+| Show transient non-blocking feedback                             | `ciNotify` and `CiFeedbackProvider` |
+
+The roles management surface uses `CiAlertDialog` before deleting application-owned roles. It includes the display name and stable identifier, warns about affected access relationships, and shows deletion progress before refreshing the table.
+
+See the [`CiAlertDialog` API reference](../api-reference/components/ci-alert-dialog.mdx) for every prop and the lower-level Shadcn composition primitives.

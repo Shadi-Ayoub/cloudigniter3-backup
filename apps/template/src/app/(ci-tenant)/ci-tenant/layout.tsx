@@ -11,7 +11,7 @@ import { appBootstrap } from "@/kernel/server";
  * /t/acme/dashboard -> /ci-tenant/dashboard
  */
 export default async function CiTenantLayout({ children }: PropsWithChildren) {
-  const config = await appBootstrap();
-  // throw new Error(`Main Menu Config: ${JSON.stringify(config)}`);
-  return <CiLayout config={config}>{children}</CiLayout>;
+  const context = await appBootstrap();
+
+  return <CiLayout context={context}>{children}</CiLayout>;
 }

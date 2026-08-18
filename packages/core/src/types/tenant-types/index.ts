@@ -1,3 +1,4 @@
+export type { CiBuildTenantPublicPathnameInput } from "./CiBuildTenantPublicPathnameInput";
 export type { CiGetTenantBySlugInterface } from "./CiGetTenantBySlugInterface";
 export type { CiResolveTenantContextResult } from "./CiResolveTenantContextResult";
 export type { CiTenantContext } from "./CiTenantContext";

@@ -30,6 +30,7 @@ export const appAccessControlExtension = {
       privileges: [
         {
           id: "read-users",
+          title: "Read users",
           effect: "allow",
           resource: "identity.users",
           action: "read",
@@ -41,7 +42,7 @@ export const appAccessControlExtension = {
 } as const satisfies CiAccessControlLayer;
 
 export const appAccessControl = ciCreateAppAccessControl(
-  appAccessControlExtension,
+  appAccessControlExtension
 );
 ```
 
@@ -53,7 +54,7 @@ becoming silent authorization mistakes.
 Collections are merged by stable `id` within their ownership boundary. An application may add a new action to a
 core resource, create resources beneath a core domain, and create roles that inherit core roles. It cannot
 replace core domains, resource fields, existing core actions, core roles, or core privileges. Application roles
-also cannot inherit `SYSTEM_SUPER_ADMIN` or grant the core-override capability.
+also cannot inherit `system-super-admin` or grant the core-override capability.
 
 For a standalone catalog that intentionally does not use the CloudIgniter defaults, use
 `ciDefineAccessControl()` instead.
@@ -71,7 +72,7 @@ const tenantScope = ciTenantAccessScope("tenant-123");
 const assignment = ciCreateRoleAssignment(
   "support-agent",
   tenantScope,
-  "descendants",
+  "descendants"
 );
 ```
 
@@ -95,7 +96,7 @@ const subject = ciCreateAuthorizationSubject(
     id: "user-456",
     authenticated: true,
   },
-  [assignment],
+  [assignment]
 );
 ```
 
@@ -126,11 +127,10 @@ const decision = appAuthorizer.authorize({
   subject,
   resource: "identity.users",
   action: "read",
-  scope: ciOrgUnitAccessScope(
-    "tenant-123",
-    "finance-payroll",
-    ["company", "finance"],
-  ),
+  scope: ciOrgUnitAccessScope("tenant-123", "finance-payroll", [
+    "company",
+    "finance",
+  ]),
 });
 
 if (!decision.allowed) {
@@ -206,7 +206,7 @@ const denied = appAuthorizer.authorize({
 });
 
 console.log(denied.allowed); // false
-console.log(denied.reason);  // "no-matching-privilege"
+console.log(denied.reason); // "no-matching-privilege"
 ```
 
 It also cannot cross tenant boundaries:

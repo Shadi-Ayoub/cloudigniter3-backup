@@ -67,5 +67,6 @@ export {
   // type CiUpdateTenantApiInterface,
   // type CiTenantUrlStrategy,
 } from "./constants";
+export { ciBuildTenantPublicPathname } from "./ci-build-tenant-public-pathname";
 export { CI_DEFAULT_TENANT_ROUTING_OPTIONS } from "./ci-default-tenant-routing-options";
 export { ciNormalizeTenantScope } from "./ci-normalize-tenant-scope";

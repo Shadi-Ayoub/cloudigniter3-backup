@@ -1,9 +1,7 @@
-import { deepmerge } from "deepmerge-ts";
 import type { CiRoutesMap } from "@ci-core/types";
 import { ciCoreRoutes } from "./ci-core-routes";
+import { ciMergeRouteMaps } from "./ci-merge-route-maps";
 
 export function ciGetRoutes(customRoutes: CiRoutesMap) {
-  const routes = deepmerge(ciCoreRoutes, customRoutes);
-
-  return routes;
+  return ciMergeRouteMaps(ciCoreRoutes, customRoutes);
 }

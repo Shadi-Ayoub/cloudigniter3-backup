@@ -24,10 +24,17 @@ export {
 } from "./dashboard";
 
 // ─────────────────────────────────────────────────────────────
+// data entity manager
+// ─────────────────────────────────────────────────────────────
+export { CiDataEntityManager } from "./data-entity-manager";
+
+// ─────────────────────────────────────────────────────────────
 // data table
 // ─────────────────────────────────────────────────────────────
 export {
   CiDataTable,
+  CiDataTableRecordInformationDialog,
+  type CiDataTableRecordInformationDialogProps,
   CiDataTableRowActions,
   CiDataTableRowActionsMenu,
   buildDataTableColumnsWithActions,
@@ -119,6 +126,18 @@ export {
   AlertTitle,
   AlertDescription,
   AlertAction,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogMedia,
+  AlertDialogOverlay,
+  AlertDialogPortal,
+  AlertDialogTitle,
+  AlertDialogTrigger,
   Badge,
   BorderBeam,
   Button,

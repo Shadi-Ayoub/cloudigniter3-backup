@@ -14,7 +14,7 @@ export const CI_DEV_BEACON_LOGO: CiDevBeaconLogoSpec = {
 export const CI_DEFAULT_DEV_BEACON_OPTIONS: Required<CiDevBeaconOptions> = {
   enabled: false,
   allowProduction: false,
-  requiredRoles: ["DEVELOPER"],
+  requiredRoles: ["developer"],
 };
 
 export const CI_DEFAULT_DEV_BEACON_POSITION_CLASSES = {

@@ -2,6 +2,21 @@ export { cn } from "./lib/utils";
 
 export { Alert, AlertTitle, AlertDescription, AlertAction } from "./alert";
 
+export {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogMedia,
+  AlertDialogOverlay,
+  AlertDialogPortal,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./alert-dialog";
+
 export { Badge } from "./badge";
 
 export { BorderBeam, type BorderBeamProps } from "./border-beam";

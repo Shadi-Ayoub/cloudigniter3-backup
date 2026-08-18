@@ -20,6 +20,30 @@ export type {
 } from "./dashboard-types";
 
 // ─────────────────────────────────────────────────────────────
+// data entity manager
+// ─────────────────────────────────────────────────────────────
+export type {
+  CiDataEntityBooleanField,
+  CiDataEntityCreateCallback,
+  CiDataEntityDeleteCallback,
+  CiDataEntityEditorMode,
+  CiDataEntityField,
+  CiDataEntityFieldBase,
+  CiDataEntityFieldType,
+  CiDataEntityJsonField,
+  CiDataEntityManagerLabels,
+  CiDataEntityManagerProps,
+  CiDataEntityManagerTableOverrides,
+  CiDataEntityManagerTableProps,
+  CiDataEntityManagerTableRenderer,
+  CiDataEntityMutationResult,
+  CiDataEntityNumberField,
+  CiDataEntityStringField,
+  CiDataEntityStringInput,
+  CiDataEntityUpdateCallback,
+} from "./data-entity-manager-types";
+
+// ─────────────────────────────────────────────────────────────
 // data table
 // ─────────────────────────────────────────────────────────────
 export {
@@ -58,6 +82,17 @@ export {
   type CiDataTableRowActionsMenuProps,
   type CiDataTableSortSpec,
 } from "./data-table-types";
+
+// ─────────────────────────────────────────────────────────────
+// feedback
+// ─────────────────────────────────────────────────────────────
+export type {
+  CiAlertDialogProps,
+  CiAlertDialogSize,
+  CiAlertDialogVariant,
+  CiAlertProps,
+  CiAlertVariant,
+} from "./feedback-types";
 
 // ─────────────────────────────────────────────────────────────
 // main menu

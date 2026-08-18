@@ -33,7 +33,7 @@ const schemaUser = {
       email: a
         .string()
         .authorization((allow) => [
-          allow.group("SYSTEM_ADMIN"),
+          allow.group("system-admin"),
           allow.ownerDefinedIn("profileOwner").to(["read"]),
         ]),
       // dob: a.date(),
@@ -48,7 +48,7 @@ const schemaUser = {
         .string()
         .authorization((allow) => [
           allow.ownerDefinedIn("profileOwner").to(["read"]),
-          allow.group("SYSTEM_ADMIN"),
+          allow.group("system-admin"),
           allow.guest().to(["read"]),
           allow.authenticated().to(["read"]),
         ]),
@@ -57,7 +57,7 @@ const schemaUser = {
     .secondaryIndexes((index) => [index("username"), index("email")])
     .authorization((allow) => [
       allow.ownerDefinedIn("profileOwner").to(["read", "update"]),
-      allow.group("SYSTEM_ADMIN"),
+      allow.group("system-admin"),
       allow.guest().to(["read"]),
       allow.authenticated().to(["read"]),
     ]),
@@ -70,8 +70,8 @@ const schemaUser = {
   //   .handler(a.handler.function(createUserHandler))
   //   .returns(a.json())
   //   .authorization((allow) => [
-  //     allow.group('ADMIN'),
-  //     allow.group('SYSTEM_ADMIN'),
+  //     allow.group('admin'),
+  //     allow.group('system-admin'),
   //   ]),
 };
 

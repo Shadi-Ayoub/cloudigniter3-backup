@@ -1,0 +1,8 @@
+{
+  "label": "Developer tooling",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Architecture and extension guidance for CloudIgniter maintainer tools."
+  }
+}

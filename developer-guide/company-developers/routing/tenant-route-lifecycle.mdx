@@ -1,0 +1,52 @@
+---
+title: Tenant Route Lifecycle
+description: Maintain logical route registration, Tenant-scope enforcement, and scoped Next.js rewrite trees.
+sidebar_position: 1
+---
+
+# Tenant route lifecycle
+
+Tenant-aware routing crosses the generic route contract, Next.js proxy runtime,
+and template filesystem routes:
+
+```text
+packages/core CiRouteDefinition
+  → packages/next proxy Tenant resolution and scope enforcement
+  → apps/template routes.ts logical registration
+  → (ci-global)/ci-global or (ci-tenant)/ci-tenant physical page
+```
+
+## Ownership
+
+| Concern                                         | Owner           |
+| ----------------------------------------------- | --------------- |
+| `tenantScopes` contract and public-path builder | `packages/core` |
+| Proxy enforcement and internal rewrite          | `packages/next` |
+| Logical route registry and physical page entry  | `apps/template` |
+
+The proxy resolves Tenant and Org Unit context before matching the logical
+`featurePathname`. After a route match, it checks the optional
+`tenantScopes` list before authentication. A mismatch produces an unresolved
+route-information response with reason `route-tenant-scope-not-allowed`; it
+must not construct a resolved route context or render the wrong physical tree.
+
+Omitting `tenantScopes` intentionally preserves existing behavior. A present
+empty array denies every scope. This allows applications to introduce explicit
+scope declarations incrementally.
+
+## Physical routing invariants
+
+- Route registry keys never include `/ci-global` or `/ci-tenant`.
+- Browser links never target those internal prefixes.
+- `(ci-global)` and `(ci-tenant)` are URL-less route groups.
+- Their nested literal directories are required proxy rewrite targets.
+- Scoped layouts call `appBootstrap()` and pass `context` to `CiLayout`.
+- Scoped pages call the cached `appBootstrap()` and pass `context` to `CiPage`.
+- Pages beneath a `CiLayout` do not add another `CiPageWrapper`.
+
+When adding or changing this lifecycle, validate the core route types and
+serialization guard, the focused proxy scope tests, both package typechecks,
+and the template consumer. See the user guide's
+[Routing modes](/docs/core-system/multi-Tenancy/configuration/routing-modes)
+and the API reference for
+[`CiRouteDefinition`](/docs/api-reference/type-definitions/CiRouteDefinition).

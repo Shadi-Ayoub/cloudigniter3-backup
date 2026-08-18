@@ -30,8 +30,8 @@ function ciResolveIdentityGroupRoles(
 const roles = ciResolveIdentityGroupRoles(
   ["ci-admins", "unrelated", "ci-admins"],
   appAccessControl,
-  { roleMap: { "ci-admins": "ADMIN" } },
-); // ["ADMIN"]
+  { roleMap: { "ci-admins": "admin" } },
+); // ["admin"]
 ```
 
 Matching is exact and case-sensitive; results are deduplicated in first-seen order. Unmapped names are tried as

@@ -1,0 +1,59 @@
+---
+title: CiRouteDefinition
+description: Define logical CloudIgniter route metadata, authentication, Tenant-scope availability, and optional authorization requirements.
+sidebar_position: 4
+---
+
+# `CiRouteDefinition`
+
+`CiRouteDefinition` is the provider-neutral metadata stored for each logical
+application route.
+
+```ts
+import type {
+  CiAccessRequirement,
+  CiRouteDefinition,
+  CiTenantScope,
+} from "@cloudigniter/core/types";
+
+interface CiRouteDefinition {
+  title: string;
+  namespace: string;
+  protected: boolean;
+  tenantScopes?: readonly CiTenantScope[];
+  access?: CiAccessRequirement;
+}
+```
+
+## Fields
+
+| Field          | Required | Meaning                                                                                                                     |
+| -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `title`        | Yes      | Human-readable route title.                                                                                                 |
+| `namespace`    | Yes      | Logical namespace used by route-scoped message resolution.                                                                  |
+| `protected`    | Yes      | Whether authentication is required before rendering.                                                                        |
+| `tenantScopes` | No       | `system`, `global`, and/or `tenant` scopes where the route exists. Omission allows every scope; an empty array allows none. |
+| `access`       | No       | Independent resource/action authorization requirement.                                                                      |
+
+```ts title="apps/template/routes.ts"
+import type { CiRoutesMap } from "@cloudigniter/core/types";
+
+export const routes = {
+  "/dashboard/books": {
+    title: "Manage Books",
+    namespace: "dashboard.books",
+    protected: true,
+    tenantScopes: ["tenant"],
+  },
+} satisfies CiRoutesMap;
+```
+
+The Next.js proxy resolves the current Tenant scope, matches the logical route,
+and checks `tenantScopes` before authentication and physical route rewriting. A
+mismatch produces the route-information reason
+`route-tenant-scope-not-allowed`.
+
+`tenantScopes` controls route availability only. It does not replace backend
+authorization or Tenant-partition enforcement. See
+[Routing modes](/docs/core-system/multi-Tenancy/configuration/routing-modes) and
+[`ciBuildTenantPublicPathname()`](../shared-apis/ci-build-tenant-public-pathname).

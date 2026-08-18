@@ -1,0 +1,129 @@
+---
+title: Deployment, drop, and rollback
+description: Refresh AWS SSO, run an explicit one-shot Amplify sandbox, reverse local generation safely, and understand what cannot be restored.
+sidebar_position: 3
+---
+
+Resource Studio separates deterministic local generation from AWS deployment. Creating, updating, dropping, or rolling back a Data Entity first changes application files only. The Studio never deploys merely because a generation form was submitted.
+
+## Verify the exact AWS target
+
+Before deployment, select an explicit AWS profile and sandbox identifier, then choose **Check AWS access**. Resource Studio:
+
+1. verifies that the generated files still match the current generated plan;
+2. hashes the exact generated plan;
+3. runs `aws sts get-caller-identity` with the selected profile;
+4. resolves one Region from `AWS_REGION`, then `AWS_DEFAULT_REGION`, then the selected profile's configured Region;
+5. issues a single-use deployment intent that expires after 10 minutes.
+
+The intent is bound to the selected profile and identifier, the verified AWS account, caller ARN and identity, the resolved Region, and the generated-plan hash. It is kept in the running Studio process rather than written as a reusable deployment credential.
+
+The Studio confirmation shows the verified account, caller ARN, Region, profile, and sandbox identifier. Confirm each value rather than treating a remembered selection as sufficient. Changing the profile, identifier, or generated plan invalidates the intent and requires another access check.
+
+At deployment time, Resource Studio consumes the intent, hashes the plan again, and repeats the identity and Region lookup. An expired intent or any plan, profile, identifier, identity, account, ARN, or Region mismatch stops before `ampx` runs. The verified Region is then pinned into the child process as both `AWS_REGION` and `AWS_DEFAULT_REGION`.
+
+If no Region resolves, configure one instead of relying on an implicit Amplify default:
+
+```bash
+aws configure set region <aws-region> --profile <profile>
+```
+
+## Refresh AWS access explicitly
+
+If the SSO session has expired, choose **Refresh SSO login**. The Studio runs the equivalent of:
+
+```bash
+aws sso login --profile <profile>
+```
+
+After a successful login, the Studio automatically repeats the STS and Region verification and issues a new short-lived deployment intent. If you refresh SSO separately in a terminal, choose **Check AWS access** again before deploying.
+
+Resource Studio does not store AWS access tokens. SSO remains owned by the AWS CLI credential cache. Its machine-local lifecycle log filters credential-bearing fields and redacts common authorization headers, bearer/basic credentials, AWS access keys, JWTs, API keys, tokens, passwords, and secrets found inside strings before persistence. Redaction is defense in depth, so never paste credentials into a Data Entity field or other Studio input.
+
+## Deploy one sandbox run
+
+Choose **Deploy sandbox once** only after reviewing and validating the generated files and the verified target shown in the confirmation dialog. The explicit action runs the equivalent of:
+
+```bash
+pnpm exec ampx sandbox --once \
+  --profile <profile> \
+  --identifier <sandbox-identifier>
+```
+
+The command runs from the target application root with the verified Region pinned. It is not a continuously running sandbox process, and it is never chained automatically to local generation. Deployment requires a supported Node.js LTS runtime; V1 accepts Node.js 22 and 24, while offline Data Entity editing remains available under an unsupported runtime.
+
+If credentials have expired, the target changed, generated files drifted, or the intent expired, deployment stops and leaves the local generated transaction available for retry or rollback.
+
+### Deploy explicitly without the browser
+
+Automation and terminal-only workflows can invoke the same verified deployment path directly:
+
+```bash
+pnpm exec ci amplify sandbox deploy \
+  --profile=<profile> \
+  --identifier=<sandbox-identifier> \
+  --no-interactive
+```
+
+This command is explicit: headless use requires both target flags and does not run as a side effect of generation. It verifies the generated plan and AWS target, prints the verified account, ARN, and Region, re-hashes the plan, rechecks the identity and Region, and then runs one sandbox deployment. It does not refresh an expired SSO login automatically; run `aws sso login --profile <profile>` first and invoke the command again.
+
+Treat the profile and sandbox identifier as deployment targets, not defaults to accept blindly. Review Amplify output for table or index replacement, resource deletion, authorization changes, and failures before testing the generated management route.
+
+## Undo latest local change
+
+Every applied Resource Studio change records exact before- and after-images, file modes, and directories in a machine-local transaction journal under:
+
+```text
+.cloudigniter/local/resource-studio/transactions/<transaction-id>/
+```
+
+Keep `.cloudigniter/local` out of version control and retain it for as long as you need local rollback.
+
+When every tracked file still matches the transaction's expected after-image, **Undo latest local change**:
+
+- restores every pre-existing tracked file byte-for-byte with its previous file mode;
+- removes tracked files that the transaction created;
+- restores tracked files that the transaction deleted;
+- removes directories created by the transaction when they are still empty;
+- verifies the final before-images before marking the transaction rolled back.
+
+Before changing any target file, undo checks **all** tracked after-images. If you or another tool changed even one of them, Resource Studio reports every detected conflict and changes none of the target files. Resolve or preserve those edits first; Resource Studio does not overwrite drift.
+
+For a manual testing session containing several applied transactions, choose **Undo latest local change** repeatedly. Each successful undo exposes the preceding applied transaction as the latest one, producing last-in, first-out reversal. This reconstructs the local file state from before the session only while the relevant journals remain available and every transaction passes its drift check.
+
+The guarantee is intentionally limited. Local rollback does not restore:
+
+- files outside the recorded transaction or edits made by other tools;
+- dependency-install effects, build output, caches, or untracked runtime side effects;
+- an AWS sandbox, CloudFormation state, DynamoDB records, SSO state, or any other cloud-side effect;
+- data made incompatible or deleted by a previously deployed schema change.
+
+It is a file transaction, not a database backup or a Git replacement.
+
+## Roll back after a deployment
+
+If a generated version has already been deployed, use this order:
+
+1. Stop writing important test data and record the sandbox target.
+2. Use **Undo latest local change** once or repeatedly until the intended local state is restored.
+3. Review the resulting infrastructure diff.
+4. Refresh SSO if required, then verify the exact account, caller, Region, profile, identifier, and restored plan again.
+5. Confirm that verified target and explicitly run **Deploy sandbox once** again to reconcile AWS with the restored local definitions.
+
+The second deployment is a compensating infrastructure change. It is not an exact rollback of cloud data. A table deleted or replaced by the first deployment can lose its records permanently unless you created an independent backup and restore plan.
+
+## Drop a Data Entity
+
+**Drop Data Entity** is a new forward transaction. It removes the entity-owned descriptor, schema, scoped management route, manager, and server actions, then regenerates the shared schema and route registries from the remaining descriptors. It does not rewind unrelated later work the way a transaction rollback can.
+
+Dropping locally does not immediately delete the deployed table. If you explicitly deploy the dropped state, Amplify may delete the model's DynamoDB table and all records in it. Confirm the resource ID, scope, route, profile, sandbox identifier, and data-retention plan before deploying a drop.
+
+For disposable manual-test data, the safest sequence is:
+
+1. create the entity locally;
+2. deploy once and test it;
+3. drop it or roll back the local session;
+4. inspect the restored/generated files;
+5. deploy once again only if you also want the sandbox reconciled.
+
+For retained or production-like data, do not use drop as a migration mechanism. Design and test an explicit export, compatibility, cutover, and restore plan first.

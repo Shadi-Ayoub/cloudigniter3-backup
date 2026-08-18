@@ -1,0 +1,170 @@
+---
+sidebar_position: 3
+title: Data entity manager
+description: Add provider-neutral create, edit, and delete workflows around a CloudIgniter data table.
+---
+
+# Data entity manager
+
+`CiDataEntityManager` turns field metadata and trusted mutation callbacks into a consistent CRUD management
+surface. It owns the create and edit form, row and toolbar actions, pending states, semantic outcome alerts, and
+the destructive delete acknowledgement. The application still owns persistence and renders `CiDataTable`
+through an explicit boundary.
+
+Use this component for generated Resource Studio pages and for application-owned records whose fields can be
+described as strings, numbers, booleans, JSON values, or arrays of those values. Date and time controls remain
+provider-neutral string fields.
+
+## Compose a manager
+
+The component is browser-safe and interactive, so render it from a Client Component. Import the component and
+table from `/client`, and import public contracts from `/types`.
+
+```tsx title="CiBooksManager.tsx" showLineNumbers
+"use client";
+
+import { CiDataEntityManager, CiDataTable } from "@cloudigniter/ui/client";
+import type {
+  CiDataEntityField,
+  CiDataEntityMutationResult,
+  CiDataTableDataSource,
+} from "@cloudigniter/ui/types";
+
+type BookRecord = {
+  id: string;
+  title: string;
+  price?: number;
+  published?: boolean;
+  releaseDate?: string;
+  tags?: string[];
+};
+
+const fields = [
+  {
+    name: "title",
+    label: "Title",
+    valueKind: "string",
+    required: true,
+  },
+  {
+    name: "price",
+    label: "Price",
+    valueKind: "number",
+    min: 0,
+    step: 0.01,
+  },
+  {
+    name: "published",
+    label: "Published",
+    valueKind: "boolean",
+    defaultValue: false,
+  },
+  {
+    name: "releaseDate",
+    label: "Release date",
+    valueKind: "string",
+    inputKind: "date",
+  },
+  {
+    name: "tags",
+    label: "Tags",
+    valueKind: "string",
+    array: true,
+    itemsRequired: true,
+  },
+] satisfies readonly CiDataEntityField<BookRecord>[];
+
+export function CiBooksManager({
+  source,
+  createBook,
+  updateBook,
+  deleteBook,
+}: {
+  source: CiDataTableDataSource<BookRecord>;
+  createBook: (
+    values: Partial<BookRecord>,
+  ) => Promise<CiDataEntityMutationResult<BookRecord>>;
+  updateBook: (
+    record: BookRecord,
+    values: Partial<BookRecord>,
+  ) => Promise<CiDataEntityMutationResult<BookRecord>>;
+  deleteBook: (
+    record: BookRecord,
+  ) => Promise<CiDataEntityMutationResult<BookRecord>>;
+}) {
+  return (
+    <CiDataEntityManager<BookRecord>
+      title="Books"
+      description="Create, review, and maintain the bookstore catalog."
+      entityLabel="Book"
+      entityPluralLabel="Books"
+      fields={fields}
+      source={source}
+      getRowId={(book) => book.id}
+      getRecordLabel={(book) => book.title}
+      onCreate={createBook}
+      onUpdate={updateBook}
+      onDelete={deleteBook}
+      tableProps={{
+        config: {
+          mode: "server",
+          pagination: { pageSize: 25 },
+          persistence: {
+            key: "custom-books-v1",
+            filters: false,
+            pageSize: true,
+            format: true,
+          },
+        },
+      }}
+      renderTable={(props) => <CiDataTable {...props} />}
+    />
+  );
+}
+```
+
+The render boundary is intentional. Generated `CiBooksManager.tsx` code visibly renders
+`<CiDataTable {...props} />`, while the reusable manager augments those props with stable create, edit, and
+delete actions. This keeps the generated page easy to inspect and customize without duplicating interaction
+logic.
+
+## Field behavior
+
+`valueKind` describes storage-independent value semantics. `inputKind` only selects the browser control used
+for a string.
+
+| Metadata                        | Editor behavior                                                                        |
+| ------------------------------- | -------------------------------------------------------------------------------------- |
+| `valueKind: "string"`           | Text by default; also supports textarea, email, URL, date, time, and date-time inputs. |
+| `valueKind: "number"`           | Parses a finite number and applies optional `min`, `max`, and `step` constraints.      |
+| `valueKind: "boolean"`          | Presents explicit Yes, No, and optional Not set choices.                               |
+| `valueKind: "json"`             | Presents a monospaced textarea and rejects malformed JSON.                             |
+| `array: true`                   | Accepts a JSON array and verifies each item against `valueKind`.                       |
+| `required: true`                | Rejects blank values and empty arrays. `false` remains a valid required boolean.       |
+| `itemsRequired: true`           | Rejects `null` array items.                                                            |
+| `readOnly` / `readOnlyOnUpdate` | Preserves the value in the submitted draft while preventing edits.                     |
+
+Optional blank controls are submitted as `undefined`. A provider adapter can translate that value into its own
+omit-or-clear semantics. Array controls use JSON deliberately so values remain lossless; for example,
+`["hardcover", "signed"]`.
+
+Use `validate(value, values, mode)` for domain rules that do not belong to a database provider. Return an
+actionable string to reject the field. Authorization, tenant isolation, uniqueness, and authoritative record
+validation still belong in the trusted server callback.
+
+## Mutations, refresh, and feedback
+
+Mutation callbacks may throw, return nothing, or return a `CiDataEntityMutationResult`. A returned `{ ok:
+false, message }` keeps the active dialog open and shows the error near the operation. A successful create or
+update closes its editor, shows a success alert, and invokes the table action's provider refresh. Deletion uses
+`CiAlertDialog`, names the selected record, explains the consequence, and blocks repeat confirmation or
+dismissal while pending.
+
+Do not use client callbacks as an authorization boundary. Re-resolve the actor, tenant, and current record in
+the server adapter, and derive protected keys there rather than trusting editable form values.
+
+When persisted search or filters could hide a newly created row, keep `tableProps.config.persistence.filters`
+disabled or deliberately reset those criteria. This avoids presenting a successful create as a missing record.
+
+See the [`CiDataEntityManager` API reference](../api-reference/components/ci-data-entity-manager.mdx), the
+[`CiDataTable` guide](./data-table.mdx), and the [confirmation-dialog guide](./confirmation-dialogs.mdx).

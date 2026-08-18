@@ -1,0 +1,50 @@
+---
+title: ciMergeAmplifyDataSchemas
+description: Strictly compose independently owned AWS Amplify Data schema fragments while preserving their inferred intersection type.
+sidebar_position: 1
+---
+
+# `ciMergeAmplifyDataSchemas()`
+
+`ciMergeAmplifyDataSchemas()` is an AWS provider build-time helper. It combines the top-level entries of Amplify Data schema fragments without allowing a later fragment to replace an existing model, custom operation, enum, or custom type.
+
+```ts
+import {
+  ciMergeAmplifyDataSchemas,
+  type CiAmplifyDataSchemaRecord,
+} from "@cloudigniter/aws/server/backend";
+
+type CiAmplifyDataSchemaRecord = Readonly<Record<string, unknown>>;
+
+function ciMergeAmplifyDataSchemas<
+  const TFragments extends readonly CiAmplifyDataSchemaRecord[],
+>(
+  ...fragments: TFragments
+): CiSchemaFragmentIntersection<TFragments[number]>;
+```
+
+`CiSchemaFragmentIntersection` is the inferred intersection of the supplied fragment types. This preserves model keys for downstream `a.schema(...)` and `ClientSchema` inference instead of widening the result to `Record<string, unknown>`.
+
+```ts
+import { a } from "@aws-amplify/backend";
+import { ciMergeAmplifyDataSchemas } from "@cloudigniter/aws/server/backend";
+
+const coreSchemas = {
+  UserProfile: a.model({ id: a.id().required() }),
+};
+
+const customSchemas = {
+  Book: a.model({ title: a.string().required() }),
+};
+
+const schemaData = ciMergeAmplifyDataSchemas(
+  coreSchemas,
+  customSchemas,
+);
+
+const schema = a.schema(schemaData);
+```
+
+The helper creates a new top-level object, does not mutate the fragments, and accepts empty fragments. It performs a shallow name merge; nested definitions are not combined. A repeated top-level name throws `Error` with an `Amplify Data schema name collision` message before `a.schema(...)` is created. There is no custom-over-core precedence.
+
+Application hand-written fragments and Resource Studio output should remain separate inputs to this helper. See [Resource Studio's generated tree](../../resource-studio/overview#what-v1-generates) and the [core/custom ownership boundary](/company-developers/architecture/core-custom-ownership).

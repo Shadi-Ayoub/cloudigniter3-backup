@@ -2,3 +2,26 @@
 title: Tenant Scope
 sidebar_position: 4
 ---
+
+# Tenant scope
+
+Every application request resolves to one canonical Tenant scope:
+
+| Scope    | Meaning                                           | Typical public path in slug mode |
+| -------- | ------------------------------------------------- | -------------------------------- |
+| `system` | Application infrastructure outside Tenant routing | `/login`                         |
+| `global` | Cross-Tenant application workspace                | `/t/global/dashboard`            |
+| `tenant` | One resolved Tenant                               | `/t/acme/dashboard`              |
+
+The proxy resolves this scope before matching the logical application route.
+Routes may then constrain availability with `CiRouteDefinition.tenantScopes`.
+For example, a Book manager that must operate only inside one Tenant declares
+`tenantScopes: ["tenant"]` and lives beneath the `(ci-tenant)/ci-tenant` route
+tree.
+
+Route scope does not grant data access. Server actions and provider adapters
+must use the canonical request context and must not accept a Tenant ID, `PK`, or
+`SK` from browser input as authoritative scope.
+
+See [Routing modes](../configuration/routing-modes) for registration, rewrite,
+and physical folder examples.

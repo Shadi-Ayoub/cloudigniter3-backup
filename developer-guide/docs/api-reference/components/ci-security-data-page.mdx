@@ -1,0 +1,142 @@
+---
+title: CiSecurityDataPage
+sidebar_position: 3
+description: Provider-neutral security administration tables and role editing dialogs.
+---
+
+# `CiSecurityDataPage`
+
+`CiSecurityDataPage` is the client-side security administration surface exported from
+`@cloudigniter/ui/client`. It renders role, permission, resource, assignment, or identity-group records and
+delegates persistence to injected callbacks.
+
+```tsx
+import { CiSecurityDataPage } from "@cloudigniter/ui/client";
+import type { CiSecurityDataPageProps } from "@cloudigniter/ui/types";
+```
+
+## Editor identity lifecycle
+
+The component tracks create and edit mode separately from the mutable record draft. Stable identifiers remain
+editable while creating a record, including after the first character changes the draft ID. When an existing
+record is opened for editing, its stable identifier is disabled and cannot be renamed.
+
+New application role and privilege identifiers must match
+`^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$`. The editor preserves invalid input for correction, associates an actionable
+error with the field, and disables Save until the identifier is valid. Core role IDs use the same convention;
+dot-delimited resource IDs retain their separate capability namespace.
+
+## Owner filtering
+
+The table exposes one Owner filter in its toolbar for Core, Application, and Provider records. The Owner column
+displays the record origin but does not render a second column-level filter.
+
+## Record information and role counts
+
+The information dialog keeps descriptive text separate from computed table details. Its **Description** tab
+renders only the record's non-empty `description` value; it never substitutes the Details-column summary. The
+dialog's **Details** and **JSON** tabs continue to expose the complete administration record.
+
+For role records, the Details column shows three independently named values on separate rows:
+
+```text
+4 permissions
+2 direct users
+7 users via inheritance
+```
+
+`CiSecurityRoleRecord` supplies `permissionCount`, `directUserCount`, and `inheritedUserCount`. These are ready
+values loaded from EmberGuard's mutation-maintained role-counter projection. `buildRecords()` never walks role
+assignments to render the role table:
+
+- each subject is counted once even if it has multiple scoped assignments to the same role;
+- direct users have a stored assignment to that exact role;
+- inherited users have a stored assignment to another role whose non-suspended inheritance path reaches the
+  displayed role;
+- a subject already counted as direct is not counted again as inherited;
+- unknown-role assignments are excluded, while time-bounded assignments remain visible as administrative grant
+  relationships even when the runtime authorizer currently excludes them;
+- creating, updating, deleting, suspending, or restoring a role rebuilds the projection, as does adding,
+  replacing, or deleting a role assignment.
+
+Provider group mappings are not user directories and therefore are not included in these counts. A server page
+that renders role records loads the definition and role counters from the same persisted access-control state;
+it does not call `loadAssignments()`. Assignment pages may still load assignments for their own rows.
+
+## Role editor option contracts
+
+Role editing uses authoritative options supplied by the server-composed application page:
+
+```ts
+type CiSecurityDataPageProps = {
+  // Other table and mutation props omitted.
+  roleOptions?: Array<{
+    id: string;
+    label: string;
+    inherits: string[];
+  }>;
+  privilegeOptions?: Array<{
+    id: string;
+    label: string;
+    description: string;
+    sourceRoleId: string;
+    privilege: CiPrivilege;
+  }>;
+  resourceDomains?: CiSecurityResourceDomainRecord[];
+  onSetRoleStatus?: (
+    roleId: string,
+    status: "active" | "suspended",
+    reason: string
+  ) => Promise<CiSecurityMutationResult>;
+  onCreateResourceDomain?: (
+    input: CiCreateSecurityResourceDomainInput
+  ) => Promise<CiSecurityMutationResult>;
+  onSetResourceDomainStatus?: (
+    domainId: string,
+    status: "active" | "suspended",
+    reason: string
+  ) => Promise<CiSecurityMutationResult>;
+};
+```
+
+The role graph metadata filters cycle-causing inheritance suggestions. Privilege options retain the complete
+policy statement so selection copies `id`, `title`, `effect`, `resource`, `action`, scopes, and description into
+the edited role.
+
+Both fields use a keyboard-accessible search-first multi-select. Selected direct values appear as removable
+chips. Inherited ancestors are evaluated transitively but are not added to the chip list.
+
+`CiSecurityRoleRecord.privileges` contains the role's complete direct privilege array. Saving a role replaces
+that array, while ordinary access-control layers retain merge-by-ID behavior. Application adapters must still
+validate the completed catalog and enforce protected core-policy rules on the server.
+
+## Destructive confirmations
+
+Delete actions open the shared [`CiAlertDialog`](./ci-alert-dialog.mdx) instead of a browser-native confirmation.
+The dialog names the record and stable identifier, explains that existing access relationships may be affected,
+and blocks dismissal while deletion is pending. Core-owned records do not expose the delete action.
+
+## Role status controls
+
+Role tables show an Active or Suspended status badge. When `onSetRoleStatus` is supplied, each eligible role row
+offers Suspend or Restore in its aligned action menu. Both transitions use `CiAlertDialog`, require a non-empty
+reason, expose pending state, and report success or failure through the page alert. Suspending the actor's
+primary role adds a lockout warning.
+
+The callback receives only the stable role ID, requested status, and reason. The trusted server adapter resolves
+ownership and current state, records actor/time metadata, protects core roles, and persists the complete
+definition. `system-super-admin` never exposes Suspend because the server contract reserves it as the
+break-glass role.
+
+## Resource-domain controls
+
+For `kind="resource"`, `resourceDomains` supplies the authoritative, alphabetically sorted domain inventory.
+The resource editor renders this inventory as a picker instead of accepting a free-form domain ID. Suspended
+domains are labeled and disabled for new selections; an existing resource may continue to display its current
+suspended domain while the catalog remains preserved.
+
+When the domain callbacks are supplied, the table exposes **Resource domains**. Its dialog can create a domain
+and suspend or restore eligible domains. Creation validates the stable ID as lowercase kebab case and keeps the
+action disabled until the ID and display name are complete. Status transitions require a reason, use
+`CiAlertDialog`, show pending and outcome feedback, and never expose the `platform` recovery domain as a
+suspendable target.

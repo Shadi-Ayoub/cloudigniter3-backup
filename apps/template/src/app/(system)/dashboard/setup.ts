@@ -6,7 +6,7 @@ export const setup: CiNextDashboardCardProps[] = [
     icon: "ci:shield-lock-outline",
     label: "Security",
     description:
-      "Centralizes CloudIgniter's attribute- and role-based access-control model: resource catalogs define protected capabilities, privileges define allowed or denied actions, and scoped assignments determine where a role applies. Example: register identity.users, grant the ADMIN role the identity.users.read privilege, and assign that role within a specific tenant.",
+      "Centralizes CloudIgniter's attribute- and role-based access-control model: resource catalogs define protected capabilities, privileges define allowed or denied actions, and scoped assignments determine where a role applies. Example: register identity.users, grant the admin role the identity.users.read privilege, and assign that role within a specific tenant.",
     meta: "ARBAC policy center",
     badge: "Protected",
     tone: "security",

@@ -28,7 +28,13 @@ type CiDataTableRowActionsProps<TData> = {
   mode: "buttons" | "menu" | "mixed";
   inlineCount: number;
   menuLabel: string;
+  reserveSpace: boolean;
 };
+
+/** Reserves one non-interactive icon slot to keep row controls aligned. */
+function ActionSpacer() {
+  return <span aria-hidden className="inline-flex size-11 shrink-0" />;
+}
 
 /** Renders row actions as buttons, a menu, or inline buttons plus overflow. */
 export function CiDataTableRowActions<TData>({
@@ -39,16 +45,29 @@ export function CiDataTableRowActions<TData>({
   mode,
   inlineCount,
   menuLabel,
+  reserveSpace,
 }: CiDataTableRowActionsProps<TData>) {
   const visible = actions.filter((action) =>
     ciIsDataTableControlVisible(action, row)
   );
-  const informationControl =
-    information && ciIsDataTableControlVisible(information, row) ? (
+  const informationIsVisible = information
+    ? ciIsDataTableControlVisible(information, row)
+    : false;
+  const informationControl = information ? (
+    informationIsVisible ? (
       <CiDataTableInformationControl row={row} information={information} />
-    ) : null;
+    ) : reserveSpace ? (
+      <ActionSpacer />
+    ) : null
+  ) : null;
+  const hasReservableControls = Boolean(information) || actions.length > 0;
 
-  if (!visible.length && !informationControl) return null;
+  if (
+    !visible.length &&
+    !informationControl &&
+    (!reserveSpace || !hasReservableControls)
+  )
+    return null;
   if (mode === "menu") {
     return (
       <div className="flex items-center justify-end gap-2 whitespace-nowrap">
@@ -60,18 +79,40 @@ export function CiDataTableRowActions<TData>({
             context={context}
             triggerAriaLabel={menuLabel}
           />
+        ) : reserveSpace && actions.length ? (
+          <ActionSpacer />
         ) : null}
       </div>
     );
   }
 
-  const inline = mode === "buttons" ? visible : visible.slice(0, inlineCount);
-  const overflow = mode === "mixed" ? visible.slice(inlineCount) : [];
+  const inlineSlots = reserveSpace
+    ? (mode === "buttons" ? actions : actions.slice(0, inlineCount)).map(
+        (action) => ({
+          action,
+          visible: ciIsDataTableControlVisible(action, row),
+        })
+      )
+    : (mode === "buttons" ? visible : visible.slice(0, inlineCount)).map(
+        (action) => ({ action, visible: true })
+      );
+  const overflowCandidates =
+    mode === "mixed"
+      ? reserveSpace
+        ? actions.slice(inlineCount)
+        : visible.slice(inlineCount)
+      : [];
+  const overflow = overflowCandidates.filter((action) =>
+    ciIsDataTableControlVisible(action, row)
+  );
 
   return (
     <div className="flex items-center justify-end gap-2 whitespace-nowrap">
       {informationControl}
-      {inline.map((action) => {
+      {inlineSlots.map(({ action, visible: actionIsVisible }) => {
+        if (!actionIsVisible) {
+          return <ActionSpacer key={action.id} />;
+        }
         const disabled = ciIsDataTableControlDisabled(action, row);
         const iconOnly = action.display === "icon" && action.icon;
         const actionButton = (
@@ -110,6 +151,8 @@ export function CiDataTableRowActions<TData>({
           context={context}
           triggerAriaLabel={menuLabel}
         />
+      ) : reserveSpace && overflowCandidates.length ? (
+        <ActionSpacer />
       ) : null}
     </div>
   );

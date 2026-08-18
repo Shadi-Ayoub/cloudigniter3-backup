@@ -20,7 +20,7 @@
 //     })
 //     .handler(a.handler.function(setSettingsHandler))
 //     .returns(a.json())
-//     .authorization((allow) => [allow.group('SYSTEM_ADMIN')]),
+//     .authorization((allow) => [allow.group('system-admin')]),
 // };
 
 // export default schemaSettings;

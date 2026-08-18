@@ -16,11 +16,15 @@ CloudIgniter separates a backend feature into two descriptions:
 1. The **package contract** in `packages/aws` describes the feature in
    provider-oriented terms: logical resources, handler IDs, environment values,
    dependencies, and permissions.
-2. The **Amplify binding** in `apps/template/amplify` connects that contract to
-   concrete Amplify function factories and Data models.
+2. The **package-owned Amplify implementation** supplies concrete function
+   factories and Data schema fragments, while a thin binding in
+   `apps/template/amplify` connects those exports to the target application.
 
 The separation keeps `@cloudigniter/aws` independent of an application template
-and prevents Amplify construct details from leaking into reusable backend logic.
+and prevents application configuration from leaking into reusable backend logic.
+Some current core factories and schema fragments are still template-local; they
+are [recorded migration debt](../../architecture/core-custom-ownership#remaining-template-boundary-audit),
+not the location for new core implementation.
 
 ## What “dynamic” and “autonomous” mean
 
@@ -61,7 +65,7 @@ added to the repository.
 flowchart TD
   Module[Resource module files in packages/aws]
   PackageManifest[CI_CORE_BACKEND_MANIFEST]
-  AmplifyFiles[Function factories and Data models in apps/template/amplify]
+  AmplifyFiles[Package-owned function factories and Data schema fragments]
   AmplifyManifest[CI_CORE_AMPLIFY_MANIFEST]
   ContractCheck[ciAssertAmplifyBackendContract]
   Shape[CI_CORE_AMPLIFY_FUNCTION_RESOURCES]
@@ -331,13 +335,16 @@ the table's `index/*` ARN.
 
 ## Layer 3: concrete Amplify resources
 
-The package contract does not create a Lambda or table. The template supplies the
-concrete Amplify definitions.
+The package contract is separate from the concrete provider definition. For a
+CloudIgniter-owned capability, keep both in `packages/aws` under the feature's
+provider implementation and export the stable factory/schema fragment through
+`@cloudigniter/aws/server/backend`. The template binding imports that export; it
+does not copy the implementation.
 
 For a Lambda, keep the implementation and resource factory together:
 
 ```text title="Example Amplify handler files" showLineNumbers
-apps/template/amplify/functions/billing/create-invoice/
+packages/aws/src/server/backend/resources/billing/create-invoice/
 ├── handler.ts
 └── resource.ts
 ```
@@ -357,16 +364,26 @@ The factory's `resourceGroupName` and the manifest feature's
 bindings for projection; Amplify decides the actual nested stack from the
 resource factory.
 
-For an Amplify-managed DynamoDB table, define an `a.model(...)` in
-`apps/template/amplify/data/schemata`. The manifest later resolves that model's
-synthesized table construct.
+For a CloudIgniter-owned Amplify-managed DynamoDB table, define and export its
+`a.model(...)` fragment from `packages/aws`. The template's core schema
+composition imports the package fragment, and the manifest later resolves that
+model's synthesized table construct. Application-owned models instead belong in
+`apps/template/amplify/custom/data/schemata`; Resource Studio owns only its
+registered folders and generated registry within that custom seam.
+
+Choose the model/table boundary through the
+[DynamoDB bounded-context strategy](/company-developers/persistence/dynamodb-strategy) before adding it. An
+Amplify model is not automatically the correct boundary for one business entity: related item types may share
+a capability model, while different IAM, consistency, lifecycle, throughput, stream, or restore requirements
+require separate tables. Document the access pattern and cost impact of every secondary index.
 
 ## Layer 4: the Amplify manifest
 
 `CI_CORE_AMPLIFY_MANIFEST` is the template-side binding point. It is organized by
-feature, not by deployment stage. Its types, validation, and compiler are imported
-from `@cloudigniter/aws/server/backend`; the application retains only values that
-must reference its concrete Amplify factories and schema model names.
+feature, not by deployment stage. Its types, validation, compiler, and core
+factory/schema exports are imported from `@cloudigniter/aws/server/backend`; the
+application retains only the thin selection needed to connect those exports to
+the target Amplify backend and its model names.
 
 ```ts title="Example Amplify feature binding" showLineNumbers
 export const CI_CORE_AMPLIFY_MANIFEST = ciDefineAmplifyBackendManifest({
@@ -392,7 +409,7 @@ export const CI_CORE_AMPLIFY_MANIFEST = ciDefineAmplifyBackendManifest({
 
 export const compiledBackend = ciCompileAmplifyBackendBindings(
   CI_CORE_BACKEND_MANIFEST,
-  CI_CORE_AMPLIFY_MANIFEST,
+  CI_CORE_AMPLIFY_MANIFEST
 );
 ```
 
@@ -520,12 +537,13 @@ Assume `ciCreateInvoiceHandler` belongs to a new billing feature.
    allowlist, environment resolution, dependencies, and one permission
    representation.
 4. Add the module to `CI_CORE_BACKEND_MANIFEST.modules` if it is new.
-5. Create `handler.ts` and `resource.ts` in the matching template feature folder.
+5. Create `handler.ts` and `resource.ts` in the matching `packages/aws` feature
+   folder and export the resource factory through the public backend boundary.
 6. If the handler is an AppSync operation, add its schema operation and handler
    reference to the Data schema. If it needs Auth access, add only the required
    Auth access relationship.
-7. Add one `functions` binding to the feature in
-   `CI_CORE_AMPLIFY_MANIFEST`.
+7. Import the package factory and add one `functions` binding to the feature in
+   the template's thin `CI_CORE_AMPLIFY_MANIFEST`.
 8. Run package tests, package typecheck, and template manifest tests.
 
 You do **not** manually edit `backend-core.ts`, `auth.ts`, `data.ts`, or
@@ -538,7 +556,8 @@ You do **not** manually edit `backend-core.ts`, `auth.ts`, `data.ts`, or
 3. Create the package feature folder and resource module; declare the `tableKeys`,
    name/ARN environment values, handler ownership, and grants.
 4. Register the module in `CI_CORE_BACKEND_MANIFEST`.
-5. Add the `a.model(...)` schema in the template Data schema.
+5. Add and export the `a.model(...)` schema fragment in `packages/aws`; bind the
+   package export through the template's thin core schema composition.
 6. Add one `tables` binding to the matching feature in
    `CI_CORE_AMPLIFY_MANIFEST`, using the exact model name and a unique output name.
 7. Add table access through `tableGrants` or inline DynamoDB statements, never

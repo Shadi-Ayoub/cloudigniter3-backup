@@ -50,7 +50,7 @@ const schemaEmberguard = {
     ])
     // Direct model access bypasses the custom-handler policy checks below, so
     // only the super administrator may use generated model operations.
-    .authorization((allow) => [allow.group("SYSTEM_SUPER_ADMIN")]),
+    .authorization((allow) => [allow.group("system-super-admin")]),
 
   GetEmberguardDefinition: a
     .query()
@@ -58,8 +58,8 @@ const schemaEmberguard = {
     .handler(a.handler.function(getEmberguardDefinitionHandler))
     .returns(a.json())
     .authorization((allow) => [
-      allow.group("SYSTEM_ADMIN"),
-      allow.group("SYSTEM_SUPER_ADMIN"),
+      allow.group("system-admin"),
+      allow.group("system-super-admin"),
     ]),
 
   SetEmberguardDefinition: a
@@ -68,8 +68,8 @@ const schemaEmberguard = {
     .handler(a.handler.function(setEmberguardDefinitionHandler))
     .returns(a.json())
     .authorization((allow) => [
-      allow.group("SYSTEM_ADMIN"),
-      allow.group("SYSTEM_SUPER_ADMIN"),
+      allow.group("system-admin"),
+      allow.group("system-super-admin"),
     ]),
 
   ListEmberguardRoleAssignments: a
@@ -78,8 +78,8 @@ const schemaEmberguard = {
     .handler(a.handler.function(listEmberguardRoleAssignmentsHandler))
     .returns(a.json())
     .authorization((allow) => [
-      allow.group("SYSTEM_ADMIN"),
-      allow.group("SYSTEM_SUPER_ADMIN"),
+      allow.group("system-admin"),
+      allow.group("system-super-admin"),
     ]),
 
   PutEmberguardRoleAssignment: a
@@ -88,8 +88,8 @@ const schemaEmberguard = {
     .handler(a.handler.function(putEmberguardRoleAssignmentHandler))
     .returns(a.json())
     .authorization((allow) => [
-      allow.group("SYSTEM_ADMIN"),
-      allow.group("SYSTEM_SUPER_ADMIN"),
+      allow.group("system-admin"),
+      allow.group("system-super-admin"),
     ]),
 
   DeleteEmberguardRoleAssignment: a
@@ -98,8 +98,8 @@ const schemaEmberguard = {
     .handler(a.handler.function(deleteEmberguardRoleAssignmentHandler))
     .returns(a.json())
     .authorization((allow) => [
-      allow.group("SYSTEM_ADMIN"),
-      allow.group("SYSTEM_SUPER_ADMIN"),
+      allow.group("system-admin"),
+      allow.group("system-super-admin"),
     ]),
 
   ListEmberguardResourceInventory: a
@@ -108,8 +108,8 @@ const schemaEmberguard = {
     .handler(a.handler.function(listEmberguardResourceInventoryHandler))
     .returns(a.json())
     .authorization((allow) => [
-      allow.group("SYSTEM_ADMIN"),
-      allow.group("SYSTEM_SUPER_ADMIN"),
+      allow.group("system-admin"),
+      allow.group("system-super-admin"),
     ]),
 
   PutEmberguardResourceInventory: a
@@ -118,8 +118,8 @@ const schemaEmberguard = {
     .handler(a.handler.function(putEmberguardResourceInventoryHandler))
     .returns(a.json())
     .authorization((allow) => [
-      allow.group("SYSTEM_ADMIN"),
-      allow.group("SYSTEM_SUPER_ADMIN"),
+      allow.group("system-admin"),
+      allow.group("system-super-admin"),
     ]),
 
   ListEmberguardCustomDomains: a
@@ -128,8 +128,8 @@ const schemaEmberguard = {
     .handler(a.handler.function(listEmberguardCustomDomainsHandler))
     .returns(a.json())
     .authorization((allow) => [
-      allow.group("SYSTEM_ADMIN"),
-      allow.group("SYSTEM_SUPER_ADMIN"),
+      allow.group("system-admin"),
+      allow.group("system-super-admin"),
     ]),
 
   PutEmberguardCustomDomain: a
@@ -138,8 +138,8 @@ const schemaEmberguard = {
     .handler(a.handler.function(putEmberguardCustomDomainHandler))
     .returns(a.json())
     .authorization((allow) => [
-      allow.group("SYSTEM_ADMIN"),
-      allow.group("SYSTEM_SUPER_ADMIN"),
+      allow.group("system-admin"),
+      allow.group("system-super-admin"),
     ]),
 
   DeleteEmberguardCustomDomain: a
@@ -148,8 +148,8 @@ const schemaEmberguard = {
     .handler(a.handler.function(deleteEmberguardCustomDomainHandler))
     .returns(a.json())
     .authorization((allow) => [
-      allow.group("SYSTEM_ADMIN"),
-      allow.group("SYSTEM_SUPER_ADMIN"),
+      allow.group("system-admin"),
+      allow.group("system-super-admin"),
     ]),
 };
 
