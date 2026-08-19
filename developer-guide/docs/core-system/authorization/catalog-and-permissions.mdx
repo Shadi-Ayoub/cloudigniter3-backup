@@ -64,6 +64,7 @@ const resource = {
   id: "billing.invoices",
   domainId: "billing",
   title: "Invoices",
+  status: "active",
   actions: [
     { id: "read", title: "Read invoices" },
     { id: "create", title: "Create invoices" },
@@ -73,6 +74,28 @@ const resource = {
   scopeKinds: ["tenant", "orgUnit"],
 };
 ```
+
+Resources have the same reversible Active/Suspended lifecycle as domains. Suspending one resource immediately
+denies every action on that resource while leaving its actions, scopes, privileges, and domain relationship
+unchanged. The Resources Catalog records the actor, timestamp, and required reason in `statusChange`, and an
+administrator can later restore the same stable resource.
+
+CloudIgniter evaluates the parent domain before the resource. If both are suspended, the decision reason is
+`suspended-domain`; otherwise a suspended resource returns `suspended-resource`. Restoring a resource inside a
+suspended domain records the resource as active but does not restore access until the parent domain is also
+active.
+
+| Domain state | Resource state | Authorization result |
+| ------------ | -------------- | -------------------- |
+| Active       | Active         | Continue to action, scope, and privilege evaluation |
+| Active       | Suspended      | Deny with `suspended-resource` |
+| Suspended    | Active         | Deny with `suspended-domain` |
+| Suspended    | Suspended      | Deny with `suspended-domain` |
+
+The `platform.authorization` and `platform.authorization.core` resources cannot be suspended because they
+preserve the administration and break-glass recovery paths. Core resources otherwise require a directly
+assigned, system-scoped `system-super-admin` to suspend or restore; application resources require application
+access-control management authority.
 
 The current engine authorizes the resource **type** and request scope. If access depends on a record's owner,
 classification, workflow state, or another relationship, resolve those facts in the service and perform the
@@ -260,7 +283,7 @@ for (const issue of issues) {
 Validation detects:
 
 - invalid or duplicate identifiers;
-- invalid domain or role status metadata;
+- invalid domain, resource, or role status metadata;
 - empty action or scope lists;
 - unknown domains, resources, actions, and inherited roles;
 - invalid precedence values;

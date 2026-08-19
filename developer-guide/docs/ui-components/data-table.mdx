@@ -636,7 +636,15 @@ const config = {
 };
 ```
 
-Table and compact rows use a fluid layout across the container. TanStack `size`, `minSize`, and `maxSize` establish relative widths. Drag a header separator to resize or double-click it to reset the column. Card format becomes one, two, or three columns as the container grows.
+Table and compact rows use a content-weighted fluid layout across the container. When a column does not declare
+`size`, `CiDataTable` estimates its initial share from the heading and up to 100 currently loaded accessor values,
+so longer values receive more of the available width. TanStack `size`, `minSize`, and `maxSize` override or bound
+that estimate. Dragging a header separator, persisted widths, and double-click reset continue to use TanStack's
+column-sizing state.
+
+The table keeps an intrinsic minimum equal to its resolved column widths. On a narrower container it scrolls
+inside the table surface instead of allowing cell content to overlap an adjacent column. Card format becomes one,
+two, or three columns as the container grows.
 
 ## Browser preference cookie
 

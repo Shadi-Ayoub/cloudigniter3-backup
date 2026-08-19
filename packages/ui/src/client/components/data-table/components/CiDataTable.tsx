@@ -62,6 +62,7 @@ import type {
 } from "@ci-ui/types";
 
 import {
+  ciEstimateDataTableColumnSize,
   ciExportDataTableToExcel,
   ciLoadDataTablePreferences,
   ciSaveDataTablePreferences,
@@ -146,6 +147,20 @@ function getColumnId<TData extends RowData>(
   if (column.id) return column.id;
   const accessorKey = (column as { accessorKey?: string }).accessorKey;
   return accessorKey?.replaceAll(".", "_");
+}
+
+/** Reads a column's accessor value for content-weighted initial sizing. */
+function getColumnSizingValue<TData extends RowData>(
+  column: ColumnDef<CiDataTableFeatures, TData, unknown>,
+  row: TData,
+  index: number,
+): unknown {
+  const accessorFn = (
+    column as { accessorFn?: (record: TData, index: number) => unknown }
+  ).accessorFn;
+  if (accessorFn) return accessorFn(row, index);
+  const accessorKey = (column as { accessorKey?: string }).accessorKey;
+  return accessorKey ? getValueAtPath(row, accessorKey) : undefined;
 }
 
 /** Converts component column definitions into serializable Excel columns. */
@@ -352,6 +367,8 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
     [resetPaging]
   );
 
+  const tableData = isProviderMode ? providerPage.rows : data;
+
   const filteredBaseColumns = useMemo(() => {
     const filterMap = new Map(filters.map((filter) => [filter.id, filter]));
     return baseColumns.map((column) => {
@@ -369,6 +386,32 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
       } as ColumnDef<CiDataTableFeatures, TData, unknown>;
     });
   }, [baseColumns, filters]);
+
+  const contentSizedBaseColumns = useMemo(
+    () =>
+      filteredBaseColumns.map((column) => {
+        if (column.size !== undefined) return column;
+        const meta = getColumnMeta(column);
+        const id = getColumnId(column);
+        const header =
+          meta?.label ??
+          (typeof column.header === "string" ? column.header : (id ?? ""));
+        const sampledValues = tableData
+          .slice(0, 100)
+          .map((row, index) => getColumnSizingValue(column, row, index));
+
+        return {
+          ...column,
+          size: ciEstimateDataTableColumnSize({
+            header,
+            values: sampledValues,
+            minSize: column.minSize,
+            maxSize: column.maxSize,
+          }),
+        };
+      }),
+    [filteredBaseColumns, tableData],
+  );
 
   const columns = useMemo<
     ColumnDef<CiDataTableFeatures, TData, unknown>[]
@@ -440,10 +483,10 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
     }
 
     // Selection stays at inline-start; row actions sit at inline-end in both LTR and RTL.
-    return [...leadingColumns, ...filteredBaseColumns, ...trailingColumns];
+    return [...leadingColumns, ...contentSizedBaseColumns, ...trailingColumns];
   }, [
     config?.rowActions?.header,
-    filteredBaseColumns,
+    contentSizedBaseColumns,
     labels.actions,
     labels.selectAll,
     labels.selectRow,
@@ -538,7 +581,6 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
     source,
   ]);
 
-  const tableData = isProviderMode ? providerPage.rows : data;
   const tanStackPageSize =
     pageSizeChoice === "all" ? Number.MAX_SAFE_INTEGER : pageSizeChoice;
 
@@ -949,7 +991,10 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
   /** Renders table and compact formats with shared semantic markup. */
   const renderTableFormat = (compact: boolean) => (
     <div className="relative min-h-28 overflow-hidden rounded-xl border bg-background">
-      <Table className="w-full table-fixed">
+      <Table
+        className="w-full table-fixed"
+        style={{ minWidth: `${table.getTotalSize()}px` }}
+      >
         <TableHeader className="bg-muted/70">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
@@ -964,7 +1009,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                   <TableHead
                     key={header.id}
                     className={cn(
-                      "relative h-auto min-w-0 px-3 py-2 text-start align-middle font-semibold text-foreground",
+                      "relative h-auto min-w-0 overflow-hidden px-3 py-2 text-start align-middle font-semibold text-foreground",
                       header.column.id === ACTIONS_COLUMN_ID && "text-end",
                       meta?.headerClassName
                     )}
@@ -1109,7 +1154,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                   <TableCell
                     key={cell.id}
                     className={cn(
-                      "min-w-0 text-start align-middle",
+                      "min-w-0 overflow-hidden text-start align-middle",
                       compact ? "px-2 py-1.5" : "px-3 py-2.5",
                       cell.column.id === ACTIONS_COLUMN_ID && "text-end",
                       getCellClassName(cell)

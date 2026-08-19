@@ -7,6 +7,7 @@ export type CiAuthorizationDecisionReason =
   | "unknown-action"
   | "unsupported-scope"
   | "suspended-domain"
+  | "suspended-resource"
   | "suspended-role"
   | "no-role-assignment"
   | "no-matching-privilege";

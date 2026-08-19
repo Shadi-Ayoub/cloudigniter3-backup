@@ -1345,7 +1345,7 @@
     "semantic_hash": ""
   },
   "apps/template/tsconfig.json": {
-    "mtime": 1787127475.3,
+    "mtime": 1787069837.18,
     "ast_hash": "bffddee9ffa3d548477661833e856c3c",
     "semantic_hash": ""
   },
@@ -7275,7 +7275,7 @@
     "semantic_hash": ""
   },
   "packages/ui/package.json": {
-    "mtime": 1787127475.31,
+    "mtime": 1787069836.98,
     "ast_hash": "eb41de5a0ea3b8050ce6ff60e646476e",
     "semantic_hash": ""
   },
@@ -7345,8 +7345,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/data-table/components/CiDataTable.tsx": {
-    "mtime": 1787127506.44,
-    "ast_hash": "3619f88890cdb74ed5786ab11e0b2da3",
+    "mtime": 1787031262.4,
+    "ast_hash": "039e2b0ba7ed9a8e6e73748bd1a0d210",
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/data-table/components/CiDataTableRowActionsMenu.tsx": {
@@ -7370,8 +7370,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/data-table/lib/index.ts": {
-    "mtime": 1787127423.97,
-    "ast_hash": "7e8089ed9d29016e29196868a470e8da",
+    "mtime": 1786181512.24,
+    "ast_hash": "f5b92ae64c206ba46999289949dff526",
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/index.ts": {
@@ -8155,7 +8155,7 @@
     "semantic_hash": ""
   },
   "packages/ui/tsconfig.json": {
-    "mtime": 1787127475.3,
+    "mtime": 1787069836.97,
     "ast_hash": "5dbd2054cb93498ea13147f1020483b1",
     "semantic_hash": ""
   },
@@ -9980,8 +9980,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/ui-components/data-table.mdx": {
-    "mtime": 1787127424.05,
-    "ast_hash": "967c83a978ee279c8038f6fdbe426e9a",
+    "mtime": 1786611041.22,
+    "ast_hash": "4ee8fcee3c6c1c019e88943962f0c978",
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/data-table/components/CiDataTableInformationControl.tsx": {
@@ -10005,8 +10005,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/components/ci-data-table.mdx": {
-    "mtime": 1787127424.1,
-    "ast_hash": "570fd263ca99a9daa42e405a92bc322f",
+    "mtime": 1786611241.59,
+    "ast_hash": "574336177e37228ce899cd36db47f121",
     "semantic_hash": ""
   },
   ".agents/skills/brand/scripts/extract-colors.cjs": {
@@ -11692,16 +11692,6 @@
   "developer-guide/docs/api-reference/type-definitions/CiResourceDefinition.mdx": {
     "mtime": 1787069579.89,
     "ast_hash": "e6c2bfc17a080557247167e94e142a20",
-    "semantic_hash": ""
-  },
-  "packages/ui/__tests__/data-table-column-sizing.test.ts": {
-    "mtime": 1787127496.54,
-    "ast_hash": "939614040fdfd14ab4a6c3c526d8d873",
-    "semantic_hash": ""
-  },
-  "packages/ui/src/client/components/data-table/lib/ci-data-table-column-sizing.ts": {
-    "mtime": 1787127496.53,
-    "ast_hash": "7b13cca5454f2a0827ebbb569a3a290c",
     "semantic_hash": ""
   }
 }

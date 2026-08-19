@@ -18,6 +18,7 @@ import type {
   CiSecurityRoleRecord,
   CiSecurityRoleCountersById,
   CiSetSecurityRoleStatusInput,
+  CiSetSecurityResourceStatusInput,
   CiCreateSecurityResourceDomainInput,
   CiSetSecurityResourceDomainStatusInput,
   CiSecurityStoredRoleAssignment,
@@ -168,6 +169,8 @@ function buildResourceRecords(
     id: resource.id,
     title: resource.title,
     description: resource.description,
+    status: resource.status ?? "active",
+    statusChange: resource.statusChange ? { ...resource.statusChange } : undefined,
     domainId: resource.domainId,
     actions: resource.actions.map((action) => action.id),
     scopeKinds: [...resource.scopeKinds],
@@ -753,6 +756,80 @@ export function ciCreateSecurityAdministration(
     await options.repository.saveAccessControlDefinition(next);
   }
 
+  /** Suspends or restores one resource while preserving its catalog policy. */
+  async function setResourceStatus(
+    input: CiSetSecurityResourceStatusInput
+  ): Promise<void> {
+    const reason = input.reason.trim();
+    if (!reason) {
+      throw new Error("A reason is required to change a resource's status.");
+    }
+    if (input.status !== "active" && input.status !== "suspended") {
+      throw new Error('Resource status must be either "active" or "suspended".');
+    }
+    if (
+      input.status === "suspended" &&
+      (input.resourceId === "platform.authorization" ||
+        input.resourceId === "platform.authorization.core")
+    ) {
+      throw new Error(
+        "Access-control recovery resources cannot be suspended because they preserve the administration and break-glass paths."
+      );
+    }
+
+    const current = await loadDefinition();
+    const currentCapabilities = resolveSecurityCapabilities(
+      { ...options, definition: current },
+      subject
+    );
+    if (!currentCapabilities.canManageApplication) {
+      throw new Error("You cannot manage application access control.");
+    }
+    const resource = current.resources.find(
+      (item) => item.id === input.resourceId
+    );
+    if (!resource) {
+      throw new Error(`Unknown resource "${input.resourceId}".`);
+    }
+
+    const reference = { kind: "resource", resourceId: resource.id } as const;
+    const isCore = ciIsCoreAccessControlEntry(reference);
+    if (isCore && !currentCapabilities.canManageCore) {
+      throw new Error(
+        "Only a system super administrator can suspend or restore a core resource."
+      );
+    }
+    if ((resource.status ?? "active") === input.status) return;
+
+    const layer: CiAccessControlLayer = {
+      resources: [
+        {
+          id: resource.id,
+          status: input.status,
+          statusChange: {
+            changedAt: clock().toISOString(),
+            changedBy: options.actor.id,
+            reason,
+          },
+        },
+      ],
+    };
+    const next = isCore
+      ? ciApplyCoreAccessControlOverrides(current, [
+          ciCreateCoreAccessControlOverride({
+            id: createId(),
+            expectedRevision: 0,
+            reason,
+            subject,
+            currentDefinition: current,
+            layer,
+          }),
+        ])
+      : ciMergeAccessControlDefinitions(current, layer);
+    ciAssertValidAccessControlDefinition(next);
+    await options.repository.saveAccessControlDefinition(next);
+  }
+
   /** Validates and persists one editable administration record. */
   async function saveRecord(
     record: CiSecurityRecord,
@@ -793,6 +870,14 @@ export function ciCreateSecurityAdministration(
       const currentResource = current.resources.find(
         (resource) => resource.id === record.id
       );
+      if ((record.status ?? "active") !== (currentResource?.status ?? "active")) {
+        await setResourceStatus({
+          resourceId: record.id,
+          status: record.status ?? "active",
+          reason: reason ?? "",
+        });
+        return;
+      }
       if (!targetDomain) {
         throw new Error(`Unknown resource domain "${record.domainId}".`);
       }
@@ -932,6 +1017,7 @@ export function ciCreateSecurityAdministration(
     buildResourceDomains,
     createResourceDomain,
     setResourceDomainStatus,
+    setResourceStatus,
     saveRecord,
     setRoleStatus,
     deleteRecord,

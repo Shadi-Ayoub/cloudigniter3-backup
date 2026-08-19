@@ -337,6 +337,61 @@ export function ciValidateAccessControlDefinition(
       issues
     );
 
+    if (
+      resource.status !== undefined &&
+      resource.status !== "active" &&
+      resource.status !== "suspended"
+    ) {
+      issues.push({
+        severity: "error",
+        code: "invalid-resource-status",
+        path: `${path}.status`,
+        message: 'Resource status must be either "active" or "suspended".',
+      });
+    }
+
+    const statusChangeIsValid =
+      resource.statusChange !== undefined &&
+      typeof resource.statusChange.changedAt === "string" &&
+      Number.isFinite(Date.parse(resource.statusChange.changedAt)) &&
+      typeof resource.statusChange.changedBy === "string" &&
+      resource.statusChange.changedBy.trim().length > 0 &&
+      typeof resource.statusChange.reason === "string" &&
+      resource.statusChange.reason.trim().length > 0;
+
+    if (resource.statusChange !== undefined && !statusChangeIsValid) {
+      issues.push({
+        severity: "error",
+        code: "invalid-resource-status",
+        path: `${path}.statusChange`,
+        message:
+          "Resource status metadata requires a valid timestamp, actor identifier, and non-empty reason.",
+      });
+    }
+
+    if (resource.status === "suspended" && resource.statusChange === undefined) {
+      issues.push({
+        severity: "error",
+        code: "invalid-resource-status",
+        path: `${path}.statusChange`,
+        message: "A suspended resource requires status-change metadata.",
+      });
+    }
+
+    if (
+      (resource.id === "platform.authorization" ||
+        resource.id === "platform.authorization.core") &&
+      resource.status === "suspended"
+    ) {
+      issues.push({
+        severity: "error",
+        code: "invalid-resource-status",
+        path: `${path}.status`,
+        message:
+          "Access-control recovery resources cannot be suspended because they preserve the administration and break-glass paths.",
+      });
+    }
+
     if (!domainIds.has(resource.domainId)) {
       issues.push({
         severity: "error",

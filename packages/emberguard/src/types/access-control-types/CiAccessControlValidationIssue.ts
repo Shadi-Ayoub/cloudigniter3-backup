@@ -7,6 +7,7 @@ export type CiAccessControlValidationIssue = {
     | "duplicate-identifier"
     | "invalid-precedence"
     | "invalid-domain-status"
+    | "invalid-resource-status"
     | "invalid-role-status"
     | "empty-list"
     | "unknown-domain"

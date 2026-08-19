@@ -505,6 +505,7 @@ test("creates, sorts, suspends, and restores resource domains", async () => {
       kind: "resource",
       id: "billing.invoices",
       title: "Invoices",
+      status: "active",
       domainId: "billing-operations",
       actions: ["read"],
       scopeKinds: ["tenant"],
@@ -525,6 +526,69 @@ test("creates, sorts, suspends, and restores resource domains", async () => {
       .getDefinition()
       .domains.find((domain) => domain.id === "billing-operations")?.status,
     "active"
+  );
+
+  await administration.saveRecord({
+    kind: "resource",
+    id: "billing.invoices",
+    title: "Invoices",
+    status: "active",
+    domainId: "billing-operations",
+    actions: ["read", "approve"],
+    scopeKinds: ["tenant"],
+    sensitiveActionCount: 0,
+    origin: "application",
+    locked: false,
+  });
+  await administration.setResourceStatus({
+    resourceId: "billing.invoices",
+    status: "suspended",
+    reason: "Contain invoice authorization during the review.",
+  });
+  const suspendedResource = memory
+    .getDefinition()
+    .resources.find((resource) => resource.id === "billing.invoices");
+  assert.equal(suspendedResource?.status, "suspended");
+  assert.deepEqual(suspendedResource?.statusChange, {
+    changedAt: "2026-08-18T09:30:00.000Z",
+    changedBy: "incident-commander",
+    reason: "Contain invoice authorization during the review.",
+  });
+  assert.deepEqual(
+    suspendedResource?.actions.map((action) => action.id),
+    ["read", "approve"]
+  );
+
+  await administration.setResourceStatus({
+    resourceId: "billing.invoices",
+    status: "active",
+    reason: "Invoice authorization controls were approved.",
+  });
+  assert.equal(
+    memory
+      .getDefinition()
+      .resources.find((resource) => resource.id === "billing.invoices")?.status,
+    "active"
+  );
+
+  const restoredResourceRecord = administration
+    .buildRecords(memory.getDefinition(), [], memory.getRoleCounters())
+    .resource.find((record) => record.id === "billing.invoices");
+  assert.ok(restoredResourceRecord);
+  await administration.saveRecord(
+    { ...restoredResourceRecord, status: "suspended" },
+    "Exercise the generic-save lifecycle delegation."
+  );
+  assert.deepEqual(
+    memory
+      .getDefinition()
+      .resources.find((resource) => resource.id === "billing.invoices")
+      ?.statusChange,
+    {
+      changedAt: "2026-08-18T09:30:00.000Z",
+      changedBy: "incident-commander",
+      reason: "Exercise the generic-save lifecycle delegation.",
+    }
   );
 });
 
@@ -567,6 +631,14 @@ test("protects core and break-glass roles from unsafe suspension", async () => {
       reason: "Unsafe test.",
     }),
     /break-glass role cannot be suspended/
+  );
+  await assert.rejects(
+    superAdmin.setResourceStatus({
+      resourceId: "platform.authorization",
+      status: "suspended",
+      reason: "Unsafe test.",
+    }),
+    /recovery resources cannot be suspended/
   );
 });
 

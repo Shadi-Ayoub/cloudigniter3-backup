@@ -33,6 +33,7 @@ auditable allow/deny decision
 - Require every domain, action, role, and privilege ID—including core role IDs—to use lowercase kebab case; reserve lowercase dotted segments for resource capability IDs.
 - Give every privilege a stable `id` and a required, human-readable `title`; use the title in forms and displays while retaining the ID for persistence and audit evidence.
 - Treat resource-domain status as additive policy state: omitted means `active`; a suspended domain causes every resource in it to fail authorization with `suspended-domain` while preserving the catalog for restoration.
+- Treat resource status as the child policy gate: omitted means `active`; a suspended resource fails with `suspended-resource` while preserving its actions, scopes, privileges, and domain relationship. Evaluate domain status first, so `suspended-domain` wins when both levels are suspended.
 - Keep generic evaluation algorithms inside `packages/emberguard`.
 - Expose supported helpers and public contracts through `@cloudigniter/core/lib` and `@cloudigniter/core/types`.
 - Adapt provider groups and claims in the provider package, then normalize them into generic assignments.
@@ -47,12 +48,14 @@ Evaluate in this order:
 
 1. Reject an unauthenticated subject when the capability requires authentication.
 2. Reject unknown resources and actions.
-3. Select active direct privileges and role assignments whose time bounds and scopes match.
-4. Exclude suspended roles before expansion; they grant nothing and do not bridge inherited privileges.
-5. Expand active role inheritance and retain both the assigned role and privilege-owning role as decision evidence.
-6. Match resource and action patterns.
-7. Apply the configured combining algorithm.
-8. Deny when no applicable privilege allows the request.
+3. Deny a resource in a suspended domain with `suspended-domain`.
+4. Deny a suspended resource with `suspended-resource`.
+5. Select active direct privileges and role assignments whose time bounds and scopes match.
+6. Exclude suspended roles before expansion; they grant nothing and do not bridge inherited privileges.
+7. Expand active role inheritance and retain both the assigned role and privilege-owning role as decision evidence.
+8. Match resource and action patterns.
+9. Apply the configured combining algorithm.
+10. Deny when no applicable privilege allows the request.
 
 Use `deny-overrides` by default. Any matching deny defeats matching allows. Use `highest-precedence` only when the strongest applicable assigned role is intentionally authoritative; within the selected tier, deny still overrides allow. Treat direct subject privileges as the strongest tier in highest-precedence mode.
 
@@ -180,6 +183,7 @@ Treat `CI_DEFAULT_ACCESS_CONTROL_DEFINITION` as immutable core policy.
 - On persisted-catalog reads, migrate only an absent legacy privilege `title` from the matching configured catalog entry or, for an unknown custom entry, a deterministic label derived from its stable ID before validation.
 - Never normalize role IDs. Definitions, inheritance references, assignments, identity-provider groups, seed data, and integrations must all use the canonical lowercase kebab IDs and fail fast otherwise.
 - Validate resource-domain IDs with the same lowercase kebab convention. Require actor, timestamp, and reason metadata for suspension, and never permit suspension of the `platform` recovery domain.
+- Require actor, timestamp, and reason metadata for resource suspension. Never permit suspension of `platform.authorization` or `platform.authorization.core`; these resources preserve administration and break-glass recovery. Restoring a resource does not override a suspended parent domain.
 - Do not repair explicitly blank or malformed titles, and validate every catalog write strictly. The read migration is compatibility behavior, not permission-policy normalization.
 
 ## Provider and enforcement strategy
@@ -223,6 +227,7 @@ Use a search-first chip multi-select when a form selects multiple roles, privile
 - Keep server-side cycle, protected-capability, and catalog validation authoritative; client filtering is usability and early feedback, not the security boundary.
 - Show role status in the table and require an alert-dialog acknowledgement plus a non-empty reason for suspend and restore. Warn when the actor targets their primary role.
 - On the resource page, expose domains in a focused management dialog, sort them alphabetically by display name, validate new IDs during entry and on the server, and use reasoned alert-dialog confirmation for suspension and restoration. Render the resource form's domain as a picker and prevent new selections of suspended domains.
+- Show resource status in the resource table and expose reasoned Suspend/Restore actions using `CiAlertDialog`. Preserve the resource record and policy, explain that a suspended parent domain still denies a restored resource, and keep recovery-resource suspension unavailable in both UI and trusted server logic. A generic save entry point may accept the transition only when it delegates immediately to the same trusted `setResourceStatus()` path; it must never persist caller-supplied status metadata directly.
 - Use `privilegesMode: "replace"` only when a trusted editor submits a complete role privilege selection. Retain the default merge-by-ID behavior for ordinary catalog composition.
 
 ## Validation checklist
@@ -233,6 +238,7 @@ Use a search-first chip multi-select when a form selects multiple roles, privile
 - Test expired and not-yet-active assignments.
 - Test direct suspended assignments, suspended roles in inheritance paths, restoration, status metadata, core-role authority, and break-glass protection.
 - Test suspended-domain denial, domain restoration, naming validation, protected `platform` recovery, and rejection of new resources assigned to suspended domains.
+- Test suspended-resource denial, resource restoration, status metadata, domain-over-resource precedence, core authority, and protected access-control recovery resources.
 - Test deny-overrides and highest-precedence conflicts when both algorithms are supported.
 - Test that `system-admin` receives base `user` access but no inherited business-admin privileges.
 - Test direct-assignment requirements and bootstrap preservation for `system-super-admin`.

@@ -13,6 +13,7 @@ export function CiNextSecurityDataPage(props: CiSecurityDataPageProps) {
   const setRoleStatus = props.onSetRoleStatus;
   const createResourceDomain = props.onCreateResourceDomain;
   const setResourceDomainStatus = props.onSetResourceDomainStatus;
+  const setResourceStatus = props.onSetResourceStatus;
 
   const onSave = useCallback<NonNullable<CiSecurityDataPageProps["onSave"]>>(
     async (record, reason) => {
@@ -85,6 +86,20 @@ export function CiNextSecurityDataPage(props: CiSecurityDataPageProps) {
     [router, setResourceDomainStatus]
   );
 
+  const onSetResourceStatus = useCallback<
+    NonNullable<CiSecurityDataPageProps["onSetResourceStatus"]>
+  >(
+    async (resourceId, status, reason) => {
+      if (!setResourceStatus) {
+        return { ok: false, message: "Changing resource status is not available." };
+      }
+      const result = await setResourceStatus(resourceId, status, reason);
+      if (result.ok) router.refresh();
+      return result;
+    },
+    [router, setResourceStatus]
+  );
+
   return (
     <CiSecurityDataPage
       {...props}
@@ -97,6 +112,7 @@ export function CiNextSecurityDataPage(props: CiSecurityDataPageProps) {
       onSetResourceDomainStatus={
         setResourceDomainStatus ? onSetResourceDomainStatus : undefined
       }
+      onSetResourceStatus={setResourceStatus ? onSetResourceStatus : undefined}
     />
   );
 }

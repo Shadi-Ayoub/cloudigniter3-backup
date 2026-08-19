@@ -7,6 +7,7 @@ import {
   createSecurityResourceDomainAction,
   saveSecurityRecordAction,
   setSecurityResourceDomainStatusAction,
+  setSecurityResourceStatusAction,
   setSecurityRoleStatusAction,
 } from "../actions";
 import {
@@ -121,6 +122,9 @@ export async function SecurityAspectPage({
           kind === "resource"
             ? setSecurityResourceDomainStatusAction
             : undefined
+        }
+        onSetResourceStatus={
+          kind === "resource" ? setSecurityResourceStatusAction : undefined
         }
       />
     </CiPage>

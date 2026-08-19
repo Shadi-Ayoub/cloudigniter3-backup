@@ -142,6 +142,19 @@ The Amplify application reuses `SetEmberguardDefinition` for domain creation and
 the definition and mutation-maintained role-counter projection inside the same EmberGuard access-table state
 write rather than introducing a second domain store or additional request-path query.
 
+Individual resource suspension uses the same definition-write path through `setResourceStatus()`. EmberGuard
+re-resolves authority, requires a reason, records actor/time metadata, and uses audited core overrides for core
+resources. The authorizer checks domain status first and resource status second; this makes a suspended domain
+the authoritative parent denial while allowing a resource to be restored independently in preparation for a
+later domain restoration. `platform.authorization` and `platform.authorization.core` are never suspendable
+because they preserve administration and break-glass recovery.
+
+Generic resource editing never writes lifecycle metadata directly. `saveRecord()` detects a requested resource
+transition and delegates immediately to `setResourceStatus()`, which rebuilds actor/time/reason metadata from
+trusted context; a caller cannot forge transition evidence. The Amplify adapter needs no
+new table, index, handler, or request-path read: the existing optimistic `SetEmberguardDefinition` transaction
+persists resource status atomically with the authoritative catalog and role-counter projection.
+
 ## Persisted privilege-title compatibility
 
 EmberGuard owns the provider-neutral migration for definitions persisted before `CiPrivilege.title` became

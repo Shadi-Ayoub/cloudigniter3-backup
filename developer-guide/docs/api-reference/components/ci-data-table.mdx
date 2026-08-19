@@ -595,6 +595,12 @@ Read the TanStack references for [Pagination](https://tanstack.com/table/latest/
 
 :::
 
+For columns without an explicit `size`, `CiDataTable` estimates a content-weighted initial width from the heading
+and up to 100 currently loaded accessor values. Explicit `size`, `minSize`, and `maxSize` values remain
+authoritative, as do user-resized widths restored through `persistence.columnWidths`. The resolved widths form the
+table's intrinsic minimum; constrained containers scroll within the table surface rather than letting cell content
+overlap the following column.
+
 ### Row-action layout configuration
 
 | Option                    | Default               | Description                                                                                                                              |

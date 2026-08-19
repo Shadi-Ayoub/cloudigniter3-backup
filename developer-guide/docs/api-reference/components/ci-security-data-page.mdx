@@ -96,6 +96,11 @@ type CiSecurityDataPageProps = {
     status: "active" | "suspended",
     reason: string
   ) => Promise<CiSecurityMutationResult>;
+  onSetResourceStatus?: (
+    resourceId: string,
+    status: "active" | "suspended",
+    reason: string
+  ) => Promise<CiSecurityMutationResult>;
 };
 ```
 
@@ -140,3 +145,16 @@ and suspend or restore eligible domains. Creation validates the stable ID as low
 action disabled until the ID and display name are complete. Status transitions require a reason, use
 `CiAlertDialog`, show pending and outcome feedback, and never expose the `platform` recovery domain as a
 suspendable target.
+
+## Resource status controls
+
+Resource tables show an Active or Suspended badge. When `onSetResourceStatus` is supplied, eligible rows offer
+Suspend or Restore. Both transitions use `CiAlertDialog`, require a reason, block repeated submission while
+pending, and report the outcome through the page alert. The table retains the same row, actions, scopes,
+privileges, and domain relationship after suspension.
+
+Suspending a resource removes authorization immediately and produces `suspended-resource` decisions while its
+domain remains active. Domain suspension has higher precedence, so restoring an individual resource does not
+restore access while its parent domain is suspended; the restore dialog explains that condition. The
+`platform.authorization` and `platform.authorization.core` recovery resources expose no executable suspension
+path, and the trusted server adapter enforces the same protection.

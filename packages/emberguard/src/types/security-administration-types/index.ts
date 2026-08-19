@@ -19,6 +19,7 @@ export type {
   CiSecurityResourceDomainRecord,
   CiCreateSecurityResourceDomainInput,
   CiSetSecurityResourceDomainStatusInput,
+  CiSetSecurityResourceStatusInput,
   CiSecurityRoleRecord,
   CiSecurityRoleCounters,
   CiSecurityRoleCountersById,

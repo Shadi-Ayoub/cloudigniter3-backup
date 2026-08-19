@@ -370,6 +370,73 @@ test("suspended resource domains deny every resource while preserving the catalo
   );
 });
 
+test("suspended resources deny access while preserving actions and privileges", () => {
+  const suspendedDefinition: CiAccessControlDefinition = {
+    ...definition,
+    resources: definition.resources.map((resource) =>
+      resource.id === "identity.users"
+        ? {
+            ...resource,
+            status: "suspended" as const,
+            statusChange: {
+              changedAt: "2026-08-18T10:00:00.000Z",
+              changedBy: "incident-commander",
+              reason: "Contain user administration during an incident.",
+            },
+          }
+        : resource
+    ),
+  };
+  const authorizer = ciCreateAuthorizer(suspendedDefinition);
+  const tenant = ciTenantAccessScope("tenant-a");
+  const decision = authorizer.authorize({
+    subject: subject([
+      ciCreateRoleAssignment("editor", tenant, "descendants"),
+    ]),
+    resource: "identity.users",
+    action: "update",
+    scope: tenant,
+  });
+
+  assert.equal(decision.allowed, false);
+  assert.equal(decision.reason, "suspended-resource");
+  assert.equal(
+    suspendedDefinition.resources.find(
+      (resource) => resource.id === "identity.users"
+    )?.actions.length,
+    definition.resources.find((resource) => resource.id === "identity.users")
+      ?.actions.length
+  );
+
+  const suspendedParent: CiAccessControlDefinition = {
+    ...suspendedDefinition,
+    domains: suspendedDefinition.domains.map((domain) =>
+      domain.id === "identity"
+        ? {
+            ...domain,
+            status: "suspended" as const,
+            statusChange: {
+              changedAt: "2026-08-18T10:05:00.000Z",
+              changedBy: "incident-commander",
+              reason: "Escalate containment to the complete identity domain.",
+            },
+          }
+        : domain
+    ),
+  };
+  assert.equal(
+    ciCreateAuthorizer(suspendedParent).authorize({
+      subject: subject([
+        ciCreateRoleAssignment("editor", tenant, "descendants"),
+      ]),
+      resource: "identity.users",
+      action: "update",
+      scope: tenant,
+    }).reason,
+    "suspended-domain"
+  );
+});
+
 test("keeps exact and tenant scopes isolated", () => {
   const authorizer = ciCreateAuthorizer(definition);
   const actor = subject([
@@ -755,6 +822,31 @@ test("returns structured validation errors and non-blocking wildcard warnings", 
       (issue) =>
         issue.code === "invalid-domain-status" &&
         issue.message.includes("recovery path")
+    ),
+    true
+  );
+
+  const suspendedRecoveryResource: CiAccessControlDefinition = {
+    ...CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
+    resources: CI_DEFAULT_ACCESS_CONTROL_DEFINITION.resources.map((resource) =>
+      resource.id === "platform.authorization"
+        ? {
+            ...resource,
+            status: "suspended" as const,
+            statusChange: {
+              changedAt: "2026-08-18T10:00:00.000Z",
+              changedBy: "system-super-admin",
+              reason: "Unsafe recovery-resource test.",
+            },
+          }
+        : resource
+    ),
+  };
+  assert.equal(
+    ciValidateAccessControlDefinition(suspendedRecoveryResource).some(
+      (issue) =>
+        issue.code === "invalid-resource-status" &&
+        issue.message.includes("recovery resources")
     ),
     true
   );

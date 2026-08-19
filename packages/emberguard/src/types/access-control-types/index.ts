@@ -41,7 +41,11 @@ export type { CiIdentityGroupRoleMappingOptions } from "./CiIdentityGroupRoleMap
 export type { CiIdentityGroupRoleResolutionOptions } from "./CiIdentityGroupRoleResolutionOptions";
 export type { CiPrivilege } from "./CiPrivilege";
 export type { CiPrivilegeEffect } from "./CiPrivilegeEffect";
-export type { CiResourceDefinition } from "./CiResourceDefinition";
+export type {
+  CiResourceDefinition,
+  CiResourceStatus,
+  CiResourceStatusChange,
+} from "./CiResourceDefinition";
 export type {
   CiResourceDomainDefinition,
   CiResourceDomainStatus,

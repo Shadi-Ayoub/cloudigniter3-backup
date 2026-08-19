@@ -200,6 +200,12 @@ subject-role relationships. Provider reads must load the active definition befor
 authorizers must be recreated after a status-changing write. An omitted status is interpreted as `active` for
 backward compatibility.
 
+Resource-domain and individual-resource suspension use the same additive `status` and `statusChange` pattern in
+the active definition. They reuse the existing optimistic `SetEmberguardDefinition` transaction, so the
+catalog and role-counter projection change atomically without a separate lifecycle table, index, or
+authorization-path query. A suspended domain remains the parent denial for every child resource; restoring one
+resource does not bypass that domain state.
+
 ## Example subject assignment item
 
 ```json

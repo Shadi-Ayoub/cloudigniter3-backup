@@ -8,6 +8,7 @@ import type {
   CiRoleStatus,
   CiCreateSecurityResourceDomainInput,
   CiResourceDomainStatus,
+  CiResourceStatus,
 } from "@cloudigniter/core/types";
 import { appBootstrap, appCreateSecurityAdministration } from "@/kernel/server";
 
@@ -114,6 +115,31 @@ export async function setSecurityResourceDomainStatusAction(
     return {
       ok: true,
       message: `Resource domain ${domainId} was ${
+        status === "suspended" ? "suspended" : "restored"
+      }.`,
+    };
+  } catch (error) {
+    return { ok: false, message: ciNormalizeThrownError(error).message };
+  }
+}
+
+/** Suspends or restores one authorization resource without removing its policy. */
+export async function setSecurityResourceStatusAction(
+  resourceId: string,
+  status: CiResourceStatus,
+  reason: string
+): Promise<CiSecurityMutationResult> {
+  try {
+    const context = await appBootstrap();
+    await appCreateSecurityAdministration(context).setResourceStatus({
+      resourceId,
+      status,
+      reason,
+    });
+    revalidatePath("/dashboard/security", "layout");
+    return {
+      ok: true,
+      message: `Resource ${resourceId} was ${
         status === "suspended" ? "suspended" : "restored"
       }.`,
     };

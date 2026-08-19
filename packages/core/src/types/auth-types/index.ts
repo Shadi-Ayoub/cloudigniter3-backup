@@ -43,6 +43,8 @@ export type {
   CiPrivilegeEffect,
   CiResourceDefinition,
   CiResourceDefinitionLayer,
+  CiResourceStatus,
+  CiResourceStatusChange,
   CiResourceDomainDefinition,
   CiResourceDomainDefinitionLayer,
   CiResourceDomainStatus,

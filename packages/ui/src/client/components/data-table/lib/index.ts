@@ -15,6 +15,7 @@ export {
   ciLoadDataTablePreferences,
   ciSaveDataTablePreferences,
 } from "./ci-data-table-preferences";
+export { ciEstimateDataTableColumnSize } from "./ci-data-table-column-sizing";
 export {
   ciBuildDataTableExcelWorkbook,
   ciExportDataTableToExcel,

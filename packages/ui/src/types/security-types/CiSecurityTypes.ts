@@ -6,6 +6,7 @@ import type {
   CiSecurityRecordKind,
   CiRoleStatus,
   CiResourceDomainStatus,
+  CiResourceStatus,
   CiSecurityResourceDomainRecord,
   CiCreateSecurityResourceDomainInput,
 } from "@cloudigniter/core/types";
@@ -46,6 +47,11 @@ export type CiSecurityDataPageProps = {
   onSetResourceDomainStatus?: (
     domainId: string,
     status: CiResourceDomainStatus,
+    reason: string
+  ) => Promise<CiSecurityMutationResult>;
+  onSetResourceStatus?: (
+    resourceId: string,
+    status: CiResourceStatus,
     reason: string
   ) => Promise<CiSecurityMutationResult>;
 };

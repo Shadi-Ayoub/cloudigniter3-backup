@@ -201,6 +201,10 @@ export function ciCreateAuthorizer(
       return deny("suspended-domain");
     }
 
+    if (resource.status === "suspended") {
+      return deny("suspended-resource");
+    }
+
     if (!resource.actions.some((action) => action.id === request.action)) {
       return deny("unknown-action");
     }

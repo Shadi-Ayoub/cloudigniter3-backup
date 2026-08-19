@@ -48,9 +48,11 @@ import {
 } from "@cloudigniter/core/lib";
 import type {
   CiAccessScopeKind,
+  CiResourceStatus,
   CiRoleStatus,
   CiSecurityRecord,
   CiSecurityRecordKind,
+  CiSecurityResourceRecord,
   CiSecurityRoleRecord,
 } from "@cloudigniter/core/types";
 import { CiSearchableChipMultiSelect } from "./CiSearchableChipMultiSelect";
@@ -86,6 +88,10 @@ const ACCESS_SCOPE_KIND_OPTIONS: ReadonlyArray<{
 ];
 
 const OTHER_ACTION_VALUE = "__other_action__";
+const PROTECTED_RECOVERY_RESOURCE_IDS = new Set([
+  "platform.authorization",
+  "platform.authorization.core",
+]);
 
 /** Common action verbs provide consistent defaults across resource catalogs. */
 const COMMON_ACTION_OPTIONS = [
@@ -154,6 +160,7 @@ function createSecurityDraft(kind: CiSecurityRecordKind): CiSecurityRecord {
       return {
         ...base,
         kind,
+        status: "active",
         domainId: "",
         actions: ["read"],
         scopeKinds: ["tenant"],
@@ -361,11 +368,36 @@ function buildSecurityColumns(
     );
   }
   if (kind === "resource") {
-    aspectColumns.push({
-      id: "domainId",
-      accessorFn: (row) => (row.kind === "resource" ? row.domainId : ""),
-      header: "Domain",
-    });
+    aspectColumns.push(
+      {
+        id: "domainId",
+        accessorFn: (row) => (row.kind === "resource" ? row.domainId : ""),
+        header: "Domain",
+      },
+      {
+        id: "status",
+        accessorFn: (row) => (row.kind === "resource" ? row.status : ""),
+        header: "Status",
+        cell: ({ row }) => {
+          const status =
+            row.original.kind === "resource"
+              ? row.original.status ?? "active"
+              : "active";
+          return (
+            <Badge
+              variant="outline"
+              className={
+                status === "active"
+                  ? "border-success-border bg-success-surface text-success-surface-foreground"
+                  : "border-warning-border bg-warning-surface text-warning-surface-foreground"
+              }
+            >
+              {status === "active" ? "Active" : "Suspended"}
+            </Badge>
+          );
+        },
+      }
+    );
   }
   if (kind === "assignment") {
     aspectColumns.push(
@@ -1056,6 +1088,7 @@ export function CiSecurityDataPage({
   onSetRoleStatus,
   onCreateResourceDomain,
   onSetResourceDomainStatus,
+  onSetResourceStatus,
 }: CiSecurityDataPageProps) {
   const [editorSession, setEditorSession] =
     useState<CiSecurityEditorSession | null>(null);
@@ -1084,6 +1117,15 @@ export function CiSecurityDataPage({
   const [roleStatusReason, setRoleStatusReason] = useState("");
   const [roleStatusDialogOpen, setRoleStatusDialogOpen] = useState(false);
   const [isChangingRoleStatus, setIsChangingRoleStatus] = useState(false);
+  const [resourceStatusTarget, setResourceStatusTarget] =
+    useState<CiSecurityResourceRecord | null>(null);
+  const [nextResourceStatus, setNextResourceStatus] =
+    useState<CiResourceStatus>("suspended");
+  const [resourceStatusReason, setResourceStatusReason] = useState("");
+  const [resourceStatusDialogOpen, setResourceStatusDialogOpen] =
+    useState(false);
+  const [isChangingResourceStatus, setIsChangingResourceStatus] =
+    useState(false);
   const [resourceDomainsDialogOpen, setResourceDomainsDialogOpen] =
     useState(false);
   const [isPending, startTransition] = useTransition();
@@ -1158,6 +1200,32 @@ export function CiSecurityDataPage({
             },
           },
           {
+            id: "suspend-resource",
+            label: "Suspend resource",
+            icon: <CirclePause />,
+            variant: "destructive",
+            hideWhen: (record) =>
+              (!onSetResourceStatus && !onSave) ||
+              record.kind !== "resource" ||
+              (record.status ?? "active") === "suspended",
+            disableWhen: (record) =>
+              !canManage ||
+              PROTECTED_RECOVERY_RESOURCE_IDS.has(record.id) ||
+              (record.origin === "core" && !capabilities.canManageCore),
+            onSelect: (record) => {
+              if (
+                record.kind !== "resource" ||
+                (!onSetResourceStatus && !onSave)
+              )
+                return;
+              setFeedback(null);
+              setResourceStatusReason("");
+              setResourceStatusTarget(record);
+              setNextResourceStatus("suspended");
+              setResourceStatusDialogOpen(true);
+            },
+          },
+          {
             id: "delete",
             label: "Delete",
             icon: <Trash2 />,
@@ -1189,6 +1257,30 @@ export function CiSecurityDataPage({
               setRoleStatusTarget(record);
               setNextRoleStatus("active");
               setRoleStatusDialogOpen(true);
+            },
+          },
+          {
+            id: "restore-resource",
+            label: "Restore resource",
+            icon: <CirclePlay />,
+            hideWhen: (record) =>
+              (!onSetResourceStatus && !onSave) ||
+              record.kind !== "resource" ||
+              (record.status ?? "active") !== "suspended",
+            disableWhen: (record) =>
+              !canManage ||
+              (record.origin === "core" && !capabilities.canManageCore),
+            onSelect: (record) => {
+              if (
+                record.kind !== "resource" ||
+                (!onSetResourceStatus && !onSave)
+              )
+                return;
+              setFeedback(null);
+              setResourceStatusReason("");
+              setResourceStatusTarget(record);
+              setNextResourceStatus("active");
+              setResourceStatusDialogOpen(true);
             },
           },
         ],
@@ -1236,6 +1328,7 @@ export function CiSecurityDataPage({
       onDelete,
       onSave,
       onSetRoleStatus,
+      onSetResourceStatus,
       resourceDomains,
     ]
   );
@@ -1257,7 +1350,7 @@ export function CiSecurityDataPage({
     rowActions: { mode: "mixed", inlineCount: 1, reserveSpace: true },
     selection: { enabled: false },
     persistence: {
-      key: `ci-security-${kind}`,
+      key: kind === "resource" ? "ci-security-resource-v2" : `ci-security-${kind}`,
       columnWidths: true,
       // Security administration should always reopen with the complete catalog.
       // Persisted owner/search filters can otherwise make a successful create
@@ -1317,6 +1410,29 @@ export function CiSecurityDataPage({
     }
   };
 
+  /** Applies a reasoned resource suspension or restoration. */
+  const confirmResourceStatusChange = async () => {
+    if (!resourceStatusTarget || (!onSetResourceStatus && !onSave)) return;
+
+    setIsChangingResourceStatus(true);
+    try {
+      const result = onSetResourceStatus
+        ? await onSetResourceStatus(
+            resourceStatusTarget.id,
+            nextResourceStatus,
+            resourceStatusReason.trim()
+          )
+        : await onSave!(
+            { ...resourceStatusTarget, status: nextResourceStatus },
+            resourceStatusReason.trim()
+          );
+      if (!result.ok) throw new Error(result.message);
+      setFeedback(result);
+    } finally {
+      setIsChangingResourceStatus(false);
+    }
+  };
+
   return (
     <main className="mx-auto w-full max-w-7xl space-y-4 px-1 sm:px-2">
       <header className="flex flex-col gap-4 rounded-2xl border border-primary/20 bg-primary/5 p-5 shadow-sm dark:bg-primary/10 sm:p-6 lg:flex-row lg:items-end lg:justify-between">
@@ -1366,7 +1482,12 @@ export function CiSecurityDataPage({
         data={records}
         config={config}
         searchPlaceholder={`Search ${title.toLowerCase()}...`}
-        loading={isPending || isDeleting || isChangingRoleStatus}
+        loading={
+          isPending ||
+          isDeleting ||
+          isChangingRoleStatus ||
+          isChangingResourceStatus
+        }
       />
 
       <CiAlertDialog
@@ -1427,6 +1548,75 @@ export function CiSecurityDataPage({
           <p className="text-xs text-muted-foreground">
             The actor, timestamp, and this reason are stored with the latest
             role status change.
+          </p>
+        </div>
+      </CiAlertDialog>
+
+      <CiAlertDialog
+        open={resourceStatusDialogOpen}
+        onOpenChange={(open) => {
+          if (!isChangingResourceStatus) setResourceStatusDialogOpen(open);
+        }}
+        variant={nextResourceStatus === "suspended" ? "destructive" : "default"}
+        icon={
+          nextResourceStatus === "suspended" ? (
+            <CirclePause aria-hidden />
+          ) : (
+            <CirclePlay aria-hidden />
+          )
+        }
+        title={`${
+          nextResourceStatus === "suspended" ? "Suspend" : "Restore"
+        } resource “${
+          resourceStatusTarget?.title ?? resourceStatusTarget?.id ?? ""
+        }”?`}
+        description={
+          nextResourceStatus === "suspended"
+            ? "Every authorization request for this resource will be denied immediately. Its actions, privileges, domain relationship, and catalog record remain intact for restoration."
+            : "This resource will resume authorization checks unless its parent domain is still suspended."
+        }
+        confirmLabel={
+          nextResourceStatus === "suspended"
+            ? "Suspend resource"
+            : "Restore resource"
+        }
+        pendingLabel={
+          nextResourceStatus === "suspended"
+            ? "Suspending resource…"
+            : "Restoring resource…"
+        }
+        confirmDisabled={!resourceStatusReason.trim()}
+        pending={isChangingResourceStatus}
+        onConfirm={confirmResourceStatusChange}
+        onConfirmError={(error) => {
+          setFeedback({
+            ok: false,
+            message: ciNormalizeClientThrownError(error).message,
+          });
+        }}
+      >
+        <div className="grid gap-2">
+          {nextResourceStatus === "active" &&
+          resourceDomains?.find(
+            (domain) => domain.id === resourceStatusTarget?.domainId
+          )?.status === "suspended" ? (
+            <p className="rounded-lg border border-warning-border bg-warning-surface p-3 text-warning-surface-foreground">
+              The parent domain is suspended. Restoring this resource preserves
+              its active state, but access remains denied until the domain is
+              restored.
+            </p>
+          ) : null}
+          <Label htmlFor="resource-status-reason">Reason</Label>
+          <Textarea
+            id="resource-status-reason"
+            required
+            value={resourceStatusReason}
+            onChange={(event) => setResourceStatusReason(event.target.value)}
+            placeholder="Reference the incident, investigation, or approval for this change."
+          />
+          <p className="text-xs text-muted-foreground">
+            The actor, timestamp, and this reason are stored with the latest
+            resource status change.
           </p>
         </div>
       </CiAlertDialog>

@@ -8,6 +8,8 @@ import type {
   CiRoleStatusChange,
   CiResourceDomainStatus,
   CiResourceDomainStatusChange,
+  CiResourceStatus,
+  CiResourceStatusChange,
 } from "../access-control-types";
 
 export type CiSecurityEntryOrigin = "core" | "application" | "provider";
@@ -78,6 +80,8 @@ export type CiSecurityPermissionRecord = CiSecurityBaseRecord & {
 
 export type CiSecurityResourceRecord = CiSecurityBaseRecord & {
   kind: "resource";
+  status?: CiResourceStatus;
+  statusChange?: CiResourceStatusChange;
   domainId: string;
   actions: string[];
   scopeKinds: CiAccessScopeKind[];
@@ -102,6 +106,13 @@ export type CiCreateSecurityResourceDomainInput = {
 export type CiSetSecurityResourceDomainStatusInput = {
   domainId: string;
   status: CiResourceDomainStatus;
+  reason: string;
+};
+
+/** Requests a deliberate, reasoned resource suspension or restoration. */
+export type CiSetSecurityResourceStatusInput = {
+  resourceId: string;
+  status: CiResourceStatus;
   reason: string;
 };
 
@@ -199,6 +210,7 @@ export type CiSecurityAdministration = {
   setResourceDomainStatus(
     input: CiSetSecurityResourceDomainStatusInput
   ): Promise<void>;
+  setResourceStatus(input: CiSetSecurityResourceStatusInput): Promise<void>;
   saveRecord(record: CiSecurityRecord, reason?: string): Promise<void>;
   setRoleStatus(input: CiSetSecurityRoleStatusInput): Promise<void>;
   deleteRecord(record: CiSecurityRecord): Promise<void>;

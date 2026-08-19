@@ -1,0 +1,72 @@
+---
+title: CiResourceDefinition
+description: Define an authorization resource and its active or suspended lifecycle state.
+sidebar_position: 4
+---
+
+# `CiResourceDefinition`
+
+`CiResourceDefinition` describes one stable authorization capability, its supported actions and scopes, and its
+runtime lifecycle state. Import the contracts from the core public types entry point:
+
+```ts
+import type {
+  CiResourceDefinition,
+  CiResourceStatus,
+  CiResourceStatusChange,
+} from "@cloudigniter/core/types";
+```
+
+```ts
+type CiResourceStatus = "active" | "suspended";
+
+type CiResourceStatusChange = {
+  changedAt: string;
+  changedBy: string;
+  reason: string;
+};
+
+type CiResourceDefinition = {
+  id: string;
+  domainId: string;
+  title: string;
+  description?: string;
+  status?: CiResourceStatus;
+  statusChange?: CiResourceStatusChange;
+  actions: readonly CiActionDefinition[];
+  scopeKinds: readonly CiAccessScopeKind[];
+};
+```
+
+Omitting `status` means `active`. A suspended resource remains in the catalog with its actions, scopes,
+privileges, and parent-domain relationship intact, but every authorization request for it is denied with
+`suspended-resource`. A suspended resource requires valid actor, ISO timestamp, and non-empty reason metadata
+in `statusChange`.
+
+```ts
+const invoices = {
+  id: "billing.invoices",
+  domainId: "billing",
+  title: "Invoices",
+  status: "suspended",
+  statusChange: {
+    changedAt: "2026-08-18T10:00:00.000Z",
+    changedBy: "incident-commander",
+    reason: "Contain invoice authorization during the controls review.",
+  },
+  actions: [
+    { id: "read", title: "Read invoices" },
+    { id: "approve", title: "Approve invoices", sensitive: true },
+  ],
+  scopeKinds: ["tenant"],
+} satisfies CiResourceDefinition;
+```
+
+The parent domain is evaluated first. If the domain is suspended, the decision is `suspended-domain` even when
+the resource is also suspended. Restoring the resource does not restore access until its domain is active.
+`platform.authorization` and `platform.authorization.core` cannot be suspended because they preserve the
+administration and break-glass recovery paths.
+
+See [Catalog and Permission Design](/docs/core-system/authorization/catalog-and-permissions),
+[`CiResourceDomainDefinition`](./CiResourceDomainDefinition), and
+[`CiSecurityDataPage`](../components/ci-security-data-page.mdx).

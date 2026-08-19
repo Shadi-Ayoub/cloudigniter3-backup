@@ -425,7 +425,7 @@
     "semantic_hash": ""
   },
   "apps/template/amplify_outputs.json": {
-    "mtime": 1786623435.87,
+    "mtime": 1786967777.02,
     "ast_hash": "a78b68b85a938530c0a29be8eb325c23",
     "semantic_hash": ""
   },
@@ -540,8 +540,8 @@
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/dashboard/page.tsx": {
-    "mtime": 1786444666.54,
-    "ast_hash": "28e3a11abd95a832894d9b934a27c072",
+    "mtime": 1787030090.73,
+    "ast_hash": "d202377de0314623ee4817cbcc5d4b41",
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/dashboard/setup.ts": {
@@ -555,8 +555,8 @@
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/dashboard/theme/page.tsx": {
-    "mtime": 1786270835.93,
-    "ast_hash": "443b5ad10781f970c4f14969a052e4e5",
+    "mtime": 1787030090.9,
+    "ast_hash": "79d080d95b76624e1318374cfe32509d",
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/login/layout.tsx": {
@@ -585,8 +585,8 @@
     "semantic_hash": ""
   },
   "apps/template/src/app/layout.tsx": {
-    "mtime": 1784701465.05,
-    "ast_hash": "3edd4dcad915301fe69329f11c9ffae2",
+    "mtime": 1786965186.04,
+    "ast_hash": "d7eb82dc4ad81b3d79484589a2f82934",
     "semantic_hash": ""
   },
   "apps/template/src/app/not-found.tsx": {
@@ -2855,8 +2855,8 @@
     "semantic_hash": ""
   },
   "packages/core/__tests__/auth/access-control.test.ts": {
-    "mtime": 1786522185.8,
-    "ast_hash": "ed68184bbf45a53e018016e4bb79358a",
+    "mtime": 1787052627.81,
+    "ast_hash": "7132fc7de5a5313a09f9178c553cf4d4",
     "semantic_hash": ""
   },
   "packages/core/obfuscator.config.json": {
@@ -3120,18 +3120,18 @@
     "semantic_hash": ""
   },
   "packages/core/src/lib/auth/access-control/ci-core-access-control.ts": {
-    "mtime": 1786444973.19,
-    "ast_hash": "e8369d39e7f88bc7099eb6482803d760",
+    "mtime": 1786958081.27,
+    "ast_hash": "9e98dcf3c5b3a32ae4c957b8c599dca7",
     "semantic_hash": ""
   },
   "packages/core/src/lib/auth/access-control/ci-create-authorizer.ts": {
-    "mtime": 1786521932.82,
-    "ast_hash": "09b8008eeb6b7ecd9a6a855787529c96",
+    "mtime": 1787052131.02,
+    "ast_hash": "d81a3f8e37846832a1c278050c9b43ba",
     "semantic_hash": ""
   },
   "packages/core/src/lib/auth/access-control/ci-default-access-control.ts": {
-    "mtime": 1786444973.21,
-    "ast_hash": "f1031d67dfb03de652e8b475f3b01e04",
+    "mtime": 1786958121.72,
+    "ast_hash": "b5949fc325f0237bb5c1bc9d82eb1ebe",
     "semantic_hash": ""
   },
   "packages/core/src/lib/auth/access-control/ci-identity-group-grants.ts": {
@@ -3145,8 +3145,8 @@
     "semantic_hash": ""
   },
   "packages/core/src/lib/auth/access-control/ci-validate-access-control.ts": {
-    "mtime": 1786522133.53,
-    "ast_hash": "1ef8273afbc2485ae5898ac5ea3cc272",
+    "mtime": 1787052604.94,
+    "ast_hash": "a0221b96d4916be2caef7be2ba7eaa06",
     "semantic_hash": ""
   },
   "packages/core/src/lib/auth/access-control/index.ts": {
@@ -3780,8 +3780,8 @@
     "semantic_hash": ""
   },
   "packages/core/src/types/auth-types/access-control-types/CiAccessControlValidationIssue.ts": {
-    "mtime": 1786521806.75,
-    "ast_hash": "ae06e01f249f6557b82add41f8b714e8",
+    "mtime": 1787052124.92,
+    "ast_hash": "919025a57c433d26e9c56ebfc29741c3",
     "semantic_hash": ""
   },
   "packages/core/src/types/auth-types/access-control-types/CiAccessRequirement.ts": {
@@ -3820,8 +3820,8 @@
     "semantic_hash": ""
   },
   "packages/core/src/types/auth-types/access-control-types/CiAuthorizationDecisionReason.ts": {
-    "mtime": 1786521806.64,
-    "ast_hash": "39e446c88448164c9f206e7114516e4a",
+    "mtime": 1787052093.9,
+    "ast_hash": "89095fd84d980c2fdf0b027507b3fa72",
     "semantic_hash": ""
   },
   "packages/core/src/types/auth-types/access-control-types/CiAuthorizationMatch.ts": {
@@ -3890,8 +3890,8 @@
     "semantic_hash": ""
   },
   "packages/core/src/types/auth-types/access-control-types/CiResourceDomainDefinition.ts": {
-    "mtime": 1785815019.67,
-    "ast_hash": "e064ec39c321b8c2204ee54e997dd356",
+    "mtime": 1787052093.6,
+    "ast_hash": "f23298488c22b1a9f390d6d2ea8325ef",
     "semantic_hash": ""
   },
   "packages/core/src/types/auth-types/access-control-types/CiRoleAssignment.ts": {
@@ -3915,13 +3915,13 @@
     "semantic_hash": ""
   },
   "packages/core/src/types/auth-types/access-control-types/index.ts": {
-    "mtime": 1786521806.5,
-    "ast_hash": "369d4220e4b35933c8eaac1fee417f4e",
+    "mtime": 1787052093.76,
+    "ast_hash": "e1252742696defcf74092265f1cd968e",
     "semantic_hash": ""
   },
   "packages/core/src/types/auth-types/index.ts": {
-    "mtime": 1786521821.21,
-    "ast_hash": "e3810ffbd645c51a7bdfa06793abdaeb",
+    "mtime": 1787052101.27,
+    "ast_hash": "4dbdf7c325502a3cd63748b16515e905",
     "semantic_hash": ""
   },
   "packages/core/src/types/console-print-types/CiConsoleLogOptions.ts": {
@@ -4435,8 +4435,8 @@
     "semantic_hash": ""
   },
   "packages/core/src/types/index.ts": {
-    "mtime": 1786870668.14,
-    "ast_hash": "24b051306572cc72ee5ac9eeeaa8f9cb",
+    "mtime": 1787052140.79,
+    "ast_hash": "5988528474ded0ad983069ef4d3d85be",
     "semantic_hash": ""
   },
   "packages/core/src/types/kernel-types/CiCoreConfig.ts": {
@@ -4675,8 +4675,8 @@
     "semantic_hash": ""
   },
   "packages/core/src/types/page-types/CiBreadcrumbItem.ts": {
-    "mtime": 1779187305.52,
-    "ast_hash": "6c51b7116cb297dba457e5085e15f43f",
+    "mtime": 1787029915.04,
+    "ast_hash": "c496616f99421a5b6e2b83454fee039b",
     "semantic_hash": ""
   },
   "packages/core/src/types/page-types/CiCollapsiblePageHeaderProps.ts": {
@@ -4710,8 +4710,8 @@
     "semantic_hash": ""
   },
   "packages/core/src/types/page-types/CiPageSetup.ts": {
-    "mtime": 1783847835.71,
-    "ast_hash": "6d35ed47563eeaa5777a8bee2911a18d",
+    "mtime": 1787029947.42,
+    "ast_hash": "d8d6b671815dca841889f30e25ca405d",
     "semantic_hash": ""
   },
   "packages/core/src/types/page-types/CiPageShellProps.ts": {
@@ -4865,8 +4865,8 @@
     "semantic_hash": ""
   },
   "packages/core/src/types/security-types/index.ts": {
-    "mtime": 1786613288.52,
-    "ast_hash": "8c0cfa0c38d48c1240236759ce9d09dd",
+    "mtime": 1787052140.7,
+    "ast_hash": "40916f79258af47061cf45e87f752f64",
     "semantic_hash": ""
   },
   "packages/core/src/types/seeder-types/CiClearSeederInterface.ts": {
@@ -5360,13 +5360,13 @@
     "semantic_hash": ""
   },
   "packages/next/src/client/page/CiBreadcrumbs.tsx": {
-    "mtime": 1785735896.29,
-    "ast_hash": "2fc535f24bf86802fd4336d4c826c943",
+    "mtime": 1787031247.89,
+    "ast_hash": "bd657e8718d6994f898025e363964713",
     "semantic_hash": ""
   },
   "packages/next/src/client/page/CiPage.tsx": {
-    "mtime": 1786274301.93,
-    "ast_hash": "b051f389ce61871127812fbf2e398e6e",
+    "mtime": 1787029947.5,
+    "ast_hash": "ebb8f92731109d435dd5dd0483f77222",
     "semantic_hash": ""
   },
   "packages/next/src/client/page/index.ts": {
@@ -6870,8 +6870,8 @@
     "semantic_hash": ""
   },
   "packages/next/src/ui/client/components/profile-menu/CiNextAwsProfileMenu.tsx": {
-    "mtime": 1784956181.13,
-    "ast_hash": "b268d6bb041bd456afca67574adb8aed",
+    "mtime": 1786965820.88,
+    "ast_hash": "257f1cb6e8b1617adb30b9e1ba44f61e",
     "semantic_hash": ""
   },
   "packages/next/src/ui/client/components/profile-menu/CiNextProfileMenu.tsx": {
@@ -7160,8 +7160,8 @@
     "semantic_hash": ""
   },
   "packages/next/src/ui/client/pages/login/CiNextAwsLoginPage.tsx": {
-    "mtime": 1783250655.21,
-    "ast_hash": "5291f12d6184198f48edd07f057d7340",
+    "mtime": 1786965801.88,
+    "ast_hash": "ee98396bab9d56dbe41fec9766306bd8",
     "semantic_hash": ""
   },
   "packages/next/src/ui/client/pages/login/use-show-loader-when-authenticator-disappears.ts": {
@@ -7345,8 +7345,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/data-table/components/CiDataTable.tsx": {
-    "mtime": 1786517403.52,
-    "ast_hash": "94faa454e4f745a2c218acad62b5b72f",
+    "mtime": 1787031262.4,
+    "ast_hash": "039e2b0ba7ed9a8e6e73748bd1a0d210",
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/data-table/components/CiDataTableRowActionsMenu.tsx": {
@@ -7500,8 +7500,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/shadcn/input.tsx": {
-    "mtime": 1780156746.77,
-    "ast_hash": "621bc4b0ff7f874009bdcafbe829c3c8",
+    "mtime": 1786959666.19,
+    "ast_hash": "a41713260f5832edf1ddb04b65d18619",
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/shadcn/label.tsx": {
@@ -7560,8 +7560,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/shadcn/textarea.tsx": {
-    "mtime": 1780156746.78,
-    "ast_hash": "1321575b3b0a40fc55ba604b0d3f6d47",
+    "mtime": 1786959666.28,
+    "ast_hash": "926021946d46ad0fada695239d883351",
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/shadcn/tooltip.tsx": {
@@ -7860,8 +7860,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/page/components/CiPageShell.tsx": {
-    "mtime": 1783756820.09,
-    "ast_hash": "8d04d7c828d8fc9d21f97b73a9edf235",
+    "mtime": 1786966609.73,
+    "ast_hash": "d9a112d323940f6e69c30686ebb3f48f",
     "semantic_hash": ""
   },
   "packages/ui/src/client/page/components/index.ts": {
@@ -8480,8 +8480,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/toc.mdx": {
-    "mtime": 1786872351.07,
-    "ast_hash": "1d9e82c25a3377d2175d03c98f39728b",
+    "mtime": 1787052540.06,
+    "ast_hash": "b59f7aae73877605839efde29855b140",
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/trace-diagnostic/intro.mdx": {
@@ -8680,8 +8680,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/authorization/catalog-and-permissions.mdx": {
-    "mtime": 1786525222.79,
-    "ast_hash": "410be6bf7c46965af5b175a1ae28f3c0",
+    "mtime": 1787052513.5,
+    "ast_hash": "b126cfd132030989b47569c1b16219d4",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/authorization/dynamodb-persistence.mdx": {
@@ -9405,8 +9405,8 @@
     "semantic_hash": ""
   },
   "packages/aws/__tests__/backend/post-build-plan.test.ts": {
-    "mtime": 1786620041.61,
-    "ast_hash": "7478f04abeb9a55be276a179b61f09fe",
+    "mtime": 1786967588.53,
+    "ast_hash": "77608c173c418e09536cb7c30b1f0118",
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/resources/backend-manifest.ts": {
@@ -9630,8 +9630,8 @@
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/resources/data/emberguard-access-table/policy.ts": {
-    "mtime": 1786620075.69,
-    "ast_hash": "ca451a4e86a172b9f8902ef034fd96ce",
+    "mtime": 1786967588.42,
+    "ast_hash": "5ad432b225c5ab4a536ca19a8989eb93",
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/resources/data/emberguard-access-table/types.ts": {
@@ -9640,8 +9640,8 @@
     "semantic_hash": ""
   },
   "packages/emberguard/__tests__/auth/access-control.test.ts": {
-    "mtime": 1786522023.7,
-    "ast_hash": "194b3216c0af63a7adafe03aefff5f42",
+    "mtime": 1787052627.73,
+    "ast_hash": "3eefcbaef6585c6a21c8ac8628f9e26c",
     "semantic_hash": ""
   },
   "packages/emberguard/package.json": {
@@ -9685,18 +9685,18 @@
     "semantic_hash": ""
   },
   "packages/emberguard/src/lib/access-control/ci-core-access-control.ts": {
-    "mtime": 1786444972.86,
-    "ast_hash": "c61b30efbb784cc91de5320cd19ef84e",
+    "mtime": 1786958081.35,
+    "ast_hash": "33a078818870547bbd892f3fe5349090",
     "semantic_hash": ""
   },
   "packages/emberguard/src/lib/access-control/ci-create-authorizer.ts": {
-    "mtime": 1786521932.81,
-    "ast_hash": "8176c71d8eb26e011d08226097c0a7e2",
+    "mtime": 1787052130.95,
+    "ast_hash": "7817b865a085525906fe415409cc46a4",
     "semantic_hash": ""
   },
   "packages/emberguard/src/lib/access-control/ci-default-access-control.ts": {
-    "mtime": 1786444972.88,
-    "ast_hash": "3e9199f873a8a0f25940b02ab4fff02d",
+    "mtime": 1786958121.82,
+    "ast_hash": "28c203d4525bdc5fb2d4d3dc8a7a3638",
     "semantic_hash": ""
   },
   "packages/emberguard/src/lib/access-control/ci-identity-group-grants.ts": {
@@ -9710,8 +9710,8 @@
     "semantic_hash": ""
   },
   "packages/emberguard/src/lib/access-control/ci-validate-access-control.ts": {
-    "mtime": 1786522133.46,
-    "ast_hash": "458a0bc7fe064fa3eac3ce8f739554f2",
+    "mtime": 1787052604.86,
+    "ast_hash": "3f68b8acc94d110f1b05a9cca7f6394e",
     "semantic_hash": ""
   },
   "packages/emberguard/src/lib/access-control/index.ts": {
@@ -9740,8 +9740,8 @@
     "semantic_hash": ""
   },
   "packages/emberguard/src/providers/aws/provider.ts": {
-    "mtime": 1786622061.0,
-    "ast_hash": "7a2266eb5664fcf3cdfe651cb427a097",
+    "mtime": 1786967206.59,
+    "ast_hash": "626eeabe39d548d2bcf0a4045816ae02",
     "semantic_hash": ""
   },
   "packages/emberguard/src/server/index.ts": {
@@ -9765,8 +9765,8 @@
     "semantic_hash": ""
   },
   "packages/emberguard/src/types/access-control-types/CiAccessControlValidationIssue.ts": {
-    "mtime": 1786521806.7,
-    "ast_hash": "ae06e01f249f6557b82add41f8b714e8",
+    "mtime": 1787052124.83,
+    "ast_hash": "919025a57c433d26e9c56ebfc29741c3",
     "semantic_hash": ""
   },
   "packages/emberguard/src/types/access-control-types/CiAccessRequirement.ts": {
@@ -9805,8 +9805,8 @@
     "semantic_hash": ""
   },
   "packages/emberguard/src/types/access-control-types/CiAuthorizationDecisionReason.ts": {
-    "mtime": 1786521806.55,
-    "ast_hash": "39e446c88448164c9f206e7114516e4a",
+    "mtime": 1787052093.84,
+    "ast_hash": "89095fd84d980c2fdf0b027507b3fa72",
     "semantic_hash": ""
   },
   "packages/emberguard/src/types/access-control-types/CiAuthorizationMatch.ts": {
@@ -9875,8 +9875,8 @@
     "semantic_hash": ""
   },
   "packages/emberguard/src/types/access-control-types/CiResourceDomainDefinition.ts": {
-    "mtime": 1786164987.85,
-    "ast_hash": "e064ec39c321b8c2204ee54e997dd356",
+    "mtime": 1787052093.51,
+    "ast_hash": "f23298488c22b1a9f390d6d2ea8325ef",
     "semantic_hash": ""
   },
   "packages/emberguard/src/types/access-control-types/CiRoleAssignment.ts": {
@@ -9900,8 +9900,8 @@
     "semantic_hash": ""
   },
   "packages/emberguard/src/types/access-control-types/index.ts": {
-    "mtime": 1786521806.43,
-    "ast_hash": "369d4220e4b35933c8eaac1fee417f4e",
+    "mtime": 1787052093.68,
+    "ast_hash": "e1252742696defcf74092265f1cd968e",
     "semantic_hash": ""
   },
   "packages/emberguard/src/types/index.ts": {
@@ -10535,13 +10535,13 @@
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/dashboard/security/_components/SecurityAspectPage.tsx": {
-    "mtime": 1786613735.37,
-    "ast_hash": "5d8314a8d986b1704a37c18700d0143d",
+    "mtime": 1787052197.9,
+    "ast_hash": "0842da8ae3699d823faffa241a93f19a",
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/dashboard/security/actions.ts": {
-    "mtime": 1786521884.58,
-    "ast_hash": "67cb2deb41e126a9f5de14e9d4a9b533",
+    "mtime": 1787052197.83,
+    "ast_hash": "2d88282371e1f81fe1cd47efd973c69c",
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/dashboard/security/assignments/page.tsx": {
@@ -10555,8 +10555,8 @@
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/dashboard/security/page.tsx": {
-    "mtime": 1786613735.38,
-    "ast_hash": "68d8e63e31dfc87869e39b2a45086251",
+    "mtime": 1787030090.79,
+    "ast_hash": "f13ef10e84261a61d92ed49f028da39e",
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/dashboard/security/permissions/page.tsx": {
@@ -10575,8 +10575,8 @@
     "semantic_hash": ""
   },
   "apps/template/src/kernel/server/api/system/security/app-security-service.ts": {
-    "mtime": 1786263271.49,
-    "ast_hash": "f533ae8a7f0a747302526d24fc015ffc",
+    "mtime": 1786958061.35,
+    "ast_hash": "e73fb3cbdc8ced50991a36fe08180836",
     "semantic_hash": ""
   },
   "apps/template/src/kernel/server/api/system/security/index.ts": {
@@ -10585,8 +10585,8 @@
     "semantic_hash": ""
   },
   "packages/next/src/ui/client/pages/dashboard/security/CiNextSecurityDataPage.tsx": {
-    "mtime": 1786521884.52,
-    "ast_hash": "39c935a7d27d9fcd3d35889c9f107b4d",
+    "mtime": 1787052187.48,
+    "ast_hash": "e491f30d7d6c0d07f2cc459727f4d3e5",
     "semantic_hash": ""
   },
   "packages/next/src/ui/client/pages/dashboard/security/index.ts": {
@@ -10600,8 +10600,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/security/CiSecurityDataPage.tsx": {
-    "mtime": 1786614703.83,
-    "ast_hash": "2049ae610c84d2532588b86c2228acd3",
+    "mtime": 1787052335.67,
+    "ast_hash": "276be9790f6c5c93c4f0c9a0ddf74a7c",
     "semantic_hash": ""
   },
   "packages/ui/src/client/security/index.ts": {
@@ -10610,8 +10610,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/types/security-types/CiSecurityTypes.ts": {
-    "mtime": 1786521884.44,
-    "ast_hash": "6272a8d828015846bd3681a8a82e6d94",
+    "mtime": 1787052179.5,
+    "ast_hash": "964e9fccffb85be580d88bfa6d18c9dc",
     "semantic_hash": ""
   },
   "packages/ui/src/types/security-types/index.ts": {
@@ -10630,8 +10630,8 @@
     "semantic_hash": ""
   },
   "packages/aws/src/lib/emberguard/ci-create-aws-emberguard-administration-repository.ts": {
-    "mtime": 1786613841.03,
-    "ast_hash": "4e0157530e78293237141f3c22f6359a",
+    "mtime": 1786959875.37,
+    "ast_hash": "2773ae03f3600578b40299894d6875e0",
     "semantic_hash": ""
   },
   "packages/aws/src/lib/emberguard/ci-resolve-aws-cognito-identity-groups.ts": {
@@ -10655,13 +10655,13 @@
     "semantic_hash": ""
   },
   "packages/emberguard/__tests__/auth/security-administration.test.ts": {
-    "mtime": 1786613735.26,
-    "ast_hash": "bcfa98340a31ae5bdda811f37876d0fc",
+    "mtime": 1787052314.69,
+    "ast_hash": "ce72e50f1d29b98d435e8734a91960d1",
     "semantic_hash": ""
   },
   "packages/emberguard/src/lib/security-administration/ci-create-security-administration.ts": {
-    "mtime": 1786613508.06,
-    "ast_hash": "ba05ed03b54a7868edeb9a9aab1431b1",
+    "mtime": 1787052172.48,
+    "ast_hash": "64694b6718610ebb63a5df56328a7f29",
     "semantic_hash": ""
   },
   "packages/emberguard/src/lib/security-administration/index.ts": {
@@ -10670,13 +10670,13 @@
     "semantic_hash": ""
   },
   "packages/emberguard/src/types/security-administration-types/CiSecurityAdministrationTypes.ts": {
-    "mtime": 1786613836.48,
-    "ast_hash": "cf80038bf9c30217b4ca42c89e7514f0",
+    "mtime": 1787052140.62,
+    "ast_hash": "6bb5b53a5a9ea983c0784a0b71f35b65",
     "semantic_hash": ""
   },
   "packages/emberguard/src/types/security-administration-types/index.ts": {
-    "mtime": 1786613288.46,
-    "ast_hash": "4d7a86368858b5f11dba256d204e3afb",
+    "mtime": 1787052147.3,
+    "ast_hash": "4b116bd69a351f3d7d9b9ef92fea5938",
     "semantic_hash": ""
   },
   "packages/next/src/server/emberguard/ci-create-next-security-administration.ts": {
@@ -10825,13 +10825,13 @@
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-development/references/access-control.md": {
-    "mtime": 1786622728.24,
-    "ast_hash": "1dbe5ebbe9e711c8b48cdee8edc1e7e4",
+    "mtime": 1787052547.83,
+    "ast_hash": "a5730ef725bfe9507f6964c4d96ccacc",
     "semantic_hash": ""
   },
   "developer-guide/company-developers/authorization/access-control-strategy.mdx": {
-    "mtime": 1786522101.07,
-    "ast_hash": "a47dff049a464be4bc02d054e554c5d0",
+    "mtime": 1787052539.98,
+    "ast_hash": "e99c721ae1c3121848b743fc5a0e7238",
     "semantic_hash": ""
   },
   "developer-guide/static/img/logo.png": {
@@ -10875,8 +10875,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/security/CiSearchableChipMultiSelect.tsx": {
-    "mtime": 1786441544.9,
-    "ast_hash": "b1c14c8f265225542953d6d71c875603",
+    "mtime": 1787025995.36,
+    "ast_hash": "ead025610587a1bed89c9762c1ee708c",
     "semantic_hash": ""
   },
   "packages/ui/src/client/security/ci-security-role-options.ts": {
@@ -10885,8 +10885,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/components/ci-security-data-page.mdx": {
-    "mtime": 1786614703.91,
-    "ast_hash": "e9e96dfdd26106d450eaf51fa8a3a047",
+    "mtime": 1787052524.78,
+    "ast_hash": "183c31db361f30dbe465790896d4678b",
     "semantic_hash": ""
   },
   "packages/ui/__tests__/security/ci-security-editor-session.test.ts": {
@@ -10930,8 +10930,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/feedback/CiAlertDialog.tsx": {
-    "mtime": 1786520663.09,
-    "ast_hash": "275d45872b878af7d8318ccfb5d6af5e",
+    "mtime": 1787052976.12,
+    "ast_hash": "df574cd984d90a7f67233e40dbd84b05",
     "semantic_hash": ""
   },
   "packages/ui/src/types/feedback-types/CiAlertDialogProps.ts": {
@@ -11010,8 +11010,8 @@
     "semantic_hash": ""
   },
   "packages/emberguard/__tests__/auth/aws-provider-table-keys.test.ts": {
-    "mtime": 1786622025.45,
-    "ast_hash": "658525fc30563be6bb8bfd02020a1c26",
+    "mtime": 1786967226.52,
+    "ast_hash": "db53cfb4e191c9900d98ae478bcd836b",
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-development/references/table-keys.md": {
@@ -11672,6 +11672,21 @@
   ".agents/skills/cloudigniter-development/references/resource-studio.md": {
     "mtime": 1786880118.71,
     "ast_hash": "d6a9fcb5f2e4ef26dbb54a7caf6dce02",
+    "semantic_hash": ""
+  },
+  "apps/template/src/app/(system)/dashboard/breadcrumb-menu.ts": {
+    "mtime": 1787030090.68,
+    "ast_hash": "5c6c72970e56e4b4408bf3d9e4f74baf",
+    "semantic_hash": ""
+  },
+  "packages/ui/src/client/security/CiResourceDomainsDialog.tsx": {
+    "mtime": 1787052972.9,
+    "ast_hash": "5810044b4559e0af89db94b6cd2c7cbc",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/api-reference/type-definitions/CiResourceDomainDefinition.mdx": {
+    "mtime": 1787052557.62,
+    "ast_hash": "1ed29136c1b4e236d145c19d69e3631f",
     "semantic_hash": ""
   }
 }

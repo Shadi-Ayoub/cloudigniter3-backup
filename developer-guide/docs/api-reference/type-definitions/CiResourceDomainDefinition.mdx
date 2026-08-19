@@ -62,5 +62,10 @@ A suspended domain remains in the catalog, but the authorizer denies every resou
 same stable domain and resource relationships. The `platform` core domain is protected from suspension because
 it contains the administration recovery path.
 
+Domain status is the parent gate for resource status. A resource restored inside a suspended domain remains
+unavailable until the domain is restored. When both are suspended, the authorizer reports `suspended-domain`
+because domain evaluation occurs first.
+
 See [Catalog and Permission Design](/docs/core-system/authorization/catalog-and-permissions) and
+[`CiResourceDefinition`](./CiResourceDefinition) and
 [`CiSecurityDataPage`](../components/ci-security-data-page.mdx).
