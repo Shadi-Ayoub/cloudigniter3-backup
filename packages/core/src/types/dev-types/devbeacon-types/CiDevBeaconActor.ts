@@ -1,4 +1,4 @@
-export type CiDevBeaconActor = {
-  authenticated: boolean;
-  roles: readonly string[];
-};
+import type { CiDeveloperToolsActor } from "../developer-tools-types";
+
+/** @deprecated Use `CiDeveloperToolsActor` for shared development features. */
+export type CiDevBeaconActor = CiDeveloperToolsActor;

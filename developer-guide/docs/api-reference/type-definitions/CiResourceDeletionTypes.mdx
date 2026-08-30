@@ -1,0 +1,37 @@
+---
+title: Resource Deletion Types
+description: Provider-neutral contracts for soft delete, restore, purge, deletion metadata, and lifecycle results.
+sidebar_position: 12
+---
+
+# Resource deletion types
+
+Import the lifecycle contracts from the canonical Core types entry point:
+
+```ts
+import type {
+  CiPurgeResourceInput,
+  CiResourceDeletionMetadata,
+  CiResourceDeletionState,
+  CiResourceLifecycleMutationResult,
+  CiRestoreResourceInput,
+  CiSoftDeleteResourceInput,
+} from "@cloudigniter/core/types";
+```
+
+`CiResourceDeletionState` is `"active" | "deleted"`. Deleted records may carry trusted
+`CiResourceDeletionMetadata` with `operationId`, `deletedAt`, `deletedBy`, and `reason`.
+
+Soft delete and restore inputs accept a stable `resourceId` and required `reason`. Purge additionally requires
+`confirmation`, which trusted logic must compare exactly with `resourceId`. These input contracts never make a
+browser-provided actor or timestamp authoritative.
+
+`CiResourceLifecycleMutationResult<TResource>` is a serializable success/error union for server-action callbacks:
+
+```ts
+type Result<T> =
+  { ok: true; message: string; resource?: T } | { ok: false; message: string };
+```
+
+Tenant-specific aliases such as `CiDeleteTenantInput`, `CiRestoreTenantInput`, and `CiPurgeTenantInput` replace
+`resourceId` with `tenantId` while preserving the same lifecycle rules.

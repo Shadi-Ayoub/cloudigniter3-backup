@@ -75,7 +75,13 @@ information, and extra row/global actions. The manager uses generated field colu
 the authoritative `getRowId` prop.
 
 The default row-action configuration is mixed mode with one inline action and reserved action space. A caller
-may override it through `tableProps.config.rowActions`.
+may override it through `tableProps.config.rowActions`. The manager uses `rowActions.overflow: 1`, matching the
+Core default; inline actions with icons are icon-only and retain their labels in tooltips and the overflow menu.
+
+The rendered table also receives the standard full-width management header. Its default title badge is
+`Data management`; its context chips report either the local record count or `Provider-backed`, plus
+`Management enabled` or `Read only`. Override `titleBadge`, `titleChips`, `titleIcon`, or `titleIconTone` through
+`tableProps` when the entity has more specific context.
 
 ## Field metadata
 

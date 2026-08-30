@@ -1,0 +1,76 @@
+---
+title: Org Unit management types
+description: Public shared-tree records, create/update inputs, list results, and authoritative request context.
+sidebar_position: 19
+---
+
+# Org Unit management types
+
+Import runtime-neutral Org Unit contracts from `@cloudigniter/core/types`:
+
+```ts
+import type {
+  CiCreateOrgUnitInput,
+  CiListOrgUnitsResult,
+  CiOrgUnitContext,
+  CiOrgUnitManagementRow,
+  CiUpdateOrgUnitInput,
+} from "@cloudigniter/core/types";
+```
+
+## Management record
+
+```ts
+type CiOrgUnitManagementRow = {
+  orgUnitId: string;
+  parentId: string | null;
+  ancestorOrgUnitIds: string[];
+  name: string;
+  slug: string;
+  path: string;
+  description?: string;
+  status: "active" | "suspended" | "archived";
+  tenantIds: string[];
+  childIds: string[];
+  createdAt: string;
+  updatedAt: string;
+  version: number;
+};
+```
+
+`ancestorOrgUnitIds` is ordered from root to direct parent. Provider-backed routing supplies it authoritatively; browser code must not derive it from `path`.
+
+## Mutations
+
+```ts
+type CiCreateOrgUnitInput = {
+  orgUnitId: string;
+  parentId?: string | null;
+  name: string;
+  slug: string;
+  description?: string;
+  status?: CiOrgUnitStatus;
+  tenantIds: string[];
+  meta?: Record<string, unknown>;
+};
+
+type CiUpdateOrgUnitInput = {
+  orgUnitId: string;
+  parentId?: string | null;
+  name: string;
+  description?: string;
+  status: CiOrgUnitStatus;
+  tenantIds: string[];
+  expectedVersion: number;
+};
+```
+
+IDs and slugs use lowercase kebab case in the management UI; the provider rejects empty values and `#` key delimiters. At least one tenant is required. A child's tenant IDs must be available on its parent. `expectedVersion` protects edits from overwriting a newer mutation.
+
+`parentId` is optional for compatibility. Omitting it preserves the current parent; a string moves the complete subtree below that Org Unit and `null` moves it to the tree root. The provider rejects self/descendant cycles and tenant-incompatible parents, then atomically rewrites paths, predecessor IDs, routing attachments, projections, and parent child lists. Slug remains immutable. Moves exceeding the provider's 100-operation transaction bound fail without partial writes.
+
+## Request context and scope
+
+`CiOrgUnitContext` includes the resolved tenant ID, canonical node ID/path/status, optional parent, and optional authoritative `ancestorOrgUnitIds`. Convert it to `CiOrgUnitAccessScope` with [`ciOrgUnitContextAccessScope`](../shared-apis/ci-org-unit-context-access-scope).
+
+See [Org Unit Management](../../core-system/multi-Tenancy/org-unit-management) for the workflow.

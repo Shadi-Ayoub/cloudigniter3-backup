@@ -6,10 +6,7 @@ import {
   ciCreateRoleAssignments,
   ciSystemAccessScope,
 } from "@cloudigniter/core/lib";
-import {
-  appBootstrap,
-  appCreateSecurityAdministration,
-} from "@/kernel/server";
+import { appBootstrap, appCreateSecurityAdministration } from "@/kernel/server";
 import { dashboardBreadcrumbChildren } from "./breadcrumb-menu";
 import { setup } from "./setup";
 
@@ -34,6 +31,18 @@ export default async function CPHomePage() {
     action: "read",
     scope: ciSystemAccessScope(),
   });
+  const canReadTenants = ciCreateAuthorizer(definition).can({
+    subject,
+    resource: "platform.tenants",
+    action: "read",
+    scope: ciSystemAccessScope(),
+  });
+  const canReadOrgUnits = ciCreateAuthorizer(definition).can({
+    subject,
+    resource: "platform.org-units",
+    action: "read",
+    scope: ciSystemAccessScope(),
+  });
   const roleLabel =
     context.auth.user.primaryRole?.replaceAll("-", " ") ?? "Authenticated user";
 
@@ -50,11 +59,17 @@ export default async function CPHomePage() {
       context={context}
     >
       <CiNextDashboardOverview
-        setup={
-          canReadSecurity
-            ? setup
-            : setup.filter((card) => card.id !== "dashboard-security")
-        }
+        setup={setup.filter((card) => {
+          if (card.id === "dashboard-security") return canReadSecurity;
+          if (card.id === "dashboard-org-units") return canReadOrgUnits;
+          if (
+            card.id === "dashboard-tenants" ||
+            card.id === "dashboard-trash"
+          ) {
+            return canReadTenants;
+          }
+          return true;
+        })}
         eyebrow="Administration workspace"
         title="Control center"
         description="A focused view of the people, policy, tenants, and platform services that keep your application operating securely."

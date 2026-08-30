@@ -1,8 +1,18 @@
-import type { CiSystemItemType, CiTenantStatus } from "@ci-core/types";
+import type {
+  CiResourceDeletionMetadata,
+  CiResourceDeletionState,
+  CiSystemItemType,
+  CiTenantStatus,
+  CiTenantStatusTransitionMetadata,
+} from "@ci-core/types";
 
 export type CiTenantDdbTableItem = {
   PK: string; // "TENANT"
   SK: string; // "TENANT#<tenantId>"
+  GSI1PK: string;
+  GSI1SK: string;
+  GSI2PK?: string;
+  GSI2SK?: string;
 
   id: string;
   type: CiSystemItemType;
@@ -12,6 +22,9 @@ export type CiTenantDdbTableItem = {
    * CiTenant lifecycle status used by middleware and authz gates.
    */
   status: CiTenantStatus;
+  statusTransition?: CiTenantStatusTransitionMetadata;
+  deletionState: CiResourceDeletionState;
+  deletion?: CiResourceDeletionMetadata;
 
   name: string;
   description?: string;
@@ -24,4 +37,5 @@ export type CiTenantDdbTableItem = {
 
   createdAt: string;
   updatedAt: string;
+  version: number;
 };

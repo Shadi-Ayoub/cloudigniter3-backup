@@ -1,72 +1,26 @@
 ---
-title: Supported Modes
+title: Supported modes
+description: The canonical CiEnvMode values and their intended use.
 sidebar_position: 2
 ---
 
-# 🚀 Supported Modes
-
 ```ts
-export type CiEnvMode = "live" | "test" | "sandbox";
+export type CiEnvMode =
+  | "development"
+  | "test"
+  | "staging"
+  | "production";
 ```
 
-| Mode        | Purpose                                                | Allowed to Touch Real Data? | Auto‑Cleanup? | Typical Use Case                |
-| ----------- | ------------------------------------------------------ | --------------------------- | ------------- | ------------------------------- |
-| **live**    | Normal production-like operation                       | ✅ Yes                      | ❌ No         | Real live data                  |
-| **test**    | Isolated automated/manual tests inside dev environment | 🚫 No                       | 🔄 Yes        | Local testing, seed data, mocks |
-| **sandbox** | Developer experimentation, breaking things allowed     | 🚫 No                       | 🔄 Optional   | Dev playground                  |
+| Mode | Purpose | Developer tools |
+| --- | --- | --- |
+| `development` | Local or explicitly disposable application development | Eligible after authentication and exact `developer` role checks |
+| `test` | Automated test execution | Denied |
+| `staging` | Production-like validation | Denied |
+| `production` | Live application operation | Denied |
 
-## `live` Mode
+`test` is deliberately not a developer-tools bypass. Tests should invoke focused functions with explicit test
+fixtures or exercise a development deployment; they must not make deployed mutation handlers broadly available.
 
-- Real live data in production.
-- No test seeders, no mock PK patterns.
-- Any “test-only” handler/route must fail immediately if CI_ENV_MODE value is not `test` or `sandbox`.
-
-## `test` Mode
-
-- Deployed in non-production Amplify env (e.g. dev, test).
-- You can run seeders with mock data
-- You can use special PK patterns (e.g. TENANT#test:...),
-- You can wipe/reset data frequently.
-- Still technically isolated from live because it's a separate Amplify env / AWS resources.
-
-## `sandbox` Mode
-
-- For local experimentation or ephemeral preview environments (feature branches).
-- Same rules as test, just a different meaning.
-
-:::info[Important]  
-Neither **test** nor **sandbox** modes are allowed in live deployments.  
-CloudIgniter ensures that the backend rejects them automatically.
-:::
-
-:::info[Behavior Differences per Mode]
-
-**live Mode**
-
-- Read/write real data
-- No mock/seed utilities
-- Cleanup utilities disabled
-
-✔ Ideal for production and pilot environments  
-✔ “Safe” and enforceable
-
-**test Mode**
-
-- Records get PK ending with `#test`
-- Cleanup script runs automatically
-- Bulk seeding allowed
-
-✔ Designed for Cypress/Playwright integration tests  
-✔ Never touches live data
-
-**sandbox Mode**
-
-- Records get PK ending with `#sandbox`
-- Realistic but disposable data
-- Developers can experiment
-- No restrictions on destructive operations
-- Optional cleanup scripts
-
-✔ Works for local development  
-✔ Useful for breaking/debugging features
-:::
+The old `live` and `sandbox` values are not members of `CiEnvMode`. Use `production` and `development`
+respectively when migrating older configuration.

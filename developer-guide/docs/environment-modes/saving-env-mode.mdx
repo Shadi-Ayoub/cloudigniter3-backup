@@ -1,78 +1,20 @@
 ---
-title: Environment Mode within Data
-sidebar_position: 3
+title: Environment isolation and data
+description: Separate deployments safely without inventing environment suffixes in CloudIgniter table keys.
+sidebar_position: 4
 ---
 
-# Environment Mode within Data
+`CI_ENV_MODE` is runtime context. Core tenant records do not store an `envMode` field and CloudIgniter does not
+append a mode suffix to PK or SK values. Canonical keys remain capability-oriented, for example:
 
-## How CloudIgniter stores environment mode internally
-
-Every core table record in CloudIgniter includes:
-
-```ts
-envMode: CiEnvMode; // 'live' | 'test' | 'sandbox'
+```text
+PK = CI#SYSTEM#TENANT#dev-acme-school
+SK = CI#META
 ```
 
-Examples:
+Use separate Amplify deployments and their generated physical tables to isolate development, test, staging, and
+production data. Within each table, build every key with `ciBuildTableKey()` or `ciBuildTableKeys()` and enforce
+the normal tenant and authorization boundary.
 
-### Live Tenant Record in the System Table
-
-```json
-{
-  "PK": "TENANT#ats",
-  "SK": "META",
-  "type": "TENANT",
-  "tenantId": "ats",
-  "name": "Applied Technology Schools",
-  "envMode": "live",
-  "createdAt": "2025-01-02T10:12:33.509Z",
-  "updatedAt": "2025-01-02T10:12:33.509Z"
-}
-```
-
-### Test Tenant Record in the System Table
-
-```json
-{
-  "PK": "TENANT#ats#test",
-  "SK": "META",
-  "type": "TENANT",
-  "tenantId": "ats",
-  "name": "ATS (Test Copy)",
-  "envMode": "test",
-  "createdAt": "...",
-  "updatedAt": "..."
-}
-```
-
-### Sandbox OU Record in the System Table
-
-```json
-{
-  "PK": "OU#ats#sandbox",
-  "SK": "PATH#ats/division:science/grade:10",
-  "type": "ORG_UNIT",
-  "envMode": "sandbox"
-}
-```
-
-## Query Scoping by Environment Mode
-
-CloudIgniter prevents cross-environment contamination by enforcing the following:
-
-- **Every read query includes `envMode` automatically**
-- **Every write includes the current `CI_ENV_MODE`**
-
-CloudIgniter Dynamodb wrapper automatically injects the Environment Mode in the primary key `PK` using the below logic:
-
-```ts
-PK = `${PK_BASE}#${currentEnvMode !== "live" ? currentEnvMode : ""}`;
-```
-
-Example:
-
-| Mode    | Base PK      | Final PK             |
-| ------- | ------------ | -------------------- |
-| live    | `TENANT#ats` | `TENANT#ats`         |
-| test    | `TENANT#ats` | `TENANT#ats#test`    |
-| sandbox | `TENANT#ats` | `TENANT#ats#sandbox` |
+Development seeding adds explicit provenance to each created record and an atomic marker in the same bounded
+context. Cleanup queries the marker partition; it does not search for an environment suffix or scan the table.

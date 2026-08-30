@@ -1,0 +1,56 @@
+---
+title: D
+description: CloudIgniter terms beginning with D.
+---
+
+# D
+
+
+## Data Entity
+
+The schema-level definition of one application record type, including identity, fields, access patterns, authorization, and management behavior. Resource Studio can generate its backend and frontend artifacts. See [Data entities](/docs/resource-studio/data-entities).
+
+
+## Data Record
+
+One stored instance of a Data Entity.
+
+
+## Data Store
+
+The persistence resource behind a Data Entity, such as an Amplify Data model backed by DynamoDB.
+
+
+## Debug Probe
+
+A development-only diagnostic surface for inspecting resolved CloudIgniter runtime information. It requires development mode, an authenticated actor, and the exact `developer` role.
+
+
+## Deletion State
+
+The lifecycle overlay that indicates whether a resource is active or soft-deleted. It is independent of operational statuses such as active, suspended, or archived.
+
+
+## Descendants Propagation
+
+An assignment propagation rule that applies at its declared scope and eligible lower scopes. Org Unit descendant matching requires the requested node’s authoritative predecessor IDs and the same Tenant identity.
+
+
+## Dev Beacon
+
+The development-only CloudIgniter diagnostics interface used to inspect routing, context, access, and other application state. It uses the same trusted gate as Debug Probe.
+
+
+## Developer Role
+
+The canonical `developer` role that enables approved development tools when the environment mode is exactly `development`. It inherits base user access but does not imply system administration.
+
+
+## Disposable Resource
+
+A development fixture created with explicit seeder provenance and safe cleanup rules. Disposable does not mean untracked: cleanup removes only resources proven to belong to the matching seeder.
+
+
+## DynamoDB
+
+Amazon DynamoDB, the AWS persistence service used by CloudIgniter provider implementations. CloudIgniter favors exact keys, bounded queries, conditional writes, transactions, and bounded-context tables over request-path scans.

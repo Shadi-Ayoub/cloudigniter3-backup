@@ -1,0 +1,30 @@
+---
+title: ciOrgUnitContextAccessScope
+description: Convert an authoritative Org Unit request context into a descendant-aware authorization scope.
+sidebar_position: 24
+---
+
+# `ciOrgUnitContextAccessScope`
+
+Runtime-neutral helper exported from `@cloudigniter/core/lib`:
+
+```ts
+function ciOrgUnitContextAccessScope(
+  context: CiOrgUnitContext,
+): CiOrgUnitAccessScope;
+```
+
+The result contains `kind: "orgUnit"`, the current `tenantId`, canonical `orgUnitId`, and `ancestorOrgUnitIds`. EmberGuard uses those predecessors when evaluating a `descendants` grant.
+
+```ts
+import { ciOrgUnitContextAccessScope } from "@cloudigniter/core/lib";
+
+const decision = authorizer.authorize({
+  subject,
+  resource: "platform.org-units",
+  action: "read",
+  scope: ciOrgUnitContextAccessScope(resolvedOrgUnit),
+});
+```
+
+Only pass a context resolved at a trusted server boundary. The helper copies the available chain; it does not make caller-supplied IDs authoritative.

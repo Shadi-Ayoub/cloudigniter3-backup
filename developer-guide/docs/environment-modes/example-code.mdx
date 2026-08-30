@@ -1,33 +1,24 @@
 ---
-title: Example Code
-sidebar_position: 6
+title: Environment-mode recipes
+description: Use the public developer-tools access gate correctly.
+sidebar_position: 7
 ---
 
-# Quick Code Recipes
+```ts
+import { ciCanAccessDeveloperTools } from "@cloudigniter/core/lib";
 
-## Insert Tenant in Test Mode
-
-```ts showLineNumbers
-await ddb.writeItem({
-  tableName,
-  key: { PK: "TENANT#ats#test", SK: "META" },
-  item: {
-    type: "TENANT",
-    envMode: "test",
-    tenantId: "ats",
-    name: "ATS Test Tenant",
+const allowed = ciCanAccessDeveloperTools({
+  envMode: context.env.mode,
+  actor: {
+    authenticated: context.auth.user.authenticated,
+    roles: context.auth.user.roles,
   },
 });
 ```
 
-## Query All Tenants for Current Environment
+Use the result to compose presentation. A mutation must call the same helper again with fresh trusted context,
+and the provider handler must independently require `CI_ENV_MODE === "development"` plus exact Cognito group
+membership.
 
-```ts showLineNumbers
-const pkPrefix = `TENANT#${envMode === "live" ? "" : `${envMode}`}`;
-
-const res = await ddb.query({
-  TableName: tableName,
-  KeyConditionExpression: "begins_with(PK, :pk)",
-  ExpressionAttributeValues: { ":pk": pkPrefix },
-});
-```
+Do not branch authorization on `process.env.NEXT_PUBLIC_CI_ENV_MODE`; that value is delivered to the browser and
+is not trustworthy evidence.

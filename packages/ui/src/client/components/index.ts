@@ -89,6 +89,14 @@ export { CiHeaderLogo, type CiHeaderLogoProps } from "./mark";
 export { CiProfileMenu } from "./profile-menu";
 
 // ─────────────────────────────────────────────────────────────
+// new resource badge
+// ─────────────────────────────────────────────────────────────
+export {
+  CiNewResourceBadge,
+  type CiNewResourceBadgeProps,
+} from "./new-resource-badge";
+
+// ─────────────────────────────────────────────────────────────
 // tooltip balloon
 // ─────────────────────────────────────────────────────────────
 export {

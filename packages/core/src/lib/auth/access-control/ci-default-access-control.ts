@@ -88,8 +88,27 @@ export const CI_DEFAULT_ACCESS_CONTROL_DEFINITION =
             { id: "create", title: "Create tenants", sensitive: true },
             { id: "update", title: "Update tenants", sensitive: true },
             { id: "delete", title: "Delete tenants", sensitive: true },
+            { id: "restore", title: "Restore tenants", sensitive: true },
+            {
+              id: "purge",
+              title: "Permanently delete tenants",
+              sensitive: true,
+            },
           ],
           scopeKinds: ["system"],
+        },
+        {
+          id: "platform.org-units",
+          domainId: "platform",
+          title: "Org Unit administration",
+          actions: [
+            { id: "read", title: "View Org Units" },
+            { id: "create", title: "Create Org Units", sensitive: true },
+            { id: "update", title: "Update Org Units", sensitive: true },
+            { id: "share", title: "Share Org Units", sensitive: true },
+            { id: "archive", title: "Archive Org Units", sensitive: true },
+          ],
+          scopeKinds: ["system", "global", "tenant", "orgUnit"],
         },
         {
           id: "identity.users",
@@ -158,6 +177,22 @@ export const CI_DEFAULT_ACCESS_CONTROL_DEFINITION =
           inherits: ["user"],
           privileges: [
             {
+              id: "read-org-units",
+              title: "View Org Units",
+              effect: "allow",
+              resource: "platform.org-units",
+              action: "read",
+              scopeKinds: ["global", "tenant", "orgUnit"],
+            },
+            {
+              id: "update-org-units",
+              title: "Update Org Units",
+              effect: "allow",
+              resource: "platform.org-units",
+              action: "update",
+              scopeKinds: ["global", "tenant", "orgUnit"],
+            },
+            {
               id: "read-users",
               title: "View users",
               effect: "allow",
@@ -189,6 +224,14 @@ export const CI_DEFAULT_ACCESS_CONTROL_DEFINITION =
           precedence: CI_CORE_ROLE_PRECEDENCE["super-admin"],
           inherits: ["admin"],
           privileges: [
+            {
+              id: "manage-org-units",
+              title: "Manage Org Units",
+              effect: "allow",
+              resource: "platform.org-units",
+              action: "*",
+              scopeKinds: ["global", "tenant", "orgUnit"],
+            },
             {
               id: "manage-users",
               title: "Manage users",
@@ -230,6 +273,14 @@ export const CI_DEFAULT_ACCESS_CONTROL_DEFINITION =
               scopeKinds: ["system"],
             },
             {
+              id: "manage-system-org-units",
+              title: "Manage system Org Units",
+              effect: "allow",
+              resource: "platform.org-units",
+              action: "*",
+              scopeKinds: ["system"],
+            },
+            {
               id: "manage-system-access-control",
               title: "Manage system access control",
               effect: "allow",
@@ -256,7 +307,7 @@ export const CI_DEFAULT_ACCESS_CONTROL_DEFINITION =
           ],
         },
       ],
-    } as const satisfies CiAccessControlDefinition)
+    } as const satisfies CiAccessControlDefinition),
   );
 
 /**
@@ -273,14 +324,14 @@ export function ciCreateAppAccessControl(
     if (extension) {
       ciAssertAppAccessControlLayerDoesNotOverrideCore(
         CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
-        extension
+        extension,
       );
     }
   }
 
   const definition = ciMergeAccessControlDefinitions(
     CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
-    ...extensions
+    ...extensions,
   );
   ciAssertExclusiveCoreOverrideRole(definition);
   return definition;

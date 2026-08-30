@@ -48,7 +48,7 @@ scope.
 
 ## Slug routing
 
-With `tenant.mode: "slug"` and `tenant.basePath: "/t"`, the proxy resolves and
+With `tenant.mode: "slug"` and `tenant.basePath: "/t"`, the [proxy](/dictionary/p#proxy) resolves and
 rewrites these URLs:
 
 | Browser-visible pathname    | Logical route      | Internal target              |
@@ -71,6 +71,6 @@ browser-visible pathname with
 [`ciBuildTenantPublicPathname()`](/docs/api-reference/shared-apis/ci-build-tenant-public-pathname).
 
 When a registered route is requested from a scope not listed in
-`tenantScopes`, the proxy stops before authentication and page rendering and
+`tenantScopes`, the [proxy](/dictionary/p#proxy) stops before authentication and page rendering and
 uses the configured route-information response with reason
 `route-tenant-scope-not-allowed`.

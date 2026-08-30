@@ -13,7 +13,7 @@ Every application request resolves to one canonical Tenant scope:
 | `global` | Cross-Tenant application workspace                | `/t/global/dashboard`            |
 | `tenant` | One resolved Tenant                               | `/t/acme/dashboard`              |
 
-The proxy resolves this scope before matching the logical application route.
+The [proxy](/dictionary/p#proxy) resolves this scope before matching the logical application route.
 Routes may then constrain availability with `CiRouteDefinition.tenantScopes`.
 For example, a Book manager that must operate only inside one Tenant declares
 `tenantScopes: ["tenant"]` and lives beneath the `(ci-tenant)/ci-tenant` route

@@ -4,7 +4,7 @@ export const CI_CORE_TABLE_KEYS = [
   "emberguardAccessTable",
   // 'privateSettingsTable',
   // 'publicSettingsTable',
-  // 'systemTable',
+  "systemTable",
   "userProfileTable",
   // 'userSettingsTable',
 ] as const;

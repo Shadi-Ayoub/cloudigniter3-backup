@@ -1,4 +1,4 @@
-import type { CiEnvMode } from './CiEnvMode';
+import type { CiEnvMode } from "./CiEnvMode";
 
-// Seeder-specific env mode (explicitly excludes "live")
-export type CiSeedEnvMode = Extract<CiEnvMode, 'test' | 'sandbox'>;
+/** Environment mode in which application seeders are permitted to execute. */
+export type CiSeedEnvMode = Extract<CiEnvMode, "development">;

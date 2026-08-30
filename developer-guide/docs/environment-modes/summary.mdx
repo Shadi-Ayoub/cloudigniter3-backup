@@ -1,18 +1,13 @@
 ---
 title: Summary
-sidebar_position: 7
+description: The environment-mode and developer-capability contract in one page.
+sidebar_position: 8
 ---
 
-# Summary
+- CloudIgniter modes are `development`, `test`, `staging`, and `production`.
+- Deployment resources, not key suffixes, provide environment isolation.
+- Developer features require development mode, an authenticated actor, and exact `developer` membership.
+- Client visibility never replaces server and provider authorization.
+- Seeded resources carry explicit provenance and are collected through bounded marker queries.
 
-CloudIgniter's environment mode system ensures:
-
-- Absolute isolation between live and test/sandbox data
-- Deterministic cleanup
-- Multi-tenant safety
-- Predictable developer workflows
-- Zero risk of corrupting production data
-
-This design is **core** to CloudIgniter's philosophy:
-
-> _“Move fast, safely.”_
+Continue with [Development tools and application seeding](./development-tools-and-seeding).

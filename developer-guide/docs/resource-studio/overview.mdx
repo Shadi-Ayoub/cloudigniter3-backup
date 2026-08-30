@@ -55,7 +55,7 @@ Every Data Entity is either `tenant` or `global` scoped. Resource Studio never g
 | Tenant | `src/app/(ci-tenant)/ci-tenant/(ci-custom)/dashboard/books` | `/t/acme/dashboard/books` |
 | Global | `src/app/(ci-global)/ci-global/(ci-custom)/dashboard/books` | `/t/global/dashboard/books` |
 
-The management path entered in Studio is the logical feature path, such as `/dashboard/books`. The form suggests `/dashboard/<plural-kebab-case>` and lets you replace it with another static absolute path. Do not enter `/ci-tenant`, `/ci-global`, or a public `/t/...` prefix; CloudIgniter's proxy adds the correct internal and public scope transport.
+The management path entered in Studio is the logical feature path, such as `/dashboard/books`. The form suggests `/dashboard/<plural-kebab-case>` and lets you replace it with another static absolute path. Do not enter `/ci-tenant`, `/ci-global`, or a public `/t/...` prefix; CloudIgniter's [proxy](/dictionary/p#proxy) adds the correct internal and public scope transport.
 
 The `(ci-custom)` route group does not add a URL segment. It marks the generated page as application-owned so a template upgrade can distinguish it from CloudIgniter core pages. The route definition is protected and limited to the selected Tenant scope. EmberGuard policy generation is intentionally deferred beyond V1.
 

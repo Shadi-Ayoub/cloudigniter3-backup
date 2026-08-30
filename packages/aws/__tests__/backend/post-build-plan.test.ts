@@ -17,6 +17,9 @@ const USER_PROFILE_TABLE_ARN =
 const EMBERGUARD_ACCESS_TABLE_NAME = "ci-emberguard-access-sandbox";
 const EMBERGUARD_ACCESS_TABLE_ARN =
   "arn:aws:dynamodb:me-central-1:123456789012:table/ci-emberguard-access-sandbox";
+const SYSTEM_TABLE_NAME = "ci-system-sandbox";
+const SYSTEM_TABLE_ARN =
+  "arn:aws:dynamodb:me-central-1:123456789012:table/ci-system-sandbox";
 
 const TEST_IAM_MODULE = {
   Policy: class {},
@@ -36,6 +39,7 @@ function createRuntime(): CiCoreRuntime {
         name: EMBERGUARD_ACCESS_TABLE_NAME,
         arn: EMBERGUARD_ACCESS_TABLE_ARN,
       },
+      systemTable: { name: SYSTEM_TABLE_NAME, arn: SYSTEM_TABLE_ARN },
       auth: { enabled: true },
     },
     region: "me-central-1",

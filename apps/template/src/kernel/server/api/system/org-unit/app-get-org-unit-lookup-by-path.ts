@@ -1,19 +1,18 @@
 import { cache } from "react";
 
-import { CI_MOCK_ORG_UNITS, ciNormalizePathname } from "@cloudigniter/core/lib";
+import { ciNormalizePathname, ciParseGraphqlResponse } from "@cloudigniter/core/lib";
 
 import type {
   CiGetOrgUnitByPathInterface,
   CiRequest,
   CiResponse,
 } from "@cloudigniter/core/types";
+import { appPrepareServerApiRequest } from "../../app-prepare-server-api-request";
+import { appServerClient } from "../../app-server-client";
 
 /**
  * Resolves an Org Unit by its canonical hierarchical path within a Tenant
- * using temporary mock data.
- *
- * Replace this implementation with the Amplify-backed lookup once the routing
- * and Org Unit resolution flow have been verified.
+ * through the System-table tenant attachment record.
  */
 export const appGetOrgUnitLookupByPath = cache(
   async (
@@ -32,29 +31,25 @@ export const appGetOrgUnitLookupByPath = cache(
       };
     }
 
-    const orgUnit = CI_MOCK_ORG_UNITS.find(
-      (item) => item.tenantId === tenantId && item.path === orgUnitPath,
+    const input = appPrepareServerApiRequest({
+      input: { tenantId, orgUnitPath },
+    });
+    const response = await appServerClient.queries.GetOrgUnitByPath(
+      { inputString: JSON.stringify(input) },
+      { authMode: "apiKey" },
     );
-
-    if (!orgUnit) {
-      return {
-        ok: true,
-        statusCode: 200,
-        body: {
-          exists: false,
-          tenantId,
-          path: orgUnitPath,
-        },
-      };
-    }
-
+    const parsed = ciParseGraphqlResponse(response, true);
+    if (!parsed.ok) return parsed;
+    const body = parsed.body as {
+      exists: boolean;
+      orgUnit?: Record<string, unknown>;
+    };
     return {
       ok: true,
       statusCode: 200,
-      body: {
-        exists: true,
-        ...orgUnit,
-      },
+      body: body.exists && body.orgUnit
+        ? { exists: true, ...body.orgUnit }
+        : { exists: false, tenantId, path: orgUnitPath },
     };
   },
 );

@@ -1,7 +1,8 @@
 import { Inter } from "next/font/google";
+import { ciCanAccessDeveloperTools } from "@cloudigniter/core/lib";
 import { ciStartTraceServer } from "@cloudigniter/core/server";
 import type { CiNextRootLayoutContext } from "@cloudigniter/next/types";
-import { appBootstrap, appGetDevBeaconActor } from "@/kernel/server";
+import { appBootstrap } from "@/kernel/server";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -10,7 +11,15 @@ const version = process.env.NEXT_VERSION;
 export async function appResolveRootLayoutContext() {
   const ctx = await appBootstrap();
 
+  const developerToolsAccess = ciCanAccessDeveloperTools({
+    envMode: ctx.env.mode,
+    actor: {
+      authenticated: ctx.auth.user.authenticated,
+      roles: ctx.auth.user.roles,
+    },
+  });
   const debugProbeEnabled =
+    developerToolsAccess &&
     ctx.config.appCoreConfig.dev.debug.debugProbe.enabled === true;
 
   // ─────────────────────────────────────────────────────────────
@@ -31,8 +40,6 @@ export async function appResolveRootLayoutContext() {
   if (!ctx.env.mode) {
     throw new Error("No environment mode is defined.");
   }
-
-  const actor = await appGetDevBeaconActor();
 
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   logger.wave("Application Root Layout Re-rendered");

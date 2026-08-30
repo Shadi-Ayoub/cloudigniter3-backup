@@ -6,8 +6,9 @@ import schemaEmberguard from "./schema-emberguard";
 // import schemaPublicSettings from './settings/schema-public-settings';
 // import schemaPrivateSettings from './settings/schema-private-settings';
 // import schemaUserSettings from './settings/schema-user-settings';
-// import schemaSystem from "./schema-system";
-// import schemaTenant from './schema-tenant';
+import schemaSystem from "./schema-system";
+import schemaOrgUnit from "./schema-org-unit";
+import schemaTenant from "./schema-tenant";
 import schemaUser from "./schema-user";
 
 import { customDataSchemas } from "../../custom/backend";
@@ -21,8 +22,9 @@ const coreSchemas = {
   // ...schemaPublicSettings,
   // ...schemaPrivateSettings,
   // ...schemaUserSettings,
-  // ...schemaSystem,
-  // ...schemaTenant,
+  ...schemaSystem,
+  ...schemaOrgUnit,
+  ...schemaTenant,
   ...schemaUser,
 };
 

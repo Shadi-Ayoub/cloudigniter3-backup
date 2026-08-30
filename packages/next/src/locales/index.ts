@@ -4,6 +4,7 @@ import ar_dev from "./ar/dashboard-dev.json";
 import ar_home from "./ar/home.json";
 import ar_settings from "./ar/dashboard-settings.json";
 import ar_tenants from "./ar/dashboard-tenants.json";
+import ar_org_units from "./ar/dashboard-org-units.json";
 import ar_theme from "./ar/dashboard-theme.json";
 
 import en_common from "./en/common.json";
@@ -12,6 +13,7 @@ import en_dev from "./en/dashboard-dev.json";
 import en_home from "./en/home.json";
 import en_settings from "./en/dashboard-settings.json";
 import en_tenants from "./en/dashboard-tenants.json";
+import en_org_units from "./en/dashboard-org-units.json";
 import en_theme from "./en/dashboard-theme.json";
 
 const locales: {
@@ -26,6 +28,7 @@ const locales: {
     home: ar_home,
     "dashboard-settings": ar_settings,
     "dashboard-tenants": ar_tenants,
+    "dashboard-org-units": ar_org_units,
     "dashboard-theme": ar_theme,
   },
   en: {
@@ -35,6 +38,7 @@ const locales: {
     home: en_home,
     "dashboard-settings": en_settings,
     "dashboard-tenants": en_tenants,
+    "dashboard-org-units": en_org_units,
     "dashboard-theme": en_theme,
   },
 };

@@ -1,0 +1,71 @@
+---
+title: S
+description: CloudIgniter terms beginning with S.
+---
+
+# S
+
+
+## Scope
+
+The authoritative boundary in which an authorization request or assignment applies. CloudIgniter scopes include system, global, tenant, and Org Unit boundaries.
+
+
+## Scope Propagation
+
+The rule that determines whether an assignment applies only to its exact scope or also to eligible descendants. Propagation does not create role inheritance.
+
+
+## Seeder
+
+A development capability that creates realistic disposable fixtures and later cleans them through explicit provenance markers. Seeder UI and mutations require development mode, authentication, and the exact `developer` role.
+
+
+## Server Action
+
+A Next.js server function invoked from a client interaction. CloudIgniter server actions normalize input and feedback but must still rely on trusted authorization and provider boundaries for enforcement.
+
+
+## Server Component
+
+A React component rendered on the server that may resolve trusted context and server-only data. It passes only serializable values into Client Components.
+
+
+## Shared Subtree
+
+An Org Unit node and its descendants reused by several tenants through tenant attachments. Sharing preserves one canonical identity and does not permit authorization to cross tenant boundaries automatically.
+
+
+## Soft Delete
+
+The default user-facing Delete behavior. It preserves the authoritative record and deletion metadata, removes the resource from ordinary resolution, and exposes it in Trash for restore or separately authorized purge.
+
+
+## Subject
+
+The normalized user, service, or other principal for which access is evaluated. A subject carries trusted identity and assignment inputs without leaking provider-specific structures into generic policy logic.
+
+
+## Super Admin Role
+
+The canonical `super-admin` role for elevated business administration. It inherits `admin` but remains separate from the technical system-administration lane.
+
+
+## System Administrator
+
+The canonical `system-admin` role for technical platform settings, Tenant infrastructure, and system access-control operation. It does not inherit business `admin` or `super-admin` access.
+
+
+## System Scope
+
+The authorization boundary for CloudIgniter platform operation and bootstrap administration. It is distinct from cross-tenant global business access.
+
+
+## System Super Administrator
+
+The protected `system-super-admin` role for bootstrap, break-glass, and core-policy administration. It inherits `system-admin`, cannot be suspended, and should be granted sparingly at system scope.
+
+
+## System Table
+
+The DynamoDB bounded-context table that stores CloudIgniter control-plane records such as Tenants, canonical Org Units, tenant/path attachments, and lifecycle projections.

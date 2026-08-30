@@ -110,6 +110,8 @@ export type CiDataTableColumnMeta<TData, TValue = unknown> = {
     type?: "text" | "select";
     placeholder?: string;
     options?: CiDataTableFilterOption[];
+    /** Alphabetizes options by label by default. Set false for semantic order. */
+    sortOptions?: boolean;
   };
   export?:
     | boolean
@@ -141,6 +143,8 @@ export type CiDataTableFilter<TData extends RowData> = {
   placeholder?: string;
   allLabel?: string;
   options?: CiDataTableFilterOption[];
+  /** Alphabetizes options by label by default. Set false for semantic order. */
+  sortOptions?: boolean;
   defaultValue?: CiDataTableFilterValue;
   filterFn?: FilterFnOption<CiDataTableFeatures, TData>;
 };
@@ -157,6 +161,7 @@ export type CiDataTableAction<TData> = {
   id: string;
   label: string;
   icon?: ReactNode;
+  /** @deprecated Inline actions with icons are always icon-only. */
   display?: "button" | "icon";
   variant?: "default" | "destructive";
   /** Hides the action when the predicate matches the current record. */
@@ -171,6 +176,14 @@ export type CiDataTableAction<TData> = {
     row: TData,
     context?: CiDataTableRowActionContext<TData>
   ) => void | Promise<void>;
+};
+
+/** Describes one compact context chip in the management-page title block. */
+export type CiDataTableTitleChip = {
+  id: string;
+  label: ReactNode;
+  icon?: ReactNode;
+  variant?: "default" | "secondary" | "destructive" | "outline";
 };
 
 type CiDataTableInformationBase<TData> = {
@@ -220,6 +233,7 @@ export type CiDataTableGlobalAction<TData> = {
   id: string;
   label: string;
   icon?: ReactNode;
+  className?: string;
   variant?: "default" | "outline" | "secondary" | "ghost" | "destructive";
   selection?: "required" | "optional" | "none";
   isVisible?: (context: CiDataTableGlobalActionContext<TData>) => boolean;
@@ -277,6 +291,15 @@ export type CiDataTableConfig<TData = unknown> = {
     enabled?: boolean;
     initial?: CiDataTableSortSpec[];
   };
+  newResourceBadge?: {
+    /** Enabled by default when a row exposes `createdAt`. */
+    enabled?: boolean;
+    createdAt?: (
+      row: TData,
+    ) => string | number | Date | null | undefined;
+    /** Uses the Core-owned default duration when omitted. */
+    durationMs?: number;
+  };
   filtering?: {
     global?: boolean;
     debounceMs?: number;
@@ -293,6 +316,9 @@ export type CiDataTableConfig<TData = unknown> = {
   };
   rowActions?: {
     mode?: "buttons" | "menu" | "mixed";
+    /** Number of action icons shown before the overflow menu. */
+    overflow?: number;
+    /** @deprecated Use overflow. */
     inlineCount?: number;
     header?: string;
     /** Keeps row-action controls aligned when visibility differs by row. */
@@ -335,6 +361,14 @@ export type CiDataTableConfig<TData = unknown> = {
 export type CiDataTableInterface<TData extends RowData, TValue = unknown> = {
   title?: string;
   description?: string;
+  /** Compact uppercase context label rendered above the title. */
+  titleBadge?: ReactNode;
+  /** Contextual record, provider, or capability chips rendered in the header. */
+  titleChips?: CiDataTableTitleChip[];
+  /** Replaces the default table glyph in the title block. */
+  titleIcon?: ReactNode;
+  /** Applies a semantic color treatment to the title icon. */
+  titleIconTone?: "primary" | "info" | "success" | "warning" | "danger";
   definition?: CiDataTableDefinition<TData>;
   /** Retained as the concise/legacy alternative to definition.columns. */
   columns?: CiDataTableColumnDef<TData, TValue>[];

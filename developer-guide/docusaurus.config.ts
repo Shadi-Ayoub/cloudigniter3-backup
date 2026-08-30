@@ -1,6 +1,7 @@
 import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
+import remarkDictionaryTerms from "./plugins/remark-dictionary-terms";
 import { prepareSkillsDocs } from "./scripts/prepare-skills-docs";
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
@@ -43,9 +44,11 @@ const config: Config = {
       {
         docs: {
           sidebarPath: "./sidebars.ts",
+          remarkPlugins: [remarkDictionaryTerms],
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
+          editUrl:
+            "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
         },
         blog: {
           showReadingTime: true,
@@ -55,7 +58,8 @@ const config: Config = {
           },
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
+          editUrl:
+            "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
           // Useful options to enforce blogging best practices
           onInlineTags: "warn",
           onInlineAuthors: "warn",
@@ -72,10 +76,20 @@ const config: Config = {
     [
       "@docusaurus/plugin-content-docs",
       {
+        id: "dictionary",
+        path: "dictionary",
+        routeBasePath: "dictionary",
+        sidebarPath: "./dictionary-sidebars.ts",
+      },
+    ],
+    [
+      "@docusaurus/plugin-content-docs",
+      {
         id: "companyDevelopers",
         path: "company-developers",
         routeBasePath: "company-developers",
         sidebarPath: "./company-sidebars.ts",
+        remarkPlugins: [remarkDictionaryTerms],
       },
     ],
     [
@@ -101,6 +115,17 @@ const config: Config = {
         src: "img/logo.png",
       },
       items: [
+        {
+          type: "docSidebar",
+          docsPluginId: "dictionary",
+          sidebarId: "dictionarySidebar",
+          position: "left",
+          label: "Dictionary",
+        },
+        {
+          type: "custom-dictionaryViewer",
+          position: "left",
+        },
         {
           type: "docSidebar",
           sidebarId: "userGuideSidebar",
@@ -144,6 +169,10 @@ const config: Config = {
             {
               label: "Tutorial",
               to: "/docs/intro",
+            },
+            {
+              label: "Dictionary",
+              to: "/dictionary",
             },
           ],
         },

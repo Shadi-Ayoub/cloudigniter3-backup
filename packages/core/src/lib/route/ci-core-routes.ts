@@ -25,6 +25,11 @@ export const ciCoreRoutes: CiRoutesMap = {
       action: "read",
     },
   },
+  "/dashboard/trash": {
+    title: "Trash Management",
+    namespace: "dashboard.trash",
+    protected: true,
+  },
   "/dashboard/security/*": {
     title: "Access Control Administration",
     namespace: "dashboard.security",
@@ -63,6 +68,15 @@ export const ciCoreRoutes: CiRoutesMap = {
     title: "Manage Tenants",
     namespace: "dashboard.tenants",
     protected: true,
+  },
+  "/dashboard/org-units": {
+    title: "Manage Org Units",
+    namespace: "dashboard.org-units",
+    protected: true,
+    access: {
+      resource: "platform.org-units",
+      action: "read",
+    },
   },
   "/dashboard/theme": {
     title: "Theme Presentation",

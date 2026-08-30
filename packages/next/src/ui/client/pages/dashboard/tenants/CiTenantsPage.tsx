@@ -279,13 +279,21 @@ export const CiTenantsPage = () => {
           </button>
           <pre>{JSON.stringify(tenants, null, 2)}</pre>
           <CiDataTable
-            title="Users"
-            description="Manage system users and their access."
+            title="Tenants"
+            titleBadge="Tenant management"
+            titleChips={[
+              {
+                id: "records",
+                label: `${tenantsData.length} ${
+                  tenantsData.length === 1 ? "record" : "records"
+                }`,
+              },
+            ]}
+            description="Manage tenants and their operational status."
             columns={tenantColumns}
             data={tenantsData}
             rowActions={tenantActions}
-            searchPlaceholder="Search users..."
-            className="max-w-none"
+            searchPlaceholder="Search tenants..."
             direction={direction}
           />
         </div>

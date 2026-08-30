@@ -1,6 +1,6 @@
 ---
 name: cloudigniter-development
-description: Apply CloudIgniter architecture and ownership conventions, including Resource Studio and Data Entity planners, generated backend/frontend artifacts, collision-safe create/update/drop/undo transactions, local Studio security, AWS SSO/STS verification and one-shot Amplify sandbox deployment, macOS AppleDouble cleanup safety, DynamoDB persistence and table keys, Next.js routing and rendering, access control, CiDataTable management pages, public APIs, runtime boundaries, and validation. Use when implementing, debugging, refactoring, reviewing, or documenting CloudIgniter code in packages/cli, packages/core, packages/emberguard, packages/next, packages/aws, packages/ui, apps/template, or the developer guide.
+description: Apply CloudIgniter architecture and ownership conventions, including developer-role feature gates and JSON seed/cleanup workflows, reversible resource deletion and Trash workflows, Resource Studio and Data Entity planners, generated backend/frontend artifacts, collision-safe create/update/drop/undo transactions, local Studio security, AWS SSO/STS verification and one-shot Amplify sandbox deployment, macOS AppleDouble cleanup safety, DynamoDB persistence and table keys, Next.js routing and rendering, access control, CiDataTable management pages, public APIs, runtime boundaries, and validation. Use when implementing, debugging, refactoring, reviewing, or documenting CloudIgniter code in packages/cli, packages/core, packages/emberguard, packages/next, packages/aws, packages/ui, apps/template, or the developer guide.
 ---
 
 # CloudIgniter Development Workflow
@@ -11,20 +11,30 @@ Use this skill for development work in the CloudIgniter repository. Treat `AGENT
 
 Read every reference selected for the task completely before changing code.
 
-- Read [architecture-overview.md](references/architecture-overview.md) for repository architecture, dependency direction, and the template-versus-package boundary.
-- Read [package-ownership.md](references/package-ownership.md) when deciding whether work belongs in `core`, `emberguard`, `next`, a provider package, `ui`, or the template.
-- Read [template-core-custom-boundary.md](references/template-core-custom-boundary.md) whenever work changes or generates files in `apps/template`, adds an application extension seam, or designs an application-facing generator.
-- Read [resource-studio.md](references/resource-studio.md) whenever work implements, changes, reviews, diagnoses, or documents Resource Studio; a Data Entity descriptor or capability; AWS, Next.js, or UI generation; generated schemas, scoped management pages/actions/routes; the Studio browser/server/session API; create/update/drop/undo transactions; AWS SSO/STS preflight; or one-shot Amplify sandbox deployment.
-- Read [request-lifecycle.md](references/request-lifecycle.md) whenever work touches or depends on `next.config.ts`, `proxy.ts`, routing, tenant/org-unit resolution, request context, redirects/rewrites, bootstrapping, next-intl, locale messages, request headers, or request cookies.
-- Read [page-rendering.md](references/page-rendering.md) whenever work touches the root layout, route-group layouts, page components, `appBootstrap()`, `appResolveRootLayoutContext()`, `AppRootWrapper`, `CiLayout`, `CiPageWrapper`, `CiClientWrapper`, `CiPage`, or their provider hierarchy.
-- Read [public-api-and-runtime.md](references/public-api-and-runtime.md) when adding or changing public types, exports, modules, package dependencies, or client/server code.
-- Read [emberguard.md](references/emberguard.md) for authentication, authorization, actors, sessions, roles, permissions, policies, claims, or provider binding.
-- Read [access-control.md](references/access-control.md) when defining or changing authorization catalogs, resources, actions, privileges, scopes, assignments, combining algorithms, role inheritance, core roles, identity-group mappings, access-control override policy, or security-administration role and privilege selectors.
-- Read [dynamodb-design.md](references/dynamodb-design.md) whenever work proposes, creates, combines, splits, renames, reads, writes, queries, indexes, migrates, secures, monitors, or documents a DynamoDB table or persisted DynamoDB record.
-- Read [table-keys.md](references/table-keys.md) whenever work creates, changes, migrates, reads, writes, queries, or documents table `PK`, `SK`, or secondary-index key values.
-- Read [data-table.md](references/data-table.md) whenever work creates, changes, reviews, or diagnoses a page built around `CiDataTable`, including columns, loading and empty states, row/global actions, mutation feedback, confirmations, filters, persistence, responsive formats, or provider-backed refresh behavior.
-- Read [cli-development.md](references/cli-development.md) whenever work adds, changes, migrates, documents, publishes, or reviews `@cloudigniter/cli`, the `ci` or `ci-dev` executables, command flags, prompts, subprocesses, terminal output, exit codes, or package scripts that invoke the CLI.
-- Read [validation.md](references/validation.md) before validating a non-trivial change or reviewing its final diff.
+The references are grouped by reading level: `architecture` for system and domain contracts, `cli` for command/tooling workflows, and `authoring` for implementation review and validation.
+
+### Architecture
+
+- Start with the [architecture overview](references/architecture/overview.md) for repository structure, dependency direction, and the template-versus-package boundary.
+- Read [package ownership](references/architecture/packages/ownership.md) when deciding whether work belongs in `core`, `emberguard`, `next`, a provider package, `ui`, or the template; add the [template core/custom boundary](references/architecture/packages/template-core-custom-boundary.md) for template or generator work and [public API/runtime boundaries](references/architecture/packages/public-api-and-runtime.md) for exports, dependencies, or client/server code.
+- Start with the [access-control overview](references/architecture/access-control/overview.md), then select [permissions and scopes](references/architecture/access-control/permissions.md), [roles](references/architecture/access-control/roles.md), [assignments and enforcement](references/architecture/access-control/assignments.md), [catalog composition and overrides](references/architecture/access-control/catalog-and-overrides.md), [administration](references/architecture/access-control/administration.md), and [access-control validation](references/architecture/access-control/validation.md) as the task requires.
+- Read [EmberGuard](references/architecture/security/emberguard.md) for authentication, authorization, actors, sessions, policies, claims, or provider binding.
+- Start with the [Tenant request-lifecycle overview](references/architecture/tenants/overview.md), then select [routing](references/architecture/tenants/routing.md), [request context and localization](references/architecture/tenants/context-and-localization.md), or [bootstrap and diagnostics](references/architecture/tenants/bootstrap-and-diagnostics.md) when work touches `next.config.ts`, `proxy.ts`, Tenant/Org Unit resolution, redirects/rewrites, next-intl, headers, cookies, bootstrap, or internal endpoints.
+- Read [Org Unit trees and tenant sharing](references/architecture/tenants/org-units.md) for Org Unit management, shared subtrees, tenant attachments, hierarchy-aware authorization, routing lookup, or Org Unit seeding.
+- Read [page rendering](references/architecture/rendering/page-rendering.md) for root layouts, route-group layouts, pages, bootstrap wrappers, providers, `CiLayout`, `CiPageWrapper`, `CiClientWrapper`, or `CiPage`.
+- Read [DynamoDB design](references/architecture/persistence/dynamodb.md) for any persisted DynamoDB record or table decision, and [table keys](references/architecture/persistence/table-keys.md) for `PK`, `SK`, or secondary-index keys.
+- Read the [data-table interaction contract](references/architecture/ui/data-table.md) for management pages built around `CiDataTable`.
+- Read [collection ordering and resource recency](references/architecture/ui/presentation-defaults.md) when work renders chips, dropdown options, trees, data-table sorting, or newly created-resource badges.
+- Start with the [resources overview](references/architecture/resources/overview.md). For Resource Studio, select its [overview](references/architecture/resources/studio/overview.md), [data entities and generation](references/architecture/resources/studio/data-entities-and-generation.md), [transactions](references/architecture/resources/studio/transactions.md), [deployment and security](references/architecture/resources/studio/deployment-and-security.md), and [validation](references/architecture/resources/studio/validation.md) as needed. Read the [resource deletion lifecycle](references/architecture/resources/deletion.md) for deletion, restoration, purge, retention, Trash UI, or provider cleanup.
+
+### CLI
+
+- Read [CLI development](references/cli/development.md) for `@cloudigniter/cli`, `ci`, `ci-dev`, commands, flags, prompts, subprocesses, terminal output, exit codes, publishing, or invoking package scripts.
+- Read [development tools and seeding](references/cli/development-tools-and-seeding.md) for developer-role gates, Dev Beacon, Debug Probe, development-only UI, seed manifests/fixtures, cleanup operations, provenance markers, garbage collectors, or seeder commands.
+
+### Authoring and review
+
+- Read [validation and final review](references/authoring/validation.md) before validating a non-trivial change or reviewing its final diff.
 
 Do not load every reference by default. Select the smallest set that fully covers the task.
 
@@ -47,6 +57,9 @@ Do not load every reference by default. Select the smallest set that fully cover
 15. Let generators rewrite only registered generated-owned resource folders and generated registries. Reject every core/manual/generated key or path collision before mutating files, and never silently adopt or overwrite hand-written code.
 16. Keep local generation and cloud deployment separate. A generated-resource deployment requires an explicit target, a short-lived single-use intent bound to the exact generated plan and verified provider identity/Region, and a complete recheck immediately before the provider subprocess.
 17. Treat macOS `._*` files as ownership-sensitive metadata. Record exact pre-existing artifacts and intended outputs before Codex or a CloudIgniter tool creates or generates files, then remove only exact AppleDouble companions proven to be newly created by that operation. Preserve every pre-existing, symlinked, non-regular, non-AppleDouble, or provenance-uncertain `._*` path byte-for-byte; never use glob, recursive, `find -delete`, or bulk cleanup.
+18. Treat user-facing `Delete` as reversible deletion by default. Keep deletion separate from suspension/archive status, require a Trash-only conditional purge, and plan every DynamoDB, Cognito, provider, projection, authorization, audit, and cache participant before implementing a resource lifecycle.
+19. Require exact `development` mode, an authenticated actor, and exact `developer` membership for every developer capability. Repeat the gate at mutation boundaries, write explicit seed provenance and atomic markers, and garbage-collect through bounded marker queries rather than current fixture names or scans.
+20. Alphabetize user-facing unordered chips, options, and tree siblings by displayed label; preserve explicit semantic sequences. Default `CiDataTable` to newest creation date first, and use the shared Core-duration `CiNewResourceBadge` for recently created resources.
 
 ## Workflow
 
@@ -60,6 +73,7 @@ Identify:
 - whether it is generic, Next.js-specific, provider-specific, EmberGuard-specific, UI-specific, or application-specific;
 - affected public contracts, configuration, and runtime boundaries.
 - for persistence work, the bounded context, access patterns, consistency requirements, data lifecycle, expected item sizes and traffic, tenancy boundary, and failure impact.
+- for deletion work, the soft-delete, restore, and purge participants; their transaction/idempotency boundary; and which provider locations are explicitly not applicable.
 
 Separate the requested outcome from the files named in the request.
 
@@ -110,7 +124,7 @@ application composition/config   → apps/template
 
 When a template file must remain an application entry point, move reusable implementation behind an intentional package API and leave configuration or delegation in the template.
 
-For template or generator work, apply [template-core-custom-boundary.md](references/template-core-custom-boundary.md). Existing template-local platform code is migration debt, not permission to add another exception.
+For template or generator work, apply the [template core/custom boundary](references/architecture/packages/template-core-custom-boundary.md). Existing template-local platform code is migration debt, not permission to add another exception.
 
 ### 4. Design the change
 
@@ -133,7 +147,7 @@ For DynamoDB work, also decide and record:
 - the least-privilege IAM and tenant-isolation boundary;
 - the migration, rollback, observability, and cost-guardrail plan.
 
-Use [dynamodb-design.md](references/dynamodb-design.md) for the mandatory decision sequence. Verify volatile AWS
+Use [DynamoDB design](references/architecture/persistence/dynamodb.md) for the mandatory decision sequence. Verify volatile AWS
 pricing and service behavior against current official AWS documentation before making a cost-sensitive choice.
 
 For request context, explicitly identify:
@@ -172,7 +186,7 @@ For request lifecycle changes:
 - keep message selection driven by the resolved route namespace;
 - keep core messages lower precedence than application overrides.
 
-Read [request-lifecycle.md](references/request-lifecycle.md) for the complete invariants and diagnostic sequence.
+Read the [Tenant request-lifecycle overview](references/architecture/tenants/overview.md) and its focused child references for the complete invariants and diagnostic sequence.
 
 ### 7. Validate and review
 
@@ -192,12 +206,12 @@ optional feature. A change is not complete merely because a provider call succee
 
 If a broad check is already failing, distinguish related failures from baseline failures and report both honestly.
 
-For a `CiDataTable` page, also complete the interaction review in [data-table.md](references/data-table.md). A
+For a `CiDataTable` page, also complete the [data-table interaction review](references/architecture/ui/data-table.md). A
 type-correct table is not complete when loading clears its structure, empty content collapses its headings,
 conditional actions shift between rows, mutations are silent, or destructive actions use browser-native
 confirmation.
 
-Use [validation.md](references/validation.md) for the final checklist.
+Use [validation and final review](references/authoring/validation.md) for the final checklist.
 
 ## Completion report
 

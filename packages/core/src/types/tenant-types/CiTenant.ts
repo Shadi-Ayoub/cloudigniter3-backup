@@ -2,6 +2,11 @@ import type { CiTenantDdbTableItem } from "./CiTenantDdbTableItem";
 import type { CiTenantMode } from "./CiTenantMode";
 import type { CiTenantScope } from "./CiTenantScope";
 import type { CiTenantStatus } from "./CiTenantStatus";
+import type { CiTenantStatusTransitionMetadata } from "./CiTenantLifecycleTypes";
+import type {
+  CiResourceDeletionMetadata,
+  CiResourceDeletionState,
+} from "../resource-lifecycle-types";
 
 /**
  * High-level CiTenant type used across CloudIgniter.
@@ -23,6 +28,9 @@ export type CiTenant = {
 
   /** Operational status (e.g., active/suspended) */
   status?: CiTenantStatus;
+  statusTransition?: CiTenantStatusTransitionMetadata;
+  deletionState?: CiResourceDeletionState;
+  deletion?: CiResourceDeletionMetadata;
 
   /** Optional categorization (e.g., TENANT/SETTING/etc.) */
   type?: string;

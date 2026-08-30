@@ -28,6 +28,7 @@ export const CiClientWrapper = ({
   i18nConfig,
   locale,
   devConfig,
+  developerToolsEnabled,
   protect,
   children,
 }: CiClientWrapperProps) => {
@@ -77,7 +78,11 @@ export const CiClientWrapper = ({
             },
           }}
         >
-          <CiDebugProbeProvider enabled={devConfig.debug.debugProbe.enabled}>
+          <CiDebugProbeProvider
+            enabled={
+              developerToolsEnabled && devConfig.debug.debugProbe.enabled
+            }
+          >
             <AntdRegistry>
               <CiFeedbackProvider
                 initialConfig={{ ...feedbackConfig }}

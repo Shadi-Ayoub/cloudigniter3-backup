@@ -15,11 +15,11 @@ export const appListTenants = cache(
     const inputString = JSON.stringify(apiRequest);
 
     const apiResponse: CiGraphQLResponse =
-      await appServerClient.queries.listTenants(
+      await appServerClient.queries.ListTenants(
         {
           inputString,
         },
-        { authMode: apiRequest.authMode }, // <- 'userPool' for signed-in, 'apikey' for guests
+        { authMode: "userPool" },
       );
 
     const ciResponse = ciParseGraphqlResponse(apiResponse, true);

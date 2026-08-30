@@ -34,11 +34,20 @@ Tenants have a lifecycle state:
 | suspended | Temporarily disabled (read-only or blocked) |
 | archived  | No longer active, preserved for audit       |
 
+Deletion is not another tenant status. A deleted tenant keeps its prior status beneath a separate deletion
+lifecycle overlay so restoring it does not silently activate a previously suspended tenant.
+
 Status is enforced at:
 
 - API boundaries
 - Permission checks
 - UI routing and guards
+
+### Org Unit Trees
+
+Org Units form trees beneath tenants. One canonical node may be attached to several tenants, allowing several companies to share Finance, People Operations, or an entire Shared Services subtree without duplicating identity. Every child tenant set must be contained by its parent tenant set.
+
+Each resolved Org Unit context carries predecessor IDs from the root to the direct parent. Descendant authorization uses that authoritative chain and the current tenant ID, not URL parsing. See [Org Unit Management](./org-unit-management).
 
 ---
 

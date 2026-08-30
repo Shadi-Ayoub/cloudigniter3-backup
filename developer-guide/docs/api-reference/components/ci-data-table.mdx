@@ -75,6 +75,10 @@ export function TenantTable() {
 type CiDataTableInterface<TData extends RowData, TValue = unknown> = {
   title?: string;
   description?: string;
+  titleBadge?: ReactNode;
+  titleIcon?: ReactNode;
+  titleIconTone?: "primary" | "info" | "success" | "warning" | "danger";
+  titleChips?: CiDataTableTitleChip[];
   definition?: CiDataTableDefinition<TData>;
   columns?: CiDataTableColumnDef<TData, TValue>[];
   data?: TData[];
@@ -98,6 +102,10 @@ type CiDataTableInterface<TData extends RowData, TValue = unknown> = {
 | ------------------- | --------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------- |
 | `title`             | `string`                                | None                   | Optional heading rendered above the toolbar. It also supplies the default Excel file and sheet names.     |
 | `description`       | `string`                                | None                   | Supporting text rendered below `title`.                                                                   |
+| `titleBadge`        | `ReactNode`                             | `"Data management"`    | Compact context label above the title, such as `"Access governance"`.                                    |
+| `titleIcon`         | `ReactNode`                             | Table glyph            | Replaces the large decorative icon that spans the title and description block.                            |
+| `titleIconTone`     | Semantic tone union                     | `"primary"`            | Colors the icon surface with `primary`, `info`, `success`, `warning`, or `danger` theme tokens.            |
+| `titleChips`        | `CiDataTableTitleChip[]`                | `[]`                   | Context chips for record count, provider, management state, or other concise page facts.                  |
 | `definition`        | `CiDataTableDefinition<TData>`          | None                   | Recommended reusable definition containing columns and table operations.                                  |
 | `columns`           | `CiDataTableColumnDef<TData, TValue>[]` | `[]`                   | Direct column shorthand for a small one-off table. Ignored when `definition.columns` exists.              |
 | `data`              | `TData[]`                               | `[]`                   | Local rows used in client mode. A provider `source` takes precedence unless mode is explicitly `client`.  |
@@ -114,6 +122,24 @@ type CiDataTableInterface<TData extends RowData, TValue = unknown> = {
 | `onSelectionChange` | `(rows) => void`                        | None                   | Called with currently selected row objects when selection or loaded rows change.                          |
 
 At least one of `definition.columns` or `columns` is required in practice. Prefer `definition` when the table needs information, toolbar filters, global actions, stable row identity, or a reusable contract.
+
+### Management-page header
+
+When `title` or `description` is present, `CiDataTable` renders the standard management-page
+header as a full-width `div`. The icon surface spans the badge, main title, and subtitle; context chips sit at
+the opposite edge and wrap below on narrower screens.
+
+```ts title="CiDataTableTitleChip" showLineNumbers
+type CiDataTableTitleChip = {
+  id: string;
+  label: ReactNode;
+  icon?: ReactNode;
+  variant?: "default" | "secondary" | "destructive" | "outline";
+};
+```
+
+The outer table surface defaults to `width: "100%"`. Management pages should not wrap it in a fixed or maximum
+width container. `config.width` remains available for intentionally constrained embedded tables.
 
 ## Definition API
 
@@ -240,7 +266,7 @@ type CiDataTableCellContext<TData, TValue = unknown> = {
 
 ## Built-in record information
 
-`definition.information` renders an Info icon or labeled button before ordinary row actions. It remains a separate first control in `menu` mode and does not count toward `rowActions.inlineCount` in `mixed` mode.
+`definition.information` renders an Info icon or labeled button before ordinary row actions. It remains a separate first control in `menu` mode and does not count toward `rowActions.overflow` in `mixed` mode.
 
 ```ts title="CiDataTableInformation" showLineNumbers
 type CiDataTableInformationBase<TData> = {
@@ -332,7 +358,7 @@ type CiDataTableAction<TData> = {
 | `id`          | Yes      | Stable action ID; unique within the row-action list.                                                             |
 | `label`       | Yes      | Visible text or accessible name and tooltip for an icon-only action.                                             |
 | `icon`        | No       | React icon shown before the label or by itself.                                                                  |
-| `display`     | No       | Defaults to labeled button behavior. `"icon"` becomes icon-only when `icon` is also supplied.                    |
+| `display`     | No       | Deprecated compatibility field. Inline actions with an icon are always icon-only.                               |
 | `variant`     | No       | Ordinary actions use a ghost button/menu item; `"destructive"` receives destructive styling and menu separation. |
 | `hideWhen`    | No       | Hides the action when `true`.                                                                                    |
 | `disableWhen` | No       | Keeps the action visible but unavailable when `true`.                                                            |
@@ -356,7 +382,6 @@ const tenantRowActions = [
     id: "edit",
     label: "Edit tenant",
     icon: <Pencil />,
-    display: "icon" as const,
     disableWhen: (tenant: TenantRow) => tenant.isSystem,
     onSelect: (tenant: TenantRow) => openEditor(tenant),
   },
@@ -366,11 +391,7 @@ const tenantRowActions = [
     icon: <Trash2 />,
     variant: "destructive" as const,
     hideWhen: (tenant: TenantRow) => tenant.isSystem,
-    onSelect: async (tenant: TenantRow, context) => {
-      if (!window.confirm(`Delete ${tenant.name}?`)) return;
-      await deleteTenant(tenant.id);
-      context?.refresh();
-    },
+    onSelect: (tenant: TenantRow) => openDeleteTenantDialog(tenant),
   },
 ];
 ```
@@ -384,6 +405,7 @@ type CiDataTableGlobalAction<TData> = {
   id: string;
   label: string;
   icon?: ReactNode;
+  className?: string;
   variant?: "default" | "outline" | "secondary" | "ghost" | "destructive";
   selection?: "required" | "optional" | "none";
   isVisible?: (context: CiDataTableGlobalActionContext<TData>) => boolean;
@@ -399,6 +421,7 @@ type CiDataTableGlobalAction<TData> = {
 | `id`         | Required     | Stable ID used for busy state.                                            |
 | `label`      | Required     | Button label.                                                             |
 | `icon`       | None         | Optional leading icon. A spinner replaces it while the action is running. |
+| `className`  | None         | Optional classes applied to the toolbar button, such as `min-h-11` for a 44-pixel target. |
 | `variant`    | `"outline"`  | Standard CloudIgniter button variant.                                     |
 | `selection`  | `"required"` | Whether selection is required, optional, or irrelevant.                   |
 | `isVisible`  | `true`       | Evaluated against the complete global-action context.                     |
@@ -444,6 +467,7 @@ type CiDataTableFilter<TData extends RowData> = {
   placeholder?: string;
   allLabel?: string;
   options?: CiDataTableFilterOption[];
+  sortOptions?: boolean;
   defaultValue?: CiDataTableFilterValue;
   filterFn?: FilterFnOption<CiDataTableFeatures, TData>;
 };
@@ -461,14 +485,15 @@ type CiDataTableFilterValue =
   | null;
 ```
 
-| Field          | Default             | Description                                                                                    |
-| -------------- | ------------------- | ---------------------------------------------------------------------------------------------- |
+| Field          | Default             | Description                                                                                     |
+| -------------- | ------------------- | ----------------------------------------------------------------------------------------------- |
 | `id`           | Required            | Must match the target TanStack column ID.                                                      |
 | `label`        | Required            | Accessible name for the toolbar control.                                                       |
 | `type`         | `"select"`          | Text filters use `includesString`; select filters use `equals` unless `filterFn` overrides it. |
 | `placeholder`  | `label`             | Control placeholder.                                                                           |
 | `allLabel`     | Localized `"All"`   | Label for clearing a toolbar select filter.                                                    |
-| `options`      | `[]`                | Typed select options. Number and boolean identity is preserved.                                |
+| `options`      | `[]`                | Typed select options. Number and boolean identity is preserved.                                 |
+| `sortOptions`  | `true`              | Alphabetizes options by label. Set `false` for an intentional semantic order.                   |
 | `defaultValue` | None                | Initial filter entry. `undefined` and `null` do not create an initial filter.                  |
 | `filterFn`     | Derived from `type` | Native TanStack filter function or a registered filter-function name.                          |
 
@@ -484,6 +509,11 @@ type CiDataTableConfig<TData = unknown> = {
   sorting?: {
     enabled?: boolean;
     initial?: CiDataTableSortSpec[];
+  };
+  newResourceBadge?: {
+    enabled?: boolean;
+    createdAt?: (row: TData) => string | number | Date | null | undefined;
+    durationMs?: number;
   };
   filtering?: {
     global?: boolean;
@@ -501,8 +531,11 @@ type CiDataTableConfig<TData = unknown> = {
   };
   rowActions?: {
     mode?: "buttons" | "menu" | "mixed";
+    overflow?: number;
+    /** @deprecated Use overflow. */
     inlineCount?: number;
     header?: string;
+    reserveSpace?: boolean;
   };
   columnResizing?: boolean;
   hoverHighlight?: boolean;
@@ -552,9 +585,11 @@ type CiDataTableFormatOption = {
 | Option                 | Default | Description                                                                                  |
 | ---------------------- | ------- | -------------------------------------------------------------------------------------------- |
 | `sorting.enabled`      | `true`  | Enables sortable column interactions. Columns can still opt out with `enableSorting: false`. |
-| `sorting.initial`      | `[]`    | Initial priority-ordered sort rules.                                                         |
+| `sorting.initial`      | Creation date descending when a `createdAt`, `created`, or `creationDate` column exists; otherwise `[]` | Explicit priority-ordered sort rules. Supplying `[]` opts out of the creation-date default. |
 | `filtering.global`     | `true`  | Shows global search. It does not disable column or toolbar filters.                          |
 | `filtering.debounceMs` | `250`   | Delay before global search updates client filtering or provider queries.                     |
+
+`newResourceBadge.enabled` defaults to `true`. Rows with a `createdAt` value display the shared **NEW** badge beside the first data value until the Core-owned five-minute duration expires. Use `createdAt` to resolve a differently named timestamp, `durationMs` for an explicit product override, or `enabled: false` to suppress the badge. The component starts hidden during SSR and evaluates recency after hydration, preventing clock-dependent markup mismatches.
 
 ```ts title="CiDataTableSortSpec" showLineNumbers
 type CiDataTableSortSpec = {
@@ -603,14 +638,18 @@ overlap the following column.
 
 ### Row-action layout configuration
 
-| Option                    | Default               | Description                                                                                                                              |
-| ------------------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `rowActions.mode`         | `"menu"`              | `"buttons"` renders every visible action inline; `"menu"` puts ordinary actions in one drop-down; `"mixed"` combines both.               |
-| `rowActions.inlineCount`  | `2`                   | Number of ordinary actions shown before overflow in mixed mode. Negative values normalize to zero. Information does not count toward it. |
-| `rowActions.header`       | Localized `"Actions"` | Action-column heading.                                                                                                                   |
-| `rowActions.reserveSpace` | `false`               | Reserves non-interactive action slots when row predicates hide controls, preserving alignment without rendering fake disabled actions.   |
+| Option                    | Default               | Description                                                                                                                                                 |
+| ------------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `rowActions.mode`         | `"menu"`              | `"buttons"` renders every visible action inline; `"menu"` puts ordinary actions in one drop-down; `"mixed"` combines both.                                  |
+| `rowActions.overflow`     | Core default (`1`)    | Number of ordinary action icons shown before overflow in mixed mode. Negative values normalize to zero. Information does not count toward it.               |
+| `rowActions.inlineCount`  | Deprecated            | Compatibility alias for `overflow`. New code should not use it.                                                                                             |
+| `rowActions.header`       | Localized `"Actions"` | Action-column heading.                                                                                                                                      |
+| `rowActions.reserveSpace` | `false`               | Reserves non-interactive action slots when row predicates hide controls, preserving alignment without rendering fake disabled actions.                      |
 
-The action column is always logical inline-start: left-most in LTR and right-most in RTL.
+The action column is always logical inline-start: left-most in LTR and right-most in RTL. Inline actions that
+provide an icon render without a visible label; the action label supplies their accessible name and tooltip,
+and remains visible inside the overflow menu. The default is exported as
+`CI_DATA_TABLE_DEFAULT_ROW_ACTION_OVERFLOW` from `@cloudigniter/core/lib`.
 
 ### Layout and interaction configuration
 
@@ -1041,7 +1080,6 @@ const tenantRowActions: CiDataTableAction<TenantRow>[] = [
     id: "edit",
     label: "Edit tenant",
     icon: <Pencil />,
-    display: "icon",
     disableWhen: (tenant) => tenant.isSystem,
     onSelect: (tenant) => openTenantEditor(tenant),
   },
@@ -1122,7 +1160,7 @@ const tenantConfig: CiDataTableConfig<TenantRow> = {
     allowAll: false,
   },
   selection: { enableRow: (tenant) => !tenant.isSystem },
-  rowActions: { mode: "mixed", inlineCount: 2 },
+  rowActions: { mode: "mixed", overflow: 1 },
   columnResizing: true,
   hoverHighlight: true,
   stripedRows: true,

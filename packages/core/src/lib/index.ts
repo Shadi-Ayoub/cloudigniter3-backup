@@ -63,6 +63,11 @@ export {
 } from "./general";
 
 // ─────────────────────────────────────────────────────────────
+// data table
+// ─────────────────────────────────────────────────────────────
+export { CI_DATA_TABLE_DEFAULT_ROW_ACTION_OVERFLOW } from "./data-table";
+
+// ─────────────────────────────────────────────────────────────
 // api
 // ─────────────────────────────────────────────────────────────
 export {
@@ -85,6 +90,8 @@ export {
 // dev
 // ─────────────────────────────────────────────────────────────
 export {
+  CI_DEFAULT_DEVELOPER_TOOLS_REQUIRED_ROLES,
+  ciCanAccessDeveloperTools,
   // dev beacon
   ciCanAccessDevBeacon,
   ciIsDevBeaconLanguageErrorResponse,
@@ -171,12 +178,22 @@ export {
   CI_DEFAULT_ORG_UNIT_PATH_COOKIE_NAME,
   CI_DEFAULT_ORG_UNIT_PATH_HEADER_NAME,
   CI_MOCK_ORG_UNITS,
+  ciOrgUnitContextAccessScope,
 } from "./org-unit";
 
 // ─────────────────────────────────────────────────────────────
 // profile menu
 // ─────────────────────────────────────────────────────────────
 export { CI_DEFAULT_PROFILE_MENU_MESSAGES } from "./profile-menu";
+
+// ─────────────────────────────────────────────────────────────
+// resource presentation defaults
+// ─────────────────────────────────────────────────────────────
+export {
+  CI_DEFAULT_NEW_RESOURCE_BADGE_DURATION_MS,
+  ciIsNewResource,
+  type CiNewResourceTimestamp,
+} from "./resource";
 
 // ─────────────────────────────────────────────────────────────
 // result

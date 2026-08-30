@@ -1,0 +1,54 @@
+.desktopButton {
+  display: inline-grid;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  margin-inline-start: -0.45rem;
+  padding: 0;
+  place-items: center;
+  color: var(--ifm-navbar-link-color);
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  transition:
+    color var(--ifm-transition-fast) var(--ifm-transition-timing-default),
+    background-color var(--ifm-transition-fast)
+      var(--ifm-transition-timing-default),
+    border-color var(--ifm-transition-fast) var(--ifm-transition-timing-default);
+}
+
+.desktopButton:hover {
+  color: var(--ifm-color-primary);
+  background: var(--ifm-color-emphasis-100);
+  border-color: var(--ifm-color-emphasis-200);
+}
+
+.desktopButton:focus-visible,
+.mobileButton:focus-visible {
+  outline: 3px solid var(--ifm-color-primary);
+  outline-offset: 2px;
+}
+
+.mobileButton {
+  display: flex;
+  width: 100%;
+  min-height: 44px;
+  align-items: center;
+  gap: 10px;
+  color: var(--ifm-menu-color);
+  font: inherit;
+  cursor: pointer;
+  border: 0;
+}
+
+.mobileButton:hover {
+  color: var(--ifm-menu-color-active);
+  background: var(--ifm-menu-color-background-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desktopButton {
+    transition: none;
+  }
+}

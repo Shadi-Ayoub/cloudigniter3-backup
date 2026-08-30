@@ -4,6 +4,8 @@ export const dashboardBreadcrumbChildren: CiBreadcrumbItem[] = [
   { label: "Security", href: "/dashboard/security" },
   { label: "Appearance", href: "/dashboard/theme" },
   { label: "Tenants", href: "/dashboard/tenants" },
+  { label: "Org Units", href: "/dashboard/org-units" },
+  { label: "Trash", href: "/dashboard/trash" },
 ];
 
 export const securityBreadcrumbChildren: CiBreadcrumbItem[] = [

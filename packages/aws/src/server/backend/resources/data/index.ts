@@ -5,7 +5,7 @@
 import { ciEmberguardAccessTableResourceModule } from "./emberguard-access-table";
 // import { ciPrivateSettingsTableResourceModule } from "./private-settings-table";
 // import { ciPublicSettingsTableResourceModule } from "./public-settings-table";
-// import { ciSystemTableResourceModule } from "./system-table";
+import { ciSystemTableResourceModule } from "./system-table";
 import { ciUserProfileTableResourceModule } from "./user-profile-table";
 // import { ciUserSettingsTableResourceModule } from "./user-settings-table";
 
@@ -17,7 +17,7 @@ export {
   ciEmberguardAccessTableResourceModule,
   // ciPrivateSettingsTableResourceModule,
   // ciPublicSettingsTableResourceModule,
-  // ciSystemTableResourceModule,
+  ciSystemTableResourceModule,
   ciUserProfileTableResourceModule,
   // ciUserSettingsTableResourceModule,
 };
@@ -30,7 +30,7 @@ export const CI_DATA_RESOURCE_MODULES = [
   ciEmberguardAccessTableResourceModule,
   // ciPrivateSettingsTableResourceModule,
   // ciPublicSettingsTableResourceModule,
-  // ciSystemTableResourceModule,
+  ciSystemTableResourceModule,
   ciUserProfileTableResourceModule,
   // ciUserSettingsTableResourceModule,
 ] as const;

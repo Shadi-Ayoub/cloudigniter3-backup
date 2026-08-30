@@ -1,26 +1,16 @@
 ---
-title: Environment Modes & Testing
+title: Environment modes and testing
+description: Separate automated testing from authenticated development-only tooling.
 sidebar_position: 3
 ---
 
-# Environment Modes and Testing
+CloudIgniter supports `development`, `test`, `staging`, and `production` modes. Automated tests may use `test`
+as ordinary runtime context, but deployed Dev Beacon, Debug Probe, and seeder mutations require `development`
+plus an authenticated actor with exact `developer` membership.
 
-Testing isolation is enforced via **Environment Modes**:
+Environment isolation comes from separate deployments and resources. CloudIgniter does not suffix PK or SK values
+with a mode. Tests and fixtures must use the canonical key builders and the same bounded-context access patterns
+as production code.
 
-```ts
-export type CiEnvMode = "live" | "test" | "sandbox";
-```
-
-- **live**  
-  Real environment, real live data.  
-  👉 **No testing helpers or seeders are allowed to run here.**
-
-- **test**  
-  Dedicated for automated & manual testing.  
-  👉 Safe for seed/cleanup, never touches live data.
-
-- **sandbox**  
-  Developer playground, can be broken/reset freely.  
-  👉 Intended for local dev experimentation, not user-facing.
-
-For structural details on environment modes, see [Environment Modes](../environment-modes/intro.mdx). This section focuses on how to **use** environment modes in testing.
+See [Environment modes](../environment-modes/intro) and
+[Development tools and application seeding](../environment-modes/development-tools-and-seeding).

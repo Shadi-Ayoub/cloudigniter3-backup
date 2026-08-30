@@ -1,0 +1,45 @@
+---
+title: CiOrgUnitManagementPage
+description: Reusable tree explorer and focused browser for shared tenant Org Units.
+sidebar_position: 9
+---
+
+# `CiOrgUnitManagementPage`
+
+`CiOrgUnitManagementPage` is a client component exported from `@cloudigniter/ui/client`. It renders shared tenant structures as a direction-aware, resizable tree beside a focused-node browsing panel. It retains the standard management title block and places search, tenant/status filters, tree controls, root creation, and the optional seeder above both panels.
+
+Selecting a node updates the browser with its stable identity, status, path, predecessor chain, tenant attachments, direct-child count, description, and timestamps. Right-clicking a node opens lifecycle commands; an explicit action button exposes the same commands to touch and keyboard users. Parent and leaf rows use visual variants of one tree icon, while their semantic status dot updates with the authoritative mutation result.
+
+```tsx
+import { CiOrgUnitManagementPage } from "@cloudigniter/ui/client";
+
+<CiOrgUnitManagementPage
+  orgUnits={orgUnits}
+  tenants={tenants}
+  canManage={canManage}
+  direction={direction}
+  locale={locale}
+  onCreate={createOrgUnitAction}
+  onUpdate={updateOrgUnitAction}
+  developmentSeeder={developerToolsAccess ? developmentSeeder : undefined}
+/>;
+```
+
+## Props
+
+| Prop                | Type                                                                                                  | Purpose                                                                                                                                                          |
+| ------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `orgUnits`          | `CiOrgUnitManagementRow[]`                                                                            | Flat canonical records reconstructed into a tree by `parentId`.                                                                                                  |
+| `tenants`           | `CiTenantHtmlTableRow[]`                                                                              | Labels and allowed root attachment options.                                                                                                                      |
+| `canManage`         | `boolean`                                                                                             | Presents or omits create, edit, and lifecycle controls. It is not an authorization boundary.                                                                     |
+| `direction`         | `"ltr" \| "rtl"`                                                                                      | Places the tree at logical inline-start and mirrors tree/resizer arrow behavior. Defaults to `"ltr"`.                                                            |
+| `locale`            | `string`                                                                                               | Formats focused-node timestamps deterministically during SSR and hydration. Defaults to `"en-US"`; the template passes the resolved application locale.         |
+| `onCreate`          | `(input: CiCreateOrgUnitInput) => Promise<CiResourceLifecycleMutationResult<CiOrgUnitManagementRow>>` | Trusted create callback.                                                                                                                                         |
+| `onUpdate`          | `(input: CiUpdateOrgUnitInput) => Promise<CiResourceLifecycleMutationResult<CiOrgUnitManagementRow>>` | Trusted optimistic edit callback. A move result must return the requested authoritative `parentId`; a mismatch is shown as an error and is never applied locally. |
+| `developmentSeeder` | `CiTenantManagementPageProps["developmentSeeder"]`                                                    | Optional server-authorized development seeder shown in the explorer toolbar. Seed results may include authoritative `orgUnits`; cleanup uses deleted result IDs. |
+
+The tree follows the ARIA tree pattern with roving focus and Arrow Up/Down, Home/End, and direction-aware expand/collapse keys. Its separator supports pointer and keyboard resizing and persists the chosen width in local storage. Filtering keeps matching nodes and their predecessors visible; siblings, parent choices, tenant choices, and tenant chips are alphabetized by displayed label. System administrators may drag the dedicated 44px move handle onto another node or the root drop target. The handle uses pointer capture and hit-tested targets for mouse, pen, and touch, and a warning dialog confirms the move. Clicking or keyboard-activating the handle opens Edit; **Edit → Parent Org Unit** excludes self/descendant destinations. Mutation feedback, protected dialog dismissal, logical indentation, confirmation for suspend/archive, and 44px action targets remain built in. Tenant attachments use a searchable combobox with removable chips. The available list excludes selected tenants and, for a child, omits every tenant unavailable on its direct parent. An invalid existing attachment remains removable after a parent change, while Save stays blocked until the invalid chip is removed. Provider validation remains authoritative and additionally prevents detaching a tenant still required by a child. Persisted timestamps use the supplied locale and an explicit UTC timezone so server markup and the first client render remain identical. Newly created nodes use [`CiNewResourceBadge`](./CiNewResourceBadge) and disappear from the recency state after the Core-owned default duration.
+
+`developmentSeeder` is a presentation capability, not an authorization boundary. Resolve it on the server only after `ciCanAccessDeveloperTools()` succeeds; the server action and provider handler must repeat the development-mode, authenticated-actor, and exact `developer`-role checks.
+
+The component intentionally exposes no permanent-delete action. Archive through status when a node should remain preserved; provenance-aware development cleanup owns disposable fixture removal.

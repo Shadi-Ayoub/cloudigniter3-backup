@@ -41,6 +41,21 @@ export {
   ciSetCognitoUserPasswordHandler,
   ciUpdateCognitoUserHandler,
 
+  // tenant lifecycle
+  ciCleanupSeededTenantsHandler,
+  ciDeleteTenantHandler,
+  ciListTenantsHandler,
+  ciPurgeTenantHandler,
+  ciRestoreTenantHandler,
+  ciSeedTenantsHandler,
+  ciSetTenantStatusHandler,
+
+  // Org Unit management
+  ciCreateOrgUnitHandler,
+  ciGetOrgUnitByPathHandler,
+  ciListOrgUnitsHandler,
+  ciUpdateOrgUnitHandler,
+
   // emberguard
   ciDeleteEmberguardCustomDomainHandler,
   ciDeleteEmberguardRoleAssignmentHandler,

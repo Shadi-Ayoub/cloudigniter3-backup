@@ -1,0 +1,33 @@
+---
+title: ciReadJsonSeederData
+description: Load array-shaped application seeder JSON through a confined server-only filesystem boundary.
+sidebar_position: 3
+---
+
+Import from the server entry point:
+
+```ts
+import { ciReadJsonSeederData } from "@cloudigniter/core/server";
+```
+
+```ts
+async function ciReadJsonSeederData<T = unknown>(
+  input: CiReadJsonSeederDataInput,
+): Promise<T[]>;
+```
+
+`CiReadJsonSeederDataInput` contains:
+
+| Field | Default | Meaning |
+| --- | --- | --- |
+| `definition` | required | `CiSeederDefinition` whose data paths are loaded |
+| `appRoot` | `process.cwd()` | Application root |
+| `customSeederRoot` | `src/custom/dev/seeder` | Root to which data paths are confined |
+| `maxFileBytes` | `1_048_576` | Maximum size of each JSON file |
+
+The loader validates the seeder ID, requires at least one data file, permits only `.json` regular files, rejects
+path traversal, requires array-shaped JSON, and merges files in manifest order. It parses structure only; callers
+must validate domain records before invoking a create or cleanup API.
+
+This API uses Node.js filesystem modules and must not be imported from `@cloudigniter/core/client` or a Client
+Component.

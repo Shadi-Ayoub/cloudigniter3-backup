@@ -20,6 +20,7 @@ import { ciMakeRuntimeCommonPolicies } from "../policy/ci-make-runtime-common-po
 
 import {
   ciEmberguardAccessTableResourceModule,
+  ciSystemTableResourceModule,
   ciUserProfileTableResourceModule,
 } from "./data";
 import { ciAuthResourceModule } from "./auth";
@@ -29,6 +30,7 @@ import { ciDefineBackendManifest } from "./backend-manifest";
 export const CI_CORE_BACKEND_MANIFEST = ciDefineBackendManifest({
   modules: [
     ciEmberguardAccessTableResourceModule,
+    ciSystemTableResourceModule,
     ciUserProfileTableResourceModule,
     ciAuthResourceModule,
   ] as const,

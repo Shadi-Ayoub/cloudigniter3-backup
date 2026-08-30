@@ -1,0 +1,71 @@
+---
+title: Org Unit Management
+description: Build tenant Org Unit trees, share departments across companies, and apply predecessor-aware access.
+sidebar_position: 5
+---
+
+# Org Unit Management
+
+Open **Dashboard → Org Units** to manage the organization structure beneath your tenants. An Org Unit has one stable identity, one parent, and an immutable slug/path. It may be attached to several tenants, so companies can share a department or complete subtree without maintaining duplicate records.
+
+## Shared-tree model
+
+Consider a firm with a central headquarters and three company tenants:
+
+```text
+Central Headquarters                       tenants: HQ, Consulting, Logistics, Technology
+├── Shared Services                        tenants: HQ, Consulting, Logistics, Technology
+│   ├── Finance                            tenants: HQ, Consulting, Logistics, Technology
+│   └── People Operations                  tenants: HQ, Consulting, Technology
+├── Consulting Delivery                    tenant: Consulting
+├── Fleet Operations                       tenant: Logistics
+└── Product Engineering                    tenant: Technology
+```
+
+The child tenant set must always be a subset of its parent tenant set. CloudIgniter rejects creating a child for a tenant absent from its parent and rejects detaching a tenant from a parent while a child still uses it.
+
+The management page uses a two-panel explorer beneath the same management header used by CloudIgniter's data pages. The direction-aware tree panel sits on the left in LTR locales and on the right in RTL locales. Drag its separator, or focus the separator and use the arrow keys, to resize it. The chosen width is preserved for the next visit.
+
+Use the top toolbar to search by name, ID, path, or tenant, filter by tenant and status, expand or collapse the trees, create a root, or open the development seeder. Sibling Org Units, tenant choices, and attachment chips are alphabetized by their displayed names. A matching descendant keeps its predecessors visible so filtered results retain their structural context. Select a node to show its identity, status, predecessor path, tenant attachments, children, description, and timestamps in the browsing panel. Timestamps use the resolved application locale and a stable UTC timezone, keeping server rendering and hydration consistent.
+
+Right-click a tree node to create a child, edit it, suspend or reactivate it, or archive it. The visible action menu exposes the same commands for touch and keyboard users. Parent and leaf nodes use variants of the same tree glyph, while the adjacent semantic dot changes from green to red immediately after a successful suspension. Suspending and archiving require confirmation; archived nodes remain retained for audit.
+
+System administrators can move a complete subtree by pressing its visible move handle and dragging it onto another Org Unit. The handle supports mouse, pen, and touch; a simple click opens Edit instead. Drop it on the tree-root target to create a new root tree. The target highlights as the pointer enters it, and drag-and-drop always asks for confirmation before saving. Keyboard users can choose the same destination from **Edit → Parent Org Unit**. A target cannot be the node itself or one of its descendants, and every tenant retained on the moved root must also be attached to the new parent.
+
+Newly created Org Units display a **NEW** badge for five minutes. The shared recency timer removes the badge automatically; refreshing the page does not restart it because recency is calculated from `createdAt`.
+
+In the editor, **Tenant attachments** uses a searchable dropdown with removable chips. A child Org Unit's dropdown contains only unselected tenants already attached to its direct parent; unavailable tenants are omitted instead of shown disabled. Root Org Units can select from every available tenant. If changing the parent makes an existing attachment invalid, that attachment remains visible as a removable chip and saving stays blocked until it is removed.
+
+In development mode, authenticated developers also see the explorer-wide **Seeder** action. It runs the same provenance-aware Northstar tenant and Org Unit fixture exposed from Tenant management. Seed results merge authoritative Org Unit rows into the current tree; cleanup removes only resources deleted by the matching seeder markers.
+
+Slug remains immutable after creation. Re-parenting is an explicit bounded subtree migration: CloudIgniter strongly reads the stored child graph and atomically rewrites canonical paths, predecessor IDs, tenant routing attachments, collection projections, and the old/new parent child lists. A move that would exceed the 100-operation DynamoDB transaction bound fails without partial writes; split an unusually large restructuring into smaller subtree moves.
+
+### A confirmed move does not change the tree
+
+The explorer accepts a move as successful only when the authoritative row returned by the update has the requested `parentId`. If it reports that the deployed backend did not persist the parent, the browser is running newer move-capable UI code than the current Amplify Lambda. From `apps/template`, deploy the current backend once with `pnpm sandbox` (equivalent to `ampx sandbox --once --profile developer1`), refresh the page, and retry. The failed confirmation does not apply a client-only move.
+
+## Hierarchy-aware access
+
+Org Unit assignments use `exact` or `descendants` propagation. A descendant grant is accepted only when the requested node's authoritatively stored predecessor IDs contain the assigned node ID and the tenant IDs match. Sharing a canonical Finance node with two companies does not let an assignment in Company A cross into Company B.
+
+Use `ciOrgUnitContextAccessScope()` with a context returned by trusted routing resolution:
+
+```ts
+import { ciOrgUnitContextAccessScope } from "@cloudigniter/core/lib";
+
+const scope = ciOrgUnitContextAccessScope(orgUnitContext);
+const allowed = authorizer.can({
+  subject,
+  resource: "platform.org-units",
+  action: "update",
+  scope,
+});
+```
+
+Do not construct `ancestorOrgUnitIds` from pathname segments, request headers, or browser state.
+
+## Status and deletion
+
+Org Units support `active`, `suspended`, and `archived` operational statuses. The management page does not expose irreversible deletion. Disposable development Org Units are removed only by their provenance-aware seeder cleanup.
+
+See [DynamoDB Table Structure](./ddb-table-structure) for storage keys and [Development tools and application seeding](../../environment-modes/development-tools-and-seeding) for the multi-company fixture.

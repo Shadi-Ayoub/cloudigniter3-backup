@@ -6,7 +6,12 @@ export { ciReadForwardedCookies } from "./cookie";
 // ─────────────────────────────────────────────────────────────
 // dev
 // ─────────────────────────────────────────────────────────────
-export { ciStartTraceServer, CiTraceLoggerServer } from "./dev";
+export {
+  ciReadJsonSeederData,
+  ciStartTraceServer,
+  CiTraceLoggerServer,
+  type CiReadJsonSeederDataInput,
+} from "./dev";
 
 // ─────────────────────────────────────────────────────────────
 // env

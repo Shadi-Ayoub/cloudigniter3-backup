@@ -14,6 +14,11 @@ export function ciIsOrgUnitContext(value: unknown): value is CiOrgUnitContext {
     ciIsOptionalString(value.slug) &&
     ciIsOptionalString(value.name) &&
     ciIsOptionalString(value.status) &&
+    (value.ancestorOrgUnitIds === undefined ||
+      (Array.isArray(value.ancestorOrgUnitIds) &&
+        value.ancestorOrgUnitIds.every(
+          (ancestorId) => typeof ancestorId === "string",
+        ))) &&
     (value.parentId === undefined || value.parentId === null || typeof value.parentId === "string") &&
     (value.exists === undefined || typeof value.exists === "boolean")
   );

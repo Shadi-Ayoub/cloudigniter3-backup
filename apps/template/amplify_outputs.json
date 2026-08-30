@@ -238,6 +238,206 @@
             ]
           }
         },
+        "System": {
+          "name": "System",
+          "fields": {
+            "id": {
+              "name": "id",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "PK": {
+              "name": "PK",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "SK": {
+              "name": "SK",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "GSI1PK": {
+              "name": "GSI1PK",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "GSI1SK": {
+              "name": "GSI1SK",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "GSI2PK": {
+              "name": "GSI2PK",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "GSI2SK": {
+              "name": "GSI2SK",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "type": {
+              "name": "type",
+              "isArray": false,
+              "type": {
+                "enum": "SystemItemType"
+              },
+              "isRequired": true,
+              "attributes": []
+            },
+            "tenantId": {
+              "name": "tenantId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "status": {
+              "name": "status",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "deletionState": {
+              "name": "deletionState",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "deletion": {
+              "name": "deletion",
+              "isArray": false,
+              "type": "AWSJSON",
+              "isRequired": false,
+              "attributes": []
+            },
+            "name": {
+              "name": "name",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "description": {
+              "name": "description",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "data": {
+              "name": "data",
+              "isArray": false,
+              "type": "AWSJSON",
+              "isRequired": false,
+              "attributes": []
+            },
+            "version": {
+              "name": "version",
+              "isArray": false,
+              "type": "Int",
+              "isRequired": false,
+              "attributes": []
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "isArray": false,
+              "type": "AWSDateTime",
+              "isRequired": false,
+              "attributes": []
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "isArray": false,
+              "type": "AWSDateTime",
+              "isRequired": false,
+              "attributes": []
+            }
+          },
+          "syncable": true,
+          "pluralName": "Systems",
+          "attributes": [
+            {
+              "type": "model",
+              "properties": {}
+            },
+            {
+              "type": "key",
+              "properties": {
+                "fields": [
+                  "PK",
+                  "SK"
+                ]
+              }
+            },
+            {
+              "type": "key",
+              "properties": {
+                "name": "GSI1",
+                "queryField": "listSystemByGSI1PKAndGSI1SK",
+                "fields": [
+                  "GSI1PK",
+                  "GSI1SK"
+                ]
+              }
+            },
+            {
+              "type": "key",
+              "properties": {
+                "name": "GSI2",
+                "queryField": "listSystemByGSI2PKAndGSI2SK",
+                "fields": [
+                  "GSI2PK",
+                  "GSI2SK"
+                ]
+              }
+            },
+            {
+              "type": "auth",
+              "properties": {
+                "rules": [
+                  {
+                    "groupClaim": "cognito:groups",
+                    "provider": "userPools",
+                    "allow": "groups",
+                    "groups": [
+                      "system-super-admin"
+                    ],
+                    "operations": [
+                      "create",
+                      "update",
+                      "delete",
+                      "read"
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "primaryKeyInfo": {
+            "isCustomPrimaryKey": true,
+            "primaryKeyFieldName": "PK",
+            "sortKeyFieldNames": [
+              "SK"
+            ]
+          }
+        },
         "UserProfile": {
           "name": "UserProfile",
           "fields": {
@@ -427,6 +627,15 @@
             "CUSTOM_DOMAIN",
             "AUDIT_EVENT"
           ]
+        },
+        "SystemItemType": {
+          "name": "SystemItemType",
+          "values": [
+            "TENANT",
+            "ORG_UNIT",
+            "ORG_UNIT_ATTACHMENT",
+            "SEED_MARKER"
+          ]
         }
       },
       "nonModels": {},
@@ -498,6 +707,48 @@
               "isArray": false,
               "type": "String",
               "isRequired": false
+            }
+          }
+        },
+        "ListOrgUnits": {
+          "name": "ListOrgUnits",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
+        "GetOrgUnitByPath": {
+          "name": "GetOrgUnitByPath",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
+        "ListTenants": {
+          "name": "ListTenants",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
             }
           }
         }
@@ -614,6 +865,118 @@
               "isRequired": true
             }
           }
+        },
+        "CreateOrgUnit": {
+          "name": "CreateOrgUnit",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
+        "UpdateOrgUnit": {
+          "name": "UpdateOrgUnit",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
+        "SeedTenants": {
+          "name": "SeedTenants",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
+        "CleanupSeededTenants": {
+          "name": "CleanupSeededTenants",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
+        "DeleteTenant": {
+          "name": "DeleteTenant",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
+        "RestoreTenant": {
+          "name": "RestoreTenant",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
+        "PurgeTenant": {
+          "name": "PurgeTenant",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
+        "SetTenantStatus": {
+          "name": "SetTenantStatus",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
         }
       }
     }
@@ -622,6 +985,7 @@
   "custom": {
     "cloudigniter": {
       "userProfileTableName": "UserProfile-fqsqohaocbgsbaazjeo2iw4lpm-NONE",
+      "systemTableName": "System-fqsqohaocbgsbaazjeo2iw4lpm-NONE",
       "emberguardAccessTableName": "EmberguardAccess-fqsqohaocbgsbaazjeo2iw4lpm-NONE",
       "emberguardAccessBootstrapFunctionName": "amplify-cloudignitertempl-getemberguarddefinitionh-Qk3fTK7pM4gz"
     }

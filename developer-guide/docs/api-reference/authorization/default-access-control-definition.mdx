@@ -15,7 +15,7 @@ const CI_DEFAULT_ACCESS_CONTROL_DEFINITION: CiAccessControlDefinition;
 ```
 
 It registers the `platform`, `identity`, and `developer` domains; dashboard, authorization, protected core
-authorization, settings, tenants, users, and developer-tool resources; and these roles:
+authorization, settings, tenants, Org Units, users, and developer-tool resources; and these roles:
 
 | Role                 | Precedence | Inherits       |
 | -------------------- | ---------: | -------------- |
@@ -29,6 +29,8 @@ authorization, settings, tenants, users, and developer-tool resources; and these
 The business-administration lane is `user → admin → super-admin`; the technical-administration lane is
 `user → system-admin → system-super-admin`. `system-admin` intentionally receives no business-admin privileges
 through inheritance. Assign roles from both lanes when one subject needs both responsibilities.
+
+`platform.org-units` supports `read`, `create`, `update`, `share`, and `archive` across system, global, tenant, and Org Unit scopes. `admin` can read/update Org Units within assigned business scopes, `super-admin` can manage them there, and `system-admin` manages them at system scope. Descendant propagation still requires the requested node's authoritative predecessor chain.
 
 Lower precedence numbers are stronger, but precedence does not imply inheritance. A system assignment remains
 system-only. Assign a compatible role at global scope with `descendants` when it must reach every tenant and Org

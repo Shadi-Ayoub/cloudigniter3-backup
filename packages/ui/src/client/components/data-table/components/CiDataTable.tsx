@@ -16,6 +16,7 @@ import {
   type Updater,
 } from "@tanstack/react-table";
 import { ciDataTableFeatures, type CiDataTableFeatures } from "@ci-ui/common";
+import { CI_DATA_TABLE_DEFAULT_ROW_ACTION_OVERFLOW } from "@cloudigniter/core/lib";
 import {
   ChevronLeft,
   ChevronRight,
@@ -24,9 +25,11 @@ import {
   List,
   RefreshCw,
   Search,
+  TableProperties,
 } from "lucide-react";
 
 import {
+  Badge,
   Button,
   Checkbox,
   Input,
@@ -68,11 +71,36 @@ import {
   ciSaveDataTablePreferences,
 } from "../lib";
 import { CiDataTableRowActions } from "./CiDataTableRowActions";
+import { CiNewResourceBadge } from "../../new-resource-badge";
+import { ciResolveDataTableInitialSorting } from "../lib/ci-data-table-sorting";
 
 const ACTIONS_COLUMN_ID = "__ci_actions__";
 const SELECTION_COLUMN_ID = "__ci_selection__";
 const FILTER_ALL_VALUE = "__ci_all__";
 const DEFAULT_PAGE_SIZES = [10, 25, 50, 100];
+const TOOLBAR_CONTROL_HEIGHT_CLASS = "h-11 min-h-11";
+const TOOLBAR_INPUT_CLASS = `${TOOLBAR_CONTROL_HEIGHT_CLASS} bg-background`;
+const TOOLBAR_SELECT_CLASS = cn(
+  TOOLBAR_CONTROL_HEIGHT_CLASS,
+  "data-[size=default]:h-11 bg-secondary text-secondary-foreground",
+  "hover:bg-secondary/80 dark:bg-secondary dark:hover:bg-secondary/80",
+);
+const TOOLBAR_EXCEL_EXPORT_CLASS = cn(
+  TOOLBAR_CONTROL_HEIGHT_CLASS,
+  "border-success-border bg-success-surface text-success-surface-foreground",
+  "hover:bg-success-surface/80 hover:text-success-surface-foreground",
+  "dark:border-success-border dark:bg-success-surface dark:hover:bg-success-surface/80",
+);
+const TITLE_ICON_TONE_CLASSES = {
+  primary: "border-primary/30 bg-primary/10 text-primary",
+  info: "border-info-border bg-info-surface text-info-surface-foreground",
+  success:
+    "border-success-border bg-success-surface text-success-surface-foreground",
+  warning:
+    "border-warning-border bg-warning-surface text-warning-surface-foreground",
+  danger:
+    "border-danger-border bg-danger-surface text-danger-surface-foreground",
+} as const;
 const DEFAULT_LABELS = {
   search: "Search...",
   loading: "Loading...",
@@ -119,6 +147,17 @@ function decodeFilterValue(value: string): CiDataTableFilterValue {
   } catch {
     return value;
   }
+}
+
+/** Alphabetizes user-facing filter options unless semantic order is explicit. */
+function sortFilterOptions<TOption extends { label: string }>(
+  options: readonly TOption[] | undefined,
+  alphabetize = true,
+): TOption[] {
+  if (!options) return [];
+  return alphabetize
+    ? [...options].sort((left, right) => left.label.localeCompare(right.label))
+    : [...options];
 }
 
 /** Reads a nested accessor path from a row for the default Excel export. */
@@ -203,6 +242,10 @@ function buildExcelColumns<TData extends RowData>(
 export function CiDataTable<TData extends RowData, TValue = unknown>({
   title,
   description,
+  titleBadge = "Data management",
+  titleChips,
+  titleIcon,
+  titleIconTone = "primary",
   definition,
   columns: legacyColumns,
   data = [],
@@ -248,9 +291,11 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
   const hoverHighlight = config?.hoverHighlight ?? true;
   const stripedRows = config?.stripedRows ?? true;
   const rowActionMode = config?.rowActions?.mode ?? "menu";
-  const rowActionInlineCount = Math.max(
+  const rowActionOverflow = Math.max(
     0,
-    config?.rowActions?.inlineCount ?? 2
+    config?.rowActions?.overflow ??
+      config?.rowActions?.inlineCount ??
+      CI_DATA_TABLE_DEFAULT_ROW_ACTION_OVERFLOW,
   );
   const reserveRowActionSpace = config?.rowActions?.reserveSpace ?? false;
   const selectionEnabled =
@@ -273,9 +318,16 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
       ),
     [filters]
   );
-  const [sorting, setSorting] = useState<SortingState>(
-    config?.sorting?.initial ?? []
+  const initialSorting = useMemo(
+    () =>
+      ciResolveDataTableInitialSorting(
+        baseColumns.map((column) => getColumnId(column)),
+        config?.sorting?.initial,
+        config?.sorting?.enabled !== false,
+      ),
+    [baseColumns, config?.sorting?.enabled, config?.sorting?.initial],
   );
+  const [sorting, setSorting] = useState<SortingState>(() => initialSorting);
   const [columnFilters, setColumnFilters] =
     useState<ColumnFiltersState>(initialFilters);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -412,6 +464,9 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
       }),
     [filteredBaseColumns, tableData],
   );
+  const firstDataColumnId = contentSizedBaseColumns[0]
+    ? getColumnId(contentSizedBaseColumns[0])
+    : undefined;
 
   const columns = useMemo<
     ColumnDef<CiDataTableFeatures, TData, unknown>[]
@@ -421,13 +476,28 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
       [];
 
     if (rowActions.length || information) {
-      const menuWidth = information ? (rowActions.length ? 128 : 72) : 64;
-      const buttonWidth = information ? 240 : 180;
+      const inlineActionCount =
+        rowActionMode === "menu"
+          ? 0
+          : rowActionMode === "buttons"
+            ? rowActions.length
+            : Math.min(rowActionOverflow, rowActions.length);
+      const hasOverflow =
+        rowActionMode === "menu"
+          ? rowActions.length > 0
+          : rowActionMode === "mixed" &&
+            rowActions.length > rowActionOverflow;
+      const actionControlCount =
+        (information ? 1 : 0) + inlineActionCount + (hasOverflow ? 1 : 0);
+      const actionColumnWidth = Math.min(
+        320,
+        Math.max(64, actionControlCount * 52 + 16),
+      );
       trailingColumns.push({
         id: ACTIONS_COLUMN_ID,
         header: config?.rowActions?.header ?? labels.actions,
-        size: rowActionMode === "menu" ? menuWidth : buttonWidth,
-        minSize: rowActionMode === "menu" ? menuWidth : 100,
+        size: actionColumnWidth,
+        minSize: actionColumnWidth,
         maxSize: 320,
         enableSorting: false,
         enableColumnFilter: false,
@@ -439,7 +509,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
             information={information}
             context={{ row: row.original, query, refresh }}
             mode={rowActionMode}
-            inlineCount={rowActionInlineCount}
+            overflow={rowActionOverflow}
             menuLabel={labels.actions}
             reserveSpace={reserveRowActionSpace}
           />
@@ -493,7 +563,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
     information,
     query,
     refresh,
-    rowActionInlineCount,
+    rowActionOverflow,
     rowActionMode,
     rowActions,
     reserveRowActionSpace,
@@ -886,6 +956,12 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
         columnId: cell.column.id,
       };
       const content = flexRender(cell.column.columnDef.cell, cell.getContext());
+      const createdAt =
+        config?.newResourceBadge?.createdAt?.(cell.row.original) ??
+        getValueAtPath(cell.row.original, "createdAt");
+      const showNewResourceBadge =
+        config?.newResourceBadge?.enabled !== false &&
+        cell.column.id === firstDataColumnId;
       const truncate = meta?.truncate;
       const maxWidth =
         typeof truncate === "number"
@@ -905,7 +981,26 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
           style={maxWidth ? { maxWidth } : undefined}
           title={showTitle && value != null ? String(value) : undefined}
         >
-          {content}
+          <span
+            className={cn(
+              showNewResourceBadge && "flex min-w-0 items-center gap-2",
+            )}
+          >
+            <span className="min-w-0">{content}</span>
+            {showNewResourceBadge ? (
+              <CiNewResourceBadge
+                createdAt={
+                  createdAt as
+                    | string
+                    | number
+                    | Date
+                    | null
+                    | undefined
+                }
+                durationMs={config?.newResourceBadge?.durationMs}
+              />
+            ) : null}
+          </span>
         </div>
       );
 
@@ -934,7 +1029,12 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
       }
       return wrapped;
     },
-    []
+    [
+      config?.newResourceBadge?.createdAt,
+      config?.newResourceBadge?.durationMs,
+      config?.newResourceBadge?.enabled,
+      firstDataColumnId,
+    ]
   );
 
   /** Resolves a cell's conditionally computed class name. */
@@ -1085,7 +1185,10 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                               <SelectItem value={FILTER_ALL_VALUE}>
                                 {labels.allRows}
                               </SelectItem>
-                              {headerFilter.options?.map((option) => (
+                              {sortFilterOptions(
+                                headerFilter.options,
+                                headerFilter.sortOptions !== false,
+                              ).map((option) => (
                                 <SelectItem
                                   key={`${option.id}`}
                                   value={encodeFilterValue(option.id)}
@@ -1143,7 +1246,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                 key={row.id}
                 data-state={row.getIsSelected() ? "selected" : undefined}
                 className={cn(
-                  "flex w-full",
+                  "flex w-full items-stretch",
                   stripedRows && rowIndex % 2 === 0
                     ? "bg-muted/25"
                     : "bg-background",
@@ -1154,9 +1257,10 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                   <TableCell
                     key={cell.id}
                     className={cn(
-                      "min-w-0 overflow-hidden text-start align-middle",
+                      "flex min-w-0 items-center overflow-hidden text-start align-middle",
                       compact ? "px-2 py-1.5" : "px-3 py-2.5",
-                      cell.column.id === ACTIONS_COLUMN_ID && "text-end",
+                      cell.column.id === ACTIONS_COLUMN_ID &&
+                        "justify-end text-end",
                       getCellClassName(cell)
                     )}
                     style={getCellStyle(cell)}
@@ -1269,19 +1373,51 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
   return (
     <section
       dir={direction}
-      className={cn("flex max-w-full flex-col", className)}
+      className={cn("flex w-full max-w-full flex-col", className)}
       style={{ width: widthStyle }}
       aria-busy={isLoading}
     >
       {(title || description) && (
-        <header className="mb-4">
-          {title ? (
-            <h2 className="text-xl font-semibold leading-none">{title}</h2>
+        <div className="mb-8 flex w-full flex-col gap-5 rounded-2xl border border-primary/20 bg-primary/5 p-5 shadow-sm dark:bg-primary/10 sm:p-6 lg:flex-row lg:items-stretch lg:justify-between">
+          <div className="flex min-w-0 flex-1 items-stretch gap-4 sm:gap-5">
+            <div
+              aria-hidden="true"
+              className={cn(
+                "flex min-h-24 w-24 shrink-0 items-center justify-center self-stretch rounded-2xl border p-4 [&>svg]:size-16 [&>svg]:shrink-0 sm:w-28",
+                TITLE_ICON_TONE_CLASSES[titleIconTone],
+              )}
+            >
+              {titleIcon ?? <TableProperties />}
+            </div>
+            <div className="min-w-0 self-center py-1">
+              {titleBadge ? (
+                <div className="mb-2 text-xs font-semibold tracking-[0.14em] text-primary uppercase">
+                  {titleBadge}
+                </div>
+              ) : null}
+              {title ? (
+                <h1 className="text-2xl leading-tight font-semibold tracking-tight sm:text-3xl">
+                  {title}
+                </h1>
+              ) : null}
+              {description ? (
+                <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground sm:text-base">
+                  {description}
+                </p>
+              ) : null}
+            </div>
+          </div>
+          {titleChips?.length ? (
+            <div className="flex flex-wrap content-end items-end gap-2 lg:max-w-sm lg:justify-end lg:self-end">
+              {titleChips.map((chip) => (
+                <Badge key={chip.id} variant={chip.variant ?? "outline"}>
+                  {chip.icon}
+                  {chip.label}
+                </Badge>
+              ))}
+            </div>
           ) : null}
-          {description ? (
-            <p className="text-muted-foreground mt-1 text-sm">{description}</p>
-          ) : null}
-        </header>
+        </div>
       )}
 
       <div className="mb-3 flex flex-wrap items-center gap-2">
@@ -1296,7 +1432,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
               value={globalFilter}
               onChange={(event) => handleGlobalFilterChange(event.target.value)}
               placeholder={searchPlaceholder ?? labels.search}
-              className="ps-8"
+              className={cn(TOOLBAR_INPUT_CLASS, "ps-8")}
             />
           </label>
         ) : null}
@@ -1314,6 +1450,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                   setToolbarFilter(filter.id, event.target.value || undefined)
                 }
                 placeholder={filter.placeholder ?? filter.label}
+                className={TOOLBAR_INPUT_CLASS}
               />
             </label>
           ) : (
@@ -1333,14 +1470,20 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                 )
               }
             >
-              <SelectTrigger aria-label={filter.label}>
+              <SelectTrigger
+                aria-label={filter.label}
+                className={TOOLBAR_SELECT_CLASS}
+              >
                 <SelectValue placeholder={filter.placeholder ?? filter.label} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={FILTER_ALL_VALUE}>
                   {filter.allLabel ?? labels.allRows}
                 </SelectItem>
-                {filter.options?.map((option) => (
+                {sortFilterOptions(
+                  filter.options,
+                  filter.sortOptions !== false,
+                ).map((option) => (
                   <SelectItem
                     key={`${option.id}`}
                     value={encodeFilterValue(option.id)}
@@ -1358,7 +1501,10 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
             value={format}
             onValueChange={(value) => setFormat(value as CiDataTableFormat)}
           >
-            <SelectTrigger aria-label={labels.viewFormat}>
+            <SelectTrigger
+              aria-label={labels.viewFormat}
+              className={TOOLBAR_SELECT_CLASS}
+            >
               {format === "cards" ? (
                 <LayoutGrid className="size-4" aria-hidden />
               ) : (
@@ -1396,6 +1542,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                 key={action.id}
                 type="button"
                 variant={action.variant ?? "outline"}
+                className={cn(action.className, TOOLBAR_CONTROL_HEIGHT_CLASS)}
                 disabled={disabled}
                 aria-busy={isBusy}
                 onClick={() =>
@@ -1417,6 +1564,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
             <Button
               type="button"
               variant="outline"
+              className={TOOLBAR_EXCEL_EXPORT_CLASS}
               disabled={busyActions.has("__excel__")}
               aria-busy={busyActions.has("__excel__")}
               onClick={() =>

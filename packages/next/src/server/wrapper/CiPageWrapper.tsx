@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { ciCanAccessDeveloperTools } from "@cloudigniter/core/lib";
 import { ciStartTraceServer } from "@cloudigniter/core/server";
 // import { CI_DEV_BEACON_LOGO } from "@cloudigniter/core/lib";
 import type { CiI18nConfig, CiSettings } from "@cloudigniter/core/types";
@@ -35,6 +36,13 @@ export async function CiPageWrapper({
   });
 
   const settings = context.settings as CiSettings;
+  const developerToolsEnabled = ciCanAccessDeveloperTools({
+    envMode: context.env.mode,
+    actor: {
+      authenticated: context.auth.user.authenticated,
+      roles: context.auth.user.roles,
+    },
+  });
 
   if (protect && !settings) {
     throw new Error(`Failed to load system Settings`);
@@ -49,6 +57,7 @@ export async function CiPageWrapper({
       }}
       i18nConfig={context.config.appCoreConfig.i18n as CiI18nConfig}
       devConfig={context.config.appCoreConfig.dev}
+      developerToolsEnabled={developerToolsEnabled}
       locale={locale}
       protect={protect}
     >

@@ -7,4 +7,6 @@ export type CiSystemItemType =
   | 'POLICY_VER'
   | 'SCOPES'
   | 'TENANT'
-  | 'ORG_UNIT';
+  | 'ORG_UNIT'
+  | 'ORG_UNIT_ATTACHMENT'
+  | 'SEED_MARKER';

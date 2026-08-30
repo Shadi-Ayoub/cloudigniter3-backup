@@ -14,12 +14,13 @@ The repository skill
 validation workflow used by Codex. Its section-specific references keep each
 audience focused:
 
-| Guide surface | Source directory | Audience and purpose |
-| --- | --- | --- |
-| CloudIgniter Users | `developer-guide/docs` outside `api-reference` | Application developers learning concepts, setup, configuration, supported workflows, and troubleshooting |
-| CloudIgniter Developers | `developer-guide/company-developers` | Contributors maintaining packages, providers, architecture, runtime boundaries, and extension workflows |
-| API Reference | `developer-guide/docs/api-reference` | Developers looking up exact public imports, signatures, fields, defaults, constraints, and runtime requirements |
-| Skills | `.agents/skills` and `.codex/skills` (generated into the Skills tab) | Codex and maintainers reviewing reusable instructions; source content is authoritative outside the guide |
+| Guide surface           | Source directory                                                     | Audience and purpose                                                                                                                      |
+| ----------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| CloudIgniter Users      | `developer-guide/docs` outside `api-reference`                       | Application developers learning concepts, setup, configuration, supported workflows, and troubleshooting                                  |
+| CloudIgniter Developers | `developer-guide/company-developers`                                 | Contributors maintaining packages, providers, architecture, runtime boundaries, and extension workflows                                   |
+| Dictionary              | `developer-guide/dictionary`                                         | Readers looking up concise, stable CloudIgniter ecosystem terminology, grouped by first letter and alphabetized in the Dictionary sidebar |
+| API Reference           | `developer-guide/docs/api-reference`                                 | Developers looking up exact public imports, signatures, fields, defaults, constraints, and runtime requirements                           |
+| Skills                  | `.agents/skills` and `.codex/skills` (generated into the Skills tab) | Codex and maintainers reviewing reusable instructions; source content is authoritative outside the guide                                  |
 
 ## Route documentation by impact
 
@@ -46,7 +47,30 @@ Typical routing:
 - A provider feature needs application setup guidance, contributor-facing provider architecture, and reference pages for public adapters or contracts.
 - A configuration change needs updated user setup, typed contract reference, and internal resolution documentation when wiring changes.
 - An architecture change needs contributor documentation and the matching `cloudigniter-development` skill reference; update user guidance when the workflow also changes.
+- A new or materially changed stable ecosystem term needs a concise Dictionary definition and links to the detailed guide rather than a duplicated tutorial.
 - A deprecation or removal needs migration guidance and removal of stale imports and examples across every surface.
+
+## Link Dictionary terms in prose
+
+Every term cataloged in `developer-guide/dictionary-sidebars.ts` is an identified
+Dictionary term. Make each prose occurrence clickable with its canonical
+definition URL, for example `[proxy](/dictionary/p#proxy)`. The guide intercepts
+these links outside the Dictionary tab and opens the searchable Dictionary
+Viewer over the current page. Normal URL navigation remains available without
+JavaScript and from inside the Dictionary tab. Readers can also select the book
+icon beside the Dictionary tab to open the viewer directly without leaving the
+current page.
+
+Add links in paragraphs, lists, callouts, and table cells. Skip headings, code,
+diagrams, existing links, and the term's own definition. Add or rename the entry
+in both its letter MDX file and `dictionary-sidebars.ts`; that shared catalog
+drives the sidebar, viewer search, alphabet availability, and canonical link.
+
+The `plugins/remark-dictionary-terms.ts` build transform provides a coverage
+backstop for CloudIgniter Users, CloudIgniter Developers, and API Reference. It
+matches cataloged terms case-insensitively, prefers the longest term when names
+overlap, and produces the same canonical links without changing headings, code,
+diagrams, existing links, Dictionary definitions, or generated Skills content.
 
 ## Verify source before writing
 
@@ -107,6 +131,10 @@ pnpm --filter developer-guide typecheck
 pnpm --filter developer-guide build
 ```
 
+The standard `start` and `build` scripts clear Docusaurus-generated metadata
+before loading the guide. This prevents moved or removed documentation plugins
+from leaving stale route and document records that can break client navigation.
+
 If a change is internal and preserves documented behavior, record why no page
 needed an edit. Do not create artificial documentation churn, but never skip the
 impact review.
@@ -118,6 +146,7 @@ examples include an API-export inventory check, stricter broken-link handling,
 section templates, terminology linting, clearer sidebar ownership, or executable
 code examples. Add the improvement to the authoring skill when it is a reusable
 rule rather than a one-off preference.
+
 ### Skills
 
-The Skills tab is a generated, read-only view of skill `SKILL.md` files. Do not edit generated files or duplicate them in this guide. Skill changes normally flow from their source folders without a separate guide edit; if a skill itself can be improved, update it in its owning folder and rebuild the guide.
+The Skills tab is a generated, read-only view of skill entrypoints and Markdown references. It preserves nested reference folders as navigation categories, including deliberate labels and ordering for architecture, CLI, and authoring guidance. Do not edit generated files or duplicate them in this guide. Skill changes normally flow from their source folders without a separate guide edit; if a skill itself can be improved, update it in its owning folder and rebuild the guide.

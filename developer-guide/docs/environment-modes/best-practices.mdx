@@ -1,30 +1,16 @@
 ---
-title: Best Practices
-sidebar_position: 5
+title: Best practices
+description: Safety rules for environment modes and developer-only operations.
+sidebar_position: 6
 ---
 
-# Best Practices (“Do & Don’t”)
-
-## ✔ DO
-
-- Set `CI_ENV_MODE=live` for production-like deployments
-- Commit `.env.local` with:
-
-  ```env
-  CI_ENV_MODE=live
-  NEXT_PUBLIC_CI_ENV_MODE=live
-  ```
-
-- Use test mode for automated test suites
-- Use sandbox mode for local experimentation
-- Always scope queries by environment mode (already automatic)
-- Always include `envMode` in corresponding tables records
-
-## ❌ DON’T
-
-- ❌ Never allow test or sandbox mode in real production
-- ❌ Never run cleanup scripts in `live` mode
-- ❌ Never use seed data in `live` mode
-- ❌ Never mix test records with real records
-- ❌ Never bypass the PK scoping logic
-- ❌ Never expose destructive sandbox features to end users
+- Keep Next.js and Amplify `CI_ENV_MODE` values aligned.
+- Use separate cloud resources for development, test, staging, and production.
+- Require `development` mode, authentication, and exact `developer` membership together.
+- Repeat the check in every server action and provider handler; UI visibility is not authorization.
+- Use exact canonical role IDs. `DEVELOPER` is not the same identifier as `developer`.
+- Store seed provenance and garbage-collection markers atomically with created resources.
+- Use bounded `GetItem`/`Query`/transaction access patterns and least-privilege handler IAM.
+- Preserve records when provenance, protection, or ownership checks do not match.
+- Never give a workstation direct table permissions just to make a seeder convenient.
+- Never enable development tools in `test`, `staging`, or `production`.

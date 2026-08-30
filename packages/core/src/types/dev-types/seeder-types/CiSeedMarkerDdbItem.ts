@@ -3,6 +3,7 @@ export type CiSeedMarkerDdbItem = {
   SK: string;
 
   type: 'SEED_MARKER';
+  id: string;
 
   seedSetId: string;
   item: string; // e.g. "TENANT"

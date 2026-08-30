@@ -1,4 +1,9 @@
+import type {
+  CiResourceDeletionMetadata,
+  CiResourceDeletionState,
+} from "../resource-lifecycle-types";
 import type { CiTenantStatus } from "./CiTenantStatus";
+import type { CiTenantStatusTransitionMetadata } from "./CiTenantLifecycleTypes";
 
 export type CiTenantHtmlTableRow = {
   /**
@@ -20,11 +25,12 @@ export type CiTenantHtmlTableRow = {
    * Operational state of the tenant
    */
   status: CiTenantStatus;
+  statusTransition?: CiTenantStatusTransitionMetadata;
 
   /**
    * Business / organizational classification
    */
-  type: "school" | "department" | "organization";
+  type: string;
 
   /**
    * Region or jurisdiction
@@ -34,6 +40,8 @@ export type CiTenantHtmlTableRow = {
   usersCount?: number;
   createdAt: string;
   updatedAt?: string;
+  deletionState?: CiResourceDeletionState;
+  deletion?: CiResourceDeletionMetadata;
 
   /**
    * Flags for system-level tenants

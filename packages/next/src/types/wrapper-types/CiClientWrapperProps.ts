@@ -11,6 +11,8 @@ export interface CiClientWrapperProps {
   i18nConfig: CiI18nConfig;
   locale: CiLocale;
   devConfig: CiDevConfig;
+  /** Authoritative server-resolved access to development-only capabilities. */
+  developerToolsEnabled: boolean;
   protect: boolean;
   children: ReactNode;
 }

@@ -106,6 +106,7 @@ export function CiBooksManager({
       onUpdate={updateBook}
       onDelete={deleteBook}
       tableProps={{
+        titleBadge: "Catalog management",
         config: {
           mode: "server",
           pagination: { pageSize: 25 },
@@ -122,6 +123,11 @@ export function CiBooksManager({
   );
 }
 ```
+
+The manager supplies the same full-width header used by other `CiDataTable` management pages. It adds a
+`Data management` title badge, a record-count or `Provider-backed` chip, and a management-state chip by default.
+Use `tableProps` to replace the badge, chips, icon, or semantic icon tone when the page needs more specific
+context. The default mixed row-action layout shows one icon-only action before the labeled overflow menu.
 
 The render boundary is intentional. Generated `CiBooksManager.tsx` code visibly renders
 `<CiDataTable {...props} />`, while the reusable manager augments those props with stable create, edit, and

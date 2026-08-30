@@ -1,6 +1,6 @@
 ---
 name: cloudigniter-guide-authoring
-description: Keep the CloudIgniter Docusaurus developer guide synchronized with implemented behavior across the CloudIgniter Users, CloudIgniter Developers, API Reference, and live Skills sections. Use whenever Codex implements, fixes, refactors, deprecates, or removes a capability, public API, configuration contract, architecture, provider integration, runtime workflow, or user-facing behavior; authors or reorganizes files under developer-guide; reviews documentation impact; or audits guide accuracy and completeness. Treat affected guide updates and validation as part of implementation completion.
+description: Keep the CloudIgniter Docusaurus developer guide synchronized with implemented behavior across the CloudIgniter Users, CloudIgniter Developers, Dictionary, API Reference, and live Skills sections. Use whenever Codex implements, fixes, refactors, deprecates, or removes a capability, public API, configuration contract, architecture, provider integration, runtime workflow, user-facing behavior, or stable ecosystem term; authors or reorganizes files under developer-guide; reviews documentation impact; or audits guide accuracy and completeness. Treat affected guide updates and validation as part of implementation completion.
 ---
 
 # CloudIgniter Guide Authoring
@@ -33,6 +33,12 @@ Load more than one section reference when a change crosses audiences. A new publ
 7. Validate code examples, import paths, runtime labels, defaults, edge cases, and navigation against source.
 8. Run the developer-guide typecheck and production build. Resolve broken links, invalid MDX, sidebar failures, and documentation regressions caused by the change.
 9. Review the implementation diff and documentation diff together. Do not report a product-change task as complete until affected guide content is current.
+
+## Dictionary links
+
+Treat every term listed in `developer-guide/dictionary-sidebars.ts` as an identified Dictionary term. Whenever an identified term appears in guide prose, make the displayed term a canonical Markdown link to its definition, for example `[proxy](/dictionary/p#proxy)`. The guide's `remark-dictionary-terms` transform enforces this across CloudIgniter Users, CloudIgniter Developers, and API Reference prose when an author misses an explicit link. These links open the Dictionary Viewer without leaving the current guide page; the same URLs still provide normal navigation when JavaScript is unavailable or the reader is already in the Dictionary tab.
+
+Link identified terms in paragraphs, lists, callouts, and table cells. Do not add links inside headings, code spans, code blocks, Mermaid or other diagrams, existing links, or the term's own Dictionary definition. When adding or renaming a term, update its letter MDX file and `dictionary-sidebars.ts` catalog together so the Dictionary tab, viewer search, alphabet navigation, and authoring target stay synchronized.
 
 ## Completion gate
 

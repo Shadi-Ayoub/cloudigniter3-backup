@@ -17,6 +17,17 @@ import { putEmberguardCustomDomainHandler } from "../functions/system/emberguard
 import { putEmberguardResourceInventoryHandler } from "../functions/system/emberguard/put-resource-inventory/resource";
 import { putEmberguardRoleAssignmentHandler } from "../functions/system/emberguard/put-role-assignment/resource";
 import { setEmberguardDefinitionHandler } from "../functions/system/emberguard/set-definition/resource";
+import { deleteTenantHandler } from "../functions/system/tenant/delete-tenant/resource";
+import { cleanupSeededTenantsHandler } from "../functions/system/tenant/cleanup-seeded-tenants/resource";
+import { listTenantsHandler } from "../functions/system/tenant/list-tenants/resource";
+import { purgeTenantHandler } from "../functions/system/tenant/purge-tenant/resource";
+import { restoreTenantHandler } from "../functions/system/tenant/restore-tenant/resource";
+import { seedTenantsHandler } from "../functions/system/tenant/seed-tenants/resource";
+import { setTenantStatusHandler } from "../functions/system/tenant/set-tenant-status/resource";
+import { createOrgUnitHandler } from "../functions/system/org-unit/create-org-unit/resource";
+import { getOrgUnitByPathHandler } from "../functions/system/org-unit/get-org-unit-by-path/resource";
+import { listOrgUnitsHandler } from "../functions/system/org-unit/list-org-units/resource";
+import { updateOrgUnitHandler } from "../functions/system/org-unit/update-org-unit/resource";
 
 /** Concrete Amplify bindings for the active CloudIgniter backend contract. */
 export const CI_CORE_AMPLIFY_MANIFEST = ciDefineAmplifyBackendManifest({
@@ -46,6 +57,62 @@ export const CI_CORE_AMPLIFY_MANIFEST = ciDefineAmplifyBackendManifest({
         userProfileTable: {
           modelName: "UserProfile",
           outputName: "userProfileTableName",
+        },
+      },
+    },
+    tenantLifecycle: {
+      status: "active",
+      resourceGroupName: "data",
+      functions: {
+        ciCleanupSeededTenantsHandler: {
+          backendKey: "cleanupSeededTenantsHandler",
+          resource: cleanupSeededTenantsHandler,
+        },
+        ciDeleteTenantHandler: {
+          backendKey: "deleteTenantHandler",
+          resource: deleteTenantHandler,
+        },
+        ciListTenantsHandler: {
+          backendKey: "listTenantsHandler",
+          resource: listTenantsHandler,
+        },
+        ciPurgeTenantHandler: {
+          backendKey: "purgeTenantHandler",
+          resource: purgeTenantHandler,
+        },
+        ciRestoreTenantHandler: {
+          backendKey: "restoreTenantHandler",
+          resource: restoreTenantHandler,
+        },
+        ciSeedTenantsHandler: {
+          backendKey: "seedTenantsHandler",
+          resource: seedTenantsHandler,
+        },
+        ciSetTenantStatusHandler: {
+          backendKey: "setTenantStatusHandler",
+          resource: setTenantStatusHandler,
+        },
+        ciCreateOrgUnitHandler: {
+          backendKey: "createOrgUnitHandler",
+          resource: createOrgUnitHandler,
+        },
+        ciGetOrgUnitByPathHandler: {
+          backendKey: "getOrgUnitByPathHandler",
+          resource: getOrgUnitByPathHandler,
+        },
+        ciListOrgUnitsHandler: {
+          backendKey: "listOrgUnitsHandler",
+          resource: listOrgUnitsHandler,
+        },
+        ciUpdateOrgUnitHandler: {
+          backendKey: "updateOrgUnitHandler",
+          resource: updateOrgUnitHandler,
+        },
+      },
+      tables: {
+        systemTable: {
+          modelName: "System",
+          outputName: "systemTableName",
         },
       },
     },

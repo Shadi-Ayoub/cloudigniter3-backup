@@ -13,7 +13,7 @@
     "clean": "rimraf .next",
     "resources:studio": "ci resources studio",
     "sso": "aws sso login --profile developer1",
-    "sandbox": "ampx sandbox --profile developer1",
+    "sandbox": "ampx sandbox --once --profile developer1",
     "bootstrap:root": "ci amplify bootstrap root-user --profile=developer1 --no-interactive",
     "bootstrap:access-control": "ci amplify bootstrap access-control --profile=developer1 --no-interactive",
     "sandbox:bootstrap": "ci amplify sandbox bootstrap --profile=developer1 --no-interactive",

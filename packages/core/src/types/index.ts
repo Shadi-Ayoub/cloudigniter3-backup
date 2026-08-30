@@ -131,6 +131,9 @@ export type {
   // CiDevBeaconTenantInfo,
   CiDevBeaconTraceLogViewerTextProps,
   CiDevBeaconTraceTabProps,
+  CiDeveloperToolsAccessInput,
+  CiDeveloperToolsActor,
+  CiDeveloperToolsOptions,
   // CiDevBeaconWrapperProps,
 
   // general
@@ -156,6 +159,12 @@ export type {
   CiSeederItemKey,
   CiSeedMarkerDdbItem,
   CiSeederResponseBody,
+  CiSeederDefinition,
+  CiSeederExecutionItemResult,
+  CiSeederExecutionResult,
+  CiSeederItemStatus,
+  CiSeederManifest,
+  CiSeederOperation,
 
   // trace
   CiBuildCanonicalInput,
@@ -279,13 +288,21 @@ export type {
 // ─────────────────────────────────────────────────────────────
 export type {
   CiGetOrgUnitByPathInterface,
+  CiCreateOrgUnitInput,
+  CiListOrgUnitsInput,
+  CiListOrgUnitsResult,
   CiLookupOrgUnitInput,
   CiLookupOrgUnitResult,
   CiOrgUnitContext,
+  CiOrgUnitDdbTableItem,
+  CiOrgUnitManagementRow,
+  CiOrgUnitMutationResult,
   CiOrgUnitRoutingOptions,
+  CiOrgUnitSeederDataItem,
   CiOrgUnitStatus,
   CiResolveOrgUnitInput,
   CiResolveOrgUnitResult,
+  CiUpdateOrgUnitInput,
 } from "./org-unit-types";
 
 // ─────────────────────────────────────────────────────────────
@@ -350,6 +367,18 @@ export type {
   CiResolvedScopeContext,
   CiScopeKind,
 } from "./scope-types";
+
+// ─────────────────────────────────────────────────────────────
+// resource lifecycle
+// ─────────────────────────────────────────────────────────────
+export type {
+  CiPurgeResourceInput,
+  CiResourceDeletionMetadata,
+  CiResourceDeletionState,
+  CiResourceLifecycleMutationResult,
+  CiRestoreResourceInput,
+  CiSoftDeleteResourceInput,
+} from "./resource-lifecycle-types";
 
 // ─────────────────────────────────────────────────────────────
 // security
@@ -501,6 +530,7 @@ export type {
   // CiTenantSlugResult,
   CiTenant,
   CiTenantContext,
+  CiDeleteTenantInput,
   CiTenantDdbTableItem,
   // CiTenantHeaderKey,
   CiTenantHtmlTableRow,
@@ -516,6 +546,17 @@ export type {
   // CiTenantSlugDdbTableItem,
   // CiTenantsPageProps,
   CiTenantStatus,
+  CiCleanupSeededTenantsInput,
+  CiSeedTenantsInput,
+  CiTenantSeederDataItem,
+  CiTenantSeederExecutionResult,
+  CiListTenantsInput,
+  CiListTenantsResult,
+  CiPurgeTenantInput,
+  CiRestoreTenantInput,
+  CiSetTenantStatusInput,
+  CiTenantLifecycleResult,
+  CiTenantStatusTransitionMetadata,
   // CiTenantLookupBySlugOkBody,
   // CiTenantLookupBySlugNotFoundBody,
   // CiUpdateTenantInterface,

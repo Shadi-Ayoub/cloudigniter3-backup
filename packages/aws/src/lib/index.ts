@@ -56,6 +56,26 @@ export {
 } from "./dynamodb";
 
 // ─────────────────────────────────────────────────────────────
+// tenant lifecycle
+// ───────────────────────────────────────────────────────────
+export {
+  ciCleanupSeededTenants,
+  ciDeleteTenant,
+  ciListTenants,
+  ciPurgeTenant,
+  ciRestoreTenant,
+  ciSeedTenants,
+} from "./tenant";
+// ─────────────────────────────────────────────────────────────
+// Org Unit management
+// ─────────────────────────────────────────────────────────────
+export {
+  ciCreateOrgUnit,
+  ciGetOrgUnitByPath,
+  ciListOrgUnits,
+  ciUpdateOrgUnit,
+} from "./org-unit";
+// ─────────────────────────────────────────────────────────────
 // EmberGuard
 // ─────────────────────────────────────────────────────────────
 export {

@@ -1,94 +1,26 @@
 ---
-title: The CI_ENV_MODE variable
-sidebar_position: 4
+title: Configure CI_ENV_MODE
+description: Configure the same canonical environment mode for Next.js and Amplify handlers.
+sidebar_position: 3
 ---
 
-# Setting CI_ENV_MODE
+For local development, keep the Next.js server, browser presentation, and Amplify handler environment aligned:
 
-The `CI_ENV_MODE' environment variable is used to store the environment mode to be exposed to Amplify handlers
-on the server as well as the client/browser.
-
-## Defining `CI_ENV_MODE`
-
-Create the `.env.local` file in the root (already created for you) and add the below inside it:
-
-```env
-CI_ENV_MODE=live
-NEXT_PUBLIC_CI_ENV_MODE=sandbox
+```env title="apps/template/.env.local"
+CI_ENV_MODE=development
+NEXT_PUBLIC_CI_ENV_MODE=development
 ```
 
-In order to make the value of an environment variable accessible in the browser, we need to "inline" it, at build time, into
-the js bundle that is delivered to the client, replacing the reference to `process.env.NEXT_PUBLIC_CI_ENV_MODE` with a hard-coded
-value. To tell Next.js to do this, we just have to prefix the variable with ` NEXT_PUBLIC_`.
-
-:::tip
-
-- The available values for **CI_ENV_MODE** are `live`, `test`, and `sandbox` (see [Supported Modes](./supported-modes.mdx))
-- Read more about Next.js <a href="https://nextjs.org/docs/app/guides/environment-variables" target="_blank">Environment Variables. </a>
-  :::
-
-## Exposing `CI_ENV_MODE`
-
-CloudIgniter exposes `CI_ENV_MODE` to core handlers (aka lambdas) in `amplify/backend.ts` as indicated below:
-
-```ts {4,9} title="amplify/backend/runtime.ts" showLineNumbers
-import type { Backend } from "./types";
-
-export const getRuntime = (backend: Backend) => {
-  const envMode = process.env.CI_ENV_MODE ?? "live";
-
-  const region = backend.stack.region;
-
-  const runtime = {
-    envMode,
-    region,
-  };
-
-  return runtime;
-};
+```env title="apps/template/amplify/.env"
+CI_ENV_MODE=development
 ```
 
-When developers add additional application handlers, they should include the `CI_ENV_MODE` environment variable
-in the handler resource so Amplify injects it into the corresponding Lambda.
+CloudIgniter's backend manifest injects `CI_ENV_MODE` and `CI_REGION` into every active core handler. Application
+handlers created outside that manifest must declare and validate their environment explicitly.
 
-```ts {3,7} title="Example on how to expose the envitronment mode variable to lambdas in the application" showLineNumbers
-import { defineFunction } from "@aws-amplify/backend";
+Server code reads the mode through trusted configuration or `ciGetEnvMode()`. A public variable is acceptable for
+presentation hints, but client code cannot authorize developer tools or mutations. Server actions and provider
+handlers resolve the trusted mode again.
 
-const envMode = process.env.CI_ENV_MODE ?? "live";
-
-export const sayHello = defineFunction({
-  environment: {
-    CI_ENV_MODE: envMode,
-  },
-});
-```
-
----
-
-## Accessing `CI_ENV_MODE`
-
-### In Server Components / API Routes
-
-```ts
-export const envMode = process.env.CI_ENV_MODE ?? "live";
-```
-
-### In Lambda Functions
-
-```ts
-const envMode = process.env.CI_ENV_MODE ?? "live";
-```
-
-### In Client Components
-
-> ⚠️ Only for logic that is safe to expose on the client!
-
-```ts
-export const envMode = process.env.NEXT_PUBLIC_CI_ENV_MODE;
-```
-
-If needed:
-
-```
-NEXT_PUBLIC_CI_ENV_MODE=live
-```
+Use `CI_ENV_MODE=production` for live deployments. Never set a production stack to `development` merely to debug
+it; use a separate development deployment and reproduce the issue there.

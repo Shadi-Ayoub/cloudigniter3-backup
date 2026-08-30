@@ -48,7 +48,7 @@ export const routes = {
 } satisfies CiRoutesMap;
 ```
 
-The Next.js proxy resolves the current Tenant scope, matches the logical route,
+The Next.js [proxy](/dictionary/p#proxy) resolves the current Tenant scope, matches the logical route,
 and checks `tenantScopes` before authentication and physical route rewriting. A
 mismatch produces the route-information reason
 `route-tenant-scope-not-allowed`.

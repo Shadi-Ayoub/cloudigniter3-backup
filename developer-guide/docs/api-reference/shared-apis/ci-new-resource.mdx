@@ -1,0 +1,32 @@
+---
+title: ciIsNewResource and NEW-resource defaults
+description: Runtime-neutral resource-recency predicate and shared badge duration.
+sidebar_position: 25
+---
+
+# `ciIsNewResource` and `CI_DEFAULT_NEW_RESOURCE_BADGE_DURATION_MS`
+
+Import the runtime-neutral recency API from `@cloudigniter/core/lib`:
+
+```ts
+import {
+  CI_DEFAULT_NEW_RESOURCE_BADGE_DURATION_MS,
+  ciIsNewResource,
+} from "@cloudigniter/core/lib";
+
+const showNew = ciIsNewResource(resource.createdAt);
+```
+
+```ts
+const CI_DEFAULT_NEW_RESOURCE_BADGE_DURATION_MS = 300_000;
+
+function ciIsNewResource(
+  createdAt: string | number | Date | null | undefined,
+  options?: {
+    now?: number;
+    durationMs?: number;
+  },
+): boolean;
+```
+
+The predicate returns `true` only when the timestamp is valid, is not in the future, and is younger than the duration. Invalid timestamps and non-positive or non-finite durations return `false`. Pass `now` for deterministic server logic and tests; UI code should normally use [`CiNewResourceBadge`](../components/CiNewResourceBadge), which handles hydration and expiry.

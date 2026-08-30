@@ -5,14 +5,15 @@ export type CiDevBeaconOptions = {
   enabled?: boolean;
 
   /**
-   * Allows the Dev Beacon to be rendered in production.
+   * Retained for source compatibility. Developer tools now fail closed outside
+   * `development`, so this value no longer enables production rendering.
    *
-   * A user must still be authenticated and have the configured role.
+   * @deprecated Developer capabilities are development-only.
    */
   allowProduction?: boolean;
 
   /**
-   * Role required to access the Dev Beacon.
+   * Exact role IDs allowed to access the Dev Beacon.
    *
    * Defaults to "developer".
    */

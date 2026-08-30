@@ -1,0 +1,87 @@
+---
+title: CiTenantManagementPage
+description: Reusable tenant and Trash data-table UI with operational status, soft delete, restore, and permanent-delete dialogs.
+sidebar_position: 8
+---
+
+# CiTenantManagementPage
+
+`CiTenantManagementPage` is a client component exported from `@cloudigniter/ui/client`. It renders the active
+tenant table or the tenant portion of Trash while keeping provider mutations behind serialized callbacks.
+
+```tsx
+import { CiTenantManagementPage } from "@cloudigniter/ui/client";
+
+<CiTenantManagementPage
+  mode="trash"
+  tenants={deletedTenants}
+  capabilities={{
+    canDelete: false,
+    canSetStatus: false,
+    canRestore: true,
+    canPurge: true,
+  }}
+  onRestore={restoreTenantAction}
+  onPurge={purgeTenantAction}
+/>;
+```
+
+The component uses `CiDataTable`, stable tenant IDs, persistent but versioned table preferences, reserved action
+space, semantic feedback, and `CiAlertDialog`. Delete requires a reason and explains that the resource moves to
+Trash. Purge additionally requires exact tenant-ID confirmation and states that the action is irreversible.
+
+Capabilities control presentation only. The trusted server action and provider handler must independently enforce
+authorization and lifecycle preconditions.
+
+## Operational status controls
+
+On an active management page, `canSetStatus` and `onSetStatus` enable a row-specific overflow action. Active
+tenants expose **Suspend** and suspended tenants expose **Activate**. Protected system and archived tenants expose
+neither action.
+
+```tsx
+<CiTenantManagementPage
+  mode="active"
+  tenants={tenants}
+  capabilities={{
+    canDelete: true,
+    canSetStatus: true,
+    canRestore: false,
+    canPurge: false,
+  }}
+  onDelete={deleteTenantAction}
+  onSetStatus={setTenantStatusAction}
+/>
+```
+
+The component requires a reason in `CiAlertDialog`, keeps the row visible after success, and replaces it with the
+tenant returned by the callback so the badge and next available action update immediately. Omitting
+`canSetStatus` preserves the previous disabled behavior. The callback receives `CiSetTenantStatusInput`; its server
+action and provider handler must independently authorize the transition.
+
+## Development seeder controls
+
+`developmentSeeder` optionally adds a selection-independent **Seeder** action to the active table toolbar. The
+action opens a modal containing the configured title, description, seed action, and cleanup action:
+
+```tsx
+<CiTenantManagementPage
+  mode="active"
+  tenants={tenants}
+  capabilities={capabilities}
+  developmentSeeder={{
+    id: "test-tenants",
+    title: "Test Tenants",
+    description:
+      "Creates a disposable multi-company group and shared Org Unit tree.",
+    onSeed: seedTestTenantsAction,
+    onCleanup: cleanupTestTenantsAction,
+  }}
+/>
+```
+
+The component keeps the **Seed Tenants** and **Clean Up** operations out of the persistent page layout, manages dialog focus, prevents
+dismissal and repeat execution while pending, displays semantic outcome feedback inside the modal, merges
+returned seeded tenant rows, removes successfully cleaned tenant rows, and confirms cleanup through `CiAlertDialog`. The same result counts include disposable Org Units, which are managed through their canonical markers and tenant attachments. The server
+page must omit this prop unless `ciCanAccessDeveloperTools()` succeeds. Both callbacks are public server-action
+endpoints and must repeat authorization; the provider handler remains the final mutation boundary.

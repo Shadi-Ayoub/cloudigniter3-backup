@@ -1,0 +1,35 @@
+---
+title: CiNewResourceBadge
+description: Hydration-safe, time-limited marker for recently created resources.
+sidebar_position: 10
+---
+
+# `CiNewResourceBadge`
+
+`CiNewResourceBadge` is a client component exported from `@cloudigniter/ui/client`. It displays **NEW** while a resource timestamp remains inside the configured recency window and removes itself automatically at expiry.
+
+```tsx
+import { CiNewResourceBadge } from "@cloudigniter/ui/client";
+
+<CiNewResourceBadge createdAt={resource.createdAt} />;
+```
+
+```ts
+type CiNewResourceBadgeProps = {
+  createdAt: string | number | Date | null | undefined;
+  durationMs?: number;
+  label?: string;
+  className?: string;
+};
+```
+
+| Prop | Default | Purpose |
+| --- | --- | --- |
+| `createdAt` | Required | Persisted resource creation timestamp. Invalid, absent, or future timestamps remain hidden. |
+| `durationMs` | `CI_DEFAULT_NEW_RESOURCE_BADGE_DURATION_MS` | Recency window. The Core default is five minutes. |
+| `label` | `"NEW"` | Visible badge text. |
+| `className` | None | Additional presentation classes. |
+
+The initial server and browser render are both empty. Recency is evaluated after hydration and a browser timer hides the badge at the absolute expiry time, so the component does not introduce a server/client clock mismatch and a refresh does not restart the duration.
+
+See [`ciIsNewResource`](../shared-apis/ci-new-resource) for runtime-neutral checks.

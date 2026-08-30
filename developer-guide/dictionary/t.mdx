@@ -1,0 +1,41 @@
+---
+title: T
+description: CloudIgniter terms beginning with T.
+---
+
+# T
+
+
+## Tenant
+
+An isolated application/customer scope with a stable identity, slug, lifecycle, routing context, and scoped authorization assignments. A Tenant may attach to several Org Units, including nodes shared with other tenants.
+
+
+## Tenant Attachment
+
+The relationship that makes an Org Unit available within a Tenant. The child node’s tenant set must remain a subset of its direct parent’s tenant set.
+
+
+## Tenant-aware Route
+
+A logical feature route rendered through a Tenant or Org Unit public pathname. The proxy validates the scope and rewrites it to the internal Tenant route tree without exposing that physical prefix to application links.
+
+
+## Tenant Context
+
+The trusted request-specific Tenant information resolved before route matching. It participates in routing, localization, data access, and authorization but does not contain the complete Tenant inventory.
+
+
+## Tenant Scope
+
+An authorization boundary limited to one Tenant. Tenant identity must match between the assignment and the requested runtime scope.
+
+
+## Trash
+
+The authorized management area for soft-deleted resources. It offers Restore and, when separately permitted, irreversible purge with exact confirmation and a reason.
+
+
+## Trusted Boundary
+
+A server, handler, resolver, job, or provider operation that re-resolves identity, scope, authorization, and mutation invariants instead of trusting browser presentation state.

@@ -1,0 +1,54 @@
+---
+title: Seeder types
+description: Public contracts for application seeder manifests, execution results, and tenant seed operations.
+sidebar_position: 14
+---
+
+Import public contracts from `@cloudigniter/core/types`:
+
+```ts
+import type {
+  CiSeederDefinition,
+  CiSeederExecutionResult,
+  CiSeederManifest,
+  CiTenantSeederDataItem,
+  CiTenantSeederExecutionResult,
+} from "@cloudigniter/core/types";
+```
+
+## Manifest contracts
+
+```ts
+type CiSeederDefinition = {
+  id: string;
+  title: string;
+  description?: string;
+  resource: string;
+  dataDirectory: string;
+  dataFiles: readonly string[];
+  createApi: string;
+  cleanupApi: string;
+};
+
+type CiSeederManifest = {
+  version: 1;
+  seeders: readonly CiSeederDefinition[];
+};
+```
+
+`id` must use lowercase kebab case. Paths are relative to the configured seeder root. API fields are trusted
+application operation IDs and must be resolved through an allowlist.
+
+## Result contract
+
+`CiSeederExecutionResult<TResource>` reports `operation`, `created`, `deleted`, `skipped`, `failed`, per-item
+statuses, and optional returned resources. Item status is `created`, `deleted`, `skipped`, or `failed`. A provider
+may return a successful transport response with `ok: false` to report partial item failures.
+
+`CiTenantSeederExecutionResult` specializes `resources` to `CiTenantHtmlTableRow` and may return authoritative
+`orgUnits: CiOrgUnitManagementRow[]` for Org Units created or already owned by the same seeder. Tenant input
+items require `tenantId`, `name`, and `slug`, with optional description, status, region, tenant type, user count,
+metadata, and parent-first Org Unit fixtures.
+
+Seeder contracts describe orchestration; they do not weaken the environment, actor, role, domain validation, or
+provider authorization requirements.

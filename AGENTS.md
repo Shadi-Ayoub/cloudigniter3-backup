@@ -692,7 +692,7 @@ apps/template/next.config.ts
     → application bootstrap and providers
 ```
 
-Before modifying any stage, read the `cloudigniter-development` skill's `references/request-lifecycle.md` completely and inspect every affected stage in source.
+Before modifying any stage, read the `cloudigniter-development` skill's `references/architecture/tenants/overview.md` and every affected focused Tenant-lifecycle reference completely, then inspect every affected stage in source.
 
 ### `next.config.ts`
 

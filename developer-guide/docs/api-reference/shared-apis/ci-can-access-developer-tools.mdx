@@ -1,0 +1,33 @@
+---
+title: ciCanAccessDeveloperTools
+description: Evaluate the shared strict access rule for CloudIgniter development-only capabilities.
+sidebar_position: 6
+---
+
+`ciCanAccessDeveloperTools()` is a runtime-neutral helper exported from `@cloudigniter/core/lib`.
+
+```ts
+function ciCanAccessDeveloperTools(
+  input: CiDeveloperToolsAccessInput,
+): boolean;
+```
+
+```ts
+import { ciCanAccessDeveloperTools } from "@cloudigniter/core/lib";
+
+const allowed = ciCanAccessDeveloperTools({
+  envMode: context.env.mode,
+  actor: {
+    authenticated: context.auth.user.authenticated,
+    roles: context.auth.user.roles,
+  },
+  options: { enabled: true, requiredRoles: ["developer"] },
+});
+```
+
+The function returns `true` only when the feature is enabled, `envMode` is exactly `development`, the actor is
+authenticated, and at least one exact trimmed role ID matches. `requiredRoles` defaults to `["developer"]`; an
+empty list fails closed. Matching is case-sensitive.
+
+Use it for server-side composition and repeat it in server actions. Provider handlers must independently validate
+their trusted environment and identity claims. The helper alone does not authorize a browser request.

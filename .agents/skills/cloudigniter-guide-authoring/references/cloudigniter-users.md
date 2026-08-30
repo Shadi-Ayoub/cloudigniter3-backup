@@ -29,7 +29,7 @@ Common homes include:
 - `docs/providers` and `docs/aws-amplify-setup` for provider setup and application integration;
 - `docs/ui-components` for reusable UI workflows;
 - `docs/internationalization`, `docs/theme-system`, `docs/error-handling`, and similar focused domains;
-- `docs/dictionary` only for stable terminology, not complete tutorials.
+- the separate `developer-guide/dictionary` plugin only for stable terminology, not complete tutorials; group terms beneath their first letter and keep each letter's sidebar entries alphabetized by displayed term.
 
 Update `_category_.json` when a new capability changes discoverability or order. Avoid adding a second category for an existing concept under a slightly different name.
 

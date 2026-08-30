@@ -1,0 +1,61 @@
+---
+title: C
+description: CloudIgniter terms beginning with C.
+---
+
+# C
+
+
+## Canonical Org Unit
+
+The single authoritative Org Unit record whose identity can be shared by several tenants. Tenant/path attachments point to this record instead of duplicating the node for each tenant.
+
+
+## CiDataTable
+
+CloudIgniter’s reusable management-table component, with consistent sorting, filtering, responsive formats, actions, feedback, accessibility, and provider-backed data behavior. Its default sort is newest creation date first. See [Data table](/docs/ui-components/data-table).
+
+
+## Client Component
+
+A React component that executes in the browser and may own state, effects, events, and browser APIs. CloudIgniter keeps provider clients, credentials, filesystem APIs, and other server-only values outside this boundary.
+
+
+## CloudIgniter
+
+A reusable application platform composed of provider-neutral public APIs, internal capabilities, framework integrations, provider implementations, shared UI, CLI tooling, and a reference application template.
+
+
+## CloudIgniter CLI
+
+The command-line tooling exposed through `ci` for application and system workflows and through workspace-gated `ci-dev` commands for platform maintainers. See [CloudIgniter CLI](/docs/cli/overview).
+
+
+## CloudIgniter Core
+
+The `@cloudigniter/core` package, which owns stable provider- and framework-neutral public contracts, types, and helpers. Generic public EmberGuard APIs are also exposed through this facade.
+
+
+## CloudIgniter Developers
+
+Contributors who implement or maintain CloudIgniter packages, providers, framework integrations, generators, and architecture. Their guide focuses on ownership and extension invariants rather than application setup.
+
+
+## CloudIgniter Users
+
+Application developers, integrators, and operators who consume CloudIgniter through supported configuration, package entry points, generated resources, and operational workflows.
+
+
+## Cognito
+
+Amazon Cognito, the AWS identity provider used by the reference provider for users, sessions, claims, and group membership. Cognito-specific structures are normalized before they reach generic CloudIgniter contracts.
+
+
+## Combining Algorithm
+
+The rule used when several applicable privileges disagree. CloudIgniter defaults to `deny-overrides`; `highest-precedence` is available when the strongest assigned responsibility is intentionally authoritative.
+
+
+## Custom Seam
+
+An application-owned location that CloudIgniter upgrades preserve. Supported seams include `amplify/custom`, `src/custom`, and scoped `(ci-custom)` App Router trees; reusable platform code does not belong there.

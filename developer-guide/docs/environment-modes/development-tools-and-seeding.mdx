@@ -1,0 +1,120 @@
+---
+title: Development tools and application seeding
+description: Configure developer-only CloudIgniter features and safely seed or clean up application test data.
+sidebar_position: 5
+---
+
+CloudIgniter activates Dev Beacon, Debug Probe, and seeder controls only when all of these are true:
+
+1. `CI_ENV_MODE` is `development`;
+2. the current user is authenticated;
+3. the user's role list contains the exact canonical role ID `developer`.
+
+The same rule runs at the root UI, server action, and provider handler. A hidden button is not the security
+boundary.
+
+## Move the Dev Beacon
+
+The configured `position` preset sets the [Dev Beacon](/dictionary/d#dev-beacon) button's initial location. If it
+covers a page control, drag the button with a mouse, touch, or pen and release it anywhere else in the viewport.
+The button stays fully on-screen, and a small movement threshold prevents an ordinary click from being mistaken
+for a drag. Clicking, pressing **Enter**, or pressing **Space** still opens the developer dashboard.
+
+With keyboard focus on the button, press **Alt + Arrow key** to move it in 8-pixel steps. Add **Shift** to move in
+32-pixel steps. A dragged location lasts for the current mounted client session; reloading the page, remounting the
+component, or changing its `position` prop restores the configured preset.
+
+## Define a seeder
+
+Application seeder definitions and data live in the custom seam:
+
+```text
+apps/template/src/custom/dev/seeder/
+├── seeder.config.ts
+└── data/
+    └── tenants/
+        └── tenants.json
+```
+
+```ts title="src/custom/dev/seeder/seeder.config.ts"
+import type { CiSeederManifest } from "@cloudigniter/core/types";
+
+export const appSeederManifest = {
+  version: 1,
+  seeders: [
+    {
+      id: "test-tenants",
+      title: "Test Tenants",
+      resource: "platform.tenants",
+      dataDirectory: "data/tenants",
+      dataFiles: ["tenants.json"],
+      createApi: "SeedTenants",
+      cleanupApi: "CleanupSeededTenants",
+    },
+  ],
+} as const satisfies CiSeederManifest;
+```
+
+Operation names are trusted application registry IDs, not arbitrary URLs. The application adapter must allowlist
+the supported operation before calling it.
+
+Tenant JSON is an array. Each item requires `tenantId`, `name`, and `slug`; optional fields include `description`,
+`status`, `region`, `tenantType`, `usersCount`, `meta`, and a parent-first `orgUnits` array. Each Org Unit requires `orgUnitId`, `name`, `slug`, and one or more `tenantIds`; `parentId`, description, status, and metadata are optional.
+
+```json
+[
+  {
+    "tenantId": "dev-group-hq",
+    "name": "Group Headquarters (Test)",
+    "slug": "dev-group-hq",
+    "status": "active",
+    "orgUnits": [
+      {
+        "orgUnitId": "dev-central-hq",
+        "name": "Central Headquarters",
+        "slug": "central-hq",
+        "tenantIds": ["dev-group-hq", "dev-company-a", "dev-company-b"]
+      }
+    ]
+  }
+]
+```
+
+`ciReadJsonSeederData()` resolves paths beneath `src/custom/dev/seeder`, rejects traversal and non-JSON files,
+enforces a size limit, and requires each file to contain an array. Domain validation still runs before the
+provider API is called.
+
+## Seed and clean up tenants
+
+Open **Dashboard → Tenants** as a user with the `developer` role while the application and Amplify backend are in
+`development` mode. Select the **Seeder** action in the table toolbar to open the **Test Tenants** dialog. The
+**Seed Tenants** action creates tenant and Org Unit fixture records. Re-running it skips records already owned by that seeder and
+fails rather than overwriting a tenant with unrelated ownership. The toolbar action and dialog are omitted for
+every other role or environment.
+
+**Clean Up** in the Seeder dialog opens a destructive confirmation. Cleanup queries the seeder's marker partition, then conditionally
+deletes each matching resource and marker together. Org Units are removed deepest-first with every tenant/path attachment before tenants. It still finds data after a fixture is removed from JSON.
+Ownership-mismatched, protected, and malformed records are preserved and reported.
+
+Tenant and Org Unit seed records and markers share the System-table security/lifecycle boundary. Cleanup has no Cognito
+participant. A future user seeder must separately plan Cognito identities, user profiles, assignments, and partial
+failure recovery.
+
+### Troubleshoot transactional permission errors
+
+Creating an Org Unit conditionally verifies its tenant and predecessor records inside the same DynamoDB transaction.
+The deployed seed-tenants Lambda role therefore needs `dynamodb:TransactWriteItems` plus the component actions
+`dynamodb:ConditionCheckItem`, `dynamodb:PutItem`, and `dynamodb:UpdateItem` on the System table. If the Seeder
+reports that one of these actions is not authorized after a code update, redeploy or restart the Amplify sandbox so
+its generated inline policy is applied to the Lambda role, then retry. Same-seeder tenant and Org Unit records from
+a partial run are skipped safely.
+
+## CLI strategy
+
+The initial workflow intentionally uses the authenticated UI and server actions. Do not grant a local AWS profile
+direct DynamoDB access for seeding. A future `ci seed` command should call the same deployed, least-privilege API
+only after it can prove the application actor and target deployment, then repeat the environment and role checks.
+
+See [`ciCanAccessDeveloperTools`](../api-reference/shared-apis/ci-can-access-developer-tools),
+[`ciReadJsonSeederData`](../api-reference/server-apis/ci-read-json-seeder-data), and
+[seeder types](../api-reference/type-definitions/CiSeederTypes).

@@ -52,6 +52,12 @@ Keep four independent concepts explicit:
 
 Never infer inheritance or scope from precedence.
 
+### Org Unit predecessor propagation
+
+`ciOrgUnitContextAccessScope()` converts a trusted resolved context into the request scope used by EmberGuard. An exact Org Unit assignment matches only its node. A descendant assignment also matches when the grant node occurs in the request node's authoritative `ancestorOrgUnitIds`. The tenant ID must still match, even when several tenants share the canonical node.
+
+The provider/framework lookup obtains predecessors from the System-table tenant/path attachment. Never derive them from request paths, cookies, or caller-provided arrays. The core `platform.org-units` resource defines `read`, `create`, `update`, `share`, and `archive`; enforce it again at trusted management mutations.
+
 ## Configuration boundary
 
 `packages/core` owns the public `CiEmberguardConfig` and `CiEmberguardAccessControlConfig` contracts. Applications

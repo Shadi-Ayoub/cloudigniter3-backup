@@ -33,4 +33,5 @@ export type {
   CiDataTableRowActionContext,
   CiDataTableRowActionsMenuProps,
   CiDataTableSortSpec,
+  CiDataTableTitleChip,
 } from "./CiDataTableTypes";

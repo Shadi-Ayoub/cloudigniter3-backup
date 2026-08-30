@@ -1,0 +1,98 @@
+[
+  {
+    "tenantId": "dev-northstar-hq",
+    "name": "Northstar Group Headquarters (Test)",
+    "slug": "dev-northstar-hq",
+    "description": "Disposable central headquarters for the Northstar multi-company fixture.",
+    "status": "active",
+    "region": "DXB",
+    "tenantType": "headquarters",
+    "usersCount": 18,
+    "meta": { "fixture": true, "scenario": "central-headquarters" },
+    "orgUnits": [
+      {
+        "orgUnitId": "dev-northstar-central-hq",
+        "name": "Central Headquarters",
+        "slug": "central-hq",
+        "description": "The common predecessor shared by every Northstar company.",
+        "tenantIds": ["dev-northstar-hq", "dev-northstar-consulting", "dev-northstar-logistics", "dev-northstar-technology"]
+      },
+      {
+        "orgUnitId": "dev-northstar-shared-services",
+        "parentId": "dev-northstar-central-hq",
+        "name": "Shared Services",
+        "slug": "shared-services",
+        "description": "A shared subtree used by all group companies.",
+        "tenantIds": ["dev-northstar-hq", "dev-northstar-consulting", "dev-northstar-logistics", "dev-northstar-technology"]
+      },
+      {
+        "orgUnitId": "dev-northstar-finance",
+        "parentId": "dev-northstar-shared-services",
+        "name": "Finance",
+        "slug": "finance",
+        "tenantIds": ["dev-northstar-hq", "dev-northstar-consulting", "dev-northstar-logistics", "dev-northstar-technology"]
+      },
+      {
+        "orgUnitId": "dev-northstar-people",
+        "parentId": "dev-northstar-shared-services",
+        "name": "People Operations",
+        "slug": "people-operations",
+        "tenantIds": ["dev-northstar-hq", "dev-northstar-consulting", "dev-northstar-technology"]
+      },
+      {
+        "orgUnitId": "dev-northstar-consulting-delivery",
+        "parentId": "dev-northstar-central-hq",
+        "name": "Consulting Delivery",
+        "slug": "consulting-delivery",
+        "tenantIds": ["dev-northstar-consulting"]
+      },
+      {
+        "orgUnitId": "dev-northstar-fleet",
+        "parentId": "dev-northstar-central-hq",
+        "name": "Fleet Operations",
+        "slug": "fleet-operations",
+        "tenantIds": ["dev-northstar-logistics"]
+      },
+      {
+        "orgUnitId": "dev-northstar-product-engineering",
+        "parentId": "dev-northstar-central-hq",
+        "name": "Product Engineering",
+        "slug": "product-engineering",
+        "tenantIds": ["dev-northstar-technology"]
+      }
+    ]
+  },
+  {
+    "tenantId": "dev-northstar-consulting",
+    "name": "Northstar Consulting (Test)",
+    "slug": "dev-northstar-consulting",
+    "description": "Disposable consulting company with shared and company-specific departments.",
+    "status": "active",
+    "region": "AUH",
+    "tenantType": "company",
+    "usersCount": 34,
+    "meta": { "fixture": true, "scenario": "multi-company" }
+  },
+  {
+    "tenantId": "dev-northstar-logistics",
+    "name": "Northstar Logistics (Test)",
+    "slug": "dev-northstar-logistics",
+    "description": "Disposable logistics company sharing Finance but not People Operations.",
+    "status": "active",
+    "region": "SHJ",
+    "tenantType": "company",
+    "usersCount": 47,
+    "meta": { "fixture": true, "scenario": "shared-department-subset" }
+  },
+  {
+    "tenantId": "dev-northstar-technology",
+    "name": "Northstar Technology (Test)",
+    "slug": "dev-northstar-technology",
+    "description": "Disposable technology company with its own engineering department.",
+    "status": "suspended",
+    "region": "DXB",
+    "tenantType": "company",
+    "usersCount": 22,
+    "meta": { "fixture": true, "scenario": "suspended-company" }
+  }
+]

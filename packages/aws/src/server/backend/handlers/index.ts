@@ -14,6 +14,23 @@ export {
   ciUpdateCognitoUserHandler,
 } from "./cognito-handlers";
 
+export {
+  ciCleanupSeededTenantsHandler,
+  ciDeleteTenantHandler,
+  ciListTenantsHandler,
+  ciPurgeTenantHandler,
+  ciRestoreTenantHandler,
+  ciSeedTenantsHandler,
+  ciSetTenantStatusHandler,
+} from "./tenant-handlers";
+
+export {
+  ciCreateOrgUnitHandler,
+  ciGetOrgUnitByPathHandler,
+  ciListOrgUnitsHandler,
+  ciUpdateOrgUnitHandler,
+} from "./org-unit-handlers";
+
 // ─────────────────────────────────────────────────────────────
 // emberguard handlers
 // ─────────────────────────────────────────────────────────────

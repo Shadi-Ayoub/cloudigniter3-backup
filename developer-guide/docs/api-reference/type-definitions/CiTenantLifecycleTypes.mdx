@@ -1,0 +1,52 @@
+---
+title: Tenant lifecycle types
+description: Public tenant status, delete, restore, purge, list, and lifecycle result contracts.
+sidebar_position: 18
+---
+
+# Tenant lifecycle types
+
+Tenant lifecycle contracts are runtime-neutral types exported from `@cloudigniter/core/types`.
+
+```ts
+import type {
+  CiSetTenantStatusInput,
+  CiTenantLifecycleResult,
+  CiTenantStatusTransitionMetadata,
+} from "@cloudigniter/core/types";
+```
+
+## Operational status
+
+```ts
+type CiSetTenantStatusInput = {
+  tenantId: string;
+  status: "active" | "suspended";
+  reason: string;
+};
+
+type CiTenantStatusTransitionMetadata = {
+  status: "active" | "suspended";
+  changedAt: string;
+  changedBy: string;
+  reason: string;
+};
+```
+
+`reason` must contain at least three non-whitespace characters. The trusted provider supplies `changedAt` and
+`changedBy`; browser code must not supply transition metadata. Status transitions preserve deletion state and
+tenant lookup projections. Archived, protected system, and deleted tenants cannot use this operation.
+
+## Result
+
+```ts
+type CiTenantLifecycleResult = {
+  tenant: CiTenantHtmlTableRow;
+};
+```
+
+Provider handlers return this body for delete, restore, and status transitions. The returned row contains the
+authoritative operational status and optional `statusTransition` metadata.
+
+See [Tenant Lifecycle Operations](../../core-system/multi-Tenancy/lifecycle-operations.mdx) for the administrator
+workflow and [`CiTenantManagementPage`](../components/CiTenantManagementPage.mdx) for the client callback contract.

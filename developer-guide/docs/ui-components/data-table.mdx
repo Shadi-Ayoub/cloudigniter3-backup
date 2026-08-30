@@ -22,10 +22,13 @@ For the complete field-by-field contract, defaults, callback contexts, and helpe
 
 The smallest table needs rows and a definition. The simple table format, global search, striped rows, hover highlighting, paging, column resizing, and Excel export are enabled by default.
 
+When a definition includes a `createdAt`, `created`, or `creationDate` column, its initial order is newest first. An explicit `config.sorting.initial` overrides that behavior; use `[]` to opt out without choosing another sort. Rows exposing `createdAt` also receive a temporary **NEW** badge beside the first data value. The badge uses CloudIgniter's shared five-minute default and disappears automatically based on the persisted timestamp.
+
 ```tsx title="app/users/users-table.tsx" showLineNumbers
 "use client";
 
 import { CiDataTable, ciDefineDataTable } from "@cloudigniter/ui";
+import { Users } from "lucide-react";
 
 type UserRow = {
   id: string;
@@ -46,14 +49,32 @@ const definition = ciDefineDataTable<UserRow>({
 export function UsersTable({ users }: { users: UserRow[] }) {
   return (
     <CiDataTable
+      titleBadge="Identity management"
       title="Users"
       description="Manage user accounts and access."
+      titleIcon={<Users aria-hidden />}
+      titleIconTone="info"
+      titleChips={[
+        { id: "records", label: `${users.length} records`, variant: "outline" },
+        { id: "management", label: "Management enabled" },
+      ]}
       definition={definition}
       data={users}
     />
   );
 }
 ```
+
+When a title or description is present, the table renders the standard management-page header in a full-width
+`div`. Its large decorative icon spans the title badge, main title, and subtitle. `titleBadge` supplies the compact
+context label, while `titleChips` adds concise page facts such as record count, provider, or management state.
+`titleIcon` replaces the default table glyph and `titleIconTone` selects a theme-aware `primary`, `info`,
+`success`, `warning`, or `danger` treatment. Keep the icon decorative because the adjacent heading names the
+section.
+
+`CiDataTable` and its header fill the available page width by default. Do not add page-local maximum-width
+wrappers for management tables. Use `config.width` only when an embedded table intentionally needs a narrower
+surface.
 
 Native TanStack v9 `ColumnDef` options remain available, including `accessorKey`, `accessorFn`, `cell`, `sortFn`, `filterFn`, `size`, `minSize`, `maxSize`, and feature enablement flags. The component registers only the features it uses.
 
@@ -157,6 +178,8 @@ export const userTable = ciDefineDataTable<UserRow>({
 
 Use `clickable.onClick` instead of `href` to open application state such as a modal or side sheet.
 
+Select-filter options are alphabetized by label by default. Set `sortOptions: false` only for an intentional semantic sequence such as a workflow progression.
+
 ```tsx title="app/users/modal-cell.tsx" showLineNumbers
 {
   accessorKey: "name",
@@ -174,7 +197,7 @@ Use `clickable.onClick` instead of `href` to open application state such as a mo
 
 ## Row actions
 
-Each action owns its callback and can control visibility or disabled state per record. Use `hideWhen` when a matching record must not expose the action and `disableWhen` when the action should remain discoverable but unavailable. Both conditions are applied consistently in button, menu, and mixed modes. `display: "icon"` produces an accessible icon-only button; the label becomes its accessible name and keyboard-accessible tooltip.
+Each action owns its callback and can control visibility or disabled state per record. Use `hideWhen` when a matching record must not expose the action and `disableWhen` when the action should remain discoverable but unavailable. Both conditions are applied consistently in button, menu, and mixed modes. An inline action with an icon is always icon-only; its label becomes the accessible name and keyboard-accessible tooltip. The same label remains visible when the action moves into the overflow menu.
 
 ```tsx title="app/tenants/tenant-actions.tsx" showLineNumbers
 import { Eye, Pencil, Trash2 } from "lucide-react";
@@ -184,14 +207,12 @@ const rowActions = [
     id: "view",
     label: "View tenant",
     icon: <Eye />,
-    display: "icon" as const,
     onSelect: (tenant: TenantRow) => router.push(`/tenants/${tenant.id}`),
   },
   {
     id: "edit",
     label: "Edit tenant",
     icon: <Pencil />,
-    display: "icon" as const,
     disableWhen: (tenant: TenantRow) => tenant.isSystem,
     onSelect: (tenant: TenantRow) => openEditor(tenant),
   },
@@ -276,15 +297,20 @@ const buttons = { rowActions: { mode: "buttons" as const } };
 // One menu button opens a drop-down containing every ordinary action.
 const menu = { rowActions: { mode: "menu" as const } };
 
-// Two inline actions followed by an overflow menu.
+// One inline icon followed by an overflow menu.
 const mixed = {
   rowActions: {
     mode: "mixed" as const,
-    inlineCount: 2,
+    overflow: 1,
     reserveSpace: true,
   },
 };
 ```
+
+`overflow` is the number of ordinary action icons shown before the overflow menu in mixed mode. Its Core-owned
+default is `CI_DATA_TABLE_DEFAULT_ROW_ACTION_OVERFLOW` (`1`), exported from `@cloudigniter/core/lib`. Set it to
+`0` to put every ordinary action in the menu. The built-in information control remains first and does not count
+toward this limit.
 
 The action column is placed at inline-start: left-most in LTR and right-most in RTL. When configured, the built-in Info control is always its first button and the overflow menu follows it.
 
@@ -386,6 +412,7 @@ const definition = ciDefineDataTable<UserRow>({
     {
       id: "create-user",
       label: "Create user",
+      className: "min-h-11",
       selection: "none",
       onSelect: () => openCreateUserModal(),
     },
@@ -400,6 +427,10 @@ const config = {
 ```
 
 For provider-backed tables, selected row objects are scoped to loaded rows. If a workflow needs durable cross-page selection, store selected IDs in the application and pass them to its bulk-action handler.
+
+Use `selection: "none"` for an infrequent table-wide tool that does not operate on selected rows. Prefer a
+compact, clearly labeled toolbar action that opens an accessible dialog over a persistent panel above the table;
+use `className: "min-h-11"` when the action needs the standard 44-pixel interaction target.
 
 ## Pagination and the All option
 
@@ -798,11 +829,10 @@ const tenantConfig: CiDataTableConfig<TenantRow> = {
     allowAll: false,
   },
   selection: { enableRow: (tenant) => !tenant.isSystem },
-  rowActions: { mode: "mixed", inlineCount: 2, reserveSpace: true },
+  rowActions: { mode: "mixed", overflow: 1, reserveSpace: true },
   columnResizing: true,
   hoverHighlight: true,
   stripedRows: true,
-  width: "100%",
   excelExport: {
     fileName: "tenants.xlsx",
     sheetName: "Tenants",

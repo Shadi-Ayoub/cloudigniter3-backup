@@ -1,0 +1,71 @@
+---
+title: R
+description: CloudIgniter terms beginning with R.
+---
+
+# R
+
+
+## Request Context
+
+A minimal, versioned snapshot of the current request containing resolved Tenant, Org Unit, logical feature pathname, and route information. The proxy forwards authoritative context in a same-request header; cookies are only a revalidated cross-request bridge.
+
+
+## Resource
+
+A stable business or platform capability against which actions are authorized, or a unit managed by Resource Studio when used in generation workflows. Context determines which meaning applies.
+
+
+## Resource Domain
+
+A named access-control catalog grouping for related resources. Suspending a domain denies every resource inside it while retaining the catalog for restoration.
+
+
+## Resource Studio
+
+The local browser tool opened by `ci resources studio` to define, generate, deploy, drop, and locally roll back application resources. See [Resource Studio](/docs/resource-studio/overview).
+
+
+## Restore
+
+The lifecycle action that reverses every reversible soft-delete participant and returns a resource to ordinary resolution. It preserves the resource’s independent operational status.
+
+
+## Role
+
+A stable responsibility that groups privileges and can inherit another suitable role. Roles are assigned at explicit scopes; they should model duties rather than people or screens.
+
+
+## Role Assignment
+
+An assignment that grants a role to a subject within a declared scope, optional propagation rule, and optional time bounds.
+
+
+## Role Inheritance
+
+The acyclic relationship through which one active role receives privileges from another role. Inheritance composes responsibilities; it is separate from role precedence and scope propagation.
+
+
+## Route
+
+A logical application destination registered by feature pathname, namespace, scope support, authentication rules, and presentation metadata. It is not the same as a public tenant-prefixed URL.
+
+
+## Route Definition
+
+The application configuration record describing a route’s logical pathname and runtime rules. The resolved definition is kept minimal when included in request context.
+
+
+## Route Namespace
+
+The stable message namespace associated with a resolved route. CloudIgniter uses it to load the appropriate core and application locale-file chain.
+
+
+## Route Page
+
+The Next.js App Router `page.tsx` server entry point for a route. It bootstraps trusted context and data, then renders through `CiPage` or delegates interactive behavior to client components.
+
+
+## Routing
+
+The request lifecycle that normalizes the public pathname, resolves Tenant and Org Unit context, derives the feature pathname, matches a route, enforces route rules, and rewrites to the correct internal route tree.

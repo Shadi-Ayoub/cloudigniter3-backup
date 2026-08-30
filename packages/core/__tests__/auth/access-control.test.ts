@@ -29,6 +29,7 @@ import {
   ciMatchesPermission,
   ciMergeAccessControlDefinitions,
   ciOrgUnitAccessScope,
+  ciOrgUnitContextAccessScope,
   ciParsePermission,
   ciResolveIdentityGroupRoles,
   ciResolvePrimaryRole,
@@ -487,6 +488,40 @@ test("propagates Org Unit grants only through the supplied ancestor chain", () =
       scope: ciOrgUnitAccessScope("tenant-a", "other-team", ["other-division"]),
     }),
     false
+  );
+});
+
+test("builds descendant authorization scope from authoritative Org Unit context", () => {
+  const scope = ciOrgUnitContextAccessScope({
+    id: "payroll",
+    tenantId: "tenant-a",
+    parentId: "people",
+    ancestorOrgUnitIds: ["headquarters", "shared-services", "people"],
+    slug: "payroll",
+    path: "/shared-services/people/payroll",
+    status: "active",
+  });
+
+  assert.deepEqual(scope, {
+    kind: "orgUnit",
+    tenantId: "tenant-a",
+    orgUnitId: "payroll",
+    ancestorOrgUnitIds: ["headquarters", "shared-services", "people"],
+  });
+  assert.equal(
+    ciCreateAuthorizer(definition).can({
+      subject: subject([
+        ciCreateRoleAssignment(
+          "viewer",
+          ciOrgUnitAccessScope("tenant-a", "headquarters"),
+          "descendants",
+        ),
+      ]),
+      resource: "identity.users",
+      action: "read",
+      scope,
+    }),
+    true,
   );
 });
 

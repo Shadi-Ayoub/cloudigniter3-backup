@@ -55,7 +55,7 @@ import type {
   CiSecurityResourceRecord,
   CiSecurityRoleRecord,
 } from "@cloudigniter/core/types";
-import { CiSearchableChipMultiSelect } from "./CiSearchableChipMultiSelect";
+import { CiSearchableChipMultiSelect } from "../components/searchable-chip-multi-select";
 import { CiResourceDomainsDialog } from "./CiResourceDomainsDialog";
 import {
   ciIsSecurityIdentifierLocked,
@@ -1347,7 +1347,7 @@ export function CiSecurityDataPage({
       pageSizeOptions: [10, 25, 50, 100],
       allowAll: true,
     },
-    rowActions: { mode: "mixed", inlineCount: 1, reserveSpace: true },
+    rowActions: { mode: "mixed", overflow: 1, reserveSpace: true },
     selection: { enabled: false },
     persistence: {
       key: kind === "resource" ? "ci-security-resource-v2" : `ci-security-${kind}`,
@@ -1434,30 +1434,7 @@ export function CiSecurityDataPage({
   };
 
   return (
-    <main className="mx-auto w-full max-w-7xl space-y-4 px-1 sm:px-2">
-      <header className="flex flex-col gap-4 rounded-2xl border border-primary/20 bg-primary/5 p-5 shadow-sm dark:bg-primary/10 sm:p-6 lg:flex-row lg:items-end lg:justify-between">
-        <div className="max-w-3xl">
-          <div className="mb-2 flex items-center gap-2 text-xs font-semibold tracking-[0.14em] text-primary uppercase">
-            <ShieldCheck className="size-4" /> Access governance
-          </div>
-          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-            {title}
-          </h1>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground sm:text-base">
-            {description}
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Badge variant="outline">{records.length} records</Badge>
-          {providerLabel ? (
-            <Badge variant="secondary">{providerLabel}</Badge>
-          ) : null}
-          <Badge variant={canManage ? "default" : "secondary"}>
-            {canManage ? "Management enabled" : "Read only"}
-          </Badge>
-        </div>
-      </header>
-
+    <main className="w-full space-y-4">
       {feedback ? (
         <CiAlert
           variant={feedback.ok ? "success" : "error"}
@@ -1478,6 +1455,32 @@ export function CiSecurityDataPage({
       ) : null}
 
       <CiDataTable
+        title={title}
+        description={description}
+        titleBadge="Access governance"
+        titleIcon={<ShieldCheck aria-hidden />}
+        titleChips={[
+          {
+            id: "records",
+            label: `${records.length} ${
+              records.length === 1 ? "record" : "records"
+            }`,
+          },
+          ...(providerLabel
+            ? [
+                {
+                  id: "provider",
+                  label: providerLabel,
+                  variant: "secondary" as const,
+                },
+              ]
+            : []),
+          {
+            id: "management",
+            label: canManage ? "Management enabled" : "Read only",
+            variant: canManage ? "default" : "secondary",
+          },
+        ]}
         definition={definition}
         data={records}
         config={config}

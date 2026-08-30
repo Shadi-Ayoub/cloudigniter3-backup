@@ -4,6 +4,56 @@ import path from "node:path";
 const sourceRoots = [".agents/skills", ".codex/skills"];
 const APPLEDOUBLE_MAGIC = Buffer.from([0x00, 0x05, 0x16, 0x07]);
 
+const categoryOverrides: Record<
+  string,
+  { label: string; position?: number }
+> = {
+  "cloudigniter-development/references/architecture": {
+    label: "Architecture",
+    position: 1,
+  },
+  "cloudigniter-development/references/cli": {
+    label: "CLI",
+    position: 2,
+  },
+  "cloudigniter-development/references/authoring": {
+    label: "Authoring",
+    position: 3,
+  },
+  "cloudigniter-development/references/architecture/access-control": {
+    label: "Access Control",
+    position: 1,
+  },
+  "cloudigniter-development/references/architecture/packages": {
+    label: "Packages and Boundaries",
+    position: 2,
+  },
+  "cloudigniter-development/references/architecture/tenants": {
+    label: "Tenants and Requests",
+    position: 3,
+  },
+  "cloudigniter-development/references/architecture/rendering": {
+    label: "Rendering",
+    position: 4,
+  },
+  "cloudigniter-development/references/architecture/resources": {
+    label: "Resources",
+    position: 5,
+  },
+  "cloudigniter-development/references/architecture/persistence": {
+    label: "Persistence",
+    position: 6,
+  },
+  "cloudigniter-development/references/architecture/security": {
+    label: "Security",
+    position: 7,
+  },
+  "cloudigniter-development/references/architecture/ui": {
+    label: "UI",
+    position: 8,
+  },
+};
+
 function collectAppleDoubleFiles(directory: string): string[] {
   if (!fs.existsSync(directory)) return [];
   const files: string[] = [];
@@ -97,6 +147,35 @@ function writeCategoryMetadata(
   );
 }
 
+function defaultCategoryLabel(directoryName: string): string {
+  if (directoryName === "cli") return "CLI";
+  if (directoryName === "ui") return "UI";
+  return directoryName
+    .split("-")
+    .map((part) => `${part.slice(0, 1).toUpperCase()}${part.slice(1)}`)
+    .join(" ");
+}
+
+function writeNestedCategoryMetadata(
+  skillDir: string,
+  skillName: string,
+  relativeParts: string[] = [],
+): void {
+  for (const entry of fs.readdirSync(skillDir, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue;
+    const nextParts = [...relativeParts, entry.name];
+    const categoryPath = `${skillName}/${nextParts.join("/")}`;
+    const override = categoryOverrides[categoryPath];
+    const childDir = path.join(skillDir, entry.name);
+    writeCategoryMetadata(
+      childDir,
+      override?.label ?? defaultCategoryLabel(entry.name),
+      override?.position,
+    );
+    writeNestedCategoryMetadata(childDir, skillName, nextParts);
+  }
+}
+
 export function prepareSkillsDocs(siteDir: string = process.cwd()): void {
   const repositoryRoot = path.resolve(siteDir, "..");
   const generatedRoot = path.join(siteDir, ".generated", "skills");
@@ -121,12 +200,7 @@ export function prepareSkillsDocs(siteDir: string = process.cwd()): void {
           entry.name.replaceAll("-", " "),
           position,
         );
-        if (fs.existsSync(path.join(skillDir, "references"))) {
-          writeCategoryMetadata(
-            path.join(skillDir, "references"),
-            "References",
-          );
-        }
+        writeNestedCategoryMetadata(skillDir, entry.name);
       }
     }
   }

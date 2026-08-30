@@ -1,12 +1,7 @@
-// import { deleteTenantHandler } from '@cloudigniter/next/server/backend';
+import { ciDeleteTenantHandler } from "@cloudigniter/aws/server/backend";
+import type { Schema } from "../../../../data/resource";
 
-// import type { Schema } from '../../../../data/resource';
+type Handler = Schema["DeleteTenant"]["functionHandler"];
 
-// type Handler = Schema['deleteTenant']['functionHandler'];
-// /**
-//  * * @param event
-//  * @returns
-//  */
-// export const handler: Handler = async (event, context) => {
-//   return await deleteTenantHandler(event, context);
-// };
+export const handler: Handler = async (event, context) =>
+  ciDeleteTenantHandler(event, context);

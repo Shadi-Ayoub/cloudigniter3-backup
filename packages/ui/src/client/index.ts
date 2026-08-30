@@ -61,6 +61,10 @@ export {
   // profile menu
   CiProfileMenu,
 
+  // new resource badge
+  CiNewResourceBadge,
+  type CiNewResourceBadgeProps,
+
   // tooltip balloon
   CiTooltipBalloon,
   type CiTooltipBalloonColor,
@@ -266,6 +270,12 @@ export { CiNavigateWithLoader } from "./navigation";
 // security administration
 // ─────────────────────────────────────────────────────────────
 export { CiSecurityDataPage } from "./security";
+
+// ────────────────────────────────────────────────────────────
+// tenant management
+// ────────────────────────────────────────────────────────────
+export { CiTenantManagementPage } from "./tenant-management";
+export { CiOrgUnitManagementPage } from "./org-unit-management";
 
 // ─────────────────────────────────────────────────────────────
 // page

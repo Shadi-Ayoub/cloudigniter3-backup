@@ -1,0 +1,1 @@
+export { CiTenantManagementPage } from "./CiTenantManagementPage";

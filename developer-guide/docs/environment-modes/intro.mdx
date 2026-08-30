@@ -1,19 +1,17 @@
 ---
-title: Introduction
+title: Environment modes
+description: Understand CloudIgniter runtime modes and the strict boundary around developer-only capabilities.
 sidebar_position: 1
 ---
 
-# Environment Modes
+CloudIgniter exposes one runtime mode through `CI_ENV_MODE` and, when browser-safe presentation needs it,
+`NEXT_PUBLIC_CI_ENV_MODE`. The current modes are `development`, `test`, `staging`, and `production`.
 
-CloudIgniter supports multiple **environment modes** to separate real production data from test/sandbox data.  
-This guide explains how environment modes work, how they influence the System Table, and how developers can safely use test features without ever risking production integrity.
+Environment mode is a capability and deployment signal; it is not authorization evidence and does not
+automatically partition records inside one table. Use separate deployments/resources for environment isolation,
+then apply normal tenant keys and authorization within each deployment.
 
-## 🔑 Why environment modes matter
-
-Without environment segmentation, test data could mix with real production data. Environment modes enforce:
-
-- Guaranteed separation between real and fake data
-- Safe CRUD operations on the tables
-- Data isolation per environment
-- Automatic cleanup for sandbox/test runs
-- Restriction of mock/test features from live production
+Development tools use a stricter rule than ordinary environment branching. Dev Beacon, Debug Probe, and seeders
+are available only when the mode is exactly `development`, the actor is authenticated, and the actor has the
+exact `developer` role ID. The [development tools and seeding guide](./development-tools-and-seeding) shows the
+supported workflow.

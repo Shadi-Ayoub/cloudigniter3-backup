@@ -5,6 +5,70 @@ sidebar_position: 6
 
 # Tenant Lifecycle Operations
 
+CloudIgniter separates operational status from deletion. Suspending or archiving a tenant changes how it may
+operate; deleting it moves the tenant to Trash while preserving its previous operational status for restoration.
+
+## Suspend or activate a tenant
+
+For a non-system active tenant, open the row's **Actions** menu and choose **Suspend**. Provide an operational
+reason and confirm. Suspended tenants remain visible in `/dashboard/tenants`, retain their slug and deletion state,
+and expose **Activate** in the same menu. Tenant routing observes the new status and sends suspended tenant traffic
+to the configured suspended-tenant information route.
+
+Only `system-admin` and `system-super-admin` members can invoke the deployed mutation. The provider reads the
+base record consistently, rejects system, archived, deleted, stale, and repeated transitions, and conditionally
+updates the status, actor, timestamp, reason, and version. Activating a tenant reverses only operational
+suspension; it does not restore a tenant from Trash.
+
+## Delete a tenant
+
+For privileged administrators, the ordinary **Delete** action is a soft delete. CloudIgniter:
+
+1. verifies that the tenant is not a protected system tenant;
+2. records the authenticated actor, timestamp, required reason, and operation ID;
+3. removes the tenant from the active list and active slug lookup;
+4. preserves the tenant record and its independent `active`, `suspended`, or `archived` status; and
+5. exposes the record at the application route `/dashboard/trash`.
+
+Deleted tenants cannot be resolved through ordinary tenant routing. The tenant row disappears from the active
+management table only after the provider mutation succeeds.
+
+## Restore a tenant
+
+In **Dashboard → Trash**, choose **Restore**, provide a reason, and confirm. Restoration conditionally requires the
+record to still be deleted, removes deletion metadata, reconstructs the active list and slug projections, and
+returns the tenant with its previous operational status.
+
+## Delete permanently
+
+Permanent deletion is a separate Trash action. It requires:
+
+- current tenant-administration privileges;
+- a tenant that is already soft-deleted;
+- a reason;
+- typing the exact tenant ID; and
+- acknowledging that the action cannot be undone.
+
+The provider performs a strongly consistent state check before deleting the System-table record. A tenant cannot
+be permanently deleted directly from the active tenant table.
+
+## Retention and failed actions
+
+The tenant pilot does not automatically empty Trash and does not attach a DynamoDB TTL. A privileged administrator
+must explicitly restore or permanently delete each tenant. If a lifecycle request fails, CloudIgniter keeps the row
+in its current view and reports the error; retrying is protected by conditional state transitions so a stale request
+cannot silently advance a tenant from the wrong state.
+
+This first implementation covers tenant control-plane records. Applying the strategy to users, roles, or other
+resources requires that resource's own provider-participant plan—for example, Cognito disable/enable/delete steps
+for a user identity.
+
+:::warning
+Permanent deletion removes the tenant control-plane record. Before enabling it for an application with additional
+tenant-owned provider resources, extend the lifecycle participant plan so those resources are purged or retained by
+explicit policy.
+:::
+
 ## Creating a Tenant
 
 Tenant creation is handled through controlled server utilities:

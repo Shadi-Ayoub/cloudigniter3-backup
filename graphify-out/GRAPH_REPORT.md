@@ -1,88 +1,88 @@
-# Graph Report - cloudigniter3  (2026-08-19)
+# Graph Report - cloudigniter3  (2026-08-30)
 
 ## Corpus Check
-- 2284 files · ~823,535 words
+- 2433 files · ~864,691 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 9911 nodes · 19889 edges · 737 communities (606 shown, 131 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 173 edges (avg confidence: 0.72)
+- 10568 nodes · 21679 edges · 784 communities (649 shown, 135 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 182 edges (avg confidence: 0.72)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `80906e03`
+- Built from commit: `e0fbc7d7`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - ui/src/client/index.ts
-- ci-next-proxy-response.ts
+- aws/src/types/index.ts
 - lib/access-control/index.ts
 - auth-types/access-control-types/index.ts
-- tenant-resolution-checkup/route.ts
-- backend/index.ts
-- core/src/types/settings-types/index.ts
+- lambda-types/index.ts
+- aws/src/lib/index.ts
+- core/src/types/index.ts
 - cognito-user-types/index.ts
 - layout copy.tsx
 - dependencies
-- dynamodb-types/index.ts
+- CiResult
 - CiAccessControlDefinition
 - auth/access-control/index.ts
 - ci-entries.mjs
-- core/src/client/index.ts
-- CiDataTableRecordInformationDialog.tsx
+- ci-update-org-unit.ts
+- ci-tenant-handlers.ts
 - ci-resource-file-transaction.mjs
 - ci-resource-studio-local-store.mjs
 - ci-aws-data-entity-planner.ts
 - smart-form/components/index.ts
-- core/src/lib/index.ts
+- tenant/constants.ts
 - ci-amplify-backend-manifest.ts
 - core/src/types/tenant-types/index.ts
 - Tailwind CSS Utility Reference
-- lambda/index.ts
+- app-security-service.ts
 - slide_search_core.py
 - ui/src/types/index.ts
 - dependencies
-- Cognito.ts
-- dev-types/index.ts
+- ciNormalizeThrownError
+- CiDataTable.tsx
 - Brand Guidelines v1.0
-- next/src/types/index.ts
+- ci-next-proxy-response.ts
 - exports
-- CiResult
-- kernel-types/index.ts
+- dev-types/index.ts
+- types/access-control-types/index.ts
 - BM25
 - Design
 - Canvas Design System
-- access-control-bootstrap.test.ts
+- ci-resolve-subdomain-tenant.ts
 - HTML Root Element
-- ci-handle-tenant-logic.ts
+- access-control-bootstrap.test.ts
 - ci-create-security-administration.ts
 - CiDevBeaconAuthenticatedUserSegment.tsx
 - module-types/index.ts
 - CiSandboxPage.tsx
-- types/access-control-types/index.ts
+- tenant-resolution-checkup/route.ts
 - ci-validate-modules.mjs
 - Form & Input Components
 - Docusaurus Social Card
 - Tailwind CSS Responsive Design
 - ci-bootstrap-root-user-from-amplify-app.ts
-- ci-get-current-route.ts
+- backend-auth.ts
 - delete-CiThemePresentationPage copy.tsx
 - CloudIgniter Logo Draft 1
 - tasks
 - design_system.py
-- CiLocaleDirection
-- aws/src/lib/index.ts
+- lib/access-control/ci-core-access-control.ts
+- core/src/types/page-types/index.ts
 - Typography Specifications
 - BM25
 - dependencies
-- ci-resource-studio-service.mjs
-- ci-emberguard-access-handlers.ts
+- core/src/client/index.ts
+- backend/index.ts
 - devDependencies
 - devDependencies
-- ci-config.tsx
+- ci-resolve-org-unit-context.ts
 - API Reference Section
-- CiTraceLoggerServer
+- gray
 - appBootstrap
 - Docusaurus Plushie Banner
 - Logo Usage Rules
@@ -92,8 +92,8 @@
 - devDependencies
 - devDependencies
 - html-token-validator.py
-- ci-prepare-policy.ts
-- lib/access-control/ci-core-access-control.ts
+- ci-normalize-policy-bundle.ts
+- graphql-types/index.ts
 - ci-core-amplify-manifest.ts
 - AWS Amplify Gen 2
 - exclude
@@ -102,9 +102,9 @@
 - ci-switch-sources.mjs
 - ui/server/index.ts
 - compilerOptions
-- ciGetLangDir
+- ciNormalizePathname
 - Client-Server-Cloud API Architecture Diagram
-- CiSeederPage.tsx
+- dev-types/seeder-types/index.ts
 - Asset Approval Checklist
 - Logo AI Prompt Engineering
 - scripts
@@ -120,7 +120,7 @@
 - exclude
 - Workflow
 - public-cli.mjs
-- CiRoutesMap
+- server/backend/types.ts
 - exclude
 - exclude
 - Design System
@@ -129,31 +129,30 @@
 - scripts
 - scripts
 - scripts
-- general/index.ts
-- resource-studio-server.test.mjs
+- ci-resource-studio-service.mjs
 - exclude
 - spacing
 - scripts
 - `CiDataTable`
 - compilerOptions
-- core/src/types/auth-types/index.ts
+- src/client/auth/index.ts
 - CiThemePresentationPage.tsx
 - scripts
 - CloudIgniter Scoped ARBAC Model
-- CiResponse
+- kernel/server/index.ts
 - dependencies
 - compilerOptions
-- Application Request Lifecycle
+- org-unit-types/index.ts
 - ci-build-package.mjs
 - ciResolveIcon
-- tenant/constants.ts
-- language/route.ts
+- tenants/overview.md
+- messages.ts
 - Routing by Task Type
 - generate-slide.py
 - shadcn/ui Theming & Customization
 - TailwindConfigGenerator
-- emberguard-access-table/module.ts
-- system/settings/app-get-settings.ts
+- ciBuildTableKey
+- lib/cognito-user/index.ts
 - devDependencies
 - compilerOptions
 - ui/src/client/feedback/index.ts
@@ -164,12 +163,12 @@
 - color
 - main
 - test_design_system_mode.py
-- next/src/types/auth-types/index.ts
+- studio.mjs
 - devDependencies
 - compilerOptions
 - dependencies
 - Data table
-- lambda-types/index.ts
+- CiDataEntityManager.tsx
 - next/package.json
 - cli-command-reference.mdx
 - Brand Consistency Checklist
@@ -177,12 +176,12 @@
 - Color Semantics
 - fetch-background.py
 - search
-- Dynamodb.ts
-- route-types/index.ts
-- ci-create-next-security-administration.ts
+- ciReadJsonSeederData
+- api-types/index.ts
+- next/src/server/index.ts
 - Tenant Context
 - compilerOptions
-- core/src/types/index.ts
+- use-tenants-loader.ts
 - compilerOptions
 - TestShadcnInstaller
 - dependencies
@@ -196,15 +195,15 @@
 - fontSize
 - .add_components
 - custom/settings/index.ts
-- ui/client/components/index.ts
+- card
 - compilerOptions
 - CiEnvMode
 - useErrorStore
-- src/client/auth/index.ts
-- graphql-types/index.ts
+- CiSecurityDataPage.tsx
+- language/route.ts
 - compilerOptions
 - ui/package.json
-- ci-install-module-dependencies.mjs
+- private-settings-table/module.ts
 - compilerOptions
 - CIP Design Reference
 - Icon Design Reference
@@ -213,7 +212,7 @@
 - amplify-tenant-settings-repo.ts
 - exports
 - compilerOptions
-- login-standard/CiLayout.tsx
+- core/src/lib/index.ts
 - compilerOptions
 - Banner Design - Multi-Format Creative Banner System
 - Messaging Framework
@@ -227,7 +226,7 @@
 - Layout Patterns
 - ShadcnInstaller
 - scripts
-- CiDataTable Management-Page Interaction Standard
+- useCiPageLoaderStore
 - compilerOptions
 - brand/references/update.md
 - Logo Design Reference
@@ -237,40 +236,40 @@
 - ci-build-next-app-assets.mjs
 - Primitive Tokens
 - validate-tokens.cjs
-- input
+- button
 - test_tailwind_config_gen.py
 - exports
-- kernel/client/index.ts
+- next/src/lib/index.ts
 - exports
-- messages.ts
+- A
 - Core Visual Elements
 - inject-brand-context.cjs
 - CIP Design Style Guide
 - embed-tokens.cjs
 - patch
 - Quick Reference
-- create-account/layout.tsx
 - AppLoginPageClientWrapper.tsx
+- ci-settings-provider.tsx
 - config.json
 - scripts
 - aws/package.json
-- CloudIgniter DynamoDB Design and Interaction
+- Roles
 - core/package.json
-- next/src/lib/index.ts
+- ci-create-aws-emberguard-administration-repository.ts
 - ci-build-types.mjs
 - Brand
 - Slide Strategies
 - logo/generate.py
 - Component Tokens
 - generate-tokens.cjs
-- request/helpers/index.ts
+- Dynamodb.ts
 - primitive
 - Slide Strategies
 - ._base_config
 - ci-build-types-raw.mjs
 - DynamoDB bounded-context strategy
 - CloudIgniter CLI Development
-- backend-auth.ts
+- core/src/types/auth-types/index.ts
 - emberguard/package.json
 - old/CiTenantContext.ts
 - ci-list-client-files.mjs
@@ -285,35 +284,35 @@
 - react.json
 - emberguard/tsconfig.tools.json
 - amplify-sandbox-deploy.test.mjs
-- button
+- Package responsibilities
 - ._generate_javascript
 - ui-ux-pro-max
 - delete-amplify/auth/get-user-profile-record.ts
 - HomepageFeatures/index.tsx
 - developer-guide/tsconfig.json
-- ci-resolve-next-theme-provider-props.ts
+- general/index.ts
 - library.json
 - next.json
-- form.tsx
+- R
 - Configuration API
 - Table-key governance
-- Resource Studio V1 Development Contract
+- S
 - build-theme.mjs
 - Slides Reference
 - HTML Slide Template
 - HTML Slide Template
-- CiTraceLoggerBase
+- trace/route.ts
 - _select_palette_for_mode
 - How to Use This Skill
 - devDependencies
 - sanitize-settings-for-client.ts
-- Access-Control Logic and Strategy
+- next/src/client/index.ts
 - ci-clean-dts-map.cjs
-- useCiPageLoaderStore
-- CloudIgniter Table-Key Convention
+- ui/client/index.ts
+- ciAwsGetCurrentUser
 - emberguard/rollup.config.js
 - CiHeaderLogoProps
-- ci-resolve-module-graph.ts
+- next/src/types/index.ts
 - CloudIgniter Repository Instructions
 - Slides
 - Pre-Delivery Checklist
@@ -329,7 +328,7 @@
 - Brand Guidelines Template
 - Welcome
 - Amplify backend build strategy
-- api-types/index.ts
+- ui/client/components/index.ts
 - CiNextContext
 - Extend the Amplify backend
 - amplify_extended Folder
@@ -341,7 +340,7 @@
 - Example Workflow
 - delete-layout.tsx
 - Server-side Errors
-- cloudigniter.config.ts
+- kernel-types/index.ts
 - ImageWrapper/index.tsx
 - peerDependencies
 - ciCreateAppAccessControl
@@ -357,10 +356,10 @@
 - Framework Boot
 - registry-example.ts
 - next/rollup.config.js
-- Page Rendering and Layout Architecture
+- ui/client/dev/debug-probe/CiDebugProbeClient.tsx
 - delete-main-menu-types/CiMainMenuItem.ts
 - ui/rollup.config.js
-- next/src/client/index.ts
+- ciGetLangDir
 - Kernel
 - CloudIgniter Page Component
 - CloudIgniter Public API
@@ -368,7 +367,7 @@
 - Layered Authenticator Theme Merge
 - CloudIgniter Testing Strategy
 - cli-architecture.mdx
-- ciPrintToConsole
+- route-types/index.ts
 - Route Handler Strategy
 - Unified CloudIgniter API Workflow
 - CI Server API Wrapper
@@ -390,7 +389,7 @@
 - Authentication Interface
 - Fetch
 - Docusaurus Tutorial Intro
-- types/dashboard-types/index.ts
+- ci-plan-next-data-entities.ts
 - graphify reference: add a URL and watch a folder
 - ciCreateAuthorizer
 - ciValidateAccessControlDefinition
@@ -405,7 +404,7 @@
 - cli/overview.mdx
 - CiSeedTenantsResult.ts
 - scripts
-- gray
+- color
 - CloudIgniter Launch Logo
 - CloudIgniter Brand Identity
 - CloudIgniter Brand Mark
@@ -433,16 +432,16 @@
 - ciFormatPermission
 - CloudIgniter Request/Response Contract
 - AuthenticatorProps
-- Page Client Wrapper
+- C
 - Docusaurus Standalone Pages
 - Docusaurus Markdown Features
 - ciCreateTableServiceHandler
 - User Table Columns
-- ciAwsGetCurrentUser
-- Public API and Runtime Boundaries
+- Page Rendering and Layout Architecture
+- CiDataTable Management-Page Interaction Standard
 - CiMainMenuItem
 - include
-- Package responsibilities
+- trace-types/index.ts
 - Developer guide authoring workflow
 - NextIntl Plugin
 - ciGetAccessControlEntryOrigin
@@ -462,17 +461,17 @@
 - delete-list-users.ts
 - compilerOptions
 - resource-file-transaction-types.d.mts
-- use-tenants-loader.ts
+- CiUser
 - tsconfig.json
 - slides-create.md
 - create.md
-- public-settings-table/module.ts
+- request/helpers/index.ts
 - .test_add_components_dry_run
-- useCiNextNavigationWithLoader
-- login-standard/header/CiMainHeaderUserBox.tsx
+- CiDevBeaconClient.tsx
+- form.tsx
 - `CiAlertDialog`
 - .__init__
-- CiTableResourceState
+- D
 - .test_init_default_typescript
 - .test_generate_javascript_config
 - .test_generate_config_with_colors
@@ -480,26 +479,26 @@
 - Docusaurus Static-Site Deployment
 - .test_validate_config_valid
 - .test_write_config_invalid_path
-- next/src/server/index.ts
+- P
 - .test_base_config_structure
-- ci-create-aws-emberguard-administration-repository.ts
+- CiTraceLoggerBase
 - delete-env-keys.ts
 - amplify/package.json
 - next-env.d.ts
 - ci-switch-dist.mjs
-- ui/client/index.ts
-- kernel/server/index.ts
+- CiTraceLoggerServer
+- @aws-amplify/ui-react
 - ci-switch-src.mjs
 - Core backend manifests
-- dashboard/layout.tsx
-- CiNextHeaderLogo.tsx
+- main-header-user-box/CiMainHeaderUserBox.tsx
+- Resource deletion lifecycle
 - postcss.config.mjs
 - delete-authenticatorComponentsStyle.tsx
 - delete-authenticatorFormFields.ts
 - delete-amplify/data/schemata/index.ts
 - app-icon-registry.ts
 - extraction-spec.md
-- prepare-skills-docs.ts
+- login-standard/CiLayout.tsx
 - developer-guide/scripts/backup.sh
 - sidebars.ts
 - .test_add_components_no_components
@@ -524,19 +523,19 @@
 - `@cloudigniter/cli`
 - ci-entries.d.mts
 - ci-clean.mjs
-- aws/src/types/index.ts
-- console-print-types/index.ts
-- CiDevBeaconRouteContextSegment.tsx
+- Public API and Runtime Boundaries
+- T
+- radius
 - next/scripts/ci-build-package.config.mjs
-- src/client/dev/debug-probe/CiDebugProbeClient.tsx
+- AppRootWrapper.tsx
 - Data-source API
 - core-custom-ownership.mdx
 - `CiDataEntityManager`
 - .test_full_configuration_typescript
 - .test_default_content_paths_react
-- trace/route.ts
-- radius
-- CiThemeConfig
+- CiResolvedScopeContext.ts
+- CiCanonicalRecord
+- aws-cdk-lib
 - README.md
 - scripts/backup.sh
 - Future Documentation App
@@ -551,102 +550,155 @@
 - Component Trace Record
 - Function Trace Record
 - Wave Trace Record
-- Application Configurations
-- Application Extended Configurations
-- Application Settings
-- Kernel
-- Layout Component
-- Middleware
-- User Settings
+- ciStartTraceClient
+- ci-create-next-security-administration.ts
+- CiTraceLoggerOptions
+- public-settings-table/module.ts
+- CiProfileMenuProps.ts
+- CiDevBeaconButton.tsx
+- input
 - Docusaurus Blog Posts
 - CloudIgniter Users Management
 - Locale Distribution Assets
 - Resource Studio compiler APIs
+- H
+- CloudIgniter DynamoDB Design and Interaction
+- M
+- CiNextAwsDevBeaconProps.ts
+- ui/client/dev/trace/ci-start-trace-client.ts
+- Validation and Final Review
+- $type
+- Development Tools and Application Seeding
 - postcss.config.js
-- CiDebugProbeProps
-- backend-manifest.test.ts
-- @types/react-dom
-- ci-collect-module-package-dependencies.ts
+- resource-types.ts
+- O
+- auth/ci-role-precedence.ts
+- ci-config.tsx
 - `ciIsAccessControlKebabIdentifier`
 - ci-import-package-entry.d.mts
 - custom/README.md
-- CiDevBeacon.tsx
+- CiLocaleDirection
 - company-sidebars.ts
 - suppress-root-auth-warning.cjs
 - CloudIgniter Architecture Overview
-- EmberGuard Layering
-- CiDevBeaconLanguageDetailsModal.tsx
+- Template Core and Custom Boundary
+- Resource Deletion Lifecycle
 - `CiSecurityDataPage`
-- Validation and Final Review
+- EmberGuard Layering
 - exports
 - ci-test-style.mjs
 - CiEmberguardConfig
-- CiSeedEnvMode
+- B
 - ci-obfuscate-package.mjs
 - deployment-and-rollback.mdx
-- CiModuleManifest
-- CiDataEntityManager.tsx
-- CiAuthorizationRequest
+- E
+- G
+- CiDevBeacon.tsx
 - ci-privilege.mdx
-- ci-get-headers.ts
-- @aws-amplify/ui-react
+- system/settings/app-get-settings.ts
+- padding-y
 - `ciMigrateLegacyPrivilegeTitles`
-- general-types/index.ts
+- types/dashboard-types/index.ts
 - lucide-react
-- aws-cdk-lib
-- CiClientWrapper.tsx
-- @iconify/react
+- Org Unit Trees and Tenant Sharing
+- I
+- CiTenantManagementPage
 - ui/scripts/ci-build-package.config.mjs
-- xl
-- CiNextDashboardHeaderButton.tsx
-- .test_add_components_no_config
+- CiResourceDeletionTypes.mdx
+- resource-registry.ts
+- icon-types/index.ts
 - skills-sidebars.ts
-- @radix-ui/react-checkbox
-- @radix-ui/react-scroll-area
-- sonner
-- Template Core and Custom Boundary
+- L
+- CiThemeConfig
+- $type
+- detect_domain
 - data-entities.mdx
 - resource-studio/overview.mdx
-- .test_list_installed_no_config
-- .test_init_dry_run
-- dotenv
+- Access Control
+- CloudIgniter Table-Key Convention
+- Data Entities and Generation
 - @aws-amplify/backend-cli
-- @base-ui/react
-- padding-x
-- CiResourceFileTransactionError
-- aws-amplify
-- CiOrgUnitContext
+- Resource Studio Deployment and Security
+- destructive-foreground
+- Resource Studio V1
+- radius
+- ci-start-trace-core.ts
 - Tenant route lifecycle
 - `ciMergeRouteMaps()`
-- @aws-amplify/adapter-nextjs
+- muted
 - `ciBuildTenantPublicPathname()`
 - `CiRouteDefinition`
 - CiResourceFileTransactionError
-- @radix-ui/react-label
+- ci-auth-client-module.ts
 - resource-studio-book-schema.fixture.ts
 - @cloudigniter/aws
 - @radix-ui/react-checkbox
 - @types/react
-- tailwindcss
+- Org Unit management types
 - ci-merge-amplify-data-schemas.mdx
-- CiProfileMenuProps.ts
+- app-build-server-page-config.ts
 - radix-ui
-- zod-formik-adapter
-- CiNextContext.ts
+- Org Unit Management
+- Permissions and Scopes
+- tooling/development-tools-and-seeding.mdx
+- Resource Studio Transactions
+- Resource Studio Validation
+- environment-modes/development-tools-and-seeding.mdx
+- CiSeederTypes.mdx
+- Collection Ordering and Resource Recency
+- F
+- 800
+- org-unit-seeder.test.ts
+- N
+- DictionaryViewer/index.tsx
+- U
+- CloudIgniter Dictionary
+- Org Unit tree persistence
+- ciPrintToConsole
+- Resources
+- K
+- destructive
+- primary-foreground
+- secondary-foreground
+- result-types/index.ts
+- lucide-react
+- `CiOrgUnitManagementPage`
 - files
+- @types/react-dom
+- ci-org-unit-context-access-scope.mdx
+- cookie-types/index.ts
 - @aws-amplify/auth
+- @iconify/react
+- @radix-ui/react-checkbox
+- @radix-ui/react-scroll-area
+- CiNewResourceBadge.mdx
+- ci-new-resource.mdx
+- ring
+- CiDevBeacon
+- CiResourceFileTransactionError
+- antd
+- @iconify/react
+- @radix-ui/react-slot
+- sonner
+- @tanstack/react-table
+- sonner
+- .test_add_components_no_config
+- .test_list_installed_no_config
+- .test_init_dry_run
+- ci-define-server-module.ts
+- radix-ui
 
 ## God Nodes (most connected - your core abstractions)
-1. `cn()` - 130 edges
+1. `cn()` - 135 edges
 2. `TailwindConfigGenerator` - 58 edges
-3. `CiNextContext` - 50 edges
-4. `ciNormalizePathname()` - 47 edges
-5. `CiResponse` - 46 edges
-6. `ciStartTraceServer()` - 45 edges
-7. `appBootstrap` - 42 edges
-8. `CiAccessControlDefinition` - 39 edges
-9. `ciNormalizeThrownError()` - 38 edges
-10. `CiTraceLoggerBase` - 36 edges
+3. `CiResponse` - 57 edges
+4. `appBootstrap` - 50 edges
+5. `CiNextContext` - 50 edges
+6. `ciNormalizePathname()` - 49 edges
+7. `ciNormalizeThrownError()` - 48 edges
+8. `ciStartTraceServer()` - 45 edges
+9. `ciResponseError()` - 41 edges
+10. `CiAccessControlDefinition` - 39 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Handler` --calls--> `ciCreateCognitoUserHandler`  [EXTRACTED]
@@ -655,32 +707,32 @@
   apps/template/amplify/auth/cognito-user/cognito-get-user/handler.ts → packages/aws/src/server/backend/handlers/cognito-handlers/ci-get-cognito-user-handler.ts
 - `Handler` --calls--> `ciSetCognitoUserPasswordHandler`  [EXTRACTED]
   apps/template/amplify/auth/cognito-user/cognito-set-user-password/handler.ts → packages/aws/src/server/backend/handlers/cognito-handlers/ci-set-cognito-user-password-handler.ts
-- `saveSettings()` --calls--> `ciParseGraphqlResponse()`  [EXTRACTED]
-  apps/template/src/kernel/server/api/system/settings/save-settings.ts → packages/core/src/lib/graphql/ci-parse-graphql-response.ts
-- `Handler` --calls--> `ciDeleteEmberguardCustomDomainHandler`  [EXTRACTED]
-  apps/template/amplify/functions/system/emberguard/delete-custom-domain/handler.ts → packages/aws/src/server/backend/handlers/emberguard-handlers/ci-emberguard-access-handlers.ts
+- `ciPostBuild()` --calls--> `ciApplyCorePostBuildPlan()`  [EXTRACTED]
+  apps/template/amplify/backend/ci-post-build.ts → packages/aws/src/server/backend/post-build.ts
+- `ciPostBuild()` --calls--> `ciCreateCorePostBuildPlan()`  [EXTRACTED]
+  apps/template/amplify/backend/ci-post-build.ts → packages/aws/src/server/backend/post-build.ts
 
 ## Import Cycles
-- 2-file cycle: `apps/template/src/kernel/server/bootstrap/app-bootstrap.ts -> apps/template/src/kernel/server/index.ts -> apps/template/src/kernel/server/bootstrap/app-bootstrap.ts`
 - 2-file cycle: `apps/template/src/kernel/server/index.ts -> apps/template/src/kernel/server/root/appResolveRootLayoutContext.ts -> apps/template/src/kernel/server/index.ts`
+- 2-file cycle: `apps/template/src/kernel/server/bootstrap/app-bootstrap.ts -> apps/template/src/kernel/server/index.ts -> apps/template/src/kernel/server/bootstrap/app-bootstrap.ts`
 - 2-file cycle: `apps/template/src/kernel/server/index.ts -> apps/template/src/kernel/server/root/AppRootWrapper.tsx -> apps/template/src/kernel/server/index.ts`
 - 2-file cycle: `packages/next/src/server/index.ts -> packages/next/src/server/tenant/ci-handle-tenant-logic.ts -> packages/next/src/server/index.ts`
 - 2-file cycle: `packages/next/src/server/index.ts -> packages/next/src/server/wrapper/CiNextRootWrapper.tsx -> packages/next/src/server/index.ts`
 - 2-file cycle: `packages/next/src/server/index.ts -> packages/next/src/server/wrapper/CiPageWrapper.tsx -> packages/next/src/server/index.ts`
 - 2-file cycle: `packages/next/src/client/index.ts -> packages/next/src/client/wrapper/CiClientWrapper.tsx -> packages/next/src/client/index.ts`
-- 2-file cycle: `packages/ui/src/client/feedback/notify/ci-notify.ts -> packages/ui/src/client/index.ts -> packages/ui/src/client/feedback/notify/ci-notify.ts`
-- 2-file cycle: `packages/ui/src/client/components/smart-form/components/CiSmartFormDescription.tsx -> packages/ui/src/client/index.ts -> packages/ui/src/client/components/smart-form/components/CiSmartFormDescription.tsx`
+- 2-file cycle: `packages/ui/src/client/components/data-entity-manager/CiDataEntityManager.tsx -> packages/ui/src/client/index.ts -> packages/ui/src/client/components/data-entity-manager/CiDataEntityManager.tsx`
+- 2-file cycle: `packages/ui/src/client/components/about-border-beam/CiAboutBorderBeam.tsx -> packages/ui/src/client/index.ts -> packages/ui/src/client/components/about-border-beam/CiAboutBorderBeam.tsx`
+- 2-file cycle: `packages/ui/src/client/components/smart-form/components/CiSmartFormLabel.tsx -> packages/ui/src/client/index.ts -> packages/ui/src/client/components/smart-form/components/CiSmartFormLabel.tsx`
 - 2-file cycle: `packages/ui/src/client/index.ts -> packages/ui/src/client/security/CiSecurityDataPage.tsx -> packages/ui/src/client/index.ts`
+- 2-file cycle: `packages/ui/src/client/components/data-table/components/CiDataTable.tsx -> packages/ui/src/client/index.ts -> packages/ui/src/client/components/data-table/components/CiDataTable.tsx`
+- 2-file cycle: `packages/ui/src/client/components/data-table/components/CiDataTableRecordInformationDialog.tsx -> packages/ui/src/client/index.ts -> packages/ui/src/client/components/data-table/components/CiDataTableRecordInformationDialog.tsx`
+- 2-file cycle: `packages/ui/src/client/components/smart-form/components/CiSmartFormItem.tsx -> packages/ui/src/client/index.ts -> packages/ui/src/client/components/smart-form/components/CiSmartFormItem.tsx`
 - 3-file cycle: `apps/template/src/kernel/server/api/index.ts -> apps/template/src/kernel/server/api/system/tenant/app-get-tenant.ts -> apps/template/src/kernel/server/index.ts -> apps/template/src/kernel/server/api/index.ts`
 - 3-file cycle: `apps/template/src/kernel/server/api/index.ts -> apps/template/src/kernel/server/api/system/tenant/app-list-tenants.ts -> apps/template/src/kernel/server/index.ts -> apps/template/src/kernel/server/api/index.ts`
 - 3-file cycle: `apps/template/src/kernel/server/api/index.ts -> apps/template/src/kernel/server/api/system/tenant/app-seed-tenants.ts -> apps/template/src/kernel/server/index.ts -> apps/template/src/kernel/server/api/index.ts`
-- 3-file cycle: `apps/template/src/kernel/server/index.ts -> apps/template/src/kernel/server/root/index.ts -> apps/template/src/kernel/server/root/AppRootWrapper.tsx -> apps/template/src/kernel/server/index.ts`
 - 3-file cycle: `apps/template/src/kernel/server/index.ts -> apps/template/src/kernel/server/root/index.ts -> apps/template/src/kernel/server/root/appResolveRootLayoutContext.ts -> apps/template/src/kernel/server/index.ts`
 - 3-file cycle: `apps/template/src/kernel/server/bootstrap/app-bootstrap.ts -> apps/template/src/kernel/server/index.ts -> apps/template/src/kernel/server/bootstrap/index.ts -> apps/template/src/kernel/server/bootstrap/app-bootstrap.ts`
-- 3-file cycle: `packages/next/src/server/index.ts -> packages/next/src/server/wrapper/index.ts -> packages/next/src/server/wrapper/CiNextRootWrapper.tsx -> packages/next/src/server/index.ts`
-- 3-file cycle: `packages/next/src/server/index.ts -> packages/next/src/server/wrapper/index.ts -> packages/next/src/server/wrapper/CiPageWrapper.tsx -> packages/next/src/server/index.ts`
-- 3-file cycle: `packages/next/src/server/index.ts -> packages/next/src/server/tenant/index.ts -> packages/next/src/server/tenant/ci-handle-tenant-logic.ts -> packages/next/src/server/index.ts`
-- 3-file cycle: `packages/next/src/client/index.ts -> packages/next/src/client/wrapper/index.ts -> packages/next/src/client/wrapper/CiClientWrapper.tsx -> packages/next/src/client/index.ts`
+- 3-file cycle: `apps/template/src/kernel/server/index.ts -> apps/template/src/kernel/server/root/index.ts -> apps/template/src/kernel/server/root/AppRootWrapper.tsx -> apps/template/src/kernel/server/index.ts`
 
 ## Hyperedges (group relationships)
 - **CloudIgniter End-to-End API Pipeline** — repo::cloudigniter3_developer_guide_docs_api_client_call_strategy_client_layer, repo::cloudigniter3_developer_guide_docs_api_end_to_end_nextjs_route_handler_layer, repo::cloudigniter3_developer_guide_docs_api_end_to_end_server_api_wrapper_layer, repo::cloudigniter3_developer_guide_docs_api_appsync_aws_appsync_layer, repo::cloudigniter3_developer_guide_docs_api_lambda_handler_strategy_lambda_handler [EXTRACTED 1.00]
@@ -735,147 +787,147 @@
 - **Docusaurus Social Brand Message** — repo::cloudigniter3_developer_guide_static_img_docusaurus_social_card_docusaurus_wordmark, repo::cloudigniter3_developer_guide_static_img_docusaurus_social_card_docusaurus_mascot, repo::cloudigniter3_developer_guide_static_img_docusaurus_social_card_build_optimized_websites, repo::cloudigniter3_developer_guide_static_img_docusaurus_social_card_focus_on_your_content [EXTRACTED 1.00]
 - **Docusaurus Mountain Scene** — repo::cloudigniter3_developer_guide_static_img_undraw_docusaurus_mountain_mountain_landscape, repo::cloudigniter3_developer_guide_static_img_undraw_docusaurus_mountain_docusaurus_mascot, repo::cloudigniter3_developer_guide_static_img_undraw_docusaurus_mountain_keytar [INFERRED 0.85]
 
-## Communities (737 total, 131 thin omitted)
+## Communities (784 total, 135 thin omitted)
 
 ### Community 0 - "ui/src/client/index.ts"
 Cohesion: 0.05
-Nodes (122): ciCreateSelectHandler(), CiProfileMenu(), CiProfileMenuAction, Alert(), AlertAction(), AlertDescription(), AlertTitle(), alertVariants (+114 more)
+Nodes (125): CiNewResourceBadge(), CiNewResourceBadgeProps, ciCreateSelectHandler(), CiProfileMenu(), CiProfileMenuAction, Alert(), AlertAction(), AlertDescription() (+117 more)
 
-### Community 1 - "ci-next-proxy-response.ts"
-Cohesion: 0.13
-Nodes (22): appGetCoreConfig(), config, proxy(), ciGetRouteSearchParams(), ciHandleRouteLogic(), CiHandleRouteLogicInput, CiHandleRouteLogicResult, ciIsRequestAuthenticated() (+14 more)
+### Community 1 - "aws/src/types/index.ts"
+Cohesion: 0.05
+Nodes (34): dynamic, runtime, { runWithAmplifyServerContext }, appThemeProviderProps, appAmplifyServerClient, config, appWithAmplify(), config (+26 more)
 
 ### Community 2 - "lib/access-control/index.ts"
-Cohesion: 0.09
-Nodes (53): CPHomePage(), authenticatedUser(), definition, subject(), accessControlKebabIdentifierPattern, CI_ACCESS_CONTROL_KEBAB_IDENTIFIER_PATTERN, ciAssertAppAccessControlLayerDoesNotOverrideCore(), ciAccessScopeContains() (+45 more)
+Cohesion: 0.10
+Nodes (50): CPHomePage(), authenticatedUser(), definition, subject(), accessControlKebabIdentifierPattern, CI_ACCESS_CONTROL_KEBAB_IDENTIFIER_PATTERN, ciIsAccessControlKebabIdentifier(), ciAccessScopeContains() (+42 more)
 
 ### Community 3 - "auth-types/access-control-types/index.ts"
 Cohesion: 0.07
 Nodes (47): CiAccessControlDefinition, CiAccessControlEntryOrigin, CiAccessControlEntryReference, CiAccessControlLayer, CiActionDefinitionLayer, CiPrivilegeLayer, CiResourceDefinitionLayer, CiResourceDomainDefinitionLayer (+39 more)
 
-### Community 4 - "tenant-resolution-checkup/route.ts"
+### Community 4 - "lambda-types/index.ts"
+Cohesion: 0.13
+Nodes (14): CiAppSyncResolverEvent, CiAttachAwsResponseDebugInput, CiAwsAuthMode, CiAwsRequest, CiAwsRequestOptions, CiAwsResponseDebug, CiAwsResponseMeta, CiCreateDirectHandlerParams (+6 more)
+
+### Community 5 - "aws/src/lib/index.ts"
 Cohesion: 0.10
-Nodes (37): ciAreResolutionSnapshotsEqual(), ciBuildSlugProbePath(), CiCheckArea, CiCheckOutcome, ciCheckupResponse(), ciCreateAreaSummary(), ciCreateCheckup(), ciCreateConfigurationFailureCheckup() (+29 more)
+Nodes (29): Handler, Handler, Handler, ciCreateCognitoUser(), CiCreateCognitoUserResult, ciDeleteCognitoUser(), CiDeleteCognitoUserResult, ciGetCognitoUser() (+21 more)
 
-### Community 5 - "backend/index.ts"
-Cohesion: 0.08
-Nodes (66): CiCoreAuth, CiCoreAuthParams, CiEnvMap, CI_AUTH_FUNCS_IDS, CI_DATA_FUNCS_IDS, CiCoreFunctionId, CiPlanOptions, CiInlinePolicySpec (+58 more)
-
-### Community 6 - "core/src/types/settings-types/index.ts"
-Cohesion: 0.05
-Nodes (42): CiAppSettings, CiBuildSettingsKeysInput, CiCoreSettings, CiGeneralSettings, CiGetSettingsApiInterface, CiGetSettingsHandlerInput, CiGetSettingsHandlerOutput, CiPrivateCoreSettings (+34 more)
+### Community 6 - "core/src/types/index.ts"
+Cohesion: 0.04
+Nodes (68): CiDevBeaconTenantInfo, CiEmailSettings, CiGeneralSettings, CiPageCoreConfig, CiSecuritySettings, CiAppSettings, CiBuildSettingsKeysInput, CiCoreSettings (+60 more)
 
 ### Community 7 - "cognito-user-types/index.ts"
 Cohesion: 0.08
 Nodes (24): CiCognitoAttributeKeyValuePair, CiCognitoAttributes, CiCognitoAttributesMap, CiCreateCognitoUserInterface, CiCreateUserHandlerInterface, CiCreateUserProfileInterface, CiDataTableUserRecord, CiDeleteCognitoUserInterface (+16 more)
 
 ### Community 8 - "layout copy.tsx"
-Cohesion: 0.21
-Nodes (11): AppRootLayout(), dynamic, inter, revalidate, appGetDevBeaconAccess(), appGetDevBeaconActor(), ciCanAccessDevBeacon(), ciIsDevBeaconLanguageErrorResponse() (+3 more)
+Cohesion: 0.16
+Nodes (13): AppRootLayout(), dynamic, inter, revalidate, appGetDevBeaconAccess(), appGetDevBeaconActor(), ciCanAccessDevBeacon(), ciIsDevBeaconLanguageErrorResponse() (+5 more)
 
 ### Community 9 - "dependencies"
 Cohesion: 0.03
-Nodes (63): @ant-design/nextjs-registry, @headlessui/react, highlight.js, monaco-editor, dependencies, @ant-design/nextjs-registry, antd, class-variance-authority (+55 more)
+Nodes (63): @ant-design/nextjs-registry, @headlessui/react, highlight.js, monaco-editor, dependencies, @ant-design/nextjs-registry, aws-amplify, @aws-amplify/adapter-nextjs (+55 more)
 
-### Community 10 - "dynamodb-types/index.ts"
-Cohesion: 0.09
-Nodes (27): CiDeleteItemOptions, buildExistenceCondition(), buildUpdateParts(), normalizeMetrics(), normalizeTimestamps(), OptimisticLock, TimestampOptions, UpdateShape (+19 more)
+### Community 10 - "CiResult"
+Cohesion: 0.10
+Nodes (24): CiAwsLikeError, ciBuildCognitoErrorResult(), CiCognitoErrorStatus, ciCloudWatchLogsClient, ciGetLambdaCloudwatchLog(), CiGetLambdaCloudwatchLogBody, ciParseLambdaReportLine(), ciCloudWatchClient (+16 more)
 
 ### Community 11 - "CiAccessControlDefinition"
-Cohesion: 0.07
-Nodes (31): CI_CORE_ROLE_PRECEDENCE, CI_CORE_ROLES_BY_PRECEDENCE, CiEmberguardCoreRole, ciResolvePrimaryRole(), assertCanonicalRoleAssignments(), assertCanonicalRoleId(), Emberguard, ciBuildSecurityRoleCounters() (+23 more)
+Cohesion: 0.06
+Nodes (35): CI_CORE_ROLE_PRECEDENCE, CI_CORE_ROLES_BY_PRECEDENCE, CiEmberguardCoreRole, ciResolvePrimaryRole(), assertCanonicalRoleAssignments(), assertCanonicalRoleId(), Emberguard, ciBuildSecurityRoleCounters() (+27 more)
 
 ### Community 12 - "auth/access-control/index.ts"
 Cohesion: 0.08
-Nodes (49): ciAccessControlLayerHasChanges(), ciAssertAppAccessControlLayerDoesNotOverrideCore(), ciAssertCoreAccessControlOverrideTargets(), ciAssertExclusiveCoreOverrideRole(), ciDefinitionContainsAccessControlEntry(), findResource(), findRole(), ciAccessScopeContains() (+41 more)
+Nodes (50): ciAccessControlLayerHasChanges(), ciAssertAppAccessControlLayerDoesNotOverrideCore(), ciAssertCoreAccessControlOverrideTargets(), ciAssertExclusiveCoreOverrideRole(), ciDefinitionContainsAccessControlEntry(), findResource(), findRole(), ciAccessScopeContains() (+42 more)
 
 ### Community 13 - "ci-entries.mjs"
 Cohesion: 0.06
 Nodes (41): ciEntriesConfig, externalPackages, addEntry(), ciLoadEntriesConfig(), collectSourceFiles(), deriveBarrelOutKey(), deriveFlatName(), deriveStructuredKey() (+33 more)
 
-### Community 14 - "core/src/client/index.ts"
-Cohesion: 0.11
-Nodes (15): ciGetAllCookies(), ciGetCookie(), ciIsCookie(), ciRemoveCookie(), ciSetCookie(), ciClearLocalStorage(), ciGetLocalStorageItem(), ciGetLocalStorageKeys() (+7 more)
+### Community 14 - "ci-update-org-unit.ts"
+Cohesion: 0.17
+Nodes (35): ciCreateOrgUnit(), CiCreateOrgUnitServiceInput, ciGetOrgUnitByPath(), ciListOrgUnits(), decodeToken(), encodeToken(), CI_ORG_UNIT_COLLECTION_KEY, ciBuildOrgUnitChildrenPartitionKey() (+27 more)
 
-### Community 15 - "CiDataTableRecordInformationDialog.tsx"
-Cohesion: 0.09
-Nodes (37): CiDataTableInformationControl(), CiDataTableInformationControlProps, resolveRecordNode(), CiDataTableRecordInformationDialog(), CiDataTableRecordInformationDialogProps, RecordInformationViews(), CiDataTableRowActions(), CiDataTableRowActionsProps (+29 more)
+### Community 15 - "ci-tenant-handlers.ts"
+Cohesion: 0.11
+Nodes (55): ciCleanupSeededTenants(), isOwnedBySeeder(), ciDeleteTenant(), CiDeleteTenantServiceInput, ciListTenants(), decodeNextToken(), encodeNextToken(), ciPurgeTenant() (+47 more)
 
 ### Community 16 - "ci-resource-file-transaction.mjs"
-Cohesion: 0.17
-Nodes (40): CI_JOURNAL_STATUSES, ciApplyResourceFileTransaction(), ciAtomicWriteAbsoluteFile(), ciAtomicWriteWorkspaceFile(), ciBuildConflict(), ciContentToBuffer(), ciCreatePlannedDirectories(), ciCreateResourceFileTransaction() (+32 more)
+Cohesion: 0.16
+Nodes (41): CI_JOURNAL_STATUSES, ciApplyResourceFileTransaction(), ciAtomicWriteAbsoluteFile(), ciAtomicWriteWorkspaceFile(), ciBuildConflict(), ciContentToBuffer(), ciCreatePlannedDirectories(), ciCreateResourceFileTransaction() (+33 more)
 
 ### Community 17 - "ci-resource-studio-local-store.mjs"
-Cohesion: 0.12
-Nodes (24): CI_SUPPORTED_NODE_LTS_MAJORS, ciAssertSupportedNodeRuntime(), ciCommandFailure(), ciCreateResourceStudioAwsRuntime(), ciInspectResourceStudioNodeRuntime(), ciAtomicPrivateWrite(), ciCreateResourceStudioLocalStore(), ciCreateResourceStudioLogStreamSanitizer() (+16 more)
+Cohesion: 0.19
+Nodes (19): CI_SUPPORTED_NODE_LTS_MAJORS, ciAssertSupportedNodeRuntime(), ciCommandFailure(), ciCreateResourceStudioAwsRuntime(), ciInspectResourceStudioNodeRuntime(), ciAtomicPrivateWrite(), ciCreateResourceStudioLocalStore(), ciCreateResourceStudioLogStreamSanitizer() (+11 more)
 
 ### Community 18 - "ci-aws-data-entity-planner.ts"
-Cohesion: 0.07
-Nodes (52): asRecord(), assertIdentifier(), assertStaticManagementPath(), AUTH_OPERATIONS, CI_AWS_RESOURCE_STUDIO_CAPABILITIES, CiAwsDataEntityAuthorizationRule, CiAwsDataEntityDescriptor, CiAwsDataEntityField (+44 more)
+Cohesion: 0.13
+Nodes (33): asRecord(), assertIdentifier(), assertStaticManagementPath(), AUTH_OPERATIONS, CI_AWS_RESOURCE_STUDIO_CAPABILITIES, CiAwsDataEntityAuthorizationRule, CiAwsDataEntityDescriptor, CiAwsDataEntityField (+25 more)
 
 ### Community 19 - "smart-form/components/index.ts"
-Cohesion: 0.09
-Nodes (27): CiCodeEditorContentSerializer, CiCodeEditorProps, CiCodeEditorSerializationContext, ciDefineCodeEditorThemes(), useCiMonacoTheme(), CiSmartCheckboxField(), CiSmartFormControl, CiSmartFormDescription (+19 more)
+Cohesion: 0.08
+Nodes (32): CiSettingsFormContent(), CiCodeEditor(), CiCodeEditorContentSerializer, CiCodeEditorProps, CiCodeEditorSerializationContext, ciDefineCodeEditorThemes(), useCiMonacoTheme(), CiSmartCheckboxField() (+24 more)
 
-### Community 20 - "core/src/lib/index.ts"
-Cohesion: 0.09
-Nodes (38): ciBuildServiceSettingsRegistry(), ciBuildSettingsRegistry(), CiTemplateSettingsRegistry, CiTemplateSettingsRegistryEntry, NotificationsSettingsSchema, CI_CORE_ROLE_PRECEDENCE, CI_CORE_ROLES_BY_PRECEDENCE, ciResolvePrimaryRole() (+30 more)
+### Community 20 - "tenant/constants.ts"
+Cohesion: 0.14
+Nodes (20): CI_DEFAULT_ORG_UNIT_OPTIONS, CI_DEFAULT_ORG_UNIT_PATH_COOKIE_NAME, CI_DEFAULT_ORG_UNIT_PATH_HEADER_NAME, CI_MOCK_ORG_UNITS, ciBuildTenantPublicPathname(), ciNormalizeTenantBasePath(), CI_DEFAULT_TENANT_ROUTING_OPTIONS, ciNormalizeTenantScope() (+12 more)
 
 ### Community 21 - "ci-amplify-backend-manifest.ts"
-Cohesion: 0.06
-Nodes (50): ciGetAuthStack(), ciPrepareUserPool(), backend, coreResources, CiCloudIgniterBackendOutputsInput, ciCreateCloudIgniterBackendOutputs(), ciPostBuild(), ciGetDataStack() (+42 more)
+Cohesion: 0.07
+Nodes (42): ciGetAuthStack(), ciPrepareUserPool(), backend, CiCloudIgniterBackendOutputsInput, ciCreateCloudIgniterBackendOutputs(), ciPostBuild(), ciGetDataStack(), backendShape (+34 more)
 
 ### Community 22 - "core/src/types/tenant-types/index.ts"
-Cohesion: 0.14
-Nodes (15): CiDevBeaconTenantInfo, CiBuildTenantPublicPathnameInput, CiGetTenantBySlugInterface, CiResolveTenantContextResult, CiTenantContext, CiTenantDdbTableItem, CiTenantInfoPageStrategy, CiTenantLookupFailure (+7 more)
+Cohesion: 0.11
+Nodes (29): CiPurgeResourceInput, CiResourceDeletionMetadata, CiResourceDeletionState, CiResourceLifecycleMutationResult, CiRestoreResourceInput, CiSoftDeleteResourceInput, CiBuildTenantPublicPathnameInput, CiGetTenantBySlugInterface (+21 more)
 
 ### Community 23 - "Tailwind CSS Utility Reference"
 Cohesion: 0.05
 Nodes (43): Arbitrary Values, Aspect Ratio, Background Colors, Border Color, Border Radius, Border Style, Border Width, Borders (+35 more)
 
-### Community 24 - "lambda/index.ts"
-Cohesion: 0.22
-Nodes (14): ciAttachAwsResponseDebug(), ciAttachHandlerDebug(), ciCloudWatchLogsClient, ciGetLambdaCloudwatchLog(), CiGetLambdaCloudwatchLogBody, ciParseLambdaReportLine(), ciCloudWatchClient, ciGetLambdaMetrics() (+6 more)
+### Community 24 - "app-security-service.ts"
+Cohesion: 0.46
+Nodes (3): appAccessControl, appAccessControlExtension, appAuthorizer
 
 ### Community 25 - "slide_search_core.py"
 Cohesion: 0.09
 Nodes (36): format_context(), format_result(), main(), Format a single search result for display, Format contextual recommendations for display., BM25, calculate_pattern_break(), detect_domain() (+28 more)
 
 ### Community 26 - "ui/src/types/index.ts"
-Cohesion: 0.05
-Nodes (80): tableConfig, tenantRows, tenantTable, CiTenantHtmlTableRow, tenantActions, tenantsData, tenantColumns, applyUpdater() (+72 more)
+Cohesion: 0.06
+Nodes (70): CiTenantHtmlTableRow, tenantActions, tenantsData, tenantColumns, BorderBeamProps, CiDataTableFeatures, CiRoundButtonFallback(), CiAboutBorderBeamProps (+62 more)
 
 ### Community 27 - "dependencies"
 Cohesion: 0.05
-Nodes (43): fflate, dependencies, antd, class-variance-authority, clsx, fflate, formik, @monaco-editor/react (+35 more)
+Nodes (43): @base-ui/react, fflate, dependencies, antd, @base-ui/react, class-variance-authority, clsx, fflate (+35 more)
 
-### Community 28 - "Cognito.ts"
-Cohesion: 0.12
-Nodes (16): createGroup(), listGroupsForUser(), awsSdkCreateCognitoUser(), awsSdkDeleteCognitoUser(), awsSdkGetCognitoUser(), awsSdkListCognitoUsers(), awsSdkSetCognitoUserPassword(), awsSdkUpdateCognitoUser() (+8 more)
+### Community 28 - "ciNormalizeThrownError"
+Cohesion: 0.18
+Nodes (26): GET(), runtime, OrgUnitsPage(), cleanupTestTenantsAction(), deleteTenantAction(), failedSeederResult(), purgeTenantAction(), requireDeveloperToolsAccess() (+18 more)
 
-### Community 29 - "dev-types/index.ts"
-Cohesion: 0.10
-Nodes (33): CiDevBeaconAccessInput, CiDevBeaconActor, CiDevBeaconButtonProps, CiDevBeaconClientProps, CiDevBeaconExtraTab, CiDevBeaconExtraTabSpec, CiDevBeaconLanguageDiagnostics, CiDevBeaconLanguageErrorResponse (+25 more)
+### Community 29 - "CiDataTable.tsx"
+Cohesion: 0.08
+Nodes (49): CI_DATA_TABLE_DEFAULT_ROW_ACTION_OVERFLOW, applyUpdater(), buildExcelColumns(), CiDataTable(), decodeFilterValue(), DEFAULT_LABELS, DEFAULT_PAGE_SIZES, encodeFilterValue() (+41 more)
 
 ### Community 30 - "Brand Guidelines v1.0"
 Cohesion: 0.05
 Nodes (37): 1. Color Palette, 2. Typography, 3. Logo Usage, 4. Voice & Tone, 5. Imagery Guidelines, 6. Design Components, Accessibility, AI Image Generation (+29 more)
 
-### Community 31 - "next/src/types/index.ts"
-Cohesion: 0.08
-Nodes (23): AppConfig, AppRootLayoutContext, CopyrightInterface, CiDevBeaconPlatformInformationSegmentProps, CiNextProxyResponseInterface, CiNextStatus, CiNextAppConfig, CiNextConfig (+15 more)
+### Community 31 - "ci-next-proxy-response.ts"
+Cohesion: 0.13
+Nodes (22): appGetCoreConfig(), config, proxy(), ciGetRouteSearchParams(), ciGetRoutesMatcher(), ciHandleRouteLogic(), CiHandleRouteLogicInput, CiHandleRouteLogicResult (+14 more)
 
 ### Community 32 - "exports"
 Cohesion: 0.05
 Nodes (38): import, types, exports, ./client, ./layout/app-standard, ./layout/cp-standard, ./layout/login-standard, ./lib (+30 more)
 
-### Community 33 - "CiResult"
-Cohesion: 0.11
-Nodes (17): CiAwsLikeError, ciBuildCognitoErrorResult(), CiCognitoErrorStatus, ciErrorResult(), ciError401(), ciError403(), ciError404(), ciIsErrorResult() (+9 more)
+### Community 33 - "dev-types/index.ts"
+Cohesion: 0.07
+Nodes (39): CiDevBeaconAccessInput, CiDevBeaconActor, CiDevBeaconButtonProps, CiDevBeaconClientProps, CiDevBeaconExtraTab, CiDevBeaconExtraTabSpec, CiDevBeaconLanguageDiagnostics, CiDevBeaconLanguageErrorResponse (+31 more)
 
-### Community 34 - "kernel-types/index.ts"
-Cohesion: 0.14
-Nodes (10): CiDataConfig, CiPlatformId, CiProviderId, CiRequestConfig, CiResolvedCoreConfig, CiRootLayoutContext, CiSystemItemType, CiSystemStatus (+2 more)
+### Community 34 - "types/access-control-types/index.ts"
+Cohesion: 0.10
+Nodes (29): ciCreateRoleAssignment(), ciCreateRoleAssignments(), ciCreateRoleAssignmentsFromIdentityGroups(), ciResolveIdentityGroupRoles(), hasMappedGroup(), hasMappedGroup(), CiAccessControlValidationIssue, CiAccessRequirement (+21 more)
 
 ### Community 35 - "BM25"
 Cohesion: 0.09
@@ -889,41 +941,41 @@ Nodes (35): Banner Design (Built-in), Banner: Design Rules, Banner: Quick Size R
 Cohesion: 0.06
 Nodes (35): 1. Visual Communication First, 2. Minimal Text Integration, 3. Expert Craftsmanship, 4. Systematic Patterns, Analog Meditation, Approach, Canvas Boundaries, Canvas Design System (+27 more)
 
-### Community 38 - "access-control-bootstrap.test.ts"
-Cohesion: 0.10
-Nodes (24): ciBootstrapAccessControl(), ciIsRecord(), ciParseBootstrapResponse(), ciRequireNonEmptyString(), CiAmplifyOutputs, ciBootstrapAccessControlFromAmplifyApp(), ciIsRecord(), ciOptionalString() (+16 more)
+### Community 38 - "ci-resolve-subdomain-tenant.ts"
+Cohesion: 0.35
+Nodes (7): CiTenantResolutionOptions, CiTenantResolutionResult, ciNormalizeBasePath(), ciNormalizeRootDomains(), ciResolveSlugTenant(), ciResolveSubdomainTenant(), ciStripPort()
 
 ### Community 39 - "HTML Root Element"
 Cohesion: 0.33
 Nodes (7): Root HTML Element DOM Inspector Screenshot, English Document Language, HTML Root Element, Left-to-Right Document Direction, Light Color Scheme, light Theme Class, Root Presentation State
 
-### Community 40 - "ci-handle-tenant-logic.ts"
-Cohesion: 0.09
-Nodes (26): CiTenantResolutionOptions, CiTenantResolutionResult, CiTenantRoutingOptions, CiHandleTenantLogicParams, CiHandleTenantLogicResult, CiTenantLogicBaseResult, CiTenantRequest, ciResolveTenantContext() (+18 more)
+### Community 40 - "access-control-bootstrap.test.ts"
+Cohesion: 0.16
+Nodes (14): ciBootstrapAccessControl(), ciIsRecord(), ciParseBootstrapResponse(), ciRequireNonEmptyString(), CiAmplifyOutputs, ciBootstrapAccessControlFromAmplifyApp(), ciIsRecord(), ciOptionalString() (+6 more)
 
 ### Community 41 - "ci-create-security-administration.ts"
-Cohesion: 0.05
-Nodes (75): ciIsAccessControlKebabIdentifier(), assertSecurityRecordIsComplete(), buildAssignmentRecords(), buildIdentityGroupRecords(), buildPermissionRecords(), buildResourceDomainRecords(), buildResourceRecords(), buildRoleRecords() (+67 more)
+Cohesion: 0.09
+Nodes (40): assertApplicationEntryDoesNotEscalateCore(), assertSecurityRecordIsComplete(), buildAssignmentRecords(), buildIdentityGroupRecords(), buildPermissionRecords(), buildResourceDomainRecords(), buildResourceRecords(), buildRoleRecords() (+32 more)
 
 ### Community 42 - "CiDevBeaconAuthenticatedUserSegment.tsx"
-Cohesion: 0.04
-Nodes (73): CiDevTenantResolutionCheckup, CiDevBeaconCard(), CiDevBeaconCardProps, CiDevBeaconCardTitleProps, CiDevBeaconCardRow(), CiDevBeaconCardRowProps, CiDevBeaconCardRowValuePadding, valuePaddingClasses (+65 more)
+Cohesion: 0.05
+Nodes (60): CiDevTenantResolutionCheckup, CiDevBeaconCard(), CiDevBeaconCardProps, CiDevBeaconCardTitleProps, CiDevBeaconCardRow(), CiDevBeaconCardRowProps, CiDevBeaconCardRowValuePadding, valuePaddingClasses (+52 more)
 
 ### Community 43 - "module-types/index.ts"
-Cohesion: 0.16
-Nodes (15): CiClientModuleContext, CiModuleContext, CiModuleDependency, CiModuleHost, CiModuleId, CiModulePackageDependency, CiModulePackageSection, CiModuleRuntimeEnvironment (+7 more)
+Cohesion: 0.07
+Nodes (41): ciCollectModulePackageDependencies(), ciValidPackageSections, ciCreateEnabledModuleManifestMap(), ciCreateInitialEnabledModuleIds(), ciCreateModuleManifestMap(), ciDependencyAppliesToEnvironment(), ciExpandRequiredModuleDependencies(), ciFormatValues() (+33 more)
 
 ### Community 44 - "CiSandboxPage.tsx"
 Cohesion: 0.18
 Nodes (12): CiSandboxMethodDefinition, SandboxProps, InputHandle, InputPanel, InputProps, Output, OutputHandle, OutputProps (+4 more)
 
-### Community 45 - "types/access-control-types/index.ts"
-Cohesion: 0.10
-Nodes (29): ciCreateRoleAssignment(), ciCreateRoleAssignments(), ciCreateRoleAssignmentsFromIdentityGroups(), ciResolveIdentityGroupRoles(), hasMappedGroup(), hasMappedGroup(), CiAccessControlValidationIssue, CiAccessRequirement (+21 more)
+### Community 45 - "tenant-resolution-checkup/route.ts"
+Cohesion: 0.13
+Nodes (30): ciAreResolutionSnapshotsEqual(), ciBuildSlugProbePath(), CiCheckArea, CiCheckOutcome, ciCheckupResponse(), ciCreateAreaSummary(), ciCreateCheckup(), ciCreateConfigurationFailureCheckup() (+22 more)
 
 ### Community 46 - "ci-validate-modules.mjs"
-Cohesion: 0.12
-Nodes (32): ciAddError(), ciAllowedModuleRootEntries, ciCollectModuleSpecifiers(), ciCollectTypeScriptFiles(), ciCoreModulesDirectory, ciErrors, ciGetCloudIgniterImportEnvironment(), ciHasModifier() (+24 more)
+Cohesion: 0.06
+Nodes (51): ciCloudIgniterWorkspacePackagePath(), ciImportPackageEntry(), ciPathExists(), ciResolveExportTarget(), appRoot, CiAwsBackendModule, appRoot, CiAwsBackendModule (+43 more)
 
 ### Community 47 - "Form & Input Components"
 Cohesion: 0.06
@@ -941,9 +993,9 @@ Nodes (32): 1. Mobile-First Design, 2. Consistent Breakpoint Usage, 3. Test at B
 Cohesion: 0.17
 Nodes (24): CI_ROOT_USER_GROUPS, ciBootstrapRootUser(), ciGetCognitoAttribute(), ciGetCognitoRootUser(), ciIsUserNotFoundError(), ciRequireNonEmptyString(), CiAmplifyOutputs, ciBootstrapRootUserFromAmplifyApp() (+16 more)
 
-### Community 51 - "ci-get-current-route.ts"
-Cohesion: 0.22
-Nodes (6): ciDefineServerModule(), ciModuleManifest, ciAuthServerModule, ciGetCurrentRoute(), ciReadCurrentRoute, ciRequireCurrentRoute()
+### Community 51 - "backend-auth.ts"
+Cohesion: 0.14
+Nodes (13): backendAuth, backendAuthAccess(), client, handler(), AmplifyAuthResource, auth, coreResources, customBackendAuth (+5 more)
 
 ### Community 53 - "delete-CiThemePresentationPage copy.tsx"
 Cohesion: 0.13
@@ -961,13 +1013,13 @@ Nodes (29): ^check, ^lint, ^typecheck, ^typecheck:tools, dependsOn, dependsOn, o
 Cohesion: 0.09
 Nodes (27): ansi_ljust(), _detect_page_type(), format_ascii_box(), format_markdown(), format_master_md(), format_page_override_md(), generate_design_system(), _generate_intelligent_overrides() (+19 more)
 
-### Community 57 - "CiLocaleDirection"
-Cohesion: 0.14
-Nodes (17): CiDevBeaconLanguageSummary, CiTraceConfig, CiExtendedI18nConfig, CiGetServerLocaleInterface, CiI18nConfig, CiI18nSettings, CiLanguageFileDiagnostic, CiLanguageFileStatus (+9 more)
+### Community 57 - "lib/access-control/ci-core-access-control.ts"
+Cohesion: 0.16
+Nodes (19): ciAccessControlLayerHasChanges(), ciAssertAppAccessControlLayerDoesNotOverrideCore(), ciAssertCoreAccessControlOverrideTargets(), ciAssertExclusiveCoreOverrideRole(), ciDefinitionContainsAccessControlEntry(), findResource(), findRole(), assertCoreOverrideBootstrapInvariants() (+11 more)
 
-### Community 58 - "aws/src/lib/index.ts"
-Cohesion: 0.12
-Nodes (27): ciCreateCognitoUser(), CiCreateCognitoUserResult, ciDeleteCognitoUser(), CiDeleteCognitoUserResult, ciGetCognitoUser(), CiGetCognitoUserResult, ciSetCognitoUserPassword(), CiSetCognitoUserPasswordResult (+19 more)
+### Community 58 - "core/src/types/page-types/index.ts"
+Cohesion: 0.14
+Nodes (12): CiBreadcrumbItem, CiCollapsiblePageHeaderProps, CiCorePageConfig, CiErrorPageProps, CiInfoPageStrategy, CiPageHeaderActionButtonProps, CiPageSetup, CiRouteRuntimeConfig (+4 more)
 
 ### Community 59 - "Typography Specifications"
 Cohesion: 0.06
@@ -979,15 +1031,15 @@ Nodes (21): BM25, _domain_keywords(), _get_bm25(), _load_csv(), _load_product_ke
 
 ### Community 61 - "dependencies"
 Cohesion: 0.06
-Nodes (33): dependencies, aws-amplify, @aws-amplify/adapter-nextjs, @aws-amplify/ui-react, aws-lambda, deepmerge-ts, lucide-react, next (+25 more)
+Nodes (33): dependencies, aws-amplify, @aws-amplify/adapter-nextjs, @aws-amplify/ui-react, aws-lambda, deepmerge-ts, dotenv, next (+25 more)
 
-### Community 62 - "ci-resource-studio-service.mjs"
-Cohesion: 0.13
-Nodes (27): ciRunResourceFileTransaction(), ciAssertDescriptorReservations(), ciAssertGeneratedPlanMatchesWorkspace(), ciAssertPlannerFile(), ciAssertResourceId(), ciBuildFileChanges(), ciCreatePlan(), ciCreateResourceStudioService() (+19 more)
+### Community 62 - "core/src/client/index.ts"
+Cohesion: 0.10
+Nodes (16): ciGetAllCookies(), ciGetCookie(), ciIsCookie(), ciRemoveCookie(), ciSetCookie(), ciClearLocalStorage(), ciGetLocalStorageItem(), ciGetLocalStorageKeys() (+8 more)
 
-### Community 63 - "ci-emberguard-access-handlers.ts"
-Cohesion: 0.06
-Nodes (38): Handler, Handler, Handler, postConfirmation, Schema, schemaData, Handler, Handler (+30 more)
+### Community 63 - "backend/index.ts"
+Cohesion: 0.05
+Nodes (60): postConfirmation, schemaData, Handler, Handler, Handler, Handler, Handler, Handler (+52 more)
 
 ### Community 64 - "devDependencies"
 Cohesion: 0.06
@@ -997,21 +1049,21 @@ Nodes (31): devDependencies, aws-amplify, @cloudigniter/cli, @cloudigniter/confi
 Cohesion: 0.06
 Nodes (33): devDependencies, @cloudigniter/aws, @cloudigniter/cli, @cloudigniter/config-ts, @cloudigniter/core, @cloudigniter/ui, esbuild-plugin-preserve-directives, rimraf (+25 more)
 
-### Community 66 - "ci-config.tsx"
-Cohesion: 0.08
-Nodes (26): baseTabs, fieldLabels, fieldSectionMap, CiSettingsForm(), CiSettingsFormContent(), CiEmailSettingsSection(), CiGeneralSettingsSection(), GeneralSectionInterface (+18 more)
+### Community 66 - "ci-resolve-org-unit-context.ts"
+Cohesion: 0.23
+Nodes (8): CiOrgUnitRoutingOptions, CiResolveOrgUnitResult, ciResolveOrgUnit(), CiOrgUnitRequest, ciResolveOrgUnitContext(), ciLookupOrgUnit(), CiOrgUnitLookupRequest, ciResolveOrgUnit()
 
 ### Community 67 - "API Reference Section"
 Cohesion: 0.05
-Nodes (35): API change rules, API Reference Section, Completeness checklist, Information architecture, Recommended component or hook page, Recommended function or method page, Recommended type or configuration page, Scope (+27 more)
+Nodes (36): API change rules, API Reference Section, Completeness checklist, Information architecture, Recommended component or hook page, Recommended function or method page, Recommended type or configuration page, Scope (+28 more)
 
-### Community 68 - "CiTraceLoggerServer"
-Cohesion: 0.22
-Nodes (4): dynamic, POST(), runtime, CiTraceLoggerServer
+### Community 68 - "gray"
+Cohesion: 0.09
+Nodes (23): $type, $value, $type, $value, $type, $value, $type, $value (+15 more)
 
 ### Community 69 - "appBootstrap"
-Cohesion: 0.12
-Nodes (21): CiGlobalDashboardPage(), CiTenantDashboardPage(), GET(), runtime, dashboardBreadcrumbChildren, securityBreadcrumbChildren, ciIsConcurrentAccessControlStateError(), createSecurityResourceDomainAction() (+13 more)
+Cohesion: 0.06
+Nodes (41): nextConfig, withNextIntl, CiGlobalDashboardPage(), CiGlobalLayout(), CiTenantDashboardPage(), CiTenantLayout(), LayoutInterface, LoginLayout() (+33 more)
 
 ### Community 70 - "Docusaurus Plushie Banner"
 Cohesion: 0.50
@@ -1045,17 +1097,17 @@ Nodes (31): devDependencies, @cloudigniter/cli, @cloudigniter/config-ts, @cloudi
 Cohesion: 0.14
 Nodes (24): get_context(), is_allowed_exception(), is_allowed_rgba(), is_inside_block(), load_css_variables(), main(), print_result(), print_summary() (+16 more)
 
-### Community 78 - "ci-prepare-policy.ts"
-Cohesion: 0.10
-Nodes (38): CiNormalizedPolicyBundle, CiPolicyDocument, CiPolicyStatement, ciBuildPolicyStatementSignature(), ciBuildSortKeyForPolicyStatement(), ciCompareStrings(), ciDeduplicatePolicyStatements(), ciFlattenPolicyBundle() (+30 more)
+### Community 78 - "ci-normalize-policy-bundle.ts"
+Cohesion: 0.16
+Nodes (26): ciBuildPolicyStatementSignature(), ciBuildSortKeyForPolicyStatement(), ciCompareStrings(), ciDeduplicatePolicyStatements(), ciFlattenPolicyBundle(), ciIsPolicyGroup(), ciNormalizeConditionBlock(), ciNormalizeOptionalString() (+18 more)
 
-### Community 79 - "lib/access-control/ci-core-access-control.ts"
-Cohesion: 0.18
-Nodes (18): ciAccessControlLayerHasChanges(), ciAssertCoreAccessControlOverrideTargets(), ciAssertExclusiveCoreOverrideRole(), ciDefinitionContainsAccessControlEntry(), findResource(), findRole(), assertCoreOverrideBootstrapInvariants(), assertCoreOverrideRecord() (+10 more)
+### Community 79 - "graphql-types/index.ts"
+Cohesion: 0.24
+Nodes (8): CiApiRawPayload, CiApiResultUnion, CiCallError, CiCallErrorKind, CiCallOk, CiCallOptions, CiCallResult, CiParseErrorResponse
 
 ### Community 80 - "ci-core-amplify-manifest.ts"
-Cohesion: 0.07
-Nodes (22): createCognitoUserHandler, getCognitoUserHandler, setCognitoUserPasswordHandler, CI_CORE_AMPLIFY_MANIFEST, compiledBackend, coreSchemas, schemaCognitoUser, schemaEmberguard (+14 more)
+Cohesion: 0.05
+Nodes (34): createCognitoUserHandler, getCognitoUserHandler, setCognitoUserPasswordHandler, CI_CORE_AMPLIFY_MANIFEST, compiledBackend, coreSchemas, schemaCognitoUser, schemaEmberguard (+26 more)
 
 ### Community 81 - "AWS Amplify Gen 2"
 Cohesion: 0.67
@@ -1070,28 +1122,28 @@ Cohesion: 0.67
 Nodes (3): Docusaurus Basics, Docusaurus Document Versioning, Docusaurus Internationalization
 
 ### Community 84 - "DesignSystemGenerator"
-Cohesion: 0.08
-Nodes (19): DesignSystemGenerator, _palette_is_dark(), WCAG relative luminance of a #RRGGBB string, or None if unparseable., True when a colors.csv row's Background is a dark surface., Generates design system recommendations from aggregated searches., Load reasoning rules from CSV., Execute searches across multiple domains., Find matching reasoning rule for a category. (+11 more)
+Cohesion: 0.11
+Nodes (13): DesignSystemGenerator, _palette_is_dark(), WCAG relative luminance of a #RRGGBB string, or None if unparseable., True when a colors.csv row's Background is a dark surface., Generates design system recommendations from aggregated searches., Load reasoning rules from CSV., Find matching reasoning rule for a category., Apply reasoning rules to search results. (+5 more)
 
 ### Community 85 - "ci-switch-sources.mjs"
 Cohesion: 0.10
 Nodes (25): buildExactObject(), ciBuildRelativeCssSourcePath(), ciBuildTailwindSourceLine(), ciFindTailwindSourceInsertIndex(), ciGetPackageShortName(), ciIsTailwindSourceLineForCurrentPackage(), ciResolveAppTemplateGlobalsCssPath(), ciResolveAppTemplateRootPath() (+17 more)
 
 ### Community 86 - "ui/server/index.ts"
-Cohesion: 0.10
-Nodes (16): CiNextRootWrapper(), CiNextRootWrapperInterface, CiNextDashboardCard(), CiNextDashboardOverview(), CiNextDashboardOverviewProps, CiNextDashboardPage(), CiNextDashboardPageProps, CiMainHeaderUserBox() (+8 more)
+Cohesion: 0.15
+Nodes (11): CiNextDashboardOverview(), CiNextDashboardOverviewProps, CiNextDashboardPage(), CiNextDashboardPageProps, CiDashboardGrid(), CiDashboardGridProps, CiDashboardPage(), CiDashboardPageProps (+3 more)
 
 ### Community 87 - "compilerOptions"
 Cohesion: 0.07
 Nodes (26): compilerOptions, composite, declaration, declarationMap, jsx, noEmit, paths, plugins (+18 more)
 
-### Community 88 - "ciGetLangDir"
-Cohesion: 0.19
-Nodes (12): ciGetLangDir(), RTL_LANGS, ciResolveNamespaceLocaleFileNames(), CI_DEFAULT_LOCALE, CI_DEFAULT_LOCALE_COOKIE_NAME, CI_DEFAULT_LOCALE_DIRECTION, CI_DEFAULT_LOCALE_NAME, CI_DEFAULT_LOCALES (+4 more)
+### Community 88 - "ciNormalizePathname"
+Cohesion: 0.12
+Nodes (21): routes, resourceStudioRoutes, customRoutes, appGetRoutes(), ciNormalizePathname(), CiCompiledRoutes, ciCompileRoutes(), CompiledEntry (+13 more)
 
-### Community 90 - "CiSeederPage.tsx"
-Cohesion: 0.17
-Nodes (14): appSeed, SeederResponse, CiSeederAction, CiSeederErrorBody, CiSeederInput, CiSeederInputItem, CiSeederItemKey, CiSeederResponseBody (+6 more)
+### Community 90 - "dev-types/seeder-types/index.ts"
+Cohesion: 0.13
+Nodes (18): appSeed, SeederResponse, CiSeederAction, CiSeederDefinition, CiSeederErrorBody, CiSeederExecutionItemResult, CiSeederExecutionResult, CiSeederItemStatus (+10 more)
 
 ### Community 91 - "Asset Approval Checklist"
 Cohesion: 0.08
@@ -1153,9 +1205,9 @@ Nodes (23): Art Direction Styles (Reuse from Banner), Color & Contrast, Design B
 Cohesion: 0.17
 Nodes (26): ciCreateDeveloperParser(), ciRunDeveloperCli(), ciDeveloperHelp, ciPublicHelp, ciCreatePublicParser(), ciResolvePublicCommand(), ciResolveRequiredDeployOption(), ciRunBootstrapWorker() (+18 more)
 
-### Community 106 - "CiRoutesMap"
-Cohesion: 0.13
-Nodes (20): resourceStudioRoutes, customRoutes, appGetRoutes(), CiCompiledRoutes, ciCompileRoutes(), CompiledEntry, escapeRegex(), patternScore() (+12 more)
+### Community 106 - "server/backend/types.ts"
+Cohesion: 0.08
+Nodes (51): CiCoreAuth, CiCoreAuthParams, CiEnvMap, CI_AUTH_FUNCS_IDS, CI_DATA_FUNCS_IDS, CiCoreFunctionId, CiPlanOptions, CiInlinePolicySpec (+43 more)
 
 ### Community 107 - "exclude"
 Cohesion: 0.08
@@ -1189,13 +1241,9 @@ Nodes (23): scripts, build, build:assets, build:dev, build:js, build:prod, build
 Cohesion: 0.09
 Nodes (23): scripts, build, build:assets, build:dev, build:js, build:prod, build:types, build:types:clean (+15 more)
 
-### Community 115 - "general/index.ts"
-Cohesion: 0.10
-Nodes (14): ciIsCustomLocaleKey(), ciLoadCustomMessages(), CiMessageLoader, CiMessageModule, ciEscapeHTML(), ciGeneratePassword(), ciIsEmpty(), ciIsEmptyObject() (+6 more)
-
-### Community 116 - "resource-studio-server.test.mjs"
-Cohesion: 0.11
-Nodes (11): CI_ASSET_ROOT, ciAssertActionResult(), ciCreateSerialQueue(), ciErrorPayload(), ciIsLoopback(), ciJson(), ciParseCookies(), ciRandomToken() (+3 more)
+### Community 115 - "ci-resource-studio-service.mjs"
+Cohesion: 0.14
+Nodes (26): ciAssertDescriptorReservations(), ciAssertGeneratedPlanMatchesWorkspace(), ciAssertPlannerFile(), ciAssertResourceId(), ciBuildFileChanges(), ciCreatePlan(), ciCreateResourceStudioService(), ciImportOptionalApplicationModule() (+18 more)
 
 ### Community 117 - "exclude"
 Cohesion: 0.09
@@ -1211,15 +1259,15 @@ Nodes (23): scripts, build, build:assets, build:dev, build:js, build:prod, build
 
 ### Community 120 - "`CiDataTable`"
 Cohesion: 0.10
-Nodes (20): Browser preference persistence, Built-in labels, Built-in record information, `CiDataTable`, Column API, Complete tenant-management example, Component signature, Composition model (+12 more)
+Nodes (21): Browser preference persistence, Built-in labels, Built-in record information, `CiDataTable`, Column API, Complete tenant-management example, Component signature, Composition model (+13 more)
 
 ### Community 121 - "compilerOptions"
 Cohesion: 0.09
 Nodes (21): compilerOptions, esModuleInterop, exactOptionalPropertyTypes, ignoreDeprecations, isolatedModules, jsx, lib, module (+13 more)
 
-### Community 122 - "core/src/types/auth-types/index.ts"
+### Community 122 - "src/client/auth/index.ts"
 Cohesion: 0.16
-Nodes (14): CiAuthConfig, CiAuthProviderId, CiAuthUiConfig, CiLoginOptions, CiLogoutOptions, CiPublicAuthMode, CiEmberguardAccessControlConfig, CiEmberguardConfig (+6 more)
+Nodes (18): AuthenticatorPropsOverride, ciBuildAuthenticatorProps(), ciBuildDefaultThemeFromTokens(), IMPORTANT:, scale(), TokenLeaf, tokenValue(), ciAwsSignOut() (+10 more)
 
 ### Community 123 - "CiThemePresentationPage.tsx"
 Cohesion: 0.12
@@ -1233,9 +1281,9 @@ Nodes (23): scripts, build, build:assets, build:dev, build:js, build:prod, build
 Cohesion: 0.06
 Nodes (50): CloudIgniter Page Pattern, bootstrap, Server Page Controller Pattern, PageClientWrapper, CloudIgniter Route Page, CloudIgniterPageConfig, force-dynamic Rendering Contract, Access-Control Catalog (+42 more)
 
-### Community 126 - "CiResponse"
-Cohesion: 0.12
-Nodes (27): GET(), runtime, appPrepareServerApiRequest(), appServerClient, config, getLambdaParameters(), appGetOrgUnitLookupByPath, appClearItem() (+19 more)
+### Community 126 - "kernel/server/index.ts"
+Cohesion: 0.07
+Nodes (45): Schema, GET(), runtime, appPrepareServerApiRequest(), appServerClient, config, config, getLambdaParameters() (+37 more)
 
 ### Community 127 - "dependencies"
 Cohesion: 0.11
@@ -1245,9 +1293,9 @@ Nodes (19): enquirer, execa, fast-glob, jsonc-parser, meow, ora, dependencies, e
 Cohesion: 0.10
 Nodes (20): compilerOptions, declaration, declarationMap, esModuleInterop, exactOptionalPropertyTypes, ignoreDeprecations, isolatedModules, lib (+12 more)
 
-### Community 129 - "Application Request Lifecycle"
-Cohesion: 0.17
-Nodes (12): 10. Diagnostic sequence, 1. Lifecycle overview, 2. Role of `apps/template/next.config.ts`, 3. Role of `apps/template/src/proxy.ts`, 4. Tenant and route resolution strategy, 5. Request-context transport, 6. i18n and message resolution, 7. Bootstrap and provider flow (+4 more)
+### Community 129 - "org-unit-types/index.ts"
+Cohesion: 0.14
+Nodes (22): createOrgUnitAction(), updateOrgUnitAction(), appCreateOrgUnitRecord(), appListOrgUnitRecords(), appUpdateOrgUnitRecord(), inputString(), requireOk(), CiLookupOrgUnitInput (+14 more)
 
 ### Community 130 - "ci-build-package.mjs"
 Cohesion: 0.20
@@ -1257,13 +1305,13 @@ Nodes (18): ciBuildStepsDir, ciColor(), ciColors, ciDestroySpinner(), ciFlushOut
 Cohesion: 0.21
 Nodes (5): ciIconRegistry, ciResolveIcon(), CiIcon(), CiRoundButtonFallback(), CiIcon()
 
-### Community 132 - "tenant/constants.ts"
-Cohesion: 0.17
-Nodes (19): CI_DEFAULT_ORG_UNIT_OPTIONS, CI_DEFAULT_ORG_UNIT_PATH_COOKIE_NAME, CI_DEFAULT_ORG_UNIT_PATH_HEADER_NAME, CI_MOCK_ORG_UNITS, ciBuildTenantPublicPathname(), ciNormalizeTenantBasePath(), CI_DEFAULT_TENANT_ROUTING_OPTIONS, ciNormalizeTenantScope() (+11 more)
+### Community 132 - "tenants/overview.md"
+Cohesion: 0.11
+Nodes (18): 10. Diagnostic sequence, 7. Bootstrap and provider flow, 8. Internal endpoints, 9. Ownership and change rules, Bootstrap and Request Diagnostics, Related references, 5. Request-context transport, 6. i18n and message resolution (+10 more)
 
-### Community 133 - "language/route.ts"
+### Community 133 - "messages.ts"
 Cohesion: 0.10
-Nodes (26): ciCreateLanguageDiagnosticsError(), ciGetErrorPayload(), ciGetRequestedPathname(), ciIsDevBeaconLanguageDiagnosticsEnabled(), ciIsServerErrorPayload(), dynamic, GET(), responseHeaders (+18 more)
+Nodes (25): ciCreateCriticalI18nError(), ciCreateFileDiagnostic(), ciFlattenMessages(), ciIsMessageRecord(), CiLanguageMessageEntry, CiLanguageMessageFileDiagnostic, CiLanguageMessageFileStatus, CiLanguageMessagesDiagnostics (+17 more)
 
 ### Community 134 - "Routing by Task Type"
 Cohesion: 0.10
@@ -1281,13 +1329,13 @@ Nodes (19): Base Color Presets, Best Practices, Color Customization, Color Forma
 Cohesion: 0.10
 Nodes (11): Generate Tailwind CSS configuration files., Add full color palette (50-950 shades) for a base color. Args: name: Color name…, TailwindConfigGenerator, Test adding custom fonts., Test adding custom spacing., Test that adding same plugin twice doesn't duplicate., Test initialization for JavaScript config., Test initialization with different frameworks. (+3 more)
 
-### Community 138 - "emberguard-access-table/module.ts"
-Cohesion: 0.13
-Nodes (15): CiEmberguardAccessTableHandlers, EMBERGUARD_ACCESS_TABLE_HANDLERS, ciEmberguardAccessTableResourceModule, EMBERGUARD_ACCESS_TABLE_ENV_KEYS, assignmentMutationHandlers, ciMakeEmberguardAccessTablePolicies(), ordinaryDeleteHandlers, ordinaryWriteHandlers (+7 more)
+### Community 138 - "ciBuildTableKey"
+Cohesion: 0.29
+Nodes (8): assertValidSegment(), CI_TABLE_KEY_DELIMITER, CI_TABLE_KEY_PREFIX, ciBuildTableKey(), ciBuildTableKeys(), CiBuildTableKeysInput, CiTableKeys, CiTableKeySegments
 
-### Community 139 - "system/settings/app-get-settings.ts"
-Cohesion: 0.09
-Nodes (26): ciBuildMergedSettingsFromHandlerOutput(), ciCollectScopeSettingIds(), ciGetSettings, ciMergeSettingsGroup(), CiPersistedSettingsScope, ciResolveScopeIds(), CiSettingsId, ciUniqueIds() (+18 more)
+### Community 139 - "lib/cognito-user/index.ts"
+Cohesion: 0.12
+Nodes (17): createGroup(), listGroupsForUser(), awsSdkCreateCognitoUser(), awsSdkDeleteCognitoUser(), awsSdkGetCognitoUser(), awsSdkListCognitoUsers(), awsSdkSetCognitoUserPassword(), awsSdkUpdateCognitoUser() (+9 more)
 
 ### Community 140 - "devDependencies"
 Cohesion: 0.10
@@ -1299,7 +1347,7 @@ Nodes (17): compilerOptions, declaration, declarationMap, emitDeclarationOnly, n
 
 ### Community 142 - "ui/src/client/feedback/index.ts"
 Cohesion: 0.13
-Nodes (23): CI_DEFAULT_FEEDBACK_CONFIG, FeedbackState, PushOptions, useCiFeedbackStore, ciNotify(), joinClassNames(), normalizeSeverity(), TitleT (+15 more)
+Nodes (25): CI_DEFAULT_FEEDBACK_CONFIG, FeedbackState, PushOptions, useCiFeedbackStore, ciNotify(), joinClassNames(), normalizeSeverity(), TitleT (+17 more)
 
 ### Community 143 - "Asset Organization Guide"
 Cohesion: 0.11
@@ -1318,8 +1366,8 @@ Cohesion: 0.11
 Nodes (18): 1. Wordmark (Logotype), 2. Lettermark (Monogram), 3. Pictorial Mark (Brand Mark), 4. Abstract Mark, 5. Mascot, 6. Emblem, 7. Combination Mark, Aesthetic Styles (+10 more)
 
 ### Community 147 - "color"
-Cohesion: 0.05
-Nodes (37): $type, $value, background, destructive, destructive-foreground, foreground, muted, muted-foreground (+29 more)
+Cohesion: 0.11
+Nodes (19): $type, $value, background, foreground, muted-foreground, primary, primary-hover, secondary (+11 more)
 
 ### Community 148 - "main"
 Cohesion: 0.11
@@ -1329,13 +1377,13 @@ Nodes (10): main(), Add custom font families. Args: fonts: Dict of font_type: [f
 Cohesion: 0.16
 Nodes (10): _filter_anti_patterns_for_mode(), _query_wants_dark(), True when a styles.csv row describes itself as dark-first., True when the query explicitly asks for a dark theme., Resolve the mode the rest of the output has to agree with., Drop "avoid dark mode" advice once dark mode is the resolved answer., _resolve_color_mode(), _style_is_dark_primary() (+2 more)
 
-### Community 150 - "next/src/types/auth-types/index.ts"
-Cohesion: 0.20
-Nodes (7): CiAuthenticatorConfig, CiLoginProps, CiLogoutProps, CiUseLogoutOptions, CiUseLogoutResult, CiAwsLoginViewProps, CiAwsLogoutButtonProps
+### Community 150 - "studio.mjs"
+Cohesion: 0.14
+Nodes (17): CI_ASSET_ROOT, ciAssertActionResult(), ciCreateSerialQueue(), ciErrorPayload(), ciIsLoopback(), ciJson(), ciParseCookies(), ciRandomToken() (+9 more)
 
 ### Community 151 - "devDependencies"
-Cohesion: 0.11
-Nodes (19): autoprefixer, devDependencies, autoprefixer, @docusaurus/module-type-aliases, @docusaurus/tsconfig, @docusaurus/types, postcss, postcss-import (+11 more)
+Cohesion: 0.09
+Nodes (23): autoprefixer, devDependencies, autoprefixer, @docusaurus/module-type-aliases, @docusaurus/tsconfig, @docusaurus/types, postcss, postcss-import (+15 more)
 
 ### Community 152 - "compilerOptions"
 Cohesion: 0.11
@@ -1349,9 +1397,9 @@ Nodes (19): dependencies, clsx, @docusaurus/core, @docusaurus/preset-classic, @d
 Cohesion: 0.12
 Nodes (16): Browser preference cookie, Built-in record information, Complete management-table configuration, Data table, DynamoDB cursor scenario, Excel export, Formats, size, and resizing, Loading, errors, and empty content (+8 more)
 
-### Community 155 - "lambda-types/index.ts"
-Cohesion: 0.15
-Nodes (13): CiAppSyncResolverEvent, CiAttachAwsResponseDebugInput, CiAwsAuthMode, CiAwsRequest, CiAwsRequestOptions, CiAwsResponseDebug, CiAwsResponseMeta, CiCreateDirectHandlerParams (+5 more)
+### Community 155 - "CiDataEntityManager.tsx"
+Cohesion: 0.16
+Nodes (18): buildFieldColumns(), CiDataEntityDeleteSession, CiDataEntityEditorSession, CiDataEntityFeedback, CiDataEntityManager(), getDefaultRecordLabel(), getMutationFailure(), isOperationAllowed() (+10 more)
 
 ### Community 156 - "next/package.json"
 Cohesion: 0.11
@@ -1378,20 +1426,20 @@ Cohesion: 0.17
 Nodes (17): generate_css_for_background(), get_background_image(), get_curated_images(), get_overlay_css(), get_pexels_search_url(), load_backgrounds_config(), load_brand_colors(), main() (+9 more)
 
 ### Community 162 - "search"
-Cohesion: 0.20
-Nodes (7): detect_domain(), Auto-detect the most relevant domain from query. Matches are weighted by…, Main search function with auto-domain detection, search(), Known query -> expected top-domain sanity checks (not exact-row pinning, since…, TestDomainDetection, TestSearchDomains
-
-### Community 163 - "Dynamodb.ts"
-Cohesion: 0.06
-Nodes (41): ciWithDdbClient(), batchWriteItems(), CiDeleteItemBody, CiDeleteItemResult, deleteItem(), queryItems(), QueryItemsBody, QueryItemsResult (+33 more)
-
-### Community 164 - "route-types/index.ts"
-Cohesion: 0.34
-Nodes (8): CiMatchedRoute, CiRoute, CiRouteDefinition, CiRouteInfoPageReason, CiRouteMatch, CiRouteMatchKind, CiRoutePattern, CiRouteSearchParams
-
-### Community 165 - "ci-create-next-security-administration.ts"
 Cohesion: 0.14
-Nodes (17): appAccessControl, appAccessControlExtension, appAuthorizer, ciCreateAwsEmberguardAdministrationRepository(), ciResolveAwsCognitoIdentityGroups(), isRecord(), readPrecedence(), deleteRoleAssignment() (+9 more)
+Nodes (10): Main search function with auto-domain detection, search(), Execute searches across multiple domains., Select best matching result based on priority keywords., Extract results list from search result dict., Generate complete design system recommendation. variance/motion/density are…, Bucket a 1-10 dial value into its tier config. Returns None if value is None., _resolve_dial() (+2 more)
+
+### Community 163 - "ciReadJsonSeederData"
+Cohesion: 0.42
+Nodes (5): assertContainedPath(), assertDefinition(), ciReadJsonSeederData(), CiReadJsonSeederDataInput, definition
+
+### Community 164 - "api-types/index.ts"
+Cohesion: 0.15
+Nodes (11): CiApiInputArgs, CiCoreResponseMeta, CiGraphQLError, CiNullable, CiRequestOptions, CiResponseDebugMeta, CiResponseErrorOptions, CiResponseMeta (+3 more)
+
+### Community 165 - "next/src/server/index.ts"
+Cohesion: 0.05
+Nodes (38): CiTenantRoutingOptions, CiCookieEntry, ciGetCookies(), readCiCookies(), readCiCookiesMap(), resolveMaybePromise(), ciGetNextServerCookie(), ciSetNextServerCookie() (+30 more)
 
 ### Community 166 - "Tenant Context"
 Cohesion: 0.08
@@ -1401,9 +1449,9 @@ Nodes (31): Direct Subject Privileges, Identity-Provider Group Adapter, Provider
 Cohesion: 0.12
 Nodes (15): compilerOptions, allowJs, checkJs, esModuleInterop, module, moduleResolution, noEmit, skipLibCheck (+7 more)
 
-### Community 168 - "core/src/types/index.ts"
-Cohesion: 0.05
-Nodes (34): ciIsErrorResponse(), ciResponseHasErrorBody(), CiCookieOptions, CiCookiePriority, CiEmailSettings, CiClientErrorPayload, CiServerErrorPayload, CiAppIcon (+26 more)
+### Community 168 - "use-tenants-loader.ts"
+Cohesion: 0.24
+Nodes (9): ciSafeToString(), CiTenant, ciGetEnvMode(), LoadTenantsErrorBody, LoadTenantsInput, LoadTenantsOkBody, getErrMsg(), isLoadTenantsOkBody() (+1 more)
 
 ### Community 169 - "compilerOptions"
 Cohesion: 0.11
@@ -1446,8 +1494,8 @@ Cohesion: 0.20
 Nodes (15): apply_color(), apply_viewbox_size(), extract_svgs(), generate_batch(), generate_icon(), generate_sizes(), load_env(), main() (+7 more)
 
 ### Community 179 - "fontSize"
-Cohesion: 0.10
-Nodes (21): $type, $value, $type, $value, $type, $value, $type, $value (+13 more)
+Cohesion: 0.11
+Nodes (20): $type, $value, $type, $value, $type, $value, $type, $value (+12 more)
 
 ### Community 180 - ".add_components"
 Cohesion: 0.17
@@ -1457,9 +1505,9 @@ Nodes (8): main(), Add all available shadcn/ui components. Args: overwrite: If T
 Cohesion: 0.30
 Nodes (7): extendedSettingsDefaultValues, AppPrivateExtendedSettings, AppPublicExtendedSettings, AppSettings, AppUserExtendedSettings, ExtendedSettingsFormValues, extendedSettingsZodSchema
 
-### Community 182 - "ui/client/components/index.ts"
-Cohesion: 0.34
-Nodes (6): CiDashboardCardConfig, CiDashboardCardProps, CiDashboardCardViewModel, CiDashboardHeaderButtonProps, CiDashboardIcon, CiDashboardPageProps
+### Community 182 - "card"
+Cohesion: 0.20
+Nodes (12): $type, $value, bg, bg, padding, shadow, card, bg (+4 more)
 
 ### Community 183 - "compilerOptions"
 Cohesion: 0.12
@@ -1473,13 +1521,13 @@ Nodes (24): Environment Mode Best Practices, Safe Environment Operations, Amplif
 Cohesion: 0.09
 Nodes (22): Client Retry Separation, Client-Side Errors, ClientErrorPayload, ErrorHandler Component, Client Error Severity, Severity-Driven Error UI, Stable Error IDs, useErrorStore (+14 more)
 
-### Community 186 - "src/client/auth/index.ts"
-Cohesion: 0.16
-Nodes (18): AuthenticatorPropsOverride, ciBuildAuthenticatorProps(), ciBuildDefaultThemeFromTokens(), IMPORTANT:, scale(), TokenLeaf, tokenValue(), ciAwsSignOut() (+10 more)
+### Community 186 - "CiSecurityDataPage.tsx"
+Cohesion: 0.04
+Nodes (85): CiDevBeaconAmplifyOutputsStatusRowProps, CiDevBeaconProvidersStatusRowProps, CiDevBeaconResolutionCheckupModalProps, ciDecodeBase64Url(), CiDevBeaconJsonViewerDialog(), CiDevBeaconRequestContextCardProps, CiDevBeaconRequestContextEntry, ciFormatJsonValue() (+77 more)
 
-### Community 187 - "graphql-types/index.ts"
-Cohesion: 0.13
-Nodes (15): ciCall(), ciIsGraphqlError(), ciIsGraphqlResponse(), ciParseGraphqlResponseData(), errorResponse(), isObjectLike(), isResponse(), CiApiRawPayload (+7 more)
+### Community 187 - "language/route.ts"
+Cohesion: 0.09
+Nodes (27): ciCreateLanguageDiagnosticsError(), ciGetErrorPayload(), ciGetRequestedPathname(), ciIsDevBeaconLanguageDiagnosticsEnabled(), ciIsServerErrorPayload(), dynamic, GET(), responseHeaders (+19 more)
 
 ### Community 188 - "compilerOptions"
 Cohesion: 0.12
@@ -1489,9 +1537,9 @@ Nodes (15): compilerOptions, declaration, declarationMap, emitDeclarationOnly, n
 Cohesion: 0.12
 Nodes (15): files, react, react-dom, src, main, module, name, peerDependencies (+7 more)
 
-### Community 190 - "ci-install-module-dependencies.mjs"
-Cohesion: 0.11
-Nodes (19): ciCloudIgniterWorkspacePackagePath(), ciImportPackageEntry(), ciPathExists(), ciResolveExportTarget(), appRoot, CiAwsBackendModule, appRoot, CiAwsBackendModule (+11 more)
+### Community 190 - "private-settings-table/module.ts"
+Cohesion: 0.35
+Nodes (6): CiPrivateSettingsTableHandlers, PRIVATE_SETTINGS_TABLE_HANDLERS, ciPrivateSettingsTableResourceModule, PRIVATE_SETTINGS_TABLE_ENV_KEYS, ciMakePrivateSettingsTablePolicies(), CiPrivateSettingsTable
 
 ### Community 191 - "compilerOptions"
 Cohesion: 0.12
@@ -1525,9 +1573,9 @@ Nodes (15): import, types, exports, ./client, ./lib, ./server, ./server/backend,
 Cohesion: 0.14
 Nodes (13): compilerOptions, allowJs, checkJs, noEmit, rootDir, tsBuildInfoFile, exclude, extends (+5 more)
 
-### Community 199 - "login-standard/CiLayout.tsx"
-Cohesion: 0.17
-Nodes (10): CiCoreConfig, CiLayout(), LayoutProps, CiContainer(), ContentProps, CiCopyright(), CiFooter(), FooterInterface (+2 more)
+### Community 199 - "core/src/lib/index.ts"
+Cohesion: 0.10
+Nodes (37): ciBuildServiceSettingsRegistry(), ciBuildSettingsRegistry(), CiTemplateSettingsRegistry, CiTemplateSettingsRegistryEntry, NotificationsSettingsSchema, CI_DEFAULT_GLOBAL_SEGMENT, CI_DEFAULT_PRIVATE_CORE_SETTINGS_ID, CI_DEFAULT_PUBLIC_CORE_SETTINGS_ID (+29 more)
 
 ### Community 200 - "compilerOptions"
 Cohesion: 0.14
@@ -1581,9 +1629,9 @@ Nodes (8): Handle shadcn/ui component installation., ShadcnInstaller, Test addin
 Cohesion: 0.12
 Nodes (16): scripts, bootstrap:access-control, bootstrap:root, build, check, clean, dev, lint (+8 more)
 
-### Community 213 - "CiDataTable Management-Page Interaction Standard"
-Cohesion: 0.22
-Nodes (9): CiDataTable Management-Page Interaction Standard, Columns and empty results, Completion checklist, Confirmation dialogs, Filters, persistence, and responsive formats, Loading and refresh behavior, Mutation feedback, Ownership and composition (+1 more)
+### Community 213 - "useCiPageLoaderStore"
+Cohesion: 0.10
+Nodes (17): config, inter, ciSleep(), CiPageShellProps, CiBreadcrumbs(), CiSpinner(), CiErrorPage(), CiPageHeader() (+9 more)
 
 ### Community 214 - "compilerOptions"
 Cohesion: 0.14
@@ -1602,8 +1650,8 @@ Cohesion: 0.15
 Nodes (12): Categories, Dark Mode, File Organization, Layer 1: Primitive Tokens, Layer 2: Semantic Tokens, Layer 3: Component Tokens, Layer Overview, Migration from Flat Tokens (+4 more)
 
 ### Community 218 - "design-tokens-starter.json"
-Cohesion: 0.17
-Nodes (11): $type, $value, dark, semantic, $schema, $type, $value, semantic (+3 more)
+Cohesion: 0.15
+Nodes (12): component, $type, $value, dark, semantic, $schema, $type, $value (+4 more)
 
 ### Community 219 - "compilerOptions"
 Cohesion: 0.14
@@ -1621,9 +1669,9 @@ Nodes (11): Border Radius, Color Scales, Gray Scale, Motion / Duration, Primary 
 Cohesion: 0.24
 Nodes (11): extensions, formatReport(), fs, getFiles(), main(), parseArgs(), path, patterns (+3 more)
 
-### Community 223 - "input"
-Cohesion: 0.12
-Nodes (22): $type, $value, radius, border, padding, radius, shadow, border (+14 more)
+### Community 223 - "button"
+Cohesion: 0.20
+Nodes (10): fg, font-size, hover-bg, button, $type, $value, $type, $value (+2 more)
 
 ### Community 224 - "test_tailwind_config_gen.py"
 Cohesion: 0.20
@@ -1633,17 +1681,17 @@ Nodes (8): Tests for tailwind_config_gen.py, Reduce a generated TS/JS config to 
 Cohesion: 0.17
 Nodes (12): import, types, exports, ./client, ./lib, ./server, ./types, import (+4 more)
 
-### Community 226 - "kernel/client/index.ts"
-Cohesion: 0.20
-Nodes (7): CreateAccountPage(), LoginPage(), AppAmplifyClientConfig(), config, appDefaultAuthenticatorStyleTheme(), AppLoginPageClientWrapper(), AppDataClient
+### Community 226 - "next/src/lib/index.ts"
+Cohesion: 0.23
+Nodes (6): CiThemeProvider(), ciIsExternalHref(), ciMapThemeConfigToNextThemeProviderProps(), ciResolveNextThemeProviderProps(), CI_DEFAULT_NEXT_THEME_PROVIDER_PROPS, book
 
 ### Community 227 - "exports"
 Cohesion: 0.17
 Nodes (12): import, types, exports, ./client, ./lib, ./server, ./types, import (+4 more)
 
-### Community 228 - "messages.ts"
-Cohesion: 0.14
-Nodes (20): ciCreateCriticalI18nError(), ciCreateFileDiagnostic(), ciFlattenMessages(), ciIsMessageRecord(), CiLanguageMessageEntry, CiLanguageMessageFileDiagnostic, CiLanguageMessageFileStatus, CiLanguageMessagesDiagnostics (+12 more)
+### Community 228 - "A"
+Cohesion: 0.11
+Nodes (17): A, Access Control, Access-Control Catalog, Access Scope, Action, Actor, Admin Role, Amplify Backend (+9 more)
 
 ### Community 229 - "Core Visual Elements"
 Cohesion: 0.18
@@ -1669,37 +1717,37 @@ Nodes (6): Test adding components with overwrite flag., Test successful componen
 Cohesion: 0.18
 Nodes (11): 10. Charts & Data (LOW), 1. Accessibility (CRITICAL), 2. Touch & Interaction (CRITICAL), 3. Performance (HIGH), 4. Style Selection (HIGH), 5. Layout & Responsive (HIGH), 6. Typography & Color (MEDIUM), 7. Animation (MEDIUM) (+3 more)
 
-### Community 235 - "create-account/layout.tsx"
-Cohesion: 0.11
-Nodes (14): nextConfig, withNextIntl, LayoutInterface, LoginLayout(), metadata, LayoutInterface, metadata, LayoutInterface (+6 more)
+### Community 235 - "AppLoginPageClientWrapper.tsx"
+Cohesion: 0.16
+Nodes (14): AppAuthenticatorPageMode, AuthenticatorHeader(), buildAmplifyAuthenticatorCustomProps(), BuildAmplifyAuthenticatorCustomPropsOptions, AuthenticatorHeader(), buildAmplifyAuthenticatorCustomProps(), SignUpFormFields(), SignUpHeader() (+6 more)
 
-### Community 236 - "AppLoginPageClientWrapper.tsx"
-Cohesion: 0.14
-Nodes (16): AppAuthenticatorPageMode, AuthenticatorHeader(), buildAmplifyAuthenticatorCustomProps(), BuildAmplifyAuthenticatorCustomPropsOptions, AuthenticatorHeader(), buildAmplifyAuthenticatorCustomProps(), SignUpFormFields(), SignUpHeader() (+8 more)
+### Community 236 - "ci-settings-provider.tsx"
+Cohesion: 0.27
+Nodes (7): ciGetSettingsValueAtPath(), CiSettingsContext, CiSettingsProvider(), ciUseSettingsContext(), useCiSettingValue(), useCiSettings(), CiSettingsPageProps
 
 ### Community 237 - "config.json"
 Cohesion: 0.18
 Nodes (10): access, baseBranch, changelog, commit, fixed, ignore, linked, $schema (+2 more)
 
 ### Community 238 - "scripts"
-Cohesion: 0.18
-Nodes (11): scripts, build, clear, deploy, docusaurus, serve, start, swizzle (+3 more)
+Cohesion: 0.15
+Nodes (13): scripts, build, clear, deploy, docusaurus, prebuild, prestart, serve (+5 more)
 
 ### Community 239 - "aws/package.json"
 Cohesion: 0.18
 Nodes (10): files, src, main, module, name, private, sideEffects, type (+2 more)
 
-### Community 240 - "CloudIgniter DynamoDB Design and Interaction"
-Cohesion: 0.29
-Nodes (7): Architecture default, CloudIgniter DynamoDB Design and Interaction, Combine or split, Cost-effective defaults, Mandatory decision sequence, Required validation, Safe interaction rules
+### Community 240 - "Roles"
+Cohesion: 0.09
+Nodes (16): Access-Control Administration, Related references, Security administration UI strategy, Assignments and Enforcement, Provider and enforcement strategy, Related references, Catalog Composition and Overrides, Catalog composition and overrides (+8 more)
 
 ### Community 241 - "core/package.json"
 Cohesion: 0.18
 Nodes (10): files, src, main, module, name, private, sideEffects, type (+2 more)
 
-### Community 242 - "next/src/lib/index.ts"
-Cohesion: 0.18
-Nodes (8): ciResolveAuthProvider(), ciIsExternalHref(), CiLogin(), CiLogoutButton(), useCiNextAwsAuthenticatorTheme(), useCiNextAwsLogout(), CiNextAwsLogin, CiNextAwsLogoutButton()
+### Community 242 - "ci-create-aws-emberguard-administration-repository.ts"
+Cohesion: 0.28
+Nodes (14): isAccessControlDefinition(), isAssignmentScope(), isRecord(), isStoredRoleAssignment(), parseGraphqlData(), readAssignmentsBody(), readDefinitionBody(), readRoleCountersBody() (+6 more)
 
 ### Community 243 - "ci-build-types.mjs"
 Cohesion: 0.33
@@ -1725,9 +1773,9 @@ Nodes (9): Alert Tokens, Badge Tokens, Button Tokens, Card Tokens, Component Tok
 Cohesion: 0.36
 Nodes (9): flattenTokens(), fs, generateCSS(), generateTailwind(), main(), parseArgs(), path, resolveReference() (+1 more)
 
-### Community 249 - "request/helpers/index.ts"
-Cohesion: 0.40
-Nodes (8): ciIsOptionalString(), ciIsOrgUnitContext(), ciIsRecord(), ciIsRequestContext(), ciIsRoute(), ciIsRouteSearchParams(), ciIsTenantContext(), CiRequestContext
+### Community 249 - "Dynamodb.ts"
+Cohesion: 0.04
+Nodes (68): ciWithDdbClient(), batchWriteItems(), CiDeleteItemBody, CiDeleteItemOptions, CiDeleteItemResult, deleteItem(), queryItems(), QueryItemsBody (+60 more)
 
 ### Community 250 - "primitive"
 Cohesion: 0.18
@@ -1753,9 +1801,9 @@ Nodes (6): Boundary decision, Cost model, DynamoDB bounded-context strategy, Int
 Cohesion: 0.22
 Nodes (9): CloudIgniter CLI Development, Command and flag grammar, Compatibility and validation, Generated-resource deployment safety, Implementation structure, Product and audience boundary, Subprocesses and errors, Table of contents (+1 more)
 
-### Community 256 - "backend-auth.ts"
-Cohesion: 0.15
-Nodes (12): backendAuth, backendAuthAccess(), client, handler(), AmplifyAuthResource, auth, customBackendAuth, ciCreateProfileRecord() (+4 more)
+### Community 256 - "core/src/types/auth-types/index.ts"
+Cohesion: 0.09
+Nodes (18): AppLoginPageClientWrapperInterface, CiAuthConfig, CiAuthenticatorPageMode, CiAuthProviderId, CiAuthUiConfig, CiLoginOptions, CiLogoutOptions, CiPublicAuthMode (+10 more)
 
 ### Community 257 - "emberguard/package.json"
 Cohesion: 0.18
@@ -1813,9 +1861,9 @@ Nodes (10): compilerOptions, module, moduleResolution, noEmit, extends, include,
 Cohesion: 0.16
 Nodes (4): ciAssertDeployNodeRuntime(), ciAssertExplicitOption(), ciRunAmplifySandboxDeploy(), planHash
 
-### Community 271 - "button"
-Cohesion: 0.12
-Nodes (19): $type, $value, bg, fg, font-size, hover-bg, padding-y, bg (+11 more)
+### Community 271 - "Package responsibilities"
+Cohesion: 0.13
+Nodes (15): `apps/template`, Authentication roles from Cognito, Examples, Ownership decision table, Package Ownership, Package responsibilities, `packages/cli`, `packages/core` (+7 more)
 
 ### Community 272 - "._generate_javascript"
 Cohesion: 0.29
@@ -1834,12 +1882,12 @@ Cohesion: 0.29
 Nodes (3): FeatureItem, FeatureList, HomepageFeatures()
 
 ### Community 276 - "developer-guide/tsconfig.json"
-Cohesion: 0.25
-Nodes (7): compilerOptions, paths, exclude, extends, build, .docusaurus, @docusaurus/tsconfig
+Cohesion: 0.22
+Nodes (8): compilerOptions, baseUrl, paths, exclude, extends, build, .docusaurus, @docusaurus/tsconfig
 
-### Community 277 - "ci-resolve-next-theme-provider-props.ts"
-Cohesion: 0.42
-Nodes (4): CiThemeProvider(), ciMapThemeConfigToNextThemeProviderProps(), ciResolveNextThemeProviderProps(), CI_DEFAULT_NEXT_THEME_PROVIDER_PROPS
+### Community 277 - "general/index.ts"
+Cohesion: 0.16
+Nodes (8): ciEscapeHTML(), ciGeneratePassword(), ciIsEmpty(), ciIsEmptyObject(), ciMergeObjects(), IndexedRecord, ciPascalToKebab(), ciSafeJsonParse()
 
 ### Community 278 - "library.json"
 Cohesion: 0.25
@@ -1849,9 +1897,9 @@ Nodes (7): compilerOptions, declaration, declarationMap, noEmit, extends, ./base
 Cohesion: 0.25
 Nodes (7): compilerOptions, allowJs, incremental, jsx, extends, ./base.json, $schema
 
-### Community 280 - "form.tsx"
-Cohesion: 0.17
-Nodes (9): FormControl, FormDescription, FormFieldContext, FormFieldContextValue, FormItem, FormItemContext, FormItemContextValue, FormLabel (+1 more)
+### Community 280 - "R"
+Cohesion: 0.13
+Nodes (14): R, Request Context, Resource, Resource Domain, Resource Studio, Restore, Role, Role Assignment (+6 more)
 
 ### Community 281 - "Configuration API"
 Cohesion: 0.22
@@ -1861,9 +1909,9 @@ Nodes (9): Configuration API, Execution modes, Formats, Layout and interaction c
 Cohesion: 0.33
 Nodes (5): Contributor checklist, Cutovers and deployed-data migrations, Dependency direction, Invariants, Table-key governance
 
-### Community 283 - "Resource Studio V1 Development Contract"
+### Community 283 - "S"
 Cohesion: 0.13
-Nodes (15): 10. Defend the local Studio boundary, 11. Clean macOS AppleDouble artifacts by proven provenance only, 12. Validate the complete V1 path, 13. Keep V1 exclusions explicit, 1. Purpose and terminology, 2. Load the adjacent contracts, 3. Keep capability ownership explicit, 4. Preserve the Data Entity and Amplify contract (+7 more)
+Nodes (14): S, Scope, Scope Propagation, Seeder, Server Action, Server Component, Shared Subtree, Soft Delete (+6 more)
 
 ### Community 284 - "build-theme.mjs"
 Cohesion: 0.32
@@ -1881,9 +1929,9 @@ Nodes (6): Animation Classes, Background Images, Base Structure, Chart.js Integr
 Cohesion: 0.29
 Nodes (6): Animation Classes, Background Images, Base Structure, Chart.js Integration, CSS Variables Reference, HTML Slide Template
 
-### Community 288 - "CiTraceLoggerBase"
-Cohesion: 0.05
-Nodes (28): ciStartTraceCore(), createNoopStartTraceResult(), mergeTraceLoggerOptions(), NOOP_DONE(), noopTraceLogger, CI_LOG_ENTRY_TYPES, CI_PROTECTED_CANONICAL_KEYS, CiTraceLoggerBase (+20 more)
+### Community 288 - "trace/route.ts"
+Cohesion: 0.38
+Nodes (5): dynamic, GET(), runtime, tailFileByBytes(), takeLastLines()
 
 ### Community 289 - "_select_palette_for_mode"
 Cohesion: 0.43
@@ -1901,29 +1949,29 @@ Nodes (7): devDependencies, esbuild, tsup, @types/node, esbuild, tsup, @types/no
 Cohesion: 0.52
 Nodes (6): dropTopLevel(), isPlainObject(), pickTopLevel(), safeGetBool(), SanitizeOptions, sanitizeSettingsForClient()
 
-### Community 293 - "Access-Control Logic and Strategy"
-Cohesion: 0.17
-Nodes (12): Access-Control Logic and Strategy, Catalog composition and overrides, Configuration strategy, Core role lanes, Evaluation strategy, Model and ownership, Provider and enforcement strategy, Role design (+4 more)
+### Community 293 - "next/src/client/index.ts"
+Cohesion: 0.28
+Nodes (8): ciResolveAuthProvider(), ciAuthClientModule, CiLogin(), CiLogoutButton(), useCiNextAwsAuthenticatorTheme(), useCiNextAwsLogout(), CiNextAwsLogin, CiNextAwsLogoutButton()
 
 ### Community 294 - "ci-clean-dts-map.cjs"
 Cohesion: 0.33
 Nodes (6): deleteDtsFiles(), distDir, fs, isInsideDist(), path, projectRoot
 
-### Community 295 - "useCiPageLoaderStore"
-Cohesion: 0.07
-Nodes (30): config, GlobalError(), inter, ciParseServerErrorPayload(), CiBreadcrumbChildrenMenu(), CiBreadcrumbs(), ciNormalizeBreadcrumbPath(), CiPage() (+22 more)
+### Community 295 - "ui/client/index.ts"
+Cohesion: 0.18
+Nodes (11): CiSandboxPage(), CiSeederPage(), toneClass(), CiNextSecurityDataPage(), CiTenantsPage(), CiThemePresentationPage(), CiNextAwsLoginPage(), CiNextAwsLoginPageShell (+3 more)
 
-### Community 296 - "CloudIgniter Table-Key Convention"
-Cohesion: 0.40
-Nodes (5): Canonical shape, CloudIgniter Table-Key Convention, Cutover and migration rule, Ownership and dependencies, Validation
+### Community 296 - "ciAwsGetCurrentUser"
+Cohesion: 0.27
+Nodes (9): appGetCurrentUser(), config, ciAwsGetCurrentUser(), ciFormatUnixTimestamp(), ciGetBooleanClaim(), ciGetDisplayName(), ciGetStringArrayClaim(), ciGetStringClaim() (+1 more)
 
 ### Community 297 - "emberguard/rollup.config.js"
 Cohesion: 0.40
 Nodes (4): aliasPlugin, config, external, projectRoot
 
-### Community 299 - "ci-resolve-module-graph.ts"
-Cohesion: 0.24
-Nodes (17): ciCreateEnabledModuleManifestMap(), ciCreateInitialEnabledModuleIds(), ciCreateModuleManifestMap(), ciDependencyAppliesToEnvironment(), ciExpandRequiredModuleDependencies(), ciFormatValues(), ciGetDependencyEnvironments(), ciModuleSupportsEnvironment() (+9 more)
+### Community 299 - "next/src/types/index.ts"
+Cohesion: 0.04
+Nodes (40): CiSettingsRegistryMap, @cloudigniter/next/types, NotificationsSettingsSchema, @cloudigniter/next/server, SettingsRegistryMap, appGetServerCoreConfig, ciConfig, AppNextAwsPageConfig (+32 more)
 
 ### Community 300 - "CloudIgniter Repository Instructions"
 Cohesion: 0.05
@@ -1985,13 +2033,13 @@ Nodes (17): First Blog Post, Long Blog Post, Blog Truncation Marker, Docusaurus 
 Cohesion: 0.06
 Nodes (31): Adding a new resource category, Amplify backend build strategy, Amplify compiler and projection helpers, Amplify manifest fields, Architecture map, `auth.ts`, `backend-core.ts`, `ci-post-build.ts` (+23 more)
 
-### Community 315 - "api-types/index.ts"
-Cohesion: 0.23
-Nodes (8): CiApiInputArgs, CiCoreResponseMeta, CiGraphQLError, CiNullable, CiRequestOptions, CiResponseDebugMeta, CiResponseErrorOptions, CiResponseMeta
+### Community 315 - "ui/client/components/index.ts"
+Cohesion: 0.11
+Nodes (24): CiTraceConfig, CiNavigateWithLoaderProps, CiNextNavigateWithLoader(), CiNextNavigateWithLoaderProps, CiNextNavigationWithLoaderAdapter, useCiNextNavigationWithLoader(), CiNextDashboardCard(), CiNextDashboardCardProps (+16 more)
 
 ### Community 316 - "CiNextContext"
-Cohesion: 0.08
-Nodes (33): HomePage(), ciCapitalizeFirstLetter(), ciReadForwardedCookies(), ciStartTraceServer(), ciReadForwardedHeaders(), CiLayout(), CiLayoutProps, CiContainer() (+25 more)
+Cohesion: 0.07
+Nodes (38): HomePage(), inter, ciCapitalizeFirstLetter(), ciReadForwardedCookies(), ciStartTraceServer(), ciReadForwardedHeaders(), CiLayout(), CiLayoutProps (+30 more)
 
 ### Community 317 - "Extend the Amplify backend"
 Cohesion: 0.33
@@ -2033,9 +2081,9 @@ Nodes (3): dynamic, inter, revalidate
 Cohesion: 0.18
 Nodes (12): ErrorPage Component, Next.js Error Handling Documentation, parseServerErrorPayload(), Server-side Errors, Advanced Lambda Handlers, CloudIgniter Handler Architecture, Direct Service Handlers, Table Service Handlers (+4 more)
 
-### Community 327 - "cloudigniter.config.ts"
-Cohesion: 0.20
-Nodes (6): routes, appThemeProviderProps, amplifyOutputs, appGetAllServerConfig(), appGetServerCoreConfig, ciConfig
+### Community 327 - "kernel-types/index.ts"
+Cohesion: 0.16
+Nodes (9): CiCoreConfig, CiDataConfig, CiPlatformId, CiProviderId, CiRequestConfig, CiSystemItemType, CiSystemStatus, CiSystemStatusItem (+1 more)
 
 ### Community 328 - "ImageWrapper/index.tsx"
 Cohesion: 0.40
@@ -2093,17 +2141,17 @@ Nodes (8): Client Bundle Server-Module Fallbacks, External Directory Support, Fr
 Cohesion: 0.40
 Nodes (4): aliasPlugin, config, external, projectRoot
 
-### Community 343 - "Page Rendering and Layout Architecture"
-Cohesion: 0.17
-Nodes (12): 10. Source map, 1. Rendering model, 2. Bootstrapping contract, 3. Root layout layer, 4. Route layout layer, 5. Page layer, 6. Provider hierarchy, 7. Server and client boundaries (+4 more)
+### Community 343 - "ui/client/dev/debug-probe/CiDebugProbeClient.tsx"
+Cohesion: 0.38
+Nodes (6): CiDebugProbeClient(), ciToCssPositionValue(), CiDebugProbeContext, CiDebugProbeContextValue, CiDebugProbeProvider(), ciUseDebugProbe()
 
 ### Community 345 - "ui/rollup.config.js"
 Cohesion: 0.40
 Nodes (4): aliasPlugin, config, external, projectRoot
 
-### Community 346 - "next/src/client/index.ts"
-Cohesion: 0.16
-Nodes (16): CiDevBeaconTraceLogViewerTextProps, ciAuthClientModule, buildExtraTab(), buildExtraTabs(), buildLogoNode(), CiDevBeaconClient(), CiDevBeaconSideTabsList(), CiDevBeaconSectionDiagnostics() (+8 more)
+### Community 346 - "ciGetLangDir"
+Cohesion: 0.19
+Nodes (12): ciGetLangDir(), RTL_LANGS, ciResolveNamespaceLocaleFileNames(), CI_DEFAULT_LOCALE, CI_DEFAULT_LOCALE_COOKIE_NAME, CI_DEFAULT_LOCALE_DIRECTION, CI_DEFAULT_LOCALE_NAME, CI_DEFAULT_LOCALES (+4 more)
 
 ### Community 347 - "Kernel"
 Cohesion: 0.25
@@ -2133,9 +2181,9 @@ Nodes (9): Environment Modes and Testing, assertNotLive(), cleanupEnvironment(),
 Cohesion: 0.33
 Nodes (5): Add a command, Command grammar, Ownership boundaries, Resource Studio flow, Terminal and process standards
 
-### Community 354 - "ciPrintToConsole"
-Cohesion: 0.67
-Nodes (3): ciPrintToConsole(), printTable(), CiConsolePrint()
+### Community 354 - "route-types/index.ts"
+Cohesion: 0.34
+Nodes (8): CiMatchedRoute, CiRoute, CiRouteDefinition, CiRouteInfoPageReason, CiRouteMatch, CiRouteMatchKind, CiRoutePattern, CiRouteSearchParams
 
 ### Community 355 - "Route Handler Strategy"
 Cohesion: 0.29
@@ -2174,12 +2222,12 @@ Cohesion: 0.29
 Nodes (8): cloudigniter.config.ts, ciCreateSettingsRegistry(), ciRegisterSettings(), Settings Defaults, Settings Namespace, Settings Scope, Typed Settings Registry, Zod Settings Schema
 
 ### Community 364 - "ci-create-lambda-handler.ts"
-Cohesion: 0.07
-Nodes (47): ciBuildHandlerName(), CiDirectHandler, CI_CORE_HANDLER_ENV_VARS, ciCreateLambdaHandler(), CiCreateLambdaHandlerParams, CiHandlerEnvVars, CiHandlerResolvedEnv, CiLambdaHandlerBuildClientConfigFn (+39 more)
+Cohesion: 0.09
+Nodes (36): ciAttachAwsResponseDebug(), ciAttachHandlerDebug(), ciBuildHandlerName(), CiDirectHandler, CI_CORE_HANDLER_ENV_VARS, ciCreateLambdaHandler(), CiCreateLambdaHandlerParams, CiHandlerEnvVars (+28 more)
 
 ### Community 365 - "Access-Control Strategy"
-Cohesion: 0.20
-Nodes (9): Access-Control Strategy, Configuration boundary, Core role design, Evaluation invariants, Extension workflow, Ownership and decision flow, Persisted privilege-title compatibility, Security administration role editor (+1 more)
+Cohesion: 0.18
+Nodes (10): Access-Control Strategy, Configuration boundary, Core role design, Evaluation invariants, Extension workflow, Org Unit predecessor propagation, Ownership and decision flow, Persisted privilege-title compatibility (+2 more)
 
 ### Community 366 - "validate_data.py"
 Cohesion: 0.83
@@ -2213,9 +2261,9 @@ Nodes (7): Client, Client Layer Diagram, Fetch, Next.js Page or Component, Reque
 Cohesion: 0.29
 Nodes (7): Docusaurus Classic Template, Docusaurus Tutorial Intro, Docusaurus Live Reload, Node.js 18 or Above, Developer Guide Website, Docusaurus, GitHub Pages Deployment
 
-### Community 376 - "types/dashboard-types/index.ts"
-Cohesion: 0.16
-Nodes (10): ciResolveDashboardCardViewModels(), ciResolveDashboardIcon(), ciIsExternalHref(), CiNavigateWithLoader(), CiNavigateWithLoaderProps, CiDashboardCardConfig, CiDashboardCardViewModel, CiDashboardHeaderButtonProps (+2 more)
+### Community 376 - "ci-plan-next-data-entities.ts"
+Cohesion: 0.19
+Nodes (17): assertEntity(), CiFrontendEntity, CiFrontendField, CiGeneratedFile, ciPlanNextDataEntities(), fieldBaseType(), fieldInputType(), fieldRecordType() (+9 more)
 
 ### Community 377 - "graphify reference: add a URL and watch a folder"
 Cohesion: 0.50
@@ -2269,9 +2317,9 @@ Nodes (6): Bootstrap Amplify resources, Deploy generated resources from the term
 Cohesion: 0.40
 Nodes (5): scripts, check, check:package, test, typecheck
 
-### Community 391 - "gray"
-Cohesion: 0.05
-Nodes (53): $type, $value, $type, $value, $type, $value, $type, $value (+45 more)
+### Community 391 - "color"
+Cohesion: 0.15
+Nodes (21): $type, $value, $type, $value, 500, 600, blue, green (+13 more)
 
 ### Community 392 - "CloudIgniter Launch Logo"
 Cohesion: 0.40
@@ -2365,9 +2413,9 @@ Nodes (4): Type Definitions, CloudIgniter Request/Response Contract, Request<TIn
 Cohesion: 0.50
 Nodes (4): AuthenticatorProps, buildAuthenticatorProps(), Authenticator UI and Cognito Backend Alignment, Deterministic Authenticator Component Overrides
 
-### Community 419 - "Page Client Wrapper"
-Cohesion: 0.50
-Nodes (4): Page Client Wrapper, Page Component, Next.js Route Segment Page, Route Page
+### Community 419 - "C"
+Cohesion: 0.15
+Nodes (12): C, Canonical Org Unit, CiDataTable, Client Component, CloudIgniter, CloudIgniter CLI, CloudIgniter Core, CloudIgniter Developers (+4 more)
 
 ### Community 420 - "Docusaurus Standalone Pages"
 Cohesion: 0.50
@@ -2385,13 +2433,13 @@ Nodes (4): ciCreateDirectHandler, ciCreateLambdaHandler, ciCreateTableServiceHan
 Cohesion: 0.50
 Nodes (4): User Table Columns, getUserStatus, renderStatusBadge, User Row Actions
 
-### Community 424 - "ciAwsGetCurrentUser"
-Cohesion: 0.27
-Nodes (9): appGetCurrentUser(), config, ciAwsGetCurrentUser(), ciFormatUnixTimestamp(), ciGetBooleanClaim(), ciGetDisplayName(), ciGetStringArrayClaim(), ciGetStringClaim() (+1 more)
+### Community 424 - "Page Rendering and Layout Architecture"
+Cohesion: 0.17
+Nodes (12): 10. Source map, 1. Rendering model, 2. Bootstrapping contract, 3. Root layout layer, 4. Route layout layer, 5. Page layer, 6. Provider hierarchy, 7. Server and client boundaries (+4 more)
 
-### Community 425 - "Public API and Runtime Boundaries"
-Cohesion: 0.22
-Nodes (9): Canonical public entry points, Compatibility, Dependency direction, Export validation, Modules, Public API and Runtime Boundaries, Runtime boundaries, Table of contents (+1 more)
+### Community 425 - "CiDataTable Management-Page Interaction Standard"
+Cohesion: 0.18
+Nodes (11): CiDataTable Management-Page Interaction Standard, Columns and empty results, Completion checklist, Confirmation dialogs, Filters, persistence, and responsive formats, Loading and refresh behavior, Management-page header and width, Mutation feedback (+3 more)
 
 ### Community 426 - "CiMainMenuItem"
 Cohesion: 0.18
@@ -2401,13 +2449,13 @@ Nodes (11): CiMainMenuItem, CiMainMenuTarget, CiMenuItemProps, CiNavigationMenuP
 Cohesion: 0.17
 Nodes (11): compilerOptions, noEmit, rootDir, extends, include, src/**/*.ts, src/**/*.tsx, __tests__/**/*.ts (+3 more)
 
-### Community 428 - "Package responsibilities"
-Cohesion: 0.13
-Nodes (15): `apps/template`, Authentication roles from Cognito, Examples, Ownership decision table, Package Ownership, Package responsibilities, `packages/cli`, `packages/core` (+7 more)
+### Community 428 - "trace-types/index.ts"
+Cohesion: 0.31
+Nodes (5): CiMetricConfig, CiStartTraceResult, CiTimerRecord, CiTraceLoggerFactory, CiTraceLoggerLike
 
 ### Community 429 - "Developer guide authoring workflow"
-Cohesion: 0.18
-Nodes (10): API Reference, Author the guide surfaces differently, CloudIgniter Developers, CloudIgniter Users, Completion checklist, Developer guide authoring workflow, Improve the workflow as it evolves, Route documentation by impact (+2 more)
+Cohesion: 0.17
+Nodes (11): API Reference, Author the guide surfaces differently, CloudIgniter Developers, CloudIgniter Users, Completion checklist, Developer guide authoring workflow, Improve the workflow as it evolves, Link Dictionary terms in prose (+3 more)
 
 ### Community 430 - "NextIntl Plugin"
 Cohesion: 0.67
@@ -2442,8 +2490,8 @@ Cohesion: 0.67
 Nodes (3): CiThemeProvider, next-themes, Dashboard Card Configuration
 
 ### Community 438 - "Workflow"
-Cohesion: 0.17
-Nodes (12): 1. Understand the behavior, 2. Trace before editing, 3. Determine ownership, 4. Design the change, 5. Implement package capability first, 6. Preserve lifecycle invariants, 7. Validate and review, CloudIgniter Development Workflow (+4 more)
+Cohesion: 0.13
+Nodes (15): 1. Understand the behavior, 2. Trace before editing, 3. Determine ownership, 4. Design the change, 5. Implement package capability first, 6. Preserve lifecycle invariants, 7. Validate and review, Architecture (+7 more)
 
 ### Community 439 - "ci-clean-types-temp.mjs"
 Cohesion: 0.50
@@ -2453,45 +2501,41 @@ Nodes (4): ciCleanTypesTemp(), ciEmitOutputSection(), cwd, tempTypesDir
 Cohesion: 0.13
 Nodes (14): CiCreateResourceFileTransactionInput, CiResourceFileAbsentState, CiResourceFileApplyResult, CiResourceFileChange, CiResourceFileConflict, CiResourceFileDelete, CiResourceFilePresentState, CiResourceFileRollbackResult (+6 more)
 
-### Community 448 - "use-tenants-loader.ts"
-Cohesion: 0.24
-Nodes (9): ciSafeToString(), CiTenant, ciGetEnvMode(), LoadTenantsErrorBody, LoadTenantsInput, LoadTenantsOkBody, getErrMsg(), isLoadTenantsOkBody() (+1 more)
+### Community 448 - "CiUser"
+Cohesion: 0.47
+Nodes (3): CiCoreRole, CiUser, CiDevBeaconAuthenticatedUserSegmentProps
 
-### Community 452 - "public-settings-table/module.ts"
-Cohesion: 0.35
-Nodes (6): CiPublicSettingsTableHandlers, PUBLIC_SETTINGS_TABLE_HANDLERS, ciPublicSettingsTableResourceModule, PUBLIC_SETTINGS_TABLE_ENV_KEYS, ciMakePublicSettingsTablePolicies(), CiPublicSettingsTable
+### Community 452 - "request/helpers/index.ts"
+Cohesion: 0.40
+Nodes (8): ciIsOptionalString(), ciIsOrgUnitContext(), ciIsRecord(), ciIsRequestContext(), ciIsRoute(), ciIsRouteSearchParams(), ciIsTenantContext(), CiRequestContext
 
-### Community 454 - "useCiNextNavigationWithLoader"
-Cohesion: 0.25
-Nodes (11): CiNavigateWithLoaderProps, CiNextNavigateWithLoader(), CiNextNavigateWithLoaderProps, CiNextNavigationWithLoaderAdapter, useCiNextNavigationWithLoader(), CiNextMainMenu(), CiNextMainMenuProps, CiNextMenuItem() (+3 more)
+### Community 454 - "CiDevBeaconClient.tsx"
+Cohesion: 0.16
+Nodes (14): CiDevBeaconTraceLogViewerTextProps, buildExtraTab(), buildExtraTabs(), buildLogoNode(), CiDevBeaconClient(), CiDevBeaconSideTabsList(), CiDevBeaconSectionConfig(), CiDevBeaconSectionTools() (+6 more)
+
+### Community 455 - "form.tsx"
+Cohesion: 0.17
+Nodes (9): FormControl, FormDescription, FormFieldContext, FormFieldContextValue, FormItem, FormItemContext, FormItemContextValue, FormLabel (+1 more)
 
 ### Community 456 - "`CiAlertDialog`"
 Cohesion: 0.22
 Nodes (7): Accessibility and async behavior, `CiAlertDialog`, Imports and runtime, Low-level Shadcn composition, Props, Choosing the right feedback component, Confirmation dialogs
 
-### Community 458 - "CiTableResourceState"
-Cohesion: 0.10
-Nodes (23): ciMergeEnvMaps(), CI_ENV, CiEnvAllowList, CiEnvKey, CiPrivateSettingsTableHandlers, PRIVATE_SETTINGS_TABLE_HANDLERS, ciPrivateSettingsTableResourceModule, PRIVATE_SETTINGS_TABLE_ENV_KEYS (+15 more)
+### Community 458 - "D"
+Cohesion: 0.17
+Nodes (11): D, Data Entity, Data Record, Data Store, Debug Probe, Deletion State, Descendants Propagation, Dev Beacon (+3 more)
 
-### Community 467 - "next/src/server/index.ts"
-Cohesion: 0.06
-Nodes (29): CiSettingsRegistryMap, @cloudigniter/next/types, NotificationsSettingsSchema, @cloudigniter/next/server, SettingsRegistryMap, ciGetNextAmplifyServerRunner(), ciResolveNextAwsAuthMode(), ciGetAmplifyServerContext() (+21 more)
-
-### Community 469 - "ci-create-aws-emberguard-administration-repository.ts"
-Cohesion: 0.33
-Nodes (12): isAccessControlDefinition(), isAssignmentScope(), isRecord(), isStoredRoleAssignment(), parseGraphqlData(), readAssignmentsBody(), readDefinitionBody(), readRoleCountersBody() (+4 more)
+### Community 467 - "P"
+Cohesion: 0.18
+Nodes (10): P, Page Client Wrapper, Page Component, Permission, Precedence, Predecessor, Privilege, Provider (+2 more)
 
 ### Community 476 - "ci-switch-dist.mjs"
 Cohesion: 0.50
 Nodes (3): result, scriptDir, switchScriptPath
 
-### Community 477 - "ui/client/index.ts"
-Cohesion: 0.31
-Nodes (6): setup, CiNextDashboardCardProps, CiSandboxPage(), CiNextSecurityDataPage(), CiTenantsPage(), CiThemePresentationPage()
-
-### Community 478 - "kernel/server/index.ts"
-Cohesion: 0.18
-Nodes (11): AppRootLayout(), dynamic, revalidate, Kernel(), appResolveRootLayoutContext(), inter, AppRootWrapper(), AppRootWrapperProps (+3 more)
+### Community 477 - "CiTraceLoggerServer"
+Cohesion: 0.23
+Nodes (4): dynamic, POST(), runtime, CiTraceLoggerServer
 
 ### Community 479 - "ci-switch-src.mjs"
 Cohesion: 0.50
@@ -2501,29 +2545,33 @@ Nodes (3): result, scriptDir, switchScriptPath
 Cohesion: 0.40
 Nodes (4): Add a core DynamoDB table, Add a core handler, Core backend manifests, Lifecycle and verification
 
-### Community 481 - "dashboard/layout.tsx"
-Cohesion: 0.27
-Nodes (6): CiGlobalLayout(), CiTenantLayout(), CPLayout(), LayoutInterface, metadata, CiLayout()
+### Community 481 - "main-header-user-box/CiMainHeaderUserBox.tsx"
+Cohesion: 0.26
+Nodes (4): MainHeaderUserBoxInterface, CiNextProfileMenu(), CiMainHeaderUserBox(), CiMainHeaderUserBoxProps
 
-### Community 490 - "prepare-skills-docs.ts"
-Cohesion: 0.27
-Nodes (10): config, APPLEDOUBLE_MAGIC, collectAppleDoubleFiles(), isAppleDoubleFile(), linkMarkdownFiles(), prepareSkillsDocs(), removeGeneratedAppleDoubleFiles(), sanitizeMdx() (+2 more)
-
-### Community 509 - "aws/src/types/index.ts"
-Cohesion: 0.06
-Nodes (31): dynamic, runtime, { runWithAmplifyServerContext }, appAmplifyServerClient, config, appWithAmplify(), config, { runWithAmplifyServerContext } (+23 more)
-
-### Community 510 - "console-print-types/index.ts"
-Cohesion: 0.53
-Nodes (4): CiConsoleLogOptions, CiConsolePrintInterface, CiPrintOutputFormat, CiPrintOutputType
-
-### Community 511 - "CiDevBeaconRouteContextSegment.tsx"
+### Community 482 - "Resource deletion lifecycle"
 Cohesion: 0.33
-Nodes (7): CiTenantRouteCardProps, CiDevBeaconOrgUnitContextSegment(), CiDevBeaconRouteContextSegment(), CiDevBeaconRouteContextSegmentProps, getDisplayValue(), CiDevBeaconRouteDefinitionsModal(), CiDevBeaconTenantContextSegment()
+Nodes (5): Invariants, Ownership and flow, Participant planning, Resource deletion lifecycle, Tenant access patterns
 
-### Community 513 - "src/client/dev/debug-probe/CiDebugProbeClient.tsx"
-Cohesion: 0.38
-Nodes (6): CiDebugProbeClient(), ciToCssPositionValue(), CiDebugProbeContext, CiDebugProbeContextValue, CiDebugProbeProvider(), ciUseDebugProbe()
+### Community 490 - "login-standard/CiLayout.tsx"
+Cohesion: 0.17
+Nodes (9): CiLayout(), LayoutProps, CiContainer(), ContentProps, CiCopyright(), CiFooter(), FooterInterface, CiHeader() (+1 more)
+
+### Community 509 - "Public API and Runtime Boundaries"
+Cohesion: 0.22
+Nodes (9): Canonical public entry points, Compatibility, Dependency direction, Export validation, Modules, Public API and Runtime Boundaries, Runtime boundaries, Table of contents (+1 more)
+
+### Community 510 - "T"
+Cohesion: 0.22
+Nodes (8): T, Tenant, Tenant Attachment, Tenant-aware Route, Tenant Context, Tenant Scope, Trash, Trusted Boundary
+
+### Community 511 - "radius"
+Cohesion: 0.11
+Nodes (27): $type, $value, lg, sm, $type, $value, $type, $value (+19 more)
+
+### Community 513 - "AppRootWrapper.tsx"
+Cohesion: 0.11
+Nodes (14): AppRootLayout(), dynamic, revalidate, CreateAccountPage(), LoginPage(), AppAmplifyClientConfig(), config, appDefaultAuthenticatorStyleTheme() (+6 more)
 
 ### Community 515 - "Data-source API"
 Cohesion: 0.40
@@ -2537,57 +2585,113 @@ Nodes (7): Ownership lanes, Remaining template boundary audit, Resource Studio o
 Cohesion: 0.17
 Nodes (9): Accessibility and interaction, `CiDataEntityManager`, Component contract, Field metadata, Mutation callbacks and results, Compose a manager, Data entity manager, Field behavior (+1 more)
 
-### Community 522 - "trace/route.ts"
-Cohesion: 0.38
-Nodes (5): dynamic, GET(), runtime, tailFileByBytes(), takeLastLines()
+### Community 522 - "CiResolvedScopeContext.ts"
+Cohesion: 0.62
+Nodes (3): CiResolvedPathnameContext, CiResolvedScopeContext, CiScopeKind
 
-### Community 523 - "radius"
-Cohesion: 0.13
-Nodes (22): $type, $value, lg, $type, $value, $type, $value, $type (+14 more)
+### Community 523 - "CiCanonicalRecord"
+Cohesion: 0.23
+Nodes (6): CI_LOG_ENTRY_TYPES, CI_PROTECTED_CANONICAL_KEYS, CiBuildCanonicalInput, CiBaseFields, CiCanonicalRecord, CiLogEntryType
 
-### Community 524 - "CiThemeConfig"
-Cohesion: 0.54
-Nodes (4): CiClientThemeConfig, CiThemeAttributeStrategy, CiThemeConfig, CiThemeSettings
+### Community 539 - "ciStartTraceClient"
+Cohesion: 0.10
+Nodes (19): CiThemeSwitcher(), CiNextAwsProfileMenu(), CiAboutBorderBeam(), CiAboutBorderBeamView(), CiDashboardHeaderButton(), ciResolveDashboardCardViewModels(), ciResolveDashboardIcon(), CiLocaleSwitcher() (+11 more)
+
+### Community 540 - "ci-create-next-security-administration.ts"
+Cohesion: 0.21
+Nodes (14): ciCreateAwsEmberguardAdministrationRepository(), ciResolveAwsCognitoIdentityGroups(), isRecord(), readPrecedence(), deleteRoleAssignment(), getDefinition(), listRoleAssignments(), putRoleAssignment() (+6 more)
+
+### Community 541 - "CiTraceLoggerOptions"
+Cohesion: 0.23
+Nodes (3): CiStartTraceInit, CiTraceLoggerOptions, CiTraceLoggerClient
+
+### Community 542 - "public-settings-table/module.ts"
+Cohesion: 0.35
+Nodes (6): CiPublicSettingsTableHandlers, PUBLIC_SETTINGS_TABLE_HANDLERS, ciPublicSettingsTableResourceModule, PUBLIC_SETTINGS_TABLE_ENV_KEYS, ciMakePublicSettingsTablePolicies(), CiPublicSettingsTable
+
+### Community 543 - "CiProfileMenuProps.ts"
+Cohesion: 0.62
+Nodes (3): CiProfileMenuItem, CiProfileMenuMessages, CiProfileMenuProps
+
+### Community 544 - "CiDevBeaconButton.tsx"
+Cohesion: 0.27
+Nodes (7): ciClampDevBeaconDragPosition(), CiDevBeaconDragBounds, CiDevBeaconDragPosition, ciHasDevBeaconDragStarted(), CiDevBeaconButton, CiDevBeaconPointerDrag, sizeMap
+
+### Community 545 - "input"
+Cohesion: 0.29
+Nodes (8): padding-x, input, $type, $value, focus-ring, padding-x, $type, $value
 
 ### Community 549 - "Resource Studio compiler APIs"
 Cohesion: 0.25
 Nodes (7): `CI_AWS_RESOURCE_STUDIO_CAPABILITIES`, `ciNormalizeAwsDataEntityDescriptor()`, `ciPlanAwsDataEntities()`, `ciPlanNextDataEntities()`, Determinism and application, Imports, Resource Studio compiler APIs
 
-### Community 657 - "CiDebugProbeProps"
-Cohesion: 0.67
-Nodes (3): CiDebugProbeOptions, CiDebugProbePositionValue, CiDebugProbeProps
+### Community 552 - "H"
+Cohesion: 0.33
+Nodes (5): H, Handler, Hard Delete, Hierarchy-aware Authorization, Hydration
 
-### Community 658 - "backend-manifest.test.ts"
-Cohesion: 0.31
-Nodes (7): ciCompileBackendManifest(), ciDefineBackendManifest(), resourceEnvKeyAllowlist, compileModules(), ManifestDefinitionInput, REQUIRED_ACTIVE_HANDLER_IDS, REQUIRED_ACTIVE_MODULE_IDS
+### Community 553 - "CloudIgniter DynamoDB Design and Interaction"
+Cohesion: 0.29
+Nodes (7): Architecture default, CloudIgniter DynamoDB Design and Interaction, Combine or split, Cost-effective defaults, Mandatory decision sequence, Required validation, Safe interaction rules
 
-### Community 660 - "ci-collect-module-package-dependencies.ts"
-Cohesion: 0.39
-Nodes (4): ciCollectModulePackageDependencies(), ciValidPackageSections, CiModuleError, CiModuleErrorCode
+### Community 578 - "M"
+Cohesion: 0.33
+Nodes (5): M, Management Page, Marker, Middleware, Multi-tenancy
 
-### Community 664 - "CiDevBeacon.tsx"
+### Community 579 - "CiNextAwsDevBeaconProps.ts"
 Cohesion: 0.36
-Nodes (3): ciResolveEnv(), CiDevBeacon(), CiNexAwsDevBeaconProps
+Nodes (4): CiNexAwsDevBeaconProps, ciGetCurrentRoute(), ciReadCurrentRoute, ciRequireCurrentRoute()
+
+### Community 587 - "Validation and Final Review"
+Cohesion: 0.29
+Nodes (7): Architectural diff review, Baseline failures, CiDataTable interaction checks, Completion report, Request lifecycle checks, Select validation by scope, Validation and Final Review
+
+### Community 588 - "$type"
+Cohesion: 0.60
+Nodes (5): $type, $value, 700, 700, 700
+
+### Community 589 - "Development Tools and Application Seeding"
+Cohesion: 0.29
+Nodes (7): Access invariant, Development Tools and Application Seeding, Ownership, Provenance and garbage collection, Seeder manifest, UI and CLI, Validation
+
+### Community 657 - "resource-types.ts"
+Cohesion: 0.07
+Nodes (34): CiEmberguardAccessTableHandlers, EMBERGUARD_ACCESS_TABLE_HANDLERS, ciEmberguardAccessTableResourceModule, EMBERGUARD_ACCESS_TABLE_ENV_KEYS, assignmentMutationHandlers, ciMakeEmberguardAccessTablePolicies(), ordinaryDeleteHandlers, ordinaryWriteHandlers (+26 more)
+
+### Community 658 - "O"
+Cohesion: 0.33
+Nodes (5): O, Operational Status, Org Unit, Org Unit Attachment, Org Unit Explorer
+
+### Community 659 - "auth/ci-role-precedence.ts"
+Cohesion: 0.70
+Nodes (3): CI_CORE_ROLE_PRECEDENCE, CI_CORE_ROLES_BY_PRECEDENCE, ciResolvePrimaryRole()
+
+### Community 660 - "ci-config.tsx"
+Cohesion: 0.12
+Nodes (19): baseTabs, fieldLabels, fieldSectionMap, CiSettingsForm(), CiEmailSettingsSection(), CiGeneralSettingsSection(), GeneralSectionInterface, GeneralSettingsJsonSchema (+11 more)
+
+### Community 664 - "CiLocaleDirection"
+Cohesion: 0.12
+Nodes (18): CiDevBeaconLanguageSummary, CiExtendedI18nConfig, CiGetServerLocaleInterface, CiI18nConfig, CiI18nSettings, CiLanguageFileDiagnostic, CiLanguageFileStatus, CiLocale (+10 more)
 
 ### Community 667 - "CloudIgniter Architecture Overview"
 Cohesion: 0.25
 Nodes (8): Architectural rules, Architecture smells, CloudIgniter Architecture Overview, Configuration boundary, Core versus custom ownership, Preferred end state, System model, Template boundary
 
-### Community 668 - "EmberGuard Layering"
-Cohesion: 0.29
-Nodes (6): Do not, EmberGuard Layering, Implementation rules, Public API rule, Responsibility chain, Review checklist
+### Community 668 - "Template Core and Custom Boundary"
+Cohesion: 0.33
+Nodes (6): Generator contract, Ownership lanes, Review and validation, Template Core and Custom Boundary, Thin composition exception, Upgrade invariant
 
-### Community 670 - "CiDevBeaconLanguageDetailsModal.tsx"
-Cohesion: 0.32
-Nodes (6): CiAccessibleDialogDescription, CiAccessibleDialogTitle, CiDevBeaconLanguageDetailsModal(), CiDevBeaconLanguageDetailsModalProps, CiDevBeaconLanguageMessageTab, ciEntriesToStructuredJson()
+### Community 670 - "Resource Deletion Lifecycle"
+Cohesion: 0.33
+Nodes (6): Authorization and UI, Completion checklist, Default contract, DynamoDB rules, Participant plan, Resource Deletion Lifecycle
 
 ### Community 671 - "`CiSecurityDataPage`"
 Cohesion: 0.14
 Nodes (11): `CiSecurityDataPage`, Destructive confirmations, Editor identity lifecycle, Owner filtering, Record information and role counts, Resource-domain controls, Resource status controls, Role editor option contracts (+3 more)
 
-### Community 672 - "Validation and Final Review"
-Cohesion: 0.29
-Nodes (7): Architectural diff review, Baseline failures, CiDataTable interaction checks, Completion report, Request lifecycle checks, Select validation by scope, Validation and Final Review
+### Community 672 - "EmberGuard Layering"
+Cohesion: 0.33
+Nodes (6): Do not, EmberGuard Layering, Implementation rules, Public API rule, Responsibility chain, Review checklist
 
 ### Community 673 - "exports"
 Cohesion: 0.20
@@ -2597,9 +2701,9 @@ Nodes (10): exports, ./runtime/resource-file-transaction, ./tooling/entries, ./t
 Cohesion: 0.50
 Nodes (3): CiEmberguardConfig, Configuration example, Fields
 
-### Community 676 - "CiSeedEnvMode"
-Cohesion: 0.27
-Nodes (4): CiClearSeederInterface, CiDevEnv, CiSeedEnvMode, CiClearSeederInterface
+### Community 676 - "B"
+Cohesion: 0.40
+Nodes (4): B, Backend Manifest, Bootstrap, Bounded Context
 
 ### Community 677 - "ci-obfuscate-package.mjs"
 Cohesion: 0.23
@@ -2609,33 +2713,61 @@ Nodes (12): javascript-obfuscator, javascript-obfuscator, ciEmitOutputSection(),
 Cohesion: 0.25
 Nodes (7): Deploy explicitly without the browser, Deploy one sandbox run, Drop a Data Entity, Refresh AWS access explicitly, Roll back after a deployment, Undo latest local change, Verify the exact AWS target
 
-### Community 679 - "CiModuleManifest"
-Cohesion: 0.29
-Nodes (4): CiModuleManifest, ciModuleManifest, ciModuleManifest, ciModuleManifest
+### Community 679 - "E"
+Cohesion: 0.40
+Nodes (4): E, EmberGuard, Environment Mode, Exact Propagation
 
-### Community 680 - "CiDataEntityManager.tsx"
-Cohesion: 0.16
-Nodes (18): buildFieldColumns(), CiDataEntityDeleteSession, CiDataEntityEditorSession, CiDataEntityFeedback, CiDataEntityManager(), getDefaultRecordLabel(), getMutationFailure(), isOperationAllowed() (+10 more)
+### Community 680 - "G"
+Cohesion: 0.40
+Nodes (4): G, Generated Resource, Global Scope, GSI
 
-### Community 681 - "CiAuthorizationRequest"
-Cohesion: 0.48
-Nodes (3): CiAuthorizationRequest, CiAuthorizer, CiAuthorizerOptions
+### Community 683 - "system/settings/app-get-settings.ts"
+Cohesion: 0.22
+Nodes (11): ciBuildMergedSettingsFromHandlerOutput(), ciCollectScopeSettingIds(), ciGetSettings, ciMergeSettingsGroup(), CiPersistedSettingsScope, ciResolveScopeIds(), CiSettingsId, ciUniqueIds() (+3 more)
 
-### Community 683 - "ci-get-headers.ts"
-Cohesion: 0.48
-Nodes (5): ciGetHeaders(), CiHeaderEntry, readCiHeaders(), readCiHeadersMap(), resolveMaybePromise()
-
-### Community 689 - "CiClientWrapper.tsx"
-Cohesion: 0.47
-Nodes (3): CiClientWrapper(), CiInitialLoader(), CiFeedbackHandler()
-
-### Community 693 - "xl"
+### Community 684 - "padding-y"
 Cohesion: 0.67
-Nodes (4): xl, xl, $type, $value
+Nodes (4): padding-y, padding-y, $type, $value
 
-### Community 701 - "Template Core and Custom Boundary"
-Cohesion: 0.33
-Nodes (6): Generator contract, Ownership lanes, Review and validation, Template Core and Custom Boundary, Thin composition exception, Upgrade invariant
+### Community 686 - "types/dashboard-types/index.ts"
+Cohesion: 0.35
+Nodes (5): CiDashboardCardConfig, CiDashboardCardViewModel, CiDashboardHeaderButtonProps, CiDashboardIcon, CiDashboardPageProps
+
+### Community 688 - "Org Unit Trees and Tenant Sharing"
+Cohesion: 0.29
+Nodes (6): Authorization, Development seeding, Domain model, Explorer interaction, Org Unit Trees and Tenant Sharing, System-table access patterns
+
+### Community 689 - "I"
+Cohesion: 0.40
+Nodes (4): I, Identity Provider, Immutable Slug, Internationalization
+
+### Community 690 - "CiTenantManagementPage"
+Cohesion: 0.25
+Nodes (6): CiTenantManagementPage, Development seeder controls, Operational status controls, Operational status, Result, Tenant lifecycle types
+
+### Community 694 - "resource-registry.ts"
+Cohesion: 0.11
+Nodes (35): CiPolicyFragment, CiCoreTableKey, ciMakeRuntimeCommonPolicies(), CiBackendManifestInput, CiBackendManifestModule, ciCompileBackendManifest(), CiCompiledBackendManifest, ciDefineBackendManifest() (+27 more)
+
+### Community 695 - "icon-types/index.ts"
+Cohesion: 0.50
+Nodes (3): CiAppIcon, CiBuiltInIcon, CiIconName
+
+### Community 697 - "L"
+Cohesion: 0.40
+Nodes (4): L, Lambda, Layout, Locale
+
+### Community 698 - "CiThemeConfig"
+Cohesion: 0.54
+Nodes (4): CiClientThemeConfig, CiThemeAttributeStrategy, CiThemeConfig, CiThemeSettings
+
+### Community 699 - "$type"
+Cohesion: 0.60
+Nodes (5): $type, $value, border, border, border
+
+### Community 701 - "detect_domain"
+Cohesion: 0.43
+Nodes (3): detect_domain(), Auto-detect the most relevant domain from query. Matches are weighted by…, TestDomainDetection
 
 ### Community 702 - "data-entities.mdx"
 Cohesion: 0.33
@@ -2645,29 +2777,141 @@ Nodes (5): Add custom fields, Add secondary indexes only for a query, Apply and 
 Cohesion: 0.33
 Nodes (5): Data and key conventions, Scope and public routes, Terminology, V1 boundaries, What V1 generates
 
-### Community 709 - "padding-x"
-Cohesion: 0.67
-Nodes (4): padding-x, padding-x, $type, $value
+### Community 704 - "Access Control"
+Cohesion: 0.40
+Nodes (5): Access Control, Configuration strategy, Model and ownership, Reading map, Related architecture
 
-### Community 712 - "CiOrgUnitContext"
-Cohesion: 0.16
-Nodes (11): CiLookupOrgUnitInput, CiLookupOrgUnitResult, CiOrgUnitContext, CiOrgUnitRoutingOptions, CiOrgUnitStatus, CiResolveOrgUnitInput, CiResolveOrgUnitResult, CiResolvedPathnameContext (+3 more)
+### Community 705 - "CloudIgniter Table-Key Convention"
+Cohesion: 0.40
+Nodes (5): Canonical shape, CloudIgniter Table-Key Convention, Cutover and migration rule, Ownership and dependencies, Validation
+
+### Community 706 - "Data Entities and Generation"
+Cohesion: 0.40
+Nodes (5): 4. Preserve the Data Entity and Amplify contract, 5. Generate only registered artifacts, 6. Preserve frontend and Tenant-scope behavior, Data Entities and Generation, Related references
+
+### Community 708 - "Resource Studio Deployment and Security"
+Cohesion: 0.40
+Nodes (5): 10. Defend the local Studio boundary, 11. Clean macOS AppleDouble artifacts by proven provenance only, 9. Separate generation from deployment and SSO, Related references, Resource Studio Deployment and Security
+
+### Community 709 - "destructive-foreground"
+Cohesion: 0.67
+Nodes (3): destructive-foreground, $type, $value
+
+### Community 710 - "Resource Studio V1"
+Cohesion: 0.40
+Nodes (5): 1. Purpose and terminology, 2. Load the adjacent contracts, 3. Keep capability ownership explicit, Reading map, Resource Studio V1
+
+### Community 711 - "radius"
+Cohesion: 0.60
+Nodes (5): radius, radius, radius, $type, $value
+
+### Community 712 - "ci-start-trace-core.ts"
+Cohesion: 0.48
+Nodes (5): ciStartTraceCore(), createNoopStartTraceResult(), mergeTraceLoggerOptions(), NOOP_DONE(), noopTraceLogger
 
 ### Community 713 - "Tenant route lifecycle"
 Cohesion: 0.50
 Nodes (3): Ownership, Physical routing invariants, Tenant route lifecycle
 
-### Community 726 - "CiProfileMenuProps.ts"
-Cohesion: 0.62
-Nodes (3): CiProfileMenuItem, CiProfileMenuMessages, CiProfileMenuProps
+### Community 715 - "muted"
+Cohesion: 0.67
+Nodes (3): muted, $type, $value
 
-### Community 731 - "CiNextContext.ts"
-Cohesion: 0.38
-Nodes (3): CiCoreRole, CiUser, CiDevBeaconAuthenticatedUserSegmentProps
+### Community 724 - "Org Unit management types"
+Cohesion: 0.40
+Nodes (4): Management record, Mutations, Org Unit management types, Request context and scope
 
-### Community 740 - "files"
+### Community 726 - "app-build-server-page-config.ts"
+Cohesion: 0.67
+Nodes (3): appBuildServerPageConfig(), BuildPageConfigInput, extractMainMenu()
+
+### Community 728 - "Org Unit Management"
+Cohesion: 0.33
+Nodes (5): A confirmed move does not change the tree, Hierarchy-aware access, Org Unit Management, Shared-tree model, Status and deletion
+
+### Community 729 - "Permissions and Scopes"
+Cohesion: 0.50
+Nodes (4): Evaluation strategy, Permissions and Scopes, Related references, Scope strategy
+
+### Community 730 - "tooling/development-tools-and-seeding.mdx"
+Cohesion: 0.40
+Nodes (4): CLI boundary, Extending seeders, Ownership map, Seeder lifecycle
+
+### Community 731 - "Resource Studio Transactions"
+Cohesion: 0.50
+Nodes (4): 7. Plan and mutate fail-closed, 8. Keep rollback claims exact, Related references, Resource Studio Transactions
+
+### Community 732 - "Resource Studio Validation"
+Cohesion: 0.50
+Nodes (4): 12. Validate the complete V1 path, 13. Keep V1 exclusions explicit, Broader validation, Resource Studio Validation
+
+### Community 733 - "environment-modes/development-tools-and-seeding.mdx"
+Cohesion: 0.33
+Nodes (5): CLI strategy, Define a seeder, Move the Dev Beacon, Seed and clean up tenants, Troubleshoot transactional permission errors
+
+### Community 735 - "Collection Ordering and Resource Recency"
+Cohesion: 0.40
+Nodes (4): Collection Ordering and Resource Recency, Data tables, Default ordering, Newly created resources
+
+### Community 739 - "F"
+Cohesion: 0.50
+Nodes (3): F, Feature Pathname, Framework Integration
+
+### Community 740 - "800"
+Cohesion: 0.67
+Nodes (4): $type, $value, 800, 800
+
+### Community 741 - "org-unit-seeder.test.ts"
+Cohesion: 0.50
+Nodes (3): fixtures, OrgUnitFixture, TenantFixture
+
+### Community 742 - "N"
+Cohesion: 0.50
+Nodes (3): N, NEW Badge, Next.js Integration
+
+### Community 743 - "DictionaryViewer/index.tsx"
+Cohesion: 0.05
+Nodes (40): dictionarySidebar, dictionaryTermsByLetter, sidebars, config, DictionarySidebarCategory, DictionaryTerm, dictionaryTermPattern, dictionaryTerms (+32 more)
+
+### Community 744 - "U"
+Cohesion: 0.50
+Nodes (3): U, User Role, User Settings
+
+### Community 748 - "Org Unit tree persistence"
+Cohesion: 0.50
+Nodes (3): Access patterns and consistency, Org Unit tree persistence, Safety and IAM
+
+### Community 749 - "ciPrintToConsole"
+Cohesion: 0.29
+Nodes (7): ciPrintToConsole(), printTable(), CiConsolePrint(), CiConsoleLogOptions, CiConsolePrintInterface, CiPrintOutputFormat, CiPrintOutputType
+
+### Community 750 - "Resources"
+Cohesion: 0.67
+Nodes (3): Reading map, Related architecture, Resources
+
+### Community 752 - "destructive"
+Cohesion: 0.67
+Nodes (3): destructive, $type, $value
+
+### Community 753 - "primary-foreground"
+Cohesion: 0.67
+Nodes (3): primary-foreground, $type, $value
+
+### Community 754 - "secondary-foreground"
+Cohesion: 0.67
+Nodes (3): secondary-foreground, $type, $value
+
+### Community 755 - "result-types/index.ts"
+Cohesion: 0.10
+Nodes (14): GlobalError(), ciIsErrorResponse(), ciParseServerErrorPayload(), ciResponseHasErrorBody(), CiDebugProbeOptions, CiDebugProbePositionValue, CiDebugProbeProps, CiClientErrorPayload (+6 more)
+
+### Community 760 - "files"
 Cohesion: 0.50
 Nodes (4): files, README.md, src, bin
+
+### Community 770 - "ring"
+Cohesion: 0.67
+Nodes (3): ring, $type, $value
 
 ## Ambiguous Edges - Review These
 - `Missing Logo Fallback Illustration` → `Question-Mark-Shaped Smoke`  [AMBIGUOUS]
@@ -2678,9 +2922,9 @@ Nodes (4): files, README.md, src, bin
   developer-guide/docs/assets/images/request.ts.png · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **3164 isolated node(s):** `fs`, `path`, `fs`, `path`, `fs` (+3159 more)
+- **3389 isolated node(s):** `fs`, `path`, `fs`, `path`, `fs` (+3384 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **131 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **135 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -2691,11 +2935,11 @@ _Questions this graph is uniquely positioned to answer:_
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **What is the exact relationship between `src/kernel/i18n/request.ts` and `Unlabeled Module Connections`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
-- **Why does `identifier` connect `ci-aws-data-entity-planner.ts` to `ci-resource-studio-local-store.mjs`?**
-  _High betweenness centrality (0.024) - this node is a cross-community bridge._
-- **Why does `CiAccessControlDefinition` connect `CiAccessControlDefinition` to `lib/access-control/index.ts`, `ci-create-next-security-administration.ts`, `ci-create-security-administration.ts`, `auth/access-control/index.ts`, `types/access-control-types/index.ts`, `lib/access-control/ci-merge-access-control.ts`, `lib/access-control/ci-core-access-control.ts`, `ci-create-aws-emberguard-administration-repository.ts`, `next/src/types/index.ts`, `ci-emberguard-access-handlers.ts`?**
-  _High betweenness centrality (0.012) - this node is a cross-community bridge._
+- **Why does `identifier` connect `studio.mjs` to `ci-plan-next-data-entities.ts`, `ci-aws-data-entity-planner.ts`?**
+  _High betweenness centrality (0.027) - this node is a cross-community bridge._
+- **Why does `assertEntity()` connect `ci-plan-next-data-entities.ts` to `studio.mjs`?**
+  _High betweenness centrality (0.019) - this node is a cross-community bridge._
+- **Why does `CiScopeKind` connect `CiResolvedScopeContext.ts` to `auth-types/access-control-types/index.ts`, `core/src/types/index.ts`?**
+  _High betweenness centrality (0.014) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `TailwindConfigGenerator` (e.g. with `TestGeneratedConfigIsValidJs` and `TestTailwindConfigGenerator`) actually correct?**
   _`TailwindConfigGenerator` has 2 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `fs`, `path`, `fs` to the rest of the system?**
-  _3164 weakly-connected nodes found - possible documentation gaps or missing edges._

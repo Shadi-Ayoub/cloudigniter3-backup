@@ -7,3 +7,11 @@ export type { CiSeederInputItem } from "./CiSeederInputItem";
 export type { CiSeederResponseBody } from "./CiSeederResponseBody";
 export type { CiSeederErrorBody } from "./CiSeederErrorBody";
 export type { CiClearSeederInterface } from "./CiClearSeederInterface";
+export type { CiSeederDefinition } from "./CiSeederDefinition";
+export type { CiSeederManifest } from "./CiSeederManifest";
+export type {
+  CiSeederExecutionItemResult,
+  CiSeederExecutionResult,
+  CiSeederItemStatus,
+  CiSeederOperation,
+} from "./CiSeederExecutionResult";

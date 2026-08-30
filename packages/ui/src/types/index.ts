@@ -81,6 +81,7 @@ export {
   type CiDataTableRowActionContext,
   type CiDataTableRowActionsMenuProps,
   type CiDataTableSortSpec,
+  type CiDataTableTitleChip,
 } from "./data-table-types";
 
 // ─────────────────────────────────────────────────────────────
@@ -111,6 +112,12 @@ export type { BorderBeamProps } from "./shadcn-types";
 // security administration
 // ─────────────────────────────────────────────────────────────
 export type { CiSecurityDataPageProps } from "./security-types";
+
+export type {
+  CiTenantManagementCapabilities,
+  CiTenantManagementPageProps,
+} from "./tenant-management-types";
+export type { CiOrgUnitManagementPageProps } from "./org-unit-management-types";
 
 // ─────────────────────────────────────────────────────────────
 // smart form

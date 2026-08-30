@@ -43,19 +43,26 @@ SK = CI#META
 {
   "PK": "CI#SYSTEM#TENANT#school-abu-dhabi",
   "SK": "CI#META",
+  "GSI1PK": "CI#SYSTEM#TENANTS",
+  "GSI1SK": "CI#ACTIVE#2024-01-15T08:30:00.000Z#TENANT#school-abu-dhabi",
+  "GSI2PK": "CI#SYSTEM#TENANT_SLUG#abu-dhabi",
+  "GSI2SK": "CI#TENANT#school-abu-dhabi",
   "id": "school-abu-dhabi",
   "type": "TENANT",
   "status": "active",
+  "deletionState": "active",
   "name": "School Abu Dhabi",
-  "slug": "abu-dhabi",
   "description": "Main Abu Dhabi campus",
-  "meta": {
+  "data": {
+    "slug": "abu-dhabi",
+    "tenantType": "school",
     "region": "AD",
-    "country": "AE",
-    "timezone": "Asia/Dubai",
-    "orgUnitsCount": 12,
-    "capacity": 1800,
-    "tags": ["urban", "flagship"]
+    "usersCount": 1800,
+    "meta": {
+      "country": "AE",
+      "timezone": "Asia/Dubai",
+      "tags": ["urban", "flagship"]
+    }
   },
   "createdAt": "2024-01-15T08:30:00.000Z",
   "updatedAt": "2024-01-15T08:30:00.000Z"
@@ -67,12 +74,48 @@ SK = CI#META
 | Use Case             | Key Pattern                                                      |
 | -------------------- | ---------------------------------------------------------------- |
 | Get tenant by ID     | Exact `PK = CI#SYSTEM#TENANT#<id>` and `SK = CI#META`            |
-| List tenants         | A named, paginated tenant-list index or materialized collection  |
+| List active tenants  | `GSI1PK = CI#SYSTEM#TENANTS`, `GSI1SK` begins `CI#ACTIVE`        |
+| List Trash           | `GSI1PK = CI#SYSTEM#TENANTS`, `GSI1SK` begins `CI#DELETED`       |
+| Resolve active slug  | `GSI2PK = CI#SYSTEM#TENANT_SLUG#<slug>` and tenant sort key      |
 | Update tenant status | Exact key plus a condition on the current version or state       |
 | Audit/tracing        | A separate audit/event boundary when retention or volume differs |
 
 Never implement tenant listing with a request-path table scan. Define the access pattern and index projection
 before adding the index, including its storage and write-amplification cost.
 
+Soft deletion changes the `GSI1SK` prefix to `CI#DELETED#<deletedAt>#TENANT#<tenantId>`, stores a `deletion`
+object, and removes `GSI2PK`/`GSI2SK` so ordinary slug resolution cannot find the tenant. Restore reconstructs
+those keys conditionally. Purge requires a strongly consistent base-table read and `deletionState = deleted`;
+the eventually consistent list index is never proof that purge is safe.
+
+Existing retained tenant rows must be backfilled with `deletionState`, `GSI1PK`, `GSI1SK`, `GSI2PK`, `GSI2SK`,
+and `version` before switching production readers to these access patterns. Do not add a request-path scan as a
+migration fallback.
+
 All PK, SK, and index keys must use the public core table-key helpers described in the
 [CloudIgniter table-key convention](/docs/library/dynamodb/table-key-convention).
+
+### Shared Org Unit Items
+
+Each shared Org Unit is stored once:
+
+```text
+PK = CI#SYSTEM#ORG_UNIT#<orgUnitId>
+SK = CI#META
+GSI1PK = CI#SYSTEM#ORG_UNITS
+GSI1SK = CI#ORG_UNIT#<path>#<orgUnitId>
+GSI2PK = CI#SYSTEM#ORG_UNIT_CHILDREN#<parentId-or-ROOT>
+```
+
+The canonical record stores immutable `parentId`, `slug`, `path`, root-to-parent `ancestorOrgUnitIds`, attached `tenantIds`, direct `childIds`, status, and optimistic `version`.
+
+Every attached tenant also has a direct routing item:
+
+```text
+PK = CI#SYSTEM#TENANT#<tenantId>#ORG_UNITS
+SK = CI#PATH#<canonical-path>
+```
+
+Routing performs a strongly consistent `GetItem` on this attachment. The management tree uses the existing bounded `GSI1` query. Creation condition-checks active tenant records, writes the canonical record and attachments, and updates the parent in one transaction. Updates retain parent and slug, check the expected version, validate parent/child tenant-set containment with base-table reads, then replace attachments transactionally.
+
+This design keeps tenant and Org Unit control-plane data in one operational boundary and adds no table or index. Storing only `tenantIds` on the canonical node would be cheaper per write but would require a scan or fan-out for tenant/path routing; duplicating whole nodes per tenant would make shared identity and updates inconsistent. The attachment projection is therefore the cheapest safe option for the required access patterns.

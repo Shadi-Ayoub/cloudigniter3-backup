@@ -16,7 +16,7 @@ export async function appGetDevBeaconAccess(
 
   const envMode = (process.env.CI_ENV_MODE ??
     process.env.NEXT_PUBLIC_CI_ENV_MODE ??
-    "test") as CiEnvMode;
+    "production") as CiEnvMode;
 
   const resolvedOptions = {
     ...CI_DEFAULT_DEV_BEACON_OPTIONS,

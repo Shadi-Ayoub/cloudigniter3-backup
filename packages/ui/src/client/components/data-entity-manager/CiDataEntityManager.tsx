@@ -566,6 +566,28 @@ export function CiDataEntityManager<TRecord extends RowData>({
     ...tableOverrides,
     title,
     description,
+    titleBadge: tableOverrides.titleBadge ?? "Data management",
+    titleChips:
+      tableOverrides.titleChips ??
+      [
+        data
+          ? {
+              id: "records",
+              label: `${data.length} ${
+                data.length === 1 ? "record" : "records"
+              }`,
+            }
+          : { id: "source", label: "Provider-backed" },
+        {
+          id: "management",
+          label:
+            onCreate || onUpdate || onDelete
+              ? "Management enabled"
+              : "Read only",
+          variant:
+            onCreate || onUpdate || onDelete ? "default" : "secondary",
+        },
+      ],
     data,
     source,
     definition,
@@ -573,7 +595,7 @@ export function CiDataEntityManager<TRecord extends RowData>({
       ...config,
       rowActions: {
         mode: "mixed",
-        inlineCount: 1,
+        overflow: 1,
         reserveSpace: true,
         ...config?.rowActions,
       },

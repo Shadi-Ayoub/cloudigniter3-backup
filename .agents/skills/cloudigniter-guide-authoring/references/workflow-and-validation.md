@@ -8,6 +8,7 @@ Use this reference for every CloudIgniter guide task.
 | --- | --- | --- | --- |
 | CloudIgniter Users | `developer-guide/docs` excluding `api-reference` | Default docs plugin / `userGuideSidebar` | Application developers, integrators, and operators |
 | CloudIgniter Developers | `developer-guide/company-developers` | `companyDevelopers` plugin / `cloudIgniterDevelopersSidebar` | CloudIgniter contributors and provider/package maintainers |
+| Dictionary | `developer-guide/dictionary` | `dictionary` plugin / `dictionarySidebar` | Readers looking up stable CloudIgniter ecosystem terminology by letter |
 | API Reference | `developer-guide/docs/api-reference` | Default docs plugin / `apiReferenceSidebar` | Developers looking up stable public contracts |
 | Skills | `.agents/skills` and `.codex/skills` (rendered through generated build content) | Skills docs plugin / `skillsSidebar` | Codex and maintainers inspecting reusable authoring instructions |
 
@@ -25,6 +26,7 @@ Use the following as a minimum routing matrix:
 | Package ownership, dependency direction, provider binding, request lifecycle, or rendering architecture | CloudIgniter Developers, the affected user workflow, and the matching `cloudigniter-development` reference |
 | Provider integration | CloudIgniter Users for setup/usage; CloudIgniter Developers for provider implementation; API Reference for public adapters/contracts |
 | UI component or user-facing behavior | CloudIgniter Users and API Reference for reusable public components |
+| New, renamed, or materially changed stable ecosystem term | Dictionary and every guide surface that teaches the concept |
 | Deprecation, rename, removal, or breaking behavior | Every page using the old contract, API Reference migration notes, and compatibility guidance |
 | Bug fix that changes observable behavior | Correct the pages that described or worked around the old behavior; add troubleshooting guidance when the failure mode is likely to recur |
 | Internal refactor with identical documented behavior | Verify all three surfaces; record why no guide edit is needed if none is affected |

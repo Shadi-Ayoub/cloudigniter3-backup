@@ -8,12 +8,7 @@ export type CiDevConfig = {
     devBeacon: {
       enabled: boolean;
 
-      /**
-       * Keep false until Attribute Role-based Access Control is implemented.
-       *
-       * When true, production access still requires an authenticated user
-       * with the developer role.
-       */
+      /** @deprecated Developer tools are always denied outside development. */
       allowProduction: boolean;
 
       requiredRoles: string[];

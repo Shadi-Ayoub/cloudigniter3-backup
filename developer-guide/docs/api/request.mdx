@@ -17,7 +17,7 @@ import type { DynamoDBClientConfig } from "@aws-sdk/client-dynamodb";
 
 export type Request<T = unknown> = {
   input: T;
-  envMode?: "test" | "sandbox" | "live";
+  envMode?: "development" | "test" | "staging" | "production";
   authMode?: "userPool" | "apiKey" | "iam" | "lambda" | "oidc";
   options?: RequestOptions;
   critical?: boolean;
@@ -66,7 +66,7 @@ const request: Request<SeedTenantItem[]> = {
 };
 ```
 
-⭐ `envMode?: "test" | "sandbox" | "live"` — **The Requested Environment Mode**
+⭐ `envMode?: CiEnvMode` — **The requested runtime environment mode**
 
 - Optional (but heavily used); if absent, CloudIgniter will usually default it (e.g. via `prepareApiRequest()`).
 - Indicates which **runtime environment** the operation is meant for.
@@ -84,7 +84,7 @@ const request: Request<SeedTenantItem[]> = {
 In your Lambda handler, you then validate it:
 
 ```ts title="Forbidding actions in a live environment in Lambda Handler" showLineNumbers
-if (envMode !== "test" && envMode !== "sandbox") {
+if (envMode !== "development") {
   // return 400: invalid envMode
 }
 ```
@@ -166,7 +166,7 @@ This pattern keeps AWS-specific wiring **out of the client** and **inside the co
   - Soft-fail, show a toast, log them quietly, etc.
 
 ```ts title="Specifying criticality of errors in Request<T>" showLineNumbers
-// Critical call: seeding tenants in a test/sandbox env
+// Critical call: seeding tenants in an authorized development environment
 const request: Request<SeedTenantItem[]> = {
   input: tenants,
   envMode: "test",

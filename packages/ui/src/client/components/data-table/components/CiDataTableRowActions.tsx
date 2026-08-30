@@ -26,7 +26,7 @@ type CiDataTableRowActionsProps<TData> = {
   information?: CiDataTableInformation<TData>;
   context: CiDataTableRowActionContext<TData>;
   mode: "buttons" | "menu" | "mixed";
-  inlineCount: number;
+  overflow: number;
   menuLabel: string;
   reserveSpace: boolean;
 };
@@ -43,7 +43,7 @@ export function CiDataTableRowActions<TData>({
   information,
   context,
   mode,
-  inlineCount,
+  overflow: actionCountBeforeOverflow,
   menuLabel,
   reserveSpace,
 }: CiDataTableRowActionsProps<TData>) {
@@ -87,20 +87,24 @@ export function CiDataTableRowActions<TData>({
   }
 
   const inlineSlots = reserveSpace
-    ? (mode === "buttons" ? actions : actions.slice(0, inlineCount)).map(
+    ? (mode === "buttons"
+        ? actions
+        : actions.slice(0, actionCountBeforeOverflow)
+      ).map(
         (action) => ({
           action,
           visible: ciIsDataTableControlVisible(action, row),
         })
       )
-    : (mode === "buttons" ? visible : visible.slice(0, inlineCount)).map(
-        (action) => ({ action, visible: true })
-      );
+    : (mode === "buttons"
+        ? visible
+        : visible.slice(0, actionCountBeforeOverflow)
+      ).map((action) => ({ action, visible: true }));
   const overflowCandidates =
     mode === "mixed"
       ? reserveSpace
-        ? actions.slice(inlineCount)
-        : visible.slice(inlineCount)
+        ? actions.slice(actionCountBeforeOverflow)
+        : visible.slice(actionCountBeforeOverflow)
       : [];
   const overflow = overflowCandidates.filter((action) =>
     ciIsDataTableControlVisible(action, row)
@@ -114,7 +118,7 @@ export function CiDataTableRowActions<TData>({
           return <ActionSpacer key={action.id} />;
         }
         const disabled = ciIsDataTableControlDisabled(action, row);
-        const iconOnly = action.display === "icon" && action.icon;
+        const iconOnly = Boolean(action.icon);
         const actionButton = (
           <Button
             type="button"

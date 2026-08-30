@@ -58,7 +58,7 @@ From there, it applies a series of standardized steps before returning a `Respon
 
 1. **Read environment configuration:**
    The handler starts by reading required environment variables such as `CI_SYSTEM_TABLE_NAME` and `CI_REGION`, and resolving
-   the current runtime environment via `getEnvMode()` (`'live' | 'test' | 'sandbox'`). If any critical environment variable is
+   the current runtime environment (`development | test | staging | production`). If any critical environment variable is
    missing, it immediately returns an error `Response` using the `err()` helper, including rich context (`event`, `context`, `env list`)
    for observability.
 
@@ -155,7 +155,7 @@ In summary, a **CloudIgniter Lambda handler** is not an ad-hoc function: it is a
 
 - Reads and validates environment configuration
 - Parses a single canonical `inputString` into a typed `Request<T>`
-- Applies environment and safety guards (including test/sandbox-only rules)
+- Applies environment and safety guards (including development-only developer capabilities)
 - Enforces authorization and access rules
 - Validates the business payload
 - Delegates to shared server logic

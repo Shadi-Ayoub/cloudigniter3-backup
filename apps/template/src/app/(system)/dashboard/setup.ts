@@ -33,4 +33,26 @@ export const setup: CiNextDashboardCardProps[] = [
     route: "/dashboard/tenants",
     namespace: "dashboard",
   },
+  {
+    id: "dashboard-org-units",
+    icon: "ci:office-building-outline",
+    label: "Org Units",
+    description:
+      "Builds tenant-aware organizational trees, attaches shared departments to several companies, and preserves predecessor-aware access boundaries.",
+    meta: "Shared organization trees",
+    route: "/dashboard/org-units",
+    namespace: "dashboard",
+  },
+  {
+    id: "dashboard-trash",
+    icon: "ci:trash-can-outline",
+    label: "Trash",
+    description:
+      "Reviews resources removed through CloudIgniter's reversible deletion lifecycle. Privileged administrators can restore deleted tenants, while permanent deletion remains restricted to protected super administration.",
+    meta: "Deleted resources",
+    badge: "Protected",
+    tone: "security",
+    route: "/dashboard/trash",
+    namespace: "dashboard",
+  },
 ];

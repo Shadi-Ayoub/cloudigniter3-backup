@@ -34,6 +34,22 @@ export type { CiTenant } from "./CiTenant";
 export type { CiTenantDdbTableItem } from "./CiTenantDdbTableItem";
 // export type { CiTenantHeaderKey } from "./CiTenantHeaderKey";
 export type { CiTenantHtmlTableRow } from "./CiTenantHtmlTableRow";
+export type {
+  CiDeleteTenantInput,
+  CiListTenantsInput,
+  CiListTenantsResult,
+  CiPurgeTenantInput,
+  CiRestoreTenantInput,
+  CiSetTenantStatusInput,
+  CiTenantLifecycleResult,
+  CiTenantStatusTransitionMetadata,
+} from "./CiTenantLifecycleTypes";
+export type {
+  CiCleanupSeededTenantsInput,
+  CiSeedTenantsInput,
+  CiTenantSeederDataItem,
+  CiTenantSeederExecutionResult,
+} from "./CiTenantSeederTypes";
 // export type { CiTenantLookupBySlugNotFoundBody } from "./CiTenantLookupBySlugNotFoundBody";
 // export type { CiTenantLookupBySlugOkBody } from "./CiTenantLookupBySlugOkBody";
 // export type { CiTenantResolutionOptions } from "./CiTenantResolutionOptions";

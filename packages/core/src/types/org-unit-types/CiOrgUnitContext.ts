@@ -20,6 +20,13 @@ export type CiOrgUnitContext = {
   /** Parent Org Unit identifier for tree structures. */
   parentId?: string | null;
 
+  /**
+   * Authoritatively resolved predecessors ordered from the tree root to the
+   * direct parent. Authorization uses these IDs for descendant propagation;
+   * callers must never derive them from an untrusted pathname.
+   */
+  ancestorOrgUnitIds?: readonly string[];
+
   /** Route-safe Org Unit slug. */
   slug: string;
 

@@ -28,6 +28,7 @@ type CiOrgUnitLookupRequest = Pick<Request, "url">;
  *   id: "org-unit-id",
  *   tenantId: "tenant-id",
  *   parentId: null,
+ *   ancestorOrgUnitIds: [],
  *   slug: "math",
  *   name: "Mathematics Department",
  *   path: "/academic/grade-10/math",
@@ -87,6 +88,7 @@ export async function ciLookupOrgUnit(
       id?: string;
       tenantId?: string;
       parentId?: string | null;
+      ancestorOrgUnitIds?: string[];
       slug?: string;
       name?: string;
       path?: string;
@@ -124,6 +126,11 @@ export async function ciLookupOrgUnit(
       id: data.id,
       tenantId: data.tenantId,
       parentId: data.parentId ?? null,
+      ancestorOrgUnitIds: Array.isArray(data.ancestorOrgUnitIds)
+        ? data.ancestorOrgUnitIds.filter(
+            (value): value is string => typeof value === "string",
+          )
+        : [],
       slug: data.slug,
       name: data.name,
       path: ciNormalizePathname(data.path),

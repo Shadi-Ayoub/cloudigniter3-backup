@@ -1,0 +1,86 @@
+---
+title: A
+description: CloudIgniter terms beginning with A.
+---
+
+# A
+
+
+## Access Control
+
+The CloudIgniter capability that decides whether a subject may perform an action on a resource within an authoritative scope. It combines the access-control catalog, scoped assignments, runtime context, and an explicit conflict algorithm. See [Authorization](/docs/core-system/authorization/overview).
+
+
+## Access-Control Catalog
+
+The versioned definition of resource domains, resources, actions, roles, privileges, inheritance, precedence, and policy status used by an authorizer. Applications extend the protected core catalog through validated composition rather than replacing it.
+
+
+## Access Scope
+
+The boundary within which an assignment or authorization request applies. CloudIgniter distinguishes `system`, `global`, `tenant`, and `orgUnit` scopes and does not treat them as interchangeable.
+
+
+## Action
+
+A stable operation defined for a resource, such as `read`, `create`, `update`, `archive`, or `purge`. Authorization checks match both the resource ID and action ID.
+
+
+## Actor
+
+The authenticated identity responsible for a trusted operation. Lifecycle metadata records the actor resolved by the server or provider boundary, never an actor ID supplied by the browser.
+
+
+## Admin Role
+
+The canonical `admin` role for business administration within global, Tenant, or Org Unit scopes. It belongs to the business role lane and does not grant technical system administration.
+
+
+## Amplify Backend
+
+The AWS Amplify Gen 2 infrastructure assembled by the template from CloudIgniter package manifests, concrete resources, custom application resources, environment bindings, and least-privilege policies. See [Extend the Amplify backend](/docs/providers/aws/extending-amplify-backend).
+
+
+## Amplify Sandbox
+
+A developer-specific cloud deployment used to test an Amplify backend. CloudIgniter uses one-shot deployment with `ampx sandbox --once --profile <profile>` when a watcher is not wanted.
+
+
+## Application Configuration
+
+The application-owned configuration that selects and composes CloudIgniter capabilities, providers, routes, localization, and other supported options. It configures reusable packages rather than reimplementing their behavior.
+
+
+## Application Settings
+
+Persisted, runtime-resolved values that affect application behavior or presentation. Settings are separate from build-time application configuration and may have public, private, tenant, or user visibility rules.
+
+
+## Assignment
+
+A time- and scope-bounded link from a subject to a role or direct privilege. Assignments provide the subject-specific input to an authorization decision.
+
+
+## Authentication
+
+The process of establishing who a user or service is and resolving a trusted identity or session. Authentication answers “who are you?”; authorization answers “what may you do?”.
+
+
+## Authorization
+
+The decision process that determines whether an authenticated subject may perform a requested action. CloudIgniter authorization is scoped, provider-neutral, explicit at trusted boundaries, and deny-by-default.
+
+
+## Authorizer
+
+The runtime evaluator that compiles or consumes an access-control catalog and returns an allow or deny decision with evidence. UI visibility is not a substitute for an authorizer decision.
+
+
+## AWS AppSync
+
+The managed AWS GraphQL service used by the Amplify provider to expose typed queries and mutations backed by trusted Lambda handlers or data resolvers.
+
+
+## AWS Provider
+
+The provider implementation in `@cloudigniter/aws` that adapts CloudIgniter contracts to AWS services such as Amplify, Cognito, Lambda, AppSync, and DynamoDB.

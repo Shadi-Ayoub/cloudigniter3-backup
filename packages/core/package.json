@@ -48,7 +48,7 @@
     "obfuscate": "ci-dev package obfuscate",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "check:package": "npm pack --dry-run",
-    "test": "node --import=tsx --test __tests__/auth/access-control.test.ts __tests__/icon/ci-resolve-icon.test.ts __tests__/route/ci-merge-route-maps.test.ts __tests__/route/tenant-route-scope.test.ts __tests__/table/ci-table-key.test.ts",
+    "test": "node --import=tsx --test __tests__/auth/access-control.test.ts __tests__/dev/*.test.ts __tests__/icon/ci-resolve-icon.test.ts __tests__/resource/*.test.ts __tests__/route/ci-merge-route-maps.test.ts __tests__/route/tenant-route-scope.test.ts __tests__/table/ci-table-key.test.ts",
     "dev": "tsup --watch",
     "typecheck:tools": "tsc -p tsconfig.tools.json --noEmit",
     "check": "pnpm run typecheck && pnpm run typecheck:tools",

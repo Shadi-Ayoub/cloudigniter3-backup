@@ -1,0 +1,58 @@
+---
+title: CiDevBeacon
+description: Developer-dashboard beacon with preset initial placement and viewport-bounded pointer or keyboard repositioning.
+sidebar_position: 9
+---
+
+# CiDevBeacon
+
+`CiDevBeacon` is a [Server Component](/dictionary/s#server-component) exported from
+`@cloudigniter/next/server`. It applies the environment visibility rule and renders the interactive
+[Dev Beacon](/dictionary/d#dev-beacon) client surface with serializable configuration.
+
+```tsx
+import { CI_DEV_BEACON_LOGO } from "@cloudigniter/core/lib";
+import { CiDevBeacon } from "@cloudigniter/next/server";
+
+<CiDevBeacon
+  context={context}
+  position="bottom-right"
+  visibleWhenEnv="development"
+  defaultTab="status"
+  logo={CI_DEV_BEACON_LOGO}
+/>;
+```
+
+The `position` value selects the initial placement. After rendering, users can drag the button with a mouse,
+touch, or pen to any location that keeps the control within the viewport. Movement beyond the 4-pixel activation
+threshold suppresses the following click, so releasing a drag does not open the dashboard. A normal click,
+**Enter**, or **Space** opens it.
+
+Keyboard users can press **Alt + Arrow key** while the button is focused to move it by 8 pixels, or add **Shift**
+to move it by 32 pixels. The custom location is client-session state: a reload, remount, or new `position` prop
+restores the selected preset. Viewport resizing clamps a custom location so the button remains available.
+
+## Props
+
+`CiDevBeacon` accepts `CiDevBeaconProps<CiNextContext>` from `@cloudigniter/core/types`.
+
+| Prop                   | Type                            | Default               | Behavior                                                                                                                                                           |
+| ---------------------- | ------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `context`              | `CiNextContext`                 | required              | Supplies resolved environment, configuration, authentication, and diagnostic context.                                                                              |
+| `position`             | `CiDevBeaconPosition`           | `"bottom-right"`      | Selects the initial button preset. Dragging does not mutate this prop.                                                                                             |
+| `visibleWhenEnv`       | `CiEnvMode \| null`             | `"development"`       | Renders only in the matching environment; `null` skips this component-level environment comparison. The trusted developer-access gate still belongs at the caller. |
+| `defaultTab`           | `CiDevBeaconTabValue \| string` | `"status"`            | Selects the tab shown when the dashboard opens.                                                                                                                    |
+| `logo`                 | `CiDevBeaconLogoSpec`           | `{ kind: "default" }` | Provides a server-serializable logo specification.                                                                                                                 |
+| `extraTabSpecs`        | `CiDevBeaconExtraTabSpec[]`     | `[]`                  | Adds supported serializable dashboard tab specifications.                                                                                                          |
+| `viewportTopOffset`    | `string`                        | `"120px"`             | Initial top offset for the open dashboard surface before client measurement.                                                                                       |
+| `viewportBottomOffset` | `string`                        | `"0px"`               | Initial bottom offset for the open dashboard surface before client measurement.                                                                                    |
+
+The supported initial positions are `top-left`, `top-middle`, `top-right`, `left-middle`, `right-middle`,
+`bottom-left`, `bottom-middle`, and `bottom-right`.
+
+`CiDevBeaconClient` is also exported from `@cloudigniter/next/client` for framework composition that already owns a
+resolved client-safe context. Prefer `CiDevBeacon` when rendering from the normal CloudIgniter root wrapper because
+it preserves the [Server Component](/dictionary/s#server-component) visibility and serialization boundary.
+
+See [Development tools and application seeding](../../environment-modes/development-tools-and-seeding) for the
+developer-access rule and task-oriented usage.

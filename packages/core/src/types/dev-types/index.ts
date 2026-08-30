@@ -4,6 +4,15 @@
 export type { CiDebugProbeProps } from "./debug-probe-types";
 
 // ─────────────────────────────────────────────────────────────
+// developer tools access
+// ─────────────────────────────────────────────────────────────
+export type {
+  CiDeveloperToolsAccessInput,
+  CiDeveloperToolsActor,
+  CiDeveloperToolsOptions,
+} from "./developer-tools-types";
+
+// ─────────────────────────────────────────────────────────────
 // devbeacon
 // ─────────────────────────────────────────────────────────────
 export type {
@@ -73,6 +82,12 @@ export type {
   CiSeederItemKey,
   CiSeedMarkerDdbItem,
   CiSeederResponseBody,
+  CiSeederDefinition,
+  CiSeederExecutionItemResult,
+  CiSeederExecutionResult,
+  CiSeederItemStatus,
+  CiSeederManifest,
+  CiSeederOperation,
 } from "./seeder-types";
 
 // ─────────────────────────────────────────────────────────────
