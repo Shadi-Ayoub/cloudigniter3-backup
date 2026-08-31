@@ -1,1 +1,1 @@
-// export { UsersManagementPage } from './users-management-page';
+export { CiUserManagementPage as CiNextUserManagementPage } from "@cloudigniter/ui/client";

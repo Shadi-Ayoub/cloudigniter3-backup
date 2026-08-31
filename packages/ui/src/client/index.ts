@@ -215,6 +215,8 @@ export {
   CiSpinner,
 } from "./components";
 
+export { CiUserManagementPage } from "./user-management";
+
 // ─────────────────────────────────────────────────────────────
 // dev
 // ─────────────────────────────────────────────────────────────
@@ -270,6 +272,11 @@ export { CiNavigateWithLoader } from "./navigation";
 // security administration
 // ─────────────────────────────────────────────────────────────
 export { CiSecurityDataPage } from "./security";
+
+// ────────────────────────────────────────────────────────────
+// resource catalog
+// ───────────────────────────────────────────────────────────
+export { CiResourceCatalogPage } from "./resource-catalog";
 
 // ────────────────────────────────────────────────────────────
 // tenant management

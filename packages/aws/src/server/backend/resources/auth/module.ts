@@ -12,6 +12,12 @@ export const ciAuthResourceModule = ciCreateResourceModule({
   handlers: CI_AUTH_FUNCS_IDS,
 
   envKeyAllowlist: {
+    ciDeleteCognitoUserHandler: [
+      CI_ENV.CI_USER_POOL_ID_PARAM,
+      CI_ENV.CI_USER_POOL_ARN_PARAM,
+      CI_ENV.CI_USER_POOL_ID,
+      CI_ENV.CI_USER_POOL_ARN,
+    ],
     ciCreateCognitoUserHandler: [
       CI_ENV.CI_USER_POOL_ID_PARAM,
       CI_ENV.CI_USER_POOL_ARN_PARAM,
@@ -24,7 +30,25 @@ export const ciAuthResourceModule = ciCreateResourceModule({
       CI_ENV.CI_USER_POOL_ID,
       CI_ENV.CI_USER_POOL_ARN,
     ],
+    ciListCognitoUsersHandler: [
+      CI_ENV.CI_USER_POOL_ID_PARAM,
+      CI_ENV.CI_USER_POOL_ARN_PARAM,
+      CI_ENV.CI_USER_POOL_ID,
+      CI_ENV.CI_USER_POOL_ARN,
+    ],
+    ciSetCognitoUserEnabledHandler: [
+      CI_ENV.CI_USER_POOL_ID_PARAM,
+      CI_ENV.CI_USER_POOL_ARN_PARAM,
+      CI_ENV.CI_USER_POOL_ID,
+      CI_ENV.CI_USER_POOL_ARN,
+    ],
     ciSetCognitoUserPasswordHandler: [
+      CI_ENV.CI_USER_POOL_ID_PARAM,
+      CI_ENV.CI_USER_POOL_ARN_PARAM,
+      CI_ENV.CI_USER_POOL_ID,
+      CI_ENV.CI_USER_POOL_ARN,
+    ],
+    ciUpdateCognitoUserHandler: [
       CI_ENV.CI_USER_POOL_ID_PARAM,
       CI_ENV.CI_USER_POOL_ARN_PARAM,
       CI_ENV.CI_USER_POOL_ID,

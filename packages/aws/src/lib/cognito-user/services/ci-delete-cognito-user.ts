@@ -17,10 +17,11 @@ export async function ciDeleteCognitoUser(
   try {
     const cognito = await ciCreateCognitoClient(input.CognitoClientConfig);
 
-    await cognito.deleteUser({
+    const result = await cognito.deleteUser({
       UserPoolId: input.cognito.UserPoolId,
       Username: input.cognito.Username,
     });
+    if (!result.ok && result.statusCode !== 404) return result;
 
     return ciOk200(null);
   } catch (error: unknown) {

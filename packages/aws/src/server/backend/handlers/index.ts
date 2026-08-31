@@ -12,6 +12,8 @@ export {
   ciGetCognitoUserHandler,
   ciSetCognitoUserPasswordHandler,
   ciUpdateCognitoUserHandler,
+  ciListCognitoUsersHandler,
+  ciSetCognitoUserEnabledHandler,
 } from "./cognito-handlers";
 
 export {

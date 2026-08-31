@@ -14,6 +14,14 @@ export {
 
   // security
   appCreateSecurityAdministration,
+  appCreateUserRecord,
+  appDeleteUserRecord,
+  appListUserRecords,
+  appGetUserRecord,
+  appPurgeUserRecord,
+  appRestoreUserRecord,
+  appSetUserStatus,
+  appUpdateUserRecord,
 } from "./system";
 
 //Settings

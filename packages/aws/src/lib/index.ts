@@ -25,6 +25,8 @@ export {
   ciGetCognitoUser,
   ciSetCognitoUserPassword,
   ciUpdateCognitoUser,
+  ciListCognitoUsers,
+  ciSetCognitoUserEnabled,
   ciBuildCognitoError,
   ciCreateCognitoClient,
   ciIsCognitoUserNotFoundError,
@@ -33,6 +35,7 @@ export {
   // utility
   ciGetCognitoAttributeValue,
   ciMapCognitoError,
+  ciMapCognitoUser,
 } from "./cognito-user";
 
 // ─────────────────────────────────────────────────────────────

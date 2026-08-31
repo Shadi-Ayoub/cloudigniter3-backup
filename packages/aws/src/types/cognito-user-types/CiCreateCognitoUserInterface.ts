@@ -8,5 +8,7 @@ export type CiCreateCognitoUserInterface = {
   setPassword?: boolean;
   password?: string;
   permanent?: boolean;
+  /** Cognito groups assigned after account creation. */
+  groups?: string[];
   CognitoClientConfig?: CognitoIdentityProviderClientConfig;
 };

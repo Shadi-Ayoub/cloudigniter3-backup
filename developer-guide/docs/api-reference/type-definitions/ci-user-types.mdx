@@ -1,0 +1,117 @@
+---
+title: CloudIgniter user types
+description: Public application user, profile, persisted entity, Cognito identity, assignment, input, and mutation-result contracts.
+sidebar_position: 20
+---
+
+# CloudIgniter user types
+
+Import provider-neutral contracts from `@cloudigniter/core/types` and the normalized AWS identity from
+`@cloudigniter/aws/types`:
+
+```ts
+import type {
+  CIUser,
+  CIUserEntity,
+  CIUserProfile,
+  CICreateUserInput,
+  CIUserMutationResult,
+} from "@cloudigniter/core/types";
+import type { CICognitoUser } from "@cloudigniter/aws/types";
+```
+
+## `CIUserProfile`
+
+```ts
+type CIUserProfile = {
+  displayName?: string;
+  title?: string;
+  givenName?: string;
+  middleName?: string;
+  familyName?: string;
+  avatarUrl?: string;
+  avatarKey?: string;
+  phoneNumber?: string;
+  locale?: string;
+  timeZone?: string;
+  bio?: string;
+  birthDate?: string;
+  gender?: string;
+  address?: CIUserPostalAddress;
+  extensions?: Record<string, unknown>;
+};
+```
+
+All fields are optional. `avatarKey` is the durable provider-neutral storage reference; `avatarUrl` is a replaceable
+delivery URL. `extensions` is the only application extension seam and must be a JSON object. The core
+contract does not validate application-specific keys or values.
+
+## `CIUserEntity`
+
+`CIUserEntity` extends the profile with `userId`, `username`, optional email/verification state, `profileOwner`, a
+role projection, operational `status`, trusted `statusChange`, `deletionState`, optional deletion metadata, and timestamps. `userId` is the
+stable provider subject (`sub` for Cognito); `username` and email are lookup values, not entity identity.
+
+## `CIUser`
+
+```ts
+type CIUser<TIdentity = unknown> = {
+  id: string;
+  username: string;
+  email?: string;
+  emailVerified?: boolean;
+  displayName: string;
+  avatarUrl?: string;
+  status: "active" | "invited" | "suspended";
+  statusChange?: CIUserStatusChange;
+  identityProvider: CIUserIdentityProvider;
+  roles: string[];
+  assignments: CIUserAssignment[];
+  protected?: boolean;
+  deletion?: CiResourceDeletionMetadata;
+  createdAt?: string;
+  updatedAt?: string;
+  lastAuthenticatedAt?: string;
+  detailLevel: "summary" | "full";
+  profile?: CIUserProfile;
+  identity?: TIdentity;
+};
+```
+
+Summary results omit `profile` and `identity`. A full AWS-backed result can use `CIUser<CICognitoUser>`.
+`CIUserIdentityProvider` exposes `id`, `label`, and `kind: "native" | "federated"` without leaking provider SDK
+objects.
+
+## `CICognitoUser`
+
+`CICognitoUser` normalizes Cognito username, enabled state, provider status, common name/email attributes, raw
+string attributes, timestamps, and the detected identity provider. Native users use the Cognito User Pool
+descriptor; a federated `identities` attribute may supply the external provider label and `kind: "federated"`.
+
+The related AWS types are `CICognitoUsersPage`, `CIListCognitoUsersInput`, and
+`CISetCognitoUserEnabledInput`. Client configuration remains server/provider data and must not cross into browser
+props.
+
+## Mutation inputs
+
+`CICreateUserInput` requires email, given/family names, at least one role at the UI/server boundary, and an
+`assignments` array. Each assignment includes a role, `CiAccessScope`, and propagation. Temporary password,
+invitation delivery, middle name, and profile are optional.
+
+`CIUpdateUserInput` may carry the complete desired role and scoped-assignment sets in addition to account/profile
+fields. Update, status, soft-delete, restore, impersonation, and purge use `CIUpdateUserInput`, `CISetUserStatusInput`,
+`CIDeleteUserInput`, `CIRestoreUserInput`, and `CIPurgeUserInput`. Status/deletion operations require a reason at
+the trusted adapter. Purge also requires `confirmation` to equal `userId` exactly.
+
+`CIUserSeederDataItem` is the development-fixture shape and `CIUserSeederExecutionResult` reports per-item
+created/deleted/skipped/failed results with optional user resources.
+
+All UI mutations return:
+
+```ts
+type CIUserMutationResult =
+  { ok: true; message: string; user?: CIUser } | { ok: false; message: string };
+```
+
+See [User administration](../../users-management/intro) and
+[`CiUserManagementPage`](../components/ci-user-management-page).

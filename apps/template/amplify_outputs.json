@@ -462,22 +462,85 @@
               "isRequired": false,
               "attributes": []
             },
-            "profilePicture": {
-              "name": "profilePicture",
+            "emailVerified": {
+              "name": "emailVerified",
+              "isArray": false,
+              "type": "Boolean",
+              "isRequired": false,
+              "attributes": []
+            },
+            "displayName": {
+              "name": "displayName",
               "isArray": false,
               "type": "String",
               "isRequired": false,
               "attributes": []
             },
-            "city": {
-              "name": "city",
+            "givenName": {
+              "name": "givenName",
               "isArray": false,
               "type": "String",
               "isRequired": false,
               "attributes": []
             },
-            "country": {
-              "name": "country",
+            "middleName": {
+              "name": "middleName",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "familyName": {
+              "name": "familyName",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "avatarUrl": {
+              "name": "avatarUrl",
+              "isArray": false,
+              "type": "AWSURL",
+              "isRequired": false,
+              "attributes": []
+            },
+            "phoneNumber": {
+              "name": "phoneNumber",
+              "isArray": false,
+              "type": "AWSPhone",
+              "isRequired": false,
+              "attributes": []
+            },
+            "locale": {
+              "name": "locale",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "timeZone": {
+              "name": "timeZone",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "bio": {
+              "name": "bio",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "birthDate": {
+              "name": "birthDate",
+              "isArray": false,
+              "type": "AWSDate",
+              "isRequired": false,
+              "attributes": []
+            },
+            "gender": {
+              "name": "gender",
               "isArray": false,
               "type": "String",
               "isRequired": false,
@@ -486,21 +549,50 @@
             "address": {
               "name": "address",
               "isArray": false,
+              "type": "AWSJSON",
+              "isRequired": false,
+              "attributes": []
+            },
+            "extensions": {
+              "name": "extensions",
+              "isArray": false,
+              "type": "AWSJSON",
+              "isRequired": false,
+              "attributes": []
+            },
+            "status": {
+              "name": "status",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "statusChange": {
+              "name": "statusChange",
+              "isArray": false,
+              "type": "AWSJSON",
+              "isRequired": false,
+              "attributes": []
+            },
+            "roles": {
+              "name": "roles",
+              "isArray": true,
               "type": "String",
               "isRequired": false,
+              "attributes": [],
+              "isArrayNullable": false
+            },
+            "deletionState": {
+              "name": "deletionState",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
               "attributes": []
             },
-            "landline": {
-              "name": "landline",
+            "deletion": {
+              "name": "deletion",
               "isArray": false,
-              "type": "AWSPhone",
-              "isRequired": false,
-              "attributes": []
-            },
-            "mobile": {
-              "name": "mobile",
-              "isArray": false,
-              "type": "AWSPhone",
+              "type": "AWSJSON",
               "isRequired": false,
               "attributes": []
             },
@@ -564,6 +656,16 @@
               }
             },
             {
+              "type": "key",
+              "properties": {
+                "name": "userProfilesByDeletionState",
+                "queryField": "listUserProfileByDeletionState",
+                "fields": [
+                  "deletionState"
+                ]
+              }
+            },
+            {
               "type": "auth",
               "properties": {
                 "rules": [
@@ -582,6 +684,20 @@
                     "provider": "userPools",
                     "allow": "groups",
                     "groups": [
+                      "admin"
+                    ],
+                    "operations": [
+                      "create",
+                      "update",
+                      "delete",
+                      "read"
+                    ]
+                  },
+                  {
+                    "groupClaim": "cognito:groups",
+                    "provider": "userPools",
+                    "allow": "groups",
+                    "groups": [
                       "system-admin"
                     ],
                     "operations": [
@@ -592,15 +708,16 @@
                     ]
                   },
                   {
-                    "allow": "public",
-                    "provider": "identityPool",
+                    "groupClaim": "cognito:groups",
+                    "provider": "userPools",
+                    "allow": "groups",
+                    "groups": [
+                      "system-super-admin"
+                    ],
                     "operations": [
-                      "read"
-                    ]
-                  },
-                  {
-                    "allow": "private",
-                    "operations": [
+                      "create",
+                      "update",
+                      "delete",
                       "read"
                     ]
                   }
@@ -642,6 +759,20 @@
       "queries": {
         "GetCognitoUser": {
           "name": "GetCognitoUser",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
+        "ListCognitoUsers": {
+          "name": "ListCognitoUsers",
           "isArray": false,
           "type": "AWSJSON",
           "isRequired": false,
@@ -754,6 +885,20 @@
         }
       },
       "mutations": {
+        "DeleteCognitoUser": {
+          "name": "DeleteCognitoUser",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
         "CreateCognitoUser": {
           "name": "CreateCognitoUser",
           "isArray": false,
@@ -770,6 +915,34 @@
         },
         "SetCognitoUserPassword": {
           "name": "SetCognitoUserPassword",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
+        "SetCognitoUserEnabled": {
+          "name": "SetCognitoUserEnabled",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
+        "UpdateCognitoUser": {
+          "name": "UpdateCognitoUser",
           "isArray": false,
           "type": "AWSJSON",
           "isRequired": false,

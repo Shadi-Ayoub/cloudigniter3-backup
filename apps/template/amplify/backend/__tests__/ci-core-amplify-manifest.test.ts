@@ -15,6 +15,14 @@ import {
   CI_CORE_AMPLIFY_MANIFEST,
   CI_CORE_AMPLIFY_TABLE_BINDINGS,
 } from "../ci-core-amplify-manifest";
+import { CI_COGNITO_USER_ADMIN_GROUPS } from "../../data/schemata/schema-cognito-user";
+
+test("admits both technical administrator groups to Cognito operations", () => {
+  assert.deepEqual(CI_COGNITO_USER_ADMIN_GROUPS, [
+    "system-admin",
+    "system-super-admin",
+  ]);
+});
 
 test("projects every active package binding into the Amplify backend", () => {
   assert.deepEqual(

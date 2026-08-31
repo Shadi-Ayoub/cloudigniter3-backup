@@ -113,11 +113,21 @@ export type { BorderBeamProps } from "./shadcn-types";
 // ─────────────────────────────────────────────────────────────
 export type { CiSecurityDataPageProps } from "./security-types";
 
+// ─────────────────────────────────────────────────────────────
+// resource catalog
+// ────────────────────────────────────────────────────────────
+export type { CiResourceCatalogPageProps } from "./resource-catalog-types";
+
 export type {
   CiTenantManagementCapabilities,
   CiTenantManagementPageProps,
 } from "./tenant-management-types";
 export type { CiOrgUnitManagementPageProps } from "./org-unit-management-types";
+export type {
+  CiUserManagementCapabilities,
+  CiUserManagementPageProps,
+  CiUserManagementRoleOption,
+} from "./user-management-types";
 
 // ─────────────────────────────────────────────────────────────
 // smart form

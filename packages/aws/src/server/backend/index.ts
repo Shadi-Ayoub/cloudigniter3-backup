@@ -40,6 +40,8 @@ export {
   ciGetCognitoUserHandler,
   ciSetCognitoUserPasswordHandler,
   ciUpdateCognitoUserHandler,
+  ciListCognitoUsersHandler,
+  ciSetCognitoUserEnabledHandler,
 
   // tenant lifecycle
   ciCleanupSeededTenantsHandler,

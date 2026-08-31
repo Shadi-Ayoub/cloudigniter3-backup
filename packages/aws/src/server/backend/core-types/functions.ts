@@ -1,7 +1,11 @@
 export const CI_AUTH_FUNCS_IDS = [
+  "ciDeleteCognitoUserHandler",
   "ciGetCognitoUserHandler",
   "ciCreateCognitoUserHandler",
+  "ciListCognitoUsersHandler",
+  "ciSetCognitoUserEnabledHandler",
   "ciSetCognitoUserPasswordHandler",
+  "ciUpdateCognitoUserHandler",
 ] as const;
 
 export const CI_DATA_FUNCS_IDS = [

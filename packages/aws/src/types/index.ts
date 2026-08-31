@@ -36,6 +36,10 @@ export type {
   CiSetUserPasswordOptions,
   CiDeleteCognitoUserInterface,
   CiUpdateCognitoUserInterface,
+  CICognitoUser,
+  CICognitoUsersPage,
+  CIListCognitoUsersInput,
+  CISetCognitoUserEnabledInput,
 } from "./cognito-user-types";
 
 // ─────────────────────────────────────────────────────────────

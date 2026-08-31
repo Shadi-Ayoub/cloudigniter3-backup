@@ -109,6 +109,11 @@ export class Cognito {
     return this.client;
   }
 
+  /** Returns the initialized SDK client for provider services in this package. */
+  async getIdentityProviderClient(): Promise<CognitoIdentityProviderClient> {
+    return this.getClient();
+  }
+
   /**
    * Retrieve a Cognito user by username.
    *

@@ -33,6 +33,14 @@ export {
 
   // Security
   appCreateSecurityAdministration,
+  appCreateUserRecord,
+  appDeleteUserRecord,
+  appListUserRecords,
+  appGetUserRecord,
+  appPurgeUserRecord,
+  appRestoreUserRecord,
+  appSetUserStatus,
+  appUpdateUserRecord,
 } from "./api";
 
 // ─────────────────────────────────────────────────────────────

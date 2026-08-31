@@ -1,6 +1,108 @@
 ---
-title: Introduction
+title: User administration
+description: Manage CloudIgniter users, Cognito identities, profiles, roles, assignments, and deletion lifecycle from the dashboard.
 sidebar_position: 1
 ---
 
-Users in Cloudigniter...
+# User administration
+
+Open **Dashboard → Users** to manage the people who can access a CloudIgniter application. The page combines the
+application user summary, its [Cognito](/dictionary/c#cognito) account, CloudIgniter profile, roles, and scoped
+assignments. The table identifies **Amazon Cognito** in both its header and each user's
+[Identity Provider](/dictionary/i#identity-provider) column so administrators do not confuse the application
+profile with the login directory.
+
+Access is controlled by the `identity.users` authorization resource. The server checks `read`, `create`, `update`,
+`delete`, `assign-role`, `email`, `impersonate`, `restore`, and `purge` independently; hiding or disabling an action in the browser is never the security
+boundary.
+
+## The user model
+
+CloudIgniter separates four concerns:
+
+| Contract        | Purpose                                                                       | Owner                      |
+| --------------- | ----------------------------------------------------------------------------- | -------------------------- |
+| `CIUser`        | Provider-neutral application projection used by lists and views               | `@cloudigniter/core/types` |
+| `CIUserProfile` | Fixed CloudIgniter profile fields plus the application extension seam         | `@cloudigniter/core/types` |
+| `CIUserEntity`  | Persisted User Profile table record, including lifecycle and list projections | `@cloudigniter/core/types` |
+| `CICognitoUser` | Normalized AWS identity account and provider attributes                       | `@cloudigniter/aws/types`  |
+
+Use the immutable Cognito `sub` as `userId`. Email is the configured sign-in identifier, not the durable database
+key, and a Cognito username remains a provider lookup value.
+
+## Minimum-information strategy
+
+Management lists return a `CIUser` with `detailLevel: "summary"`. The summary contains only the stable ID,
+username, email and verification flag, display name/avatar, operational status, provider, roles, scoped
+assignments, lifecycle metadata, and timestamps. It deliberately omits the complete `profile` and raw `identity`.
+
+Load `detailLevel: "full"` only for a detail or edit workflow that needs those objects. Address, birth date,
+gender, biography, and other sensitive profile fields should not be fetched merely to render a row. This split
+keeps common authorization and presentation paths small while reducing unnecessary personal-data exposure.
+
+## Profile strategy
+
+The fixed profile supports commonly useful, provider-neutral fields: display and personal names, title, avatar
+object key/delivery URL, phone number, locale, time zone, biography, birth date, gender, and a structured residence
+address. Every profile
+field is optional so each application can apply data minimization and collect only what it needs.
+
+`extensions` is the one application-owned extension field. It accepts a JSON object for namespaced additions such
+as `{"acme.departmentId":"finance"}`. Do not add application-specific columns to the fixed profile contract, put
+credentials or secrets in `extensions`, or copy every Cognito attribute into the profile. Validate and authorize
+extension data in the application adapter that owns it.
+
+## Create a user
+
+Choose **New user**, then provide:
+
+1. Email, given name, and family name. These match the current Amplify Auth requirements; middle name is optional.
+2. An optional temporary password and whether Cognito should send its invitation.
+3. Optional CloudIgniter profile summary fields and an extension JSON object.
+4. At least one Cognito role/group.
+5. One or more role assignments, including system, global, Tenant, or Org Unit scope and exact/descendant
+   propagation.
+
+Creation writes the Cognito account and group memberships, creates the User Profile record, and persists the
+scoped EmberGuard assignments. Only a directly authorized system super administrator can grant the protected
+`system-super-admin` role.
+
+Edit loads the full profile only when the dialog opens. It can update names, title, gender, residence address,
+locale and time-zone selections, Cognito roles/groups, and scoped assignments. The Email action opens the configured
+email adapter (the default browser behavior uses `mailto:`). Protected lifecycle actions remain visible but disabled
+so an administrator can discover the capability without being able to run it.
+
+The profile stores `avatarKey` as the durable S3 reference. Signed or CDN URLs are delivery values and may expire;
+do not treat `avatarUrl` as object identity. The application must register an Amplify Storage bucket and upload
+adapter before operators can upload files from this editor.
+
+Impersonation is reserved for system super administrators and remains disabled until the application installs an
+audited impersonation-session adapter. It must never reuse the administrator's Cognito tokens as if they belonged
+to the target user.
+
+In development mode, an exact `developer` can use the page's test-user seeder. It creates the three configured
+test Gmail accounts with profiles, roles, and assignments. Cleanup only removes records carrying the matching
+`test-users` provenance marker.
+
+## Status and deletion
+
+Suspension is operational and reversible: CloudIgniter disables the Cognito account, records the trusted actor,
+time, and reason, and keeps its profile and assignments. **Delete** is also reversible, but moves the user to **Dashboard → Trash**, records trusted deletion
+metadata, and disables the identity. It does not permanently delete the account.
+
+From Trash, **Restore** clears deletion metadata and re-enables the identity unless the user was independently
+suspended. **Delete permanently** requires a reason and an exact user-ID confirmation; it removes assignments,
+the Cognito identity, and the profile. The current actor cannot suspend or delete their own account, and
+`system-super-admin` accounts are protected from these lifecycle actions.
+
+:::warning Deployment compatibility
+
+The profile primary key is now Cognito `sub`. Applications with legacy username-keyed profile rows must migrate or
+reseed those rows before enabling this page. Amplify Auth sign-in attributes and required attributes are effectively
+deployment-time choices; verify them before updating an existing User Pool.
+
+:::
+
+See the [`CIUser` contracts](../api-reference/type-definitions/ci-user-types),
+[`CiUserManagementPage`](../api-reference/components/ci-user-management-page), and
+[Amplify Auth setup](../aws-amplify-setup/folder-structure).

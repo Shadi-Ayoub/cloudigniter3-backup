@@ -8,6 +8,7 @@
 export const ciIconRegistry = {
   "ci:rocket-launch-outline": "mdi:rocket-launch-outline",
   "ci:account-group": "mdi:account-group",
+  "ci:account-group-outline": "mdi:account-group-outline",
   "ci:badge-account-outline": "mdi:badge-account-outline",
   "ci:key-outline": "mdi:key-outline",
   "ci:account-key-outline": "mdi:account-key-outline",

@@ -13,8 +13,12 @@ import { CI_CORE_AMPLIFY_FUNCTION_RESOURCES } from "../backend/ci-core-amplify-m
 
 const {
   createCognitoUserHandler,
+  deleteCognitoUserHandler,
   getCognitoUserHandler,
+  listCognitoUsersHandler,
+  setCognitoUserEnabledHandler,
   setCognitoUserPasswordHandler,
+  updateCognitoUserHandler,
 } = CI_CORE_AMPLIFY_FUNCTION_RESOURCES;
 
 // import { createUserHandler } from '../functions/user/create-user/resource';
@@ -45,11 +49,26 @@ const backendAuth: AmplifyAuthProps = {
 // const coreBackendAuthAccess = customBackendAuthAccess;
 const backendAuthAccess = (allow: AuthAccessBuilder) => {
   const accessArray: AuthAccessDefinition[] = [
+    allow.resource(deleteCognitoUserHandler).to(["deleteUser"]),
     // allow.resource(listCognitoUsers).to(['listUsers']),
     allow.resource(getCognitoUserHandler).to(["getUser"]),
-    allow.resource(createCognitoUserHandler).to(["createUser"]),
+    allow.resource(listCognitoUsersHandler).to(["listUsers"]),
+    allow
+      .resource(createCognitoUserHandler)
+      .to(["createUser", "addUserToGroup"]),
     allow.resource(createCognitoUserHandler).to(["getUser"]),
     allow.resource(setCognitoUserPasswordHandler).to(["setUserPassword"]),
+    allow
+      .resource(setCognitoUserEnabledHandler)
+      .to(["disableUser", "enableUser"]),
+    allow
+      .resource(updateCognitoUserHandler)
+      .to([
+        "updateUserAttributes",
+        "listGroupsForUser",
+        "addUserToGroup",
+        "removeUserFromGroup",
+      ]),
     // allow.resource(deleteCognitoUser).to(['disableUser']),
     // allow.resource(deleteCognitoUser).to(['deleteUser']),
 

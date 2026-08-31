@@ -1,0 +1,68 @@
+[
+  {
+    "email": "shadi.ayoub.test1@gmail.com",
+    "givenName": "Shadi",
+    "familyName": "Ayoub Test 1",
+    "sendInvitation": false,
+    "roles": ["user"],
+    "assignments": [
+      {
+        "roleId": "user",
+        "scope": { "kind": "global" },
+        "propagation": "exact"
+      }
+    ],
+    "profile": {
+      "displayName": "Shadi Ayoub Test 1",
+      "title": "Mr",
+      "gender": "male",
+      "locale": "en",
+      "timeZone": "Asia/Dubai",
+      "address": { "locality": "Dubai", "countryCode": "AE" }
+    }
+  },
+  {
+    "email": "shadi.ayoub.test2@gmail.com",
+    "givenName": "Shadi",
+    "familyName": "Ayoub Test 2",
+    "sendInvitation": false,
+    "roles": ["admin"],
+    "assignments": [
+      {
+        "roleId": "admin",
+        "scope": { "kind": "global" },
+        "propagation": "exact"
+      }
+    ],
+    "profile": {
+      "displayName": "Shadi Ayoub Test 2",
+      "title": "Mr",
+      "gender": "male",
+      "locale": "en",
+      "timeZone": "Asia/Dubai",
+      "address": { "locality": "Dubai", "countryCode": "AE" }
+    }
+  },
+  {
+    "email": "shadi.ayoub.test3@gmail.com",
+    "givenName": "Shadi",
+    "familyName": "Ayoub Test 3",
+    "sendInvitation": false,
+    "roles": ["super-admin"],
+    "assignments": [
+      {
+        "roleId": "super-admin",
+        "scope": { "kind": "global" },
+        "propagation": "exact"
+      }
+    ],
+    "profile": {
+      "displayName": "Shadi Ayoub Test 3",
+      "title": "Mr",
+      "gender": "male",
+      "locale": "en",
+      "timeZone": "Asia/Dubai",
+      "address": { "locality": "Dubai", "countryCode": "AE" }
+    }
+  }
+]

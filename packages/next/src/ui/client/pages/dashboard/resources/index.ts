@@ -1,0 +1,1 @@
+export { CiNextResourceCatalogPage } from "./CiNextResourceCatalogPage";

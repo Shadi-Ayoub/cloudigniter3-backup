@@ -1,1 +1,5 @@
-export { appSeederManifest, testTenantsSeeder } from "./seeder.config";
+export {
+  appSeederManifest,
+  testTenantsSeeder,
+  testUsersSeeder,
+} from "./seeder.config";

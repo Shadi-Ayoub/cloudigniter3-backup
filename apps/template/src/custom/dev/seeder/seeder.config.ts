@@ -15,7 +15,19 @@ export const appSeederManifest = {
       createApi: "SeedTenants",
       cleanupApi: "CleanupSeededTenants",
     },
+    {
+      id: "test-users",
+      title: "Test Users",
+      description:
+        "Creates three disposable Cognito users with CloudIgniter profiles, roles, and scoped assignments.",
+      resource: "identity.users",
+      dataDirectory: "data/users",
+      dataFiles: ["users.json"],
+      createApi: "CreateUser",
+      cleanupApi: "PurgeUser",
+    },
   ],
 } as const satisfies CiSeederManifest;
 
 export const testTenantsSeeder = appSeederManifest.seeders[0];
+export const testUsersSeeder = appSeederManifest.seeders[1];

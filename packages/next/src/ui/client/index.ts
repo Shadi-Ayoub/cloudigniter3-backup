@@ -222,7 +222,11 @@ export {
 // ─────────────────────────────────────────────────────────────
 // pages
 // ─────────────────────────────────────────────────────────────
-export { CiNextSecurityDataPage } from "./pages/dashboard";
+export {
+  CiNextResourceCatalogPage,
+  CiNextSecurityDataPage,
+  CiNextUserManagementPage,
+} from "./pages/dashboard";
 
 // ─────────────────────────────────────────────────────────────
 // dev

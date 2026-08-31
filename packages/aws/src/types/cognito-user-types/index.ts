@@ -30,3 +30,9 @@ export type { CiGetUserInterface } from "./CiGetUserInterface";
 export type { CiSetUserPasswordOptions } from "./CiSetUserPasswordOptions";
 export type { CiDeleteCognitoUserInterface } from "./CiDeleteCognitoUserInterface";
 export type { CiUpdateCognitoUserInterface } from "./CiUpdateCognitoUserInterface";
+export type {
+  CICognitoUser,
+  CICognitoUsersPage,
+  CIListCognitoUsersInput,
+  CISetCognitoUserEnabledInput,
+} from "./CICognitoUser";

@@ -6,6 +6,7 @@ import { ciResolveIcon } from "@ci-core/lib";
 test("resolves the built-in security dashboard icons", () => {
   assert.deepEqual(
     [
+      "ci:account-group-outline",
       "ci:badge-account-outline",
       "ci:key-outline",
       "ci:account-key-outline",
@@ -13,6 +14,7 @@ test("resolves the built-in security dashboard icons", () => {
       "ci:account-multiple-check-outline",
     ].map((icon) => ciResolveIcon(icon)),
     [
+      "mdi:account-group-outline",
       "mdi:badge-account-outline",
       "mdi:key-outline",
       "mdi:account-key-outline",

@@ -578,4 +578,26 @@ export type {
 // ─────────────────────────────────────────────────────────────
 // user
 // ─────────────────────────────────────────────────────────────
-export type { CiCoreRole, CiUser } from "./user-types";
+export type {
+  CICreateUserAssignmentInput,
+  CICreateUserInput,
+  CIDeleteUserInput,
+  CIPurgeUserInput,
+  CIRestoreUserInput,
+  CISetUserStatusInput,
+  CIUpdateUserInput,
+  CIImpersonateUserInput,
+  CIUser,
+  CIUserAssignment,
+  CIUserEntity,
+  CIUserIdentityProvider,
+  CIUserMutationResult,
+  CIUserOperationalStatus,
+  CIUserStatusChange,
+  CIUserSeederDataItem,
+  CIUserSeederExecutionResult,
+  CIUserPostalAddress,
+  CIUserProfile,
+  CiCoreRole,
+  CiUser,
+} from "./user-types";

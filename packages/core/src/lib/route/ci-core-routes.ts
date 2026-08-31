@@ -25,6 +25,15 @@ export const ciCoreRoutes: CiRoutesMap = {
       action: "read",
     },
   },
+  "/dashboard/resources": {
+    title: "Resources Catalog",
+    namespace: "dashboard.resources",
+    protected: true,
+    access: {
+      resource: "platform.dashboard",
+      action: "read",
+    },
+  },
   "/dashboard/trash": {
     title: "Trash Management",
     namespace: "dashboard.trash",
@@ -69,6 +78,15 @@ export const ciCoreRoutes: CiRoutesMap = {
     namespace: "dashboard.tenants",
     protected: true,
   },
+  "/dashboard/users": {
+    title: "Manage Users",
+    namespace: "dashboard.users",
+    protected: true,
+    access: {
+      resource: "identity.users",
+      action: "read",
+    },
+  },
   "/dashboard/org-units": {
     title: "Manage Org Units",
     namespace: "dashboard.org-units",
@@ -84,9 +102,13 @@ export const ciCoreRoutes: CiRoutesMap = {
     protected: false,
   },
   "/dashboard/users/*": {
-    title: "List Users",
+    title: "User Administration",
     namespace: "dashboard.users",
     protected: true,
+    access: {
+      resource: "identity.users",
+      action: "read",
+    },
   },
   "/login": {
     title: "Login Page",

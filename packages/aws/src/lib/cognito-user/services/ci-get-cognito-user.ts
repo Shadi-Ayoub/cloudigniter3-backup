@@ -1,13 +1,15 @@
-import type { UserType as CognitoUserType } from "@aws-sdk/client-cognito-identity-provider";
-import { ciOk200 } from "@cloudigniter/core/lib";
 import type { CiResult } from "@cloudigniter/core/types";
-import { ciBuildCognitoError, ciCreateCognitoClient } from "@ci-aws/lib";
-import type { CiGetCognitoUserInterface } from "@ci-aws/types";
+import {
+  ciBuildCognitoError,
+  ciCreateCognitoClient,
+  ciMapCognitoUser,
+} from "@ci-aws/lib";
+import type { CICognitoUser, CiGetCognitoUserInterface } from "@ci-aws/types";
 
 /**
  * Successful result returned by `getCognitoUser`.
  */
-export type CiGetCognitoUserResult = CiResult<CognitoUserType>;
+export type CiGetCognitoUserResult = CiResult<CICognitoUser>;
 
 /**
  * Get a Cognito user.
@@ -23,7 +25,11 @@ export async function ciGetCognitoUser(
       Username: input.cognito.Username,
     });
 
-    return ciOk200(user as CognitoUserType);
+    if (!user.ok) return user;
+    return {
+      ...user,
+      body: ciMapCognitoUser(user.body),
+    };
   } catch (error: unknown) {
     return ciBuildCognitoError(
       "COGNITO_GET_USER: Failed to get the Cognito user.",

@@ -56,7 +56,17 @@ configuration and are merged without duplicating the core role list.
 ```ts {4,7,17,21,33} title="auth/backend-auth.ts" showLineNumbers
 import { CI_CORE_ROLES_BY_PRECEDENCE } from "@cloudigniter/core/lib";
 
-import { createCognitoUser } from "./cognito-user";
+import { CI_CORE_AMPLIFY_FUNCTION_RESOURCES } from "../backend/ci-core-amplify-manifest";
+
+const {
+  createCognitoUserHandler,
+  deleteCognitoUserHandler,
+  getCognitoUserHandler,
+  listCognitoUsersHandler,
+  setCognitoUserEnabledHandler,
+  setCognitoUserPasswordHandler,
+  updateCognitoUserHandler,
+} = CI_CORE_AMPLIFY_FUNCTION_RESOURCES;
 
 const coreBackendAuth: AmplifyAuthProps = {
   loginWith: {
@@ -77,12 +87,13 @@ const coreBackendAuth: AmplifyAuthProps = {
 
 const coreBackendAuthAccess = (allow: AuthAccessBuilder) => {
   const accessArray: AuthAccessDefinition[] = [
-    // allow.resource(listCognitoUsers).to(['listUsers']),
-    // allow.resource(getCognitoUser).to(['getUser']),
-    allow.resource(createCognitoUser).to(["createUser"]),
-    // allow.resource(setCognitoUserPassword).to(['setUserPassword']),
-    // allow.resource(deleteCognitoUser).to(['disableUser']),
-    // allow.resource(deleteCognitoUser).to(['deleteUser']),
+    allow.resource(deleteCognitoUserHandler).to(["deleteUser"]),
+    allow.resource(getCognitoUserHandler).to(["getUser"]),
+    allow.resource(listCognitoUsersHandler).to(["listUsers"]),
+    allow.resource(createCognitoUserHandler).to(["createUser", "addUserToGroup", "getUser"]),
+    allow.resource(setCognitoUserPasswordHandler).to(["setUserPassword"]),
+    allow.resource(setCognitoUserEnabledHandler).to(["disableUser", "enableUser"]),
+    allow.resource(updateCognitoUserHandler).to(["updateUserAttributes"]),
   ];
 
   return accessArray;
@@ -96,7 +107,8 @@ The core auth definition is intentionally kept simple. The following points desc
 1. We kept the Amplify Auth default, which is scaffolded with `email` as the default method for user sign-in.
 2. The `loginWith` property definition will result in Amplify Auth automatically configure an `email` attribute that is required for sign-in. In addition, we extended the user profile by configuring two additional attributes namely, `givenName` and `familyName` and we made them required fields.
 3. We configure `groups` from `CI_CORE_ROLES_BY_PRECEDENCE`, keeping Cognito group order aligned with CloudIgniter's current core-role catalog. Add application groups through the custom backend auth configuration rather than duplicating the core list.
-4. We defined `access` in an array that will be passed to the `auth/resource.ts` as explained above.
+4. The core handler resources receive only the Cognito actions needed to list, create, read, update, enable,
+   disable, and permanently delete identities. Dashboard authorization remains a separate server-side check.
 
 :::warning
 

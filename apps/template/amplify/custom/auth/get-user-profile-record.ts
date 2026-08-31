@@ -2,15 +2,12 @@ import type { PostConfirmationTriggerEvent } from "aws-lambda";
 
 import type { CiLambdaEvent } from "@cloudigniter/aws/types";
 
-export type ProfileRecord = {
-  // displayUsername: string;
+import type { CIUserProfile } from "@cloudigniter/core/types";
+
+export type ProfileRecord = CIUserProfile & {
   email: string;
-  // dob: string;
-  city: string;
-  country: string;
-  address: string;
-  landline: string;
-  mobile: string;
+  emailVerified?: boolean;
+  status: "active";
 };
 
 function ciIsRecord(value: unknown): value is Record<string, unknown> {
@@ -22,20 +19,7 @@ function ciCreateProfileRecord(
   source: string,
 ): ProfileRecord | null {
   const email = input.email;
-  const city = input.city;
-  const country = input.country;
-  const address = input.address;
-  const landline = input.landline;
-  const mobile = input.mobile;
-
-  if (
-    typeof email !== "string" ||
-    typeof city !== "string" ||
-    typeof country !== "string" ||
-    typeof address !== "string" ||
-    typeof landline !== "string" ||
-    typeof mobile !== "string"
-  ) {
+  if (typeof email !== "string") {
     console.log(
       `[getUserProfileRecord] Invalid or incomplete profile data received from ${source}.`,
     );
@@ -44,14 +28,23 @@ function ciCreateProfileRecord(
   }
 
   return {
-    // displayUsername: input.display_username,
     email,
-    // dob: input.dob,
-    city,
-    country,
-    address,
-    landline,
-    mobile,
+    ...(input.email_verified !== undefined
+      ? { emailVerified: input.email_verified === "true" }
+      : {}),
+    ...(typeof input.given_name === "string"
+      ? { givenName: input.given_name }
+      : {}),
+    ...(typeof input.middle_name === "string"
+      ? { middleName: input.middle_name }
+      : {}),
+    ...(typeof input.family_name === "string"
+      ? { familyName: input.family_name }
+      : {}),
+    displayName: [input.given_name, input.family_name]
+      .filter((part): part is string => typeof part === "string" && Boolean(part))
+      .join(" "),
+    status: "active",
   };
 }
 

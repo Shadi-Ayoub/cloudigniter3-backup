@@ -10,4 +10,6 @@ export type CiUpdateCognitoUserInterface = {
       Value: string;
     }>;
   };
+  /** Complete desired Cognito group membership for this user. */
+  groups?: string[];
 };

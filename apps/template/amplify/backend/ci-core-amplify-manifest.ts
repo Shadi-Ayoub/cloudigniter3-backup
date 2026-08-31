@@ -7,6 +7,10 @@ import {
 import { createCognitoUserHandler } from "../auth/cognito-user/cognito-create-user/resource";
 import { getCognitoUserHandler } from "../auth/cognito-user/cognito-get-user/resource";
 import { setCognitoUserPasswordHandler } from "../auth/cognito-user/cognito-set-user-password/resource";
+import { listCognitoUsersHandler } from "../auth/cognito-user/cognito-list-users/resource";
+import { setCognitoUserEnabledHandler } from "../auth/cognito-user/cognito-set-user-enabled/resource";
+import { updateCognitoUserHandler } from "../auth/cognito-user/cognito-update-user/resource";
+import { deleteCognitoUserHandler } from "../auth/cognito-user/cognito-delete-user/resource";
 import { deleteEmberguardCustomDomainHandler } from "../functions/system/emberguard/delete-custom-domain/resource";
 import { deleteEmberguardRoleAssignmentHandler } from "../functions/system/emberguard/delete-role-assignment/resource";
 import { getEmberguardDefinitionHandler } from "../functions/system/emberguard/get-definition/resource";
@@ -36,6 +40,10 @@ export const CI_CORE_AMPLIFY_MANIFEST = ciDefineAmplifyBackendManifest({
       status: "active",
       resourceGroupName: "auth",
       functions: {
+        ciDeleteCognitoUserHandler: {
+          backendKey: "deleteCognitoUserHandler",
+          resource: deleteCognitoUserHandler,
+        },
         ciCreateCognitoUserHandler: {
           backendKey: "createCognitoUserHandler",
           resource: createCognitoUserHandler,
@@ -44,9 +52,21 @@ export const CI_CORE_AMPLIFY_MANIFEST = ciDefineAmplifyBackendManifest({
           backendKey: "getCognitoUserHandler",
           resource: getCognitoUserHandler,
         },
+        ciListCognitoUsersHandler: {
+          backendKey: "listCognitoUsersHandler",
+          resource: listCognitoUsersHandler,
+        },
+        ciSetCognitoUserEnabledHandler: {
+          backendKey: "setCognitoUserEnabledHandler",
+          resource: setCognitoUserEnabledHandler,
+        },
         ciSetCognitoUserPasswordHandler: {
           backendKey: "setCognitoUserPasswordHandler",
           resource: setCognitoUserPasswordHandler,
+        },
+        ciUpdateCognitoUserHandler: {
+          backendKey: "updateCognitoUserHandler",
+          resource: updateCognitoUserHandler,
         },
       },
     },

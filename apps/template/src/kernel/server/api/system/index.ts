@@ -16,3 +16,4 @@ export { appGetOrgUnitLookupByPath } from "./org-unit/app-get-org-unit-lookup-by
 
 // security
 export * from "./security";
+export * from "./user";

@@ -26,10 +26,16 @@ const client = generateClient<Schema>();
 export const handler: PostConfirmationTriggerHandler = async (event) => {
   const profile = getUserProfileRecord(event, true);
   if (profile !== null) {
+    const subjectId = event.request.userAttributes.sub;
+    if (!subjectId) {
+      throw new Error("Cognito post confirmation did not include a subject ID.");
+    }
     await client.models.UserProfile.create({
-      userId: event.userName,
+      userId: subjectId,
       username: event.userName,
-      profileOwner: `${event.request.userAttributes.sub}::${event.userName}`,
+      profileOwner: `${subjectId}::${event.userName}`,
+      roles: ["user"],
+      deletionState: "active",
       ...profile,
     });
   } else {

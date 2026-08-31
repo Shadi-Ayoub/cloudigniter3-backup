@@ -4,3 +4,5 @@ export { CiSeederPage } from "./dev/seeder/CiSeederPage";
 export { CiTenantsPage } from "./tenants/CiTenantsPage";
 export { CiThemePresentationPage } from "./theme";
 export { CiNextSecurityDataPage } from "./security";
+export { CiNextResourceCatalogPage } from "./resources";
+export { CiNextUserManagementPage } from "./users";

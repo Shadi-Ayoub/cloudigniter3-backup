@@ -2,15 +2,37 @@ import type { CiNextDashboardCardProps } from "@cloudigniter/next/ui/client";
 
 export const setup: CiNextDashboardCardProps[] = [
   {
+    id: "dashboard-users",
+    icon: "ci:account-group-outline",
+    label: "Users",
+    description:
+      "Manages application users, their Amazon Cognito identities, fixed CloudIgniter profiles, identity roles, and scoped access assignments.",
+    meta: "Identity administration",
+    badge: "Amazon Cognito",
+    tone: "security",
+    route: "/dashboard/users",
+    namespace: "dashboard",
+  },
+  {
     id: "dashboard-security",
     icon: "ci:shield-lock-outline",
     label: "Security",
     description:
-      "Centralizes CloudIgniter's attribute- and role-based access-control model: resource catalogs define protected capabilities, privileges define allowed or denied actions, and scoped assignments determine where a role applies. Example: register identity.users, grant the admin role the identity.users.read privilege, and assign that role within a specific tenant.",
+      "Centralizes CloudIgniter's attribute- and role-based access-control model: roles group privileges, privileges allow or deny registered actions, and scoped assignments determine where a role applies.",
     meta: "ARBAC policy center",
     badge: "Protected",
     tone: "security",
     route: "/dashboard/security",
+    namespace: "dashboard",
+  },
+  {
+    id: "dashboard-resources",
+    icon: "ci:shape-outline",
+    label: "Resources Catalog",
+    description:
+      "Registers CloudIgniter's logical and operational vocabulary. Resources can represent domains such as tenants and Org Units or capabilities such as their managers and settings, each with stable actions and supported scopes.",
+    meta: "Platform vocabulary",
+    route: "/dashboard/resources",
     namespace: "dashboard",
   },
   {
@@ -48,7 +70,7 @@ export const setup: CiNextDashboardCardProps[] = [
     icon: "ci:trash-can-outline",
     label: "Trash",
     description:
-      "Reviews resources removed through CloudIgniter's reversible deletion lifecycle. Privileged administrators can restore deleted tenants, while permanent deletion remains restricted to protected super administration.",
+      "Reviews resources removed through CloudIgniter's reversible deletion lifecycle. Privileged administrators can restore deleted tenants and users, while permanent deletion remains a separate verified action.",
     meta: "Deleted resources",
     badge: "Protected",
     tone: "security",

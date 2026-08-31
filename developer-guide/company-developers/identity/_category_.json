@@ -1,0 +1,8 @@
+{
+  "label": "Identity",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "CloudIgniter identity, profile, provider, and user-administration architecture."
+  }
+}

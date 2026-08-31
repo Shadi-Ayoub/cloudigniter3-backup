@@ -31,6 +31,12 @@ export default async function CPHomePage() {
     action: "read",
     scope: ciSystemAccessScope(),
   });
+  const canReadUsers = ciCreateAuthorizer(definition).can({
+    subject,
+    resource: "identity.users",
+    action: "read",
+    scope: ciSystemAccessScope(),
+  });
   const canReadTenants = ciCreateAuthorizer(definition).can({
     subject,
     resource: "platform.tenants",
@@ -61,6 +67,7 @@ export default async function CPHomePage() {
       <CiNextDashboardOverview
         setup={setup.filter((card) => {
           if (card.id === "dashboard-security") return canReadSecurity;
+          if (card.id === "dashboard-users") return canReadUsers;
           if (card.id === "dashboard-org-units") return canReadOrgUnits;
           if (
             card.id === "dashboard-tenants" ||

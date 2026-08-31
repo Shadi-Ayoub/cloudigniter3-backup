@@ -11,7 +11,7 @@ import {
 export const metadata: Metadata = {
   title: "Security Center | CloudIgniter",
   description:
-    "Manage the CloudIgniter access-control catalog, roles, privileges, scoped assignments, and identity-provider mappings. For example, define and enforce tenant-scoped access to identity.users.",
+    "Manage CloudIgniter roles, privileges, scoped assignments, and identity-provider mappings.",
 };
 
 /** Renders the ARBAC security center and its management destinations. */
@@ -64,15 +64,6 @@ export default async function SecurityPage() {
       route: "/dashboard/security/assignments",
     },
     {
-      id: "security-resources",
-      icon: "ci:shape-outline",
-      label: "Resource catalog",
-      description:
-        "The resource catalog is the authoritative vocabulary used by authorization checks. Each stable resource belongs to a domain and declares its supported actions, scope kinds, and sensitive operations; unknown resources and actions are rejected before privilege evaluation. Example: identity.users belongs to the identity domain and registers read, create, update, delete, and assign-role actions across its supported scopes.",
-      meta: `${records.resource.length} protected resources`,
-      route: "/dashboard/security/resources",
-    },
-    {
       id: "security-groups",
       icon: "ci:account-multiple-check-outline",
       label: "Identity groups",
@@ -120,9 +111,9 @@ export default async function SecurityPage() {
             </div>
             <div className="rounded-xl border border-border bg-background/80 px-4 py-3">
               <p className="text-xl font-semibold tabular-nums">
-                {definition.resources.length}
+                {records.permission.length}
               </p>
-              <p className="text-xs text-muted-foreground">Resources</p>
+              <p className="text-xs text-muted-foreground">Permissions</p>
             </div>
           </div>
         }

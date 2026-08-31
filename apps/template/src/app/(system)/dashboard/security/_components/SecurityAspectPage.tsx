@@ -4,10 +4,7 @@ import type { CiSecurityRecordKind } from "@cloudigniter/core/types";
 import { appBootstrap, appCreateSecurityAdministration } from "@/kernel/server";
 import {
   deleteSecurityRecordAction,
-  createSecurityResourceDomainAction,
   saveSecurityRecordAction,
-  setSecurityResourceDomainStatusAction,
-  setSecurityResourceStatusAction,
   setSecurityRoleStatusAction,
 } from "../actions";
 import {
@@ -16,7 +13,7 @@ import {
 } from "../../breadcrumb-menu";
 
 type SecurityAspectPageProps = {
-  kind: CiSecurityRecordKind;
+  kind: Exclude<CiSecurityRecordKind, "resource">;
   title: string;
   description: string;
   providerLabel?: string;
@@ -101,11 +98,6 @@ export async function SecurityAspectPage({
           label: resource.title,
           actions: resource.actions.map((action) => action.id),
         }))}
-        resourceDomains={
-          kind === "resource"
-            ? security.buildResourceDomains(definition)
-            : undefined
-        }
         onSave={
           kind === "identity-group" ? undefined : saveSecurityRecordAction
         }
@@ -114,17 +106,6 @@ export async function SecurityAspectPage({
         }
         onSetRoleStatus={
           kind === "role" ? setSecurityRoleStatusAction : undefined
-        }
-        onCreateResourceDomain={
-          kind === "resource" ? createSecurityResourceDomainAction : undefined
-        }
-        onSetResourceDomainStatus={
-          kind === "resource"
-            ? setSecurityResourceDomainStatusAction
-            : undefined
-        }
-        onSetResourceStatus={
-          kind === "resource" ? setSecurityResourceStatusAction : undefined
         }
       />
     </CiPage>

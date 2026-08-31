@@ -35,8 +35,10 @@ export {
 export { CiDataEntityManager } from "./client/components/data-entity-manager";
 
 export { CiSecurityDataPage } from "./client/security";
+export { CiResourceCatalogPage } from "./client/resource-catalog";
 export { CiTenantManagementPage } from "./client/tenant-management";
 export { CiOrgUnitManagementPage } from "./client/org-unit-management";
+export { CiUserManagementPage } from "./client/user-management";
 
 export type { CiDataTableConditionalControl } from "./client/components/data-table";
 
@@ -100,4 +102,7 @@ export type {
   CiDataTableSortSpec,
   CiSecurityDataPageProps,
   CiOrgUnitManagementPageProps,
+  CiUserManagementCapabilities,
+  CiUserManagementPageProps,
+  CiUserManagementRoleOption,
 } from "./types";

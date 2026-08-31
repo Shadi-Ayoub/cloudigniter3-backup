@@ -1,0 +1,87 @@
+---
+title: CiUserManagementPage
+description: Reusable CiDataTable-based user administration and Trash component with injected trusted mutations.
+sidebar_position: 9
+---
+
+# `CiUserManagementPage`
+
+`CiUserManagementPage` is a Client Component exported from `@cloudigniter/ui/client`. It renders provider-neutral
+user administration and delegates all trusted mutations to callbacks.
+
+```tsx
+import { CiUserManagementPage } from "@cloudigniter/ui/client";
+import type { CiUserManagementPageProps } from "@cloudigniter/ui/types";
+```
+
+## Props
+
+```ts
+type CiUserManagementPageProps = {
+  mode?: "active" | "trash";
+  users: CIUser[];
+  providerLabel: string;
+  roleOptions: Array<{ id: string; label: string }>;
+  localeOptions: Array<{ value: string; label: string }>;
+  timeZoneOptions: Array<{ value: string; label: string }>;
+  capabilities: {
+    canCreate: boolean;
+    canUpdate: boolean;
+    canDelete: boolean;
+    canAssignRoles: boolean;
+    canEmail: boolean;
+    canImpersonate: boolean;
+  };
+  onCreate?: (input: CICreateUserInput) => Promise<CIUserMutationResult>;
+  onUpdate?: (input: CIUpdateUserInput) => Promise<CIUserMutationResult>;
+  onRead?: (userId: string) => Promise<CIUserMutationResult>;
+  onEmail?: (user: CIUser) => void | Promise<void>;
+  onImpersonate?: (
+    input: CIImpersonateUserInput,
+  ) => Promise<CIUserMutationResult>;
+  onSetStatus?: (input: CISetUserStatusInput) => Promise<CIUserMutationResult>;
+  onDelete?: (input: CIDeleteUserInput) => Promise<CIUserMutationResult>;
+  onRestore?: (input: CIRestoreUserInput) => Promise<CIUserMutationResult>;
+  onPurge?: (input: CIPurgeUserInput) => Promise<CIUserMutationResult>;
+  developmentSeeder?: { /* development-only seed and cleanup callbacks */ };
+};
+```
+
+`mode` defaults to `active`. Capability flags and absent callbacks control presentation only; every callback must
+repeat authorization and validation on the server.
+
+## Behavior
+
+The component uses `CiDataTable` with stable user IDs, searchable columns, table/compact/card formats, 25-row
+default pagination, column-width/format/page-size persistence, reserved action space, loading overlay, empty state,
+and inline success/error feedback. The provider appears as a title chip and row badge.
+
+Create and edit collect current Cognito-required account fields, profile data, locale/time-zone selections,
+residence address, S3 avatar reference, extension JSON,
+roles, and scoped assignments. Invalid extension JSON, missing required fields/roles, and incomplete scoped
+assignments fail before the callback runs.
+
+Active mode exposes information, edit, email, guarded impersonation, suspend/activate, and soft delete as allowed. Trash mode exposes restore and
+permanent delete. Destructive and status actions use `CiAlertDialog`, block repeated submission, require a reason,
+and require exact user-ID confirmation for purge. Rows marked `protected` show lifecycle actions disabled.
+
+## Composition example
+
+```tsx
+<CiUserManagementPage
+  users={users}
+  providerLabel="Amazon Cognito"
+  roleOptions={roles}
+  localeOptions={locales}
+  timeZoneOptions={timeZones}
+  capabilities={capabilities}
+  onCreate={createUserAction}
+  onUpdate={updateUserAction}
+  onSetStatus={setUserStatusAction}
+  onDelete={deleteUserAction}
+/>
+```
+
+Supply serializable initial rows from a Server Component. Do not pass Cognito clients, credentials, or provider
+configuration into this component. See the [`CIUser` contracts](../type-definitions/ci-user-types) and
+[User administration guide](../../users-management/intro).

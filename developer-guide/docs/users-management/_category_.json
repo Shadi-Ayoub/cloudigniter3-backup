@@ -3,6 +3,6 @@
   "position": 2,
   "link": {
     "type": "generated-index",
-    "description": "Describs how users are managed by admins in Cloudigniter."
+    "description": "Create, review, suspend, restore, and permanently remove CloudIgniter users."
   }
 }

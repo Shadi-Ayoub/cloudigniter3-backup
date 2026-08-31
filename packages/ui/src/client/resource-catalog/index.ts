@@ -1,0 +1,1 @@
+export { CiResourceCatalogPage } from "./CiResourceCatalogPage";

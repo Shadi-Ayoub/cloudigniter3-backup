@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import {
+  Boxes,
   CirclePause,
   CirclePlay,
   FolderTree,
@@ -1350,9 +1351,12 @@ export function CiSecurityDataPage({
     rowActions: { mode: "mixed", overflow: 1, reserveSpace: true },
     selection: { enabled: false },
     persistence: {
-      key: kind === "resource" ? "ci-security-resource-v2" : `ci-security-${kind}`,
+      key:
+        kind === "resource"
+          ? "ci-resource-catalog-v1"
+          : `ci-security-${kind}`,
       columnWidths: true,
-      // Security administration should always reopen with the complete catalog.
+      // Administration pages should always reopen with the complete catalog.
       // Persisted owner/search filters can otherwise make a successful create
       // look as though it disappeared after the route refreshes.
       filters: false,
@@ -1448,8 +1452,9 @@ export function CiSecurityDataPage({
         <Alert>
           <LockKeyhole className="size-4" />
           <AlertDescription>
-            Platform-owned entries are protected. Only a directly assigned
-            system super administrator can override core roles and permissions.
+            {kind === "resource"
+              ? "Platform-owned resource definitions are protected. Only a directly assigned system super administrator can override core resources."
+              : "Platform-owned entries are protected. Only a directly assigned system super administrator can override core roles and permissions."}
           </AlertDescription>
         </Alert>
       ) : null}
@@ -1457,8 +1462,12 @@ export function CiSecurityDataPage({
       <CiDataTable
         title={title}
         description={description}
-        titleBadge="Access governance"
-        titleIcon={<ShieldCheck aria-hidden />}
+        titleBadge={
+          kind === "resource" ? "CloudIgniter resources" : "Access governance"
+        }
+        titleIcon={
+          kind === "resource" ? <Boxes aria-hidden /> : <ShieldCheck aria-hidden />
+        }
         titleChips={[
           {
             id: "records",
