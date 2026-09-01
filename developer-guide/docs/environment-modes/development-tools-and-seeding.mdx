@@ -96,9 +96,14 @@ every other role or environment.
 deletes each matching resource and marker together. Org Units are removed deepest-first with every tenant/path attachment before tenants. It still finds data after a fixture is removed from JSON.
 Ownership-mismatched, protected, and malformed records are preserved and reported.
 
-Tenant and Org Unit seed records and markers share the System-table security/lifecycle boundary. Cleanup has no Cognito
-participant. A future user seeder must separately plan Cognito identities, user profiles, assignments, and partial
-failure recovery.
+Tenant and Org Unit seed records and markers share the System-table security/lifecycle boundary. Cleanup has no
+Cognito participant.
+
+The current **Test Users** seeder on **Dashboard → Users** creates three disposable Cognito identities, User
+Profiles, groups, and scoped assignments. It writes `extensions.cloudigniterSeeder = "test-users"` and refuses to
+adopt or clean up a matching email without that provenance. A profile or assignment failure invokes the account
+rollback path; cleanup uses the ordinary soft-delete and purge lifecycle. User fixture addresses and extensions
+remain JSON objects—the AWS adapter owns AppSync `AWSJSON` wire serialization.
 
 ### Troubleshoot transactional permission errors
 

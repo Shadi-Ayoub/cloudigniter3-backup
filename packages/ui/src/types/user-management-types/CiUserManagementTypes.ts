@@ -21,6 +21,7 @@ export type CiUserManagementCapabilities = {
   canUpdate: boolean;
   canDelete: boolean;
   canAssignRoles: boolean;
+  canDelegateSystemSuperAdminManagement?: boolean;
   canEmail: boolean;
   canImpersonate: boolean;
 };
@@ -32,11 +33,23 @@ export type CiUserManagementOption = {
 
 export type CiUserManagementPageProps = {
   mode?: "active" | "trash";
+  managementKind?: "users" | "administrators";
   users: CIUser[];
   providerLabel: string;
   roleOptions: CiUserManagementRoleOption[];
+  /** Complete role vocabulary used by filters/details; editor options may be narrower. */
+  filterRoleOptions?: CiUserManagementRoleOption[];
+  assignmentRoleOptions?: CiUserManagementRoleOption[];
   localeOptions: CiUserManagementOption[];
   timeZoneOptions: CiUserManagementOption[];
+  /** Explicit render locale; never infer it independently in the browser. */
+  locale?: string;
+  actor?: {
+    userId: string;
+    roles: string[];
+    isRootUser: boolean;
+    canManageSystemSuperAdmins: boolean;
+  };
   capabilities: CiUserManagementCapabilities;
   onCreate?: (input: CICreateUserInput) => Promise<CIUserMutationResult>;
   onUpdate?: (input: CIUpdateUserInput) => Promise<CIUserMutationResult>;

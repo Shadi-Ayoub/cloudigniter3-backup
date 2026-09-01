@@ -23,7 +23,7 @@ export function ciPostBuild(backend: CiBackend) {
   const plan = ciCreateCorePostBuildPlan(
     runtime,
     {
-      includeAuthEnv: false,
+      includeAuthEnv: true,
       authParams: auth.authParams,
     },
     {

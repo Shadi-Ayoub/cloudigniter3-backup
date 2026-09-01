@@ -2,6 +2,7 @@ import { cache } from "react";
 
 import type { CiAmplifyOutputs } from "@cloudigniter/aws/types";
 import {
+  CI_ROOT_USER_IDENTITY_GROUP,
   ciNormalizeThrownError,
   ciResolvePrimaryRole,
 } from "@cloudigniter/core/lib";
@@ -12,9 +13,18 @@ import {
   ciGetHeaders,
   ciGetRequestContext,
 } from "@cloudigniter/next/server";
-import type { CiNextContext, CiNextStatus, CiServerErrorPayload } from "@cloudigniter/next/types";
+import type {
+  CiNextContext,
+  CiNextStatus,
+  CiServerErrorPayload,
+} from "@cloudigniter/next/types";
 
-import { appGetAllServerConfig, appGetSettings, ciIsAmplifyOutputsOk, ciIsSchemaOk } from "@/kernel/server";
+import {
+  appGetAllServerConfig,
+  appGetSettings,
+  ciIsAmplifyOutputsOk,
+  ciIsSchemaOk,
+} from "@/kernel/server";
 
 export const appBootstrap = cache(async (): Promise<CiNextContext> => {
   try {
@@ -39,26 +49,37 @@ export const appBootstrap = cache(async (): Promise<CiNextContext> => {
     const requestContext = await ciGetRequestContext();
 
     if (!requestContext) {
-      throw new Error("The CloudIgniter request context was not forwarded by Proxy.");
+      throw new Error(
+        "The CloudIgniter request context was not forwarded by Proxy.",
+      );
     }
 
-    const amplifyOutputs = config.appCoreConfig.providers?.aws?.amplify?.amplifyOutputs as CiAmplifyOutputs;
+    const amplifyOutputs = config.appCoreConfig.providers?.aws?.amplify
+      ?.amplifyOutputs as CiAmplifyOutputs;
 
-    const [currentUser, settings, requestHeaders, requestCookies] = await Promise.all([
-      ciAwsGetCurrentUser(amplifyOutputs),
-      appGetSettings(),
-      ciGetHeaders(),
-      ciGetCookies(),
-    ]);
+    const [currentUser, settings, requestHeaders, requestCookies] =
+      await Promise.all([
+        ciAwsGetCurrentUser(amplifyOutputs),
+        appGetSettings(),
+        ciGetHeaders(),
+        ciGetCookies(),
+      ]);
 
-    const roles = [...(currentUser.groups ?? [])];
+    const providerGroups = [...(currentUser.groups ?? [])];
+    const isRootUser = providerGroups.includes(CI_ROOT_USER_IDENTITY_GROUP);
+    const roles = providerGroups.filter(
+      (group) => group !== CI_ROOT_USER_IDENTITY_GROUP,
+    );
     const auth: CiNextContext["auth"] = {
-      mode: currentUser.isAuthenticated ? "userPool" : config.appCoreConfig.data.publicAuthMode,
+      mode: currentUser.isAuthenticated
+        ? "userPool"
+        : config.appCoreConfig.data.publicAuthMode,
       user: {
         id: currentUser.userId,
         authenticated: currentUser.isAuthenticated,
         roles,
         primaryRole: ciResolvePrimaryRole(roles),
+        ...(isRootUser ? { isRootUser: true } : {}),
         ...(currentUser.isAuthenticated
           ? {
               email: currentUser.email,

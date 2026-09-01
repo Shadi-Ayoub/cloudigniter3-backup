@@ -1,29 +1,29 @@
 import { CiPage } from "@cloudigniter/next/client";
 import { CiNextDashboardOverview } from "@cloudigniter/next/ui/server";
 import {
-  ciCreateAuthorizationSubject,
   ciCreateAuthorizer,
-  ciCreateRoleAssignments,
+  ciGlobalAccessScope,
   ciSystemAccessScope,
 } from "@cloudigniter/core/lib";
-import { appBootstrap, appCreateSecurityAdministration } from "@/kernel/server";
+import {
+  appBootstrap,
+  appCanManageSystemSuperAdministrators,
+  appCreateSecurityAdministration,
+  appCreateUserManagementAuthorizationSubject,
+} from "@/kernel/server";
 import { dashboardBreadcrumbChildren } from "./breadcrumb-menu";
 import { setup } from "./setup";
 
 export default async function CPHomePage() {
   const context = await appBootstrap();
   const security = appCreateSecurityAdministration(context);
-  const definition = await security.loadDefinition();
-  const subject = ciCreateAuthorizationSubject(
-    {
-      id: context.auth.user.id ?? "anonymous",
-      authenticated: context.auth.user.authenticated,
-    },
-    ciCreateRoleAssignments(
-      context.auth.user.roles,
-      ciSystemAccessScope(),
-      "exact",
-    ),
+  const [definition, assignments] = await Promise.all([
+    security.loadDefinition(),
+    security.loadAssignments(),
+  ]);
+  const subject = appCreateUserManagementAuthorizationSubject(
+    context,
+    assignments,
   );
   const canReadSecurity = ciCreateAuthorizer(definition).can({
     subject,
@@ -31,12 +31,18 @@ export default async function CPHomePage() {
     action: "read",
     scope: ciSystemAccessScope(),
   });
-  const canReadUsers = ciCreateAuthorizer(definition).can({
-    subject,
-    resource: "identity.users",
-    action: "read",
-    scope: ciSystemAccessScope(),
-  });
+  const userAuthorizer = ciCreateAuthorizer(definition);
+  const canReadUsers = [ciSystemAccessScope(), ciGlobalAccessScope()].some(
+    (scope) =>
+      userAuthorizer.can({
+        subject,
+        resource: "identity.users",
+        action: "read",
+        scope,
+      }),
+  );
+  const canReadAdministrators =
+    canReadUsers || appCanManageSystemSuperAdministrators(context, assignments);
   const canReadTenants = ciCreateAuthorizer(definition).can({
     subject,
     resource: "platform.tenants",
@@ -68,6 +74,8 @@ export default async function CPHomePage() {
         setup={setup.filter((card) => {
           if (card.id === "dashboard-security") return canReadSecurity;
           if (card.id === "dashboard-users") return canReadUsers;
+          if (card.id === "dashboard-administrators")
+            return canReadAdministrators;
           if (card.id === "dashboard-org-units") return canReadOrgUnits;
           if (
             card.id === "dashboard-tenants" ||

@@ -249,6 +249,14 @@ export const CI_DEFAULT_ACCESS_CONTROL_DEFINITION =
               scopeKinds: ["global", "tenant", "orgUnit"],
             },
             {
+              id: "impersonate-users",
+              title: "Impersonate users",
+              effect: "allow",
+              resource: "identity.users",
+              action: "impersonate",
+              scopeKinds: ["system", "global", "tenant", "orgUnit"],
+            },
+            {
               id: "manage-access-control",
               title: "Manage access control",
               effect: "allow",
@@ -297,6 +305,7 @@ export const CI_DEFAULT_ACCESS_CONTROL_DEFINITION =
               "purge",
               "assign-role",
               "email",
+              "impersonate",
             ].map((action) => ({
               id: `manage-system-users-${action}`,
               title: `Manage system users: ${action}`,

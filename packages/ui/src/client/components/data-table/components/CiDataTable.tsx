@@ -25,6 +25,7 @@ import {
   List,
   RefreshCw,
   Search,
+  Tag,
   TableProperties,
 } from "lucide-react";
 
@@ -170,18 +171,17 @@ function getValueAtPath(row: unknown, path: string): unknown {
 
 /** Returns CloudIgniter metadata attached to a TanStack column. */
 function getColumnMeta<TData extends RowData>(
-  column: ColumnDef<CiDataTableFeatures, TData, unknown>
+  column: ColumnDef<CiDataTableFeatures, TData, unknown>,
 ): CiDataTableColumnMeta<TData, unknown> | undefined {
   return (
     column.meta as
-      | { ciDataTable?: CiDataTableColumnMeta<TData, unknown> }
-      | undefined
+      { ciDataTable?: CiDataTableColumnMeta<TData, unknown> } | undefined
   )?.ciDataTable;
 }
 
 /** Resolves a stable identifier for accessor and display columns. */
 function getColumnId<TData extends RowData>(
-  column: ColumnDef<CiDataTableFeatures, TData, unknown>
+  column: ColumnDef<CiDataTableFeatures, TData, unknown>,
 ): string | undefined {
   if (column.id) return column.id;
   const accessorKey = (column as { accessorKey?: string }).accessorKey;
@@ -204,7 +204,7 @@ function getColumnSizingValue<TData extends RowData>(
 
 /** Converts component column definitions into serializable Excel columns. */
 function buildExcelColumns<TData extends RowData>(
-  columns: ColumnDef<CiDataTableFeatures, TData, unknown>[]
+  columns: ColumnDef<CiDataTableFeatures, TData, unknown>[],
 ): CiDataTableExcelColumn<TData>[] {
   return columns.flatMap((column) => {
     const meta = getColumnMeta(column);
@@ -230,8 +230,8 @@ function buildExcelColumns<TData extends RowData>(
           exportConfig?.value
             ? exportConfig.value(row)
             : accessorKey
-            ? getValueAtPath(row, accessorKey)
-            : accessorFn?.(row, 0),
+              ? getValueAtPath(row, accessorKey)
+              : accessorFn?.(row, 0),
         width: column.size ? Math.round(column.size / 7) : undefined,
       },
     ];
@@ -268,7 +268,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
         TData,
         unknown
       >[] as ColumnDef<CiDataTableFeatures, TData, unknown>[],
-    [definition?.columns, legacyColumns]
+    [definition?.columns, legacyColumns],
   );
   const rowActions = definition?.rowActions ?? legacyRowActions ?? [];
   const information = definition?.information;
@@ -305,8 +305,8 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
     config?.mode === "client" || !source
       ? "client"
       : config?.mode === "server"
-      ? "server"
-      : "hybrid";
+        ? "server"
+        : "hybrid";
   const isProviderMode = effectiveMode !== "client";
 
   const initialFilters = useMemo<ColumnFiltersState>(
@@ -314,9 +314,9 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
       filters.flatMap((filter) =>
         filter.defaultValue === undefined || filter.defaultValue === null
           ? []
-          : [{ id: filter.id, value: filter.defaultValue }]
+          : [{ id: filter.id, value: filter.defaultValue }],
       ),
-    [filters]
+    [filters],
   );
   const initialSorting = useMemo(
     () =>
@@ -359,7 +359,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
         id: filter.id,
         value: filter.value as CiDataTableFilterValue,
       })),
-    [columnFilters]
+    [columnFilters],
   );
   const query = useMemo<CiDataTableQuery>(
     () => ({
@@ -381,7 +381,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
       pageSizeChoice,
       pagination.pageIndex,
       sorting,
-    ]
+    ],
   );
 
   /** Resets cursor and page-number navigation after criteria changes. */
@@ -402,21 +402,21 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
       setSorting((current) => applyUpdater(updater, current));
       resetPaging();
     },
-    [resetPaging]
+    [resetPaging],
   );
   const handleColumnFiltersChange: OnChangeFn<ColumnFiltersState> = useCallback(
     (updater) => {
       setColumnFilters((current) => applyUpdater(updater, current));
       resetPaging();
     },
-    [resetPaging]
+    [resetPaging],
   );
   const handleGlobalFilterChange = useCallback(
     (value: string) => {
       setGlobalFilter(value);
       resetPaging();
     },
-    [resetPaging]
+    [resetPaging],
   );
 
   const tableData = isProviderMode ? providerPage.rows : data;
@@ -485,8 +485,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
       const hasOverflow =
         rowActionMode === "menu"
           ? rowActions.length > 0
-          : rowActionMode === "mixed" &&
-            rowActions.length > rowActionOverflow;
+          : rowActionMode === "mixed" && rowActions.length > rowActionOverflow;
       const actionControlCount =
         (information ? 1 : 0) + inlineActionCount + (hasOverflow ? 1 : 0);
       const actionColumnWidth = Math.min(
@@ -526,8 +525,8 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
               table.getIsAllPageRowsSelected()
                 ? true
                 : table.getIsSomePageRowsSelected()
-                ? "indeterminate"
-                : false
+                  ? "indeterminate"
+                  : false
             }
             onCheckedChange={(checked) =>
               table.toggleAllPageRowsSelected(Boolean(checked))
@@ -601,8 +600,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
           const maxPages = Math.max(1, config?.maxCachedPages ?? 5);
           while (cacheRef.current.size > maxPages) {
             const oldest = cacheRef.current.keys().next().value as
-              | string
-              | undefined;
+              string | undefined;
             if (!oldest) break;
             cacheRef.current.delete(oldest);
           }
@@ -632,7 +630,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
       .catch((cause: unknown) => {
         if (controller.signal.aborted) return;
         setLocalError(
-          cause instanceof Error ? cause.message : "Failed to load data."
+          cause instanceof Error ? cause.message : "Failed to load data.",
         );
       })
       .finally(() => {
@@ -713,7 +711,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
         preferences.filters.map((filter) => ({
           id: filter.id,
           value: filter.value,
-        }))
+        })),
       );
       setGlobalFilter(preferences.globalFilter ?? "");
     }
@@ -756,7 +754,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
 
     const timeout = window.setTimeout(
       () => ciSaveDataTablePreferences(persistence, preferences),
-      150
+      150,
     );
     return () => window.clearTimeout(timeout);
   }, [
@@ -830,7 +828,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
         await callback();
       } catch (cause: unknown) {
         setLocalError(
-          cause instanceof Error ? cause.message : "The table action failed."
+          cause instanceof Error ? cause.message : "The table action failed.",
         );
       } finally {
         setBusyActions((current) => {
@@ -840,7 +838,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
         });
       }
     },
-    []
+    [],
   );
 
   /** Updates one toolbar filter and removes it when All is selected. */
@@ -853,7 +851,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
           : [...remaining, { id, value }];
       });
     },
-    [handleColumnFiltersChange]
+    [handleColumnFiltersChange],
   );
 
   const handlePageSizeChange = useCallback(
@@ -864,7 +862,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
       setRowSelection({});
       resetPaging();
     },
-    [resetPaging]
+    [resetPaging],
   );
 
   const canPreviousPage = pagination.pageIndex > 0;
@@ -934,7 +932,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
   const widthStyle =
     typeof config?.width === "number"
       ? `${config.width}px`
-      : config?.width ?? "100%";
+      : (config?.width ?? "100%");
 
   /** Computes a fluid percentage from TanStack's resizable column sizes. */
   const getCellStyle = useCallback(
@@ -942,7 +940,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
       width: `${(cellOrHeader.column.getSize() / table.getTotalSize()) * 100}%`,
       flex: "0 0 auto",
     }),
-    [table]
+    [table],
   );
 
   /** Renders a cell with conditional styling, truncation, and navigation. */
@@ -967,8 +965,8 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
         typeof truncate === "number"
           ? truncate
           : typeof truncate === "object"
-          ? truncate.maxWidth
-          : undefined;
+            ? truncate.maxWidth
+            : undefined;
       const showTitle =
         truncate === true ||
         typeof truncate === "number" ||
@@ -976,7 +974,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
       const wrapped = (
         <div
           className={cn(
-            truncate && "overflow-hidden text-ellipsis whitespace-nowrap"
+            truncate && "overflow-hidden text-ellipsis whitespace-nowrap",
           )}
           style={maxWidth ? { maxWidth } : undefined}
           title={showTitle && value != null ? String(value) : undefined}
@@ -990,12 +988,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
             {showNewResourceBadge ? (
               <CiNewResourceBadge
                 createdAt={
-                  createdAt as
-                    | string
-                    | number
-                    | Date
-                    | null
-                    | undefined
+                  createdAt as string | number | Date | null | undefined
                 }
                 durationMs={config?.newResourceBadge?.durationMs}
               />
@@ -1034,7 +1027,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
       config?.newResourceBadge?.durationMs,
       config?.newResourceBadge?.enabled,
       firstDataColumnId,
-    ]
+    ],
   );
 
   /** Resolves a cell's conditionally computed class name. */
@@ -1050,7 +1043,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
         columnId: cell.column.id,
       });
     },
-    []
+    [],
   );
 
   const visibleRows = table.getRowModel().rows;
@@ -1111,15 +1104,15 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                     className={cn(
                       "relative h-auto min-w-0 overflow-hidden px-3 py-2 text-start align-middle font-semibold text-foreground",
                       header.column.id === ACTIONS_COLUMN_ID && "text-end",
-                      meta?.headerClassName
+                      meta?.headerClassName,
                     )}
                     style={getCellStyle(header)}
                     aria-sort={
                       sorted === "asc"
                         ? "ascending"
                         : sorted === "desc"
-                        ? "descending"
-                        : "none"
+                          ? "descending"
+                          : "none"
                     }
                   >
                     <div className="flex min-w-0 flex-col gap-2">
@@ -1132,7 +1125,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                           <span className="truncate">
                             {flexRender(
                               header.column.columnDef.header,
-                              header.getContext()
+                              header.getContext(),
                             )}
                           </span>
                           <span
@@ -1142,14 +1135,14 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                             {sorted === "asc"
                               ? "▲"
                               : sorted === "desc"
-                              ? "▼"
-                              : "↕"}
+                                ? "▼"
+                                : "↕"}
                           </span>
                         </button>
                       ) : (
                         flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )
                       )}
                       {headerFilter ? (
@@ -1159,14 +1152,14 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                               header.column.getFilterValue() === undefined
                                 ? FILTER_ALL_VALUE
                                 : encodeFilterValue(
-                                    header.column.getFilterValue() as CiDataTableFilterValue
+                                    header.column.getFilterValue() as CiDataTableFilterValue,
                                   )
                             }
                             onValueChange={(value) =>
                               header.column.setFilterValue(
                                 value === FILTER_ALL_VALUE
                                   ? undefined
-                                  : decodeFilterValue(value)
+                                  : decodeFilterValue(value),
                               )
                             }
                           >
@@ -1203,7 +1196,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                             value={String(header.column.getFilterValue() ?? "")}
                             onChange={(event) =>
                               header.column.setFilterValue(
-                                event.target.value || undefined
+                                event.target.value || undefined,
                               )
                             }
                             placeholder={
@@ -1229,7 +1222,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                           "absolute inset-y-0 end-0 z-10 w-1 cursor-col-resize touch-none select-none",
                           header.column.getIsResizing()
                             ? "bg-primary"
-                            : "hover:bg-border"
+                            : "hover:bg-border",
                         )}
                       />
                     ) : null}
@@ -1250,7 +1243,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                   stripedRows && rowIndex % 2 === 0
                     ? "bg-muted/25"
                     : "bg-background",
-                  hoverHighlight ? "hover:bg-accent/60" : "hover:bg-inherit"
+                  hoverHighlight ? "hover:bg-accent/60" : "hover:bg-inherit",
                 )}
               >
                 {row.getAllCells().map((cell) => (
@@ -1261,7 +1254,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                       compact ? "px-2 py-1.5" : "px-3 py-2.5",
                       cell.column.id === ACTIONS_COLUMN_ID &&
                         "justify-end text-end",
-                      getCellClassName(cell)
+                      getCellClassName(cell),
                     )}
                     style={getCellStyle(cell)}
                   >
@@ -1304,7 +1297,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
               .filter(
                 (cell) =>
                   cell.column.id !== ACTIONS_COLUMN_ID &&
-                  cell.column.id !== SELECTION_COLUMN_ID
+                  cell.column.id !== SELECTION_COLUMN_ID,
               );
             return (
               <article
@@ -1315,7 +1308,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                   stripedRows && rowIndex % 2 === 0
                     ? "bg-muted/25"
                     : "bg-background",
-                  hoverHighlight && "hover:bg-accent/60"
+                  hoverHighlight && "hover:bg-accent/60",
                 )}
               >
                 {selectionCell ? (
@@ -1338,7 +1331,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                         <dd
                           className={cn(
                             "min-w-0 text-sm",
-                            getCellClassName(cell)
+                            getCellClassName(cell),
                           )}
                         >
                           {renderCell(cell)}
@@ -1410,8 +1403,15 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
           {titleChips?.length ? (
             <div className="flex flex-wrap content-end items-end gap-2 lg:max-w-sm lg:justify-end lg:self-end">
               {titleChips.map((chip) => (
-                <Badge key={chip.id} variant={chip.variant ?? "outline"}>
-                  {chip.icon}
+                <Badge
+                  key={chip.id}
+                  variant={
+                    !chip.variant || chip.variant === "outline"
+                      ? "secondary"
+                      : chip.variant
+                  }
+                >
+                  {chip.icon ?? <Tag aria-hidden className="size-3.5" />}
                   {chip.label}
                 </Badge>
               ))}
@@ -1439,7 +1439,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
 
         {filters.map((filter) => {
           const activeValue = columnFilters.find(
-            (activeFilter) => activeFilter.id === filter.id
+            (activeFilter) => activeFilter.id === filter.id,
           )?.value as CiDataTableFilterValue | undefined;
           return filter.type === "text" ? (
             <label key={filter.id} className="min-w-44">
@@ -1466,7 +1466,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                   filter.id,
                   value === FILTER_ALL_VALUE
                     ? undefined
-                    : decodeFilterValue(value)
+                    : decodeFilterValue(value),
                 )
               }
             >
@@ -1547,7 +1547,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                 aria-busy={isBusy}
                 onClick={() =>
                   void runGlobalAction(action.id, () =>
-                    action.onSelect(globalActionContext)
+                    action.onSelect(globalActionContext),
                   )
                 }
               >
@@ -1577,7 +1577,7 @@ export function CiDataTable<TData extends RowData, TValue = unknown>({
                 <Download className="size-4" aria-hidden />
               )}
               {typeof config?.excelExport === "object"
-                ? config.excelExport.label ?? labels.exportExcel
+                ? (config.excelExport.label ?? labels.exportExcel)
                 : labels.exportExcel}
             </Button>
           ) : null}

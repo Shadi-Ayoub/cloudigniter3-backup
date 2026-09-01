@@ -33,6 +33,7 @@ export {
   ciResolveAwsAuthMode,
 
   // utility
+  CI_COGNITO_ROOT_USER_GROUP,
   ciGetCognitoAttributeValue,
   ciMapCognitoError,
   ciMapCognitoUser,
@@ -85,6 +86,15 @@ export {
   ciCreateAwsEmberguardAdministrationRepository,
   ciResolveAwsCognitoIdentityGroups,
 } from "./emberguard";
+
+// ─────────────────────────────────────────────────────────────
+// AppSync scalar transport
+// ─────────────────────────────────────────────────────────────
+export {
+  ciDeserializeAwsJson,
+  ciSerializeAwsJson,
+  ciSerializeUserProfileAwsJsonFields,
+} from "./appsync";
 
 // ─────────────────────────────────────────────────────────────
 // lambda

@@ -1,4 +1,10 @@
 export {
+  appCanManageSystemSuperAdministrators,
+  appCreateUserManagementAuthorizationSubject,
+  appIsUserAssignmentActive,
+  appResolveAdministratorActor,
+} from "./app-user-management-authority";
+export {
   appCreateUserRecord,
   appDeleteUserRecord,
   appListUserRecords,

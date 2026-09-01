@@ -1,5 +1,12 @@
 import type { CognitoIdentityProviderClientConfig } from "@aws-sdk/client-cognito-identity-provider";
 
+/** Cognito group metadata normalized for provider-neutral application use. */
+export type CICognitoUserGroup = {
+  id: string;
+  precedence?: number;
+  description?: string;
+};
+
 /** Normalized Cognito identity exposed by the AWS provider. */
 export type CICognitoUser = {
   id: string;
@@ -25,6 +32,10 @@ export type CICognitoUser = {
     kind: "native" | "federated";
   };
   attributes: Record<string, string>;
+  /** True only when the reserved CloudIgniter Root marker group is present. */
+  isRootUser: boolean;
+  /** Role-bearing Cognito groups; reserved identity markers are omitted. */
+  groups: CICognitoUserGroup[];
   createdAt?: string;
   updatedAt?: string;
 };

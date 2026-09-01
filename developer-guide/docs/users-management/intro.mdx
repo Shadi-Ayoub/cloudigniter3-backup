@@ -1,22 +1,22 @@
 ---
 title: User administration
-description: Manage CloudIgniter users, Cognito identities, profiles, roles, assignments, and deletion lifecycle from the dashboard.
+description: Manage CloudIgniter users, administrators, identities, profiles, roles, assignments, and deletion lifecycle from the dashboard.
 sidebar_position: 1
 ---
 
 # User administration
 
-Open **Dashboard → Users** to manage the people who can access a CloudIgniter application. The page combines the
-application user summary, its [Cognito](/dictionary/c#cognito) account, CloudIgniter profile, roles, and scoped
-assignments. The table identifies **Amazon Cognito** in both its header and each user's
-[Identity Provider](/dictionary/i#identity-provider) column so administrators do not confuse the application
-profile with the login directory.
+Open **Dashboard → Users** for non-administrator application accounts and **Dashboard → Administrators** for the
+Root User or accounts with `admin`, `super-admin`, `system-admin`, or `system-super-admin`. Both pages join the
+application user projection, its [Identity Provider](/dictionary/i#identity-provider) account, CloudIgniter profile,
+[roles](/dictionary/r#role), and scoped [role assignments](/dictionary/r#role-assignment). The provider appears once
+as an icon-bearing, colored header chip; it is not repeated in every row.
 
 Access is controlled by the `identity.users` authorization resource. The server checks `read`, `create`, `update`,
-`delete`, `assign-role`, `email`, `impersonate`, `restore`, and `purge` independently; hiding or disabling an action in the browser is never the security
-boundary.
+`delete`, `assign-role`, `email`, `impersonate`, `restore`, and `purge` independently. Hiding or disabling a browser
+action is never the security boundary.
 
-## The user model
+## The user contracts
 
 CloudIgniter separates four concerns:
 
@@ -25,84 +25,125 @@ CloudIgniter separates four concerns:
 | `CIUser`        | Provider-neutral application projection used by lists and views               | `@cloudigniter/core/types` |
 | `CIUserProfile` | Fixed CloudIgniter profile fields plus the application extension seam         | `@cloudigniter/core/types` |
 | `CIUserEntity`  | Persisted User Profile table record, including lifecycle and list projections | `@cloudigniter/core/types` |
-| `CICognitoUser` | Normalized AWS identity account and provider attributes                       | `@cloudigniter/aws/types`  |
+| `CICognitoUser` | Normalized AWS identity account, names, attributes, and group records         | `@cloudigniter/aws/types`  |
 
-Use the immutable Cognito `sub` as `userId`. Email is the configured sign-in identifier, not the durable database
-key, and a Cognito username remains a provider lookup value.
+Use Cognito `sub` as the durable `userId`. Email is the configured sign-in identifier, not a database key, and a
+Cognito username remains a provider lookup value. `CICognitoUser` normalizes `given_name`, `middle_name`, and
+`family_name`, plus every role-bearing group as `{ id, precedence?, description? }`; application code does not need
+AWS SDK records.
 
 ## Minimum-information strategy
 
-Management lists return a `CIUser` with `detailLevel: "summary"`. The summary contains only the stable ID,
-username, email and verification flag, display name/avatar, operational status, provider, roles, scoped
-assignments, lifecycle metadata, and timestamps. It deliberately omits the complete `profile` and raw `identity`.
+Management lists return `CIUser` with `detailLevel: "summary"`. It includes stable identity fields, common
+given/family names, display name/avatar, operational status, provider, scoped assignments, lifecycle metadata, and
+timestamps. `roles` always contains every identity role. `primaryRole` is the highest-precedence known role for
+display and defaults; it never hides the other roles or substitutes for authorization.
 
-Load `detailLevel: "full"` only for a detail or edit workflow that needs those objects. Address, birth date,
-gender, biography, and other sensitive profile fields should not be fetched merely to render a row. This split
-keeps common authorization and presentation paths small while reducing unnecessary personal-data exposure.
+Load `detailLevel: "full"` only when a detail or edit workflow needs the complete `profile` and normalized provider
+`identity`. Address, birth date, gender, biography, and raw provider attributes should not be fetched merely to
+render a row. This split keeps common paths small and reduces unnecessary personal-data exposure.
 
-## Profile strategy
+## Profile and avatar strategy
 
-The fixed profile supports commonly useful, provider-neutral fields: display and personal names, title, avatar
-object key/delivery URL, phone number, locale, time zone, biography, birth date, gender, and a structured residence
-address. Every profile
-field is optional so each application can apply data minimization and collect only what it needs.
+The fixed profile supports optional provider-neutral fields: display and personal names, title, avatar object key
+and delivery URL, phone number, locale, time zone, biography, birth date, gender, and structured residence address.
+Applications collect only the fields they need.
 
-`extensions` is the one application-owned extension field. It accepts a JSON object for namespaced additions such
-as `{"acme.departmentId":"finance"}`. Do not add application-specific columns to the fixed profile contract, put
-credentials or secrets in `extensions`, or copy every Cognito attribute into the profile. Validate and authorize
-extension data in the application adapter that owns it.
+`extensions` is the one application-owned JSON extension field. Namespace additions such as
+`{"acme.departmentId":"finance"}` and validate them in the owning adapter. Do not add application-specific columns
+to the fixed contract, store credentials in `extensions`, or copy every Cognito attribute into the profile.
 
-## Create a user
+Store the durable S3 reference in `avatarKey` under an identity-owned prefix such as
+`user-avatars/{userId}/profile.webp`. Treat signed or CDN `avatarUrl` values as replaceable delivery data because
+they may expire. The application must register Amplify Storage and an upload adapter before the editor can upload
+photos. Until then, rows without a resolved image display a generic user avatar.
 
-Choose **New user**, then provide:
+## Create and edit accounts
 
-1. Email, given name, and family name. These match the current Amplify Auth requirements; middle name is optional.
-2. An optional temporary password and whether Cognito should send its invitation.
-3. Optional CloudIgniter profile summary fields and an extension JSON object.
-4. At least one Cognito role/group.
-5. One or more role assignments, including system, global, Tenant, or Org Unit scope and exact/descendant
+Choose **New user** or **New administrator**, then provide:
+
+1. Email, given name, and family name; middle name is optional.
+2. An optional temporary password and whether Cognito should send an invitation.
+3. Optional fixed profile fields and extension JSON.
+4. At least one eligible Cognito role/group.
+5. One or more scoped assignments, including system, global, Tenant, or Org Unit scope and exact/descendant
    propagation.
 
-Creation writes the Cognito account and group memberships, creates the User Profile record, and persists the
-scoped EmberGuard assignments. Only a directly authorized system super administrator can grant the protected
-`system-super-admin` role.
+Creation writes the Cognito account and all selected groups, creates the User Profile record, and persists the
+EmberGuard assignments. Edit loads the full projection when the dialog opens and can update names, title, gender,
+residence address, locale and time-zone drop-down selections, roles, and assignments. The table shows role and
+assignment counts; selecting either count opens a dismissible dialog with every value and identifies the primary
+role.
 
-Edit loads the full profile only when the dialog opens. It can update names, title, gender, residence address,
-locale and time-zone selections, Cognito roles/groups, and scoped assignments. The Email action opens the configured
-email adapter (the default browser behavior uses `mailto:`). Protected lifecycle actions remain visible but disabled
-so an administrator can discover the capability without being able to run it.
+The Email action opens the configured email adapter; the reference behavior uses `mailto:`. Impersonation is
+reserved for explicitly authorized high-privilege operators and remains unavailable until the application installs
+an audited impersonation-session adapter. It must never reuse the administrator's Cognito tokens as target-user
+tokens.
 
-The profile stores `avatarKey` as the durable S3 reference. Signed or CDN URLs are delivery values and may expire;
-do not treat `avatarUrl` as object identity. The application must register an Amplify Storage bucket and upload
-adapter before operators can upload files from this editor.
+## Administrator hierarchy and Root User
 
-Impersonation is reserved for system super administrators and remains disabled until the application installs an
-audited impersonation-session adapter. It must never reuse the administrator's Cognito tokens as if they belonged
-to the target user.
+Administrator management authority is ordered `admin < super-admin < system-admin < system-super-admin`. A
+non-Root administrator can manage peers and lower-ranked administrators, not higher-ranked targets. Role selectors
+apply the same ceiling.
 
-In development mode, an exact `developer` can use the page's test-user seeder. It creates the three configured
-test Gmail accounts with profiles, roles, and assignments. Cleanup only removes records carrying the matching
-`test-users` provenance marker.
+Deployment bootstrap gives one account the reserved `cloudigniter-root-user` identity marker and projects it to
+read-only `UserProfile.isRootUser`. Root is never inferred from an email, username, or `system-super-admin` role.
+Root can manage every non-Root administrator; only the Root owner can edit Root's ordinary profile, and Root roles,
+assignments, status, and deletion state are immutable through administration.
 
-## Status and deletion
+`system-super-admin-manager` is a special assignment, not a core role, Cognito group, or rank increase. Only Root
+can grant or revoke it, it must have exact system scope, and an active assignment lets that administrator manage
+system-super-admin targets but never Root.
+
+## Seeder, status, and deletion
+
+In development mode, an authenticated actor with the exact `developer` role can open the page's single top-level
+[Seeder](/dictionary/s#seeder) action. Its dialog contains **Seed** and **Cleanup**; Cleanup has a separate
+confirmation and removes only records carrying the matching provenance marker.
 
 Suspension is operational and reversible: CloudIgniter disables the Cognito account, records the trusted actor,
-time, and reason, and keeps its profile and assignments. **Delete** is also reversible, but moves the user to **Dashboard → Trash**, records trusted deletion
-metadata, and disables the identity. It does not permanently delete the account.
+time, and reason, and keeps its profile and assignments. **Delete** is a
+[soft delete](/dictionary/s#soft-delete): it disables the identity, records deletion metadata, and moves the account
+to **Dashboard → Trash** without permanently removing it.
 
-From Trash, **Restore** clears deletion metadata and re-enables the identity unless the user was independently
-suspended. **Delete permanently** requires a reason and an exact user-ID confirmation; it removes assignments,
-the Cognito identity, and the profile. The current actor cannot suspend or delete their own account, and
-`system-super-admin` accounts are protected from these lifecycle actions.
+Restore clears deletion metadata and re-enables the identity unless independently suspended. **Delete permanently**
+requires a reason and exact user-ID confirmation, then removes assignments, provider identity, and profile. The
+current actor cannot suspend or delete their own account, and Root cannot be lifecycle-managed by another actor.
+
+## Deterministic dates
+
+User tables pass the server-resolved application locale to `ciFormatDateTime`, which uses a fixed `UTC` time zone
+and deterministic fallback. Use the same locale and time zone for SSR and the first client render; do not derive
+the initial value from browser locale, `Date.now()`, or client-only state. This prevents hydration differences such
+as `2 Aug 2026, 13:16` versus `Aug 2, 2026, 1:16 PM`.
 
 :::warning Deployment compatibility
 
-The profile primary key is now Cognito `sub`. Applications with legacy username-keyed profile rows must migrate or
-reseed those rows before enabling this page. Amplify Auth sign-in attributes and required attributes are effectively
-deployment-time choices; verify them before updating an existing User Pool.
+Treat the Amplify `UserProfile` source, generated GraphQL model/input client, `amplify_outputs.json`, deployed
+AppSync schema, and backing resources as one contract. After changing profile fields, deploy or regenerate the
+current backend outputs before using the page. An error that a field is not defined on `CreateUserProfileInput`
+means the client/source and deployed schema are out of sync; update the deployment instead of silently dropping the
+field.
+
+An invalid-value error is a different check. In the current schema, `address`, `extensions`, `statusChange`, and
+`deletion` are `AWSJSON`. Fixtures and `CIUserProfile` keep these values as objects; the AWS adapter converts them
+to JSON strings only in the AppSync mutation variables and decodes them on read. If `Variable 'address' has an
+invalid value` persists after updating the application, verify that the deployed field is `AWSJSON` and that the
+current server bundle is running. Do not stringify `users.json`, because that would corrupt the domain shape and
+the seeder provenance round trip.
+
+Legacy username-keyed profile rows must be migrated or reseeded before enabling immutable Cognito `sub` keys.
+Cognito sign-in and required attributes are also deployment-time choices; verify them before updating an existing
+User Pool.
+
+If deployment reports a circular dependency between the Auth and Data nested stacks, update to the current
+CloudIgniter backend composition before retrying. Cognito administration operations are AppSync resolvers owned by
+Data, while their Lambda-owned policies reference the User Pool in Auth. The expected dependency direction is
+Data → Auth; Auth must not import the EmberGuard access table or a Data resolver role.
 
 :::
 
 See the [`CIUser` contracts](../api-reference/type-definitions/ci-user-types),
+the [AppSync AWSJSON helpers](../api-reference/shared-apis/ci-aws-json),
 [`CiUserManagementPage`](../api-reference/components/ci-user-management-page), and
 [Amplify Auth setup](../aws-amplify-setup/folder-structure).

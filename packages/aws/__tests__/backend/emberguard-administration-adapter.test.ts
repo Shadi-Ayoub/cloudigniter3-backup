@@ -72,7 +72,7 @@ test("adapts Amplify operations to the EmberGuard administration repository", as
   assert.equal(stateReads, 1);
   assert.equal(
     (await repository.listRoleAssignments())[0]?.roleId,
-    "system-admin"
+    "system-admin",
   );
   await repository.saveAccessControlDefinition({
     domains: [],
@@ -138,7 +138,7 @@ test("rejects non-canonical role assignment identifiers", async () => {
 
   await assert.rejects(
     repository.listRoleAssignments(),
-    /invalid role assignments/
+    /invalid role assignments/,
   );
   await assert.rejects(
     repository.putRoleAssignment({
@@ -148,7 +148,7 @@ test("rejects non-canonical role assignment identifiers", async () => {
       scope: { kind: "system" },
       propagation: "exact",
     }),
-    /lowercase kebab case/
+    /lowercase kebab case/,
   );
 });
 
@@ -159,13 +159,14 @@ test("extracts provider-neutral identity groups from Amplify outputs", () => {
         groups: [
           { "system-super-admin": { precedence: 0 } },
           { "system-admin": { precedence: 1 } },
+          { "cloudigniter-root-user": { precedence: 2 } },
         ],
       },
     }),
     [
       { id: "system-super-admin", provider: "AWS", precedence: 0 },
       { id: "system-admin", provider: "AWS", precedence: 1 },
-    ]
+    ],
   );
 });
 
@@ -276,7 +277,7 @@ test("rejects explicitly blank privilege titles instead of migrating them", asyn
         },
       ],
     }),
-    /human-readable title/
+    /human-readable title/,
   );
   assert.equal(saveCalls, 0);
 });

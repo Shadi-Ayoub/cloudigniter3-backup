@@ -7,6 +7,14 @@ const readHandlers = [
   "ciListEmberguardCustomDomainsHandler",
 ] as const;
 
+const cognitoMutationAssignmentReaders = [
+  "ciCreateCognitoUserHandler",
+  "ciDeleteCognitoUserHandler",
+  "ciSetCognitoUserEnabledHandler",
+  "ciSetCognitoUserPasswordHandler",
+  "ciUpdateCognitoUserHandler",
+] as const;
+
 const ordinaryWriteHandlers = [
   "ciPutEmberguardResourceInventoryHandler",
   "ciPutEmberguardCustomDomainHandler",
@@ -40,6 +48,17 @@ export function ciMakeEmberguardAccessTablePolicies(
               tables.emberguardAccess.arn,
               `${tables.emberguardAccess.arn}/index/*`,
             ],
+          },
+        ],
+      })),
+      ...cognitoMutationAssignmentReaders.map((handlerId) => ({
+        for: handlerId,
+        id: "EmberguardCognitoMutationAssignmentRead",
+        statements: [
+          {
+            effect: "Allow" as const,
+            actions: ["dynamodb:GetItem", "dynamodb:Query"],
+            resources: [tables.emberguardAccess.arn],
           },
         ],
       })),

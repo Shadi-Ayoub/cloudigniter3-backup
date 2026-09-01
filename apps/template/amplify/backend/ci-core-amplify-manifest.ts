@@ -38,7 +38,9 @@ export const CI_CORE_AMPLIFY_MANIFEST = ciDefineAmplifyBackendManifest({
   features: {
     cognitoUsers: {
       status: "active",
-      resourceGroupName: "auth",
+      // These are AppSync resolver functions. Keeping their Cognito and
+      // EmberGuard policies in Data preserves the one-way Data -> Auth edge.
+      resourceGroupName: "data",
       functions: {
         ciDeleteCognitoUserHandler: {
           backendKey: "deleteCognitoUserHandler",

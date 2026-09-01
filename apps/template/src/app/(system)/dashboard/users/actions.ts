@@ -2,10 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 import {
-  ciCreateAuthorizationSubject,
   ciCreateAuthorizer,
-  ciCreateRoleAssignments,
+  CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE,
   ciCanAccessDeveloperTools,
+  ciCanManageAdministrator,
+  ciGlobalAccessScope,
+  ciIsAdministratorRole,
   ciNormalizeThrownError,
   ciSystemAccessScope,
 } from "@cloudigniter/core/lib";
@@ -17,6 +19,7 @@ import type {
   CIRestoreUserInput,
   CISetUserStatusInput,
   CIUpdateUserInput,
+  CIUser,
   CIUserMutationResult,
   CIUserSeederDataItem,
   CIUserSeederExecutionResult,
@@ -26,13 +29,17 @@ import type {
 import { testUsersSeeder } from "@/custom/dev/seeder";
 import {
   appBootstrap,
+  appCanManageSystemSuperAdministrators,
   appCreateSecurityAdministration,
+  appCreateUserManagementAuthorizationSubject,
   appCreateUserRecord,
   appDeleteUserRecord,
   appGetUserRecord,
+  appIsUserAssignmentActive,
   appListUserRecords,
   appPurgeUserRecord,
   appRestoreUserRecord,
+  appResolveAdministratorActor,
   appSetUserStatus,
   appUpdateUserRecord,
 } from "@/kernel/server";
@@ -53,26 +60,174 @@ const USER_SEEDER_EXTENSION_KEY = "cloudigniterSeeder";
 async function requireUserAction(action: UserAction) {
   const context = await appBootstrap();
   const security = appCreateSecurityAdministration(context);
-  const definition = await security.loadDefinition();
-  const subject = ciCreateAuthorizationSubject(
-    {
-      id: context.auth.user.id ?? "anonymous",
-      authenticated: context.auth.user.authenticated,
-    },
-    ciCreateRoleAssignments(
-      context.auth.user.roles,
-      ciSystemAccessScope(),
-      "exact",
-    ),
+  const [definition, assignments] = await Promise.all([
+    security.loadDefinition(),
+    security.loadAssignments(),
+  ]);
+  const subject = appCreateUserManagementAuthorizationSubject(
+    context,
+    assignments,
   );
-  const allowed = ciCreateAuthorizer(definition).can({
-    subject,
-    resource: "identity.users",
-    action,
-    scope: ciSystemAccessScope(),
-  });
+  const authorizer = ciCreateAuthorizer(definition);
+  const policyAllowed = [ciSystemAccessScope(), ciGlobalAccessScope()].some(
+    (scope) =>
+      authorizer.can({
+        subject,
+        resource: "identity.users",
+        action,
+        scope,
+      }),
+  );
+  const delegatedAction = [
+    "assign-role",
+    "delete",
+    "email",
+    "purge",
+    "read",
+    "restore",
+    "update",
+  ].includes(action);
+  const allowed =
+    policyAllowed ||
+    (delegatedAction &&
+      appCanManageSystemSuperAdministrators(context, assignments));
   if (!allowed) throw new Error(`You cannot ${action} users.`);
-  return { context, definition, security };
+  return {
+    context,
+    definition,
+    security,
+    assignments,
+    policyAllowed,
+    actor: appResolveAdministratorActor(context, assignments),
+  };
+}
+
+type UserActionContext = Awaited<ReturnType<typeof requireUserAction>>;
+
+function userManagementSubject(user: CIUser) {
+  return {
+    id: user.id,
+    effectiveRoleIds: Array.from(
+      new Set([
+        ...user.roles,
+        ...user.assignments
+          .filter((assignment) => appIsUserAssignmentActive(assignment))
+          .map((assignment) => assignment.roleId),
+      ]),
+    ),
+    isRootUser: user.isRootUser === true,
+  };
+}
+
+function assertCanManageTarget(
+  state: UserActionContext,
+  target: CIUser,
+  operation: "profile-edit" | "account-management" = "account-management",
+): void {
+  const targetSubject = userManagementSubject(target);
+  if (
+    !state.policyAllowed &&
+    !(
+      state.actor.canManageSystemSuperAdmins === true &&
+      targetSubject.effectiveRoleIds.includes("system-super-admin")
+    )
+  ) {
+    throw new Error(
+      "The delegated authority only permits managing system super administrators.",
+    );
+  }
+
+  const isAdministrator =
+    target.isRootUser === true ||
+    targetSubject.effectiveRoleIds.some(ciIsAdministratorRole);
+  if (!isAdministrator) return;
+
+  if (
+    !ciCanManageAdministrator({
+      actor: state.actor,
+      target: targetSubject,
+      operation,
+    })
+  ) {
+    throw new Error(
+      target.isRootUser
+        ? "Only the Root User owner can edit the Root User profile."
+        : "You cannot manage an administrator at a higher authority level.",
+    );
+  }
+}
+
+function assertCanGrantRequestedAdministratorRoles(
+  state: UserActionContext,
+  targetId: string,
+  roles: readonly string[],
+): void {
+  if (!roles.some(ciIsAdministratorRole)) return;
+  const requestedTarget = {
+    id: targetId,
+    effectiveRoleIds: roles,
+    isRootUser: false,
+  };
+  if (
+    !ciCanManageAdministrator({
+      actor: state.actor,
+      target: requestedTarget,
+      operation: "account-management",
+    })
+  ) {
+    throw new Error(
+      "You cannot grant an administrator role above your authority level.",
+    );
+  }
+}
+
+function specialDelegationSignature(
+  assignments: readonly CICreateUserInput["assignments"][number][],
+): string[] {
+  return assignments
+    .filter(
+      (assignment) => assignment.roleId === CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE,
+    )
+    .map((assignment) => `${assignment.scope.kind}:${assignment.propagation}`)
+    .sort();
+}
+
+function assertDelegatedSystemSuperManagement(
+  state: UserActionContext,
+  targetRoles: readonly string[],
+  desired: readonly CICreateUserInput["assignments"][number][],
+  existing: readonly CICreateUserInput["assignments"][number][] = [],
+): void {
+  const desiredSpecial = desired.filter(
+    (assignment) => assignment.roleId === CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE,
+  );
+  const changed =
+    JSON.stringify(specialDelegationSignature(desired)) !==
+    JSON.stringify(specialDelegationSignature(existing));
+  if (!changed && desiredSpecial.length === 0) return;
+  if (!state.actor.isRootUser && changed) {
+    throw new Error(
+      "Only the Root User can grant or revoke system-super-admin management.",
+    );
+  }
+  if (desiredSpecial.length) {
+    if (!targetRoles.some(ciIsAdministratorRole)) {
+      throw new Error(
+        "System-super-admin management can only be assigned to an administrator.",
+      );
+    }
+    if (
+      desiredSpecial.some(
+        (assignment) =>
+          assignment.scope.kind !== "system" ||
+          assignment.propagation !== "exact",
+      )
+    ) {
+      throw new Error(
+        "System-super-admin management requires an exact system scope.",
+      );
+    }
+  }
 }
 
 function assignmentScopeId(scope: CiAccessScope): string | undefined {
@@ -106,7 +261,8 @@ export async function createUserAction(
   input: CICreateUserInput,
 ): Promise<CIUserMutationResult> {
   try {
-    const { context, definition, security } = await requireUserAction("create");
+    const state = await requireUserAction("create");
+    const { context, definition, security } = state;
     await requireUserAction("assign-role");
     if (
       !input.email.trim() ||
@@ -123,16 +279,24 @@ export async function createUserAction(
     const unknownRoleId = [
       ...input.roles,
       ...input.assignments.map((item) => item.roleId),
-    ].find((roleId) => !knownRoleIds.has(roleId));
+    ].find(
+      (roleId) =>
+        roleId !== CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE &&
+        !knownRoleIds.has(roleId),
+    );
     if (unknownRoleId) throw new Error(`Unknown role "${unknownRoleId}".`);
-    if (
-      input.roles.includes("system-super-admin") &&
-      !security.capabilities.canManageCore
-    ) {
-      throw new Error(
-        "Only a directly assigned system super administrator can grant system-super-admin.",
-      );
-    }
+    assertCanGrantRequestedAdministratorRoles(state, input.email, [
+      ...input.roles,
+      ...input.assignments.map((assignment) => assignment.roleId),
+    ]);
+    assertDelegatedSystemSuperManagement(
+      state,
+      [
+        ...input.roles,
+        ...input.assignments.map((assignment) => assignment.roleId),
+      ],
+      input.assignments,
+    );
     const created = await appCreateUserRecord(input);
     try {
       for (const assignment of input.assignments) {
@@ -153,6 +317,7 @@ export async function createUserAction(
       (record) => record.id === created.id,
     );
     revalidatePath("/dashboard/users");
+    revalidatePath("/dashboard/administrators");
     return {
       ok: true,
       message: `${created.displayName} was created with ${input.roles.length} role(s) and ${input.assignments.length} assignment(s).`,
@@ -167,9 +332,20 @@ export async function updateUserAction(
   input: CIUpdateUserInput,
 ): Promise<CIUserMutationResult> {
   try {
-    const { definition, security } = await requireUserAction("update");
+    const state = await requireUserAction("update");
+    const { definition, security, assignments } = state;
+    const target = await appGetUserRecord(input.userId, assignments);
+    assertCanManageTarget(
+      state,
+      target,
+      target.isRootUser ? "profile-edit" : "account-management",
+    );
+    if (target.isRootUser && (input.roles || input.assignments)) {
+      throw new Error("Root User roles and assignments are immutable.");
+    }
     if (input.roles || input.assignments) {
-      await requireUserAction("assign-role");
+      const assignmentState = await requireUserAction("assign-role");
+      assertCanManageTarget(assignmentState, target);
       if (!input.roles?.length) throw new Error("Assign at least one role.");
       if (!input.assignments?.length) {
         throw new Error("Create at least one scoped role assignment.");
@@ -178,28 +354,25 @@ export async function updateUserAction(
       const unknownRoleId = [
         ...input.roles,
         ...input.assignments.map((assignment) => assignment.roleId),
-      ].find((roleId) => !knownRoleIds.has(roleId));
-      if (unknownRoleId) throw new Error(`Unknown role "${unknownRoleId}".`);
-      const target = await appGetUserRecord(
-        input.userId,
-        await security.loadAssignments(),
+      ].find(
+        (roleId) =>
+          roleId !== CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE &&
+          !knownRoleIds.has(roleId),
       );
-      if (
-        target.roles.includes("system-super-admin") &&
-        !security.capabilities.canManageCore
-      ) {
-        throw new Error(
-          "Only a system super administrator can edit this user.",
-        );
-      }
-      if (
-        input.roles.includes("system-super-admin") &&
-        !security.capabilities.canManageCore
-      ) {
-        throw new Error(
-          "Only a directly assigned system super administrator can grant system-super-admin.",
-        );
-      }
+      if (unknownRoleId) throw new Error(`Unknown role "${unknownRoleId}".`);
+      assertCanGrantRequestedAdministratorRoles(state, input.userId, [
+        ...input.roles,
+        ...input.assignments.map((assignment) => assignment.roleId),
+      ]);
+      assertDelegatedSystemSuperManagement(
+        state,
+        [
+          ...input.roles,
+          ...input.assignments.map((assignment) => assignment.roleId),
+        ],
+        input.assignments,
+        target.assignments,
+      );
     }
     await appUpdateUserRecord(input);
     if (input.assignments) {
@@ -224,6 +397,7 @@ export async function updateUserAction(
       await security.loadAssignments(),
     );
     revalidatePath("/dashboard/users");
+    revalidatePath("/dashboard/administrators");
     return {
       ok: true,
       message:
@@ -239,10 +413,16 @@ export async function readUserAction(
   userId: string,
 ): Promise<CIUserMutationResult> {
   try {
-    const { security } = await requireUserAction("read");
+    const state = await requireUserAction("read");
+    const { security } = state;
     const user = await appGetUserRecord(
       userId,
       await security.loadAssignments(),
+    );
+    assertCanManageTarget(
+      state,
+      user,
+      user.isRootUser ? "profile-edit" : "account-management",
     );
     return { ok: true, message: "User details loaded.", user };
   } catch (error) {
@@ -267,6 +447,34 @@ function validateUserSeederItem(value: unknown): CIUserSeederDataItem {
   if (!item.roles?.length || !item.assignments?.length) {
     throw new Error(
       `User fixture "${item.email}" requires roles and assignments.`,
+    );
+  }
+  if (
+    item.profile !== undefined &&
+    (typeof item.profile !== "object" ||
+      item.profile === null ||
+      Array.isArray(item.profile))
+  ) {
+    throw new Error(`User fixture "${item.email}" requires an object profile.`);
+  }
+  if (
+    item.profile?.address !== undefined &&
+    (typeof item.profile.address !== "object" ||
+      item.profile.address === null ||
+      Array.isArray(item.profile.address))
+  ) {
+    throw new Error(
+      `User fixture "${item.email}" requires address to be a JSON object.`,
+    );
+  }
+  if (
+    item.profile?.extensions !== undefined &&
+    (typeof item.profile.extensions !== "object" ||
+      item.profile.extensions === null ||
+      Array.isArray(item.profile.extensions))
+  ) {
+    throw new Error(
+      `User fixture "${item.email}" requires extensions to be a JSON object.`,
     );
   }
   return item as CIUserSeederDataItem;
@@ -379,6 +587,7 @@ export async function seedTestUsersAction(): Promise<CIUserSeederExecutionResult
       result.resources?.push(created.user);
     }
     revalidatePath("/dashboard/users");
+    revalidatePath("/dashboard/administrators");
     return result;
   } catch (error) {
     result.ok = false;
@@ -442,6 +651,7 @@ export async function cleanupTestUsersAction(): Promise<CIUserSeederExecutionRes
       result.resources?.push(detail);
     }
     revalidatePath("/dashboard/users");
+    revalidatePath("/dashboard/administrators");
     revalidatePath("/dashboard/trash");
     return result;
   } catch (error) {
@@ -460,22 +670,20 @@ export async function setUserStatusAction(
   input: CISetUserStatusInput,
 ): Promise<CIUserMutationResult> {
   try {
-    const { context, security } = await requireUserAction("update");
+    const state = await requireUserAction("update");
+    const { context, assignments } = state;
     if (context.auth.user.id === input.userId && input.status === "suspended") {
       throw new Error("You cannot suspend your own active account.");
     }
     if (!input.reason.trim()) throw new Error("A reason is required.");
-    const target = (
-      await appListUserRecords(await security.loadAssignments())
-    ).find((user) => user.id === input.userId);
-    if (target?.roles.includes("system-super-admin")) {
-      throw new Error("A system-super-admin account cannot be suspended.");
-    }
+    const target = await appGetUserRecord(input.userId, assignments);
+    assertCanManageTarget(state, target);
     await appSetUserStatus(
       input,
       context.auth.user.id ?? "system-administrator",
     );
     revalidatePath("/dashboard/users");
+    revalidatePath("/dashboard/administrators");
     return {
       ok: true,
       message: `The user was ${input.status === "suspended" ? "suspended" : "activated"}.`,
@@ -489,22 +697,20 @@ export async function deleteUserAction(
   input: CIDeleteUserInput,
 ): Promise<CIUserMutationResult> {
   try {
-    const { context, security } = await requireUserAction("delete");
+    const state = await requireUserAction("delete");
+    const { context, assignments } = state;
     if (context.auth.user.id === input.userId) {
       throw new Error("You cannot delete your own active account.");
     }
     if (!input.reason.trim()) throw new Error("A reason is required.");
-    const target = (
-      await appListUserRecords(await security.loadAssignments())
-    ).find((user) => user.id === input.userId);
-    if (target?.roles.includes("system-super-admin")) {
-      throw new Error("A system-super-admin account cannot be deleted.");
-    }
+    const target = await appGetUserRecord(input.userId, assignments);
+    assertCanManageTarget(state, target);
     await appDeleteUserRecord(
       input,
       context.auth.user.id ?? "system-administrator",
     );
     revalidatePath("/dashboard/users");
+    revalidatePath("/dashboard/administrators");
     revalidatePath("/dashboard/trash");
     return { ok: true, message: "The user was moved to Trash." };
   } catch (error) {
@@ -516,9 +722,12 @@ export async function restoreUserAction(
   input: CIRestoreUserInput,
 ): Promise<CIUserMutationResult> {
   try {
-    await requireUserAction("restore");
+    const state = await requireUserAction("restore");
+    const target = await appGetUserRecord(input.userId, state.assignments);
+    assertCanManageTarget(state, target);
     await appRestoreUserRecord(input);
     revalidatePath("/dashboard/users");
+    revalidatePath("/dashboard/administrators");
     revalidatePath("/dashboard/trash");
     return { ok: true, message: "The user was restored." };
   } catch (error) {
@@ -530,11 +739,14 @@ export async function purgeUserAction(
   input: CIPurgeUserInput,
 ): Promise<CIUserMutationResult> {
   try {
-    const { security } = await requireUserAction("purge");
+    const state = await requireUserAction("purge");
+    const { security } = state;
     if (!input.reason.trim()) throw new Error("A reason is required.");
     if (input.confirmation !== input.userId) {
       throw new Error("The confirmation must exactly match the user ID.");
     }
+    const target = await appGetUserRecord(input.userId, state.assignments);
+    assertCanManageTarget(state, target);
     const [definition, assignments, counters] = await Promise.all([
       security.loadDefinition(),
       security.loadAssignments(),
@@ -548,6 +760,7 @@ export async function purgeUserAction(
     }
     await appPurgeUserRecord(input);
     revalidatePath("/dashboard/users");
+    revalidatePath("/dashboard/administrators");
     revalidatePath("/dashboard/trash");
     return { ok: true, message: "The user was permanently deleted." };
   } catch (error) {

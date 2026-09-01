@@ -2,6 +2,18 @@ import type { CiNextDashboardCardProps } from "@cloudigniter/next/ui/client";
 
 export const setup: CiNextDashboardCardProps[] = [
   {
+    id: "dashboard-administrators",
+    icon: "ci:badge-account-outline",
+    label: "Administrators",
+    description:
+      "Manages administrator identities with explicit authority hierarchy, Root User protection, identity roles, and scoped access assignments.",
+    meta: "Privileged identity governance",
+    badge: "Amazon Cognito",
+    tone: "security",
+    route: "/dashboard/administrators",
+    namespace: "dashboard",
+  },
+  {
     id: "dashboard-users",
     icon: "ci:account-group-outline",
     label: "Users",

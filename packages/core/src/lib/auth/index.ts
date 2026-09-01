@@ -1,4 +1,14 @@
 export {
+  CI_ADMINISTRATOR_AUTHORITY_RANKS,
+  CI_ADMINISTRATOR_ROLES,
+  CI_ROOT_USER_IDENTITY_GROUP,
+  CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE,
+  ciCanManageAdministrator,
+  ciIsAdministratorRole,
+  ciIsAdministratorUser,
+  ciResolveAdministratorAuthorityRank,
+} from "./ci-administrator-authority";
+export {
   CI_CORE_ROLE_PRECEDENCE,
   CI_CORE_ROLES_BY_PRECEDENCE,
   ciResolvePrimaryRole,

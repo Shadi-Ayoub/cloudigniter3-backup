@@ -1,4 +1,10 @@
 export type { CiAuthConfig } from "./CiAuthConfig";
+export type {
+  CiAdministratorManagementOperation,
+  CiAdministratorManagementSubject,
+  CiAdministratorRole,
+  CiCanManageAdministratorInput,
+} from "./CiAdministratorAuthority";
 export type { CiAuthenticatorPageMode } from "./CiAuthenticatorPageMode";
 export type { CiAuthMode } from "./CiAuthMode";
 export type { CiAuthProviderId } from "./CiAuthProviderId";

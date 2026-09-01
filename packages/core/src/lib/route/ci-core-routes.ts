@@ -87,6 +87,11 @@ export const ciCoreRoutes: CiRoutesMap = {
       action: "read",
     },
   },
+  "/dashboard/administrators": {
+    title: "Manage Administrators",
+    namespace: "dashboard.administrators",
+    protected: true,
+  },
   "/dashboard/org-units": {
     title: "Manage Org Units",
     namespace: "dashboard.org-units",
@@ -109,6 +114,11 @@ export const ciCoreRoutes: CiRoutesMap = {
       resource: "identity.users",
       action: "read",
     },
+  },
+  "/dashboard/administrators/*": {
+    title: "Administrator Administration",
+    namespace: "dashboard.administrators",
+    protected: true,
   },
   "/login": {
     title: "Login Page",

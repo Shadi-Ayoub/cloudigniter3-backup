@@ -33,12 +33,16 @@ export {
 
   // Security
   appCreateSecurityAdministration,
+  appCanManageSystemSuperAdministrators,
+  appCreateUserManagementAuthorizationSubject,
   appCreateUserRecord,
   appDeleteUserRecord,
   appListUserRecords,
+  appIsUserAssignmentActive,
   appGetUserRecord,
   appPurgeUserRecord,
   appRestoreUserRecord,
+  appResolveAdministratorActor,
   appSetUserStatus,
   appUpdateUserRecord,
 } from "./api";

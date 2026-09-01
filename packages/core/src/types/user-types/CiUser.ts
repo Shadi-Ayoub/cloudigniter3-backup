@@ -11,6 +11,9 @@ export type CiUser = {
    */
   primaryRole: string | null;
 
+  /** True when the signed-in identity owns the reserved deployment Root marker. */
+  isRootUser?: boolean;
+
   /** Email address associated with the authenticated user. */
   email?: string | null;
 

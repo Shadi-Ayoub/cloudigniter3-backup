@@ -6,6 +6,7 @@ import {
 import { ciError400, ciOk200 } from "@cloudigniter/core/lib";
 import type { CiResult } from "@cloudigniter/core/types";
 import {
+  CI_COGNITO_ROOT_USER_GROUP,
   ciBuildCognitoError,
   ciCreateCognitoClient,
   ciMapCognitoUser,
@@ -26,6 +27,15 @@ export type CiCreateCognitoUserResult = CiResult<CICognitoUser>;
 export async function ciCreateCognitoUser(
   input: CiCreateCognitoUserInterface,
 ): Promise<CiCreateCognitoUserResult> {
+  const groupNames = Array.from(
+    new Set((input.groups ?? []).map((name) => name.trim()).filter(Boolean)),
+  ).sort();
+  if (groupNames.includes(CI_COGNITO_ROOT_USER_GROUP)) {
+    return ciError400<CICognitoUser>(
+      `COGNITO_CREATE_USER: The group "${CI_COGNITO_ROOT_USER_GROUP}" is reserved for Root User bootstrap.`,
+    );
+  }
+
   let cognito: Awaited<ReturnType<typeof ciCreateCognitoClient>>;
   let createdUsername: string | undefined;
 
@@ -142,9 +152,9 @@ export async function ciCreateCognitoUser(
       }
     }
 
-    if (input.groups?.length) {
+    if (groupNames.length) {
       const client = await cognito.getIdentityProviderClient();
-      for (const groupName of Array.from(new Set(input.groups)).sort()) {
+      for (const groupName of groupNames) {
         await client.send(
           new AdminAddUserToGroupCommand({
             UserPoolId: input.cognito.UserPoolId,
@@ -155,7 +165,12 @@ export async function ciCreateCognitoUser(
       }
     }
 
-    return ciOk200(ciMapCognitoUser(user));
+    return ciOk200(
+      ciMapCognitoUser(
+        user,
+        groupNames.map((groupName) => ({ GroupName: groupName })),
+      ),
+    );
   } catch (error: unknown) {
     let reportedError = error;
     try {

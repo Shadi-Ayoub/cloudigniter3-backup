@@ -163,9 +163,7 @@ export function ciGetAvailableOrgUnitTenantOptions(
   parentTenantIds: readonly string[] | null,
   selectedTenantIds: readonly string[],
 ): CiSearchableChipOption[] {
-  const allowedTenantIds = parentTenantIds
-    ? new Set(parentTenantIds)
-    : null;
+  const allowedTenantIds = parentTenantIds ? new Set(parentTenantIds) : null;
   const selectedIds = new Set(selectedTenantIds);
   return tenants
     .filter(
@@ -591,11 +589,7 @@ export function CiOrgUnitManagementPage({
 
   const finishPointerDrop = useCallback(
     (draggedId: string, targetId: string | null) => {
-      const intent = ciResolveOrgUnitDropDestination(
-        rows,
-        draggedId,
-        targetId,
-      );
+      const intent = ciResolveOrgUnitDropDestination(rows, draggedId, targetId);
       clearPointerDrag();
       if (!intent) return;
       const error = validateMove(intent.row, intent.newParent);
@@ -901,17 +895,19 @@ export function CiOrgUnitManagementPage({
           </div>
         </div>
         <div className="flex flex-wrap content-end items-end gap-2 lg:max-w-sm lg:justify-end lg:self-end">
-          <Badge variant="outline">
+          <Badge variant="secondary" className="gap-1.5">
+            <Building2 aria-hidden className="size-3.5" />
             {rows.length} {rows.length === 1 ? "Org Unit" : "Org Units"}
           </Badge>
-          <Badge variant="outline">
+          <Badge variant="secondary" className="gap-1.5">
+            <Share2 aria-hidden className="size-3.5" />
             {rows.filter((row) => row.tenantIds.length > 1).length} shared
           </Badge>
-          <Badge variant={canManage ? "default" : "secondary"}>
-            {canManage ? "Management enabled" : "Read only"}
-          </Badge>
           {developmentSeeder ? (
-            <Badge variant="secondary">Development seeder</Badge>
+            <Badge variant="secondary" className="gap-1.5">
+              <DatabaseZap aria-hidden className="size-3.5" />
+              Development seeder
+            </Badge>
           ) : null}
         </div>
       </div>

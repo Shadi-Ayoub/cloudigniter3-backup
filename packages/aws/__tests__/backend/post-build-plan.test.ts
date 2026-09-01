@@ -20,6 +20,8 @@ const EMBERGUARD_ACCESS_TABLE_ARN =
 const SYSTEM_TABLE_NAME = "ci-system-sandbox";
 const SYSTEM_TABLE_ARN =
   "arn:aws:dynamodb:me-central-1:123456789012:table/ci-system-sandbox";
+const USER_POOL_ARN =
+  "arn:aws:cognito-idp:me-central-1:123456789012:userpool/me-central-1_example";
 
 const TEST_IAM_MODULE = {
   Policy: class {},
@@ -62,8 +64,7 @@ function createPlan() {
     {
       auth: {
         userPoolId: "me-central-1_example",
-        userPoolArn:
-          "arn:aws:cognito-idp:me-central-1:123456789012:userpool/me-central-1_example",
+        userPoolArn: USER_POOL_ARN,
       },
     },
   );
@@ -90,8 +91,12 @@ test("configures every active Cognito handler through the package plan", () => {
   const plan = createPlan();
   const cognitoHandlers = [
     "ciCreateCognitoUserHandler",
+    "ciDeleteCognitoUserHandler",
     "ciGetCognitoUserHandler",
+    "ciListCognitoUsersHandler",
+    "ciSetCognitoUserEnabledHandler",
     "ciSetCognitoUserPasswordHandler",
+    "ciUpdateCognitoUserHandler",
   ] as const;
 
   for (const handlerId of cognitoHandlers) {
@@ -99,10 +104,7 @@ test("configures every active Cognito handler through the package plan", () => {
 
     assert.ok(env, `${handlerId} must have a post-build environment`);
     assert.equal(env[CI_ENV.CI_USER_POOL_ID], "me-central-1_example");
-    assert.equal(
-      env[CI_ENV.CI_USER_POOL_ARN],
-      "arn:aws:cognito-idp:me-central-1:123456789012:userpool/me-central-1_example",
-    );
+    assert.equal(env[CI_ENV.CI_USER_POOL_ARN], USER_POOL_ARN);
     assert.equal(
       env[CI_ENV.CI_USER_POOL_ID_PARAM],
       "/cloudigniter/sandbox/auth/user-pool-id",
@@ -111,6 +113,65 @@ test("configures every active Cognito handler through the package plan", () => {
       env[CI_ENV.CI_USER_POOL_ARN_PARAM],
       "/cloudigniter/sandbox/auth/user-pool-arn",
     );
+  }
+});
+
+test("grants exact Cognito access from Lambda-owned post-build policies", () => {
+  const expectedActions = {
+    ciCreateCognitoUserHandler: [
+      "cognito-idp:AdminAddUserToGroup",
+      "cognito-idp:AdminCreateUser",
+      "cognito-idp:AdminGetUser",
+      "cognito-idp:AdminListGroupsForUser",
+    ],
+    ciDeleteCognitoUserHandler: [
+      "cognito-idp:AdminDeleteUser",
+      "cognito-idp:AdminGetUser",
+      "cognito-idp:AdminListGroupsForUser",
+    ],
+    ciGetCognitoUserHandler: [
+      "cognito-idp:AdminGetUser",
+      "cognito-idp:AdminListGroupsForUser",
+    ],
+    ciListCognitoUsersHandler: [
+      "cognito-idp:AdminListGroupsForUser",
+      "cognito-idp:ListUsers",
+    ],
+    ciSetCognitoUserEnabledHandler: [
+      "cognito-idp:AdminDisableUser",
+      "cognito-idp:AdminEnableUser",
+      "cognito-idp:AdminGetUser",
+      "cognito-idp:AdminListGroupsForUser",
+    ],
+    ciSetCognitoUserPasswordHandler: [
+      "cognito-idp:AdminGetUser",
+      "cognito-idp:AdminListGroupsForUser",
+      "cognito-idp:AdminSetUserPassword",
+    ],
+    ciUpdateCognitoUserHandler: [
+      "cognito-idp:AdminAddUserToGroup",
+      "cognito-idp:AdminGetUser",
+      "cognito-idp:AdminListGroupsForUser",
+      "cognito-idp:AdminRemoveUserFromGroup",
+      "cognito-idp:AdminUpdateUserAttributes",
+    ],
+  } as const;
+  const plan = createPlan();
+
+  for (const [handlerId, actions] of Object.entries(expectedActions)) {
+    const policies = plan.inlinePolicies.filter(
+      (policy) =>
+        policy.for === handlerId && policy.id === "CognitoUserPoolAccess",
+    );
+
+    assert.equal(policies.length, 1, handlerId);
+    assert.deepEqual(policies[0]?.statements, [
+      {
+        effect: "Allow",
+        actions: [...actions],
+        resources: [USER_POOL_ARN],
+      },
+    ]);
   }
 });
 
@@ -213,6 +274,34 @@ test("grants mutation handlers transactional projection permissions", () => {
   assert.equal(definitionActions.has("dynamodb:PutItem"), true);
   assert.equal(definitionActions.has("dynamodb:DeleteItem"), false);
   assert.equal(definitionActions.has("dynamodb:TransactWriteItems"), true);
+});
+
+test("wires Cognito mutation handlers for read-only assignment checks", () => {
+  const plan = createPlan();
+  for (const handlerId of [
+    "ciCreateCognitoUserHandler",
+    "ciDeleteCognitoUserHandler",
+    "ciSetCognitoUserEnabledHandler",
+    "ciSetCognitoUserPasswordHandler",
+    "ciUpdateCognitoUserHandler",
+  ] as const) {
+    assert.equal(
+      plan.env[handlerId]?.[CI_ENV.CI_EMBERGUARD_ACCESS_TABLE_NAME],
+      EMBERGUARD_ACCESS_TABLE_NAME,
+      handlerId,
+    );
+    const actions = new Set(
+      plan.inlinePolicies
+        .filter((policy) => policy.for === handlerId)
+        .flatMap((policy) =>
+          policy.statements.flatMap((statement) => statement.actions),
+        ),
+    );
+    assert.equal(actions.has("dynamodb:GetItem"), true, handlerId);
+    assert.equal(actions.has("dynamodb:Query"), true, handlerId);
+    assert.equal(actions.has("dynamodb:PutItem"), false, handlerId);
+    assert.equal(actions.has("dynamodb:DeleteItem"), false, handlerId);
+  }
 });
 
 test("allows the definition reader to initialize a missing state", () => {

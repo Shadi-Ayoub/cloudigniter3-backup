@@ -79,8 +79,11 @@ still requires Amplify synthesis and deployment before an existing Lambda execut
 6. Add UI through reusable controls and semantic feedback.
 7. Test retries, collisions, ownership drift, fixture removal, partial failures, pagination, IAM, and no-scan access.
 
-A user seeder cannot reuse the tenant collector unchanged: Cognito, the profile table, assignments, and audit
-evidence are separate participants and need an explicit recovery strategy.
+The `test-users` seeder uses an idempotent cross-service flow because Cognito, the profile table, assignments, and
+audit evidence are separate participants. Profile creation failure rolls back the Cognito identity; matching emails
+are adopted or cleaned only when decoded `extensions.cloudigniterSeeder` provenance equals `test-users`. Its
+object-shaped address, provenance extension, status transition, and deletion metadata are encoded only at the
+AppSync `AWSJSON` boundary and decoded before ownership/lifecycle checks.
 
 ## CLI boundary
 

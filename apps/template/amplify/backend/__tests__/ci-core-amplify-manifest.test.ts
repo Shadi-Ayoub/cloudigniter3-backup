@@ -16,9 +16,13 @@ import {
   CI_CORE_AMPLIFY_TABLE_BINDINGS,
 } from "../ci-core-amplify-manifest";
 import { CI_COGNITO_USER_ADMIN_GROUPS } from "../../data/schemata/schema-cognito-user";
+import { backendAuth } from "../../auth/backend-auth";
+import { customBackendAuth } from "../../custom/backend";
 
-test("admits both technical administrator groups to Cognito operations", () => {
+test("admits every administrator tier to guarded Cognito operations", () => {
   assert.deepEqual(CI_COGNITO_USER_ADMIN_GROUPS, [
+    "admin",
+    "super-admin",
     "system-admin",
     "system-super-admin",
   ]);
@@ -49,6 +53,49 @@ test("projects every active package binding into the Amplify backend", () => {
   assert.deepEqual(
     Object.keys(CI_CORE_AMPLIFY_FUNCTION_RESOURCES).sort(),
     backendKeys.sort(),
+  );
+});
+
+test("keeps every Cognito AppSync resolver in the Data resource group", () => {
+  const cognitoHandlerIds = [
+    "ciCreateCognitoUserHandler",
+    "ciDeleteCognitoUserHandler",
+    "ciGetCognitoUserHandler",
+    "ciListCognitoUsersHandler",
+    "ciSetCognitoUserEnabledHandler",
+    "ciSetCognitoUserPasswordHandler",
+    "ciUpdateCognitoUserHandler",
+  ] as const;
+
+  assert.equal(
+    CI_CORE_AMPLIFY_MANIFEST.features.cognitoUsers.resourceGroupName,
+    "data",
+  );
+
+  for (const handlerId of cognitoHandlerIds) {
+    assert.equal(
+      Object.hasOwn(CI_CORE_AMPLIFY_AUTH_FUNCTION_BINDINGS, handlerId),
+      false,
+      `${handlerId} must not create an Auth-to-Data stack edge`,
+    );
+    assert.equal(
+      Object.hasOwn(CI_CORE_AMPLIFY_DATA_FUNCTION_BINDINGS, handlerId),
+      true,
+      `${handlerId} must be owned by the Data resource group`,
+    );
+    const resource = CI_CORE_AMPLIFY_FUNCTION_BINDINGS[handlerId]
+      .resource as unknown as {
+      props: { resourceGroupName?: string };
+    };
+    assert.equal(resource.props.resourceGroupName, "data");
+  }
+});
+
+test("keeps core Cognito resolver IAM out of the Auth stack", () => {
+  assert.equal(
+    backendAuth.access,
+    customBackendAuth.access,
+    "only application-owned Auth access rules may remain on defineAuth",
   );
 });
 

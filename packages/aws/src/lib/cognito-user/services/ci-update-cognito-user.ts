@@ -1,18 +1,25 @@
 import {
   AdminAddUserToGroupCommand,
-  AdminListGroupsForUserCommand,
   AdminRemoveUserFromGroupCommand,
-  type UserType as CognitoUserType,
 } from "@aws-sdk/client-cognito-identity-provider";
-import { ciOk200 } from "@cloudigniter/core/lib";
+import { ciError400, ciOk200 } from "@cloudigniter/core/lib";
 import type { CiResult } from "@cloudigniter/core/types";
-import { ciBuildCognitoError, ciCreateCognitoClient } from "@ci-aws/lib";
-import type { CiUpdateCognitoUserInterface } from "@ci-aws/types";
+import {
+  CI_COGNITO_ROOT_USER_GROUP,
+  ciBuildCognitoError,
+  ciCreateCognitoClient,
+  ciMapCognitoUser,
+} from "@ci-aws/lib";
+import type {
+  CICognitoUser,
+  CiUpdateCognitoUserInterface,
+} from "@ci-aws/types";
+import { ciListCognitoUserGroups } from "./helpers";
 
 /**
  * Successful result returned by `updateCognitoUser`.
  */
-export type CiUpdateCognitoUserResult = CiResult<CognitoUserType | null>;
+export type CiUpdateCognitoUserResult = CiResult<CICognitoUser>;
 
 /**
  * Update a Cognito user, then re-fetch and return the updated record.
@@ -21,6 +28,15 @@ export async function ciUpdateCognitoUser(
   input: CiUpdateCognitoUserInterface,
 ): Promise<CiUpdateCognitoUserResult> {
   try {
+    if (
+      input.groups?.some(
+        (groupName) => groupName.trim() === CI_COGNITO_ROOT_USER_GROUP,
+      )
+    ) {
+      return ciError400<CICognitoUser>(
+        `COGNITO_UPDATE_USER: The group "${CI_COGNITO_ROOT_USER_GROUP}" is reserved for Root User bootstrap.`,
+      );
+    }
     const cognito = await ciCreateCognitoClient(input.CognitoClientConfig);
 
     if (input.cognito.UserAttributes.length) {
@@ -30,14 +46,12 @@ export async function ciUpdateCognitoUser(
 
     if (input.groups) {
       const client = await cognito.getIdentityProviderClient();
-      const current = await client.send(
-        new AdminListGroupsForUserCommand({
-          UserPoolId: input.cognito.UserPoolId,
-          Username: input.cognito.Username,
-        }),
-      );
+      const current = await ciListCognitoUserGroups(client, {
+        userPoolId: input.cognito.UserPoolId,
+        username: input.cognito.Username,
+      });
       const currentNames = new Set(
-        (current.Groups ?? [])
+        current
           .map((group) => group.GroupName)
           .filter((name): name is string => Boolean(name)),
       );
@@ -45,7 +59,8 @@ export async function ciUpdateCognitoUser(
         input.groups.map((name) => name.trim()).filter(Boolean),
       );
       for (const groupName of [...currentNames].filter(
-        (name) => !desiredNames.has(name),
+        (name) =>
+          name !== CI_COGNITO_ROOT_USER_GROUP && !desiredNames.has(name),
       )) {
         await client.send(
           new AdminRemoveUserFromGroupCommand({
@@ -74,7 +89,12 @@ export async function ciUpdateCognitoUser(
     });
     if (!user.ok) return user;
 
-    return ciOk200(user.body as CognitoUserType);
+    const client = await cognito.getIdentityProviderClient();
+    const groups = await ciListCognitoUserGroups(client, {
+      userPoolId: input.cognito.UserPoolId,
+      username: input.cognito.Username,
+    });
+    return ciOk200(ciMapCognitoUser(user.body, groups));
   } catch (error: unknown) {
     return ciBuildCognitoError(
       "COGNITO_UPDATE_USER: Failed to update the Cognito user.",

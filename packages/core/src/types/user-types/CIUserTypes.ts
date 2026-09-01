@@ -65,6 +65,8 @@ export type CIUserEntity = CIUserProfile & {
   profileOwner: string;
   /** List projection of identity-provider groups; provider membership remains authoritative. */
   roles: string[];
+  /** Read-only projection of the reserved deployment Root identity marker. */
+  isRootUser?: boolean;
   status: CIUserOperationalStatus;
   statusChange?: CIUserStatusChange;
   deletionState: "active" | "deleted";
@@ -91,14 +93,21 @@ export type CIUser<TIdentity = unknown> = {
   username: string;
   email?: string;
   emailVerified?: boolean;
+  /** Common identity attributes kept in the lightweight list projection. */
+  givenName?: string;
+  familyName?: string;
   displayName: string;
   avatarUrl?: string;
   status: CIUserOperationalStatus;
   statusChange?: CIUserStatusChange;
   identityProvider: CIUserIdentityProvider;
+  /** Highest-precedence identity-provider role; never replaces `roles`. */
+  primaryRole?: string;
   roles: string[];
   assignments: CIUserAssignment[];
-  /** Protected bootstrap identities cannot be suspended or deleted. */
+  /** True only for the uniquely marked deployment bootstrap owner. */
+  isRootUser?: boolean;
+  /** @deprecated Use `isRootUser`; system-super-admin is not inherently protected. */
   protected?: boolean;
   deletion?: CiResourceDeletionMetadata;
   createdAt?: string;

@@ -40,9 +40,9 @@ test("centers every table body cell on the same row axis", () => {
     markup.indexOf("</tbody>"),
   );
   const rowClassName = tableBody.match(/<tr[^>]*class="([^"]+)"/)?.[1];
-  const cellClassNames = [...tableBody.matchAll(/<td[^>]*class="([^"]+)"/g)].map(
-    (match) => match[1] ?? "",
-  );
+  const cellClassNames = [
+    ...tableBody.matchAll(/<td[^>]*class="([^"]+)"/g),
+  ].map((match) => match[1] ?? "");
 
   assert.match(rowClassName ?? "", /\bitems-stretch\b/);
   assert.equal(cellClassNames.length, 2);
@@ -96,7 +96,8 @@ test("renders an overflow action menu for manageable active tenants", () => {
   );
   assert.doesNotMatch(markup, /move tenants to Trash/);
   assert.match(markup, />2 records<\/span>/);
-  assert.match(markup, />Management enabled<\/span>/);
+  assert.doesNotMatch(markup, />Management enabled<\/span>/);
+  assert.match(markup, /lucide-building-2/);
   assert.match(markup, /\[&amp;&gt;svg\]:size-16/);
   assert.match(
     markup,

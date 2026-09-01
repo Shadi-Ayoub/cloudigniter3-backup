@@ -66,6 +66,29 @@ test("protects core backend resource keys", () => {
   );
 });
 
+test("rejects Amplify manifest and defineFunction resource-group drift", () => {
+  assert.throws(
+    () =>
+      ciDefineAmplifyBackendManifest({
+        features: {
+          cognitoUsers: {
+            status: "active",
+            resourceGroupName: "data",
+            functions: {
+              ciCreateCognitoUserHandler: {
+                backendKey: "createCognitoUserHandler",
+                resource: {
+                  props: { resourceGroupName: "auth" },
+                },
+              },
+            },
+          },
+        },
+      }),
+    /defineFunction uses "auth"/i,
+  );
+});
+
 test("creates provider-neutral runtime state for the post-build planner", () => {
   assert.deepEqual(
     ciCreateAmplifyCoreRuntime({

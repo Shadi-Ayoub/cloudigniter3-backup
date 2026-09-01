@@ -77,10 +77,49 @@ therefore needs an idempotent cross-service operation rather than copying the te
 Render seeder controls only after a server-resolved developer-tools decision. Disable repeat submission, show
 pending state, return semantic success/failure feedback, and require `CiAlertDialog` confirmation for cleanup.
 
+Every management page uses the same progressive-disclosure flow:
+
+1. Expose exactly one top-level `Seeder` action, with an icon, in the table toolbar. Do not place separate
+   `Seed` and `Clean up` actions above the table.
+2. Open a `Dialog` with the seeder title and description. Put the non-destructive `Seed` action and the
+   `Clean Up` entry point inside that dialog, together with dismissible semantic feedback.
+3. Launch cleanup from the dialog into a separate destructive `CiAlertDialog` that names the seeder and
+   explains its provenance safeguards. Return to or retain the Seeder dialog so the result remains visible.
+4. While either operation is pending, disable repeat submission and prevent dismissal by close, escape, or
+   outside interaction. Use a readable pending label and spinner.
+
+Start from the existing Tenant and Org Unit management Seeder flow before creating another composition. Extract
+shared presentation into `packages/ui` when repetition warrants it; keep fixture names and application callbacks
+in the template.
+
 Do not add a CLI command that bypasses the authenticated application boundary or grants a developer workstation
 direct table access. A future `ci seed` command must invoke the same deployed least-privilege capability with a
 verifiable application actor/target and repeat the environment and role checks. Until that identity contract is
 implemented, use the authenticated UI/server-action path.
+
+## Amplify schema and output synchronization
+
+When a seeder writes an Amplify Data model, treat the source model, generated GraphQL schema, generated
+`amplify_outputs.json` model introspection, deployed AppSync schema, mutation payload, and fixture fields as one
+versioned contract.
+
+- After adding, removing, or changing a model field, synthesize and deploy the intended Amplify environment and
+  regenerate its outputs before exercising the seeder or management UI against it. Deployment remains an
+  external mutation and still requires the task's normal authorization.
+- Before QA, verify that generated `Create<Model>Input` and `Update<Model>Input` definitions and the outputs'
+  model introspection contain every field the application sends. Confirm that the application is using outputs
+  from the same environment that received the schema deployment.
+- Treat a GraphQL error saying that an input contains a field not defined for an input object as client/deployed
+  schema drift until inspection proves otherwise. Compare the source schema, generated input, outputs, target
+  environment, and payload instead of weakening types or deleting requested fields from fixtures.
+- Distinguish field presence from scalar wire shape. Under the current User Profile contract, `address`,
+  `extensions`, `statusChange`, and `deletion` are structured domain values backed by AppSync `AWSJSON`. An error
+  such as `Variable 'address' has an invalid value` means the caller sent the wrong scalar representation when the
+  deployed field is `AWSJSON`: inspect the synthesized input and exact mutation variables, then serialize once at
+  the AWS boundary and decode on read. Keep fixture JSON object-shaped.
+- Do not hide drift by casting the payload, silently filtering domain fields, or teaching a seeder to tolerate
+  an obsolete schema. If deployment is outside the authorized scope, keep the source contract correct, report
+  the pending deployment explicitly, and do not claim the runtime workflow is verified.
 
 ## Validation
 
@@ -91,3 +130,7 @@ implemented, use the authenticated UI/server-action path.
   ownership drift, malformed markers, pagination, and absence of scans.
 - Verify exact PK/SK strings, transaction conditions, handler environment checks, AppSync group admission, IAM,
   package exports, consuming server actions, UI pending/feedback/confirmation behavior, and documentation.
+- Verify that each management page renders one top-level `Seeder` action whose dialog owns Seed/Cleanup choices
+  and whose cleanup path uses a separate destructive confirmation.
+- For Amplify-backed seeders, verify the synthesized create/update input and environment outputs include every
+  field sent by fixtures and mutation adapters before running the end-to-end seed smoke test.

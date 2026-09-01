@@ -106,6 +106,7 @@ export * from "./resource-studio";
 export {
   ciBootstrapRootUser,
   ciBootstrapRootUserFromAmplifyApp,
+  ciEnsureCognitoRootUserMarker,
   type CiBootstrapRootUserInput,
   type CiBootstrapRootUserResult,
   type CiBootstrapRootUserFromAmplifyAppInput,

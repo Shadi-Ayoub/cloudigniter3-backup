@@ -4,7 +4,7 @@
 
 import { defineAuth } from "@aws-amplify/backend";
 
-import { backendAuth, backendAuthAccess } from "./backend-auth";
+import { backendAuth } from "./backend-auth";
 
 /**
  * Define and configure your auth resource
@@ -15,7 +15,4 @@ import { backendAuth, backendAuthAccess } from "./backend-auth";
 
 type AmplifyAuthResource = ReturnType<typeof defineAuth>;
 
-export const auth: AmplifyAuthResource = defineAuth({
-  ...backendAuth,
-  access: (allow) => [...backendAuthAccess(allow)],
-});
+export const auth: AmplifyAuthResource = defineAuth(backendAuth);

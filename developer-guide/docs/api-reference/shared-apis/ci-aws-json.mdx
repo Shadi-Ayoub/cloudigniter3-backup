@@ -1,0 +1,56 @@
+---
+title: AppSync AWSJSON helpers
+description: Serialize AppSync AWSJSON variables and decode AWSJSON responses at the AWS provider boundary.
+sidebar_position: 7
+---
+
+# AppSync AWSJSON helpers
+
+These runtime-neutral AWS-provider helpers are exported from `@cloudigniter/aws/lib`:
+
+```ts
+function ciSerializeAwsJson(value: unknown): string;
+function ciDeserializeAwsJson(value: unknown): unknown;
+
+function ciSerializeUserProfileAwsJsonFields<
+  TInput extends Record<string, unknown>,
+>(
+  input: TInput,
+): Omit<TInput, "address" | "extensions" | "statusChange" | "deletion"> &
+  Partial<
+    Record<
+      "address" | "extensions" | "statusChange" | "deletion",
+      string | null
+    >
+  >;
+```
+
+AppSync defines `AWSJSON` as a JSON string. Keep domain values and fixture data structured, then encode them only
+when constructing the GraphQL variables:
+
+```ts
+import {
+  ciDeserializeAwsJson,
+  ciSerializeUserProfileAwsJsonFields,
+} from "@cloudigniter/aws/lib";
+
+const input = ciSerializeUserProfileAwsJsonFields({
+  userId: "cognito-sub",
+  address: { locality: "Dubai", countryCode: "AE" },
+  extensions: { crmCustomerId: "customer-123" },
+});
+
+const address = ciDeserializeAwsJson(input.address);
+```
+
+`ciSerializeUserProfileAwsJsonFields()` covers all four AWSJSON-backed `UserProfile` fields: `address`,
+`extensions`, `statusChange`, and `deletion`. It omits `undefined`, preserves `null` so an update can clear a field,
+and serializes every other value exactly once. `ciSerializeAwsJson()` throws `TypeError` when JavaScript cannot
+represent a value as JSON.
+
+`ciDeserializeAwsJson()` preserves non-string values because Amplify clients may already decode a response. It
+assumes a string came from an `AWSJSON` field and parses it; an invalid JSON string throws `TypeError`. Do not use
+it to guess whether an arbitrary application string is encoded JSON.
+
+See [CloudIgniter user types](../type-definitions/ci-user-types) and
+[User administration](../../users-management/intro).

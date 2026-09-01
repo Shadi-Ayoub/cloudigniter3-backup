@@ -34,6 +34,7 @@ export {
 
 // utility
 export {
+  CI_COGNITO_ROOT_USER_GROUP,
   ciGetCognitoAttributeValue,
   ciMapCognitoError,
   ciMapCognitoUser,

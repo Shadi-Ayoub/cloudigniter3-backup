@@ -43,6 +43,20 @@ and namespace extension values rather than changing the core record for every bu
 record also stores operational status, reversible deletion metadata, and role strings as a list projection. Cognito
 group membership and EmberGuard assignments remain authoritative for access.
 
+### AWSJSON transport boundary
+
+Core inputs and seeder fixtures keep `address`, `extensions`, `statusChange`, and `deletion` as structured values.
+Amplify models all four as `a.json()`, which produces AppSync `AWSJSON`; AppSync requires the GraphQL variable to
+contain a JSON string. Template server composition passes every User Profile mutation through
+`ciSerializeUserProfileAwsJsonFields()` from `@cloudigniter/aws/lib`. That adapter omits `undefined`, preserves
+`null` for restore, and serializes every other value exactly once. Reads use `ciDeserializeAwsJson()` before shape
+guards and domain projection, accepting both encoded strings and values an Amplify client already decoded.
+
+Do not stringify fixture data or change `CIUserPostalAddress` to a string. Validate both the synthesized scalar
+type and the exact create/update variables: an unknown input field indicates deployment drift, while an invalid
+value for an active `AWSJSON` field indicates wire-shape drift. Regression coverage must include the test-user
+address and provenance extension, status transition metadata, deletion metadata, and restore `null` behavior.
+
 `CIUser` defaults to a summary projection. Complete `CIUserProfile` and `CICognitoUser` objects are attached only
 when `detailLevel` is `full`. Do not fetch or serialize address, birth date, gender, raw provider attributes, or
 other full-detail fields for table and authorization paths.
@@ -107,7 +121,8 @@ reseed. Cognito sign-in and required-attribute settings cannot be casually chang
 The `test-users` development seeder is manifest-driven and uses explicit profile provenance. It refuses to adopt
 or clean up a matching email unless `extensions.cloudigniterSeeder` equals `test-users`; cleanup uses the ordinary
 soft-delete and purge lifecycle. Both seed and cleanup require development mode plus exact developer membership,
-and the invoked user operations retain their normal administration permissions.
+and the invoked user operations retain their normal administration permissions. Profile-create failure triggers a
+Cognito rollback; repeat seeding recognizes decoded provenance and skips an already-owned active account.
 
 Validate core, AWS, UI, Next.js, and template consumers; exercise Cognito mapping and enable/disable behavior; verify
 active/Trash index queries contain no scan; and test denial, protected-user, partial-failure, restore, and repeated

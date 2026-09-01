@@ -11,9 +11,10 @@ Use this reference for the root layout, route-group layouts, pages, bootstrap he
 5. Page layer
 6. Provider hierarchy
 7. Server and client boundaries
-8. Change rules
-9. Diagnostic sequence
-10. Source map
+8. Hydration-stable output
+9. Change rules
+10. Diagnostic sequence
+11. Source map
 
 ## 1. Rendering model
 
@@ -185,7 +186,33 @@ Components rendered as siblings may install global UI behavior rather than wrapp
 - Pass serializable context/configuration across the server-to-client boundary; do not pass provider clients, secrets, or server-only objects.
 - Do not add `"use client"` to a route layout or page merely to access wrapper behavior. Isolate interactive behavior beneath the existing client wrappers.
 
-## 8. Change rules
+## 8. Hydration-stable output
+
+Treat every Client Component in a server-rendered route as participating in two initial renders: one on the
+server and one during browser hydration. The same serialized inputs must produce the same visible markup in both
+environments.
+
+- Pass the server-resolved application locale through a serializable prop when rendered text is localized. Do
+  not let `Intl` select the server or browser host locale implicitly.
+- Construct date/time formatters with a concrete locale and `timeZone`. Reuse the shared
+  `ciFormatDateTime()` helper for persisted timestamps; it uses an explicit UTC time zone. If a product needs a
+  different display zone, resolve it once and pass the same value to both renders.
+- Do not call `new Intl.DateTimeFormat(undefined, ...)`, a no-argument `toLocaleString()` variant,
+  `Date.now()`, `Math.random()`, or `crypto.randomUUID()` while deriving initial visible markup. Do not branch
+  initial markup on `window`, `document`, or another browser-only global. Use a stable server snapshot,
+  deterministic identifier, or a post-hydration effect whose initial state matches the server output.
+- Pass server-fetched mutable data to the client as the render snapshot. Do not replace it with independently
+  fetched changing data before hydration completes.
+- Preserve valid HTML nesting. A deterministic value can still fail hydration when the browser repairs invalid
+  markup before React attaches.
+- Use `suppressHydrationWarning` only for a narrow, intentionally uncontrollable leaf value. It is not a fix for
+  application-owned locale, time-zone, clock, randomness, snapshot, or nesting defects.
+
+Add a focused regression whenever a hydration defect is fixed. Prefer an SSR render or hydration test with a
+fixed timestamp, explicit locale, and explicit time zone. A source-convention test is appropriate when it
+prevents host-default formatting across a reusable UI surface.
+
+## 9. Change rules
 
 - Bootstrap before rendering a CloudIgniter wrapper that requires context.
 - Pass the same `CiNextContext` through the layout and page layers for one render.
@@ -196,9 +223,16 @@ Components rendered as siblings may install global UI behavior rather than wrapp
 - Preserve both next-intl boundaries unless intentionally redesigning message scope; verify root messages and page overrides separately, including page-owned shell slots.
 - Put layout skeleton behavior in `CiLayout` and page-content/scroll behavior in `CiPage`.
 - Do not duplicate theme, debug-probe, Ant Design registry, feedback, or initial-loader setup in individual pages.
+- Keep initial server and client markup deterministic according to the hydration rules above; pass resolved
+  locale, time zone, and mutable-data snapshots through the existing server-to-client boundary.
 - Validate protected and unprotected layout variants when shared wrapper behavior changes.
 
-## 9. Diagnostic sequence
+## 10. Diagnostic sequence
+
+For a hydration error, start with React's exact server/client diff. Trace the component that produced the
+different text or structure, then inspect implicit locale/time-zone formatting, current-time or random values,
+browser-only branches, independently changing data, and invalid nesting in that order. Browser extensions are a
+last-mile possibility only after application-owned output is proven deterministic.
 
 When a rendered page lacks context, providers, translations, or expected structure, inspect in this order:
 
@@ -212,7 +246,7 @@ When a rendered page lacks context, providers, translations, or expected structu
 8. For translation failures, compare root messages with `setup.messages` or the page fallback messages.
 9. For scrolling/header/loader defects, inspect `CiPageShell` and `CiPage` rather than the root layout.
 
-## 10. Source map
+## 11. Source map
 
 | Responsibility               | Primary source                                                        |
 | ---------------------------- | --------------------------------------------------------------------- |

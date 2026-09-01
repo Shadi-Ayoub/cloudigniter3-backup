@@ -32,6 +32,7 @@ export type { CiDeleteCognitoUserInterface } from "./CiDeleteCognitoUserInterfac
 export type { CiUpdateCognitoUserInterface } from "./CiUpdateCognitoUserInterface";
 export type {
   CICognitoUser,
+  CICognitoUserGroup,
   CICognitoUsersPage,
   CIListCognitoUsersInput,
   CISetCognitoUserEnabledInput,

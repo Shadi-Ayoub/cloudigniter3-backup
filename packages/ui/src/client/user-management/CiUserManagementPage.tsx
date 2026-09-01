@@ -6,20 +6,31 @@ import {
   CirclePlay,
   Cloud,
   DatabaseZap,
-  Eraser,
+  KeyRound,
+  LoaderCircle,
   Mail,
+  Network,
   Pencil,
   Plus,
+  ShieldCheck,
   Trash2,
+  UserRound,
   UserRoundCheck,
   UserRoundCog,
+  UsersRound,
 } from "lucide-react";
 import type {
   CICreateUserAssignmentInput,
   CICreateUserInput,
   CIUser,
 } from "@cloudigniter/core/types";
+import {
+  CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE,
+  ciCanManageAdministrator,
+  ciIsAdministratorRole,
+} from "@cloudigniter/core/lib";
 import type { CiUserManagementPageProps } from "@ci-ui/types";
+import { ciFormatDateTime } from "../../lib/ci-format-date-time";
 import { CiDataTable, ciDefineDataTable } from "../components/data-table";
 import {
   CiAlert,
@@ -56,17 +67,6 @@ type AssignmentDraft = {
   scopeId: string;
   propagation: "exact" | "descendants";
 };
-
-function formatDate(value: string | undefined): string {
-  if (!value) return "—";
-  const date = new Date(value);
-  return Number.isNaN(date.getTime())
-    ? value
-    : new Intl.DateTimeFormat(undefined, {
-        dateStyle: "medium",
-        timeStyle: "short",
-      }).format(date);
-}
 
 function createAssignment(roleId = "user"): AssignmentDraft {
   return {
@@ -113,14 +113,56 @@ function fromUserAssignment(
   };
 }
 
+function formatAssignmentScope(
+  assignment: CIUser["assignments"][number],
+): string {
+  if (assignment.scope.kind === "system") return "System";
+  if (assignment.scope.kind === "global") return "Global";
+  if (assignment.scope.kind === "tenant") {
+    return `Tenant · ${assignment.scope.tenantId}`;
+  }
+  return `Org Unit · ${assignment.scope.tenantId}:${assignment.scope.orgUnitId}`;
+}
+
+function CiUserAvatar({
+  avatarUrl,
+  displayName,
+}: {
+  avatarUrl?: string;
+  displayName: string;
+}) {
+  const [failedUrl, setFailedUrl] = useState<string | null>(null);
+  const showImage = Boolean(avatarUrl && failedUrl !== avatarUrl);
+
+  return (
+    <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-xs font-semibold text-muted-foreground">
+      {showImage ? (
+        <img
+          src={avatarUrl}
+          alt={`${displayName} profile`}
+          className="size-full object-cover"
+          onError={() => setFailedUrl(avatarUrl ?? null)}
+        />
+      ) : (
+        <UserRound aria-hidden className="size-5" />
+      )}
+    </div>
+  );
+}
+
 /** Reusable user administration table and editor. */
 export function CiUserManagementPage({
   mode = "active",
+  managementKind = "users",
   users,
   providerLabel,
   roleOptions,
+  filterRoleOptions = roleOptions,
+  assignmentRoleOptions = roleOptions,
   localeOptions,
   timeZoneOptions,
+  locale: renderLocale = "en-US",
+  actor,
   capabilities,
   onCreate,
   onUpdate,
@@ -136,10 +178,21 @@ export function CiUserManagementPage({
   const [rows, setRows] = useState(users);
   const [editorMode, setEditorMode] = useState<EditorMode | null>(null);
   const [target, setTarget] = useState<CIUser | null>(null);
+  const [details, setDetails] = useState<{
+    kind: "roles" | "assignments";
+    user: CIUser;
+  } | null>(null);
   const [action, setAction] = useState<StatusAction | null>(null);
   const [pending, setPending] = useState(false);
-  const [seederPending, setSeederPending] = useState(false);
+  const [seederOpen, setSeederOpen] = useState(false);
+  const [seederPending, setSeederPending] = useState<"seed" | "cleanup" | null>(
+    null,
+  );
   const [seederCleanupOpen, setSeederCleanupOpen] = useState(false);
+  const [seederFeedback, setSeederFeedback] = useState<{
+    ok: boolean;
+    message: string;
+  } | null>(null);
   const [feedback, setFeedback] = useState<{
     ok: boolean;
     message: string;
@@ -167,10 +220,44 @@ export function CiUserManagementPage({
   const [temporaryPassword, setTemporaryPassword] = useState("");
   const [sendInvitation, setSendInvitation] = useState(true);
   const [extensionsJson, setExtensionsJson] = useState("");
-  const [selectedRoles, setSelectedRoles] = useState<string[]>(["user"]);
-  const [assignmentDrafts, setAssignmentDrafts] = useState<AssignmentDraft[]>([
-    createAssignment(),
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([
+    roleOptions[0]?.id ?? "user",
   ]);
+  // Draft IDs are created only after a browser interaction. The initial render
+  // stays deterministic across SSR and hydration.
+  const [assignmentDrafts, setAssignmentDrafts] = useState<AssignmentDraft[]>(
+    [],
+  );
+
+  const canManageTarget = (
+    user: CIUser,
+    operation: "profile-edit" | "account-management" = "account-management",
+  ) => {
+    const effectiveTargetRoleIds = [
+      ...user.roles,
+      ...user.assignments.map((assignment) => assignment.roleId),
+    ];
+    const isAdministrator =
+      user.isRootUser === true ||
+      effectiveTargetRoleIds.some(ciIsAdministratorRole);
+    if (!isAdministrator) return true;
+    if (!actor) return false;
+
+    return ciCanManageAdministrator({
+      actor: {
+        id: actor.userId,
+        effectiveRoleIds: actor.roles,
+        isRootUser: actor.isRootUser,
+        canManageSystemSuperAdmins: actor.canManageSystemSuperAdmins,
+      },
+      target: {
+        id: user.id,
+        effectiveRoleIds: effectiveTargetRoleIds,
+        isRootUser: user.isRootUser === true,
+      },
+      operation,
+    });
+  };
 
   const resetEditor = () => {
     setEditorMode(null);
@@ -196,8 +283,12 @@ export function CiUserManagementPage({
     setTemporaryPassword("");
     setSendInvitation(true);
     setExtensionsJson("");
-    setSelectedRoles(["user"]);
-    setAssignmentDrafts([createAssignment()]);
+    setSelectedRoles([roleOptions[0]?.id ?? "user"]);
+    setAssignmentDrafts([
+      createAssignment(
+        assignmentRoleOptions[0]?.id ?? roleOptions[0]?.id ?? "user",
+      ),
+    ]);
   };
 
   const openCreate = () => {
@@ -208,8 +299,8 @@ export function CiUserManagementPage({
 
   const runSeeder = async (operation: "seed" | "cleanup") => {
     if (!developmentSeeder) return;
-    setSeederPending(true);
-    setFeedback(null);
+    setSeederPending(operation);
+    setSeederFeedback(null);
     try {
       const result =
         operation === "seed"
@@ -221,14 +312,21 @@ export function CiUserManagementPage({
             `User seeder ${operation} failed.`,
         );
       }
-      setFeedback({
+      setSeederFeedback({
         ok: true,
         message: `${developmentSeeder.title}: ${result.created} created, ${result.deleted} deleted, ${result.skipped} skipped.`,
       });
       if (operation === "seed") {
         setRows((current) => {
           const byId = new Map(current.map((user) => [user.id, user]));
-          for (const user of result.resources ?? []) byId.set(user.id, user);
+          for (const user of result.resources ?? []) {
+            const isAdministrator =
+              user.isRootUser === true ||
+              user.roles.some(ciIsAdministratorRole);
+            if ((managementKind === "administrators") === isAdministrator) {
+              byId.set(user.id, user);
+            }
+          }
           return [...byId.values()];
         });
       } else {
@@ -239,14 +337,15 @@ export function CiUserManagementPage({
           current.filter((user) => !deletedIds.has(user.id)),
         );
         setSeederCleanupOpen(false);
+        setSeederOpen(true);
       }
     } catch (error) {
-      setFeedback({
+      setSeederFeedback({
         ok: false,
         message: ciNormalizeClientThrownError(error).message,
       });
     } finally {
-      setSeederPending(false);
+      setSeederPending(null);
     }
   };
 
@@ -265,11 +364,18 @@ export function CiUserManagementPage({
       }
       const fullUser = result.user;
       const profile = fullUser.profile ?? {};
+      const identity = fullUser.identity as
+        | {
+            givenName?: string;
+            middleName?: string;
+            familyName?: string;
+          }
+        | undefined;
       setTarget(fullUser);
       setEmail(fullUser.email ?? "");
-      setGivenName(profile.givenName ?? "");
-      setMiddleName(profile.middleName ?? "");
-      setFamilyName(profile.familyName ?? "");
+      setGivenName(identity?.givenName ?? profile.givenName ?? "");
+      setMiddleName(identity?.middleName ?? profile.middleName ?? "");
+      setFamilyName(identity?.familyName ?? profile.familyName ?? "");
       setDisplayName(profile.displayName ?? fullUser.displayName);
       setTitle(profile.title ?? "");
       setPhoneNumber(profile.phoneNumber ?? "");
@@ -291,7 +397,13 @@ export function CiUserManagementPage({
       setAssignmentDrafts(
         fullUser.assignments.length
           ? fullUser.assignments.map(fromUserAssignment)
-          : [createAssignment(fullUser.roles[0] ?? roleOptions[0]?.id)],
+          : [
+              createAssignment(
+                fullUser.roles[0] ??
+                  assignmentRoleOptions[0]?.id ??
+                  roleOptions[0]?.id,
+              ),
+            ],
       );
       setEditorMode("edit");
     } catch (error) {
@@ -318,8 +430,12 @@ export function CiUserManagementPage({
             username: user.username,
             email: user.email,
             emailVerified: user.emailVerified,
+            givenName: user.givenName,
+            familyName: user.familyName,
             status: user.status,
+            rootUser: user.isRootUser === true,
             identityProvider: user.identityProvider,
+            primaryRole: user.primaryRole,
             roles: user.roles,
             assignments: user.assignments,
             createdAt: user.createdAt,
@@ -332,25 +448,24 @@ export function CiUserManagementPage({
             header: "User",
             cell: ({ row }) => (
               <div className="flex min-w-48 items-center gap-3">
-                <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-xs font-semibold text-muted-foreground">
-                  {row.original.avatarUrl ? (
-                    <img
-                      src={row.original.avatarUrl}
-                      alt=""
-                      className="size-full object-cover"
-                    />
-                  ) : (
-                    row.original.displayName
-                      .split(/\s+/)
-                      .slice(0, 2)
-                      .map((part) => part[0])
-                      .join("")
-                      .toUpperCase()
-                  )}
-                </div>
+                <CiUserAvatar
+                  avatarUrl={row.original.avatarUrl}
+                  displayName={row.original.displayName}
+                />
                 <div className="min-w-0">
-                  <div className="truncate font-semibold">
-                    {row.original.displayName}
+                  <div className="flex min-w-0 items-center gap-2">
+                    <span className="truncate font-semibold">
+                      {row.original.displayName}
+                    </span>
+                    {row.original.isRootUser ? (
+                      <Badge
+                        variant="secondary"
+                        className="shrink-0 gap-1 bg-primary/10 text-primary"
+                      >
+                        <ShieldCheck aria-hidden className="size-3.5" />
+                        Root User
+                      </Badge>
+                    ) : null}
                   </div>
                   <div className="mt-0.5 max-w-72 truncate text-xs text-muted-foreground">
                     {row.original.username}
@@ -399,17 +514,18 @@ export function CiUserManagementPage({
             header: "Roles",
             accessorFn: (user) => user.roles.join(" "),
             cell: ({ row }) => (
-              <div className="flex max-w-72 flex-wrap gap-1">
-                {row.original.roles.length ? (
-                  row.original.roles.map((role) => (
-                    <Badge key={role} variant="secondary">
-                      {role}
-                    </Badge>
-                  ))
-                ) : (
-                  <span className="text-muted-foreground">No roles</span>
-                )}
-              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                className="min-h-11 px-2 tabular-nums"
+                onClick={() =>
+                  setDetails({ kind: "roles", user: row.original })
+                }
+              >
+                <KeyRound aria-hidden />
+                {row.original.roles.length}{" "}
+                {row.original.roles.length === 1 ? "role" : "roles"}
+              </Button>
             ),
           },
           {
@@ -417,20 +533,20 @@ export function CiUserManagementPage({
             header: "Assignments",
             accessorFn: (user) => user.assignments.length,
             cell: ({ row }) => (
-              <span className="tabular-nums">
-                {row.original.assignments.length}
-              </span>
-            ),
-          },
-          {
-            id: "identityProvider",
-            header: "Identity provider",
-            accessorFn: (user) => user.identityProvider.label,
-            cell: ({ row }) => (
-              <Badge variant="outline" className="gap-1.5 whitespace-nowrap">
-                <Cloud aria-hidden className="size-3.5" />
-                {row.original.identityProvider.label}
-              </Badge>
+              <Button
+                type="button"
+                variant="ghost"
+                className="min-h-11 px-2 tabular-nums"
+                onClick={() =>
+                  setDetails({ kind: "assignments", user: row.original })
+                }
+              >
+                <Network aria-hidden />
+                {row.original.assignments.length}{" "}
+                {row.original.assignments.length === 1
+                  ? "assignment"
+                  : "assignments"}
+              </Button>
             ),
           },
           {
@@ -438,7 +554,7 @@ export function CiUserManagementPage({
             header: "Created",
             cell: ({ row }) => (
               <span className="whitespace-nowrap text-muted-foreground">
-                {formatDate(row.original.createdAt)}
+                {ciFormatDateTime(row.original.createdAt, renderLocale)}
               </span>
             ),
           },
@@ -450,7 +566,10 @@ export function CiUserManagementPage({
                   accessorFn: (user: CIUser) => user.deletion?.deletedAt ?? "",
                   cell: ({ row }: { row: { original: CIUser } }) => (
                     <span className="whitespace-nowrap text-muted-foreground">
-                      {formatDate(row.original.deletion?.deletedAt)}
+                      {ciFormatDateTime(
+                        row.original.deletion?.deletedAt,
+                        renderLocale,
+                      )}
                     </span>
                   ),
                 },
@@ -467,6 +586,35 @@ export function CiUserManagementPage({
               ]
             : []),
         ],
+        filters: [
+          {
+            id: "status",
+            label: "Status",
+            allLabel: "All statuses",
+            sortOptions: false,
+            options: [
+              { id: "active", label: "Active" },
+              { id: "invited", label: "Invitation pending" },
+              { id: "suspended", label: "Suspended" },
+            ],
+          },
+          {
+            id: "roles",
+            label: "Role",
+            allLabel: "All roles",
+            sortOptions: false,
+            options: filterRoleOptions.map((role) => ({
+              id: role.id,
+              label: role.label,
+            })),
+            filterFn: (row, _columnId, value) =>
+              typeof value === "string" &&
+              (row.original.roles.includes(value) ||
+                row.original.assignments.some(
+                  (assignment) => assignment.roleId === value,
+                )),
+          },
+        ],
         rowActions:
           mode === "trash"
             ? [
@@ -474,7 +622,8 @@ export function CiUserManagementPage({
                   id: "restore",
                   label: "Restore",
                   icon: <CirclePlay aria-hidden />,
-                  hideWhen: (user) => user.protected === true || !onRestore,
+                  hideWhen: (user) => user.isRootUser === true || !onRestore,
+                  disableWhen: (user) => !canManageTarget(user),
                   onSelect: (user) => {
                     setTarget(user);
                     setReason("");
@@ -487,7 +636,8 @@ export function CiUserManagementPage({
                   label: "Delete permanently",
                   icon: <Trash2 aria-hidden />,
                   variant: "destructive",
-                  hideWhen: (user) => user.protected === true || !onPurge,
+                  hideWhen: (user) => user.isRootUser === true || !onPurge,
+                  disableWhen: (user) => !canManageTarget(user),
                   onSelect: (user) => {
                     setTarget(user);
                     setReason("");
@@ -501,14 +651,22 @@ export function CiUserManagementPage({
                   id: "edit",
                   label: "Edit",
                   icon: <Pencil aria-hidden />,
-                  disableWhen: () => !capabilities.canUpdate,
+                  disableWhen: (user) =>
+                    !capabilities.canUpdate ||
+                    !canManageTarget(
+                      user,
+                      user.isRootUser ? "profile-edit" : "account-management",
+                    ),
                   onSelect: openEdit,
                 },
                 {
                   id: "email",
                   label: "Email user",
                   icon: <Mail aria-hidden />,
-                  disableWhen: (user) => !capabilities.canEmail || !user.email,
+                  disableWhen: (user) =>
+                    !capabilities.canEmail ||
+                    !user.email ||
+                    !canManageTarget(user),
                   onSelect: async (user) => {
                     if (onEmail) {
                       await onEmail(user);
@@ -526,10 +684,11 @@ export function CiUserManagementPage({
                       : "Impersonate user",
                   icon: <UserRoundCheck aria-hidden />,
                   disableWhen: (user) =>
-                    user.protected === true ||
+                    user.isRootUser === true ||
                     user.status !== "active" ||
                     !capabilities.canImpersonate ||
-                    !onImpersonate,
+                    !onImpersonate ||
+                    !canManageTarget(user),
                   onSelect: (user) => {
                     setTarget(user);
                     setReason("");
@@ -543,7 +702,9 @@ export function CiUserManagementPage({
                   variant: "destructive",
                   hideWhen: (user) => user.status === "suspended",
                   disableWhen: (user) =>
-                    user.protected === true || !capabilities.canUpdate,
+                    user.isRootUser === true ||
+                    !capabilities.canUpdate ||
+                    !canManageTarget(user),
                   onSelect: (user) => {
                     setTarget(user);
                     setReason("");
@@ -556,7 +717,9 @@ export function CiUserManagementPage({
                   icon: <CirclePlay aria-hidden />,
                   hideWhen: (user) => user.status !== "suspended",
                   disableWhen: (user) =>
-                    user.protected === true || !capabilities.canUpdate,
+                    user.isRootUser === true ||
+                    !capabilities.canUpdate ||
+                    !canManageTarget(user),
                   onSelect: (user) => {
                     setTarget(user);
                     setReason("");
@@ -569,7 +732,9 @@ export function CiUserManagementPage({
                   icon: <Trash2 aria-hidden />,
                   variant: "destructive",
                   disableWhen: (user) =>
-                    user.protected === true || !capabilities.canDelete,
+                    user.isRootUser === true ||
+                    !capabilities.canDelete ||
+                    !canManageTarget(user),
                   onSelect: (user) => {
                     setTarget(user);
                     setReason("");
@@ -584,7 +749,10 @@ export function CiUserManagementPage({
                   ? [
                       {
                         id: "create-user",
-                        label: "New user",
+                        label:
+                          managementKind === "administrators"
+                            ? "New administrator"
+                            : "New user",
                         icon: <Plus aria-hidden />,
                         selection: "none" as const,
                         onSelect: openCreate,
@@ -594,23 +762,15 @@ export function CiUserManagementPage({
                 ...(developmentSeeder
                   ? [
                       {
-                        id: "seed-users",
-                        label: seederPending ? "Seeding…" : "Seed test users",
+                        id: "user-seeder",
+                        label: "Seeder",
                         icon: <DatabaseZap aria-hidden />,
                         selection: "none" as const,
-                        isDisabled: () => seederPending,
-                        onSelect: () => runSeeder("seed"),
-                      },
-                      {
-                        id: "cleanup-seeded-users",
-                        label: seederPending
-                          ? "Cleaning up…"
-                          : "Clean up test users",
-                        icon: <Eraser aria-hidden />,
-                        selection: "none" as const,
-                        variant: "destructive" as const,
-                        isDisabled: () => seederPending,
-                        onSelect: () => setSeederCleanupOpen(true),
+                        isDisabled: () => seederPending !== null,
+                        onSelect: () => {
+                          setSeederFeedback(null);
+                          setSeederOpen(true);
+                        },
                       },
                     ]
                   : []),
@@ -620,6 +780,7 @@ export function CiUserManagementPage({
     [
       capabilities,
       developmentSeeder,
+      managementKind,
       mode,
       onCreate,
       onDelete,
@@ -630,7 +791,13 @@ export function CiUserManagementPage({
       onRestore,
       onSetStatus,
       onUpdate,
+      filterRoleOptions,
       roleOptions,
+      actor?.userId,
+      actor?.roles,
+      actor?.isRootUser,
+      actor?.canManageSystemSuperAdmins,
+      renderLocale,
       seederPending,
     ],
   );
@@ -712,15 +879,18 @@ export function CiUserManagementPage({
       } else {
         if (!target || !onUpdate)
           throw new Error("User editing is not configured.");
-        if (!selectedRoles.length) throw new Error("Assign at least one role.");
-        for (const draft of assignmentDrafts) {
-          if (
-            (draft.scopeKind === "tenant" || draft.scopeKind === "orgUnit") &&
-            !draft.scopeId.trim()
-          ) {
-            throw new Error(
-              "Every tenant or Org Unit assignment needs a scope ID.",
-            );
+        if (!target.isRootUser && capabilities.canAssignRoles) {
+          if (!selectedRoles.length)
+            throw new Error("Assign at least one role.");
+          for (const draft of assignmentDrafts) {
+            if (
+              (draft.scopeKind === "tenant" || draft.scopeKind === "orgUnit") &&
+              !draft.scopeId.trim()
+            ) {
+              throw new Error(
+                "Every tenant or Org Unit assignment needs a scope ID.",
+              );
+            }
           }
         }
         const result = await onUpdate({
@@ -729,8 +899,12 @@ export function CiUserManagementPage({
           ...(givenName.trim() ? { givenName: givenName.trim() } : {}),
           ...(middleName.trim() ? { middleName: middleName.trim() } : {}),
           ...(familyName.trim() ? { familyName: familyName.trim() } : {}),
-          roles: selectedRoles,
-          assignments: assignmentDrafts.map(toAssignmentInput),
+          ...(target.isRootUser || !capabilities.canAssignRoles
+            ? {}
+            : {
+                roles: selectedRoles,
+                assignments: assignmentDrafts.map(toAssignmentInput),
+              }),
           profile: {
             displayName: displayName.trim() || target.displayName,
             ...(title.trim() ? { title: title.trim() } : {}),
@@ -753,12 +927,16 @@ export function CiUserManagementPage({
                   ...user,
                   email: email.trim() || user.email,
                   displayName: displayName.trim() || user.displayName,
-                  roles: selectedRoles,
-                  assignments: assignmentDrafts.map((draft) => ({
-                    id: draft.id,
-                    subjectId: target.id,
-                    ...toAssignmentInput(draft),
-                  })),
+                  ...(target.isRootUser || !capabilities.canAssignRoles
+                    ? {}
+                    : {
+                        roles: selectedRoles,
+                        assignments: assignmentDrafts.map((draft) => ({
+                          id: draft.id,
+                          subjectId: target.id,
+                          ...toAssignmentInput(draft),
+                        })),
+                      }),
                 }
               : user,
           ),
@@ -841,38 +1019,62 @@ export function CiUserManagementPage({
       ) : null}
 
       <CiDataTable
-        title={mode === "trash" ? "Deleted users" : "Users"}
-        titleBadge={
-          mode === "trash" ? "User lifecycle" : "Identity administration"
+        title={
+          mode === "trash"
+            ? managementKind === "administrators"
+              ? "Deleted administrators"
+              : "Deleted users"
+            : managementKind === "administrators"
+              ? "Administrators"
+              : "Users"
         }
-        titleIcon={<UserRoundCog aria-hidden />}
+        titleBadge={
+          mode === "trash"
+            ? managementKind === "administrators"
+              ? "Administrator lifecycle"
+              : "User lifecycle"
+            : managementKind === "administrators"
+              ? "Administrator governance"
+              : "Identity administration"
+        }
+        titleIcon={
+          managementKind === "administrators" ? (
+            <ShieldCheck aria-hidden />
+          ) : (
+            <UserRoundCog aria-hidden />
+          )
+        }
         titleIconTone="primary"
         titleChips={[
           {
             id: "records",
-            label: `${rows.length} ${rows.length === 1 ? "user" : "users"}`,
-          },
-          {
-            id: "provider",
-            label: `Identity provider · ${providerLabel}`,
+            icon: <UsersRound aria-hidden className="size-3.5" />,
+            label: `${rows.length} ${
+              rows.length === 1
+                ? managementKind === "administrators"
+                  ? "administrator"
+                  : "user"
+                : managementKind === "administrators"
+                  ? "administrators"
+                  : "users"
+            }`,
             variant: "secondary",
           },
           {
-            id: "management",
-            label:
-              capabilities.canCreate || capabilities.canUpdate
-                ? "Management enabled"
-                : "Read only",
-            variant:
-              capabilities.canCreate || capabilities.canUpdate
-                ? "default"
-                : "secondary",
+            id: "provider",
+            icon: <Cloud aria-hidden className="size-3.5" />,
+            label: `Identity provider · ${providerLabel}`,
+            variant: "default",
           },
         ]}
         description={
           mode === "trash"
-            ? "Restore soft-deleted users or permanently remove their Cognito identity, profile, and assignments after verification."
-            : "Manage application users, their Cognito identities, fixed CloudIgniter profiles, roles, and scoped assignments from one workspace."
+            ? managementKind === "administrators"
+              ? "Restore soft-deleted administrators or permanently remove their Cognito identity, profile, and assignments after hierarchy verification."
+              : "Restore soft-deleted users or permanently remove their Cognito identity, profile, and assignments after verification."
+            : managementKind === "administrators"
+              ? "Manage administrator identities and scoped access while enforcing role hierarchy, delegated authority, and Root User protection."
+              : "Manage non-administrator application users, their Cognito identities, fixed CloudIgniter profiles, roles, and scoped assignments."
         }
         definition={definition}
         data={rows}
@@ -891,26 +1093,119 @@ export function CiUserManagementPage({
           rowActions: { mode: "mixed", overflow: 1, reserveSpace: true },
           columnResizing: true,
           persistence: {
-            key: `cloudigniter-users-${mode}-v1`,
+            key: `cloudigniter-${managementKind}-${mode}-v2`,
             columnWidths: true,
-            filters: false,
+            filters: true,
             pageSize: true,
             format: true,
           },
           labels: {
-            loading: "Loading users. Please wait...",
-            noResults: "No users match the current view.",
+            loading: `Loading ${managementKind}. Please wait...`,
+            noResults: `No ${managementKind} match the current view.`,
           },
         }}
-        searchPlaceholder="Search users, email, roles, or provider..."
+        searchPlaceholder={`Search ${managementKind}, email, or roles...`}
         emptyState={
           <p className="py-8 text-center text-sm text-muted-foreground">
             {mode === "trash"
-              ? "No deleted users were found."
-              : "No active users were found. Create a user to get started."}
+              ? managementKind === "administrators"
+                ? "No deleted administrator accounts were found."
+                : "No deleted users were found."
+              : managementKind === "administrators"
+                ? "No administrator accounts were found."
+                : "No active users were found. Create a user to get started."}
           </p>
         }
       />
+
+      <Dialog
+        open={details !== null}
+        onOpenChange={(open) => {
+          if (!open) setDetails(null);
+        }}
+      >
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>
+              {details?.kind === "roles" ? "Assigned roles" : "Assignments"}
+            </DialogTitle>
+            <DialogDescription>
+              {details?.user.displayName}
+              {details?.kind === "roles"
+                ? " — the primary role is identified separately from other identity roles."
+                : " — scoped assignments control where each role applies."}
+            </DialogDescription>
+          </DialogHeader>
+
+          {details?.kind === "roles" ? (
+            <div className="grid gap-2">
+              {details.user.isRootUser ? (
+                <div className="flex min-h-11 items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-3">
+                  <ShieldCheck aria-hidden className="size-4 text-primary" />
+                  <span className="font-medium">Root User</span>
+                </div>
+              ) : null}
+              {[...details.user.roles]
+                .sort((left, right) => {
+                  if (left === details.user.primaryRole) return -1;
+                  if (right === details.user.primaryRole) return 1;
+                  return left.localeCompare(right);
+                })
+                .map((role) => (
+                  <div
+                    key={role}
+                    className="flex min-h-11 items-center justify-between gap-3 rounded-lg border border-border px-3"
+                  >
+                    <span className="font-medium">
+                      {filterRoleOptions.find((option) => option.id === role)
+                        ?.label ?? role}
+                    </span>
+                    {role === details.user.primaryRole ? (
+                      <Badge variant="secondary">Primary</Badge>
+                    ) : (
+                      <Badge variant="outline">Additional</Badge>
+                    )}
+                  </div>
+                ))}
+              {!details.user.roles.length ? (
+                <p className="text-sm text-muted-foreground">
+                  No identity roles are assigned.
+                </p>
+              ) : null}
+            </div>
+          ) : (
+            <div className="grid max-h-96 gap-2 overflow-y-auto">
+              {details?.user.assignments.map((assignment) => (
+                <div
+                  key={assignment.id}
+                  className="rounded-lg border border-border p-3"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="font-medium">
+                      {assignmentRoleOptions.find(
+                        (option) => option.id === assignment.roleId,
+                      )?.label ?? assignment.roleId}
+                    </span>
+                    <Badge variant="secondary">
+                      {assignment.propagation === "descendants"
+                        ? "Includes descendants"
+                        : "Exact"}
+                    </Badge>
+                  </div>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {formatAssignmentScope(assignment)}
+                  </p>
+                </div>
+              ))}
+              {!details?.user.assignments.length ? (
+                <p className="text-sm text-muted-foreground">
+                  No scoped assignments are configured.
+                </p>
+              ) : null}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <Dialog
         open={editorMode !== null}
@@ -930,7 +1225,13 @@ export function CiUserManagementPage({
         >
           <DialogHeader>
             <DialogTitle>
-              {editorMode === "create" ? "Create user" : "Edit user"}
+              {editorMode === "create"
+                ? managementKind === "administrators"
+                  ? "Create administrator"
+                  : "Create user"
+                : managementKind === "administrators"
+                  ? "Edit administrator"
+                  : "Edit user"}
             </DialogTitle>
             <DialogDescription>
               {editorMode === "create"
@@ -1047,7 +1348,10 @@ export function CiUserManagementPage({
                     }
                     disabled={pending}
                   >
-                    <SelectTrigger id="ci-user-gender">
+                    <SelectTrigger
+                      id="ci-user-gender"
+                      className="min-h-11 w-full"
+                    >
                       <SelectValue placeholder="Not specified" />
                     </SelectTrigger>
                     <SelectContent>
@@ -1085,7 +1389,10 @@ export function CiUserManagementPage({
                     }
                     disabled={pending}
                   >
-                    <SelectTrigger id="ci-user-locale">
+                    <SelectTrigger
+                      id="ci-user-locale"
+                      className="min-h-11 w-full"
+                    >
                       <SelectValue placeholder="Application default" />
                     </SelectTrigger>
                     <SelectContent>
@@ -1109,7 +1416,10 @@ export function CiUserManagementPage({
                     }
                     disabled={pending}
                   >
-                    <SelectTrigger id="ci-user-time-zone">
+                    <SelectTrigger
+                      id="ci-user-time-zone"
+                      className="min-h-11 w-full"
+                    >
                       <SelectValue placeholder="Application default" />
                     </SelectTrigger>
                     <SelectContent>
@@ -1221,7 +1531,7 @@ export function CiUserManagementPage({
               </div>
             </section>
 
-            {editorMode ? (
+            {editorMode && !target?.isRootUser ? (
               <section className="grid gap-4" aria-labelledby="access-heading">
                 <h3 id="access-heading" className="text-sm font-semibold">
                   Roles and assignments
@@ -1268,7 +1578,9 @@ export function CiUserManagementPage({
                       onClick={() =>
                         setAssignmentDrafts((current) => [
                           ...current,
-                          createAssignment(roleOptions[0]?.id),
+                          createAssignment(
+                            assignmentRoleOptions[0]?.id ?? roleOptions[0]?.id,
+                          ),
                         ])
                       }
                       disabled={pending || !capabilities.canAssignRoles}
@@ -1287,12 +1599,28 @@ export function CiUserManagementPage({
                           setAssignmentDrafts((current) =>
                             current.map((item) =>
                               item.id === draft.id
-                                ? { ...item, roleId: value }
+                                ? {
+                                    ...item,
+                                    roleId: value,
+                                    ...(value ===
+                                    CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE
+                                      ? {
+                                          scopeKind: "system" as const,
+                                          scopeId: "",
+                                          propagation: "exact" as const,
+                                        }
+                                      : {}),
+                                  }
                                 : item,
                             ),
                           )
                         }
-                        disabled={pending}
+                        disabled={
+                          pending ||
+                          (draft.roleId ===
+                            CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE &&
+                            !capabilities.canDelegateSystemSuperAdminManagement)
+                        }
                       >
                         <SelectTrigger
                           aria-label={`Assignment ${index + 1} role`}
@@ -1300,8 +1628,16 @@ export function CiUserManagementPage({
                           <SelectValue placeholder="Role" />
                         </SelectTrigger>
                         <SelectContent>
-                          {roleOptions.map((role) => (
-                            <SelectItem key={role.id} value={role.id}>
+                          {assignmentRoleOptions.map((role) => (
+                            <SelectItem
+                              key={role.id}
+                              value={role.id}
+                              disabled={
+                                role.id ===
+                                  CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE &&
+                                !capabilities.canDelegateSystemSuperAdminManagement
+                              }
+                            >
                               {role.label}
                             </SelectItem>
                           ))}
@@ -1323,7 +1659,10 @@ export function CiUserManagementPage({
                             ),
                           )
                         }
-                        disabled={pending}
+                        disabled={
+                          pending ||
+                          draft.roleId === CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE
+                        }
                       >
                         <SelectTrigger
                           aria-label={`Assignment ${index + 1} scope`}
@@ -1356,7 +1695,12 @@ export function CiUserManagementPage({
                               ),
                             )
                           }
-                          disabled={pending}
+                          disabled={
+                            pending ||
+                            (draft.roleId ===
+                              CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE &&
+                              !capabilities.canDelegateSystemSuperAdminManagement)
+                          }
                         />
                       ) : null}
                       <Select
@@ -1374,7 +1718,10 @@ export function CiUserManagementPage({
                             ),
                           )
                         }
-                        disabled={pending}
+                        disabled={
+                          pending ||
+                          draft.roleId === CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE
+                        }
                       >
                         <SelectTrigger
                           aria-label={`Assignment ${index + 1} propagation`}
@@ -1398,7 +1745,12 @@ export function CiUserManagementPage({
                               current.filter((item) => item.id !== draft.id),
                             )
                           }
-                          disabled={pending}
+                          disabled={
+                            pending ||
+                            (draft.roleId ===
+                              CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE &&
+                              !capabilities.canDelegateSystemSuperAdminManagement)
+                          }
                         >
                           Remove assignment
                         </Button>
@@ -1430,7 +1782,9 @@ export function CiUserManagementPage({
               {pending
                 ? "Saving..."
                 : editorMode === "create"
-                  ? "Create user"
+                  ? managementKind === "administrators"
+                    ? "Create administrator"
+                    : "Create user"
                   : "Save changes"}
             </Button>
           </DialogFooter>
@@ -1529,19 +1883,89 @@ export function CiUserManagementPage({
       </CiAlertDialog>
 
       {developmentSeeder ? (
-        <CiAlertDialog
-          open={seederCleanupOpen}
-          onOpenChange={(open) => {
-            if (!seederPending) setSeederCleanupOpen(open);
-          }}
-          variant="destructive"
-          title={`Clean up “${developmentSeeder.title}”?`}
-          description="Only users carrying this seeder's exact provenance marker will be soft-deleted and permanently purged. This cannot be undone."
-          confirmLabel={seederPending ? "Cleaning up…" : "Clean up users"}
-          cancelLabel="Cancel"
-          pending={seederPending}
-          onConfirm={() => void runSeeder("cleanup")}
-        />
+        <>
+          <Dialog
+            open={seederOpen}
+            onOpenChange={(open) => {
+              if (seederPending === null) setSeederOpen(open);
+            }}
+          >
+            <DialogContent
+              className="sm:max-w-lg"
+              showCloseButton={seederPending === null}
+              onEscapeKeyDown={(event) => {
+                if (seederPending !== null) event.preventDefault();
+              }}
+              onPointerDownOutside={(event) => {
+                if (seederPending !== null) event.preventDefault();
+              }}
+            >
+              <DialogHeader>
+                <DialogTitle>{developmentSeeder.title}</DialogTitle>
+                <DialogDescription>
+                  {developmentSeeder.description ??
+                    "Create and clean up development-only test users."}
+                </DialogDescription>
+              </DialogHeader>
+
+              {seederFeedback ? (
+                <CiAlert
+                  variant={seederFeedback.ok ? "success" : "error"}
+                  title={seederFeedback.ok ? "Seeder updated" : "Seeder failed"}
+                  onDismiss={() => setSeederFeedback(null)}
+                >
+                  {seederFeedback.message}
+                </CiAlert>
+              ) : null}
+
+              <DialogFooter>
+                <Button
+                  type="button"
+                  className="min-h-11"
+                  disabled={seederPending !== null}
+                  aria-busy={seederPending === "seed"}
+                  onClick={() => void runSeeder("seed")}
+                >
+                  {seederPending === "seed" ? (
+                    <LoaderCircle className="animate-spin" aria-hidden />
+                  ) : (
+                    <DatabaseZap aria-hidden />
+                  )}
+                  {seederPending === "seed" ? "Seeding…" : "Seed Users"}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="min-h-11"
+                  disabled={seederPending !== null}
+                  onClick={() => {
+                    setSeederOpen(false);
+                    setSeederCleanupOpen(true);
+                  }}
+                >
+                  <Trash2 aria-hidden />
+                  Clean Up
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          <CiAlertDialog
+            open={seederCleanupOpen}
+            onOpenChange={(open) => {
+              setSeederCleanupOpen(open);
+              if (!open) setSeederOpen(true);
+            }}
+            variant="destructive"
+            icon={<Trash2 aria-hidden />}
+            title={`Clean up “${developmentSeeder.title}”?`}
+            description="Only users carrying this seeder's exact provenance marker will be soft-deleted and permanently purged. Existing users and ownership-mismatched records are preserved."
+            confirmLabel="Clean up seeded users"
+            pendingLabel="Cleaning up…"
+            pending={seederPending === "cleanup"}
+            onConfirm={() => void runSeeder("cleanup")}
+          />
+        </>
       ) : null}
     </main>
   );

@@ -44,7 +44,9 @@ type CIUserProfile = {
 
 All fields are optional. `avatarKey` is the durable provider-neutral storage reference; `avatarUrl` is a replaceable
 delivery URL. `extensions` is the only application extension seam and must be a JSON object. The core
-contract does not validate application-specific keys or values.
+contract does not validate application-specific keys or values. Keep both `address` and `extensions` object-shaped;
+do not pre-stringify them for AWS. The provider adapter owns AppSync `AWSJSON` serialization and decoding through
+the [AppSync AWSJSON helpers](../shared-apis/ci-aws-json).
 
 ## `CIUserEntity`
 

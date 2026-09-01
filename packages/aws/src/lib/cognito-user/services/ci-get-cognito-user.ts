@@ -5,6 +5,7 @@ import {
   ciMapCognitoUser,
 } from "@ci-aws/lib";
 import type { CICognitoUser, CiGetCognitoUserInterface } from "@ci-aws/types";
+import { ciListCognitoUserGroups } from "./helpers";
 
 /**
  * Successful result returned by `getCognitoUser`.
@@ -18,17 +19,29 @@ export async function ciGetCognitoUser(
   input: CiGetCognitoUserInterface,
 ): Promise<CiGetCognitoUserResult> {
   try {
+    const userPoolId = input.cognito.UserPoolId;
+    const username = input.cognito.Username;
+    if (!userPoolId || !username) {
+      throw new Error(
+        "COGNITO_GET_USER: UserPoolId and Username are required.",
+      );
+    }
     const cognito = await ciCreateCognitoClient(input.CognitoClientConfig);
 
     const user = await cognito.getUser({
-      UserPoolId: input.cognito.UserPoolId,
-      Username: input.cognito.Username,
+      UserPoolId: userPoolId,
+      Username: username,
     });
 
     if (!user.ok) return user;
+    const client = await cognito.getIdentityProviderClient();
+    const groups = await ciListCognitoUserGroups(client, {
+      userPoolId,
+      username,
+    });
     return {
       ...user,
-      body: ciMapCognitoUser(user.body),
+      body: ciMapCognitoUser(user.body, groups),
     };
   } catch (error: unknown) {
     return ciBuildCognitoError(

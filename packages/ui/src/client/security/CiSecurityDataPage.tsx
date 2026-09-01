@@ -194,10 +194,10 @@ function getRecordSummary(record: CiSecurityRecord): string {
     case "role":
       return `${formatCount(
         record.permissionCount,
-        "permission"
+        "permission",
       )} · ${formatCount(
         record.directUserCount,
-        "direct user"
+        "direct user",
       )} · ${formatCount(record.inheritedUserCount, "user")} via inheritance`;
     case "permission":
       return `${record.roleId} · ${record.effect} ${record.resource}.${record.action}`;
@@ -219,35 +219,35 @@ function isSecurityDraftComplete(record: CiSecurityRecord | null): boolean {
     case "role":
       return Boolean(
         record.id.trim() &&
-          record.title.trim() &&
-          (record.origin !== "application" ||
-            ciIsAccessControlKebabIdentifier(record.id))
+        record.title.trim() &&
+        (record.origin !== "application" ||
+          ciIsAccessControlKebabIdentifier(record.id)),
       );
     case "permission":
       return Boolean(
         record.id.trim() &&
-          (record.origin !== "application" ||
-            ciIsAccessControlKebabIdentifier(record.id)) &&
-          record.title.trim() &&
-          record.roleId.trim() &&
-          record.resource.trim() &&
-          ciIsAccessControlKebabIdentifier(record.action) &&
-          record.scopeKinds.length
+        (record.origin !== "application" ||
+          ciIsAccessControlKebabIdentifier(record.id)) &&
+        record.title.trim() &&
+        record.roleId.trim() &&
+        record.resource.trim() &&
+        ciIsAccessControlKebabIdentifier(record.action) &&
+        record.scopeKinds.length,
       );
     case "resource":
       return Boolean(
         record.id.trim() &&
-          record.title.trim() &&
-          record.domainId.trim() &&
-          record.actions.length &&
-          record.scopeKinds.length
+        record.title.trim() &&
+        record.domainId.trim() &&
+        record.actions.length &&
+        record.scopeKinds.length,
       );
     case "assignment":
       return Boolean(
         record.subjectId.trim() &&
-          record.roleId.trim() &&
-          ((record.scopeKind !== "tenant" && record.scopeKind !== "orgUnit") ||
-            record.scopeId?.trim())
+        record.roleId.trim() &&
+        ((record.scopeKind !== "tenant" && record.scopeKind !== "orgUnit") ||
+          record.scopeId?.trim()),
       );
     case "identity-group":
       return false;
@@ -256,7 +256,7 @@ function isSecurityDraftComplete(record: CiSecurityRecord | null): boolean {
 
 /** Builds columns shared by every security management route. */
 function buildSecurityColumns(
-  kind: CiSecurityRecordKind
+  kind: CiSecurityRecordKind,
 ): CiDataTableColumnDef<CiSecurityRecord, unknown>[] {
   const primary: CiDataTableColumnDef<CiSecurityRecord, unknown> = {
     accessorKey: "title",
@@ -326,7 +326,7 @@ function buildSecurityColumns(
         cell: ({ row }) => {
           const status =
             row.original.kind === "role"
-              ? row.original.status ?? "active"
+              ? (row.original.status ?? "active")
               : "active";
           return (
             <Badge
@@ -351,7 +351,7 @@ function buildSecurityColumns(
             className: "font-medium tabular-nums",
           },
         },
-      }
+      },
     );
   }
   if (kind === "permission") {
@@ -365,7 +365,7 @@ function buildSecurityColumns(
         id: "effect",
         accessorFn: (row) => (row.kind === "permission" ? row.effect : ""),
         header: "Effect",
-      }
+      },
     );
   }
   if (kind === "resource") {
@@ -382,7 +382,7 @@ function buildSecurityColumns(
         cell: ({ row }) => {
           const status =
             row.original.kind === "resource"
-              ? row.original.status ?? "active"
+              ? (row.original.status ?? "active")
               : "active";
           return (
             <Badge
@@ -397,7 +397,7 @@ function buildSecurityColumns(
             </Badge>
           );
         },
-      }
+      },
     );
   }
   if (kind === "assignment") {
@@ -411,7 +411,7 @@ function buildSecurityColumns(
         id: "roleId",
         accessorFn: (row) => (row.kind === "assignment" ? row.roleId : ""),
         header: "Role",
-      }
+      },
     );
   }
   if (kind === "identity-group") {
@@ -426,7 +426,7 @@ function buildSecurityColumns(
         id: "roleId",
         accessorFn: (row) => (row.kind === "identity-group" ? row.roleId : ""),
         header: "CloudIgniter role",
-      }
+      },
     );
   }
 
@@ -469,18 +469,18 @@ function CiSecurityRecordEditor({
         ? ciGetAvailableInheritedRoleOptions(
             draft.id,
             draft.inherits,
-            roleOptions
+            roleOptions,
           )
         : [],
-    [draft, roleOptions]
+    [draft, roleOptions],
   );
   const availablePrivilegeOptions = useMemo(() => {
     if (draft.kind !== "role") return [];
     const selectedPrivilegeIds = new Set(
-      draft.privileges.map((privilege) => privilege.id)
+      draft.privileges.map((privilege) => privilege.id),
     );
     return privilegeOptions.filter(
-      (option) => !selectedPrivilegeIds.has(option.privilege.id)
+      (option) => !selectedPrivilegeIds.has(option.privilege.id),
     );
   }, [draft, privilegeOptions]);
   const editableKebabIdentifier =
@@ -499,14 +499,14 @@ function CiSecurityRecordEditor({
   const actionOptions = useMemo(() => {
     if (draft.kind !== "permission") return [];
     const resource = resourceOptions.find(
-      (option) => option.id === draft.resource
+      (option) => option.id === draft.resource,
     );
     const actions = [...COMMON_ACTION_OPTIONS, ...(resource?.actions ?? [])];
     // Retain a legacy wildcard while editing an existing permission, but do not
     // offer it for new permissions.
     if (draft.action === "*" && !actions.includes("*")) actions.push("*");
     return [...new Set(actions)].sort((left, right) =>
-      left.localeCompare(right)
+      left.localeCompare(right),
     );
   }, [draft, resourceOptions]);
   const actionIsKnown =
@@ -528,7 +528,7 @@ function CiSecurityRecordEditor({
     if (editableKebabIdentifier && !ciIsSecurityIdentifierInputAllowed(value)) {
       setIdentifierVisited(true);
       setIdentifierEntryError(
-        "That character is not allowed. Start with a lowercase letter and use only lowercase letters, digits, and single hyphens."
+        "That character is not allowed. Start with a lowercase letter and use only lowercase letters, digits, and single hyphens.",
       );
       return;
     }
@@ -653,7 +653,7 @@ function CiSecurityRecordEditor({
               emptyMessage="No unselected privileges match this search."
               onAdd={(option) => {
                 const selected = privilegeOptions.find(
-                  (candidate) => candidate.id === option.id
+                  (candidate) => candidate.id === option.id,
                 );
                 if (!selected) return;
                 const privileges = [
@@ -667,7 +667,7 @@ function CiSecurityRecordEditor({
               }}
               onRemove={(privilegeId) => {
                 const privileges = draft.privileges.filter(
-                  (privilege) => privilege.id !== privilegeId
+                  (privilege) => privilege.id !== privilegeId,
                 );
                 set({ privileges, permissionCount: privileges.length });
               }}
@@ -684,144 +684,145 @@ function CiSecurityRecordEditor({
         <div className="grid gap-4">
           <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(10rem,0.55fr)]">
             <div className="grid min-w-0 gap-2">
-            <Label>Role</Label>
-            <Select
-              value={draft.roleId}
-              disabled={isExisting}
-              onValueChange={(value) => set({ roleId: value })}
-            >
-              <SelectTrigger className="w-full min-w-0">
-                <SelectValue placeholder="Select a role" />
-              </SelectTrigger>
-              <SelectContent>
-                {roleOptions.map((option) => (
-                  <SelectItem key={option.id} value={option.id}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+              <Label>Role</Label>
+              <Select
+                value={draft.roleId}
+                disabled={isExisting}
+                onValueChange={(value) => set({ roleId: value })}
+              >
+                <SelectTrigger className="w-full min-w-0">
+                  <SelectValue placeholder="Select a role" />
+                </SelectTrigger>
+                <SelectContent>
+                  {roleOptions.map((option) => (
+                    <SelectItem key={option.id} value={option.id}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <div className="grid gap-2">
-            <Label>Effect</Label>
-            <Select
-              value={draft.effect}
-              onValueChange={(value) =>
-                set({ effect: value as "allow" | "deny" })
-              }
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="allow">Allow</SelectItem>
-                <SelectItem value="deny">Deny</SelectItem>
-              </SelectContent>
-            </Select>
+              <Label>Effect</Label>
+              <Select
+                value={draft.effect}
+                onValueChange={(value) =>
+                  set({ effect: value as "allow" | "deny" })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="allow">Allow</SelectItem>
+                  <SelectItem value="deny">Deny</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
-          <div className="grid gap-2">
-            <Label>Resource</Label>
-            <Select
-              value={draft.resource}
-              onValueChange={(value) => {
-                const nextActions = [
-                  ...COMMON_ACTION_OPTIONS,
-                  ...(resourceOptions.find((option) => option.id === value)
-                    ?.actions ?? []),
-                ].sort((left, right) => left.localeCompare(right));
-                set({
-                  resource: value,
-                  action:
-                    draft.action === "*" || nextActions?.includes(draft.action)
-                      ? draft.action
-                      : (nextActions?.[0] ?? ""),
-                });
-                setIsCustomActionSelected(false);
-                setActionEntryError(null);
-              }}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a resource" />
-              </SelectTrigger>
-              <SelectContent>
-                {resourceOptions.map((option) => (
-                  <SelectItem key={option.id} value={option.id}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="grid gap-2">
-            <Label>Action</Label>
-            <Select
-              value={
-                actionIsKnown
-                  ? draft.action
-                  : actionIsCustom
-                    ? OTHER_ACTION_VALUE
-                    : ""
-              }
-              onValueChange={(value) => {
-                const isOther = value === OTHER_ACTION_VALUE;
-                setIsCustomActionSelected(isOther);
-                setActionEntryError(null);
-                set({ action: isOther ? "" : value });
-              }}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select an action" />
-              </SelectTrigger>
-              <SelectContent>
-                {actionOptions.map((action) => (
-                  <SelectItem key={action} value={action}>
-                    {action}
-                  </SelectItem>
-                ))}
-                <SelectItem value={OTHER_ACTION_VALUE}>Other</SelectItem>
-              </SelectContent>
-            </Select>
-            {actionIsCustom ? (
-              <>
-                <Input
-                  id="security-action"
-                  value={draft.action}
-                  pattern={CI_ACCESS_CONTROL_KEBAB_IDENTIFIER_PATTERN}
-                  autoCapitalize="none"
-                  autoCorrect="off"
-                  spellCheck={false}
-                  aria-invalid={actionError ? true : undefined}
-                  aria-describedby="security-action-guidance"
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    if (!ciIsSecurityIdentifierInputAllowed(value)) {
-                      setActionEntryError(
-                        "That character is not allowed. Start with a lowercase letter and use only lowercase letters, digits, and single hyphens."
-                      );
-                      return;
+            <div className="grid gap-2">
+              <Label>Resource</Label>
+              <Select
+                value={draft.resource}
+                onValueChange={(value) => {
+                  const nextActions = [
+                    ...COMMON_ACTION_OPTIONS,
+                    ...(resourceOptions.find((option) => option.id === value)
+                      ?.actions ?? []),
+                  ].sort((left, right) => left.localeCompare(right));
+                  set({
+                    resource: value,
+                    action:
+                      draft.action === "*" ||
+                      nextActions?.includes(draft.action)
+                        ? draft.action
+                        : (nextActions?.[0] ?? ""),
+                  });
+                  setIsCustomActionSelected(false);
+                  setActionEntryError(null);
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a resource" />
+                </SelectTrigger>
+                <SelectContent>
+                  {resourceOptions.map((option) => (
+                    <SelectItem key={option.id} value={option.id}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label>Action</Label>
+              <Select
+                value={
+                  actionIsKnown
+                    ? draft.action
+                    : actionIsCustom
+                      ? OTHER_ACTION_VALUE
+                      : ""
+                }
+                onValueChange={(value) => {
+                  const isOther = value === OTHER_ACTION_VALUE;
+                  setIsCustomActionSelected(isOther);
+                  setActionEntryError(null);
+                  set({ action: isOther ? "" : value });
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select an action" />
+                </SelectTrigger>
+                <SelectContent>
+                  {actionOptions.map((action) => (
+                    <SelectItem key={action} value={action}>
+                      {action}
+                    </SelectItem>
+                  ))}
+                  <SelectItem value={OTHER_ACTION_VALUE}>Other</SelectItem>
+                </SelectContent>
+              </Select>
+              {actionIsCustom ? (
+                <>
+                  <Input
+                    id="security-action"
+                    value={draft.action}
+                    pattern={CI_ACCESS_CONTROL_KEBAB_IDENTIFIER_PATTERN}
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    aria-invalid={actionError ? true : undefined}
+                    aria-describedby="security-action-guidance"
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      if (!ciIsSecurityIdentifierInputAllowed(value)) {
+                        setActionEntryError(
+                          "That character is not allowed. Start with a lowercase letter and use only lowercase letters, digits, and single hyphens.",
+                        );
+                        return;
+                      }
+                      setActionEntryError(null);
+                      set({ action: value });
+                    }}
+                    placeholder="new-action"
+                  />
+                  <p
+                    id="security-action-guidance"
+                    className={
+                      actionError
+                        ? "text-xs text-destructive"
+                        : "text-xs text-muted-foreground"
                     }
-                    setActionEntryError(null);
-                    set({ action: value });
-                  }}
-                  placeholder="new-action"
-                />
-                <p
-                  id="security-action-guidance"
-                  className={
-                    actionError
-                      ? "text-xs text-destructive"
-                      : "text-xs text-muted-foreground"
-                  }
-                  role={actionError ? "alert" : undefined}
-                >
-                  {actionError ??
-                    "Use lowercase kebab case, beginning with a letter—for example, export-report."}
-                </p>
-              </>
-            ) : null}
-          </div>
+                    role={actionError ? "alert" : undefined}
+                  >
+                    {actionError ??
+                      "Use lowercase kebab case, beginning with a letter—for example, export-report."}
+                  </p>
+                </>
+              ) : null}
+            </div>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="security-scopes">Permitted scope kinds</Label>
@@ -831,25 +832,28 @@ function CiSecurityRecordEditor({
               placeholder="Select a scope kind…"
               showAllOptions
               options={ACCESS_SCOPE_KIND_OPTIONS.filter(
-                (option) => !draft.scopeKinds.includes(option.id)
+                (option) => !draft.scopeKinds.includes(option.id),
               )}
               selectedItems={draft.scopeKinds.map((scopeKind) => ({
                 id: scopeKind,
                 label:
                   ACCESS_SCOPE_KIND_OPTIONS.find(
-                    (option) => option.id === scopeKind
+                    (option) => option.id === scopeKind,
                   )?.label ?? scopeKind,
               }))}
               emptyMessage="All supported scope kinds are selected."
               onAdd={(option) =>
                 set({
-                  scopeKinds: [...draft.scopeKinds, option.id as CiAccessScopeKind],
+                  scopeKinds: [
+                    ...draft.scopeKinds,
+                    option.id as CiAccessScopeKind,
+                  ],
                 })
               }
               onRemove={(scopeKind) =>
                 set({
                   scopeKinds: draft.scopeKinds.filter(
-                    (item) => item !== scopeKind
+                    (item) => item !== scopeKind,
                   ),
                 })
               }
@@ -912,25 +916,28 @@ function CiSecurityRecordEditor({
               placeholder="Select a scope kind…"
               showAllOptions
               options={ACCESS_SCOPE_KIND_OPTIONS.filter(
-                (option) => !draft.scopeKinds.includes(option.id)
+                (option) => !draft.scopeKinds.includes(option.id),
               )}
               selectedItems={draft.scopeKinds.map((scopeKind) => ({
                 id: scopeKind,
                 label:
                   ACCESS_SCOPE_KIND_OPTIONS.find(
-                    (option) => option.id === scopeKind
+                    (option) => option.id === scopeKind,
                   )?.label ?? scopeKind,
               }))}
               emptyMessage="All supported scope kinds are selected."
               onAdd={(option) =>
                 set({
-                  scopeKinds: [...draft.scopeKinds, option.id as CiAccessScopeKind],
+                  scopeKinds: [
+                    ...draft.scopeKinds,
+                    option.id as CiAccessScopeKind,
+                  ],
                 })
               }
               onRemove={(scopeKind) =>
                 set({
                   scopeKinds: draft.scopeKinds.filter(
-                    (item) => item !== scopeKind
+                    (item) => item !== scopeKind,
                   ),
                 })
               }
@@ -1107,7 +1114,7 @@ export function CiSecurityDataPage({
     message: string;
   } | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<CiSecurityRecord | null>(
-    null
+    null,
   );
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -1171,11 +1178,11 @@ export function CiSecurityDataPage({
             disableWhen: (record) =>
               !canManage ||
               (record.origin === "core" && !capabilities.canManageCore),
-                  onSelect: (record) => {
-                    setFeedback(null);
-                    setEditorFeedback(null);
-                    setReason("");
-                    setEditorSession({ mode: "edit", draft: record });
+            onSelect: (record) => {
+              setFeedback(null);
+              setEditorFeedback(null);
+              setReason("");
+              setEditorSession({ mode: "edit", draft: record });
             },
           },
           {
@@ -1331,7 +1338,7 @@ export function CiSecurityDataPage({
       onSetRoleStatus,
       onSetResourceStatus,
       resourceDomains,
-    ]
+    ],
   );
 
   const config: CiDataTableConfig<CiSecurityRecord> = {
@@ -1352,9 +1359,7 @@ export function CiSecurityDataPage({
     selection: { enabled: false },
     persistence: {
       key:
-        kind === "resource"
-          ? "ci-resource-catalog-v1"
-          : `ci-security-${kind}`,
+        kind === "resource" ? "ci-resource-catalog-v1" : `ci-security-${kind}`,
       columnWidths: true,
       // Administration pages should always reopen with the complete catalog.
       // Persisted owner/search filters can otherwise make a successful create
@@ -1405,7 +1410,7 @@ export function CiSecurityDataPage({
       const result = await onSetRoleStatus(
         roleStatusTarget.id,
         nextRoleStatus,
-        roleStatusReason.trim()
+        roleStatusReason.trim(),
       );
       if (!result.ok) throw new Error(result.message);
       setFeedback(result);
@@ -1424,11 +1429,11 @@ export function CiSecurityDataPage({
         ? await onSetResourceStatus(
             resourceStatusTarget.id,
             nextResourceStatus,
-            resourceStatusReason.trim()
+            resourceStatusReason.trim(),
           )
         : await onSave!(
             { ...resourceStatusTarget, status: nextResourceStatus },
-            resourceStatusReason.trim()
+            resourceStatusReason.trim(),
           );
       if (!result.ok) throw new Error(result.message);
       setFeedback(result);
@@ -1466,29 +1471,31 @@ export function CiSecurityDataPage({
           kind === "resource" ? "CloudIgniter resources" : "Access governance"
         }
         titleIcon={
-          kind === "resource" ? <Boxes aria-hidden /> : <ShieldCheck aria-hidden />
+          kind === "resource" ? (
+            <Boxes aria-hidden />
+          ) : (
+            <ShieldCheck aria-hidden />
+          )
         }
         titleChips={[
           {
             id: "records",
+            icon: <Boxes aria-hidden className="size-3.5" />,
             label: `${records.length} ${
               records.length === 1 ? "record" : "records"
             }`,
+            variant: "secondary",
           },
           ...(providerLabel
             ? [
                 {
                   id: "provider",
+                  icon: <LockKeyhole aria-hidden className="size-3.5" />,
                   label: providerLabel,
                   variant: "secondary" as const,
                 },
               ]
             : []),
-          {
-            id: "management",
-            label: canManage ? "Management enabled" : "Read only",
-            variant: canManage ? "default" : "secondary",
-          },
         ]}
         definition={definition}
         data={records}
@@ -1610,7 +1617,7 @@ export function CiSecurityDataPage({
         <div className="grid gap-2">
           {nextResourceStatus === "active" &&
           resourceDomains?.find(
-            (domain) => domain.id === resourceStatusTarget?.domainId
+            (domain) => domain.id === resourceStatusTarget?.domainId,
           )?.status === "suspended" ? (
             <p className="rounded-lg border border-warning-border bg-warning-surface p-3 text-warning-surface-foreground">
               The parent domain is suspended. Restoring this resource preserves
@@ -1704,7 +1711,7 @@ export function CiSecurityDataPage({
                   setEditorSession((current) =>
                     current
                       ? ciUpdateSecurityEditorSessionDraft(current, nextDraft)
-                      : null
+                      : null,
                   )
                 }
                 onReasonChange={setReason}
@@ -1748,11 +1755,11 @@ export function CiSecurityDataPage({
                   {editorSession?.mode === "create"
                     ? `Creating the new ${kind.replace(
                         "identity-",
-                        ""
+                        "",
                       )}. Please wait...`
                     : `Saving the ${kind.replace(
                         "identity-",
-                        ""
+                        "",
                       )}. Please wait...`}
                 </span>
               </div>

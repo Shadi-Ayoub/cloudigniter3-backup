@@ -3,11 +3,16 @@ import test from "node:test";
 
 import {
   CI_ACCESS_CONTROL_KEBAB_IDENTIFIER_PATTERN,
+  CI_ADMINISTRATOR_AUTHORITY_RANKS,
+  CI_ADMINISTRATOR_ROLES,
   CI_CORE_ROLES_BY_PRECEDENCE,
   CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
+  CI_ROOT_USER_IDENTITY_GROUP,
+  CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE,
   ciApplyCoreAccessControlOverrides,
   ciCanAll,
   ciCanAny,
+  ciCanManageAdministrator,
   ciCanOverrideCoreAccessControl,
   ciCreateAppAccessControl,
   ciCreateAppAuthorizer,
@@ -24,6 +29,8 @@ import {
   ciGlobalAccessScope,
   ciGetAccessControlEntryOrigin,
   ciIsCoreAccessControlEntry,
+  ciIsAdministratorRole,
+  ciIsAdministratorUser,
   ciIsAccessControlKebabIdentifier,
   ciMatchesAuthorizationPattern,
   ciMatchesPermission,
@@ -32,6 +39,7 @@ import {
   ciOrgUnitContextAccessScope,
   ciParsePermission,
   ciResolveIdentityGroupRoles,
+  ciResolveAdministratorAuthorityRank,
   ciResolvePrimaryRole,
   ciSystemAccessScope,
   ciTenantAccessScope,
@@ -39,6 +47,7 @@ import {
 } from "@ci-core/lib";
 import type {
   CiAccessControlDefinition,
+  CiAdministratorManagementSubject,
   CiAuthorizationSubject,
   CiEmberguardConfig,
   CiPrivilege,
@@ -161,6 +170,195 @@ test("exposes lowercase kebab IDs for every core role", () => {
   assert.throws(
     () => ciCreateRoleAssignment("ADMIN", ciSystemAccessScope(), "exact"),
     /lowercase kebab case/,
+  );
+});
+
+/** Creates a provider-neutral subject for administrator policy tests. */
+function administratorSubject(
+  id: string,
+  effectiveRoleIds: readonly string[],
+  isRootUser = false,
+  canManageSystemSuperAdmins = false,
+): CiAdministratorManagementSubject {
+  return {
+    id,
+    effectiveRoleIds,
+    isRootUser,
+    canManageSystemSuperAdmins,
+  };
+}
+
+test("defines administrator authority independently from role precedence", () => {
+  assert.deepEqual(CI_ADMINISTRATOR_ROLES, [
+    "admin",
+    "super-admin",
+    "system-admin",
+    "system-super-admin",
+  ]);
+  assert.deepEqual(CI_ADMINISTRATOR_AUTHORITY_RANKS, {
+    admin: 1,
+    "super-admin": 2,
+    "system-admin": 3,
+    "system-super-admin": 4,
+  });
+  assert.equal(CI_ROOT_USER_IDENTITY_GROUP, "cloudigniter-root-user");
+  assert.equal(
+    CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE,
+    "system-super-admin-manager",
+  );
+  assert.equal(
+    CI_CORE_ROLES_BY_PRECEDENCE.map(String).includes(
+      CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE,
+    ),
+    false,
+  );
+
+  assert.equal(ciIsAdministratorRole("admin"), true);
+  assert.equal(ciIsAdministratorRole("ADMIN"), false);
+  assert.equal(
+    ciIsAdministratorRole(CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE),
+    false,
+  );
+  assert.equal(
+    ciIsAdministratorUser(administratorSubject("admin-1", ["admin"])),
+    true,
+  );
+  assert.equal(
+    ciIsAdministratorUser(
+      administratorSubject("delegate-1", [CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE]),
+    ),
+    false,
+  );
+  assert.equal(
+    ciIsAdministratorUser(administratorSubject("root-1", [], true)),
+    true,
+  );
+  assert.equal(
+    ciResolveAdministratorAuthorityRank([
+      "user",
+      "admin",
+      "system-admin",
+      CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE,
+    ]),
+    3,
+  );
+  assert.equal(ciResolveAdministratorAuthorityRank(["user"]), null);
+});
+
+test("enforces the administrator target-authority matrix", () => {
+  for (const [actorIndex, actorRole] of CI_ADMINISTRATOR_ROLES.entries()) {
+    for (const [targetIndex, targetRole] of CI_ADMINISTRATOR_ROLES.entries()) {
+      assert.equal(
+        ciCanManageAdministrator({
+          actor: administratorSubject(`actor-${actorRole}`, [actorRole]),
+          target: administratorSubject(`target-${targetRole}`, [targetRole]),
+          operation: "account-management",
+        }),
+        actorIndex >= targetIndex,
+        `${actorRole} managing ${targetRole}`,
+      );
+    }
+  }
+
+  assert.equal(
+    ciCanManageAdministrator({
+      actor: administratorSubject("admin-1", ["admin"]),
+      target: administratorSubject("user-1", ["user"]),
+      operation: "account-management",
+    }),
+    false,
+  );
+});
+
+test("protects Root and applies only the explicit system-super delegation", () => {
+  const root = administratorSubject("root-1", [], true);
+  const otherRoot = administratorSubject(
+    "root-2",
+    ["system-super-admin"],
+    true,
+  );
+  const systemSuperAdmin = administratorSubject("system-super-1", [
+    "system-super-admin",
+  ]);
+  const delegatedAdmin = administratorSubject(
+    "admin-1",
+    ["admin", CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE],
+    false,
+    true,
+  );
+  const unvalidatedIdentityGroupAdmin = administratorSubject("admin-2", [
+    "admin",
+    CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE,
+  ]);
+
+  assert.equal(
+    ciCanManageAdministrator({
+      actor: root,
+      target: systemSuperAdmin,
+      operation: "account-management",
+    }),
+    true,
+  );
+  assert.equal(
+    ciCanManageAdministrator({
+      actor: root,
+      target: root,
+      operation: "profile-edit",
+    }),
+    true,
+  );
+  assert.equal(
+    ciCanManageAdministrator({
+      actor: root,
+      target: root,
+      operation: "account-management",
+    }),
+    false,
+  );
+  assert.equal(
+    ciCanManageAdministrator({
+      actor: root,
+      target: otherRoot,
+      operation: "profile-edit",
+    }),
+    false,
+  );
+  assert.equal(
+    ciCanManageAdministrator({
+      actor: delegatedAdmin,
+      target: systemSuperAdmin,
+      operation: "account-management",
+    }),
+    true,
+  );
+  assert.equal(
+    ciCanManageAdministrator({
+      actor: unvalidatedIdentityGroupAdmin,
+      target: systemSuperAdmin,
+      operation: "account-management",
+    }),
+    false,
+  );
+  assert.equal(
+    ciCanManageAdministrator({
+      actor: delegatedAdmin,
+      target: root,
+      operation: "profile-edit",
+    }),
+    false,
+  );
+  assert.equal(
+    ciCanManageAdministrator({
+      actor: administratorSubject(
+        "delegate-only",
+        [CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE],
+        false,
+        true,
+      ),
+      target: systemSuperAdmin,
+      operation: "account-management",
+    }),
+    false,
   );
 });
 
@@ -1268,7 +1466,7 @@ test("restricts audited core overrides to directly assigned system super adminis
   );
 });
 
-test("reserves system user impersonation for system super administrators", () => {
+test("reserves user impersonation for super administrators and higher", () => {
   const scope = ciSystemAccessScope();
   const authorizer = ciCreateAuthorizer(CI_DEFAULT_ACCESS_CONTROL_DEFINITION);
   const request = {
@@ -1279,22 +1477,20 @@ test("reserves system user impersonation for system super administrators", () =>
 
   assert.equal(
     authorizer.can({
-      subject: subject([
-        ciCreateRoleAssignment("system-admin", scope, "exact"),
-      ]),
+      subject: subject([ciCreateRoleAssignment("admin", scope, "exact")]),
       ...request,
     }),
     false,
   );
-  assert.equal(
-    authorizer.can({
-      subject: subject([
-        ciCreateRoleAssignment("system-super-admin", scope, "exact"),
-      ]),
-      ...request,
-    }),
-    true,
-  );
+  for (const roleId of ["super-admin", "system-admin", "system-super-admin"]) {
+    assert.equal(
+      authorizer.can({
+        subject: subject([ciCreateRoleAssignment(roleId, scope, "exact")]),
+        ...request,
+      }),
+      true,
+    );
+  }
 });
 
 test("rejects core overrides that target application entries or weaken bootstrap access", () => {

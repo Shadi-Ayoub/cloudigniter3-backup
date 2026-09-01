@@ -33,12 +33,7 @@ import {
   Textarea,
 } from "../components/shadcn";
 
-type PendingAction =
-  | "activate"
-  | "delete"
-  | "purge"
-  | "restore"
-  | "suspend";
+type PendingAction = "activate" | "delete" | "purge" | "restore" | "suspend";
 
 /** Reusable tenant lifecycle table used by Tenant management and Trash. */
 export function CiTenantManagementPage({
@@ -58,9 +53,9 @@ export function CiTenantManagementPage({
   const [confirmation, setConfirmation] = useState("");
   const [pending, setPending] = useState(false);
   const [seederOpen, setSeederOpen] = useState(false);
-  const [seederPending, setSeederPending] = useState<
-    "seed" | "cleanup" | null
-  >(null);
+  const [seederPending, setSeederPending] = useState<"seed" | "cleanup" | null>(
+    null,
+  );
   const [cleanupOpen, setCleanupOpen] = useState(false);
   const [feedback, setFeedback] = useState<{
     ok: boolean;
@@ -420,23 +415,15 @@ export function CiTenantManagementPage({
         titleChips={[
           {
             id: "records",
+            icon: <Building2 aria-hidden className="size-3.5" />,
             label: `${rows.length} ${rows.length === 1 ? "record" : "records"}`,
-          },
-          {
-            id: "management",
-            label:
-              capabilities.canDelete || capabilities.canSetStatus
-                ? "Management enabled"
-                : "Read only",
-            variant:
-              capabilities.canDelete || capabilities.canSetStatus
-                ? "default"
-                : "secondary",
+            variant: "secondary",
           },
           ...(mode === "active" && developmentSeeder
             ? [
                 {
                   id: "seeder",
+                  icon: <DatabaseZap aria-hidden className="size-3.5" />,
                   label: "Development seeder",
                   variant: "secondary" as const,
                 },
@@ -520,9 +507,7 @@ export function CiTenantManagementPage({
               {seederFeedback ? (
                 <CiAlert
                   variant={seederFeedback.ok ? "success" : "error"}
-                  title={
-                    seederFeedback.ok ? "Seeder updated" : "Seeder failed"
-                  }
+                  title={seederFeedback.ok ? "Seeder updated" : "Seeder failed"}
                   onDismiss={() => setSeederFeedback(null)}
                 >
                   {seederFeedback.message}

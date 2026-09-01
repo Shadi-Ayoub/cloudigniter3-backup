@@ -111,6 +111,9 @@ Read the [resources overview](../resources/overview.md) for generated managers a
   outcome feedback.
 - Prevent dialog dismissal and repeat submission while an operation is pending. A destructive action launched
   from the dialog still requires its own `CiAlertDialog`; progressive disclosure does not replace confirmation.
+- A development seeder exposes exactly one top-level `Seeder` global action. Its dialog owns the `Seed` and
+  `Clean Up` choices and contained feedback; `Clean Up` opens a separate destructive `CiAlertDialog`. Never add
+  separate seed and cleanup actions to the table toolbar.
 - Resolve authorization and environment visibility on the server. Omit the action/callback capability entirely
   when denied; do not render a client-hidden privileged action or let the dialog make the access decision.
 
@@ -159,6 +162,8 @@ Read the [resources overview](../resources/overview.md) for generated managers a
 - Mutations expose pending, success, and error states through shared feedback.
 - Infrequent or privileged table-wide tools use a compact global action and dialog instead of a persistent page
   panel; denied capabilities are absent from the client definition.
+- Seeder-enabled pages expose one toolbar entry and keep both operations, feedback, pending state, and cleanup
+  confirmation in the canonical dialog flow.
 - Successful mutations do not appear to lose the created or updated record because of stale filters or paging.
 - Table, compact, cards, dark mode, keyboard, responsive, and RTL behavior are reviewed as applicable.
 - Owning package tests/typechecks and at least one consuming page are validated.

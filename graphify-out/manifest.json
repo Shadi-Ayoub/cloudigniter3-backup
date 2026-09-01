@@ -5,8 +5,8 @@
     "semantic_hash": ""
   },
   "apps/template/amplify/auth/backend-auth.ts": {
-    "mtime": 1788177720.36,
-    "ast_hash": "55f7af3f4acf8272d2e3f3a031c5537e",
+    "mtime": 1788250933.92,
+    "ast_hash": "708ec0423d4fa4c736e4f962ec7bd4b3",
     "semantic_hash": ""
   },
   "apps/template/amplify/auth/cognito-user/cognito-create-user/handler.ts": {
@@ -15,8 +15,8 @@
     "semantic_hash": ""
   },
   "apps/template/amplify/auth/cognito-user/cognito-create-user/resource.ts": {
-    "mtime": 1783238606.74,
-    "ast_hash": "63fb515c941ee4ad59ad7acdd4fd389b",
+    "mtime": 1788250738.57,
+    "ast_hash": "ebad0ca733baac7042ad695fd2c60235",
     "semantic_hash": ""
   },
   "apps/template/amplify/auth/cognito-user/cognito-get-user/handler.ts": {
@@ -25,8 +25,8 @@
     "semantic_hash": ""
   },
   "apps/template/amplify/auth/cognito-user/cognito-get-user/resource.ts": {
-    "mtime": 1783238663.2,
-    "ast_hash": "8ca290a0d2794424d9e5e174ec80f4eb",
+    "mtime": 1788250855.56,
+    "ast_hash": "8f81d8f87c4acd2ab93bd07098a09e42",
     "semantic_hash": ""
   },
   "apps/template/amplify/auth/cognito-user/cognito-set-user-password/handler.ts": {
@@ -35,8 +35,8 @@
     "semantic_hash": ""
   },
   "apps/template/amplify/auth/cognito-user/cognito-set-user-password/resource.ts": {
-    "mtime": 1783238671.74,
-    "ast_hash": "4862d617dfc43eb81e4590abc723ac7e",
+    "mtime": 1788250738.76,
+    "ast_hash": "763383668b455b08c1cb185f4ae324b5",
     "semantic_hash": ""
   },
   "apps/template/amplify/auth/cognito-user/index.ts": {
@@ -60,8 +60,8 @@
     "semantic_hash": ""
   },
   "apps/template/amplify/auth/resource.ts": {
-    "mtime": 1786449667.8,
-    "ast_hash": "c152bd0756b840aeaa2104850dbe4cdd",
+    "mtime": 1788250855.81,
+    "ast_hash": "33c7b0de4746e39978fe87ecc48be0b9",
     "semantic_hash": ""
   },
   "apps/template/amplify/backend.ts": {
@@ -80,8 +80,8 @@
     "semantic_hash": ""
   },
   "apps/template/amplify/backend/ci-post-build.ts": {
-    "mtime": 1786622503.75,
-    "ast_hash": "ee8e33efa88d12faffae50b5fc051a11",
+    "mtime": 1788242147.69,
+    "ast_hash": "82fa99af7a171c8f31a1991b1c729518",
     "semantic_hash": ""
   },
   "apps/template/amplify/backend/data.ts": {
@@ -165,8 +165,8 @@
     "semantic_hash": ""
   },
   "apps/template/amplify/data/schemata/schema-cognito-user.ts": {
-    "mtime": 1788171587.96,
-    "ast_hash": "be3666e576ce3ce72b9a489123805491",
+    "mtime": 1788241540.76,
+    "ast_hash": "5d9b5fcc06f4f1f48e5a89f99c1a8f7f",
     "semantic_hash": ""
   },
   "apps/template/amplify/data/schemata/schema-ou.ts": {
@@ -190,8 +190,8 @@
     "semantic_hash": ""
   },
   "apps/template/amplify/data/schemata/schema-user.ts": {
-    "mtime": 1788178396.83,
-    "ast_hash": "232fb37f984085a747456faf7069f2b6",
+    "mtime": 1788241554.83,
+    "ast_hash": "f1eeaeb5904a92d02a3f76f73a14f579",
     "semantic_hash": ""
   },
   "apps/template/amplify/data/schemata/settings/schema-private-settings.ts": {
@@ -425,8 +425,8 @@
     "semantic_hash": ""
   },
   "apps/template/amplify_outputs.json": {
-    "mtime": 1788172942.21,
-    "ast_hash": "65dfa1db8d9b3f3a416ce07491c5803b",
+    "mtime": 1788252679.15,
+    "ast_hash": "5b124d5b174b686e877fcd8e93b70034",
     "semantic_hash": ""
   },
   "apps/template/cloudigniter.config.ts": {
@@ -540,13 +540,13 @@
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/dashboard/page.tsx": {
-    "mtime": 1788164460.53,
-    "ast_hash": "b7c1b4144ff86b2ce32c6a09701e3d6c",
+    "mtime": 1788243054.02,
+    "ast_hash": "90cadd8bbd7d6fab0e9acc59847fd28e",
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/dashboard/setup.ts": {
-    "mtime": 1788165278.69,
-    "ast_hash": "ec74a3ac9d655f7a28c9e0d442c286a0",
+    "mtime": 1788241047.05,
+    "ast_hash": "29b838a6105d3f6b58c5144109fa8612",
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/dashboard/theme/layout.tsx": {
@@ -1005,8 +1005,8 @@
     "semantic_hash": ""
   },
   "apps/template/src/kernel/server/api/index.ts": {
-    "mtime": 1788177766.7,
-    "ast_hash": "99817769543a686ff3a72872fbfb3029",
+    "mtime": 1788242373.21,
+    "ast_hash": "ebaccdd5cd37396207231c2cec34eb0d",
     "semantic_hash": ""
   },
   "apps/template/src/kernel/server/api/system/delete-get-settings.ts": {
@@ -1050,7 +1050,7 @@
     "semantic_hash": ""
   },
   "apps/template/src/kernel/server/api/system/settings/save-settings.ts": {
-    "mtime": 1779988537.44,
+    "mtime": 1788255260.27,
     "ast_hash": "f37216f10d3ef83f01ae070643d9350c",
     "semantic_hash": ""
   },
@@ -1125,8 +1125,8 @@
     "semantic_hash": ""
   },
   "apps/template/src/kernel/server/bootstrap/app-bootstrap.ts": {
-    "mtime": 1785731357.55,
-    "ast_hash": "b0e17665fc816c805a9027f3cae5e308",
+    "mtime": 1788241113.85,
+    "ast_hash": "5cad48f274cf0b5af1e556014126c5a5",
     "semantic_hash": ""
   },
   "apps/template/src/kernel/server/bootstrap/ci-get-server-status.ts": {
@@ -1215,8 +1215,8 @@
     "semantic_hash": ""
   },
   "apps/template/src/kernel/server/index.ts": {
-    "mtime": 1788177766.76,
-    "ast_hash": "d5d603dc07f3b1a84f5ae0bc7103ea13",
+    "mtime": 1788242373.28,
+    "ast_hash": "a6684dca8a5a04dfbf92cd9c8a079d12",
     "semantic_hash": ""
   },
   "apps/template/src/kernel/server/lib/index.ts": {
@@ -1785,13 +1785,13 @@
     "semantic_hash": ""
   },
   "packages/aws/src/lib/cognito-user/index.ts": {
-    "mtime": 1788164014.31,
-    "ast_hash": "1a617e34a4b0ab1871d4d1ac5ffe0dca",
+    "mtime": 1788240538.5,
+    "ast_hash": "92ba9d04c0b1f1bd622923b78234b9dd",
     "semantic_hash": ""
   },
   "packages/aws/src/lib/cognito-user/services/ci-create-cognito-user.ts": {
-    "mtime": 1788165791.48,
-    "ast_hash": "11a0c2c2de78fea4384458f61d7f2a2b",
+    "mtime": 1788240538.62,
+    "ast_hash": "47428ee06a4371c1a235b3a954443da3",
     "semantic_hash": ""
   },
   "packages/aws/src/lib/cognito-user/services/ci-delete-cognito-user.ts": {
@@ -1800,8 +1800,8 @@
     "semantic_hash": ""
   },
   "packages/aws/src/lib/cognito-user/services/ci-get-cognito-user.ts": {
-    "mtime": 1788178396.73,
-    "ast_hash": "bdb5eb2881385435310985564b486d3c",
+    "mtime": 1788240050.72,
+    "ast_hash": "67ddaa145ffc08e38495a676971ffa92",
     "semantic_hash": ""
   },
   "packages/aws/src/lib/cognito-user/services/ci-set-cognito-user-password.ts": {
@@ -1810,8 +1810,8 @@
     "semantic_hash": ""
   },
   "packages/aws/src/lib/cognito-user/services/ci-update-cognito-user.ts": {
-    "mtime": 1788177720.31,
-    "ast_hash": "9ce4a107c313f3c88b7c7e0273346b20",
+    "mtime": 1788240538.68,
+    "ast_hash": "fb36502500bca177423bfda0c3a9770f",
     "semantic_hash": ""
   },
   "packages/aws/src/lib/cognito-user/services/helpers/ci-build-cognito-error.ts": {
@@ -1835,8 +1835,8 @@
     "semantic_hash": ""
   },
   "packages/aws/src/lib/cognito-user/services/helpers/index.ts": {
-    "mtime": 1775307426.55,
-    "ast_hash": "36b4bdf98d21ce3382fcfb53649bec27",
+    "mtime": 1788240019.78,
+    "ast_hash": "0a00edf402873c101dfa9a470fd081ae",
     "semantic_hash": ""
   },
   "packages/aws/src/lib/cognito-user/services/index.ts": {
@@ -1855,8 +1855,8 @@
     "semantic_hash": ""
   },
   "packages/aws/src/lib/cognito-user/utility/index.ts": {
-    "mtime": 1788164014.16,
-    "ast_hash": "bfd5716f8af90b4601cf1037608f6e99",
+    "mtime": 1788240638.55,
+    "ast_hash": "117f915b84df91ecc6a9d005d71447fa",
     "semantic_hash": ""
   },
   "packages/aws/src/lib/dynamodb/ci-with-ddb-client.ts": {
@@ -1935,8 +1935,8 @@
     "semantic_hash": ""
   },
   "packages/aws/src/lib/index.ts": {
-    "mtime": 1788164014.37,
-    "ast_hash": "28fb559921820110978ab425ca6c96e7",
+    "mtime": 1788254911.07,
+    "ast_hash": "ce6d4c46be83f5089cb63b1d5e7c5c4e",
     "semantic_hash": ""
   },
   "packages/aws/src/lib/lambda/ci-attach-aws-response-debug.ts": {
@@ -2070,13 +2070,13 @@
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/handlers/cognito-handlers/ci-create-cognito-user-handler.ts": {
-    "mtime": 1779784921.81,
-    "ast_hash": "dffd5cc301ec7b9212b2d19092fed0a1",
+    "mtime": 1788242207.19,
+    "ast_hash": "d201edac5c7ed0373eae4cf7c2a638f5",
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/handlers/cognito-handlers/ci-delete-cognito-user-handler.ts": {
-    "mtime": 1779784921.8,
-    "ast_hash": "ffa8f7a0ba40bee77079b9bed8cb3968",
+    "mtime": 1788242207.42,
+    "ast_hash": "5fd850e78e36c1d217ada7958ab2cda6",
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/handlers/cognito-handlers/ci-get-cognito-user-handler.ts": {
@@ -2085,13 +2085,13 @@
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/handlers/cognito-handlers/ci-set-cognito-user-password-handler.ts": {
-    "mtime": 1779784921.81,
-    "ast_hash": "b01dca5747d44b12dcb3dfae73beb75a",
+    "mtime": 1788242207.48,
+    "ast_hash": "a4eec3ea5d4bd135c1e689d88f1c7a42",
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/handlers/cognito-handlers/ci-update-cognito-user-handler.ts": {
-    "mtime": 1779784921.8,
-    "ast_hash": "a8ebd952adb86ccd8cea20c84ebbaeda",
+    "mtime": 1788242207.28,
+    "ast_hash": "c95e5f57aa226321948535be69abf0c8",
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/handlers/cognito-handlers/index.ts": {
@@ -2115,8 +2115,8 @@
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/index.ts": {
-    "mtime": 1788164038.69,
-    "ast_hash": "c8d73257b9969428d6f5bea107dbbf0c",
+    "mtime": 1788240563.06,
+    "ast_hash": "d4ae91536ac049d73308a9f6a3d4cadc",
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/policy/ci-make-runtime-common-policies.ts": {
@@ -2160,8 +2160,8 @@
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/resources/auth/module.ts": {
-    "mtime": 1788165068.54,
-    "ast_hash": "1644faead742798ea1d7338b57e71e69",
+    "mtime": 1788250879.16,
+    "ast_hash": "e121b6a11528d97c12f6addac6880bb4",
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/resources/data/index.ts": {
@@ -2335,8 +2335,8 @@
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/root-user/ci-bootstrap-root-user.ts": {
-    "mtime": 1788165234.34,
-    "ast_hash": "08179319b42d23565a1eabda398f75e8",
+    "mtime": 1788240638.58,
+    "ast_hash": "2e4a27d4072fcd781140a69d275129e2",
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/root-user/ci-get-root-user-password-problems.ts": {
@@ -2345,13 +2345,13 @@
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/root-user/index.ts": {
-    "mtime": 1785658927.47,
-    "ast_hash": "f6b4724b9a351e820f84eb4954380fcb",
+    "mtime": 1788240563.0,
+    "ast_hash": "b0310f4f46e732b9d81699d1292a0045",
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/root-user/types.ts": {
-    "mtime": 1785659047.35,
-    "ast_hash": "a028f0018a95df0f3122e3395dcdcef0",
+    "mtime": 1788240562.95,
+    "ast_hash": "c47316142107ff93579df51ea13e0321",
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/types.ts": {
@@ -2525,8 +2525,8 @@
     "semantic_hash": ""
   },
   "packages/aws/src/types/cognito-user-types/index.ts": {
-    "mtime": 1788164014.04,
-    "ast_hash": "77f3ac94eccab9f75921e687b5bdec3c",
+    "mtime": 1788240019.46,
+    "ast_hash": "6a9fa503071e83c79ca7c01f4a59fa4b",
     "semantic_hash": ""
   },
   "packages/aws/src/types/config-types/CiAwsProviderConfig.ts": {
@@ -2660,8 +2660,8 @@
     "semantic_hash": ""
   },
   "packages/aws/src/types/index.ts": {
-    "mtime": 1788164014.1,
-    "ast_hash": "01d9bd6d6709c5079a66cd36924e508f",
+    "mtime": 1788240019.56,
+    "ast_hash": "6e43f59b09b4cbdc6e8c4d5deba94434",
     "semantic_hash": ""
   },
   "packages/aws/src/types/lambda-types/CiAppSyncResolverEvent.ts": {
@@ -2850,8 +2850,8 @@
     "semantic_hash": ""
   },
   "packages/core/__tests__/auth/access-control.test.ts": {
-    "mtime": 1788178396.7,
-    "ast_hash": "951b7fbf2409c75b2f46c49d5a3b4879",
+    "mtime": 1788243054.38,
+    "ast_hash": "542d4c65fe4ef95bff7b1ffcb4487c4e",
     "semantic_hash": ""
   },
   "packages/core/obfuscator.config.json": {
@@ -3125,8 +3125,8 @@
     "semantic_hash": ""
   },
   "packages/core/src/lib/auth/access-control/ci-default-access-control.ts": {
-    "mtime": 1788177936.03,
-    "ast_hash": "e7c77eb8aa6ad92c958b819833b57f1c",
+    "mtime": 1788242053.53,
+    "ast_hash": "bf8b6f349acf860185bb21cf856a4006",
     "semantic_hash": ""
   },
   "packages/core/src/lib/auth/access-control/ci-identity-group-grants.ts": {
@@ -3155,8 +3155,8 @@
     "semantic_hash": ""
   },
   "packages/core/src/lib/auth/index.ts": {
-    "mtime": 1786613303.06,
-    "ast_hash": "6bef8c1ea0113c1c3d7be88007f2c24d",
+    "mtime": 1788240582.7,
+    "ast_hash": "51d7a87d3438cf3785095ac457e88f50",
     "semantic_hash": ""
   },
   "packages/core/src/lib/dev/dev-beacon/ci-dev-beacon-access.ts": {
@@ -3355,8 +3355,8 @@
     "semantic_hash": ""
   },
   "packages/core/src/lib/index.ts": {
-    "mtime": 1788082665.49,
-    "ast_hash": "6325af252a260c68f65bcde3491bb0ea",
+    "mtime": 1788240582.76,
+    "ast_hash": "b906e4eb8d8c17c430f46e8737871aac",
     "semantic_hash": ""
   },
   "packages/core/src/lib/kernel/defaults.ts": {
@@ -3460,8 +3460,8 @@
     "semantic_hash": ""
   },
   "packages/core/src/lib/route/ci-core-routes.ts": {
-    "mtime": 1788165679.27,
-    "ast_hash": "5f7e27e9028c5c9c9e94d4dff44867ec",
+    "mtime": 1788241520.05,
+    "ast_hash": "b68644b69580f3d7654dad7202fc253a",
     "semantic_hash": ""
   },
   "packages/core/src/lib/route/ci-get-route-namespace.ts": {
@@ -3915,8 +3915,8 @@
     "semantic_hash": ""
   },
   "packages/core/src/types/auth-types/index.ts": {
-    "mtime": 1787069359.5,
-    "ast_hash": "838909b19e1435a581d57c719ef944dc",
+    "mtime": 1788240582.58,
+    "ast_hash": "ed42053c1d15eb52e48aebab8a0e97dc",
     "semantic_hash": ""
   },
   "packages/core/src/types/console-print-types/CiConsoleLogOptions.ts": {
@@ -4430,8 +4430,8 @@
     "semantic_hash": ""
   },
   "packages/core/src/types/index.ts": {
-    "mtime": 1788178053.93,
-    "ast_hash": "bec8767c01bc0a02400c300f66b7fb33",
+    "mtime": 1788240582.64,
+    "ast_hash": "2b069a20607b80bc137d243aad2dfecb",
     "semantic_hash": ""
   },
   "packages/core/src/types/kernel-types/CiCoreConfig.ts": {
@@ -5265,8 +5265,8 @@
     "semantic_hash": ""
   },
   "packages/core/src/types/user-types/CiUser.ts": {
-    "mtime": 1785731356.63,
-    "ast_hash": "9e0ead75ed499024ebab267b9767c224",
+    "mtime": 1788240789.31,
+    "ast_hash": "8f07ca11c49639faeb24174a5ddefd5d",
     "semantic_hash": ""
   },
   "packages/core/src/types/user-types/index.ts": {
@@ -7340,8 +7340,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/data-table/components/CiDataTable.tsx": {
-    "mtime": 1788083414.75,
-    "ast_hash": "6b2f3c57352c1049050a8b7dd315d83f",
+    "mtime": 1788243054.52,
+    "ast_hash": "a1903da937527e363d22eb24e61b2ab8",
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/data-table/components/CiDataTableRowActionsMenu.tsx": {
@@ -7535,8 +7535,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/shadcn/sidebar.tsx": {
-    "mtime": 1780156746.78,
-    "ast_hash": "ce928efbb0d8024cd9c454cc94ae1c81",
+    "mtime": 1788243054.55,
+    "ast_hash": "a8346fa221a048b214dad0d6c954f440",
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/shadcn/skeleton.tsx": {
@@ -8470,13 +8470,13 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/shared-apis/intro.mdx": {
-    "mtime": 1788082961.14,
-    "ast_hash": "e7100449f3a67489fe4ace8efdfd6a03",
+    "mtime": 1788254995.7,
+    "ast_hash": "d356c63029a83281814d59bddeb62392",
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/toc.mdx": {
-    "mtime": 1788165485.11,
-    "ast_hash": "f59117fd422f64b12de8c216d07c0d6f",
+    "mtime": 1788254995.75,
+    "ast_hash": "f9d13d284f393278fea9a426737aa92b",
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/trace-diagnostic/intro.mdx": {
@@ -9065,8 +9065,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/users-management/intro.mdx": {
-    "mtime": 1788178397.0,
-    "ast_hash": "0da5740e62f3a8a5b6783a9b367be1bf",
+    "mtime": 1788255018.71,
+    "ast_hash": "4f85d17db9d7f361606c98a108f54f23",
     "semantic_hash": ""
   },
   "developer-guide/src/pages/markdown-page.md": {
@@ -9335,13 +9335,13 @@
     "semantic_hash": ""
   },
   "apps/template/amplify/backend/__tests__/ci-core-amplify-manifest.test.ts": {
-    "mtime": 1788171588.04,
-    "ast_hash": "c35c7442085b47dc7e9d250bb2a1fda0",
+    "mtime": 1788251129.64,
+    "ast_hash": "d597b83aab2985711e931685744c2130",
     "semantic_hash": ""
   },
   "apps/template/amplify/backend/ci-core-amplify-manifest.ts": {
-    "mtime": 1788165068.9,
-    "ast_hash": "561a9e04c1d62f26ce654f7f716aedd6",
+    "mtime": 1788250855.69,
+    "ast_hash": "aa0558454ec2b5e3b6e6b8dc5170860b",
     "semantic_hash": ""
   },
   "packages/aws/__tests__/backend/backend-manifest.test.ts": {
@@ -9350,8 +9350,8 @@
     "semantic_hash": ""
   },
   "packages/aws/__tests__/backend/post-build-plan.test.ts": {
-    "mtime": 1787908263.74,
-    "ast_hash": "2ad20533c41c1e1361bad9bd8b0ce04b",
+    "mtime": 1788250934.08,
+    "ast_hash": "212ab760b5ec75b374116e2d5386efa2",
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/resources/backend-manifest.ts": {
@@ -9405,8 +9405,8 @@
     "semantic_hash": ""
   },
   "developer-guide/company-developers/providers/aws/amplify-backend-strategy.mdx": {
-    "mtime": 1786872113.79,
-    "ast_hash": "44fe1f6ca5ba2f2013488157904cb699",
+    "mtime": 1788251234.03,
+    "ast_hash": "496eabe2f8e048c22cb94566691a4c1a",
     "semantic_hash": ""
   },
   "developer-guide/docs/providers/aws/extending-amplify-backend.mdx": {
@@ -9415,8 +9415,8 @@
     "semantic_hash": ""
   },
   "packages/aws/__tests__/backend/amplify-backend-manifest.test.ts": {
-    "mtime": 1787908263.68,
-    "ast_hash": "a56250735b86849dc28707b110d95887",
+    "mtime": 1788250904.0,
+    "ast_hash": "4037ea50468189d6ed45e5fe9fde7bfb",
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/amplify/ci-amplify-backend-helpers.ts": {
@@ -9425,8 +9425,8 @@
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/amplify/ci-amplify-backend-manifest.ts": {
-    "mtime": 1786086148.37,
-    "ast_hash": "ce0ca266b02f57d7e0d1ae97bb3e9e1f",
+    "mtime": 1788250934.05,
+    "ast_hash": "c96ccaa2e7ffbddbc3d567925a4285f7",
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/amplify/index.ts": {
@@ -9550,8 +9550,8 @@
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/handlers/emberguard-handlers/ci-emberguard-access-handlers.ts": {
-    "mtime": 1786621905.77,
-    "ast_hash": "6acb9c193a270c611b4b117f8a0a2d59",
+    "mtime": 1788243054.28,
+    "ast_hash": "c859d58fefd386dcf9a06f8beffc9dcd",
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/handlers/emberguard-handlers/index.ts": {
@@ -9575,8 +9575,8 @@
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/resources/data/emberguard-access-table/policy.ts": {
-    "mtime": 1786967588.42,
-    "ast_hash": "5ad432b225c5ab4a536ca19a8989eb93",
+    "mtime": 1788241793.75,
+    "ast_hash": "a6b548127f1da8e590063039fd983386",
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/resources/data/emberguard-access-table/types.ts": {
@@ -9640,8 +9640,8 @@
     "semantic_hash": ""
   },
   "packages/emberguard/src/lib/access-control/ci-default-access-control.ts": {
-    "mtime": 1788178432.98,
-    "ast_hash": "08b9601ba7067821a5636688b8c7b643",
+    "mtime": 1788242053.61,
+    "ast_hash": "ebb538088257ab42db9b1c6922516a7a",
     "semantic_hash": ""
   },
   "packages/emberguard/src/lib/access-control/ci-identity-group-grants.ts": {
@@ -10545,8 +10545,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/security/CiSecurityDataPage.tsx": {
-    "mtime": 1788158580.86,
-    "ast_hash": "deb15d05d437a99bff5776d9aeedf2b6",
+    "mtime": 1788243054.63,
+    "ast_hash": "399dee15a419e0ceb1fba626820a9dd6",
     "semantic_hash": ""
   },
   "packages/ui/src/client/security/index.ts": {
@@ -10570,8 +10570,8 @@
     "semantic_hash": ""
   },
   "packages/aws/__tests__/backend/emberguard-administration-adapter.test.ts": {
-    "mtime": 1786613585.12,
-    "ast_hash": "4caa39d91f9f533496429e85dfe3a360",
+    "mtime": 1788241149.85,
+    "ast_hash": "661b514114dd72faaf2f9ce6efee705a",
     "semantic_hash": ""
   },
   "packages/aws/src/lib/emberguard/ci-create-aws-emberguard-administration-repository.ts": {
@@ -10580,8 +10580,8 @@
     "semantic_hash": ""
   },
   "packages/aws/src/lib/emberguard/ci-resolve-aws-cognito-identity-groups.ts": {
-    "mtime": 1786263271.39,
-    "ast_hash": "0b5dcd5c765315e4ccd002f4179d84be",
+    "mtime": 1788241149.81,
+    "ast_hash": "304138288923681432583c53f7f461a4",
     "semantic_hash": ""
   },
   "packages/aws/src/lib/emberguard/index.ts": {
@@ -10645,8 +10645,8 @@
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-development/SKILL.md": {
-    "mtime": 1788165485.31,
-    "ast_hash": "97340dd6d6b828ca56f695bd6d48b66f",
+    "mtime": 1788254995.49,
+    "ast_hash": "d4e32e7d483190a7c9a8ad9fafecab4e",
     "semantic_hash": ""
   },
   "packages/next/__tests__/context/resolve-request-context-from-request.test.ts": {
@@ -11395,8 +11395,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/data-entity-manager/CiDataEntityManager.tsx": {
-    "mtime": 1787985520.78,
-    "ast_hash": "b13171591405bf8beca29c2750559435",
+    "mtime": 1788243054.48,
+    "ast_hash": "5ff89a87fde39e2020b31e355827fb86",
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/data-entity-manager/index.ts": {
@@ -11545,8 +11545,8 @@
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/dashboard/breadcrumb-menu.ts": {
-    "mtime": 1788164460.38,
-    "ast_hash": "3986a63e482413f226180062ab308d6c",
+    "mtime": 1788241047.19,
+    "ast_hash": "3b12f5731fc6488e9496eea7fff3e161",
     "semantic_hash": ""
   },
   "packages/ui/src/client/security/CiResourceDomainsDialog.tsx": {
@@ -11600,8 +11600,8 @@
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/dashboard/trash/page.tsx": {
-    "mtime": 1788177980.76,
-    "ast_hash": "0c3b718fac674ef7235f668b200e4655",
+    "mtime": 1788243054.04,
+    "ast_hash": "d7ca17d857868f9e79cb40709fa98546",
     "semantic_hash": ""
   },
   "apps/template/src/kernel/server/api/system/tenant/app-tenant-lifecycle-service.ts": {
@@ -11670,8 +11670,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/tenant-management/CiTenantManagementPage.tsx": {
-    "mtime": 1787997166.74,
-    "ast_hash": "0a31d519e60a9ba82ae75e7e4e9c4d05",
+    "mtime": 1788243054.66,
+    "ast_hash": "24709a2407bbb8b0ac1e171eb2067b75",
     "semantic_hash": ""
   },
   "packages/ui/src/client/tenant-management/index.ts": {
@@ -11815,8 +11815,8 @@
     "semantic_hash": ""
   },
   "developer-guide/company-developers/tooling/development-tools-and-seeding.mdx": {
-    "mtime": 1788028514.77,
-    "ast_hash": "b94e30b28f7b0d4ac375140d43b5e54d",
+    "mtime": 1788255018.96,
+    "ast_hash": "aad8758b64c88749c7e8d6bfa79fb3d4",
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/server-apis/ci-read-json-seeder-data.mdx": {
@@ -11835,8 +11835,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/environment-modes/development-tools-and-seeding.mdx": {
-    "mtime": 1788111215.86,
-    "ast_hash": "26fb1b9427d87e82b429098397ccfdeb",
+    "mtime": 1788255018.9,
+    "ast_hash": "07b892d21cbe3fc850630cfb75444023",
     "semantic_hash": ""
   },
   "packages/ui/__tests__/tenant-date-formatting.test.ts": {
@@ -11870,8 +11870,8 @@
     "semantic_hash": ""
   },
   "packages/ui/__tests__/data-table-row-alignment.test.ts": {
-    "mtime": 1788083010.66,
-    "ast_hash": "f0dd79f17702705c92b368e47acd2302",
+    "mtime": 1788243054.45,
+    "ast_hash": "d8608ba4736e28475f8ca67d5931131d",
     "semantic_hash": ""
   },
   "apps/template/amplify/functions/system/tenant/set-tenant-status/handler.ts": {
@@ -12040,8 +12040,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/org-unit-management/CiOrgUnitManagementPage.tsx": {
-    "mtime": 1788084768.9,
-    "ast_hash": "c2783dc0adb3f71ca123ed8b6018211e",
+    "mtime": 1788243054.6,
+    "ast_hash": "2b99177df33e9de9f5bdd1462bbba512",
     "semantic_hash": ""
   },
   "packages/ui/src/client/org-unit-management/index.ts": {
@@ -12125,8 +12125,8 @@
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-development/references/architecture/rendering/page-rendering.md": {
-    "mtime": 1787989174.37,
-    "ast_hash": "a3eb2b016add57c9a1a9b65353508f57",
+    "mtime": 1788240448.47,
+    "ast_hash": "7c3e4bfea4a71dfce860d2ce04c20130",
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-development/references/architecture/resources/deletion.md": {
@@ -12195,8 +12195,8 @@
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-development/references/architecture/ui/data-table.md": {
-    "mtime": 1788082888.84,
-    "ast_hash": "23b68d6b471fa775df3d4dc48aefccab",
+    "mtime": 1788240471.62,
+    "ast_hash": "0742107a188e55c522200ce0c662b116",
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-development/references/authoring/validation.md": {
@@ -12205,8 +12205,8 @@
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-development/references/cli/development-tools-and-seeding.md": {
-    "mtime": 1788028514.84,
-    "ast_hash": "c8f3ee0ef1cdee89f1ab459166ab7976",
+    "mtime": 1788254995.6,
+    "ast_hash": "c3b0219e3841ffd168b37f5873f5b7b0",
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-development/references/cli/development.md": {
@@ -12285,8 +12285,8 @@
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-development/references/architecture/ui/presentation-defaults.md": {
-    "mtime": 1788082888.75,
-    "ast_hash": "261767c0bed6d020847277de32aad699",
+    "mtime": 1788241382.72,
+    "ast_hash": "6f489eb053340e834dc95e686202e731",
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/components/CiNewResourceBadge.mdx": {
@@ -12455,8 +12455,8 @@
     "semantic_hash": ""
   },
   "apps/template/amplify/auth/cognito-user/cognito-delete-user/resource.ts": {
-    "mtime": 1788165068.65,
-    "ast_hash": "d8e8ee8b26b8a82a97bbb40d8bab2a3b",
+    "mtime": 1788250738.63,
+    "ast_hash": "ddb3e7f9a0188fe3097b936856d2a7aa",
     "semantic_hash": ""
   },
   "apps/template/amplify/auth/cognito-user/cognito-list-users/handler.ts": {
@@ -12465,8 +12465,8 @@
     "semantic_hash": ""
   },
   "apps/template/amplify/auth/cognito-user/cognito-list-users/resource.ts": {
-    "mtime": 1788164067.52,
-    "ast_hash": "3a398592425c2f8fa9b0db2712fb0466",
+    "mtime": 1788250855.63,
+    "ast_hash": "69a4a980264792e35052714d03d18d76",
     "semantic_hash": ""
   },
   "apps/template/amplify/auth/cognito-user/cognito-set-user-enabled/handler.ts": {
@@ -12475,8 +12475,8 @@
     "semantic_hash": ""
   },
   "apps/template/amplify/auth/cognito-user/cognito-set-user-enabled/resource.ts": {
-    "mtime": 1788164067.75,
-    "ast_hash": "535ce5a5e8d29f1d041d4f76430c36cd",
+    "mtime": 1788250738.71,
+    "ast_hash": "0cae9a1f1ac8bcadf56c218ca0e5d34f",
     "semantic_hash": ""
   },
   "apps/template/amplify/auth/cognito-user/cognito-update-user/handler.ts": {
@@ -12485,8 +12485,8 @@
     "semantic_hash": ""
   },
   "apps/template/amplify/auth/cognito-user/cognito-update-user/resource.ts": {
-    "mtime": 1788164067.95,
-    "ast_hash": "0a3dd60b39f72b825136b03c07c39ee3",
+    "mtime": 1788250738.83,
+    "ast_hash": "479a77301802ff1d50454f4a74ed8bf2",
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/dashboard/resources/actions.ts": {
@@ -12500,23 +12500,23 @@
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/dashboard/users/actions.ts": {
-    "mtime": 1788178396.9,
-    "ast_hash": "44aadb145482da0cbaf78efae827cebf",
+    "mtime": 1788254876.46,
+    "ast_hash": "1a7fa13c2c880b5ecf05dec551fe1982",
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/dashboard/users/page.tsx": {
-    "mtime": 1788178514.08,
-    "ast_hash": "8fc319e45063796a913945568a485f7e",
+    "mtime": 1788243054.08,
+    "ast_hash": "be76bfceea8c5d96a7bafab34e6a4346",
     "semantic_hash": ""
   },
   "apps/template/src/kernel/server/api/system/user/app-user-management-service.ts": {
-    "mtime": 1788178396.87,
-    "ast_hash": "9b9ef7a4d66fbbde5073bcffa9a313db",
+    "mtime": 1788254923.77,
+    "ast_hash": "98eaa7faed7ce377c6862651ae7dea73",
     "semantic_hash": ""
   },
   "apps/template/src/kernel/server/api/system/user/index.ts": {
-    "mtime": 1788177766.61,
-    "ast_hash": "a34a98a410b701a0c565b58dcaf40cea",
+    "mtime": 1788240828.7,
+    "ast_hash": "195fbe21b650f69ab34746cd16045e42",
     "semantic_hash": ""
   },
   "developer-guide/company-developers/identity/_category_.json": {
@@ -12525,13 +12525,13 @@
     "semantic_hash": ""
   },
   "packages/aws/__tests__/backend/cognito-user-management.test.ts": {
-    "mtime": 1788164625.16,
-    "ast_hash": "23a0ddb70f412d927654063f886d0782",
+    "mtime": 1788240638.59,
+    "ast_hash": "6da291844140da1cf94a1463351a5031",
     "semantic_hash": ""
   },
   "packages/aws/src/lib/cognito-user/services/ci-list-cognito-users.ts": {
-    "mtime": 1788164013.82,
-    "ast_hash": "20b70c6ff41ba080300c2e14e6a20e55",
+    "mtime": 1788240087.18,
+    "ast_hash": "db135dace01abdad28d06d123eb67674",
     "semantic_hash": ""
   },
   "packages/aws/src/lib/cognito-user/services/ci-set-cognito-user-enabled.ts": {
@@ -12540,8 +12540,8 @@
     "semantic_hash": ""
   },
   "packages/aws/src/lib/cognito-user/utility/ci-map-cognito-user.ts": {
-    "mtime": 1788164013.76,
-    "ast_hash": "0dda2ef931f1b2604101d2512bafd4c2",
+    "mtime": 1788240538.43,
+    "ast_hash": "738db8d7f38fd595c2ca92e50b0be212",
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/handlers/cognito-handlers/ci-list-cognito-users-handler.ts": {
@@ -12550,18 +12550,18 @@
     "semantic_hash": ""
   },
   "packages/aws/src/server/backend/handlers/cognito-handlers/ci-set-cognito-user-enabled-handler.ts": {
-    "mtime": 1788164038.5,
-    "ast_hash": "d60609205142a11dc69c433a7587566e",
+    "mtime": 1788242207.34,
+    "ast_hash": "ed53fdce9fa05881871271c2d419063e",
     "semantic_hash": ""
   },
   "packages/aws/src/types/cognito-user-types/CICognitoUser.ts": {
-    "mtime": 1788164013.67,
-    "ast_hash": "841b3366f8a9b2419243d92d365d73f6",
+    "mtime": 1788240538.37,
+    "ast_hash": "b787904e2fc2ca983c4532161aa7c3b2",
     "semantic_hash": ""
   },
   "packages/core/src/types/user-types/CIUserTypes.ts": {
-    "mtime": 1788178396.59,
-    "ast_hash": "1a12c59011fcc13a4c087fc44700f373",
+    "mtime": 1788240446.55,
+    "ast_hash": "5002f0fcf4e8762185515bd4345966a8",
     "semantic_hash": ""
   },
   "packages/next/src/ui/client/pages/dashboard/resources/CiNextResourceCatalogPage.tsx": {
@@ -12585,8 +12585,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/user-management/CiUserManagementPage.tsx": {
-    "mtime": 1788178503.31,
-    "ast_hash": "53506bcad0b6dff76d5ef854a0184b7f",
+    "mtime": 1788243075.01,
+    "ast_hash": "408d7ce8251b8adc485855f60c2acafa",
     "semantic_hash": ""
   },
   "packages/ui/src/client/user-management/index.ts": {
@@ -12605,8 +12605,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/types/user-management-types/CiUserManagementTypes.ts": {
-    "mtime": 1788178053.98,
-    "ast_hash": "ede0a01cb8d0e789a618b3272ef6b34f",
+    "mtime": 1788241419.35,
+    "ast_hash": "8173c6ccde6115b5c73ce220755cf14d",
     "semantic_hash": ""
   },
   "packages/ui/src/types/user-management-types/index.ts": {
@@ -12615,13 +12615,13 @@
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-development/references/architecture/users/overview.md": {
-    "mtime": 1788166109.93,
-    "ast_hash": "1ec786486c9c5cd48b72bb36ccedd67a",
+    "mtime": 1788254995.54,
+    "ast_hash": "08c4f5dc26368d8765800873dfce5781",
     "semantic_hash": ""
   },
   "developer-guide/company-developers/identity/user-administration.mdx": {
-    "mtime": 1788178396.98,
-    "ast_hash": "aced8f4570eace86647796fecae28138",
+    "mtime": 1788255018.77,
+    "ast_hash": "fa21863965fd2c3d0dc52886eeaad114",
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/components/ci-user-management-page.mdx": {
@@ -12630,13 +12630,98 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/type-definitions/ci-user-types.mdx": {
-    "mtime": 1788178397.01,
-    "ast_hash": "af3328ee79d901ed67b78d79854dc45e",
+    "mtime": 1788255018.83,
+    "ast_hash": "ca4c9008ab85fc070a98ba6cf162d329",
     "semantic_hash": ""
   },
   "apps/template/src/custom/dev/seeder/data/users/users.json": {
-    "mtime": 1788178396.95,
+    "mtime": 1788241787.79,
     "ast_hash": "7ce6baefed0a7a875834209494f3ce46",
+    "semantic_hash": ""
+  },
+  "packages/aws/__tests__/backend/root-user-bootstrap.test.ts": {
+    "mtime": 1788240595.45,
+    "ast_hash": "16e6b0a415f2aedac97ff489f8333179",
+    "semantic_hash": ""
+  },
+  "packages/aws/src/lib/cognito-user/services/helpers/ci-list-cognito-user-groups.ts": {
+    "mtime": 1788240019.72,
+    "ast_hash": "86309a0e961e362cbff6b9707f2cf709",
+    "semantic_hash": ""
+  },
+  "packages/core/src/lib/auth/ci-administrator-authority.ts": {
+    "mtime": 1788241133.92,
+    "ast_hash": "1c7320d46ec35b1c9e1ab4c28006f414",
+    "semantic_hash": ""
+  },
+  "packages/core/src/types/auth-types/CiAdministratorAuthority.ts": {
+    "mtime": 1788241133.83,
+    "ast_hash": "a659053001c103cdaf5707c1547718d1",
+    "semantic_hash": ""
+  },
+  "packages/ui/__tests__/hydration-safe-date-formatting.test.ts": {
+    "mtime": 1788241099.3,
+    "ast_hash": "80cc4e990674a2e9713e72f41274a0a6",
+    "semantic_hash": ""
+  },
+  "apps/template/src/app/(system)/dashboard/administrators/page.tsx": {
+    "mtime": 1788243061.0,
+    "ast_hash": "9cbbe38c2ef25a256810ea95dad86288",
+    "semantic_hash": ""
+  },
+  "apps/template/src/kernel/server/api/system/user/app-user-management-authority.ts": {
+    "mtime": 1788243091.7,
+    "ast_hash": "ec9ec37d28a5dabc98d7d4a28433128f",
+    "semantic_hash": ""
+  },
+  "packages/aws/__tests__/backend/emberguard-access-handlers.test.ts": {
+    "mtime": 1788243054.72,
+    "ast_hash": "15e05c785334e486721e1260e3e8a057",
+    "semantic_hash": ""
+  },
+  "packages/aws/src/server/backend/handlers/cognito-handlers/ci-cognito-user-mutation-guard.ts": {
+    "mtime": 1788243099.28,
+    "ast_hash": "4e2333ce12c10f545a57829569ed1adb",
+    "semantic_hash": ""
+  },
+  "packages/aws/__tests__/backend/cognito-user-mutation-guard.test.ts": {
+    "mtime": 1788243115.6,
+    "ast_hash": "bba6c028beb76eb3dee744136f21c595",
+    "semantic_hash": ""
+  },
+  "packages/ui/__tests__/user-management.test.ts": {
+    "mtime": 1788242290.7,
+    "ast_hash": "1254db3144bfc38b2e563a31d9d20a87",
+    "semantic_hash": ""
+  },
+  "packages/aws/src/server/backend/resources/auth/policy.ts": {
+    "mtime": 1788250879.08,
+    "ast_hash": "a9208ca8e578bf6dbd63a26fa41f3de0",
+    "semantic_hash": ""
+  },
+  "apps/template/amplify/backend/__tests__/user-seeder.test.ts": {
+    "mtime": 1788255193.68,
+    "ast_hash": "1dddc0399dc266836a6bd3aa01afcfab",
+    "semantic_hash": ""
+  },
+  "packages/aws/__tests__/backend/aws-json.test.ts": {
+    "mtime": 1788255040.52,
+    "ast_hash": "63fc652a8868109420d6f3b99f383ec9",
+    "semantic_hash": ""
+  },
+  "packages/aws/src/lib/appsync/ci-aws-json.ts": {
+    "mtime": 1788254910.91,
+    "ast_hash": "28af3b44176a8eb5e49032757804e6d9",
+    "semantic_hash": ""
+  },
+  "packages/aws/src/lib/appsync/index.ts": {
+    "mtime": 1788254911.0,
+    "ast_hash": "1c99c492e5b49cf1ca25324511e60cd3",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/api-reference/shared-apis/ci-aws-json.mdx": {
+    "mtime": 1788254995.65,
+    "ast_hash": "9ac02c82f28983e5c269d12ac696b893",
     "semantic_hash": ""
   }
 }

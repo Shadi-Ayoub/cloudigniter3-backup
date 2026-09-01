@@ -2,6 +2,8 @@ import { Emberguard } from "@cloudigniter/emberguard";
 import type { CiAwsEmberguardDatabase } from "@cloudigniter/emberguard/providers/aws";
 import {
   CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
+  CI_ROOT_USER_IDENTITY_GROUP,
+  CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE,
   ciResponseError,
   ciResponseOk,
 } from "@cloudigniter/core/lib";
@@ -41,7 +43,7 @@ async function createEmberguard(): Promise<Emberguard | CiResponse> {
   if (!tableName) {
     return await ciResponseError(
       500,
-      `${CI_ENV.CI_EMBERGUARD_ACCESS_TABLE_NAME} is not configured.`
+      `${CI_ENV.CI_EMBERGUARD_ACCESS_TABLE_NAME} is not configured.`,
     );
   }
 
@@ -97,7 +99,7 @@ function stableSerialize(value: unknown): string {
     return `{${Object.entries(value)
       .sort(([left], [right]) => left.localeCompare(right))
       .map(
-        ([key, nested]) => `${JSON.stringify(key)}:${stableSerialize(nested)}`
+        ([key, nested]) => `${JSON.stringify(key)}:${stableSerialize(nested)}`,
       )
       .join(",")}}`;
   }
@@ -107,26 +109,26 @@ function stableSerialize(value: unknown): string {
 /** Throws when a non-super administrator changes a platform-owned catalog entry. */
 function assertCoreCatalogUnchanged(
   current: CiAccessControlDefinition,
-  next: CiAccessControlDefinition
+  next: CiAccessControlDefinition,
 ): void {
   for (const coreDomain of CI_DEFAULT_ACCESS_CONTROL_DEFINITION.domains) {
     const currentDomain = current.domains.find(
-      (item) => item.id === coreDomain.id
+      (item) => item.id === coreDomain.id,
     );
     const nextDomain = next.domains.find((item) => item.id === coreDomain.id);
     if (stableSerialize(currentDomain) !== stableSerialize(nextDomain)) {
       throw new Error(
-        `Only system-super-admin can change core domain "${coreDomain.id}".`
+        `Only system-super-admin can change core domain "${coreDomain.id}".`,
       );
     }
   }
 
   for (const coreResource of CI_DEFAULT_ACCESS_CONTROL_DEFINITION.resources) {
     const currentResource = current.resources.find(
-      (item) => item.id === coreResource.id
+      (item) => item.id === coreResource.id,
     );
     const nextResource = next.resources.find(
-      (item) => item.id === coreResource.id
+      (item) => item.id === coreResource.id,
     );
     const withoutActions = (resource: typeof currentResource) =>
       resource ? { ...resource, actions: undefined } : undefined;
@@ -135,19 +137,19 @@ function assertCoreCatalogUnchanged(
       stableSerialize(withoutActions(nextResource))
     ) {
       throw new Error(
-        `Only system-super-admin can change core resource "${coreResource.id}".`
+        `Only system-super-admin can change core resource "${coreResource.id}".`,
       );
     }
     for (const coreAction of coreResource.actions) {
       const currentAction = currentResource?.actions.find(
-        (item) => item.id === coreAction.id
+        (item) => item.id === coreAction.id,
       );
       const nextAction = nextResource?.actions.find(
-        (item) => item.id === coreAction.id
+        (item) => item.id === coreAction.id,
       );
       if (stableSerialize(currentAction) !== stableSerialize(nextAction)) {
         throw new Error(
-          `Only system-super-admin can change core action "${coreResource.id}.${coreAction.id}".`
+          `Only system-super-admin can change core action "${coreResource.id}.${coreAction.id}".`,
         );
       }
     }
@@ -158,14 +160,14 @@ function assertCoreCatalogUnchanged(
     const nextRole = next.roles.find((item) => item.id === coreRole.id);
     if (stableSerialize(currentRole) !== stableSerialize(nextRole)) {
       throw new Error(
-        `Only system-super-admin can change core role "${coreRole.id}".`
+        `Only system-super-admin can change core role "${coreRole.id}".`,
       );
     }
   }
 }
 
 export function ciCreateEmberguardAccessHandler(
-  operation: CiEmberguardOperation
+  operation: CiEmberguardOperation,
 ) {
   return async (event: CiAppSyncResolverEvent): Promise<CiResponse> => {
     try {
@@ -189,12 +191,12 @@ export function ciCreateEmberguardAccessHandler(
         case "setDefinition": {
           const definition = getRecord<CiAccessControlDefinition>(
             input,
-            "definition"
+            "definition",
           );
           if (!getIdentityGroups(event).includes("system-super-admin")) {
             assertCoreCatalogUnchanged(
               await emberguard.loadDefinition(),
-              definition
+              definition,
             );
           }
           await emberguard.saveDefinition(definition);
@@ -213,12 +215,30 @@ export function ciCreateEmberguardAccessHandler(
           const assignment = getRecord<
             Parameters<Emberguard["putRoleAssignment"]>[0]
           >(input, "assignment");
+          const identityGroups = getIdentityGroups(event);
           if (
             assignment.roleId === "system-super-admin" &&
-            !getIdentityGroups(event).includes("system-super-admin")
+            !identityGroups.includes("system-super-admin")
           ) {
             throw new Error(
-              "Only system-super-admin can grant the system-super-admin role."
+              "Only system-super-admin can grant the system-super-admin role.",
+            );
+          }
+          if (
+            assignment.roleId === CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE &&
+            !identityGroups.includes(CI_ROOT_USER_IDENTITY_GROUP)
+          ) {
+            throw new Error(
+              "Only the Root User can grant the system-super-admin-manager role.",
+            );
+          }
+          if (
+            assignment.roleId === CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE &&
+            (assignment.scope.kind !== "system" ||
+              assignment.propagation !== "exact")
+          ) {
+            throw new Error(
+              "The system-super-admin-manager role requires exact system scope.",
             );
           }
           await emberguard.putRoleAssignment(assignment);
@@ -231,12 +251,21 @@ export function ciCreateEmberguardAccessHandler(
           const existing = (
             await emberguard.listRoleAssignments({ subjectId })
           ).find((assignment) => assignment.id === assignmentId);
+          const identityGroups = getIdentityGroups(event);
           if (
             existing?.roleId === "system-super-admin" &&
-            !getIdentityGroups(event).includes("system-super-admin")
+            !identityGroups.includes("system-super-admin")
           ) {
             throw new Error(
-              "Only system-super-admin can revoke the system-super-admin role."
+              "Only system-super-admin can revoke the system-super-admin role.",
+            );
+          }
+          if (
+            existing?.roleId === CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE &&
+            !identityGroups.includes(CI_ROOT_USER_IDENTITY_GROUP)
+          ) {
+            throw new Error(
+              "Only the Root User can revoke the system-super-admin-manager role.",
             );
           }
           await emberguard.deleteRoleAssignment({

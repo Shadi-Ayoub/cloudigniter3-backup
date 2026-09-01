@@ -3,6 +3,7 @@ import type { CiBreadcrumbItem } from "@cloudigniter/core/types";
 export const dashboardBreadcrumbChildren: CiBreadcrumbItem[] = [
   { label: "Security", href: "/dashboard/security" },
   { label: "Users", href: "/dashboard/users" },
+  { label: "Administrators", href: "/dashboard/administrators" },
   { label: "Resources Catalog", href: "/dashboard/resources" },
   { label: "Appearance", href: "/dashboard/theme" },
   { label: "Tenants", href: "/dashboard/tenants" },

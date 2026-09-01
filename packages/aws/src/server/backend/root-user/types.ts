@@ -29,6 +29,7 @@ export type CiBootstrapRootUserResult = {
   cognitoSub: string;
   profileOwner: string;
   groups: readonly string[];
+  isRootUser: true;
   cognitoUserCreated: boolean;
   passwordSet: boolean;
 };

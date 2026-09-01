@@ -14,6 +14,8 @@ const {
 
 /** Cognito groups allowed to cross the AppSync user-administration boundary. */
 export const CI_COGNITO_USER_ADMIN_GROUPS = [
+  "admin",
+  "super-admin",
   "system-admin",
   "system-super-admin",
 ] as const;

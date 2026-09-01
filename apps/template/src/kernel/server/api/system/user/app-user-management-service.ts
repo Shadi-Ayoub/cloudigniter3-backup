@@ -1,6 +1,10 @@
 import "server-only";
 
-import { ciParseGraphqlResponse } from "@cloudigniter/core/lib";
+import {
+  CI_ROOT_USER_IDENTITY_GROUP,
+  ciParseGraphqlResponse,
+  ciResolvePrimaryRole,
+} from "@cloudigniter/core/lib";
 import type {
   CICreateUserInput,
   CIDeleteUserInput,
@@ -15,6 +19,10 @@ import type {
   CiResourceDeletionMetadata,
   CiSecurityStoredRoleAssignment,
 } from "@cloudigniter/core/types";
+import {
+  ciDeserializeAwsJson,
+  ciSerializeUserProfileAwsJsonFields,
+} from "@cloudigniter/aws/lib";
 import type {
   CICognitoUser,
   CICognitoUsersPage,
@@ -43,6 +51,7 @@ type UserProfileModel = {
   address?: unknown;
   extensions?: unknown;
   roles?: Array<string | null> | null;
+  isRootUser?: boolean | null;
   status: string;
   statusChange?: unknown;
   deletionState: string;
@@ -67,34 +76,49 @@ function assertNoModelErrors(
   errors: readonly { message?: string | null }[] | undefined,
 ): void {
   if (errors?.length) {
-    throw new Error(errors[0]?.message ?? "User Profile request failed.");
+    const message = errors[0]?.message ?? "User Profile request failed.";
+    if (
+      message.includes("field that is not defined for input object type") ||
+      message.includes("FieldUndefined")
+    ) {
+      throw new Error(
+        `${message} The deployed Amplify UserProfile schema is older than this application. Deploy/regenerate the current backend outputs, then retry.`,
+      );
+    }
+    throw new Error(message);
   }
 }
 
-function isDeleted(value: unknown): value is CiResourceDeletionMetadata {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "state" in value &&
-    value.state === "deleted"
-  );
+function decodeDeletion(
+  value: unknown,
+): CiResourceDeletionMetadata | undefined {
+  const decoded = ciDeserializeAwsJson(value);
+  return typeof decoded === "object" &&
+    decoded !== null &&
+    "state" in decoded &&
+    decoded.state === "deleted"
+    ? (decoded as CiResourceDeletionMetadata)
+    : undefined;
 }
 
-function isStatusChange(value: unknown): value is CIUserStatusChange {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "changedAt" in value &&
-    typeof value.changedAt === "string" &&
-    "changedBy" in value &&
-    typeof value.changedBy === "string" &&
-    "reason" in value &&
-    typeof value.reason === "string"
-  );
+function decodeStatusChange(value: unknown): CIUserStatusChange | undefined {
+  const decoded = ciDeserializeAwsJson(value);
+  return typeof decoded === "object" &&
+    decoded !== null &&
+    "changedAt" in decoded &&
+    typeof decoded.changedAt === "string" &&
+    "changedBy" in decoded &&
+    typeof decoded.changedBy === "string" &&
+    "reason" in decoded &&
+    typeof decoded.reason === "string"
+    ? (decoded as CIUserStatusChange)
+    : undefined;
 }
 
 function toProfile(record: UserProfileModel | undefined): CIUserProfile {
   if (!record) return {};
+  const address = ciDeserializeAwsJson(record.address);
+  const extensions = ciDeserializeAwsJson(record.extensions);
   return {
     ...(record.displayName ? { displayName: record.displayName } : {}),
     ...(record.title ? { title: record.title } : {}),
@@ -109,11 +133,13 @@ function toProfile(record: UserProfileModel | undefined): CIUserProfile {
     ...(record.bio ? { bio: record.bio } : {}),
     ...(record.birthDate ? { birthDate: record.birthDate } : {}),
     ...(record.gender ? { gender: record.gender } : {}),
-    ...(record.address && typeof record.address === "object"
-      ? { address: record.address as CIUserProfile["address"] }
+    ...(address && typeof address === "object" && !Array.isArray(address)
+      ? { address: address as CIUserProfile["address"] }
       : {}),
-    ...(record.extensions && typeof record.extensions === "object"
-      ? { extensions: record.extensions as Record<string, unknown> }
+    ...(extensions &&
+    typeof extensions === "object" &&
+    !Array.isArray(extensions)
+      ? { extensions: extensions as Record<string, unknown> }
       : {}),
   };
 }
@@ -141,15 +167,37 @@ function toUser(
   const userAssignments = assignments
     .filter((assignment) => assignment.subjectId === identity.id)
     .map(toAssignment);
+  const persistedRoles = (record?.roles ?? []).filter(
+    (role): role is string => typeof role === "string",
+  );
+  const identityRoles = identity.groups
+    .map((group) => group.id)
+    .filter((role) => role !== CI_ROOT_USER_IDENTITY_GROUP);
   const roles = Array.from(
-    new Set([
-      ...(record?.roles ?? []).filter(
-        (role): role is string => typeof role === "string",
-      ),
-      ...userAssignments.map((assignment) => assignment.roleId),
-    ]),
-  ).sort();
-  const profile = toProfile(record);
+    new Set(identityRoles.length ? identityRoles : persistedRoles),
+  );
+  const storedProfile = toProfile(record);
+  const profile: CIUserProfile = {
+    ...storedProfile,
+    ...(identity.givenName
+      ? { givenName: identity.givenName }
+      : storedProfile.givenName
+        ? { givenName: storedProfile.givenName }
+        : {}),
+    ...(identity.middleName
+      ? { middleName: identity.middleName }
+      : storedProfile.middleName
+        ? { middleName: storedProfile.middleName }
+        : {}),
+    ...(identity.familyName
+      ? { familyName: identity.familyName }
+      : storedProfile.familyName
+        ? { familyName: storedProfile.familyName }
+        : {}),
+  };
+  const isRootUser =
+    identity.isRootUser === true || record?.isRootUser === true;
+  const primaryRole = ciResolvePrimaryRole(roles);
   const displayName =
     profile.displayName?.trim() ||
     [
@@ -167,6 +215,8 @@ function toUser(
         identity.status === "UNCONFIRMED"
       ? "invited"
       : "active";
+  const statusChange = decodeStatusChange(record?.statusChange);
+  const deletion = decodeDeletion(record?.deletion);
 
   return {
     id: identity.id,
@@ -175,17 +225,18 @@ function toUser(
     ...(identity.emailVerified !== undefined
       ? { emailVerified: identity.emailVerified }
       : {}),
+    ...(profile.givenName ? { givenName: profile.givenName } : {}),
+    ...(profile.familyName ? { familyName: profile.familyName } : {}),
     displayName,
     ...(profile.avatarUrl ? { avatarUrl: profile.avatarUrl } : {}),
     status,
-    ...(isStatusChange(record?.statusChange)
-      ? { statusChange: record.statusChange }
-      : {}),
+    ...(statusChange ? { statusChange } : {}),
     identityProvider: identity.identityProvider,
+    ...(primaryRole ? { primaryRole } : {}),
     roles,
     assignments: userAssignments,
-    ...(roles.includes("system-super-admin") ? { protected: true } : {}),
-    ...(isDeleted(record?.deletion) ? { deletion: record.deletion } : {}),
+    ...(isRootUser ? { isRootUser: true } : {}),
+    ...(deletion ? { deletion } : {}),
     ...(identity.createdAt ? { createdAt: identity.createdAt } : {}),
     ...(identity.updatedAt ? { updatedAt: identity.updatedAt } : {}),
     detailLevel,
@@ -212,6 +263,10 @@ function toMissingCognitoIdentity(record: UserProfileModel): CICognitoUser {
       kind: "native",
     },
     attributes: {},
+    groups: (record.roles ?? [])
+      .filter((role): role is string => typeof role === "string")
+      .map((id) => ({ id })),
+    isRootUser: record.isRootUser === true,
     ...(record.createdAt ? { createdAt: record.createdAt } : {}),
     ...(record.updatedAt ? { updatedAt: record.updatedAt } : {}),
   };
@@ -276,8 +331,8 @@ export async function appListUserRecords(
   const users = identities
     .filter((identity) =>
       deletionState === "deleted"
-        ? isDeleted(profilesById.get(identity.id)?.deletion)
-        : !isDeleted(profilesById.get(identity.id)?.deletion),
+        ? Boolean(decodeDeletion(profilesById.get(identity.id)?.deletion))
+        : !decodeDeletion(profilesById.get(identity.id)?.deletion),
     )
     .map((identity) =>
       toUser(identity, profilesById.get(identity.id), assignments),
@@ -288,7 +343,8 @@ export async function appListUserRecords(
       ...profiles
         .filter(
           (profile) =>
-            !identityIds.has(profile.userId) && isDeleted(profile.deletion),
+            !identityIds.has(profile.userId) &&
+            Boolean(decodeDeletion(profile.deletion)),
         )
         .map((profile) =>
           toUser(toMissingCognitoIdentity(profile), profile, assignments),
@@ -357,7 +413,7 @@ export async function appCreateUserRecord(
   const profile = input.profile ?? {};
   try {
     const created = await appServerClient.models.UserProfile.create(
-      {
+      ciSerializeUserProfileAwsJsonFields({
         userId: identity.id,
         username: identity.username,
         email: identity.email,
@@ -369,21 +425,21 @@ export async function appCreateUserRecord(
         displayName:
           profile.displayName ||
           `${input.givenName} ${input.familyName}`.trim(),
-        title: profile.title,
+        ...(profile.title ? { title: profile.title } : {}),
         givenName: input.givenName,
-        middleName: input.middleName,
+        ...(input.middleName ? { middleName: input.middleName } : {}),
         familyName: input.familyName,
-        avatarUrl: profile.avatarUrl,
-        avatarKey: profile.avatarKey,
-        phoneNumber: profile.phoneNumber,
-        locale: profile.locale,
-        timeZone: profile.timeZone,
-        bio: profile.bio,
-        birthDate: profile.birthDate,
-        gender: profile.gender,
+        ...(profile.avatarUrl ? { avatarUrl: profile.avatarUrl } : {}),
+        ...(profile.avatarKey ? { avatarKey: profile.avatarKey } : {}),
+        ...(profile.phoneNumber ? { phoneNumber: profile.phoneNumber } : {}),
+        ...(profile.locale ? { locale: profile.locale } : {}),
+        ...(profile.timeZone ? { timeZone: profile.timeZone } : {}),
+        ...(profile.bio ? { bio: profile.bio } : {}),
+        ...(profile.birthDate ? { birthDate: profile.birthDate } : {}),
+        ...(profile.gender ? { gender: profile.gender } : {}),
         address: profile.address,
         extensions: profile.extensions,
-      },
+      }),
       { authMode: "userPool" },
     );
     assertNoModelErrors(created.errors);
@@ -460,26 +516,28 @@ export async function appUpdateUserRecord(
   }
   const profile = input.profile ?? {};
   const updated = await appServerClient.models.UserProfile.update(
-    {
+    ciSerializeUserProfileAwsJsonFields({
       userId: input.userId,
-      email: input.email?.trim().toLowerCase(),
-      displayName: profile.displayName,
-      title: profile.title,
-      givenName: input.givenName,
-      middleName: input.middleName,
-      familyName: input.familyName,
-      avatarUrl: profile.avatarUrl,
-      avatarKey: profile.avatarKey,
-      phoneNumber: profile.phoneNumber,
-      locale: profile.locale,
-      timeZone: profile.timeZone,
-      bio: profile.bio,
-      birthDate: profile.birthDate,
-      gender: profile.gender,
+      ...(input.email?.trim()
+        ? { email: input.email.trim().toLowerCase() }
+        : {}),
+      ...(profile.displayName ? { displayName: profile.displayName } : {}),
+      ...(profile.title ? { title: profile.title } : {}),
+      ...(input.givenName ? { givenName: input.givenName } : {}),
+      ...(input.middleName ? { middleName: input.middleName } : {}),
+      ...(input.familyName ? { familyName: input.familyName } : {}),
+      ...(profile.avatarUrl ? { avatarUrl: profile.avatarUrl } : {}),
+      ...(profile.avatarKey ? { avatarKey: profile.avatarKey } : {}),
+      ...(profile.phoneNumber ? { phoneNumber: profile.phoneNumber } : {}),
+      ...(profile.locale ? { locale: profile.locale } : {}),
+      ...(profile.timeZone ? { timeZone: profile.timeZone } : {}),
+      ...(profile.bio ? { bio: profile.bio } : {}),
+      ...(profile.birthDate ? { birthDate: profile.birthDate } : {}),
+      ...(profile.gender ? { gender: profile.gender } : {}),
       address: profile.address,
       extensions: profile.extensions,
-      roles: input.roles,
-    },
+      ...(input.roles ? { roles: input.roles } : {}),
+    }),
     { authMode: "userPool" },
   );
   assertNoModelErrors(updated.errors);
@@ -507,7 +565,11 @@ export async function appSetUserStatus(
     reason: input.reason.trim(),
   };
   const updated = await appServerClient.models.UserProfile.update(
-    { userId: input.userId, status: input.status, statusChange },
+    ciSerializeUserProfileAwsJsonFields({
+      userId: input.userId,
+      status: input.status,
+      statusChange,
+    }),
     { authMode: "userPool" },
   );
   assertNoModelErrors(updated.errors);
@@ -537,7 +599,11 @@ export async function appDeleteUserRecord(
     reason: input.reason.trim(),
   };
   const updated = await appServerClient.models.UserProfile.update(
-    { userId: input.userId, deletion, deletionState: "deleted" },
+    ciSerializeUserProfileAwsJsonFields({
+      userId: input.userId,
+      deletion,
+      deletionState: "deleted",
+    }),
     { authMode: "userPool" },
   );
   assertNoModelErrors(updated.errors);
@@ -547,7 +613,7 @@ export async function appRestoreUserRecord(
   input: CIRestoreUserInput,
 ): Promise<void> {
   const current = await requireProfile(input.userId);
-  if (!isDeleted(current.deletion)) {
+  if (!decodeDeletion(current.deletion)) {
     throw new Error("Only a deleted user can be restored.");
   }
   if (!input.reason.trim()) throw new Error("A reason is required.");
@@ -565,7 +631,11 @@ export async function appRestoreUserRecord(
     requireGraphqlOk(ciParseGraphqlResponse(response, true));
   }
   const updated = await appServerClient.models.UserProfile.update(
-    { userId: input.userId, deletion: null, deletionState: "active" },
+    ciSerializeUserProfileAwsJsonFields({
+      userId: input.userId,
+      deletion: null,
+      deletionState: "active",
+    }),
     { authMode: "userPool" },
   );
   assertNoModelErrors(updated.errors);
@@ -575,7 +645,7 @@ export async function appPurgeUserRecord(
   input: CIPurgeUserInput,
 ): Promise<void> {
   const current = await requireProfile(input.userId);
-  if (!isDeleted(current.deletion)) {
+  if (!decodeDeletion(current.deletion)) {
     throw new Error("Only a deleted user can be permanently deleted.");
   }
   if (!input.reason.trim()) throw new Error("A reason is required.");

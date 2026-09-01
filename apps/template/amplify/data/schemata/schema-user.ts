@@ -32,6 +32,7 @@ const schemaUser = {
         .authorization((allow) => [
           allow.ownerDefinedIn("profileOwner").to(["read"]),
           allow.group("admin"),
+          allow.group("super-admin"),
           allow.group("system-admin"),
           allow.group("system-super-admin"),
         ]),
@@ -40,6 +41,7 @@ const schemaUser = {
         .authorization((allow) => [
           allow.ownerDefinedIn("profileOwner").to(["read"]),
           allow.group("admin"),
+          allow.group("super-admin"),
           allow.group("system-admin"),
           allow.group("system-super-admin"),
         ]),
@@ -48,6 +50,7 @@ const schemaUser = {
         .authorization((allow) => [
           allow.ownerDefinedIn("profileOwner").to(["read"]),
           allow.group("admin"),
+          allow.group("super-admin"),
           allow.group("system-admin"),
           allow.group("system-super-admin"),
         ]),
@@ -73,6 +76,7 @@ const schemaUser = {
         .authorization((allow) => [
           allow.ownerDefinedIn("profileOwner").to(["read"]),
           allow.group("admin"),
+          allow.group("super-admin"),
           allow.group("system-admin"),
           allow.group("system-super-admin"),
         ]),
@@ -82,6 +86,7 @@ const schemaUser = {
         .authorization((allow) => [
           allow.ownerDefinedIn("profileOwner").to(["read"]),
           allow.group("admin"),
+          allow.group("super-admin"),
           allow.group("system-admin"),
           allow.group("system-super-admin"),
         ]),
@@ -92,8 +97,22 @@ const schemaUser = {
         .authorization((allow) => [
           allow.ownerDefinedIn("profileOwner").to(["read"]),
           allow.group("admin"),
+          allow.group("super-admin"),
           allow.group("system-admin"),
           allow.group("system-super-admin"),
+        ]),
+      /**
+       * Read-only projection of the reserved Cognito Root marker. The
+       * deployment bootstrap owns this value; profile clients cannot mutate it.
+       */
+      isRootUser: a
+        .boolean()
+        .authorization((allow) => [
+          allow.ownerDefinedIn("profileOwner").to(["read"]),
+          allow.group("admin").to(["read"]),
+          allow.group("super-admin").to(["read"]),
+          allow.group("system-admin").to(["read"]),
+          allow.group("system-super-admin").to(["read"]),
         ]),
       deletionState: a
         .string()
@@ -101,6 +120,7 @@ const schemaUser = {
         .authorization((allow) => [
           allow.ownerDefinedIn("profileOwner").to(["read"]),
           allow.group("admin"),
+          allow.group("super-admin"),
           allow.group("system-admin"),
           allow.group("system-super-admin"),
         ]),
@@ -110,6 +130,7 @@ const schemaUser = {
         .authorization((allow) => [
           allow.ownerDefinedIn("profileOwner").to(["read"]),
           allow.group("admin"),
+          allow.group("super-admin"),
           allow.group("system-admin"),
           allow.group("system-super-admin"),
         ]),
@@ -119,6 +140,7 @@ const schemaUser = {
         .authorization((allow) => [
           allow.ownerDefinedIn("profileOwner").to(["read"]),
           allow.group("admin"),
+          allow.group("super-admin"),
           allow.group("system-admin"),
           allow.group("system-super-admin"),
         ]),
@@ -132,6 +154,7 @@ const schemaUser = {
     .authorization((allow) => [
       allow.ownerDefinedIn("profileOwner").to(["read", "update"]),
       allow.group("admin"),
+      allow.group("super-admin"),
       allow.group("system-admin"),
       allow.group("system-super-admin"),
     ]),

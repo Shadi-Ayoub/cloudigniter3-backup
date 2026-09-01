@@ -1,8 +1,8 @@
 import {
-  ciCreateAuthorizationSubject,
   ciCreateAuthorizer,
-  ciCreateRoleAssignments,
   ciCanAccessDeveloperTools,
+  ciGlobalAccessScope,
+  ciIsAdministratorRole,
   ciSystemAccessScope,
 } from "@cloudigniter/core/lib";
 import { CiPage } from "@cloudigniter/next/client";
@@ -10,7 +10,10 @@ import { CiUserManagementPage } from "@cloudigniter/ui/client";
 import {
   appBootstrap,
   appCreateSecurityAdministration,
+  appCreateUserManagementAuthorizationSubject,
+  appIsUserAssignmentActive,
   appListUserRecords,
+  appResolveAdministratorActor,
 } from "@/kernel/server";
 import { dashboardBreadcrumbChildren } from "../breadcrumb-menu";
 import {
@@ -27,30 +30,38 @@ import { testUsersSeeder } from "@/custom/dev/seeder";
 export default async function UsersPage() {
   const context = await appBootstrap();
   const security = appCreateSecurityAdministration(context);
-  const definition = await security.loadDefinition();
-  const subject = ciCreateAuthorizationSubject(
-    {
-      id: context.auth.user.id ?? "anonymous",
-      authenticated: context.auth.user.authenticated,
-    },
-    ciCreateRoleAssignments(
-      context.auth.user.roles,
-      ciSystemAccessScope(),
-      "exact",
-    ),
+  const [definition, assignments] = await Promise.all([
+    security.loadDefinition(),
+    security.loadAssignments(),
+  ]);
+  const subject = appCreateUserManagementAuthorizationSubject(
+    context,
+    assignments,
   );
   const authorizer = ciCreateAuthorizer(definition);
-  const can = (action: string) =>
-    authorizer.can({
-      subject,
-      resource: "identity.users",
-      action,
-      scope: ciSystemAccessScope(),
-    });
+  const can = (action: string) => {
+    return [ciSystemAccessScope(), ciGlobalAccessScope()].some((scope) =>
+      authorizer.can({
+        subject,
+        resource: "identity.users",
+        action,
+        scope,
+      }),
+    );
+  };
   if (!can("read")) throw new Error("You cannot view User administration.");
-  const assignments = await security.loadAssignments();
-  const users = await appListUserRecords(assignments);
+  const users = (await appListUserRecords(assignments)).filter(
+    (user) =>
+      !user.isRootUser &&
+      ![
+        ...user.roles,
+        ...user.assignments
+          .filter((item) => appIsUserAssignmentActive(item))
+          .map((item) => item.roleId),
+      ].some((role) => ciIsAdministratorRole(role)),
+  );
   const canAssignRoles = can("assign-role");
+  const administratorActor = appResolveAdministratorActor(context, assignments);
   const developerToolsAccess = ciCanAccessDeveloperTools({
     envMode: context.env.mode,
     actor: {
@@ -89,23 +100,30 @@ export default async function UsersPage() {
         users={users}
         providerLabel="Amazon Cognito"
         roleOptions={definition.roles
-          .filter(
-            (role) =>
-              role.id !== "system-super-admin" ||
-              security.capabilities.canManageCore,
-          )
+          .filter((role) => !ciIsAdministratorRole(role.id))
+          .map((role) => ({ id: role.id, label: role.title }))
+          .sort((a, b) => a.label.localeCompare(b.label))}
+        assignmentRoleOptions={definition.roles
+          .filter((role) => !ciIsAdministratorRole(role.id))
           .map((role) => ({ id: role.id, label: role.title }))
           .sort((a, b) => a.label.localeCompare(b.label))}
         localeOptions={localeOptions}
         timeZoneOptions={timeZoneOptions}
+        locale={context.config.appResolvedCoreConfig.locale}
+        actor={{
+          userId: context.auth.user.id ?? "anonymous",
+          roles: [...administratorActor.effectiveRoleIds],
+          isRootUser: administratorActor.isRootUser,
+          canManageSystemSuperAdmins: false,
+        }}
         capabilities={{
           canCreate: can("create") && canAssignRoles,
           canUpdate: can("update"),
           canDelete: can("delete"),
           canAssignRoles,
+          canDelegateSystemSuperAdminManagement: false,
           canEmail: can("email") || can("update"),
-          canImpersonate:
-            context.auth.user.roles.includes("system-super-admin"),
+          canImpersonate: can("impersonate"),
         }}
         onCreate={createUserAction}
         onUpdate={updateUserAction}

@@ -1,25 +1,10 @@
 // https://docs.amplify.aws/nextjs/build-a-backend/auth/grant-access-to-auth-resources/
 
-import {
-  type AuthAccessDefinition,
-  type AuthAccessBuilder,
-  type AmplifyAuthProps,
-} from "@aws-amplify/backend-auth";
+import { type AmplifyAuthProps } from "@aws-amplify/backend-auth";
+import { CI_COGNITO_ROOT_USER_GROUP } from "@cloudigniter/aws/lib";
 import { CI_CORE_ROLES_BY_PRECEDENCE } from "@cloudigniter/core/lib";
 
 import { customBackendAuth } from "../custom/backend";
-
-import { CI_CORE_AMPLIFY_FUNCTION_RESOURCES } from "../backend/ci-core-amplify-manifest";
-
-const {
-  createCognitoUserHandler,
-  deleteCognitoUserHandler,
-  getCognitoUserHandler,
-  listCognitoUsersHandler,
-  setCognitoUserEnabledHandler,
-  setCognitoUserPasswordHandler,
-  updateCognitoUserHandler,
-} = CI_CORE_AMPLIFY_FUNCTION_RESOURCES;
 
 // import { createUserHandler } from '../functions/user/create-user/resource';
 // import { createUser, getUser } from '../functions/user';
@@ -27,6 +12,9 @@ const {
 // import { postConfirmation } from './post-confirmation/resource';
 
 const customGroups = customBackendAuth.groups ?? [];
+const applicationGroups = customGroups.filter(
+  (group) => group !== CI_COGNITO_ROOT_USER_GROUP,
+);
 
 // const coreBackendAuth = { ...customBackendAuth };
 const backendAuth: AmplifyAuthProps = {
@@ -38,7 +26,12 @@ const backendAuth: AmplifyAuthProps = {
     // postConfirmation,
     ...customBackendAuth.triggers,
   },
-  groups: [...CI_CORE_ROLES_BY_PRECEDENCE, ...customGroups], // Cognito assigns lower (higher-priority) precedence to earlier groups.
+  // The Root marker is last because it identifies an account; it is not an application role.
+  groups: [
+    ...CI_CORE_ROLES_BY_PRECEDENCE,
+    ...applicationGroups,
+    CI_COGNITO_ROOT_USER_GROUP,
+  ], // Cognito assigns lower (higher-priority) precedence to earlier groups.
   senders: customBackendAuth.senders,
   userAttributes: { ...customBackendAuth.userAttributes },
   multifactor: customBackendAuth.multifactor,
@@ -46,38 +39,4 @@ const backendAuth: AmplifyAuthProps = {
   access: customBackendAuth.access,
 };
 
-// const coreBackendAuthAccess = customBackendAuthAccess;
-const backendAuthAccess = (allow: AuthAccessBuilder) => {
-  const accessArray: AuthAccessDefinition[] = [
-    allow.resource(deleteCognitoUserHandler).to(["deleteUser"]),
-    // allow.resource(listCognitoUsers).to(['listUsers']),
-    allow.resource(getCognitoUserHandler).to(["getUser"]),
-    allow.resource(listCognitoUsersHandler).to(["listUsers"]),
-    allow
-      .resource(createCognitoUserHandler)
-      .to(["createUser", "addUserToGroup"]),
-    allow.resource(createCognitoUserHandler).to(["getUser"]),
-    allow.resource(setCognitoUserPasswordHandler).to(["setUserPassword"]),
-    allow
-      .resource(setCognitoUserEnabledHandler)
-      .to(["disableUser", "enableUser"]),
-    allow
-      .resource(updateCognitoUserHandler)
-      .to([
-        "updateUserAttributes",
-        "listGroupsForUser",
-        "addUserToGroup",
-        "removeUserFromGroup",
-      ]),
-    // allow.resource(deleteCognitoUser).to(['disableUser']),
-    // allow.resource(deleteCognitoUser).to(['deleteUser']),
-
-    // allow.resource(getUser).to(['getUser']),
-    // allow.resource(createUserHandler).to(['createUser']),
-    // allow.resource(createUser).to(['getUser']),
-  ];
-
-  return accessArray;
-};
-
-export { backendAuth, backendAuthAccess };
+export { backendAuth };

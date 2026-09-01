@@ -15,6 +15,12 @@ Use this reference when rendering chips, selectors, menus of domain values, tree
 - Select-based table-filter options are alphabetized unless their definition sets `sortOptions: false` for semantic order.
 - Provider-backed sources receive the same default sorting query and remain responsible for applying it authoritatively.
 
+## Page-header banners
+
+- Treat header chips as concise context, not as a restatement of permissions. Do not add generic `Management enabled` or `Read only` chips; action availability already communicates capability.
+- Every chip in a page-header banner must include a recognizable icon and a filled semantic background (`default`, `secondary`, or another semantic surface). Avoid outline-only, text-only chips in this location.
+- Prefer stable facts such as record count, provider, lifecycle context, or development-seeder availability. Keep provider identity in the banner instead of repeating the same chip in every table row.
+
 ## Newly created resources
 
 - Use `CiNewResourceBadge` for recently created resources rather than page-local badge markup or timers.

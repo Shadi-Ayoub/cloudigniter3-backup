@@ -46,6 +46,11 @@
         "user": {
           "precedence": 5
         }
+      },
+      {
+        "cloudigniter-root-user": {
+          "precedence": 6
+        }
       }
     ],
     "mfa_configuration": "NONE",
@@ -476,6 +481,13 @@
               "isRequired": false,
               "attributes": []
             },
+            "title": {
+              "name": "title",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
             "givenName": {
               "name": "givenName",
               "isArray": false,
@@ -501,6 +513,13 @@
               "name": "avatarUrl",
               "isArray": false,
               "type": "AWSURL",
+              "isRequired": false,
+              "attributes": []
+            },
+            "avatarKey": {
+              "name": "avatarKey",
+              "isArray": false,
+              "type": "String",
               "isRequired": false,
               "attributes": []
             },
@@ -581,6 +600,13 @@
               "isRequired": false,
               "attributes": [],
               "isArrayNullable": false
+            },
+            "isRootUser": {
+              "name": "isRootUser",
+              "isArray": false,
+              "type": "Boolean",
+              "isRequired": false,
+              "attributes": []
             },
             "deletionState": {
               "name": "deletionState",
@@ -685,6 +711,20 @@
                     "allow": "groups",
                     "groups": [
                       "admin"
+                    ],
+                    "operations": [
+                      "create",
+                      "update",
+                      "delete",
+                      "read"
+                    ]
+                  },
+                  {
+                    "groupClaim": "cognito:groups",
+                    "provider": "userPools",
+                    "allow": "groups",
+                    "groups": [
+                      "super-admin"
                     ],
                     "operations": [
                       "create",

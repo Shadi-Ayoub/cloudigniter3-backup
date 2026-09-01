@@ -567,27 +567,14 @@ export function CiDataEntityManager<TRecord extends RowData>({
     title,
     description,
     titleBadge: tableOverrides.titleBadge ?? "Data management",
-    titleChips:
-      tableOverrides.titleChips ??
-      [
-        data
-          ? {
-              id: "records",
-              label: `${data.length} ${
-                data.length === 1 ? "record" : "records"
-              }`,
-            }
-          : { id: "source", label: "Provider-backed" },
-        {
-          id: "management",
-          label:
-            onCreate || onUpdate || onDelete
-              ? "Management enabled"
-              : "Read only",
-          variant:
-            onCreate || onUpdate || onDelete ? "default" : "secondary",
-        },
-      ],
+    titleChips: tableOverrides.titleChips ?? [
+      data
+        ? {
+            id: "records",
+            label: `${data.length} ${data.length === 1 ? "record" : "records"}`,
+          }
+        : { id: "source", label: "Provider-backed" },
+    ],
     data,
     source,
     definition,

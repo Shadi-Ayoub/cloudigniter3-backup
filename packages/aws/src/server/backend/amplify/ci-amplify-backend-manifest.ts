@@ -112,6 +112,16 @@ type CiAmplifyDataTable = {
 
 const CI_RESERVED_AMPLIFY_BACKEND_KEYS = new Set(["auth", "data"]);
 
+function ciGetFunctionResourceGroup(resource: object): string | undefined {
+  const props = (resource as { props?: unknown }).props;
+  if (!props || typeof props !== "object") return undefined;
+
+  const resourceGroupName = (props as { resourceGroupName?: unknown })
+    .resourceGroupName;
+
+  return typeof resourceGroupName === "string" ? resourceGroupName : "function";
+}
+
 /** Validate an Amplify manifest while preserving its inferred resource types. */
 export function ciDefineAmplifyBackendManifest<
   const TManifest extends CiAmplifyBackendManifest,
@@ -145,6 +155,18 @@ export function ciDefineAmplifyBackendManifest<
         );
       }
       functionOwners.set(functionId, featureId);
+
+      const functionResourceGroup = ciGetFunctionResourceGroup(
+        binding.resource,
+      );
+      if (
+        functionResourceGroup !== undefined &&
+        functionResourceGroup !== feature.resourceGroupName
+      ) {
+        throw new Error(
+          `[ciDefineAmplifyBackendManifest] Function "${functionId}" is assigned to resource group "${feature.resourceGroupName}" by feature "${featureId}", but defineFunction uses "${functionResourceGroup}".`,
+        );
+      }
 
       if (!binding.backendKey.trim()) {
         throw new Error(

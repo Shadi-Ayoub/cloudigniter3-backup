@@ -1,4 +1,5 @@
 import type { CiSecurityIdentityGroup } from "@cloudigniter/emberguard/types";
+import { CI_COGNITO_ROOT_USER_GROUP } from "../cognito-user/utility/ci-map-cognito-user";
 
 /** Returns true when a value is a non-null object. */
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -15,7 +16,7 @@ function readPrecedence(value: unknown): number | undefined {
 
 /** Converts Amplify/Cognito group output into provider-neutral group metadata. */
 export function ciResolveAwsCognitoIdentityGroups(
-  amplifyOutputs: unknown
+  amplifyOutputs: unknown,
 ): CiSecurityIdentityGroup[] {
   if (!isRecord(amplifyOutputs) || !isRecord(amplifyOutputs.auth)) {
     return [];
@@ -29,10 +30,16 @@ export function ciResolveAwsCognitoIdentityGroups(
     if (!isRecord(group)) {
       return [];
     }
-    return Object.entries(group).map(([id, config]) => ({
-      id,
-      provider: "AWS",
-      precedence: readPrecedence(config),
-    }));
+    return Object.entries(group).flatMap(([id, config]) =>
+      id === CI_COGNITO_ROOT_USER_GROUP
+        ? []
+        : [
+            {
+              id,
+              provider: "AWS",
+              precedence: readPrecedence(config),
+            },
+          ],
+    );
   });
 }
