@@ -107,7 +107,7 @@ GSI1SK = CI#ORG_UNIT#<path>#<orgUnitId>
 GSI2PK = CI#SYSTEM#ORG_UNIT_CHILDREN#<parentId-or-ROOT>
 ```
 
-The canonical record stores immutable `parentId`, `slug`, `path`, root-to-parent `ancestorOrgUnitIds`, attached `tenantIds`, direct `childIds`, status, and optimistic `version`.
+The canonical record stores `parentId`, an immutable `slug`, the canonical `path`, root-to-parent `ancestorOrgUnitIds`, attached `tenantIds`, direct `childIds`, status, and optimistic `version`.
 
 Every attached tenant also has a direct routing item:
 
@@ -116,6 +116,6 @@ PK = CI#SYSTEM#TENANT#<tenantId>#ORG_UNITS
 SK = CI#PATH#<canonical-path>
 ```
 
-Routing performs a strongly consistent `GetItem` on this attachment. The management tree uses the existing bounded `GSI1` query. Creation condition-checks active tenant records, writes the canonical record and attachments, and updates the parent in one transaction. Updates retain parent and slug, check the expected version, validate parent/child tenant-set containment with base-table reads, then replace attachments transactionally.
+Routing performs a strongly consistent `GetItem` on this attachment. The management tree uses the existing bounded `GSI1` query. Creation condition-checks active tenant records, writes the canonical record and attachments, and updates the parent in one transaction. Updates preserve the slug, check the expected version, and validate parent/child Tenant-set containment with base-table reads. Re-parenting is an explicit bounded subtree transaction that updates paths, predecessor IDs, parent child lists, and Tenant routing attachments together.
 
 This design keeps tenant and Org Unit control-plane data in one operational boundary and adds no table or index. Storing only `tenantIds` on the canonical node would be cheaper per write but would require a scan or fan-out for tenant/path routing; duplicating whole nodes per tenant would make shared identity and updates inconsistent. The attachment projection is therefore the cheapest safe option for the required access patterns.

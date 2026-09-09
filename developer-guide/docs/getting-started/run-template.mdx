@@ -1,0 +1,139 @@
+---
+title: Run the Application Template
+description: Download the Next.js and AWS template, install its npm packages, create your sandbox, and start CloudIgniter.
+sidebar_position: 2
+---
+
+# Run the Application Template
+
+Start your application from **[cloudigniter/template-next-aws](https://github.com/cloudigniter/template-next-aws)**.
+The template includes the application files and configuration; CloudIgniter packages are installed from npm.
+
+Complete [Before you start: AWS preparation](./before-you-start) first. You need the `developer1` AWS SSO profile,
+Git, pnpm, and a supported Node.js LTS release. Use Node.js 22 or 24 and the pnpm version specified in the
+downloaded template’s `package.json`.
+
+## Download the template
+
+Clone the template into a directory for your application:
+
+```bash
+git clone https://github.com/cloudigniter/template-next-aws.git my-cloudigniter-app
+cd my-cloudigniter-app
+```
+
+You can also download and extract the repository archive. In that case, open a terminal in the extracted
+application directory. Run all commands below from the directory containing the application’s `package.json`.
+
+## Install the packages
+
+```bash
+pnpm install
+```
+
+This installs the template’s dependencies, including its `@cloudigniter/*` packages, from npm. Wait for
+installation to complete before configuring or starting the application.
+
+## Configure your development environment
+
+Set these values in `.env.local` at the application root:
+
+```env
+CI_ENV_MODE=development
+NEXT_PUBLIC_CI_ENV_MODE=development
+```
+
+Set the backend environment in `amplify/.env`:
+
+```env
+CI_ENV_MODE=development
+```
+
+These settings enable development behavior in the application and backend. The AWS account, permissions, and
+Region should already be prepared as described in [Before you start](./before-you-start).
+
+## Sign in and create your AWS sandbox
+
+Sign in with the **Developer 1** profile before creating or updating the sandbox:
+
+```bash
+pnpm sso
+```
+
+This runs `aws sso login --profile developer1`. Complete the browser sign-in, then confirm your AWS target:
+
+```bash
+aws sts get-caller-identity --profile developer1
+aws configure get region --profile developer1
+```
+
+Check the account ID and Region, then create the backend:
+
+```bash
+pnpm sandbox
+```
+
+The command runs `ampx sandbox --once --profile developer1`. It deploys the application’s backend to your AWS
+development account and writes `amplify_outputs.json` at the application root. Wait for successful deployment
+before continuing. This command exits after one deployment; it does not keep watching backend files.
+
+If AWS requests account initialization, complete the
+[Amplify preparation step](./before-you-start#5-prepare-the-account-for-amplify), then retry. Keep the generated
+outputs with this application so it connects to the sandbox you just created. See
+[AWS’s cloud sandbox guide](https://docs.amplify.aws/react/deploy-and-host/sandbox-environments/setup/) for sandbox behavior.
+
+When the SSO session expires, run `pnpm sso` again. Run `pnpm sandbox` again after changing your backend definitions.
+
+## Initialize your application administrator
+
+For a new sandbox, create the initial authorization catalog and Root User before signing in. First have your AWS
+administrator apply the [initialization permissions](./before-you-start#cloudigniter-initialization-permissions)
+using the resource identifiers in the generated outputs.
+
+Set your application administrator’s details in `amplify/custom/root-user.json`, replacing the sample values:
+
+```json
+{
+  "email": "admin@example.com",
+  "givenName": "Application",
+  "familyName": "Administrator"
+}
+```
+
+Then run:
+
+```bash
+pnpm sso
+pnpm bootstrap:access-control
+pnpm bootstrap:root
+```
+
+For a new Root User, enter and confirm its password when prompted in the terminal. Use that email and password
+to sign in to CloudIgniter. The application’s Root User is separate from both the AWS account root user and the
+Developer 1 SSO identity. See [User administration](/docs/users-management/intro#administrator-hierarchy-and-root-user)
+for how application administrators and roles work.
+
+## Start the application
+
+```bash
+pnpm dev
+```
+
+Open the local URL printed in the terminal, usually `http://localhost:3000`, and visit `/login`. Sign in with the
+application administrator account you initialized above. Keep this terminal running while you use the application.
+
+## Check the result
+
+Your first run is ready when:
+
+1. The sandbox deployment has completed and `amplify_outputs.json` exists in your application directory.
+2. The login page loads at the local URL.
+3. Your application administrator can sign in and open `/dashboard`.
+
+If the sandbox reports expired credentials, repeat `pnpm sso`. For a deployment permission error, verify the
+account assignment and grants in [AWS preparation](./before-you-start#3-grant-sandbox-deployment-permissions).
+If sign-in fails, use the application administrator credentials from initialization and confirm the application
+is using the outputs from the intended sandbox.
+
+Continue with [Architecture and concepts](/docs/architecture/overview), then build your
+[first application page](/docs/building-features/first-page).

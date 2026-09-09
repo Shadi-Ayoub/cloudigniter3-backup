@@ -18,3 +18,4 @@ export {
   useCiMonacoTheme,
   useCiSmartFormField,
 } from "./hooks";
+export { CiSmartForm } from "./CiSmartForm";

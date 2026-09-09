@@ -1,10 +1,10 @@
 ---
 title: Testing helpers and seeders
-description: Use current CloudIgniter gates, key builders, fixture loaders, and garbage collectors.
+description: Use CloudIgniter gates, key builders, fixture loaders, and garbage collectors.
 sidebar_position: 4
 ---
 
-Use these supported APIs instead of environment-suffixed keys or table scans:
+Use these APIs to gate developer tools, load fixtures, and build table keys:
 
 | Need | API |
 | --- | --- |
@@ -13,9 +13,8 @@ Use these supported APIs instead of environment-suffixed keys or table scans:
 | Build CloudIgniter table keys | `ciBuildTableKey()` / `ciBuildTableKeys()` from `@cloudigniter/core/lib` |
 | Load application fixture JSON | `ciReadJsonSeederData()` from `@cloudigniter/core/server` |
 
-`assertNotLive()`, `scopePkWithEnv()`, and `cleanupEnvironment()` are not current public CloudIgniter APIs. Do not
-recreate those legacy patterns. A generic scan or suffix-based batch delete can cross capability, tenant, or
-ownership boundaries.
+Keep fixture cleanup bounded by explicit ownership markers. A generic scan or suffix-based batch delete can
+cross capability, tenant, or ownership boundaries.
 
 Each seeder needs explicit provenance and a bounded garbage-collection access pattern. Tenant seeders write one
 marker per tenant into the seeder's base-table partition and clean up through a strongly consistent `Query` plus

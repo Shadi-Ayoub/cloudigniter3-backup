@@ -425,7 +425,7 @@
     "semantic_hash": ""
   },
   "apps/template/amplify_outputs.json": {
-    "mtime": 1788252679.15,
+    "mtime": 1788257641.18,
     "ast_hash": "5b124d5b174b686e877fcd8e93b70034",
     "semantic_hash": ""
   },
@@ -450,8 +450,8 @@
     "semantic_hash": ""
   },
   "apps/template/package.json": {
-    "mtime": 1788029188.06,
-    "ast_hash": "98b881fb65328b052cce41d050e7e340",
+    "mtime": 1788967327.33,
+    "ast_hash": "3a2aab6b1386c37a28df6f74efeca99f",
     "semantic_hash": ""
   },
   "apps/template/postcss.config.mjs": {
@@ -505,8 +505,8 @@
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/ci-internal/org-unit-lookup/route.ts": {
-    "mtime": 1782384564.5,
-    "ast_hash": "973a6842bf2e44b4fd859dfac3c0e6fb",
+    "mtime": 1788967164.03,
+    "ast_hash": "9da7b2f0f4d1d5f8ec394ecd4ebc75ff",
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/ci-internal/tenant-lookup/route.ts": {
@@ -1025,8 +1025,8 @@
     "semantic_hash": ""
   },
   "apps/template/src/kernel/server/api/system/org-unit/app-get-org-unit-lookup-by-path.ts": {
-    "mtime": 1787996983.24,
-    "ast_hash": "433e9b15639fcd56ea104eadbeb67f5c",
+    "mtime": 1788967163.92,
+    "ast_hash": "0b18ae63223372610081a06949001a01",
     "semantic_hash": ""
   },
   "apps/template/src/kernel/server/api/system/seeder/app-seed.ts": {
@@ -1535,13 +1535,13 @@
     "semantic_hash": ""
   },
   "developer-guide/docusaurus.config.ts": {
-    "mtime": 1788109382.88,
-    "ast_hash": "98995877e685dd1014d77c96af6ff0e6",
+    "mtime": 1788971417.72,
+    "ast_hash": "e6b895b79a3fdb9b6a679d5183858f1d",
     "semantic_hash": ""
   },
   "developer-guide/package.json": {
-    "mtime": 1788106930.28,
-    "ast_hash": "47f1164599c20ddce7fd81519a94ae9b",
+    "mtime": 1788971166.71,
+    "ast_hash": "ff1ac22ac7cd93e3b4ad92429e31fc13",
     "semantic_hash": ""
   },
   "developer-guide/postcss.config.js": {
@@ -1555,8 +1555,8 @@
     "semantic_hash": ""
   },
   "developer-guide/sidebars.ts": {
-    "mtime": 1786077508.63,
-    "ast_hash": "a544e514dffd9fb7f8294018cb92ba9e",
+    "mtime": 1788970785.24,
+    "ast_hash": "9699f4979c57ed884a1fa6c1bda739c4",
     "semantic_hash": ""
   },
   "developer-guide/src/components/CodeBlock/index.tsx": {
@@ -2860,8 +2860,8 @@
     "semantic_hash": ""
   },
   "packages/core/package.json": {
-    "mtime": 1788082665.55,
-    "ast_hash": "2e4a65724c95c853be8a949b36638258",
+    "mtime": 1788918779.65,
+    "ast_hash": "c8b61a54a4cd52feb8fb21bce1e75b56",
     "semantic_hash": ""
   },
   "packages/core/rollup.config.js": {
@@ -3355,8 +3355,8 @@
     "semantic_hash": ""
   },
   "packages/core/src/lib/index.ts": {
-    "mtime": 1788240582.76,
-    "ast_hash": "b906e4eb8d8c17c430f46e8737871aac",
+    "mtime": 1788916012.92,
+    "ast_hash": "f5cc6ff50225601cde36b383072dbecf",
     "semantic_hash": ""
   },
   "packages/core/src/lib/kernel/defaults.ts": {
@@ -3400,8 +3400,8 @@
     "semantic_hash": ""
   },
   "packages/core/src/lib/org-unit/constants.ts": {
-    "mtime": 1785043324.65,
-    "ast_hash": "7bd48e77ff02fc2ed445769b086771ae",
+    "mtime": 1788967164.08,
+    "ast_hash": "6fefa30ea9d739f7eaf9dde0025160d1",
     "semantic_hash": ""
   },
   "packages/core/src/lib/org-unit/index.ts": {
@@ -4430,8 +4430,8 @@
     "semantic_hash": ""
   },
   "packages/core/src/types/index.ts": {
-    "mtime": 1788240582.64,
-    "ast_hash": "2b069a20607b80bc137d243aad2dfecb",
+    "mtime": 1788916012.99,
+    "ast_hash": "5ca3a7aadf9ba7e7e5a3e4d6ce46f847",
     "semantic_hash": ""
   },
   "packages/core/src/types/kernel-types/CiCoreConfig.ts": {
@@ -5990,8 +5990,8 @@
     "semantic_hash": ""
   },
   "packages/next/src/modules/dev/dev-beacon/client/components/sections/diagnostics/cards/general/components/CiDevBeaconResolutionCheckupModal.tsx": {
-    "mtime": 1785741388.72,
-    "ast_hash": "6d0cb9730915dfece6262873b4fa2ff0",
+    "mtime": 1788967864.32,
+    "ast_hash": "1586117b4f170f1d2187e2d199617597",
     "semantic_hash": ""
   },
   "packages/next/src/modules/dev/dev-beacon/client/components/sections/diagnostics/cards/general/components/CiDevBeaconResolutionCheckupSegment.tsx": {
@@ -6325,8 +6325,8 @@
     "semantic_hash": ""
   },
   "packages/next/src/server/org-unit/helpers/ci-lookup-org-unit.ts": {
-    "mtime": 1787996714.05,
-    "ast_hash": "e70662138173a419c8cd851f6b34a43f",
+    "mtime": 1788967163.97,
+    "ast_hash": "f3c55d4015fae5f5d1e5ed875496dcd8",
     "semantic_hash": ""
   },
   "packages/next/src/server/org-unit/helpers/ci-resolve-org-unit.ts": {
@@ -7610,8 +7610,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/smart-form/components/CiSmartInputField.tsx": {
-    "mtime": 1783842406.13,
-    "ast_hash": "1147c044d010baa2cdbbcf24b490f166",
+    "mtime": 1788919318.27,
+    "ast_hash": "1e00b31aaf40140638f4821e0307efbb",
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/smart-form/components/CiSmartJsonEditorField.tsx": {
@@ -7620,8 +7620,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/smart-form/components/CiSmartTextareaField.tsx": {
-    "mtime": 1783842428.01,
-    "ast_hash": "9ffbf91aaf1b58e85d496b2e658c93b2",
+    "mtime": 1788918459.51,
+    "ast_hash": "d46fe048520d592aedc8c1a8c5d8b09c",
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/smart-form/components/index.ts": {
@@ -7650,8 +7650,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/smart-form/index.ts": {
-    "mtime": 1780156746.82,
-    "ast_hash": "61d349f5901da9e42789cba0f1dae6ee",
+    "mtime": 1788916277.95,
+    "ast_hash": "97f6a00013aaa1f733ba4aac2b7a2ac3",
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/spinners/CiSpinner.tsx": {
@@ -7820,8 +7820,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/index.ts": {
-    "mtime": 1788164397.91,
-    "ast_hash": "bc14ea761529e571a8ef8094fdf8fef2",
+    "mtime": 1788916278.02,
+    "ast_hash": "9f509e9b277c01b8933c566291a5cd37",
     "semantic_hash": ""
   },
   "packages/ui/src/client/navigation/ci-navigate-with-loader.tsx": {
@@ -7920,8 +7920,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/lib/index.ts": {
-    "mtime": 1783756623.35,
-    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "mtime": 1788916278.07,
+    "ast_hash": "fef1ea4f0c205294b4f3a34ea5852d65",
     "semantic_hash": ""
   },
   "packages/ui/src/server/dashboard/CiDashboardCard.tsx": {
@@ -8085,8 +8085,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/types/index.ts": {
-    "mtime": 1788164397.85,
-    "ast_hash": "782655f869b6afe39f56e67e997cdf9a",
+    "mtime": 1788918459.58,
+    "ast_hash": "774e65c71c1af0ce693e83b6a2860a74",
     "semantic_hash": ""
   },
   "packages/ui/src/types/shadcn-types/index.ts": {
@@ -8130,8 +8130,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/types/smart-form-types/index.ts": {
-    "mtime": 1780156746.91,
-    "ast_hash": "e95eb6e098d3fb27c0e609a70413fae8",
+    "mtime": 1788918459.59,
+    "ast_hash": "743a7531b74b80df79aad2f02e1f1291",
     "semantic_hash": ""
   },
   "packages/ui/src/types/spinner-types/CiPageSpinnerProps.ts": {
@@ -8295,13 +8295,13 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/authorization/ci-create-app-access-control.mdx": {
-    "mtime": 1786444973.1,
-    "ast_hash": "1f53c7cd68eb884004fb4f4479f4a99c",
+    "mtime": 1788970904.29,
+    "ast_hash": "4c78f1a925091d56c8137b84840adc62",
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/authorization/ci-create-app-authorizer.mdx": {
-    "mtime": 1786165182.65,
-    "ast_hash": "118915f29e99fb0c5968e0913e619f26",
+    "mtime": 1788970904.29,
+    "ast_hash": "12c2e5d4c5e579021a4b5c854801ae2a",
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/authorization/ci-create-authorization-subject.mdx": {
@@ -8320,8 +8320,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/authorization/ci-create-core-access-control.mdx": {
-    "mtime": 1786165182.65,
-    "ast_hash": "a05f959853676257ebb03276d0b1e7a6",
+    "mtime": 1788970904.28,
+    "ast_hash": "e1ee56cd3c481d0b0e0a4d4c5738d32a",
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/authorization/ci-create-role-assignment.mdx": {
@@ -8345,8 +8345,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/authorization/ci-define-access-control.mdx": {
-    "mtime": 1786165182.66,
-    "ast_hash": "30d291d4dcbb52fe0074d5883075c255",
+    "mtime": 1788970904.29,
+    "ast_hash": "d6711977820e52c6129c12d174e726ce",
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/authorization/ci-format-permission.mdx": {
@@ -8435,23 +8435,23 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/client-apis/call.mdx": {
-    "mtime": 1785824617.91,
-    "ast_hash": "76c5b3a7d400a1ccd6eecad9e4c8716c",
+    "mtime": 1788971417.71,
+    "ast_hash": "ef689740ebef89be3cc89fb1cbbc8706",
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/client-apis/notify.mdx": {
-    "mtime": 1781683627.72,
-    "ast_hash": "3238d5d64dc54e6f3db78a7afb81d354",
+    "mtime": 1788971417.71,
+    "ast_hash": "fadbf20be82993fafde65e7b640a8ff6",
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/components/Layout.mdx": {
-    "mtime": 1781683627.73,
-    "ast_hash": "575c4638eb53ac2766a552c19565cdac",
+    "mtime": 1788971000.76,
+    "ast_hash": "0081ee902e90783ff590f26152198ad6",
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/components/page.mdx": {
-    "mtime": 1788104408.32,
-    "ast_hash": "b51ff9b459de3e13a3f6f2a38ae7ecca",
+    "mtime": 1788971000.76,
+    "ast_hash": "12f072ad1e640c13ed6ad0032df7e76a",
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/http-data-apis/intro.mdx": {
@@ -8460,8 +8460,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/overview.mdx": {
-    "mtime": 1786872351.14,
-    "ast_hash": "3e124217f16536c2f31a9d8c3c201bd0",
+    "mtime": 1788971126.85,
+    "ast_hash": "9c7ff5092d61d4cb82928d13761c1600",
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/server-apis/intro.mdx": {
@@ -8475,8 +8475,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/toc.mdx": {
-    "mtime": 1788254995.75,
-    "ast_hash": "f9d13d284f393278fea9a426737aa92b",
+    "mtime": 1788971126.85,
+    "ast_hash": "0861416a74df0f9a429599fc7d63052b",
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/trace-diagnostic/intro.mdx": {
@@ -8485,223 +8485,223 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/type-definitions/CiExtendedConfig.mdx": {
-    "mtime": 1781683627.76,
-    "ast_hash": "08af83c11832ae6e9b35a463f261b78e",
+    "mtime": 1788971000.77,
+    "ast_hash": "a6cc14c509b33eb84ecc590607b97e48",
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/type-definitions/CiPageConfig.mdx": {
-    "mtime": 1781683627.76,
-    "ast_hash": "3391e2008db375e692b6e461a817df25",
+    "mtime": 1788971000.76,
+    "ast_hash": "fa275b00183e06280b1b4e327228da22",
     "semantic_hash": ""
   },
   "developer-guide/docs/api/appsync.mdx": {
-    "mtime": 1781683627.69,
-    "ast_hash": "0d8a2e65a11c4d625152d8cebd44fb52",
+    "mtime": 1788970736.42,
+    "ast_hash": "2c2d4c3f9a32f46461fa6d5831013792",
     "semantic_hash": ""
   },
   "developer-guide/docs/api/client-call-strategy.mdx": {
-    "mtime": 1787931264.82,
-    "ast_hash": "445aa9437debe93a1789c8558dfc0d60",
+    "mtime": 1788970736.43,
+    "ast_hash": "b1d31d173eeedd2ddb91d7d8a4e1d71d",
     "semantic_hash": ""
   },
   "developer-guide/docs/api/end-to-end.mdx": {
-    "mtime": 1781683627.69,
-    "ast_hash": "e0bd5e7e3132104c0d01b775c6462687",
+    "mtime": 1788970736.43,
+    "ast_hash": "7b28e9b0a272382b8064f0c9d36d3f3d",
     "semantic_hash": ""
   },
   "developer-guide/docs/api/error-handling-strategy.mdx": {
-    "mtime": 1781683627.69,
-    "ast_hash": "23941927fbdf9828c5f6e25a3d2e111f",
+    "mtime": 1788970736.43,
+    "ast_hash": "ae2f9066d7c69a75a42570f29e5e0531",
     "semantic_hash": ""
   },
   "developer-guide/docs/api/graphql-response.mdx.mdx": {
-    "mtime": 1781683627.69,
-    "ast_hash": "90e7b935623a43e4ea3703d5b1214306",
+    "mtime": 1788970736.43,
+    "ast_hash": "8ee8fe6e3bc2587a057196bc0d18d50e",
     "semantic_hash": ""
   },
   "developer-guide/docs/api/intro.mdx": {
-    "mtime": 1781683627.69,
-    "ast_hash": "8bfc03856795b80267ad347e5b416f14",
+    "mtime": 1788970736.43,
+    "ast_hash": "34530cc1f742d1cf36505bb38cb527f1",
     "semantic_hash": ""
   },
   "developer-guide/docs/api/lambda-handler-strategy.mdx": {
-    "mtime": 1787931264.74,
-    "ast_hash": "315da275fe89653518055cee2ef845d3",
+    "mtime": 1788970736.43,
+    "ast_hash": "9d5217dc3f08f75ce0724d7d59d2625c",
     "semantic_hash": ""
   },
   "developer-guide/docs/api/request.mdx": {
-    "mtime": 1787931264.68,
-    "ast_hash": "3152a865753d2e927403208c429248e3",
+    "mtime": 1788970736.43,
+    "ast_hash": "e81f5e42193612ec914a84e545f31715",
     "semantic_hash": ""
   },
   "developer-guide/docs/api/response.mdx": {
-    "mtime": 1781683627.7,
-    "ast_hash": "2948d4ebbf79d60624d19c78931eec1d",
+    "mtime": 1788970736.43,
+    "ast_hash": "0e4e476eac1232680bbdcc56c48bce4f",
     "semantic_hash": ""
   },
   "developer-guide/docs/api/route-handler-strategy.mdx": {
-    "mtime": 1781683627.7,
-    "ast_hash": "11abadd152f5de4d3e7720fe88be59e8",
+    "mtime": 1788970736.43,
+    "ast_hash": "b8b2c1d1e28f0a6e8f1f959d3dd160ad",
     "semantic_hash": ""
   },
   "developer-guide/docs/api/server-api-wrapper-strategy.mdx": {
-    "mtime": 1781683627.7,
-    "ast_hash": "89963230576e5eb604cac6980347adc4",
+    "mtime": 1788970736.43,
+    "ast_hash": "dc3bc9afaa4611144cc9246b95d25e7d",
     "semantic_hash": ""
   },
   "developer-guide/docs/api/summary.mdx": {
-    "mtime": 1781683627.7,
-    "ast_hash": "ccabe731c7c102bb96e8a6feb8882d4a",
+    "mtime": 1788970736.43,
+    "ast_hash": "cf8690a70432f75e132ce1058ff833ca",
     "semantic_hash": ""
   },
   "developer-guide/docs/api/toc.mdx": {
-    "mtime": 1781683627.7,
-    "ast_hash": "e41f9923e5cbc1cf4412b47ff29392be",
+    "mtime": 1788970736.43,
+    "ast_hash": "1c83bd5e6c75bee4ae66c35e46815524",
     "semantic_hash": ""
   },
   "developer-guide/docs/auth/authentication/authenticator-custom.mdx": {
-    "mtime": 1781683627.86,
-    "ast_hash": "a7182a060e827c97d69cdd0aae33baf8",
+    "mtime": 1788970736.43,
+    "ast_hash": "e9aac6b95d944122638c5816e071afd1",
     "semantic_hash": ""
   },
   "developer-guide/docs/aws-amplify-setup/folder-structure.mdx": {
-    "mtime": 1788165484.7,
-    "ast_hash": "41bbe6e300c2e952003d3a181ecf8510",
+    "mtime": 1788975997.92,
+    "ast_hash": "6c8ac9983fbc31d5bdb99e70fa8c0703",
     "semantic_hash": ""
   },
   "developer-guide/docs/aws-amplify-setup/intro.mdx": {
-    "mtime": 1786872137.69,
-    "ast_hash": "690541143261518749ab77b410df58a3",
+    "mtime": 1788979624.31,
+    "ast_hash": "6d7f6606d1ed25b5cb3e1d20662aa3ff",
     "semantic_hash": ""
   },
   "developer-guide/docs/bootstraping-cloudigniter/authenticator-setup.mdx": {
-    "mtime": 1781683627.88,
-    "ast_hash": "31eae9f1ff2c7a5021eb462a30a8f9c5",
+    "mtime": 1788970736.42,
+    "ast_hash": "1bba6d0a167643eff702aef30d4c5d25",
     "semantic_hash": ""
   },
   "developer-guide/docs/bootstraping-cloudigniter/client-error-handling.mdx": {
-    "mtime": 1781683627.88,
-    "ast_hash": "7653eabe33aab28c4d67a72db3bb3545",
+    "mtime": 1788970736.42,
+    "ast_hash": "3beee98585dcb46abce968b0165471c7",
     "semantic_hash": ""
   },
   "developer-guide/docs/bootstraping-cloudigniter/extensibility-checklist.mdx": {
-    "mtime": 1781683627.88,
-    "ast_hash": "565fe22f7bffb3f1d49216862ec09d64",
+    "mtime": 1788970736.42,
+    "ast_hash": "332b2c2e474aa4cbcd03586ff9cbb41a",
     "semantic_hash": ""
   },
   "developer-guide/docs/bootstraping-cloudigniter/framework-boot.mdx": {
-    "mtime": 1781683627.88,
-    "ast_hash": "90423f96651da7df97b6f652bde7b82b",
+    "mtime": 1788970736.42,
+    "ast_hash": "37b6859a8e55f634113b49e6cc396ae9",
     "semantic_hash": ""
   },
   "developer-guide/docs/bootstraping-cloudigniter/intro.mdx": {
-    "mtime": 1781683627.88,
-    "ast_hash": "7c255b78ae6cf42b584479c04c620a56",
+    "mtime": 1788970736.42,
+    "ast_hash": "1e09a0beb6eaff40d60f66058f09b4b9",
     "semantic_hash": ""
   },
   "developer-guide/docs/bootstraping-cloudigniter/layout-composition.mdx": {
-    "mtime": 1781683627.88,
-    "ast_hash": "090b0f736e54aa78668e5b57859dd5a6",
+    "mtime": 1788970736.42,
+    "ast_hash": "72f5c7e556305e63b389ffad8a1d9bd1",
     "semantic_hash": ""
   },
   "developer-guide/docs/bootstraping-cloudigniter/locale-resolution.mdx": {
-    "mtime": 1781683627.88,
-    "ast_hash": "9cb0a4609ac95cbc331fd584eb1bbc39",
+    "mtime": 1788970736.42,
+    "ast_hash": "f7ad9c1c8258964a7a1db13db1863ae5",
     "semantic_hash": ""
   },
   "developer-guide/docs/bootstraping-cloudigniter/page-bootstrapping/definitions.mdx": {
-    "mtime": 1781683627.89,
-    "ast_hash": "3a39eb8d9deea2617709c296e036600c",
+    "mtime": 1788970736.42,
+    "ast_hash": "0c9bb0898cf35a69e1bc37473f7c86f1",
     "semantic_hash": ""
   },
   "developer-guide/docs/bootstraping-cloudigniter/page-bootstrapping/intro.mdx": {
-    "mtime": 1781683627.89,
-    "ast_hash": "f3c3682360112a11b8f7327c97f9f440",
+    "mtime": 1788970736.42,
+    "ast_hash": "f55095b25467d99ab8eabe5f97a8d233",
     "semantic_hash": ""
   },
   "developer-guide/docs/bootstraping-cloudigniter/page-bootstrapping/page-bootstrapping.mdx": {
-    "mtime": 1781683627.89,
-    "ast_hash": "3de096a3a1dd1af59c132ef12ab44ab3",
+    "mtime": 1788970736.42,
+    "ast_hash": "e474848abc6031f34fd6364aa9d2bbbe",
     "semantic_hash": ""
   },
   "developer-guide/docs/bootstraping-cloudigniter/page-bootstrapping/page-client-wrapper.mdx": {
-    "mtime": 1781683627.9,
-    "ast_hash": "4102e2ec845ec328f8af13abcda32758",
+    "mtime": 1788970736.42,
+    "ast_hash": "f24799b6f1166d72f09bea08f21d9e33",
     "semantic_hash": ""
   },
   "developer-guide/docs/bootstraping-cloudigniter/page-bootstrapping/page.mdx": {
-    "mtime": 1781683627.9,
-    "ast_hash": "0265d2ef3e6e7148d6f502ab333f0930",
+    "mtime": 1788970736.42,
+    "ast_hash": "41af0d36ddeb35b85008b328fa4e8eef",
     "semantic_hash": ""
   },
   "developer-guide/docs/bootstraping-cloudigniter/root-bootstrapping.mdx": {
-    "mtime": 1781683627.9,
-    "ast_hash": "9f3567058d11ed471e9967e7bbb35da6",
+    "mtime": 1788970736.42,
+    "ast_hash": "1d1c9e50a1564c03aec7d686c5678446",
     "semantic_hash": ""
   },
   "developer-guide/docs/bootstraping-cloudigniter/styles-first-then-children.mdx": {
-    "mtime": 1781683627.9,
-    "ast_hash": "5ec6d24347ebb16a89820a978caa3a6c",
+    "mtime": 1788970736.42,
+    "ast_hash": "b17c17b88d77ed65f5dae4089574882e",
     "semantic_hash": ""
   },
   "developer-guide/docs/bootstraping-cloudigniter/theme-css-loading.mdx": {
-    "mtime": 1781683627.9,
-    "ast_hash": "0b86b39085d00d4be11f2d9630768bcc",
+    "mtime": 1788970736.42,
+    "ast_hash": "e20da06b9c0263d0e1c6f7ad603c9694",
     "semantic_hash": ""
   },
   "developer-guide/docs/client-feedback-system/intro.mdx": {
-    "mtime": 1781683627.91,
-    "ast_hash": "e130a87a6a2bfbbf2bab85adb104f5e6",
+    "mtime": 1788970736.44,
+    "ast_hash": "6ddccced82ab8197077f29edc6609c1c",
     "semantic_hash": ""
   },
   "developer-guide/docs/cloudigniter-api/api-calls-on-server.mdx": {
-    "mtime": 1781683627.92,
-    "ast_hash": "17fce107e654c5ed7f14686a91a5ffdb",
+    "mtime": 1788970736.43,
+    "ast_hash": "f214463f5c329c9b0e7c13ec982e9267",
     "semantic_hash": ""
   },
   "developer-guide/docs/cloudigniter-api/handlers.mdx": {
-    "mtime": 1785911030.94,
-    "ast_hash": "a26804d5e9a2843c45fa6cbabfcfd556",
+    "mtime": 1788970736.43,
+    "ast_hash": "0aa623a93c87abdcc91811f2a9edabf2",
     "semantic_hash": ""
   },
   "developer-guide/docs/cloudigniter-api/helper-utilities.mdx": {
-    "mtime": 1781683627.92,
-    "ast_hash": "028f8507c68a2736358b5144c3a64f4a",
+    "mtime": 1788970736.43,
+    "ast_hash": "a4986b98e129f78f7d3f09df592a073b",
     "semantic_hash": ""
   },
   "developer-guide/docs/cloudigniter-api/intro.mdx": {
-    "mtime": 1781683627.92,
-    "ast_hash": "e4055f89cd3b8d5806ed06b81c640ca1",
+    "mtime": 1788970736.43,
+    "ast_hash": "e485e3dd13e757059320f4428177bbab",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/authorization/catalog-and-permissions.mdx": {
-    "mtime": 1787069579.57,
-    "ast_hash": "36f3b673569e6b8bd81b31ecee61a320",
+    "mtime": 1788975997.9,
+    "ast_hash": "4765b81dd961d9f09ddecb114f98aec7",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/authorization/dynamodb-persistence.mdx": {
-    "mtime": 1787069657.28,
-    "ast_hash": "2cac024e77bf934bcda030d01f51711e",
+    "mtime": 1788976165.72,
+    "ast_hash": "2029866fe7ea15ffd2021681fcb76fe7",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/authorization/enforcing-access.mdx": {
-    "mtime": 1786522185.91,
-    "ast_hash": "8fbd1f6cb04d52874d1cc6b0b1ef68fc",
+    "mtime": 1788970904.32,
+    "ast_hash": "93680be4cea6418d848c900b4bac2a6e",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/authorization/overview.mdx": {
-    "mtime": 1786165209.44,
-    "ast_hash": "e381bf56ce8b47270dce0ba0eb1c1220",
+    "mtime": 1788975997.9,
+    "ast_hash": "21a0d3c03844be2fcb7467b6a1155e60",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/authorization/quick-start.mdx": {
-    "mtime": 1786444973.05,
-    "ast_hash": "025cb74801be93a3b1168233e1e7051a",
+    "mtime": 1788975997.9,
+    "ast_hash": "4b59f21eea4890235f3c31865b98944c",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/authorization/reference-and-checklist.mdx": {
-    "mtime": 1787069657.35,
-    "ast_hash": "53d6910a604ab8db8ef156ad244f7c5c",
+    "mtime": 1788975997.9,
+    "ast_hash": "f905e44da45ceef465a04a1b1fff8f4b",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/authorization/roles-and-precedence.mdx": {
@@ -8710,8 +8710,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/authorization/routes-and-ui.mdx": {
-    "mtime": 1786165182.63,
-    "ast_hash": "ef9f33496f77e9aff4ab935ec3cfc860",
+    "mtime": 1788970904.32,
+    "ast_hash": "3b17c44b09244e1f2ec074cc204757ea",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/authorization/scenarios.mdx": {
@@ -8720,23 +8720,23 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/authorization/scopes-and-assignments.mdx": {
-    "mtime": 1786444972.99,
-    "ast_hash": "3700c7a39d7d301eeeddc7387be7ae9e",
+    "mtime": 1788975997.91,
+    "ast_hash": "b81181cc78fb26272a3c1e4f6c6cda95",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/authorization/subjects-and-providers.mdx": {
-    "mtime": 1786444972.97,
-    "ast_hash": "ce7c2fd0f0a584ba6ed15c3a9226bd1e",
+    "mtime": 1788970904.32,
+    "ast_hash": "ca036b6a3ea350926a5c0141a7adcfc6",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/authorization/testing-and-troubleshooting.mdx": {
-    "mtime": 1786165182.63,
-    "ast_hash": "4bdad865bafb93f8b6d99c1d992dae08",
+    "mtime": 1788975997.91,
+    "ast_hash": "9dbf64fe70b3e8814b9d4c335d3dbf5c",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/bootstrap.mdx": {
-    "mtime": 1781683627.93,
-    "ast_hash": "5339a725a11fce28b13901e7c6e2c109",
+    "mtime": 1788970736.42,
+    "ast_hash": "99ece98547435505060f6c0f575af1b6",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/configurations/cloudigniter.config.ts.mdx": {
@@ -8745,18 +8745,18 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/intro.mdx": {
-    "mtime": 1785824546.68,
-    "ast_hash": "2661829700724493caf3f94f6cb0148a",
+    "mtime": 1788970736.42,
+    "ast_hash": "6810c6677aeb193149ba5b2cc5a0284f",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/middleware.mdx": {
-    "mtime": 1781683627.93,
-    "ast_hash": "7a364a6c569eff330dce1fdf7b3eb999",
+    "mtime": 1788970736.42,
+    "ast_hash": "5262c28a2b3a9d5d52ddee94b80f0aa2",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/multi-Tenancy/best-practices.mdx": {
-    "mtime": 1781683627.95,
-    "ast_hash": "5bd4919780a83aaae6e3cfad1daef5a5",
+    "mtime": 1788970736.44,
+    "ast_hash": "55203dae1d3d585a002a4189b3e404ea",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/multi-Tenancy/client-side.mdx": {
@@ -8770,33 +8770,33 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/multi-Tenancy/configuration/tenant-configuration.mdx": {
-    "mtime": 1781780446.91,
-    "ast_hash": "60e0bccf130ad2f9a662e96c6f3da6ef",
+    "mtime": 1788971206.97,
+    "ast_hash": "34b944e23de81f53187fce9160667c3a",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/multi-Tenancy/core-concepts.mdx": {
-    "mtime": 1787997364.52,
-    "ast_hash": "cdb31f2fbb1821e754aaad73b02931cf",
+    "mtime": 1788970904.23,
+    "ast_hash": "da9a96aaaa484841797a84e338dc3fe5",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/multi-Tenancy/core-concepts/tenant-context.mdx": {
-    "mtime": 1781780297.12,
-    "ast_hash": "8abf21adb48dad1ebbce2a2c85da48f8",
+    "mtime": 1788971206.97,
+    "ast_hash": "57088f11d8cd0da4f228d1591817193c",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/multi-Tenancy/core-concepts/tenant-definition.mdx": {
-    "mtime": 1781780049.16,
-    "ast_hash": "992f7c2b23c5ac7254953166df00865e",
+    "mtime": 1788970736.44,
+    "ast_hash": "f99eaeea013a6b603fcdb81f89067d96",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/multi-Tenancy/core-concepts/tenant-identity.mdx": {
-    "mtime": 1781780109.51,
-    "ast_hash": "d58563fc8d554a278db169251e38d353",
+    "mtime": 1788971206.97,
+    "ast_hash": "663fc991fadbf0bc24bbeb0a376e3ac1",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/multi-Tenancy/core-concepts/tenant-routing-mode.mdx": {
-    "mtime": 1781780241.88,
-    "ast_hash": "0b3810822a8b22c383d86b06be7c2459",
+    "mtime": 1788971206.97,
+    "ast_hash": "7114b7dc553f7e3a28e85024255c06c3",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/multi-Tenancy/core-concepts/tenant-scope.mdx": {
@@ -8805,58 +8805,58 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/multi-Tenancy/core-concepts/tenant-status.mdx": {
-    "mtime": 1781780146.89,
-    "ast_hash": "91bb5203c5a011ef92d3c4302c4c214e",
+    "mtime": 1788971206.97,
+    "ast_hash": "43d634f682177cd165b5df5ce2c7a800",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/multi-Tenancy/ddb-table-structure.mdx": {
-    "mtime": 1787997364.6,
-    "ast_hash": "b7a2479b8b429e2eab6cffb227e6b079",
+    "mtime": 1788970904.36,
+    "ast_hash": "dd3663477189beb12bc21858b1c2c8da",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/multi-Tenancy/intro.mdx": {
-    "mtime": 1781683627.95,
-    "ast_hash": "6d3f5bbc370ee731033106567e360311",
+    "mtime": 1788970904.23,
+    "ast_hash": "eb9d3907d579a5c4d9cce53a70568a33",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/multi-Tenancy/isolation-n-security.mdx": {
-    "mtime": 1781683627.95,
-    "ast_hash": "e3b644f32b656d0b0acab05a3db68dfa",
+    "mtime": 1788970736.44,
+    "ast_hash": "bffbfe5a892efddf2d239d37791f2ee7",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/multi-Tenancy/lifecycle-operations.mdx": {
-    "mtime": 1787983286.8,
-    "ast_hash": "b46eb655f1cecab6f98cb19e8b4b94c3",
+    "mtime": 1788976077.01,
+    "ast_hash": "6022f5326223d7ca10ee0bd6071591e8",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/multi-Tenancy/management-strategy.mdx": {
-    "mtime": 1781683627.95,
-    "ast_hash": "8627f4c2b940c09ce4a75929cd993565",
+    "mtime": 1788970736.44,
+    "ast_hash": "d9b74949d0959e9465d99af4dde033bb",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/multi-Tenancy/summary.mdx": {
-    "mtime": 1781683627.96,
-    "ast_hash": "8f496798d4abd1cdffac107a9de4f61e",
+    "mtime": 1788970736.44,
+    "ast_hash": "4f3d1f137f2e7f794e5c2d61aab3e3a5",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/multi-Tenancy/type-shapes.mdx": {
-    "mtime": 1786609235.79,
-    "ast_hash": "3a9657b72b523381592e298f4842fd62",
+    "mtime": 1788970736.44,
+    "ast_hash": "e54cb5f3d8e8ad5498b40922b3bf0a23",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/settings/registry.mdx": {
-    "mtime": 1781683627.94,
-    "ast_hash": "8e5a5577b77e189449505ac5a9b551b3",
+    "mtime": 1788970736.44,
+    "ast_hash": "85a11b75761afcf0558f6daf27a8c6e3",
     "semantic_hash": ""
   },
   "developer-guide/docs/developer-dashboard/intro.mdx": {
-    "mtime": 1781683627.97,
-    "ast_hash": "d53a28caa8bcca8b64d8911177ab0bec",
+    "mtime": 1788970736.44,
+    "ast_hash": "86acd8ba901121e50f7d5e1a8ec73e60",
     "semantic_hash": ""
   },
   "developer-guide/docs/developer-dashboard/trace-logging-system.mdx": {
-    "mtime": 1781683627.97,
-    "ast_hash": "1f9af5ed58657dd242ad834db21ab381",
+    "mtime": 1788970736.44,
+    "ast_hash": "871fcad3034aa12cd87c69aa1faa5543",
     "semantic_hash": ""
   },
   "developer-guide/docs/environment-modes/CI_ENV_MODE.mdx": {
@@ -8875,8 +8875,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/environment-modes/intro.mdx": {
-    "mtime": 1787931179.74,
-    "ast_hash": "b0094c8f424a98151a7a9625304630d4",
+    "mtime": 1788975997.9,
+    "ast_hash": "4be6d34f18399bb8d734a374cc843c04",
     "semantic_hash": ""
   },
   "developer-guide/docs/environment-modes/saving-env-mode.mdx": {
@@ -8890,73 +8890,73 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/environment-modes/supported-modes.mdx": {
-    "mtime": 1787931179.81,
-    "ast_hash": "2af5573d821b83b3fae64468812dd152",
+    "mtime": 1788976077.12,
+    "ast_hash": "3d69f92d4d00e3b4dc52a949858dac33",
     "semantic_hash": ""
   },
   "developer-guide/docs/error-handling/client-side-errors.mdx": {
-    "mtime": 1781683628.0,
-    "ast_hash": "401d00c26e187bdda8de88d88adda402",
+    "mtime": 1788970736.44,
+    "ast_hash": "7b172ace0ee39a21910523e1b605ca22",
     "semantic_hash": ""
   },
   "developer-guide/docs/error-handling/intro.mdx": {
-    "mtime": 1781683628.0,
-    "ast_hash": "630d3db08ec28887dfa5a0a17edfa46a",
+    "mtime": 1788970736.44,
+    "ast_hash": "f0676f65ac76b66f9cd7a5953ae00ac3",
     "semantic_hash": ""
   },
   "developer-guide/docs/error-handling/next-error-handling.mdx": {
-    "mtime": 1781683628.0,
-    "ast_hash": "53387a3714c4eff514b7dfa68a376e44",
+    "mtime": 1788970736.44,
+    "ast_hash": "785c12b4f81127f30fc85e9c954535ec",
     "semantic_hash": ""
   },
   "developer-guide/docs/error-handling/server-side-errors.mdx": {
-    "mtime": 1781683628.01,
-    "ast_hash": "a9977150c77263ac63966a76d2dc53f9",
+    "mtime": 1788970736.44,
+    "ast_hash": "9485977ab2c5b2b1a670933369fd543f",
     "semantic_hash": ""
   },
   "developer-guide/docs/handler-architecture/intro.mdx": {
-    "mtime": 1781683628.01,
-    "ast_hash": "1cb661536c5c4b185a46e04e52e1b20d",
+    "mtime": 1788970736.43,
+    "ast_hash": "4f8a692ef6b538c72b3b393a35c527ff",
     "semantic_hash": ""
   },
   "developer-guide/docs/internationalization/backend-setup.mdx": {
-    "mtime": 1781683628.02,
-    "ast_hash": "192a87c7ec93821c56fa6b897eb77a42",
+    "mtime": 1788970736.43,
+    "ast_hash": "a7c6c167a9dc70c28c90510180df4f4a",
     "semantic_hash": ""
   },
   "developer-guide/docs/internationalization/configurations.mdx": {
-    "mtime": 1781683628.02,
-    "ast_hash": "23caf8597c8d12820b1a124965001ddf",
+    "mtime": 1788970736.44,
+    "ast_hash": "e43d379250ee27172db0f3b2c9d133d8",
     "semantic_hash": ""
   },
   "developer-guide/docs/internationalization/custom-languages.mdx": {
-    "mtime": 1781683628.02,
-    "ast_hash": "222cf2e660b2f2b2f8e355d28faf9950",
+    "mtime": 1788970736.44,
+    "ast_hash": "259c1b70ba2044a591c33b3d4dd6b4fa",
     "semantic_hash": ""
   },
   "developer-guide/docs/internationalization/intro.mdx": {
-    "mtime": 1781683628.02,
-    "ast_hash": "650e51afb614a33f96cf03b938b2e955",
+    "mtime": 1788970736.44,
+    "ast_hash": "ce5e39e39f093642c84313c421d1e511",
     "semantic_hash": ""
   },
   "developer-guide/docs/internationalization/language-switcher.mdx": {
-    "mtime": 1781683628.02,
-    "ast_hash": "dc9b6c79fbc27ffce1318f57ebbb01ea",
+    "mtime": 1788970736.44,
+    "ast_hash": "7656960e3311a49911c8b4231ceec66e",
     "semantic_hash": ""
   },
   "developer-guide/docs/internationalization/rtl-support.mdx": {
-    "mtime": 1781683628.02,
-    "ast_hash": "26b9c97ba80772e777b4fe370f64b7f3",
+    "mtime": 1788970736.44,
+    "ast_hash": "727eadc184385f6808d24b32d0bf5e98",
     "semantic_hash": ""
   },
   "developer-guide/docs/intro.md": {
-    "mtime": 1781683628.03,
-    "ast_hash": "002da5328acc852697520c1fabcdbaa8",
+    "mtime": 1788979624.25,
+    "ast_hash": "ecca5e33776f6a49f17fb05ff22b8a55",
     "semantic_hash": ""
   },
   "developer-guide/docs/library/dynamodb/write-dynamodb-item.md": {
-    "mtime": 1785824682.68,
-    "ast_hash": "ddb4c3f7a23609a578047c47c85b7dcf",
+    "mtime": 1788970736.44,
+    "ast_hash": "9350c68800492afb9e6d629db546104f",
     "semantic_hash": ""
   },
   "developer-guide/docs/testing-strategy/env-modes-n-testing.mdx": {
@@ -8965,18 +8965,18 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/testing-strategy/helpers-utilities.mdx": {
-    "mtime": 1787931256.0,
-    "ast_hash": "cd101b9f0605f10df2207468e3a8c781",
+    "mtime": 1788975997.91,
+    "ast_hash": "04e8dbe499f4056fca68461b78dd68d5",
     "semantic_hash": ""
   },
   "developer-guide/docs/testing-strategy/intro.mdx": {
-    "mtime": 1781683628.05,
-    "ast_hash": "7172f058b2a83f2fe6b75e869c6b11ef",
+    "mtime": 1788971308.91,
+    "ast_hash": "970a156caa16d811f3e8f1727e4917f5",
     "semantic_hash": ""
   },
   "developer-guide/docs/testing-strategy/testing-goals.mdx": {
-    "mtime": 1781683628.05,
-    "ast_hash": "938bee3c9bc213a540f13a7857037efb",
+    "mtime": 1788971308.91,
+    "ast_hash": "a42729e7370ffd92568a0167fcf27002",
     "semantic_hash": ""
   },
   "developer-guide/docs/testing-strategy/testing-strategy.mdx": {
@@ -8985,88 +8985,88 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/theme-system/amplify-authenticator-theme.mdx": {
-    "mtime": 1781683628.06,
-    "ast_hash": "15c7667ef695ede1f5c8469bb95a9477",
+    "mtime": 1788970736.43,
+    "ast_hash": "bfdf61e43c7b56ce6fdac2f9669546e3",
     "semantic_hash": ""
   },
   "developer-guide/docs/theme-system/configurations.mdx": {
-    "mtime": 1781683628.06,
-    "ast_hash": "c31dffc88c8e4017b97a361dec49ef88",
+    "mtime": 1788970736.43,
+    "ast_hash": "881ded8bc39f0538b28b300f1184d75a",
     "semantic_hash": ""
   },
   "developer-guide/docs/theme-system/css-styling.mdx": {
-    "mtime": 1781683628.06,
-    "ast_hash": "be4c8e2222bff101a8caf146142ee0d8",
+    "mtime": 1788970736.43,
+    "ast_hash": "8ace4990624dc7d12812064b78a7f33a",
     "semantic_hash": ""
   },
   "developer-guide/docs/theme-system/dark-mode.mdx": {
-    "mtime": 1781683628.06,
-    "ast_hash": "ff1633fad56282e7003b3c9c1c0cdd51",
+    "mtime": 1788970736.43,
+    "ast_hash": "63324be7c401f4a1f32e08e5b4be1c31",
     "semantic_hash": ""
   },
   "developer-guide/docs/theme-system/intro.mdx": {
-    "mtime": 1781683628.06,
-    "ast_hash": "96d99a34756634cc43617a6d74d6fb66",
+    "mtime": 1788970736.43,
+    "ast_hash": "4ce2df0772af632d27c97e73cb0e407c",
     "semantic_hash": ""
   },
   "developer-guide/docs/theme-system/tailwindcss.mdx": {
-    "mtime": 1781683628.06,
-    "ast_hash": "2211f737b21e15fc3305f22a31bcebf5",
+    "mtime": 1788970736.43,
+    "ast_hash": "0e356330e18d503ba8724d2e8780276f",
     "semantic_hash": ""
   },
   "developer-guide/docs/theme-system/theme-provider.mdx": {
-    "mtime": 1781683628.06,
-    "ast_hash": "7adfe5792da1ea0ca0639b18b4a6c6e2",
+    "mtime": 1788970736.43,
+    "ast_hash": "371f660019b2a5923746f9fdb7b31ff2",
     "semantic_hash": ""
   },
   "developer-guide/docs/theme-system/theme-switcher.mdx": {
-    "mtime": 1781683628.06,
-    "ast_hash": "8a1da36c52549ef97b06ed3257308905",
+    "mtime": 1788970736.43,
+    "ast_hash": "d3f0099cd3dce29bd3af8311ab0b409b",
     "semantic_hash": ""
   },
   "developer-guide/docs/tutorial-basics/congratulations.md": {
-    "mtime": 1781683628.07,
-    "ast_hash": "442dcc7bae523f37d053a8630e48a731",
+    "mtime": 1788970736.42,
+    "ast_hash": "d2d0b8f9f5c04c5a5d8cdf2b6caf6393",
     "semantic_hash": ""
   },
   "developer-guide/docs/tutorial-basics/create-a-blog-post.md": {
-    "mtime": 1781683628.07,
-    "ast_hash": "cb1532b00629699400cfbe192460c33e",
+    "mtime": 1788970736.42,
+    "ast_hash": "1525312d50670f7a64ce5e700a975135",
     "semantic_hash": ""
   },
   "developer-guide/docs/tutorial-basics/create-a-document.md": {
-    "mtime": 1781683628.07,
-    "ast_hash": "ec0a491675a9604b5d818d10a9c77737",
+    "mtime": 1788970736.42,
+    "ast_hash": "86c36c30f77e7a970d4e6745069e7959",
     "semantic_hash": ""
   },
   "developer-guide/docs/tutorial-basics/create-a-page.md": {
-    "mtime": 1781683628.07,
-    "ast_hash": "ddda05c77bb9b8f700e4989cde129872",
+    "mtime": 1788970736.42,
+    "ast_hash": "8118cd6b105f666d762805a9beb847f0",
     "semantic_hash": ""
   },
   "developer-guide/docs/tutorial-basics/deploy-your-site.md": {
-    "mtime": 1781683628.07,
-    "ast_hash": "0b8e87eab5b4cb91df9b6b3e1874fd4a",
+    "mtime": 1788970736.42,
+    "ast_hash": "7ed438b1a6267eaa0758754b98c71689",
     "semantic_hash": ""
   },
   "developer-guide/docs/tutorial-basics/markdown-features.mdx": {
-    "mtime": 1781683628.08,
-    "ast_hash": "1a3ba3e65b305a8bd8fd1ad970fd78a6",
+    "mtime": 1788970736.42,
+    "ast_hash": "06ac0fc95cf0d8f735af4b329b2c5338",
     "semantic_hash": ""
   },
   "developer-guide/docs/tutorial-extras/manage-docs-versions.md": {
-    "mtime": 1781683628.09,
-    "ast_hash": "d865233b1819f4e13055bf18d7cac5f0",
+    "mtime": 1788970736.42,
+    "ast_hash": "f1c371a55c81e6462293d7000ad7a45a",
     "semantic_hash": ""
   },
   "developer-guide/docs/tutorial-extras/translate-your-site.md": {
-    "mtime": 1781683628.09,
-    "ast_hash": "de57aa0b7df5a23d10f22791da1b5055",
+    "mtime": 1788970736.42,
+    "ast_hash": "774f8773b409911223431f0a7126dbc7",
     "semantic_hash": ""
   },
   "developer-guide/docs/users-management/intro.mdx": {
-    "mtime": 1788255018.71,
-    "ast_hash": "4f85d17db9d7f361606c98a108f54f23",
+    "mtime": 1788976165.77,
+    "ast_hash": "821df47d328b8826dc00cc3e9ffb8088",
     "semantic_hash": ""
   },
   "developer-guide/src/pages/markdown-page.md": {
@@ -9925,8 +9925,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/ui-components/data-table.mdx": {
-    "mtime": 1788082960.9,
-    "ast_hash": "17f61be9c60a3d418c7a6c16ec5285aa",
+    "mtime": 1788975997.91,
+    "ast_hash": "9e220cd080e9cb973a40c49184f4c3f8",
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/data-table/components/CiDataTableInformationControl.tsx": {
@@ -10645,8 +10645,8 @@
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-development/SKILL.md": {
-    "mtime": 1788254995.49,
-    "ast_hash": "d4e32e7d483190a7c9a8ad9fafecab4e",
+    "mtime": 1788918361.01,
+    "ast_hash": "6f8c3799ab8175a8d30c1da5d5a65199",
     "semantic_hash": ""
   },
   "packages/next/__tests__/context/resolve-request-context-from-request.test.ts": {
@@ -10680,8 +10680,8 @@
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-guide-authoring/SKILL.md": {
-    "mtime": 1788107819.67,
-    "ast_hash": "05ad9fd17fdfd8803faa8e8be3a1e3ff",
+    "mtime": 1788971126.86,
+    "ast_hash": "53a9987b3f37138ba8394e6f1837edb8",
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-guide-authoring/agents/openai.yaml": {
@@ -10700,18 +10700,18 @@
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-guide-authoring/references/cloudigniter-users.md": {
-    "mtime": 1788104717.75,
-    "ast_hash": "4be14ead036b04af904d61b65f8ab6c2",
+    "mtime": 1788979624.43,
+    "ast_hash": "7467a91f2daedc115555f96b0d8f2f84",
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-guide-authoring/references/workflow-and-validation.md": {
-    "mtime": 1788104717.69,
-    "ast_hash": "d83137c99a4553beb0defa1c204d0eae",
+    "mtime": 1788971126.87,
+    "ast_hash": "20a5fc3bbddaedd20a7e9d5559d6e545",
     "semantic_hash": ""
   },
   "developer-guide/company-developers/documentation/authoring-workflow.mdx": {
-    "mtime": 1788109390.19,
-    "ast_hash": "ad4195176156df44157b338ddc1eeb3f",
+    "mtime": 1788971126.86,
+    "ast_hash": "469f315d921f2cda060c00061b0c8d5c",
     "semantic_hash": ""
   },
   "developer-guide/scripts/prepare-skills-docs.ts": {
@@ -10925,8 +10925,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/library/dynamodb/table-key-convention.mdx": {
-    "mtime": 1786609292.4,
-    "ast_hash": "8d6a947a46bea0617255c72010079ac3",
+    "mtime": 1788975997.91,
+    "ast_hash": "9112188f0ee83aa7c5776c5e41fffb7d",
     "semantic_hash": ""
   },
   "developer-guide/company-developers/persistence/dynamodb-strategy.mdx": {
@@ -11215,8 +11215,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/cli/overview.mdx": {
-    "mtime": 1786876597.4,
-    "ast_hash": "8423920728ccef9ea0026ee005f0b306",
+    "mtime": 1788976165.62,
+    "ast_hash": "4d76fb907c41e7987a3826c47a90fb34",
     "semantic_hash": ""
   },
   "packages/cli/README.md": {
@@ -11410,8 +11410,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/ui-components/data-entity-manager.mdx": {
-    "mtime": 1787985659.14,
-    "ast_hash": "f000f9715ff2b71d5d339373a4606629",
+    "mtime": 1788976077.24,
+    "ast_hash": "ec57f7521a6c2100e49aeea09ef7cca2",
     "semantic_hash": ""
   },
   "apps/template/amplify/custom/data/schemata/__fixtures__/resource-studio-book-schema.fixture.ts": {
@@ -11495,8 +11495,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/build-time-apis/ci-merge-amplify-data-schemas.mdx": {
-    "mtime": 1786872350.95,
-    "ast_hash": "8d693362beb14e95e789dcd622cfe7f9",
+    "mtime": 1788975997.91,
+    "ast_hash": "3b28ad3070885a745d6d58ece60e1ad3",
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/build-time-apis/resource-studio-compilers.mdx": {
@@ -11510,18 +11510,18 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/resource-studio/data-entities.mdx": {
-    "mtime": 1786876597.32,
-    "ast_hash": "6acfba0bbce42b8dadbbeae1729e1f1a",
+    "mtime": 1788975997.91,
+    "ast_hash": "c441e9e56542c99be2f4e16cb03ab2d0",
     "semantic_hash": ""
   },
   "developer-guide/docs/resource-studio/deployment-and-rollback.mdx": {
-    "mtime": 1786876463.92,
-    "ast_hash": "f462dec69bf6fbefe1b08503d75471fc",
+    "mtime": 1788976077.3,
+    "ast_hash": "1b72ce454316c0568a8229dae93f72ed",
     "semantic_hash": ""
   },
   "developer-guide/docs/resource-studio/overview.mdx": {
-    "mtime": 1788106208.33,
-    "ast_hash": "424d9ee019bb081a97f148509cf573c4",
+    "mtime": 1788975997.91,
+    "ast_hash": "409a3f42ec0572bd12f999cbda24568c",
     "semantic_hash": ""
   },
   "packages/cli/src/runtime/resource-studio/assets/index.html": {
@@ -11600,8 +11600,8 @@
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/dashboard/trash/page.tsx": {
-    "mtime": 1788243054.04,
-    "ast_hash": "d7ca17d857868f9e79cb40709fa98546",
+    "mtime": 1788918459.43,
+    "ast_hash": "da17b790396ca39324e024c661442048",
     "semantic_hash": ""
   },
   "apps/template/src/kernel/server/api/system/tenant/app-tenant-lifecycle-service.ts": {
@@ -11835,8 +11835,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/environment-modes/development-tools-and-seeding.mdx": {
-    "mtime": 1788255018.9,
-    "ast_hash": "07b892d21cbe3fc850630cfb75444023",
+    "mtime": 1788975997.91,
+    "ast_hash": "081ab579a9b29bfb189e75bcdb188519",
     "semantic_hash": ""
   },
   "packages/ui/__tests__/tenant-date-formatting.test.ts": {
@@ -12180,8 +12180,8 @@
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-development/references/architecture/tenants/org-units.md": {
-    "mtime": 1788084891.91,
-    "ast_hash": "23a64242d015f5a8c1e2c3184bf59bc6",
+    "mtime": 1788967375.55,
+    "ast_hash": "c01824d496a5a2773997eac2c81375b3",
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-development/references/architecture/tenants/overview.md": {
@@ -12215,8 +12215,8 @@
     "semantic_hash": ""
   },
   "developer-guide/company-developers/persistence/org-unit-management.mdx": {
-    "mtime": 1788084804.8,
-    "ast_hash": "40db4e52343018210167a75784c8c071",
+    "mtime": 1788967375.49,
+    "ast_hash": "4d6b83a16640670eb61ffdc208032a7e",
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/components/CiOrgUnitManagementPage.mdx": {
@@ -12235,8 +12235,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/multi-Tenancy/org-unit-management.mdx": {
-    "mtime": 1788084804.67,
-    "ast_hash": "2037e0102995fa30fe35ff3100a312db",
+    "mtime": 1788975997.91,
+    "ast_hash": "e97e14fc26480e790b31a2a9cf21f2a9",
     "semantic_hash": ""
   },
   "packages/ui/src/lib/ci-format-date-time.ts": {
@@ -12300,8 +12300,8 @@
     "semantic_hash": ""
   },
   "developer-guide/dictionary-sidebars.ts": {
-    "mtime": 1788106239.76,
-    "ast_hash": "b49f949b6c6ac715d32771926afab3c3",
+    "mtime": 1788936557.11,
+    "ast_hash": "5f3533a66e21806b32ebad9c4fffe12e",
     "semantic_hash": ""
   },
   "developer-guide/dictionary/a.mdx": {
@@ -12310,13 +12310,13 @@
     "semantic_hash": ""
   },
   "developer-guide/dictionary/b.mdx": {
-    "mtime": 1788104525.86,
-    "ast_hash": "b0d75f87ed60d812cb9e35c6e859037b",
+    "mtime": 1788970904.34,
+    "ast_hash": "26a9cc3a278446f062ab2e5b06d370f0",
     "semantic_hash": ""
   },
   "developer-guide/dictionary/c.mdx": {
-    "mtime": 1788104525.86,
-    "ast_hash": "af4887c2bcb9bacdc946e3f3a5aa9797",
+    "mtime": 1788971126.86,
+    "ast_hash": "16fc3c51c903fd8d60111295d6bee8f8",
     "semantic_hash": ""
   },
   "developer-guide/dictionary/d.mdx": {
@@ -12345,8 +12345,8 @@
     "semantic_hash": ""
   },
   "developer-guide/dictionary/i.mdx": {
-    "mtime": 1788104525.87,
-    "ast_hash": "901d3782170f516db07351551c384d9d",
+    "mtime": 1788970904.34,
+    "ast_hash": "e8eaf50f5551c8141775f4af4bacc9d5",
     "semantic_hash": ""
   },
   "developer-guide/dictionary/index.mdx": {
@@ -12380,18 +12380,18 @@
     "semantic_hash": ""
   },
   "developer-guide/dictionary/p.mdx": {
-    "mtime": 1788104525.89,
-    "ast_hash": "90aebb62ce6760df0981aa37df39b223",
+    "mtime": 1788971126.86,
+    "ast_hash": "e9add8ed247c62eff178ac1f6271da47",
     "semantic_hash": ""
   },
   "developer-guide/dictionary/r.mdx": {
-    "mtime": 1788104525.89,
-    "ast_hash": "693c874a605dd6308ccc2dbdd00f170d",
+    "mtime": 1788971126.86,
+    "ast_hash": "f2bed400c4962384d8bec6ce4cf15824",
     "semantic_hash": ""
   },
   "developer-guide/dictionary/s.mdx": {
-    "mtime": 1788104525.89,
-    "ast_hash": "73bf7fb4cbac9a7b452bf75db523f732",
+    "mtime": 1788936557.06,
+    "ast_hash": "b692ac034630a9d179410503572652e0",
     "semantic_hash": ""
   },
   "developer-guide/dictionary/t.mdx": {
@@ -12445,8 +12445,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/components/ci-dev-beacon.mdx": {
-    "mtime": 1788111230.82,
-    "ast_hash": "3a97d824507f9b4916388fbf1d48bd3f",
+    "mtime": 1788967699.48,
+    "ast_hash": "764296dfc0042b5123cd368663ce61dc",
     "semantic_hash": ""
   },
   "apps/template/amplify/auth/cognito-user/cognito-delete-user/handler.ts": {
@@ -12505,8 +12505,8 @@
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/dashboard/users/page.tsx": {
-    "mtime": 1788243054.08,
-    "ast_hash": "be76bfceea8c5d96a7bafab34e6a4346",
+    "mtime": 1788916564.15,
+    "ast_hash": "27d701062f8aa8f6b5817f195fc99474",
     "semantic_hash": ""
   },
   "apps/template/src/kernel/server/api/system/user/app-user-management-service.ts": {
@@ -12585,8 +12585,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/user-management/CiUserManagementPage.tsx": {
-    "mtime": 1788243075.01,
-    "ast_hash": "408d7ce8251b8adc485855f60c2acafa",
+    "mtime": 1788919085.44,
+    "ast_hash": "ccd9a78d2862b2ac5378fcee4d15ff70",
     "semantic_hash": ""
   },
   "packages/ui/src/client/user-management/index.ts": {
@@ -12605,8 +12605,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/types/user-management-types/CiUserManagementTypes.ts": {
-    "mtime": 1788241419.35,
-    "ast_hash": "8173c6ccde6115b5c73ce220755cf14d",
+    "mtime": 1788916516.46,
+    "ast_hash": "daecadc4d5cca0464b826a9335a8e356",
     "semantic_hash": ""
   },
   "packages/ui/src/types/user-management-types/index.ts": {
@@ -12615,18 +12615,18 @@
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-development/references/architecture/users/overview.md": {
-    "mtime": 1788254995.54,
-    "ast_hash": "08c4f5dc26368d8765800873dfce5781",
+    "mtime": 1788918361.06,
+    "ast_hash": "c19a7d1a52d4fdda53943422b8ba923a",
     "semantic_hash": ""
   },
   "developer-guide/company-developers/identity/user-administration.mdx": {
-    "mtime": 1788255018.77,
-    "ast_hash": "fa21863965fd2c3d0dc52886eeaad114",
+    "mtime": 1788918361.17,
+    "ast_hash": "707f6ce1578cb1979c401a66bfc8fa36",
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/components/ci-user-management-page.mdx": {
-    "mtime": 1788178397.01,
-    "ast_hash": "dddb11feddef8ae12f2367c1479569a4",
+    "mtime": 1788918361.11,
+    "ast_hash": "9319419b7b55733af2180a7e2df2b173",
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/type-definitions/ci-user-types.mdx": {
@@ -12665,8 +12665,8 @@
     "semantic_hash": ""
   },
   "apps/template/src/app/(system)/dashboard/administrators/page.tsx": {
-    "mtime": 1788243061.0,
-    "ast_hash": "9cbbe38c2ef25a256810ea95dad86288",
+    "mtime": 1788916564.15,
+    "ast_hash": "51a4f41bd7b87d5bc7aa1fd306a064ad",
     "semantic_hash": ""
   },
   "apps/template/src/kernel/server/api/system/user/app-user-management-authority.ts": {
@@ -12722,6 +12722,251 @@
   "developer-guide/docs/api-reference/shared-apis/ci-aws-json.mdx": {
     "mtime": 1788254995.65,
     "ast_hash": "9ac02c82f28983e5c269d12ac696b893",
+    "semantic_hash": ""
+  },
+  "apps/template/src/custom/forms/generate-smart-forms.mts": {
+    "mtime": 1788919085.49,
+    "ast_hash": "2dc791c0c6b65b41a8bdb5cf05541b05",
+    "semantic_hash": ""
+  },
+  "apps/template/src/custom/forms/smart-forms.generated.ts": {
+    "mtime": 1788919266.87,
+    "ast_hash": "4c5c70e0bf0ff424a1aeb6eeee9a1d26",
+    "semantic_hash": ""
+  },
+  "apps/template/src/custom/user/index.ts": {
+    "mtime": 1788916563.94,
+    "ast_hash": "c2c6a76ef89938d34bf566a023586245",
+    "semantic_hash": ""
+  },
+  "apps/template/src/custom/user/smart-form.ts": {
+    "mtime": 1788918459.62,
+    "ast_hash": "cccfe36c1630adc524e110952bde2e4b",
+    "semantic_hash": ""
+  },
+  "packages/core/__tests__/smart-form/smart-form.test.ts": {
+    "mtime": 1788919243.88,
+    "ast_hash": "f7f664fc823335954153790ba4806c52",
+    "semantic_hash": ""
+  },
+  "packages/core/scripts/generate-smart-forms.ts": {
+    "mtime": 1788919085.52,
+    "ast_hash": "13ce33034e9f9d99606bf8093b283afc",
+    "semantic_hash": ""
+  },
+  "packages/core/src/lib/smart-form/ci-core-forms.generated.ts": {
+    "mtime": 1788919266.4,
+    "ast_hash": "3f4e08348a44505b370cb0758af1762a",
+    "semantic_hash": ""
+  },
+  "packages/core/src/lib/smart-form/ci-smart-form.ts": {
+    "mtime": 1788919266.28,
+    "ast_hash": "215ca0034aa41df8cccf1925ce4098b8",
+    "semantic_hash": ""
+  },
+  "packages/core/src/lib/smart-form/ci-user-form-definitions.ts": {
+    "mtime": 1788918459.66,
+    "ast_hash": "4f81b61f8c3405980115ac6c71d2a165",
+    "semantic_hash": ""
+  },
+  "packages/core/src/lib/smart-form/index.ts": {
+    "mtime": 1788918459.66,
+    "ast_hash": "4834276d977471719beba547125c6a49",
+    "semantic_hash": ""
+  },
+  "packages/core/src/types/smart-form-types/index.ts": {
+    "mtime": 1788918459.67,
+    "ast_hash": "463f39338b000f1dfa384ef9fa582bb4",
+    "semantic_hash": ""
+  },
+  "packages/ui/__tests__/smart-form.test.ts": {
+    "mtime": 1788919318.49,
+    "ast_hash": "9b01f7740123773390c1b40dbab242d1",
+    "semantic_hash": ""
+  },
+  "packages/ui/src/client/components/smart-form/CiSmartForm.tsx": {
+    "mtime": 1788919243.91,
+    "ast_hash": "36e37dc7affaddf5993f024d7682df7f",
+    "semantic_hash": ""
+  },
+  "packages/ui/src/client/components/smart-form/components/CiSmartFormWidget.tsx": {
+    "mtime": 1788919085.6,
+    "ast_hash": "bbac81d0311aeff83ab7a4db92ee1b08",
+    "semantic_hash": ""
+  },
+  "packages/ui/src/lib/smart-form/ci-validate-smart-form.ts": {
+    "mtime": 1788919085.61,
+    "ast_hash": "4a4c14a583d90517dbe9e51e458be1eb",
+    "semantic_hash": ""
+  },
+  "packages/ui/src/types/smart-form-types/CiSmartFormProps.ts": {
+    "mtime": 1788919085.61,
+    "ast_hash": "ae2352db74272b47333a5b6ac8a15b30",
+    "semantic_hash": ""
+  },
+  ".agents/skills/cloudigniter-development/references/architecture/ui/smart-form.md": {
+    "mtime": 1788936557.23,
+    "ast_hash": "342ef75654bf8063665ed3b39b81bd6e",
+    "semantic_hash": ""
+  },
+  "developer-guide/company-developers/architecture/smart-forms.mdx": {
+    "mtime": 1788918360.88,
+    "ast_hash": "dad671cec8bb3006dac66c0474144cd6",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/api-reference/components/ci-smart-form.mdx": {
+    "mtime": 1788918605.54,
+    "ast_hash": "d217d5dd54bf7dcbfddb8aa0fcf19806",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/api-reference/shared-apis/ci-smart-form.mdx": {
+    "mtime": 1788918360.82,
+    "ast_hash": "082acc41b01a053c922dcbdfa02aa726",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/api-reference/type-definitions/CiSmartFormTypes.mdx": {
+    "mtime": 1788918360.76,
+    "ast_hash": "aebdb62a2d734d6dc10bb4209d43058d",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/ui-components/smart-form.mdx": {
+    "mtime": 1788936557.17,
+    "ast_hash": "929c491c2a74a9518b330ce7b52503ac",
+    "semantic_hash": ""
+  },
+  "apps/template/__tests__/org-unit-resolution-checkup.test.ts": {
+    "mtime": 1788967471.66,
+    "ast_hash": "bafb6c9fe448e2774c1d6cde27002820",
+    "semantic_hash": ""
+  },
+  "developer-guide/page-dates.json": {
+    "mtime": 1788979693.51,
+    "ast_hash": "156c878c3af1ddc0c8c54f6743a979af",
+    "semantic_hash": ""
+  },
+  "developer-guide/plugins/sidebar-page-dates.ts": {
+    "mtime": 1788969254.88,
+    "ast_hash": "2f197ed096cf4750238e510a5f5a9996",
+    "semantic_hash": ""
+  },
+  "developer-guide/scripts/page-dates.mjs": {
+    "mtime": 1788969254.85,
+    "ast_hash": "218104841b68ba8372bbe19ecd380030",
+    "semantic_hash": ""
+  },
+  "developer-guide/scripts/page-dates.test.mjs": {
+    "mtime": 1788969178.03,
+    "ast_hash": "6d826fcc56e73c3a421ded6feb6638ca",
+    "semantic_hash": ""
+  },
+  "developer-guide/src/components/PageDates/index.tsx": {
+    "mtime": 1788969715.54,
+    "ast_hash": "f7ee5289f99fb0a859d6a6c34a754a0a",
+    "semantic_hash": ""
+  },
+  "developer-guide/src/theme/DocCategoryGeneratedIndexPage/index.tsx": {
+    "mtime": 1788969254.93,
+    "ast_hash": "2d7d65627e6d92fd5a822868d4c790dc",
+    "semantic_hash": ""
+  },
+  "developer-guide/src/theme/DocItem/Footer/index.tsx": {
+    "mtime": 1788969254.93,
+    "ast_hash": "949bb0cb072809fb21eed8c4d700553d",
+    "semantic_hash": ""
+  },
+  "developer-guide/scripts/check-user-guide.mjs": {
+    "mtime": 1788971167.29,
+    "ast_hash": "f2724d7134dcd0db61609b431d5e3d5b",
+    "semantic_hash": ""
+  },
+  "developer-guide/user-guide-structure.json": {
+    "mtime": 1788979624.19,
+    "ast_hash": "d8fb222927e564342795f0c5fa01472c",
+    "semantic_hash": ""
+  },
+  "developer-guide/company-developers/documentation/users-guide-structure.mdx": {
+    "mtime": 1788979624.37,
+    "ast_hash": "95c1a65422a89c4d0c79031553dbdb54",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/architecture/application-structure.mdx": {
+    "mtime": 1788970574.13,
+    "ast_hash": "f9c0e4a75d8b281cbaa4fbcc518a60de",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/architecture/overview.mdx": {
+    "mtime": 1788970574.07,
+    "ast_hash": "2ef87c34a407c85376c2a74ff248ca91",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/architecture/request-lifecycle.mdx": {
+    "mtime": 1788975997.9,
+    "ast_hash": "d7bbc32ae351265f97f6525b58348b21",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/building-features/api-and-feedback.mdx": {
+    "mtime": 1788975997.91,
+    "ast_hash": "d7b3d7312f03382d569a35b9683debde",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/building-features/first-page.mdx": {
+    "mtime": 1788975997.91,
+    "ast_hash": "69d8327814d6037eda384155f7e2ee61",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/configuration/localization.mdx": {
+    "mtime": 1788975997.9,
+    "ast_hash": "7c5b31859baedc9ae09b8d5b11bab2cd",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/configuration/overview.mdx": {
+    "mtime": 1788976165.67,
+    "ast_hash": "3fe53c04c44d686aff218704fd98b5c4",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/configuration/settings.mdx": {
+    "mtime": 1788975997.91,
+    "ast_hash": "d74d9e4326863703726c5afe715ff68c",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/configuration/themes.mdx": {
+    "mtime": 1788975997.9,
+    "ast_hash": "a395f54939b20750514ca9cd67885b1c",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/data/overview.mdx": {
+    "mtime": 1788975997.91,
+    "ast_hash": "2d00ebf6b44a4b9c3c6a0ccfa17e3023",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/getting-started/run-template.mdx": {
+    "mtime": 1788979624.49,
+    "ast_hash": "d20237a35dc693273e2df2db373dcbba",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/identity/authentication.mdx": {
+    "mtime": 1788970574.57,
+    "ast_hash": "d650bb538c39422295aa5f756e4d00d9",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/obsolete/docusaurus-intro.md": {
+    "mtime": 1788970736.42,
+    "ast_hash": "eae8809a168f2dd2aed8106e411b2998",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/obsolete/index.mdx": {
+    "mtime": 1788970785.27,
+    "ast_hash": "301999733989e88279693cda608da1a2",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/operations/overview.mdx": {
+    "mtime": 1788976077.06,
+    "ast_hash": "df99837d6066b664ad9820c2cd1597b4",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/getting-started/before-you-start.mdx": {
+    "mtime": 1788979692.93,
+    "ast_hash": "90d0edd2da2ffb885c995e16c0123938",
     "semantic_hash": ""
   }
 }

@@ -3,10 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "pnpm forms:generate && next dev",
+    "build": "pnpm forms:generate && next build",
     "start": "next start",
-    "test": "node --import=tsx --test amplify/backend/__tests__/*.test.ts",
+    "test": "node --import=tsx --test amplify/backend/__tests__/*.test.ts __tests__/*.test.ts",
     "typecheck": "tsc --noEmit",
     "check": "pnpm run typecheck",
     "lint": "next lint",
@@ -17,7 +17,8 @@
     "bootstrap:root": "ci amplify bootstrap root-user --profile=developer1 --no-interactive",
     "bootstrap:access-control": "ci amplify bootstrap access-control --profile=developer1 --no-interactive",
     "sandbox:bootstrap": "ci amplify sandbox bootstrap --profile=developer1 --no-interactive",
-    "sandbox:debug": "mkdir -p amplify/.logs && NODE_OPTIONS=\"--enable-source-maps --trace-uncaught\" ampx sandbox --profile developer1 --debug --once 2>&1 | tee amplify/.logs/amplify-sandbox-debug.log"
+    "sandbox:debug": "mkdir -p amplify/.logs && NODE_OPTIONS=\"--enable-source-maps --trace-uncaught\" ampx sandbox --profile developer1 --debug --once 2>&1 | tee amplify/.logs/amplify-sandbox-debug.log",
+    "forms:generate": "node --import=tsx src/custom/forms/generate-smart-forms.mts"
   },
   "dependencies": {
     "@aws-amplify/adapter-nextjs": "^1.7.2",

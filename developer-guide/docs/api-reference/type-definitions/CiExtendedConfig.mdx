@@ -1,5 +1,14 @@
 ---
-title: CiExtendedConfig
+title: Migrate CiExtendedConfig to current configuration types
+description: Use the current configured and resolved Next.js contracts instead of the previous guide's type name.
 ---
 
-# CiExtendedConfig
+# Migrate CiExtendedConfig to current configuration types
+
+`CiExtendedConfig` is a previous guide name, not a current public Next.js export. The application configuration
+uses `CiNextCoreConfig`; the resolved application context uses `CiNextContext`. Import them from
+`@cloudigniter/next/types`.
+
+Keep configured capability inputs separate from the resolved route, locale, messages, identity, and runtime
+state. Follow [Configure your application](/docs/configuration/overview) and
+[How a request becomes a page](/docs/architecture/request-lifecycle).

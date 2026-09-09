@@ -1,63 +1,43 @@
 ---
-title: Core Tenant Concepts
-sidebar_position: 3
+title: Core Tenant concepts
+description: Distinguish Tenant identity, routing, operational status, deletion, and shared organizational structure.
+sidebar_position: 2
 ---
 
-# Core Tenant Concepts
+# Core Tenant concepts
 
-### Tenant Identity
+## Tenant identity
 
-Each tenant is identified by a stable `tenantId`.
+A Tenant has a stable identifier and a routing slug. The identifier is used for domain records and authorization
+scope. The slug is the browser-facing name used by the selected routing mode. Keep the resolved canonical identity
+when calling trusted operations; do not substitute a browser-entered ID or a pathname segment.
 
-Examples:
+## Tenant scope
 
-```text
-school-abu-dhabi
-school-dubai
-sandbox-dev
-```
+The request may have `system`, `global`, or `tenant` scope. Scope is separate from the actor's permissions and
+from descriptive Tenant metadata. See [Tenant scope](./core-concepts/tenant-scope) for examples and route restrictions.
 
-The tenantId:
+## Tenant status
 
-- Is immutable once created
-- Is used in DynamoDB partition keys
-- Is propagated through backend and client contexts
-- Appears in logs, traces, and audit records
+Tenant operational statuses are `active`, `suspended`, and `archived`. Status describes operational state;
+its enforcement depends on the relevant route and service policy. The template exposes Tenant validation and
+information-page configuration, so check the effective configuration rather than assuming every lookup enforces it.
 
-### Tenant Status
+Deletion is a separate lifecycle overlay. A suspended Tenant restored from Trash remains suspended; restoration
+does not grant access or activate it. Follow [Tenant lifecycle operations](./lifecycle-operations).
 
-Tenants have a lifecycle state:
+## Org Unit trees
 
-| Status    | Description                                 |
-| --------- | ------------------------------------------- |
-| active    | Fully operational.                          |
-| suspended | Temporarily disabled (read-only or blocked) |
-| archived  | No longer active, preserved for audit       |
+An Org Unit has a canonical identity, parent relationship, slug, path, and Tenant attachments. Several Tenants can
+share the same canonical node or subtree. Each child's Tenant set must be contained by its parent's Tenant set.
 
-Deletion is not another tenant status. A deleted tenant keeps its prior status beneath a separate deletion
-lifecycle overlay so restoring it does not silently activate a previously suspended tenant.
+The authoritative predecessor IDs run from the root to the direct parent. Descendant authorization uses that
+stored chain together with the current Tenant ID. Sharing a node does not allow a grant in one Tenant to cross
+into another. See [Org Unit management](./org-unit-management).
 
-Status is enforced at:
+## Tenant type
 
-- API boundaries
-- Permission checks
-- UI routing and guards
+Tenant type is descriptive application metadata. It does not replace route scope, environment mode, or a scoped
+permission assignment. Use separate development, test, staging, and production deployments for environment isolation.
 
-### Org Unit Trees
-
-Org Units form trees beneath tenants. One canonical node may be attached to several tenants, allowing several companies to share Finance, People Operations, or an entire Shared Services subtree without duplicating identity. Every child tenant set must be contained by its parent tenant set.
-
-Each resolved Org Unit context carries predecessor IDs from the root to the direct parent. Descendant authorization uses that authoritative chain and the current tenant ID, not URL parsing. See [Org Unit Management](./org-unit-management).
-
----
-
-### Tenant Type
-
-Tenants may be classified by type to support platform logic. Examples:
-
-- `TENANT`
-- `SANDBOX`
-- `SYSTEM`
-- `SETTING`
-
-Type is **descriptive**, not authoritative, and should never replace permission checks.
+Continue with [Tenant scope](./core-concepts/tenant-scope) and [routing modes](./configuration/routing-modes).

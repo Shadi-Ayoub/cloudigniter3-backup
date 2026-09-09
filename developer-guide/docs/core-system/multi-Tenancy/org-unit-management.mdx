@@ -42,7 +42,7 @@ Slug remains immutable after creation. Re-parenting is an explicit bounded subtr
 
 ### A confirmed move does not change the tree
 
-The explorer accepts a move as successful only when the authoritative row returned by the update has the requested `parentId`. If it reports that the deployed backend did not persist the parent, the browser is running newer move-capable UI code than the current Amplify Lambda. From `apps/template`, deploy the current backend once with `pnpm sandbox` (equivalent to `ampx sandbox --once --profile developer1`), refresh the page, and retry. The failed confirmation does not apply a client-only move.
+The explorer confirms a move only when the saved row returned by the server has the requested `parentId`. If it reports that the backend did not persist the parent, check that the application and backend use compatible deployments and inspect the update response. Follow your application’s deployment procedure to align them, then refresh and retry. Until the server confirms the move, the tree keeps its saved structure.
 
 ## Hierarchy-aware access
 

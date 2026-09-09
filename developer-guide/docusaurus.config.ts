@@ -2,6 +2,7 @@ import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 import remarkDictionaryTerms from "./plugins/remark-dictionary-terms";
+import sidebarPageDates from "./plugins/sidebar-page-dates";
 import { prepareSkillsDocs } from "./scripts/prepare-skills-docs";
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
@@ -44,6 +45,7 @@ const config: Config = {
       {
         docs: {
           sidebarPath: "./sidebars.ts",
+          sidebarItemsGenerator: sidebarPageDates,
           remarkPlugins: [remarkDictionaryTerms],
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
@@ -89,6 +91,7 @@ const config: Config = {
         path: "company-developers",
         routeBasePath: "company-developers",
         sidebarPath: "./company-sidebars.ts",
+        sidebarItemsGenerator: sidebarPageDates,
         remarkPlugins: [remarkDictionaryTerms],
       },
     ],
@@ -167,7 +170,7 @@ const config: Config = {
           title: "Docs",
           items: [
             {
-              label: "Tutorial",
+              label: "CloudIgniter Users",
               to: "/docs/intro",
             },
             {

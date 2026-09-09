@@ -1,0 +1,62 @@
+---
+title: API calls, errors, and feedback
+description: Use request contracts and report the authoritative outcome of feature operations.
+sidebar_position: 2
+---
+
+# API calls, errors, and feedback
+
+A feature operation crosses distinct boundaries: browser interaction, trusted server handling, and provider
+work. Choose a Server Action or an HTTP endpoint that matches the feature's integration. Both must validate
+input, resolve authoritative identity and scope, and authorize the operation before writing data.
+
+## Call a JSON endpoint
+
+`ciCall` is exported from `@cloudigniter/core/lib`. It sends a `CiRequest` and returns a `CiCallResult` containing
+the endpoint's `CiResponse`. It does not return the response body directly.
+
+```ts
+import { ciCall } from "@cloudigniter/core/lib";
+import { ciNotify } from "@cloudigniter/ui/client";
+
+export async function saveNote(title: string) {
+  // This example requires your application to implement this endpoint.
+  const result = await ciCall<{ title: string }, { id: string }>(
+    "/api/notes",
+    { input: { title } },
+  );
+
+  if (!result.ok) {
+    ciNotify("error", result.message);
+    return;
+  }
+
+  ciNotify("success", "Note saved");
+}
+```
+
+Call this from client interaction code. The endpoint must return the documented JSON envelope. `ciCall`
+classifies network, non-JSON, HTTP, and CloudIgniter response failures. Read its
+[API reference](/docs/api-reference/client-apis/call) for the exact result and transport behavior.
+
+Request fields such as `envMode` or an entered Tenant ID are input, not trusted authority. Resolve environment,
+identity, and permissions again at the server/provider boundary. API paths bypass the normal page proxy in the
+template, so the endpoint must not assume the page's context header is present.
+
+## Give feedback after the operation
+
+The standard layout installs the shared feedback provider and handler. Use `ciNotify` from
+`@cloudigniter/ui/client` for success or failure messages. Keep the current form or row visible when a mutation
+fails; refresh or update it only after an authoritative success.
+
+Use [confirmation dialogs](/docs/ui-components/confirmation-dialogs) before destructive actions. Confirmation,
+in-progress state, and result feedback serve different purposes. None substitutes for server authorization.
+
+## Handle rendering failures separately
+
+An expected validation or permission failure belongs in the operation's result path. An unexpected page-rendering
+failure belongs in the application's error boundary. Keep diagnostic details available to authorized developers
+while presenting an actionable message to the user.
+
+Continue with [Data and providers](/docs/data/overview), or use the
+[development diagnostics](/docs/environment-modes/development-tools-and-seeding) to troubleshoot an integration.

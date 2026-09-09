@@ -34,6 +34,10 @@ serializable provider-neutral inputs and callback results; it never calls AWS or
 
 ## Identity and profile rules
 
+User create/edit dialogs consume compiled Core Smart Form definitions, with application extensions passed through
+`src/custom/user` and stored under `profile.extensions`. Scoped assignment controls stay inside the shared form
+as domain UI. See [Smart Form architecture](../architecture/smart-forms.mdx) for generation and cache boundaries.
+
 Cognito `sub` is the stable cross-store `userId`. Email is the login alias and may change. `username` is retained
 only for Cognito administrative calls and its secondary profile lookup.
 

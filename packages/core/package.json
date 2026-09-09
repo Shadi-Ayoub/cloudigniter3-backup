@@ -38,9 +38,9 @@
     "clean:maps": "ci-dev package clean-maps",
     "clean:dts": "ci-dev package clean-dts",
     "build": "pnpm run build:dev",
-    "build:dev": "ci-dev package build --mode=dev",
-    "build:prod": "ci-dev package build --mode=prod",
-    "build:js": "tsup --config tsup.config.ts",
+    "build:dev": "pnpm forms:generate && ci-dev package build --mode=dev",
+    "build:prod": "pnpm forms:generate && ci-dev package build --mode=prod",
+    "build:js": "pnpm forms:generate && tsup --config tsup.config.ts",
     "build:types:clean": "rm -rf dist/.types",
     "build:types": "NODE_OPTIONS=--max-old-space-size=12288 rollup -c rollup.config.js",
     "build:types:raw": "tsc -p tsconfig.build.json",
@@ -48,12 +48,13 @@
     "obfuscate": "ci-dev package obfuscate",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "check:package": "npm pack --dry-run",
-    "test": "node --import=tsx --test __tests__/auth/access-control.test.ts __tests__/dev/*.test.ts __tests__/icon/ci-resolve-icon.test.ts __tests__/resource/*.test.ts __tests__/route/ci-merge-route-maps.test.ts __tests__/route/tenant-route-scope.test.ts __tests__/table/ci-table-key.test.ts",
+    "test": "node --import=tsx --test __tests__/auth/access-control.test.ts __tests__/dev/*.test.ts __tests__/icon/ci-resolve-icon.test.ts __tests__/resource/*.test.ts __tests__/route/ci-merge-route-maps.test.ts __tests__/route/tenant-route-scope.test.ts __tests__/table/ci-table-key.test.ts __tests__/smart-form/*.test.ts",
     "dev": "tsup --watch",
     "typecheck:tools": "tsc -p tsconfig.tools.json --noEmit",
     "check": "pnpm run typecheck && pnpm run typecheck:tools",
     "scan:client-directives": "ci-dev quality scan-client-directives",
-    "list:client-files": "ci-dev quality list-client-files"
+    "list:client-files": "ci-dev quality list-client-files",
+    "forms:generate": "node --import=tsx scripts/generate-smart-forms.ts"
   },
   "devDependencies": {
     "@cloudigniter/cli": "workspace:*",

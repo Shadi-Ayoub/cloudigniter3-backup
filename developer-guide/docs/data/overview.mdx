@@ -1,0 +1,44 @@
+---
+title: Data and providers
+description: Connect application resources to provider implementations, bounded data models, and safe generation workflows.
+sidebar_position: 1
+---
+
+# Data and providers
+
+CloudIgniter separates application contracts from provider-specific implementation. The application template uses
+AWS Amplify, AppSync, Lambda, Cognito, and DynamoDB where those services fit the capability. Keep provider SDKs
+and persistence details behind trusted server/provider integrations.
+
+## Choose how to add the feature
+
+| Goal | Start with |
+| --- | --- |
+| Generate a supported Data Entity and its management UI | [Resource Studio overview](/docs/resource-studio/overview) |
+| Define fields, authorization, and query indexes | [Create and manage a Data Entity](/docs/resource-studio/data-entities) |
+| Add a manual model, Lambda, or provider integration | [Extend the Amplify backend](/docs/providers/aws/extending-amplify-backend) |
+| Understand core/custom backend composition | [Amplify folder structure](/docs/aws-amplify-setup/folder-structure) |
+| Construct canonical persistence keys | [Table-key convention](/docs/library/dynamodb/table-key-convention) |
+
+## Model data around access and lifecycle
+
+Define who can read and mutate the resource, how it is queried, and what happens when it is suspended, deleted,
+restored, or purged. Group related records only when their security, lifecycle, and operational requirements fit
+the same bounded context. Tenant control-plane data belongs to the System boundary; authorization data has its
+own boundary.
+
+Use the public Core key builders rather than manually joining key strings. Add an index for a known query,
+not as a substitute for identifying access patterns. Request-path scans are not the normal lookup strategy.
+
+See the [DynamoDB strategy](/company-developers/persistence/dynamodb-strategy) for maintainer-level design details.
+
+## Separate local generation from deployment
+
+Resource Studio previews and applies generated local files within its registered custom ownership boundaries.
+A local apply is not a cloud deployment. Deploy against an explicit verified target using the
+[deployment and rollback workflow](/docs/resource-studio/deployment-and-rollback).
+
+Undoing local files does not roll back cloud data. Likewise, deleting a resource definition, suspending a business
+record, moving it to Trash, and purging it are separate operations with different consequences.
+
+After building the feature, continue with [Testing and operations](/docs/operations/overview).

@@ -1,5 +1,30 @@
 ---
-title: Layout
+title: CiLayout
+description: Compose a CloudIgniter route layout with shared providers and the selected visual skeleton.
 ---
 
-# Layout
+# CiLayout
+
+Import the selected layout as a default export, for example:
+
+```tsx
+import CiLayout from "@cloudigniter/next/layout/cp-standard";
+import { appBootstrap } from "@/kernel/server";
+import type { PropsWithChildren } from "react";
+
+export default async function Layout({ children }: PropsWithChildren) {
+  const context = await appBootstrap();
+  return <CiLayout context={context}>{children}</CiLayout>;
+}
+```
+
+The `cp-standard` variant accepts required `context: CiNextContext` and `children`, plus optional `protect`
+(default true). Its current prop type also accepts `status`, but that value is not consumed by this variant.
+Other intentional layout entry points are `app-standard` and `login-standard`; use their own variant contracts.
+
+The layout wraps its skeleton with `CiPageWrapper`, which supplies the client provider stack through
+`CiClientWrapper`. Keep this composition in the route layout. A child page uses `CiPage` and should not add a
+second shared wrapper/provider stack.
+
+See [How a request becomes a page](/docs/architecture/request-lifecycle) and
+[`CiPage`](./page) for page-content responsibilities.

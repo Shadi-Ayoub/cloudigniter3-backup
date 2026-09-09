@@ -1,29 +1,29 @@
 ---
 title: Resource Studio overview
-description: Understand the Data Entity terminology, generated backend and frontend artifacts, Tenant scopes, and V1 boundaries.
+description: Understand the Data Entity terminology, generated backend and frontend artifacts, Tenant scopes, and supported capabilities.
 sidebar_position: 1
 ---
 
 Resource Studio turns an application-level data definition into both an AWS Amplify Data model and an administration page. For example, a `Book` definition produces a managed data store, typed create/read/update/delete/list operations, and a `CiDataTable`-based Books manager.
 
-Resource Studio is an application-developer feature exposed through `ci`. It does not have a `ci-dev` variant: CloudIgniter contributors add platform-owned entities in the package that owns the capability instead of generating them into the application template.
+Launch Resource Studio through the `ci` command to manage application-owned Data Entities.
 
 ## Terminology
 
-V1 uses these names consistently:
+The following terms describe the resources you work with in Studio:
 
 | Term | Meaning |
 | --- | --- |
 | **Resource Studio** | The local browser tool that defines, generates, deploys, drops, and rolls back application resources. |
-| **Resource** | A generated unit managed by Resource Studio. A Data Entity is the first resource kind; later versions can add functions and other kinds. |
+| **Resource** | A generated unit managed by Resource Studio. Data Entity is the supported resource kind. |
 | **Data Entity** | The application-level definition of one record type, such as `Book`, including its fields, authorization, indexes, scope, and management route. |
 | **Data Record** | One stored instance of a Data Entity, such as one book. |
-| **Data Store** | The persistence resource behind the Data Entity. V1 creates an Amplify-managed model and DynamoDB table. |
+| **Data Store** | The persistence resource behind the Data Entity. Each generated Data Entity uses an Amplify-managed model and DynamoDB table. |
 | **Management Page** | The generated Tenant- or Global-scoped page where an administrator can create, list, read, update, and delete records. |
 
 Use **Data Entity** for the schema-level concept and **Data Record** for an individual value. “Data model” is reserved for the lower-level Amplify model when the distinction matters.
 
-## What V1 generates
+## Generated resources
 
 For a Data Entity whose ID is `book`, name is `Book`, plural name is `Books`, Tenant scope is `tenant`, and logical management path is `/dashboard/books`, Resource Studio owns these application files:
 
@@ -57,7 +57,7 @@ Every Data Entity is either `tenant` or `global` scoped. Resource Studio never g
 
 The management path entered in Studio is the logical feature path, such as `/dashboard/books`. The form suggests `/dashboard/<plural-kebab-case>` and lets you replace it with another static absolute path. Do not enter `/ci-tenant`, `/ci-global`, or a public `/t/...` prefix; CloudIgniter's [proxy](/dictionary/p#proxy) adds the correct internal and public scope transport.
 
-The `(ci-custom)` route group does not add a URL segment. It marks the generated page as application-owned so a template upgrade can distinguish it from CloudIgniter core pages. The route definition is protected and limited to the selected Tenant scope. EmberGuard policy generation is intentionally deferred beyond V1.
+The `(ci-custom)` route group does not add a URL segment. It marks the generated page as application-owned so a template upgrade can distinguish it from CloudIgniter core pages. The route definition is protected and limited to the selected Tenant scope. Configure EmberGuard resources and policies separately; Studio does not generate them.
 
 ## Data and key conventions
 
@@ -72,9 +72,9 @@ Generated server actions construct every persisted key with CloudIgniter's canon
 
 Listing uses the generated `byScope` GSI and a paginated Query operation. It does not use a request-path DynamoDB Scan. GSI reads are eventually consistent, so the management list can briefly lag a successful write.
 
-## V1 boundaries
+## Supported capabilities
 
-Resource Studio V1 deliberately supports a narrow, reviewable path:
+Resource Studio supports:
 
 - AWS Amplify Gen 2 `a.model(...)` data stores only;
 - one new Amplify-managed model/table per generated Data Entity;
@@ -82,8 +82,8 @@ Resource Studio V1 deliberately supports a narrow, reviewable path:
 - Tenant- or Global-scoped Next.js management pages;
 - application-owned output under `amplify/custom`, `src/custom`, and scoped `(ci-custom)` route trees.
 
-V1 does **not** attach a model to an arbitrary existing DynamoDB table, add fields to a hand-written or core model, generate CRUD Lambda functions, generate EmberGuard resources/policies, or expose a `ci-dev` generation command. Native Amplify Data operations are the supported CRUD-and-list implementation; a Lambda is not an automatic requirement for those operations.
+Existing DynamoDB tables and hand-written or core models cannot be managed as Studio Data Entities. Studio uses native Amplify Data operations for CRUD and listing; it does not generate CRUD Lambda functions or EmberGuard policies.
 
-The generated action names reflect model semantics: create calls Amplify `.create`, reads call `.get`, changes call `.update`, deletion calls `.delete`, and listing calls the named scope GSI Query. Resource Studio does not invent ambiguous `SET`/`PUT` Lambda names for these operations.
+The generated action names reflect model semantics: create calls Amplify `.create`, reads call `.get`, changes call `.update`, deletion calls `.delete`, and listing calls the named scope GSI Query.
 
 Continue with [Create and manage a Data Entity](./data-entities), then read [Deployment, drop, and rollback](./deployment-and-rollback) before applying a sandbox change. Tooling authors can look up the [Resource Studio compiler APIs](../api-reference/build-time-apis/resource-studio-compilers).

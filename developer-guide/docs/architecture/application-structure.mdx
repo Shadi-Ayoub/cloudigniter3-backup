@@ -1,0 +1,51 @@
+---
+title: Application structure and ownership
+description: Find configuration and supported customization points without editing CloudIgniter internals.
+sidebar_position: 2
+---
+
+# Application structure and ownership
+
+The template separates CloudIgniter-managed composition from application-owned implementation. Keeping your
+features in the custom areas makes their ownership clear during upgrades and resource generation.
+
+## Find the right file
+
+Paths below are relative to `apps/template`.
+
+| Path | Purpose |
+| --- | --- |
+| `cloudigniter.config.ts` | Configure capabilities, providers, routing, authentication, localization, and development tools. |
+| `next.config.ts` | Next.js build settings and next-intl registration. |
+| `routes.ts` | Thin composition of core routes and the custom route registry. |
+| `src/proxy.ts` | Thin request entry point and matcher. |
+| `src/kernel` | CloudIgniter-managed application integration; inspect it to diagnose behavior. |
+| `src/custom` | Your route definitions, access-control additions, messages, forms, styles, and feature code. |
+| `amplify/custom` | Your provider schemas, backend registrations, and Lambda implementations. |
+
+## Put pages in their scope
+
+Application-owned App Router pages belong beneath one of these roots:
+
+```text
+src/app/(ci-global)/ci-global/(ci-custom)/
+src/app/(ci-tenant)/ci-tenant/(ci-custom)/
+```
+
+The parenthesized groups do not add URL segments. The `ci-global` and `ci-tenant` folders are internal rewrite
+targets. Browser links use public Tenant-aware URLs, such as `/t/acme/dashboard/books`.
+
+Register that page using its logical route, `/dashboard/books`, in `src/custom/routes/routes.ts`. Declare
+`tenantScopes` to match the implemented page trees. Keep application pages out of the system route tree.
+
+## Keep manual and generated code distinct
+
+Resource Studio writes registered generated files inside the custom areas. Keep hand-written registries and
+generated registries separate. A conflicting route, resource key, or occupied file is an error to resolve;
+changing merge order is not a supported way to replace another owner's entry.
+
+Extend a component through its documented props or customization hook before copying package source into your
+application. Use public package entry points and import public types through `/types`.
+
+See [Core and custom ownership](/company-developers/architecture/core-custom-ownership) for the maintainer
+contract. Next: [How a request becomes a page](/docs/architecture/request-lifecycle).

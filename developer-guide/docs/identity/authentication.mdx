@@ -1,0 +1,42 @@
+---
+title: Authentication and identity
+description: Connect sign-in, the current user, route protection, and scoped authorization.
+sidebar_position: 1
+---
+
+# Authentication and identity
+
+Authentication establishes who is making a request. Authorization decides whether that actor can perform a
+particular operation on a resource in a particular scope. Learn both before adding protected data features.
+
+## Use the configured identity provider
+
+The reference application uses Amplify and Cognito. `cloudigniter.config.ts` configures the login route and
+authentication UI; provider-specific inputs belong under the provider configuration. The server bootstrap
+resolves the current user and roles for its context.
+
+Customize the login page using `src/custom/authenticator`: its exported hooks include the login shell,
+Authenticator props, and token-based theme override. Keep authentication/session checks in the configured
+server integration; visual customization does not replace those checks.
+
+## Protect a route and its operations
+
+Set `protected: true` on a custom logical route when it requires sign-in. Add its actual permission requirements
+through the access-control catalog and route authorization contract. A protected page alone does not protect
+an independent Server Action, API endpoint, or provider mutation.
+
+The application-owned access-control extension lives in `src/custom/auth/app-access-control.ts`.
+`src/custom/auth/app-authorizer.ts` compiles the resolved catalog with the configured policy. Generic helpers
+and public types come from `@cloudigniter/core/lib` and `@cloudigniter/core/types`.
+
+## Follow the access-control chapter
+
+Read [Authorization concepts](/docs/core-system/authorization/overview), then the
+[quick start](/docs/core-system/authorization/quick-start). Continue through catalogs, roles, scopes, subjects,
+and enforcement before using the scenarios and troubleshooting pages.
+
+For account creation, profiles, administrator levels, suspension, and Trash, see
+[User administration](/docs/users-management/intro). Provider identity, application profile, role assignment,
+and Tenant membership are related records with distinct responsibilities.
+
+After identity and access, continue with [Tenants and Org Units](/docs/core-system/multi-Tenancy/intro).

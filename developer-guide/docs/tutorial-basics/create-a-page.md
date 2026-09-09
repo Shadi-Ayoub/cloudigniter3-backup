@@ -2,6 +2,16 @@
 sidebar_position: 1
 ---
 
+:::warning Obsulete — historical documentation
+
+These are the original Docusaurus site-authoring samples, not CloudIgniter application tutorials.
+
+Continue with [the current guide](/docs/intro). This page is retained for historical reference
+and is outside the current learning path.
+
+:::
+
+
 # Create a Page
 
 Add **Markdown or React** files to `src/pages` to create a **standalone page**:

@@ -24,8 +24,8 @@ Later layers may refine application-owned entries by stable `id`. `system-super-
 covering `platform.authorization.core.override` are reserved.
 
 ```ts title="src/custom/auth/app-access-control.ts" showLineNumbers
-import { ciCreateAppAccessControl } from "@cloudigniter/emberguard/lib";
-import type { CiAccessControlLayer } from "@cloudigniter/emberguard/types";
+import { ciCreateAppAccessControl } from "@cloudigniter/core/lib";
+import type { CiAccessControlLayer } from "@cloudigniter/core/types";
 
 export const appAccessControlExtension = {
   resources: [

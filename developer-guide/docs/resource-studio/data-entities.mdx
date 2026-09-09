@@ -27,13 +27,13 @@ For a book-management example, enter:
 | Management path | `/dashboard/books` | Static absolute logical path with no route parameters or scope transport prefix. |
 | Management title | `Manage Books` | Page metadata, page heading, and breadcrumb label. |
 
-The default Data Store choice is **New Amplify managed table**. **Existing table** is visible as a future capability but is unavailable in V1 because an Amplify schema fragment cannot safely attach a managed model to an arbitrary table.
+Choose **New Amplify managed table** for the Data Store. Studio creates a new managed model and table for each Data Entity. The **Existing table** option is disabled; attaching an existing table is not supported.
 
 ## Add custom fields
 
 Add at least one application field. Resource Studio accepts the AWS Amplify scalar types below:
 
-| ModelFieldType | Typical manager input | Additional V1 validation |
+| ModelFieldType | Typical manager input | Additional validation |
 | --- | --- | --- |
 | `ID`, `String`, `AWSIPAddress` | Text | `String` supports minimum/maximum length, prefix, suffix, and pattern validation. |
 | `Int`, `Float`, `AWSTimestamp` | Number | `Int` and `Float` support greater-than/greater-or-equal/less-than/less-or-equal validation. |
@@ -46,7 +46,7 @@ Add at least one application field. Resource Studio accepts the AWS Amplify scal
 | `AWSPhone` | Telephone text | — |
 | `AWSURL` | URL | — |
 
-Each field also has a label, required flag, array flag, array-item required flag, and optional default where Amplify supports it. Scalar validation is not available on array fields in Resource Studio V1. Reserved system fields (`PK`, `SK`, `id`, `ciScopeKey`, `ciSortKey`, `createdAt`, and `updatedAt`) cannot be declared as custom fields.
+Each field also has a label, required flag, array flag, array-item required flag, and optional default where Amplify supports it. Scalar validation is not available on array fields in Resource Studio. Reserved system fields (`PK`, `SK`, `id`, `ciScopeKey`, `ciSortKey`, `createdAt`, and `updatedAt`) cannot be declared as custom fields.
 
 Changing a required flag, field type, default, or array shape after deployment is a schema migration decision. Review existing records and the Amplify deployment plan before applying it; local code generation cannot make existing DynamoDB values compatible.
 
@@ -54,7 +54,7 @@ Changing a required flag, field type, default, or array shape after deployment i
 
 Authorization is model-level Amplify Data authorization. A rule selects one strategy, optional provider/claim/field settings, and one or more of `create`, `read`, `update`, and `delete`.
 
-V1 exposes these Amplify strategies:
+Choose from these Amplify authorization strategies:
 
 - signed-in users: `authenticated`;
 - unauthenticated identities: `guest`;

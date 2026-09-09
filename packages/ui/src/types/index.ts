@@ -146,3 +146,8 @@ export type {
 // spinner
 // ─────────────────────────────────────────────────────────────
 export type { CiPageSpinnerProps } from "./spinner-types";
+export type {
+  CiSmartFormProps,
+  CiSmartFormFieldRenderProps,
+  CiSmartFormActionContext,
+} from "./smart-form-types";

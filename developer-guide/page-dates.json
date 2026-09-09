@@ -1,0 +1,2100 @@
+{
+  "version": 1,
+  "pages": {
+    ".agents/skills/banner-design/SKILL.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "913d9c4b2a3b405d638d50131e0dd3fe2787c839423d79287b7858ac29255acc"
+    },
+    ".agents/skills/banner-design/references/banner-sizes-and-styles.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "c8906fb1073a576ee8c680d9bc8586249cbc4ed36690da960d65a1c9c37143b7"
+    },
+    ".agents/skills/brand/SKILL.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "6a450ee1a83a403d47cec2ede9030feb60a67a81fc425d2406e975339313bd44"
+    },
+    ".agents/skills/brand/references/approval-checklist.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "4bf8549687f53a7b9684005b4b87de93c26f018e00609b4c506a5812abd13d20"
+    },
+    ".agents/skills/brand/references/asset-organization.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "de98123417e9c5a1cc71a78131bba979c4c8ed2e5289e6c7a7f166576e488101"
+    },
+    ".agents/skills/brand/references/brand-guideline-template.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "392db8cf10fef492221c15a86e68590074bf5716de1f2982f41c01fbe30567cc"
+    },
+    ".agents/skills/brand/references/color-palette-management.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "c429298ffe3955edb8b22c9f51426fef75e83d02848cd4300e89c0d3fc34b44a"
+    },
+    ".agents/skills/brand/references/consistency-checklist.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "56d8b2d4852cda11e600adec4b9dd68fc89a1b8265382359953bec5c5e5e2c36"
+    },
+    ".agents/skills/brand/references/logo-usage-rules.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "044c5ddf30cfe0eea047451cfce6ea654939198ffdd8968a19161c97066a5a26"
+    },
+    ".agents/skills/brand/references/messaging-framework.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "24b2500a72867b55dd10f4bf359178b0eb347fddd852659ce47b69d9f597d4e6"
+    },
+    ".agents/skills/brand/references/typography-specifications.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "921c3d9e6ddfde2677b9a3e32eee94c7922f54f22c1f380c5ed2eb25a7d5bfa9"
+    },
+    ".agents/skills/brand/references/update.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "537cb55ebe260e1de127bd6288b19d8d7b15b6c893545442a58b739cbd342b37"
+    },
+    ".agents/skills/brand/references/visual-identity.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "63f0cfc5d95403d8e12aca4d839cc28471515574d9a431334bfbb96c15407c31"
+    },
+    ".agents/skills/brand/references/voice-framework.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "08c15ac79f81cd964c5efbe593131b61a093c7e1b060d5dd28b17f3cc5b331fb"
+    },
+    ".agents/skills/brand/templates/brand-guidelines-starter.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "d157a57b15f0b458c79636d11de42f3c89f03d8c0bbea1bdd3cf1c3542b2140d"
+    },
+    ".agents/skills/cloudigniter-development/SKILL.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "fc65357c3b41a6eb60c72ae8584e80c371e28da709ffacc7c58ffdb9c175a9a3"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/access-control/administration.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "42bb51bf29f3488c6e8bb1175245d5739470ea0c01723ba4539a8cbc02952bb8"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/access-control/assignments.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "e8f36536dedc7f80c098ecafccaabec3979a631735a9cb6e48e4e8408059d986"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/access-control/catalog-and-overrides.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "521effeabc7b60612426a2c8d7a672355b5f2027bba5ab65024f40f6a57a16d3"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/access-control/overview.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "6dc53a5d6abb3727de27de93d7789fb4a862366e52d7f1cb2d37c5dc7b73f1c0"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/access-control/permissions.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "9c3a5eb98870b506ae0a434c4bf4897c67898ed5a9af156132f68330fbd18500"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/access-control/roles.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "5ca713bd8b4b29d29be9232f022c27c01bc365a68a8fe3fbf4d5b8b9cfc20e77"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/access-control/validation.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "a8bf9b3b5bd4658c189425090cad681016cf8a47944cdc4578ec1e440373c717"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/overview.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "79890a54c672dc54550f7345f47fcca99527a6ca4945aa9b0158f5433ed6f06f"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/packages/ownership.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "b9ce94b33eea0e1fe836a210cc056f4511085eb2480662798efee3fa333eb4ed"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/packages/public-api-and-runtime.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "1f8ee16be5431287903863657c514dbb47d8f4c1f0bd9c9c7ca5dda4276f3f11"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/packages/template-core-custom-boundary.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "b463e48c8c74ed5e25cc076279abed7bc2c49dfc791b0f3c31740b4802864de6"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/persistence/dynamodb.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "2c0c992e93cef05173c8c4a1c04b536074fd66665f49fe37bbaa49ba9d98c297"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/persistence/table-keys.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "ff0822993bd1923b7e0b6b558cb8e3a3aa90bad66f80f4fab012986b96906018"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/rendering/page-rendering.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "a87f6732ae2984aee8757dea65a6232fa9e9c534affb398a78ebbd8a68e5ab43"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/resources/deletion.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "701aa9f4f65cccaa333f62718b18f71dd86f8d3d9196def651bbd65e7ca8dd0c"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/resources/overview.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "75d9756fe818ef6d3ca67b924eecd74fb930d013a1f01c6a0c0d15f9bc3c3c5a"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/resources/studio/data-entities-and-generation.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "3a3d699e98c04ba641ff92e2284dc648ba83304829d7859181eb2bc0ee825132"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/resources/studio/deployment-and-security.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "3f06d9cb662eb66f837b8ca440182b2dde94a6d73518b93c7ea26a5a57679416"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/resources/studio/overview.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "43dc53a8fa018ba578717fbf0f14fbcdd45f7a5778413f9ae0c061c3301ba490"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/resources/studio/transactions.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "7a3a1e6f50a05de1bb76f7c7db9a62f6dea46b7e63c1bf418e7aa0beae0307b8"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/resources/studio/validation.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "fc30ede0712644cd89bd663201cff7f02b043b60a9265c75b3f0291fdcffbf18"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/security/emberguard.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "b342caf8051250b432d3d71145414bba6313d0df6d9e2bd6e419ac6b5335101c"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/tenants/bootstrap-and-diagnostics.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "48c305aa78dce99bb2158f6b7649330c234e3dcb065ecbace1214e8c29a6a17d"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/tenants/context-and-localization.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "9c93a16503e44602e5a97f3af58df64f2f6875128a85f16a202a4376c6d0f93d"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/tenants/org-units.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "1ab3129fc512d0bcd308168c72b42337ae2c7cbb356265123b68bd5e5d0a6062"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/tenants/overview.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "3bc2714bc413a1a7767e6c44ac2adddc6424d6f04dea8a6a0dfadfa55781bee8"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/tenants/routing.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "646d128f28c598ccb735bcaae5e3d1c6575e31d889ed092aa59ab0dbbed2fe98"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/ui/data-table.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "9b723b2eb3ac0fc5fb1d46b3b15bdfdcbe29e9d570adde3cb61ca5f01be2e0af"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/ui/presentation-defaults.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "3d1d74dfe8a3a06490cdefae3fcd2bb241835d0afbe143aa0880b7920418a830"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/ui/smart-form.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "b7367540cd5650795311001e35470993bc017eea6b710704c5cc909284253681"
+    },
+    ".agents/skills/cloudigniter-development/references/architecture/users/overview.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "5b95987604b37682c3ac9a1b40f1e2fee087739f1f5ff9c8e7365c4819ccabdb"
+    },
+    ".agents/skills/cloudigniter-development/references/authoring/validation.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "6732fb8b2b9d0ec3cf4a2bcdc14a8815d2e650e0df4666046bf63429340f32fa"
+    },
+    ".agents/skills/cloudigniter-development/references/cli/development-tools-and-seeding.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "c77b1c6cd0e950ad39fe936b646606a2563d163f7901c9ba91dd16e507fbf30c"
+    },
+    ".agents/skills/cloudigniter-development/references/cli/development.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "462a337ed7b6e345345fb7a6f473e58da4d02bc13faecf4aadbee47d78ec4d41"
+    },
+    ".agents/skills/cloudigniter-guide-authoring/SKILL.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "a819a02e235fc655f82c8e19345f87139d4d897c4277b3e96b774c2f3fb162c5"
+    },
+    ".agents/skills/cloudigniter-guide-authoring/references/api-reference.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "e05a84b7012d4074ee5b0f56575cf14398d15b010c63057e37cefa9b049777c4"
+    },
+    ".agents/skills/cloudigniter-guide-authoring/references/cloudigniter-developers.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "275d1efbf13753a590dd8c470a84010556ab39a41ecf23edd95b6fbb9f719dc3"
+    },
+    ".agents/skills/cloudigniter-guide-authoring/references/cloudigniter-users.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T18:47:05.413Z",
+      "contentHash": "2cc2371e90c1dbae4b847eb864f28bf3e751e6f9a36de412b853885435f2c560"
+    },
+    ".agents/skills/cloudigniter-guide-authoring/references/workflow-and-validation.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "001c765286a232ff009d84d0015f38ac4ab6ccf359b6d1519aefaf568d42a4a9"
+    },
+    ".agents/skills/design-system/SKILL.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "655468bb723a6bc9d17fcb09a6a005e10e313d63b879f4d74fb2abdc3041ae3f"
+    },
+    ".agents/skills/design-system/references/component-specs.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "b265d979a741dd748d4e595e6898ae430faeef4f6d13d7a634fa6241b91d2da4"
+    },
+    ".agents/skills/design-system/references/component-tokens.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "e27f8f5999badee425c98235eabbd2cb3ebe2a1a364766d5c7a6b3134ceaaec8"
+    },
+    ".agents/skills/design-system/references/primitive-tokens.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "91e6caa12646c08c8aadf8e09399aed65760a25c8d80595936d81a9131118fc3"
+    },
+    ".agents/skills/design-system/references/semantic-tokens.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "97e16d8061bbc22e82b51966a7015e3fc990932902e4647843506669a1cdebcc"
+    },
+    ".agents/skills/design-system/references/states-and-variants.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "8dacb95d57d4bb37d8a99cc55515ff26da272056f837d29abc74aedcaa3ba104"
+    },
+    ".agents/skills/design-system/references/tailwind-integration.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "6d01092db1479dbd2060567b4232bb2b4bc16e89730ab07e1f87a3e7f5c406b9"
+    },
+    ".agents/skills/design-system/references/token-architecture.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "925f4049c4c4313d9fd5df98cdfd52004112aca49fba1664ad85e76bc9dce4d3"
+    },
+    ".agents/skills/design/SKILL.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "413f4ab913d07f7fd92acbadc25d71aad63443be0c40d11234944aea688603b6"
+    },
+    ".agents/skills/design/references/banner-sizes-and-styles.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "c8906fb1073a576ee8c680d9bc8586249cbc4ed36690da960d65a1c9c37143b7"
+    },
+    ".agents/skills/design/references/cip-deliverable-guide.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "1424e120b967288e2334f24fcfa5cdc7f238420326a7444f4c5597efecfabc41"
+    },
+    ".agents/skills/design/references/cip-design.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "47a3b2e445bc07185edd0cd24ba8a417229baf86717dcdff7c4e403adbceb3f1"
+    },
+    ".agents/skills/design/references/cip-prompt-engineering.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "4bf3a0c858f38c230e43e872857b72d9eb692e066e8de5920da75aac733e753c"
+    },
+    ".agents/skills/design/references/cip-style-guide.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "f3e15408cd981e93804440c1159c12e02d001bc37a3945f455b3fc13729ed4e1"
+    },
+    ".agents/skills/design/references/design-routing.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "32914a913f4f20d4cb1e497e5a87cfc04b71af4e6d75db72ecf50e4f060201c8"
+    },
+    ".agents/skills/design/references/icon-design.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "39281931d070918b4e51ecd71054da99493cabe06a07dfa8f1f682e48637c83f"
+    },
+    ".agents/skills/design/references/logo-color-psychology.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "3fd0e93e24c3b2ea7f3be778e8f2d03b1c62c7c6eab3ade478c8fca332bff287"
+    },
+    ".agents/skills/design/references/logo-design.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "2e845fe165c845fd9582c1d74204fa31de607380982a6ea0b5f8db4e293afa3a"
+    },
+    ".agents/skills/design/references/logo-prompt-engineering.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "e50f55bf323263eb27b4cd4c5172383a787fb894581d5d2befb3f6e0180b253e"
+    },
+    ".agents/skills/design/references/logo-style-guide.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "611baa841eedab101f45c113c6bfbd4d7e16e859c9d6ebd2cf941827a6e8dd15"
+    },
+    ".agents/skills/design/references/slides-copywriting-formulas.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "03733d5916ab771834745550045b736deeb94a08226f2b200f7953009c35b219"
+    },
+    ".agents/skills/design/references/slides-create.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "792d647a5d4f87d765cf417f7ac54dd0b2fc4d229cc23ea9df56282d4c1ee086"
+    },
+    ".agents/skills/design/references/slides-html-template.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "fd5b051a37365fc6059c75bb388ec6f64daf1bd9ae938b287b6d762dc83c0c35"
+    },
+    ".agents/skills/design/references/slides-layout-patterns.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "0a967ca3bd829d3234e6f1802bade6c76447fabbaddbc8117c41adbae7dfb6df"
+    },
+    ".agents/skills/design/references/slides-strategies.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "27ee3e53ffa0ea679ec83ebeacb0bcfbce498df57277e99f574b9c139dc44286"
+    },
+    ".agents/skills/design/references/slides.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "5630d5daec947ff58ab1ac97c7a1ee77a21cf6f5dce5155535b65d291691979f"
+    },
+    ".agents/skills/design/references/social-photos-design.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "2544c143ff3a4471a775e2271797a3871480f94de91b267178da92e8952192a0"
+    },
+    ".agents/skills/slides/SKILL.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "2b90bdaf63f231919a01f4962f374ecd84af101a7e7545f8d9c68e049025accb"
+    },
+    ".agents/skills/slides/references/copywriting-formulas.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "03733d5916ab771834745550045b736deeb94a08226f2b200f7953009c35b219"
+    },
+    ".agents/skills/slides/references/create.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "792d647a5d4f87d765cf417f7ac54dd0b2fc4d229cc23ea9df56282d4c1ee086"
+    },
+    ".agents/skills/slides/references/html-template.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "fd5b051a37365fc6059c75bb388ec6f64daf1bd9ae938b287b6d762dc83c0c35"
+    },
+    ".agents/skills/slides/references/layout-patterns.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "0a967ca3bd829d3234e6f1802bade6c76447fabbaddbc8117c41adbae7dfb6df"
+    },
+    ".agents/skills/slides/references/slide-strategies.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "27ee3e53ffa0ea679ec83ebeacb0bcfbce498df57277e99f574b9c139dc44286"
+    },
+    ".agents/skills/ui-styling/SKILL.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "f8b6c3832d2af51f67b3932e3c4a79bcd8a8596cc61ce1547a686fc951e5c62d"
+    },
+    ".agents/skills/ui-styling/references/canvas-design-system.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "f5de85ff39d9f3a8275c4164b921ba72d5e1d34b8d7a9243d9ee34b3870a4f5f"
+    },
+    ".agents/skills/ui-styling/references/shadcn-accessibility.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "a22cd4ccf82b635b2b2c4f12416a0c4f7edcd825d219d6089450fa797a0d9511"
+    },
+    ".agents/skills/ui-styling/references/shadcn-components.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "79c4f91cbf68993a43fa3a95889c35db73de45bdd3dfd83a6830863c01aa598a"
+    },
+    ".agents/skills/ui-styling/references/shadcn-theming.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "d17d641474221123ff0e0288043ca2f2dab3ac96908a19eed28d82f9e58865ed"
+    },
+    ".agents/skills/ui-styling/references/tailwind-customization.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "4c5adeed6263a274f74f6eb2c816ca420fd6ef4f35683582988bacd404799afe"
+    },
+    ".agents/skills/ui-styling/references/tailwind-responsive.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "8d00ae620df26daea4623c7bf996d6e612e09d359305fcfa2b40cab757ed840c"
+    },
+    ".agents/skills/ui-styling/references/tailwind-utilities.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "aba1c40ef84f43beea142ae310371e332541f39d973df90a71f1854823effda1"
+    },
+    ".agents/skills/ui-ux-pro-max/SKILL.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "0b64203a5ca7fd979bcc0c5bd8b6e9af09a1f43696f9286755ffdf993338d747"
+    },
+    ".codex/skills/graphify/SKILL.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "973adef5ea6b52ba5b2fa05947a1c06abbc96c2b75dada3b14917c864dbee4d9"
+    },
+    ".codex/skills/graphify/references/add-watch.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "b3f67570240582689c2834b4831917550c2d1aaf042148868c39dcbf387ce3fd"
+    },
+    ".codex/skills/graphify/references/exports.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "ee47fae477f106d8aed38798c58493b5a7f060a0d9d2581ce6132302827bc14b"
+    },
+    ".codex/skills/graphify/references/extraction-spec.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "32d7decad42d58129c6694ea4e4ce1f72a531bc5161827d2095787e9448735e9"
+    },
+    ".codex/skills/graphify/references/github-and-merge.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "e5ebd90c7686f50363ff7a535556bc2f596d4c47ec1e6c8b95e11e36a0dfea2b"
+    },
+    ".codex/skills/graphify/references/hooks.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "b9a4e9f66813c6fc720589f1071d1a03c95756ab7101447e14e57291fe7844e5"
+    },
+    ".codex/skills/graphify/references/query.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "e563ddcb1e155aa230f107e5ef9380bc1249c5cd8241128de7ed8a7bd9c20cf5"
+    },
+    ".codex/skills/graphify/references/transcribe.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "676a1e39aa6d43cdfcc416ec56616e36f7bad74066a82bd33a9485515b9a865c"
+    },
+    ".codex/skills/graphify/references/update.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "661f559b3ff4f3db7ba47bc2ba1c7e19f1c1d66a36f647e49221eecb174f2228"
+    },
+    "developer-guide/company-developers/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "821c770ff299ad42bbb4d322f81d72809ec68ffa6ce5dd036f89c655024d1a33"
+    },
+    "developer-guide/company-developers/architecture/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "229a2b966ac041d7889f990ed95ca59922025a998d67c35ef0836eaa259319f8"
+    },
+    "developer-guide/company-developers/architecture/core-custom-ownership.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "42ea1ad26a534cc8b35d315689557a80afb3be30f88156dea43bfecd075cc552"
+    },
+    "developer-guide/company-developers/architecture/smart-forms.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "2e5c11e810b54f98e6aa6f4028825cdca6f8bf2167c241d39a16afec7da75caf"
+    },
+    "developer-guide/company-developers/authorization/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "431ddbfc3bfaa5621b7a101e2525600eb03c8086cdc9a8a2acaba4e2e231e4e3"
+    },
+    "developer-guide/company-developers/authorization/access-control-strategy.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "658c8e639682551e68baa4efc35aa5e378a7604e7568ad831aade5709a466c08"
+    },
+    "developer-guide/company-developers/documentation/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "0370e3cdf7450d7628e589b234053e12c0fcd201ebc0c2592ada95db8dd4dd5d"
+    },
+    "developer-guide/company-developers/documentation/authoring-workflow.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "1527c6fead837a64b05f9e348cec74cd827bcd4322a4c5024f1679a056e037f5"
+    },
+    "developer-guide/company-developers/documentation/users-guide-structure.mdx": {
+      "createdAt": "2026-09-09T16:26:08.097Z",
+      "updatedAt": "2026-09-09T18:47:05.413Z",
+      "contentHash": "3975d56aae4d46855f1ce05caf9056ac5cd669fa407705533e972918734e2feb"
+    },
+    "developer-guide/company-developers/identity/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "4cd5a1928de7994b731df379849f18072e973e3a57dd4b0181e8fbb25491b84e"
+    },
+    "developer-guide/company-developers/identity/user-administration.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "234bce7c7ea97877e65c4f010a7a9f583ab2c52c9ebeef7f91e686deed68b8b1"
+    },
+    "developer-guide/company-developers/persistence/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "709d5298c13e53ade03febe896d8a256684dd565c489b01eaaf5459b25973172"
+    },
+    "developer-guide/company-developers/persistence/dynamodb-strategy.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "af68ebcf18f39ec0b5a4632080612cd95f357bfbd691cdc31b1c63a90fce87c9"
+    },
+    "developer-guide/company-developers/persistence/org-unit-management.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "919c811d77173a9990dfaad2a063f16c26ada690d417ab78ac11a53210cd493d"
+    },
+    "developer-guide/company-developers/persistence/resource-deletion-lifecycle.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "c13053366f76f15d6d1ec2eec0bec0b3fb2f1782386b8cd9ea540d6d4472e753"
+    },
+    "developer-guide/company-developers/persistence/table-key-convention.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "f14c828c9c1266eb9b664088d9a2ccd70ad499fb856c50bbf6e7020e29c9f96f"
+    },
+    "developer-guide/company-developers/providers/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "6b3fce20b863dbac7759eac49d6cba7e04ba74a0c4d4c721bde050069bd7b503"
+    },
+    "developer-guide/company-developers/providers/aws/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "48c236cb085ab75baf34b080c5c970442e6fbb3f4910619032a3bcb52857835d"
+    },
+    "developer-guide/company-developers/providers/aws/amplify-backend-strategy.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "df4cd56d2ff7dbad3f3c9e0180b9307257dd17d07d6d3cdfec3ab6a376d62ccd"
+    },
+    "developer-guide/company-developers/routing/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "e4bc1407f4f08d4c7ee85d8b04bd0c636bf0016dcdb934901b5daf27f96d1087"
+    },
+    "developer-guide/company-developers/routing/tenant-route-lifecycle.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "555b0a4e7290304999b91c683e8abc9be51bc090b07ed3cb551533e64cf0ce27"
+    },
+    "developer-guide/company-developers/tooling/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "45ba083fc714c3f7499d109dc340cccb97a0d26c824a59c3914abca1441e5920"
+    },
+    "developer-guide/company-developers/tooling/cli-architecture.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "0d24aedec7e17b4a1ce831bc525290bfb23e6bb2a355c78c16f6dbf53d24ad61"
+    },
+    "developer-guide/company-developers/tooling/cli-command-reference.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "07696422a459a16de927fa0efd4a39772377a0d40a1eaee56da80f80cf884541"
+    },
+    "developer-guide/company-developers/tooling/development-tools-and-seeding.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "bfb17e4ef79bc03ef751d28610b96210a4b14519e3ac4527dfaca5ba3e1b855c"
+    },
+    "developer-guide/dictionary/a.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "29bdfc6748c2a85e67af47ab2eb1daa09df7b4c54927ceb84a2682530a4af103"
+    },
+    "developer-guide/dictionary/b.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "2eb73c8da2d1ec817efac5e631191ac43d3f2f2bc79b3589ca816adf2a91688a"
+    },
+    "developer-guide/dictionary/c.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "360aaef24e9fda6e52e54e6e6f6ddc19cf0a46746cc1d05a5d436ff2aed8dc28"
+    },
+    "developer-guide/dictionary/d.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "b6f3ac42ba6b1e558bb56c55f26265ea9e282d65bc1bf6b713a51181a713a409"
+    },
+    "developer-guide/dictionary/e.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "239c8e1eee74906a4da768a9d695110130a921bd86f235f427029e3e2b254eb4"
+    },
+    "developer-guide/dictionary/f.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "24664feacadcc455c1dcc358a1279b9272edc9792513b1e9a86c84a6556d09c2"
+    },
+    "developer-guide/dictionary/g.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "a42b0e4638750e564dee4e9c8e243012a01e1b112aaeaf4a2970e573c62bd8f4"
+    },
+    "developer-guide/dictionary/h.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "e1c544b1686cc988c554304ce8f8fdfa48924baf6694ec66c5c4384a8d026a74"
+    },
+    "developer-guide/dictionary/i.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "163be2f4d347bc84ad571429c41fbf567846620197efe8d3547da8e4df296d1a"
+    },
+    "developer-guide/dictionary/index.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "c2efd074f3408ce9cca442e4c436edee0cb47c46cad71f516b1e3087fe3a070f"
+    },
+    "developer-guide/dictionary/k.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "1db937170fe348e875568462b4a919aef9144215cb23aeae8c67f4bb67d57a1c"
+    },
+    "developer-guide/dictionary/l.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "538065c30febf319a52348416d538fd7e2584f3b73dcee69d89be60caf9c0904"
+    },
+    "developer-guide/dictionary/m.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "896195ca31683c47af40203e7bcb3b4711d00d0063e70d4c7b8d3a3becc31dd3"
+    },
+    "developer-guide/dictionary/n.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "24a990a30c55321064c21abbd1f099f2b2d81abae3c2ebabd30260356c2d0e2f"
+    },
+    "developer-guide/dictionary/o.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "a4e4963726bb85dec7c96f6ff5e77717fb7d96b1eed8729c90e8bd9a279ff3e2"
+    },
+    "developer-guide/dictionary/p.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "ba8ca66bfd7315e6b3deec7db9ed0ccb0824fca68984cc68d976a3dfc6e3f7f1"
+    },
+    "developer-guide/dictionary/r.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "99a2108180074165061f76afce07a1e340eb3a215144e53691a097c76913986e"
+    },
+    "developer-guide/dictionary/s.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "054c8710f7f1a5f726b4e7fa457291f13cf5899c5623cbaabf07744049679500"
+    },
+    "developer-guide/dictionary/t.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "52f99eb69fe25a2950eaa7fc532f8b7a915d5076fd68e2f1de0dbdebd5dc86e6"
+    },
+    "developer-guide/dictionary/u.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "b38ba197a9b74769e2a521742c9e3b7e956da43f7842204b98db66b0b97d3dd1"
+    },
+    "developer-guide/docs/api-reference/authorization/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "2bd2634495ea98a36d02231e6a321ca1f48ea891fd9027b4645897677bab4e1e"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-access-scope-contains.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "bd2cc4d08b03e76456e4dae1e85d5c79db47ff36f3f6be52c0ee4e9c180a0ff7"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-apply-core-access-control-overrides.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "8987bc92c13417c8feaf5fa552e7af255e51898014801c7a7731aada32aa6ca8"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-assert-valid-access-control-definition.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "69cc11dc0c2abb78dcf368b568a303a4372fb3a9f2928fdb585d2b2f60c4fc94"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-authorize.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "e567a107de475df940d590500a3248f436cca08f61ec2cb720a656f3cf503a86"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-can-all.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "3f11a7af21932c443e3600160c454add5291918bf8cf4d8e980d0cde4853afe2"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-can-any.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "0d40f12b76ab2296103493b8ccb5963c010586d379d4efa1e2dbb6cbdcd556dc"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-can-override-core-access-control.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "b757071fab4a7314d66571d5b4102f26e3161914bc660b1113b6c7e59c577e66"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-can.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "e124cef6ad3aadf7e625399bff6edd927d58d8ac22c53b12702a75ec44ba9c3d"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-create-app-access-control.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "f3fdff6565fcae14edd87a4dd5c87f354dcad81e52e15596d268f48c75268e6a"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-create-app-authorizer.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "09f1fbdad1599cfc9462c3266bfc957bec6ef5363b51313bf612f071ce70fa20"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-create-authorization-subject.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "213fa549ffcebfa88fd0688d5a28628720064e597a5cc2941b9c91c72e780152"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-create-authorizer.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "0fe672b1edf0920da78237524cef9746ebe29e0fe8e6357a9c23d2893a9c5e0e"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-create-core-access-control-override.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "dfacc6b89c0f0ef4794d71399ef36188b622549474eb10f9340f8ed3aade0031"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-create-core-access-control.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "df17bd0c4c8b1a428bace5a9e5908af0bd62ace41b157b9d643a40eb9d240af3"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-create-role-assignment.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "137b7e807e3194c4a5252de31abd7e322e25d6eacb5a8ce527a68c92bc4b321b"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-create-role-assignments-from-identity-groups.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "0d95814d1680176f873ac65e6a930b6f5edd043465e391180b1bb100c83eafff"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-create-role-assignments.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "743ecf5a5bad6bf7988dce271511ab9fdfba8b440eab579331bd955fc3eaefbb"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-create-scoped-privilege.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "e25ff080208df9c6d69f69e38daaaa1a20e3dee683a69818f8e99a68ae6447e4"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-define-access-control.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "5bc52c5b673826d01c3216303a5b53924a43e0cc5b3ed7b641f9d2a65ec1c5a1"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-format-permission.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "49a4bece3d6ec52972f1297cf336d0b5eaebc171cd5c22875354f8116aab702e"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-get-access-control-entry-origin.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "57b88eff6e53569e3429bc3296cef5dccfc028e14b4769e9551e58a69929610f"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-global-access-scope.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "b5435440ebe7ea76d68353f67c37a8f441928385b38b935b6a87c2010dfe74de"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-is-access-control-kebab-identifier.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "8bdeb458604a4836712c89d9ebc88c645594d1d8e76d6b8600279a3b3b9fd3ea"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-is-core-access-control-entry.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "ce2228d34bb4ac99feb960a7719b064928e4ac632425215305c02a13eba08001"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-matches-authorization-pattern.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "f3b16dd35f804056142086fbf82923b65f06fd566573a6e8badc94fc209ec858"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-matches-permission.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "bf54989877cd2932f689e60e2b664f080a57124984cf7f500b0aed752ed9ffe9"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-merge-access-control-definitions.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "2b199f215a3f9a20c0ff434235ac1800571ab4665ce4cfb16ac5250d72094828"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-migrate-legacy-privilege-titles.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "939b2248e7eacee50610c1b9a583117dab4960de0f010fdeccce355133cc6abb"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-org-unit-access-scope.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "e6d686001a1e4735b5f44261efed29e08b98e878bd8492c6f1fd890fe5b5096d"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-parse-permission.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "1af290c1f7b718a5064f74e1f54ec8340d451ede7909073b44bbc9c52e2c9d7a"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-privilege.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "62a91bf573ba7373e746efdd978c8778eb97e11d81ce2d9b99be38cbcb940881"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-resolve-identity-group-roles.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "7421f9b64d144625d9ec168bb78e170ed77b4467cee4dee43a7bc2a68748514e"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-resolve-primary-role.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "99d818eb7c430a4a93738cd50895fb684fac029f4b86d08f1a5bc0026da9a84e"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-system-access-scope.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "a96367c6b2acaf8e38e12122c2f4e4b01c3048483bc0a090743b503f8caf0c16"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-tenant-access-scope.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "77c2a2475d5a4884ac685c15da20d16803295dc98d83ae81503b66c0ddde5653"
+    },
+    "developer-guide/docs/api-reference/authorization/ci-validate-access-control-definition.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "058b47719212d2debd949c91b89d3cb66c42dde74538f144afeb3fd0b23992f0"
+    },
+    "developer-guide/docs/api-reference/authorization/default-access-control-definition.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "a5d61aee48014765b74bd04d912adcc57c9866310bff65485e5b539bec9bcc7c"
+    },
+    "developer-guide/docs/api-reference/build-time-apis/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "df8a900150f63fce5f357f7aa52a81a67470091e34e73aaad39faf4308e87aef"
+    },
+    "developer-guide/docs/api-reference/build-time-apis/ci-merge-amplify-data-schemas.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "09714eaa44996026fe6baadf28bb34f84dc7d5a7f1de8b5a50c83ff3ed9ba735"
+    },
+    "developer-guide/docs/api-reference/build-time-apis/resource-studio-compilers.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "20f4112fb675b72c3605a43f136925ea0fbe482b01528edd3645168338dd9a75"
+    },
+    "developer-guide/docs/api-reference/classes/Dynamodb.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "7cb2acc2c1c856818fb37c9f54869317fe00bfafbdaa909cd85b4598dea55647"
+    },
+    "developer-guide/docs/api-reference/classes/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "27729fba1367c552a9c26b8d2346a006773a8cc774b00bd557c3c9a8c0a7879b"
+    },
+    "developer-guide/docs/api-reference/client-apis/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "ed7eb4d84df25a997ea1f7f441b6b9e55af30780271baa72113a0732847f3fe6"
+    },
+    "developer-guide/docs/api-reference/client-apis/about.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "a1b13580b8c1b9b6d2f62e3eac0b90bcd666636a15606da37de6d8610475b8e2"
+    },
+    "developer-guide/docs/api-reference/client-apis/call.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:30:18.815Z",
+      "contentHash": "79eabd326646d54e3733d7170d1a86e01741f5160d52ae67d0afcaa89e423939"
+    },
+    "developer-guide/docs/api-reference/client-apis/notify.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:30:18.815Z",
+      "contentHash": "ce9d61ad2df5dc95bd147642ba314d2a3ed723e4bdee5eaa188b79fdaf0fac9b"
+    },
+    "developer-guide/docs/api-reference/components/CiNewResourceBadge.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "175ac87527d769907f65dc844fea5768c65ca42704e386a8fc14ec24d742f3e9"
+    },
+    "developer-guide/docs/api-reference/components/CiOrgUnitManagementPage.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "5a9604ef9ec2c2eb772668bea2dfb695c745ca6cb5e93ff76999292fb32ea375"
+    },
+    "developer-guide/docs/api-reference/components/CiTenantManagementPage.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "2399cbf2dd8ea2cefef9e11c6ce617358b519e58a024500ac3bed9653bd596a2"
+    },
+    "developer-guide/docs/api-reference/components/Layout.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "069647f9d656146b133a5a563660a260eb96084765408d06f396dd0dc658864a"
+    },
+    "developer-guide/docs/api-reference/components/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "2abdc365eee01add8417a897a4724a4760ee548d02de939c64ae47faed996740"
+    },
+    "developer-guide/docs/api-reference/components/ci-alert-dialog.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "7a268f28318651f140e6e251fa810042c6300606d3f52690f50699b59af07c54"
+    },
+    "developer-guide/docs/api-reference/components/ci-data-entity-manager.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "224c8a2338effa060c0645d95c0140d14a5015053e7eb74c61efd59ffe17514b"
+    },
+    "developer-guide/docs/api-reference/components/ci-data-table.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "d2916dc4a6a0502748e40c98ccc0210922a2f837b6e45210de080012b17ffeb6"
+    },
+    "developer-guide/docs/api-reference/components/ci-dev-beacon.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "2d0672b1905724472c7c986e9fc368441e92a523483dcdee1f9f28f5bbef686a"
+    },
+    "developer-guide/docs/api-reference/components/ci-security-data-page.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "f53006aeb369fe0a916b29a79e9369b24cb04f0d739fa1b23c62b4555df6f226"
+    },
+    "developer-guide/docs/api-reference/components/ci-smart-form.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "e81d5e097cb27e7e0e82fe3758c18713e1d8a5e40dd8ba31d178e410cf2af150"
+    },
+    "developer-guide/docs/api-reference/components/ci-user-management-page.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "6aaf532df532697ddd5304dbeb22408a61b804d517b552f8a535130f8f6cb59d"
+    },
+    "developer-guide/docs/api-reference/components/page.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "0921145e3529efdaf3689b4a073609007b1009670c83b8afb65952d84f696625"
+    },
+    "developer-guide/docs/api-reference/http-data-apis/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "ef394c3304996b35c51fe920c0e901007dd99e1a15e795efcde1c42c2cd7b7b0"
+    },
+    "developer-guide/docs/api-reference/http-data-apis/intro.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "22c494b1b9ddda94eab007ab2f8850ec1a2653b58c8afbf4313dac2160bab0d0"
+    },
+    "developer-guide/docs/api-reference/overview.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "6c10a8c8fedf4e8d5219f2f55def009436f9a043cb88055ac3461674378ff078"
+    },
+    "developer-guide/docs/api-reference/server-apis/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "7c62e9bfd605be7bdaf4d6a16bff8dcdfd3f7c470dc38f0e772307c9274d9e0e"
+    },
+    "developer-guide/docs/api-reference/server-apis/ci-read-json-seeder-data.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "66b63c26659e6d8827383b6658bbb238b0548e8c4f217ed9dc124b6fa1c55428"
+    },
+    "developer-guide/docs/api-reference/server-apis/intro.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "fbd6681e8d5d9a4b814e6014aa0b89e7b4d668b957d0c2ca7d30405a2fbc7b81"
+    },
+    "developer-guide/docs/api-reference/shared-apis/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "a98daaab54841571e4c9403d255c30d6429e8710c9ecc3cc342eef25a3e575b6"
+    },
+    "developer-guide/docs/api-reference/shared-apis/ci-aws-json.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "796c0fbca2668c38a70418e4182482b2e997e1b319c266912944d542a1d23c0c"
+    },
+    "developer-guide/docs/api-reference/shared-apis/ci-build-table-key.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "20eb64a64d8a4acfdcae62e01291085ba1d97534799bdb63f386ac71d9850fc4"
+    },
+    "developer-guide/docs/api-reference/shared-apis/ci-build-table-keys.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "c048bcc288fcd2ea41fe0a59ff4104531f9107b94682a319ccc52e3d8b4dc922"
+    },
+    "developer-guide/docs/api-reference/shared-apis/ci-build-tenant-public-pathname.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "fba7c4192ba58ab043e7b0efb1cd764f697b66bfd67f3baa45da3096ee71c2c1"
+    },
+    "developer-guide/docs/api-reference/shared-apis/ci-can-access-developer-tools.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "86008efaae5a91135c22a963fd4c0712b82ccd08c2c40cca0909ef4022d6e299"
+    },
+    "developer-guide/docs/api-reference/shared-apis/ci-merge-route-maps.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "e7afa25ebb6b7146c40e5a3e43c76c0b825af02de74ecd60e72e453583a44ada"
+    },
+    "developer-guide/docs/api-reference/shared-apis/ci-new-resource.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "6861ce0dd43bdeb1a8800f2a77235fc42fecfd01bcbaa76cb50112c99f555822"
+    },
+    "developer-guide/docs/api-reference/shared-apis/ci-org-unit-context-access-scope.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "2f68dc276eb8e77f10c84872e95ba9b05453cbf300c3b106c46644be5b5dbae9"
+    },
+    "developer-guide/docs/api-reference/shared-apis/ci-smart-form.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "2abd60f1ae083978f6d5389868a65c000c03d8513329459f8a2848db7e8d6d64"
+    },
+    "developer-guide/docs/api-reference/shared-apis/intro.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "a2aa5b5261705aed2310998ecf44790d439f8a392cfc4261974bd14a1fc717be"
+    },
+    "developer-guide/docs/api-reference/toc.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "1b9f1ece20897e7bce230d1c44bde75288ffc4f13ecc699114649fe8d769fb04"
+    },
+    "developer-guide/docs/api-reference/trace-diagnostic/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "fa81f641b578fdd84fc57a7f348a44f429132d888382511927ce13833f43b18f"
+    },
+    "developer-guide/docs/api-reference/trace-diagnostic/intro.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "22c494b1b9ddda94eab007ab2f8850ec1a2653b58c8afbf4313dac2160bab0d0"
+    },
+    "developer-guide/docs/api-reference/type-definitions/CiEmberguardConfig.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "a8813571a31514b3b9428912a3c8f759344da055dce59837a10932707cce96fb"
+    },
+    "developer-guide/docs/api-reference/type-definitions/CiExtendedConfig.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "745a5a62f9bedb2eba58604530a94751141e13f8f1e47eebd6c4a6207f3ad725"
+    },
+    "developer-guide/docs/api-reference/type-definitions/CiOrgUnitManagementTypes.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "68b91ff389d8d0989d1b96858a1955a5ca87233685d2209efeab0cbd5be50b46"
+    },
+    "developer-guide/docs/api-reference/type-definitions/CiPageConfig.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "334e07858a4250f6d840d68070a57bbe5fcbf88aabc149ca00bedfbb7f8ffea9"
+    },
+    "developer-guide/docs/api-reference/type-definitions/CiResourceDefinition.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "8e1afd50878f7926536fe8493e85c2d3201b0b7c3188d9e8e3c8ca1a009d3c9e"
+    },
+    "developer-guide/docs/api-reference/type-definitions/CiResourceDeletionTypes.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "49d311c6a71ce867c571529a3340f33bef86e0bdcb1b60fa57f375f45e5f4dce"
+    },
+    "developer-guide/docs/api-reference/type-definitions/CiResourceDomainDefinition.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "c427962277c109e8dc1de986318caa35e3f0f3305ac62987b9a1beef271ebf9e"
+    },
+    "developer-guide/docs/api-reference/type-definitions/CiRouteDefinition.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "642971e9decfe74a3c7be4a40c847a485bf19f3987a0b03dca205beaa7709c14"
+    },
+    "developer-guide/docs/api-reference/type-definitions/CiSeederTypes.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "f0ef2155744bf457f88be0019ee01b3c66f602a0a0d6a723c77f5d258726aef8"
+    },
+    "developer-guide/docs/api-reference/type-definitions/CiSmartFormTypes.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "199c4130b4d2e674f0b81617c05675d5903ccf5475650a2c62aaa5052ef0ed5e"
+    },
+    "developer-guide/docs/api-reference/type-definitions/CiTenantLifecycleTypes.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "a8db80ce50561044fd166bf9ffbf68ef114a16c9c97f1e822b1679088785ae41"
+    },
+    "developer-guide/docs/api-reference/type-definitions/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "01157efcb788ad9e0ae7a55ee49662592afe72f770ad4e6fda117c3f008b9571"
+    },
+    "developer-guide/docs/api-reference/type-definitions/ci-user-types.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "681c44657f5cfc78eac9e2ca0297c6a3b92b4c2f287c4801e8475b929e266042"
+    },
+    "developer-guide/docs/api/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "7b440d81669c13b5c833fc3833d9ebdeb31d8ba36f79dadcbdd983dbd9b034ba"
+    },
+    "developer-guide/docs/api/appsync.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "a3e4f01e48ba9144f5f25f5dcbfc64261a07bf3c53572bb136e8dd4899d8ccc0"
+    },
+    "developer-guide/docs/api/client-call-strategy.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "0c8a4c46073c48c0717a83d324785de4470872b086235241dc39c5299822b410"
+    },
+    "developer-guide/docs/api/end-to-end.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "606dd61747bb30c193909004f23ae75eeb92c341c8645659177957e13f286345"
+    },
+    "developer-guide/docs/api/error-handling-strategy.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "7bee0bc6a01884f18886f2378cb9bb8dbffcc766c1e30e66b5d0564044188aab"
+    },
+    "developer-guide/docs/api/graphql-response.mdx.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "b47e0efd66d467b56e8d89751db225aff7215e8505bb074d8e78001531323936"
+    },
+    "developer-guide/docs/api/intro.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "3a0f392b0c976fad7f44af5e0d723ce4100609737a8d4eef78bdd99afa662d95"
+    },
+    "developer-guide/docs/api/lambda-handler-strategy.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "7c180d6f3aaf61a13d38144e752742d6d092c5fbf9405c1359d448624ade2cd8"
+    },
+    "developer-guide/docs/api/request.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "6361859800e9c58ee53aa6874f6888904ca293e05c492ff9ea77967b63dd11fc"
+    },
+    "developer-guide/docs/api/response.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "214a2e6a02699034fd7736963e7e4c93666ea02a20102c3214785303bf6fe3d8"
+    },
+    "developer-guide/docs/api/route-handler-strategy.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "0309bee3bb7e1cfac1bcd8373cd4dc4aa1d8d54d79c39f0e6f691e2509816c50"
+    },
+    "developer-guide/docs/api/server-api-wrapper-strategy.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "51924ff67315f1a22ec3fcd559ad352faf55bc6789acae7b46baaa9fbdcc8671"
+    },
+    "developer-guide/docs/api/summary.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "2f7c87d37fccdc9ed7d6b86e96ff0f5922418b39631540c334e635aafb5828f2"
+    },
+    "developer-guide/docs/api/toc.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "a488e0993c9d8feb01a891d599ef19a6d3a5aacc465df28c5701cdd799ab55ff"
+    },
+    "developer-guide/docs/architecture/application-structure.mdx": {
+      "createdAt": "2026-09-09T16:26:08.097Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "20ba6f3d22ddb37abab3288d4b8c299265ea7b314d5de85489a0101892566041"
+    },
+    "developer-guide/docs/architecture/overview.mdx": {
+      "createdAt": "2026-09-09T16:26:08.097Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "78ab4b22c2fe2010f0f40f75593270bf437316ceb94f9a2daf90904e82381434"
+    },
+    "developer-guide/docs/architecture/request-lifecycle.mdx": {
+      "createdAt": "2026-09-09T16:26:08.097Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "dac1bdcc948113dd82e2dda9b2c5ceacd53d9502564067567a3eed2c6679bbfe"
+    },
+    "developer-guide/docs/auth/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "bb0c0781d4d1450b3c41bb3492d604db4795d40f210cb40f3ad2eaae3ebf5947"
+    },
+    "developer-guide/docs/auth/authentication/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "60ab87e7b12c3024315e54823b0964b266e07c1ed3a24349d12c5d472b6ac7f9"
+    },
+    "developer-guide/docs/auth/authentication/authenticator-custom.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "119a5118e55cb55d2dfe8291c5720c83e67a41c04397294dd5915ed2c3424c79"
+    },
+    "developer-guide/docs/aws-amplify-setup/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "ea69d01b9520d76b9c5e578a8176db9fe94d88e9dab1b18eec6a728bc32fa694"
+    },
+    "developer-guide/docs/aws-amplify-setup/folder-structure.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "9d8b76d804aeb48d775190e2aa88d4a1e50d09c3dc321d5b1b6b5ac3cc7a8a29"
+    },
+    "developer-guide/docs/aws-amplify-setup/intro.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T18:47:05.413Z",
+      "contentHash": "a4201016eecd2d86cc7ac5569e2457ba1fd0adb25c67321068aa25dbb7ead63a"
+    },
+    "developer-guide/docs/bootstraping-cloudigniter/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "92add1fca4bb6cc1daad2bb3f29e719ac7cab9149357057512e70fa7eaf6325e"
+    },
+    "developer-guide/docs/bootstraping-cloudigniter/authenticator-setup.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "6ac91c35387149764fa46e40f9f1723ff6772af263673eac77a20efe54916048"
+    },
+    "developer-guide/docs/bootstraping-cloudigniter/client-error-handling.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "af1c76fc8b32302130614de572b0505dccf974048a6048fcd38e499621453938"
+    },
+    "developer-guide/docs/bootstraping-cloudigniter/extensibility-checklist.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "efa716b52151a0e4792a80d57b6cead0a1576cd4b2f2680213a3b016a9c5c2c4"
+    },
+    "developer-guide/docs/bootstraping-cloudigniter/framework-boot.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "fde02a964e8b73aebc973162fb068760ee47b975ea79cabff8153e952ed5a726"
+    },
+    "developer-guide/docs/bootstraping-cloudigniter/intro.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "881baae1219b7c7564fa9867e249adf9ff4d188d54e3af274e851e982514868f"
+    },
+    "developer-guide/docs/bootstraping-cloudigniter/layout-composition.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "adb186d6de304cd2258e4027a85fb8133ffbe991b785c2c9b908a91d1504b2cd"
+    },
+    "developer-guide/docs/bootstraping-cloudigniter/locale-resolution.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "acf1517f02c01bba20195fb09705db0e04ff2c60921d58158742875b276172d2"
+    },
+    "developer-guide/docs/bootstraping-cloudigniter/page-bootstrapping/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "7b7ab2983d4de36c7d0e7dbe72e75daa099ba1203a078451f21190c6ef1fb0a2"
+    },
+    "developer-guide/docs/bootstraping-cloudigniter/page-bootstrapping/definitions.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "ffb2db14c83de7c3c58205de5914a306cc97d0fc85b2de1f55e699e7febc2217"
+    },
+    "developer-guide/docs/bootstraping-cloudigniter/page-bootstrapping/intro.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "bfc5845be7d9dbbbeedc4319dfce573d3368eacafee168a80ab24a4e899cec44"
+    },
+    "developer-guide/docs/bootstraping-cloudigniter/page-bootstrapping/page-bootstrapping.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "f0c0a871b01f7d407fe70e3a4e0f70764755bff4d48dbfabc75dd02e9684ff02"
+    },
+    "developer-guide/docs/bootstraping-cloudigniter/page-bootstrapping/page-client-wrapper.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "3abcab6dd58b6a929cec446eaf87bc3eb25ecc87091a5ba61638a8bc2ac65f87"
+    },
+    "developer-guide/docs/bootstraping-cloudigniter/page-bootstrapping/page.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "754aa2934effdce6d1418ec5961c96ad037c1009699da7d4a54be1f5f1d9b1d5"
+    },
+    "developer-guide/docs/bootstraping-cloudigniter/root-bootstrapping.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "44a3edadedc6edebcbc9cf38c82c6dc15c2f4f76526c8eac9bd58541c56fc270"
+    },
+    "developer-guide/docs/bootstraping-cloudigniter/styles-first-then-children.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "bf36ed4591007016463269c3b50152615d14b6c1f987894e06fa98f736b2be54"
+    },
+    "developer-guide/docs/bootstraping-cloudigniter/theme-css-loading.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "2ad0010fee72437a6589c5740d3efa4c76347e17f520e9f9f6b95c4f3664f093"
+    },
+    "developer-guide/docs/building-features/api-and-feedback.mdx": {
+      "createdAt": "2026-09-09T16:26:08.097Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "09aea6ee63414f44f152b373fd3e6999f3d4dfde6e40dbb3340b53a15174bdae"
+    },
+    "developer-guide/docs/building-features/first-page.mdx": {
+      "createdAt": "2026-09-09T16:26:08.097Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "0ac46ec8bb0dee782119132e8bdb7bca60548a0468372b6c00a6a34c175abc85"
+    },
+    "developer-guide/docs/cli/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "f0cab120e8a167149c697652e4230a641a1598ae372784023e245fb8b26afa86"
+    },
+    "developer-guide/docs/cli/overview.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:49:26.240Z",
+      "contentHash": "7f2e4f395e0aaf2722a23f9cb02545a151a4a6c2be208b0d644585b47b6eaac1"
+    },
+    "developer-guide/docs/client-feedback-system/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "5b3c284280f2c2b8b585cbc403b06584d5f0ce2ccf8120348081931a5569bd9b"
+    },
+    "developer-guide/docs/client-feedback-system/intro.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "6df971d6999d01bb9af9ec1211e911d7a3fda43d05a17644813ede29b2ee9ab2"
+    },
+    "developer-guide/docs/cloudigniter-api/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "a45a61da3c6dcdff07a3ed17465356b60f0af170dbcf75b33c467be7e40fcb60"
+    },
+    "developer-guide/docs/cloudigniter-api/api-calls-on-server.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "c7eb40db72f1be804ee91952ebffac5ef2bf34703c007282556947bed4afa91a"
+    },
+    "developer-guide/docs/cloudigniter-api/handlers.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "0cf59df9caf4337e7e95ccb47f5b26acc311ecc37b1da4d2fb675bbe5eff3a67"
+    },
+    "developer-guide/docs/cloudigniter-api/helper-utilities.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "bddb452686aac912479009a29bc9aba0f87e7b433d0891f8eb91ad7ea7de9949"
+    },
+    "developer-guide/docs/cloudigniter-api/intro.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "2e48c56534add9e9be3f5b5008373a0a46f41dfca674301c921a6db460a065ba"
+    },
+    "developer-guide/docs/configuration/localization.mdx": {
+      "createdAt": "2026-09-09T16:26:08.097Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "31e38f7fac59aa11c23714d2687db4fc2c40863fd609adf598aac2320abe445b"
+    },
+    "developer-guide/docs/configuration/overview.mdx": {
+      "createdAt": "2026-09-09T16:26:08.097Z",
+      "updatedAt": "2026-09-09T17:49:26.240Z",
+      "contentHash": "f8efb0cd874e3f97905b997feff5c088e667ea0ba381158c510667a47ef811a3"
+    },
+    "developer-guide/docs/configuration/settings.mdx": {
+      "createdAt": "2026-09-09T16:26:08.097Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "c57d7f58a23349571d4676df74bf93f58342c3f7294e8dd856ff2149170a1801"
+    },
+    "developer-guide/docs/configuration/themes.mdx": {
+      "createdAt": "2026-09-09T16:26:08.097Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "9eb488b32f9a63976cffbaa147fc1ac1b04c1f179475eac4f2f471aa2f5b9669"
+    },
+    "developer-guide/docs/core-system/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "c6300659acdc7ac19dc6b4e7684b51e6a61eafef79e0831ba288664dc9b84aa8"
+    },
+    "developer-guide/docs/core-system/authorization/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "2648623825d4b3e47077d15f25908859d6fe24eafcd034cca2f3099abca0b055"
+    },
+    "developer-guide/docs/core-system/authorization/catalog-and-permissions.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "5f0f19d45b06f253f7d88e944fcc38874dfe106a4919c3c83ddadc7c2b99e116"
+    },
+    "developer-guide/docs/core-system/authorization/dynamodb-persistence.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:49:26.240Z",
+      "contentHash": "d3cd289420c1e2c9084424d692d0173dc309455da33d594fd0d9d4c63bfb7a02"
+    },
+    "developer-guide/docs/core-system/authorization/enforcing-access.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "467e1f780dd329f7f816faf88367ca0c0581d5b823c2d4a5e640e064b018cebf"
+    },
+    "developer-guide/docs/core-system/authorization/overview.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "38505c87a72de30fc9b4ef115dfe93d6ffcdff3c68a9fe41987700fb5de41ff0"
+    },
+    "developer-guide/docs/core-system/authorization/quick-start.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "f1e9c135235f4011a52d79c9df79093ae9a1caa958989bc982f2d2ca602fdd61"
+    },
+    "developer-guide/docs/core-system/authorization/reference-and-checklist.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "4bff6d821e5f4a13ea5a1127e3aad93ea4243a9fbcef0479dae91ad66674d612"
+    },
+    "developer-guide/docs/core-system/authorization/roles-and-precedence.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "582d6cc4126911c3287d5f65c9136d5c242683890bcf72441fb08987a91d628f"
+    },
+    "developer-guide/docs/core-system/authorization/routes-and-ui.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "4278e862ce449a9dbb2299ebd1bcaae17ca679738068f0f2689a06b8da8680c6"
+    },
+    "developer-guide/docs/core-system/authorization/scenarios.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "f44318fa8dd73e552b5c8b594105f640ac634cd8457e88ae28b434ac41201339"
+    },
+    "developer-guide/docs/core-system/authorization/scopes-and-assignments.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "0bd57e4d22fa303489ab4707d11980a9e4f591a0373d75fd8434aed9b53e275d"
+    },
+    "developer-guide/docs/core-system/authorization/subjects-and-providers.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "f627b475440ab67b6c8a2c87887825e1e9ed1d0d94315c94cf1f81eb5030c690"
+    },
+    "developer-guide/docs/core-system/authorization/testing-and-troubleshooting.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "267b4bcddedb33471c64124a5de82d0a42e9dc4bee743a3cf600446b7fce24c7"
+    },
+    "developer-guide/docs/core-system/bootstrap.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "0c643c6dd782cdedebf98947e280dd6e76d45f493797e817e5d9dbc790ff0543"
+    },
+    "developer-guide/docs/core-system/configurations/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "027516d425623c2b947a42d73ab793261276e657fced5314c168b1786a6d5d0d"
+    },
+    "developer-guide/docs/core-system/configurations/cloudigniter.config.ts.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "f650bcf429a86e2825796b5a187a0a57d419c43318866d053cac586913ba0d89"
+    },
+    "developer-guide/docs/core-system/intro.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "4882937221f96a07ce791f66d60211a52dfd7e9d91c85a0c15a8b832d42a6ccc"
+    },
+    "developer-guide/docs/core-system/middleware.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "e1e4ac4b9138995fa0e5dcd56dade488c82399919d55c51d984fb1b2cf6ada7f"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "62bbda395b15d517c39a81f01b54ad87dd49f5673d70f9a464646aba085b541d"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/best-practices.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "9c9594faceba47f74924f3fcc9573f41423eeb16c69d039318771882ad9e9d0c"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/client-side.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "e7f8917847901272ba1bbcc6a0ad612096da572f6529b5c8d376a12020ca8b95"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/configuration/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "a5cf67a3c20620b38708a7e587df54220b1193feb1b08178642abe06808f99d1"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/configuration/routing-modes.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "46eb4cd267b0ad9f830416649c2f1102678ea08e3572a6ff2403eb8f420e1b11"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/configuration/tenant-configuration.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:30:18.815Z",
+      "contentHash": "7e8353a10744e0c94163c539fef37f7964a52e9cc2bbdc39d2a9913a8fc61a46"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/core-concepts.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "d19b7f1cf4c1c5e4e80ee8e48ad0fc9ff3b0d5591dd24302a39acdf6f114abc9"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/core-concepts/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "deab532a56dd40e1637ae5f1305d4f9be1ce2a641b8e64aa3e6ecdc572f06ad9"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/core-concepts/tenant-context.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:30:18.815Z",
+      "contentHash": "4309b376d0ebc622ea9ef0ead768d48b3268767d1e343b44d287e8a30df15aaf"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/core-concepts/tenant-definition.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "b0482cfe3d25d43c58273fc8c871265ad9f80f8628d5a4c2613a8549ebf8b2ba"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/core-concepts/tenant-identity.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:30:18.815Z",
+      "contentHash": "ea2370a5b65f85f7c4f1656dbc7b536ce630163d0b039d68ee78c88f9ad92894"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/core-concepts/tenant-routing-mode.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:30:18.815Z",
+      "contentHash": "68c5afd2851de6f456a137d0c2fed80542879cf4d9a1813f6f4c5a21ce1c56bc"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/core-concepts/tenant-scope.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "ae5f8600ebebb0e0b45f2a7d84ee597c95bc808de7f105d79b6fd33a7519caad"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/core-concepts/tenant-status.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:30:18.815Z",
+      "contentHash": "90250629b2590f5870a832be44bb120ac294042d39fe2c08fc1c26d195e8206a"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/ddb-table-structure.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "b08cc949659682b3d80ea1e005aa87e87b158d7a6719b1ea37d0fcc130eb1313"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/intro.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "511f933f62c94c9482d9de328d5b327d55dc380cf7310088fc589479ee6c6838"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/isolation-n-security.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "9ee1c341f8b2bf7831955f7cf3ef3648063e1863f6d10ba0ef062b1a360189f6"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/lifecycle-operations.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "6f301b258b3dcd652a323b3ecaecc7b32993b561f6f2ef4c26a6c5dc79fd561d"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/management-strategy.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "3b7d2637a9cf354a532455336bc895e623f4ed02396775001fc6816cfb00068b"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/org-unit-management.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "f50b2114fde8e340b272bb7a19965f6efe1b3e3c107812f2893b5730621282ee"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/summary.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "8e256e42f355217b9b7f5163993e0c481fbbae5e1a0f683fd4b05a2dc861857f"
+    },
+    "developer-guide/docs/core-system/multi-Tenancy/type-shapes.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "cffa9c53873a46f8a64ce1e5905a0deb1652c80bcd3a6e7c9b22df7f92b94858"
+    },
+    "developer-guide/docs/core-system/settings/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "259c4ab443948218a9f05783e34d535756f93feb8e17cf8986de8220fd293f23"
+    },
+    "developer-guide/docs/core-system/settings/registry.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "5b59048790cdd635d3aa86416762d530f238b04852e7eacccb5f29bad177fa6f"
+    },
+    "developer-guide/docs/data/overview.mdx": {
+      "createdAt": "2026-09-09T16:26:08.097Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "6763cd934c17d5e19a2c74a585a963f2041e506bf3828bf1d9dd19833a208703"
+    },
+    "developer-guide/docs/developer-dashboard/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "568b11c7bca454076e87f09ab7dd9e77e9944288727c04e1e9c09ad51bb7890d"
+    },
+    "developer-guide/docs/developer-dashboard/intro.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "65ecd73b9c9b46f1e2668bcbb4f047b6331e0cdb8c0b315404f12c8980571a34"
+    },
+    "developer-guide/docs/developer-dashboard/trace-logging-system.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "39e01964fa5b11ce1acef8212eadf771d6aa614ae6394bd819b18d0436599b32"
+    },
+    "developer-guide/docs/environment-modes/CI_ENV_MODE.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "4be20103747da22cd9c10e3cbf6613f294dbf6e316e9b5955b57c7c468445a52"
+    },
+    "developer-guide/docs/environment-modes/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "b7cfdb951778fbd5fa9d0e53371a17d0066211c8a68d7c6ca4949cf0aa5d122a"
+    },
+    "developer-guide/docs/environment-modes/best-practices.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "9aba22d3b0a27e6fe79e1fd2135a4145a0ad7dd5fbd6fe1611dfa316bb06142b"
+    },
+    "developer-guide/docs/environment-modes/development-tools-and-seeding.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "022c2e8fa471b5547768df66d90b51f93278295b93dcb64813ea5c570f2b636d"
+    },
+    "developer-guide/docs/environment-modes/example-code.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "6f71c6326ff725256e5cfa17b995c75e3a7f179940f648ad63b8194437bced86"
+    },
+    "developer-guide/docs/environment-modes/intro.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "cacd51e60fc18d40606261b42fc0ddd9fc10c759a5467da2a6bd8395a60f1a4b"
+    },
+    "developer-guide/docs/environment-modes/saving-env-mode.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "e44c25a9b441603dc0e9f9ed1f19ebd3a8b98e6a97842b75c889220ab4c79a04"
+    },
+    "developer-guide/docs/environment-modes/summary.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "4b2d650ae62fe1fd83ae1254a4dc2a92643cd6f8490f9b4a39445181b8211705"
+    },
+    "developer-guide/docs/environment-modes/supported-modes.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "dff4c14593f67e7de6bbcca84479c5e2b275758f355856b618232d792ca5f37b"
+    },
+    "developer-guide/docs/error-handling/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "736b272835847f97ce7648e4c9e9c3e20899d423d05d7ba25433e28a83ff6d2c"
+    },
+    "developer-guide/docs/error-handling/client-side-errors.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "b38d0c67dd4b72f82e0b774a1c190b7163435a763e7c186f2140722e43373ba1"
+    },
+    "developer-guide/docs/error-handling/intro.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "095e08bc4fab89b6a866c42c5dab2ca7a812f86e5c7f0a77180002d9a08952a0"
+    },
+    "developer-guide/docs/error-handling/next-error-handling.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "431995501518fd91c93234292642269a0f6dbc2f133bd752b0b99e5786804306"
+    },
+    "developer-guide/docs/error-handling/server-side-errors.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "57478b1ee0bc119c2f52e51966dd6abf50be12b0051a2666dd13fd2c9865644a"
+    },
+    "developer-guide/docs/getting-started/before-you-start.mdx": {
+      "createdAt": "2026-09-09T18:47:05.413Z",
+      "updatedAt": "2026-09-09T18:48:13.510Z",
+      "contentHash": "c1d3a1c767f932f4f8439b6ebd9c1cef030b836de5ef5fc1a09227c476968321"
+    },
+    "developer-guide/docs/getting-started/run-template.mdx": {
+      "createdAt": "2026-09-09T16:26:08.097Z",
+      "updatedAt": "2026-09-09T18:47:05.413Z",
+      "contentHash": "6c1e0dd5fc98864cb91874bece0b03284b1b9a3d82542a621dfecf3dd661f38f"
+    },
+    "developer-guide/docs/handler-architecture/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "f7c362048431845e1fdd636a74dda993f694188ba4578d7421e35b636255ee1a"
+    },
+    "developer-guide/docs/handler-architecture/intro.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "f7dc5776d5b07f9b389745a6da15776dc685cf91aa5b068858d1419cc057cbae"
+    },
+    "developer-guide/docs/identity/authentication.mdx": {
+      "createdAt": "2026-09-09T16:26:08.097Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "6b737c5acf09f099b7111932128262f2410457fc78bf7c07ed38b813bd8c1c52"
+    },
+    "developer-guide/docs/internationalization/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "edaa6f5c40087cdec697fb375dd20ec2e5e48dfb4efedd053e3f9fa81c7ac45a"
+    },
+    "developer-guide/docs/internationalization/backend-setup.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "8da0d3a477b0d743df78459a468413989920116076e67f8789f8e458823635b5"
+    },
+    "developer-guide/docs/internationalization/configurations.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "c48492ceffd809338e7c21a77e5049047a3816c67f52f9a4a404ae54a1ab7532"
+    },
+    "developer-guide/docs/internationalization/custom-languages.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "95301177bb3c3037d5b4a9f9e5424f2328805e531f50908382c32a072b46394e"
+    },
+    "developer-guide/docs/internationalization/intro.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "5cc69416150b021d9bdbbc58f741b332c9325a5a8ecd9908fdefc9c8b5324309"
+    },
+    "developer-guide/docs/internationalization/language-switcher.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "a886eb607800df8bd59220d787bc283d7abc9302a979e3027b0a07ce84b41e48"
+    },
+    "developer-guide/docs/internationalization/rtl-support.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "211921e3e8213d39cabdca124d6ac2daa28fcb1f6f3047f0ca237dbee0f994c2"
+    },
+    "developer-guide/docs/intro.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T18:47:05.413Z",
+      "contentHash": "c8fb1b3f8072f6ee4fad4a9b9fa39e656e216e3c20d4413eff3bb5d940d6f77d"
+    },
+    "developer-guide/docs/library/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "5dffb56ee72d7fb86ffe89c2037e20692b0a0da7472177d9f15fcd59b133739e"
+    },
+    "developer-guide/docs/library/dynamodb/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "363015d01aa7e4982eea5ab26826781503aea7625f0f52bdc81e4a2d915f8e65"
+    },
+    "developer-guide/docs/library/dynamodb/table-key-convention.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "d7b8508b0b2befccefc054a5b62db3ff2059da95ca4361d7e20cb1bd6a4369de"
+    },
+    "developer-guide/docs/library/dynamodb/write-dynamodb-item.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "3aa4b70732c079ae56682f97e8f9613cf818b9feff47e92dfb831e9fbd289837"
+    },
+    "developer-guide/docs/obsolete/docusaurus-intro.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "e0d162b0ddca74760b865e0235b71ef79989530f19f393b661da79e931277100"
+    },
+    "developer-guide/docs/obsolete/index.mdx": {
+      "createdAt": "2026-09-09T16:26:08.097Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "674e3ac25df303a12ffbcbcced10eb27d75f2fad88f561b3cc6c87f45a33c841"
+    },
+    "developer-guide/docs/operations/overview.mdx": {
+      "createdAt": "2026-09-09T16:26:08.097Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "f226be88b2649abeddeb5c4c67a4210e167babcd78bed499700a161b373e1b24"
+    },
+    "developer-guide/docs/providers/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "74228edd73d877fbdef38888dd32d53e3f6ce290531a43fb13902e5ba04e94be"
+    },
+    "developer-guide/docs/providers/aws/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "82f56d629bde8d6bf1e3014dba6ecbd1ec11f37b2eacbc886c971da09416cda8"
+    },
+    "developer-guide/docs/providers/aws/extending-amplify-backend.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "20c15009642a104b1de9cc97a3c55f7c5f3db13f91b2b61c3dd7a9f73cc0ceeb"
+    },
+    "developer-guide/docs/resource-studio/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "9d7d06c132644b61522c357cf8d2a149402880e5423f16440557e6b34213c65e"
+    },
+    "developer-guide/docs/resource-studio/data-entities.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "d685111313d4ac2ec41dba7dcce3b28e448c47dfe817c398fa09c45e24b59ceb"
+    },
+    "developer-guide/docs/resource-studio/deployment-and-rollback.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "fb553045fb969e863066de1861b7610bde1b420c6f9d12bfa461ad1759bf9a75"
+    },
+    "developer-guide/docs/resource-studio/overview.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "173b23b7b7e182ba27ee1e23d2dc43983f50f158783a857dc12503f2b8ba7cc1"
+    },
+    "developer-guide/docs/testing-strategy/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "68b0599b2661ffae0e6c4c9419d2b2df1179a15808a49a5267c618ddefa946dc"
+    },
+    "developer-guide/docs/testing-strategy/env-modes-n-testing.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "e679f25b8c621d8e18ca7e5560b84e2d4ff5373cec1f010004b372085a95ea55"
+    },
+    "developer-guide/docs/testing-strategy/helpers-utilities.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "7a607029d85b3536fdb00bdd1230afc9ffb61db783b6e24f0b24beb5d3f4aebf"
+    },
+    "developer-guide/docs/testing-strategy/intro.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:30:18.815Z",
+      "contentHash": "7876535484d139eb077378b8d466ea9a411b258fcd39016a8ec34529f9ce27ec"
+    },
+    "developer-guide/docs/testing-strategy/testing-goals.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:30:18.815Z",
+      "contentHash": "abc3d97266c15366261efbd5b10bbf88dc73178b9b89b4ce50d3476989a1b266"
+    },
+    "developer-guide/docs/testing-strategy/testing-strategy.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "7527826608f2dfab0c8dfb944a9143d16627b45cc799358721c2f3468e769397"
+    },
+    "developer-guide/docs/theme-system/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "6862de6f4879f803011800ec1bde654defc669c07cc564c8b6ad25fe833afa2f"
+    },
+    "developer-guide/docs/theme-system/amplify-authenticator-theme.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "290b4693118535ebcfedc205d8aa49722c0259aae51916762454a78012f369ec"
+    },
+    "developer-guide/docs/theme-system/configurations.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "54cf6755fc22a35be55dd1fe08131f6b5d2e5cb1a8bacf0925b17d822256000e"
+    },
+    "developer-guide/docs/theme-system/css-styling.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "f3792f84e85197bdacbca6aafde184772311b35292e79a94ca0d224eaea94fb2"
+    },
+    "developer-guide/docs/theme-system/dark-mode.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "08ad6502cbb43997c00b604c0ac9536110d8fae3c30ec81f0a51f4c7d32912c3"
+    },
+    "developer-guide/docs/theme-system/intro.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "b028689ffb8c58ee4a958c43b9245085215325fbc2bd42141e2b41aa10bb2763"
+    },
+    "developer-guide/docs/theme-system/tailwindcss.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "9f92b063bdd8a229699ea62715d5f2a84aab1d209786649b6edef5d65a2d0ac5"
+    },
+    "developer-guide/docs/theme-system/theme-provider.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "303a2c37a731928c6399fb8ba2814b5b97f0c4dd61ceee40eebc212c111ddc7e"
+    },
+    "developer-guide/docs/theme-system/theme-switcher.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "9ff06cf65c8fa4a05e057c074edcf4a9729df1b58d5e8bd6fd0945fffd003d40"
+    },
+    "developer-guide/docs/tutorial-basics/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "20435b29e160300fd8de60c98a6d102b311988da391a858347484d4907c3258f"
+    },
+    "developer-guide/docs/tutorial-basics/congratulations.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "38cac03741b4c27f80a97380576ab1f5b846761d15553f195a26a9f956382bc2"
+    },
+    "developer-guide/docs/tutorial-basics/create-a-blog-post.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "de88d016f626e365b7e2d4d18857af43e15b6e7a44f2bbcf53efad8a44d3ce62"
+    },
+    "developer-guide/docs/tutorial-basics/create-a-document.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "8f548398eff842ad61e73927811a584c16c2d18ca6da1cbfcf10a654b1418c83"
+    },
+    "developer-guide/docs/tutorial-basics/create-a-page.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "2e1a9efae003fc42e6967841d1f82fe85312f099759aba1d6d48c00c0d3c5972"
+    },
+    "developer-guide/docs/tutorial-basics/deploy-your-site.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "247c3561d2b4c61ebcc94168330c5e82ef18615a404c5154bd7dd5f879150366"
+    },
+    "developer-guide/docs/tutorial-basics/markdown-features.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "692a1f50500255fe7455bfb472736400e585ad9e87f88e1af9e574e804371542"
+    },
+    "developer-guide/docs/tutorial-extras/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "a9dd7e323374e644bc267890b6b854559da8064242ea7f8b665d98e73686b4fd"
+    },
+    "developer-guide/docs/tutorial-extras/manage-docs-versions.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "93949d7e93a36ab96eeb4fcb941f8263daff05401460ceadb78e31191631a8ee"
+    },
+    "developer-guide/docs/tutorial-extras/translate-your-site.md": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T16:26:08.097Z",
+      "contentHash": "92549c6bf8e833cdd7cceb0cf19e77de5d393cb8448e3a160dffb8e6de50bef3"
+    },
+    "developer-guide/docs/ui-components/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "e98dbf14fe58c0e0aa5fc331bac2cb8067bcb5c573cac117fcd280f23f754d49"
+    },
+    "developer-guide/docs/ui-components/confirmation-dialogs.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "8e5ae74762031e3890f327a06445a5ea422daccb72d86011b942b4a27cf1f2c4"
+    },
+    "developer-guide/docs/ui-components/data-entity-manager.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "5f155740210dc37ac7dd1026a5518c4774385f3d30d43c1fb95decbd9fc81242"
+    },
+    "developer-guide/docs/ui-components/data-table.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:47:57.835Z",
+      "contentHash": "d98c782e37c1126f87e1fa8c9c0f688d2c838e16e282d886155edae83e16e70c"
+    },
+    "developer-guide/docs/ui-components/smart-form.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "eff3649ae59a9e3c424809c17c515baedbe988327ee4f2287e9f2b868559b4bb"
+    },
+    "developer-guide/docs/users-management/_category_.json": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T15:54:15.343Z",
+      "contentHash": "9a4c274c89c38289fc3d3342371a84b2531e1053a6a9211c92de0ef3d95d0dec"
+    },
+    "developer-guide/docs/users-management/intro.mdx": {
+      "createdAt": "2026-09-09T15:54:15.343Z",
+      "updatedAt": "2026-09-09T17:49:26.240Z",
+      "contentHash": "295a1f39f17c17d210e102b265ade9f261f7988a90a04e366304c92c44219cbe"
+    }
+  }
+}

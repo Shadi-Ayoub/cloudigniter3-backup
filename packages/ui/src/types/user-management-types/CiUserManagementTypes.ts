@@ -9,6 +9,7 @@ import type {
   CIUser,
   CIUserMutationResult,
   CIUserSeederExecutionResult,
+  CiCompiledSmartForm,
 } from "@cloudigniter/core/types";
 
 export type CiUserManagementRoleOption = {
@@ -32,6 +33,13 @@ export type CiUserManagementOption = {
 };
 
 export type CiUserManagementPageProps = {
+  /** Statically compiled application customizations; data is never part of these artifacts. */
+  forms?: {
+    create?: CiCompiledSmartForm;
+    edit?: CiCompiledSmartForm;
+    /** Additional form fields mapped to same-name keys in profile.extensions. */
+    extensionFields?: readonly string[];
+  };
   mode?: "active" | "trash";
   managementKind?: "users" | "administrators";
   users: CIUser[];

@@ -1,0 +1,40 @@
+---
+title: Obsulete
+description: Historical CloudIgniter documentation, superseded drafts, and Docusaurus samples with current replacements.
+sidebar_position: 99
+slug: /obsolete
+pagination_prev: null
+pagination_next: null
+---
+
+# Obsulete
+
+This section preserves previous-version guidance and superseded drafts. It is separate from the current
+application learning path. Every archived page includes a historical notice and a link to its replacement.
+
+Start with [Welcome to CloudIgniter](/docs/intro) for the current guide.
+
+## Find the current guidance
+
+| Historical material | Why it is here | Current guidance |
+| --- | --- | --- |
+| Docusaurus sample tutorials | These are the original Docusaurus site-authoring samples, not CloudIgniter application tutorials. | [Read the current guide](/docs/intro) |
+| Previous bootstrap and middleware | These chapters describe the previous bootstrap, middleware, and wrapper contracts. The current template uses proxy.ts, CiRequestContext, appBootstrap, CiLayout, and CiPage. | [Read the current guide](/docs/architecture/request-lifecycle) |
+| Previous API and handler architecture | These examples use previous request/response names and package paths such as @cloudigniter/next/utility or @CI. Use the current CiRequest, CiResponse, and ciCall contracts. | [Read the current guide](/docs/building-features/api-and-feedback) |
+| Previous authentication customization | These customization examples use the earlier kernel/provider and Authenticator integration. The current custom hooks live under src/custom/authenticator. | [Read the current guide](/docs/identity/authentication) |
+| Previous theme setup | These pages describe the previous CloudIgniterProvider and kernel Tailwind configuration. Use the current layout providers and custom CSS/theme hooks. | [Read the current guide](/docs/configuration/themes) |
+| Previous localization setup | These pages describe the earlier i18n request path, locale storage, and provider setup. Current messages are registered under src/custom/locales and selected from resolved route context. | [Read the current guide](/docs/configuration/localization) |
+| Previous feedback and error handling | These pages use previous feedback, error-store, and component entry points. The current feedback API is exported from @cloudigniter/ui/client. | [Read the current guide](/docs/building-features/api-and-feedback) |
+| Previous settings registry | This page claims automatic boot-time registry integration and uses removed Next.js settings exports. The current bootstrap settings integration has different behavior. | [Read the current guide](/docs/configuration/settings) |
+| Superseded Tenant drafts | These earlier Tenant drafts contain empty placeholders, previous unprefixed types, or assumptions about environment and scope that the current Tenant guide replaces. | [Read the current guide](/docs/core-system/multi-Tenancy/core-concepts) |
+| Previous developer dashboard and trace APIs | These pages describe the previous trace entry points and dashboard. Use current Dev Beacon, developer-tool access gates, and the API Reference. | [Read the current guide](/docs/environment-modes/development-tools-and-seeding) |
+| Previous DynamoDB write helper | This standalone writeItem draft describes an older helper contract. Use current provider APIs and canonical Core table-key helpers for application persistence. | [Read the current guide](/docs/library/dynamodb/table-key-convention) |
+
+## Preserved page addresses
+
+Archived documents retain their existing addresses so saved links still open with a clear historical notice.
+The sidebar places them only beneath this section. Current learning pages, Dictionary definitions, Developers
+guidance, and API references link to the appropriate current replacement.
+
+No historical page is evidence that an old import, configuration field, or runtime behavior remains supported.
+Check the current API contract before migrating an older application.

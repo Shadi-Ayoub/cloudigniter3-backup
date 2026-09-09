@@ -1,9 +1,34 @@
 ---
-title: notify
-category: Client APIs
-package: "@cloudigniter/next"
+title: ciNotify
+description: Show shared client feedback through the configured toast and modal channels.
+package: "@cloudigniter/ui"
 availability: Client
-sidebar_position: 2
+sidebar_position: 3
 ---
 
-# notify()
+# ciNotify
+
+```tsx
+import { ciNotify } from "@cloudigniter/ui/client";
+
+ciNotify("success", "Changes saved");
+ciNotify("error", "The update failed", { channel: "both" });
+```
+
+Call the helper from client interaction code beneath the configured feedback providers. The standard CloudIgniter
+layout supplies `CiFeedbackProvider` and `CiFeedbackHandler`; pages do not need to mount another pair.
+
+The arguments are a feedback level, a message (React content or a function returning it), and optional settings.
+Levels include `success`, `info`, `message`, `loading`, `warning`, `error`, and `critical`. The default channel is
+`toast`; `modal` and `both` use the shared feedback store. A modal uses a string message, a string toast description,
+or the fallback `Notification` when the supplied message is not a string.
+
+`toast` options override the configured toast defaults. The optional `modal` settings control its ID, title,
+severity override, critical flag, sticky state, and whether it opens. An enabled toast path returns the underlying toast ID;
+a modal-only call or disabled toast has no return value. Treat notification IDs as presentation state, not operation identifiers.
+
+Show success after the server confirms the operation. Use a
+[confirmation dialog](/docs/ui-components/confirmation-dialogs) before a destructive mutation and feedback after it.
+This is the current replacement for the previous `notify()` page.
+
+See [API calls, errors, and feedback](/docs/building-features/api-and-feedback).

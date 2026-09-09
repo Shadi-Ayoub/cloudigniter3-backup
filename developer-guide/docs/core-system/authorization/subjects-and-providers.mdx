@@ -38,12 +38,12 @@ live, because provider groups usually lack tenant, Org Unit, resource, and actio
 ## Adapt a CloudIgniter user
 
 ```ts
-import { ciCreateAuthorizationSubject } from "@cloudigniter/emberguard/lib";
+import { ciCreateAuthorizationSubject } from "@cloudigniter/core/lib";
 import type {
   CiRoleAssignment,
   CiScopedPrivilege,
   CiUser,
-} from "@cloudigniter/emberguard/types";
+} from "@cloudigniter/core/types";
 
 export function createAppAuthorizationSubject(
   user: CiUser,
@@ -74,7 +74,7 @@ assignments:
 import {
   ciCreateRoleAssignmentsFromIdentityGroups,
   ciSystemAccessScope,
-} from "@cloudigniter/emberguard/lib";
+} from "@cloudigniter/core/lib";
 
 import { appAccessControl } from "@/custom/auth/app-access-control";
 
@@ -160,7 +160,7 @@ import {
   ciCreateRoleAssignments,
   ciGlobalAccessScope,
   ciSystemAccessScope,
-} from "@cloudigniter/emberguard/lib";
+} from "@cloudigniter/core/lib";
 
 const trustedSystemGroups = new Set(["system-admin", "system-super-admin"]);
 
@@ -232,7 +232,7 @@ Direct privileges model an exception assigned to one subject without changing a 
 import {
   ciCreateScopedPrivilege,
   ciTenantAccessScope,
-} from "@cloudigniter/emberguard/lib";
+} from "@cloudigniter/core/lib";
 
 const temporaryExportAccess = ciCreateScopedPrivilege(
   {
@@ -280,7 +280,7 @@ import {
   ciCreateAuthorizationSubject,
   ciCreateRoleAssignments,
   ciSystemAccessScope,
-} from "@cloudigniter/emberguard/lib";
+} from "@cloudigniter/core/lib";
 
 export async function resolveAuthorizationSubject(input: {
   user: CiUser;

@@ -1,3 +1,4 @@
+import { appUserForms } from "@/custom/user";
 import { CiPage } from "@cloudigniter/next/client";
 import {
   ciCreateAuthorizer,
@@ -123,6 +124,7 @@ export default async function TrashPage() {
         ) : null}
         {canRestoreUsers ? (
           <CiUserManagementPage
+            forms={appUserForms}
             mode="trash"
             users={users}
             providerLabel="Amazon Cognito"
@@ -152,6 +154,7 @@ export default async function TrashPage() {
           />
         ) : null}
         <CiUserManagementPage
+          forms={appUserForms}
           mode="trash"
           managementKind="administrators"
           users={administrators}

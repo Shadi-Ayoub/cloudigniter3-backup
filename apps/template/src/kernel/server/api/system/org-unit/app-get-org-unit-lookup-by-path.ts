@@ -1,6 +1,11 @@
 import { cache } from "react";
 
-import { ciNormalizePathname, ciParseGraphqlResponse } from "@cloudigniter/core/lib";
+import {
+  CI_DEV_TENANT_RESOLUTION_PROBES,
+  CI_MOCK_ORG_UNITS,
+  ciNormalizePathname,
+  ciParseGraphqlResponse,
+} from "@cloudigniter/core/lib";
 
 import type {
   CiGetOrgUnitByPathInterface,
@@ -9,6 +14,8 @@ import type {
 } from "@cloudigniter/core/types";
 import { appPrepareServerApiRequest } from "../../app-prepare-server-api-request";
 import { appServerClient } from "../../app-server-client";
+import { appGetDevBeaconAccess } from "../../../auth/app-get-dev-beacon-access";
+import { appGetCoreConfig } from "../../../config/app-get-core-config";
 
 /**
  * Resolves an Org Unit by its canonical hierarchical path within a Tenant
@@ -28,6 +35,25 @@ export const appGetOrgUnitLookupByPath = cache(
         body: {
           error: "Tenant id and Org Unit path are required.",
         },
+      };
+    }
+
+    // Dev Beacon's reserved tenant uses in-memory routing fixtures. Keep that
+    // source available only through the same trusted access gate as the checkup.
+    if (
+      tenantId === CI_DEV_TENANT_RESOLUTION_PROBES.tenant.active &&
+      (await appGetDevBeaconAccess(appGetCoreConfig().dev?.debug?.devBeacon))
+        .allowed
+    ) {
+      const orgUnit = CI_MOCK_ORG_UNITS.find(
+        (item) => item.tenantId === tenantId && item.path === orgUnitPath,
+      );
+      return {
+        ok: true,
+        statusCode: 200,
+        body: orgUnit
+          ? { exists: true, ...orgUnit }
+          : { exists: false, tenantId, path: orgUnitPath },
       };
     }
 

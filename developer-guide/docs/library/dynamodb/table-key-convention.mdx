@@ -72,14 +72,14 @@ They throw `TypeError` when a segment would make the key ambiguous.
 
 ## Changing an existing key
 
-A key rename changes an item's address; it is not an in-place update. Before production, update every reader,
-writer, query, fixture, and example in one cutover. Do not preserve a fallback or dual-write path for disposable
-development data; reset or reseed affected development tables when necessary.
+A key rename changes an item’s address. Before changing keys for stored data, identify every reader, writer,
+query, index, and integration that depends on the existing address. Plan how records will be copied, verified,
+and switched to the new keys, including a rollback procedure that preserves data.
 
-Once deployed data must be retained, design a release-specific migration before changing its address. Add a
-temporary compatibility read, backfill, or dual write only when that migration requires it.
+Test the migration against representative data before deployment. Use temporary compatibility reads, backfills,
+or dual writes only when the migration requires them, and define when they can be removed.
 
-The active EmberGuard access-control definition now reads and writes only
+The active EmberGuard access-control definition reads and writes only
 `CI#EMBERGUARD#ACCESS_CONTROL` / `CI#DEFINITION#ACTIVE`.
 
 See [`ciBuildTableKey()`](/docs/api-reference/shared-apis/ci-build-table-key) and

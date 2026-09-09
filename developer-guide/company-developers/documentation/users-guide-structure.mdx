@@ -1,0 +1,60 @@
+---
+title: Users guide structure and page retirement
+description: Maintain the application learning journey, historical archive, and cross-guide references.
+sidebar_position: 2
+---
+
+# Users guide structure and page retirement
+
+The [CloudIgniter Users guide](/docs/intro) teaches application development in this order:
+
+1. [Start here](/docs/getting-started/before-you-start): AWS and SSO preparation, standalone template download, npm dependencies, sandbox creation, and first run.
+2. [Architecture and concepts](/docs/architecture/overview): packages, ownership, and request/rendering flow.
+3. [Configure your application](/docs/configuration/overview): environments, localization, themes, and settings.
+4. [Identity and access](/docs/identity/authentication): users, authentication, catalogs, assignments, and enforcement.
+5. [Tenants and Org Units](/docs/core-system/multi-Tenancy/intro): scopes, routing, organizational trees, and lifecycle.
+6. [Build features](/docs/building-features/first-page): pages, forms, tables, feedback, and Resource Studio.
+7. [Data and providers](/docs/data/overview): provider extension and persistence conventions.
+8. [Testing and operations](/docs/operations/overview): verification, diagnostics, seeders, and deployment.
+
+The learning sequence is maintained explicitly in `developer-guide/user-guide-structure.json`, consumed by
+`sidebars.ts`. A current page belongs to exactly one chapter, either as its overview or an item. The API Reference
+has its own sidebar and is reached through purposeful links, rather than duplicated in the Users tree.
+
+## Classify content using the current implementation
+
+Retain accurate workflows and correct localized drift, such as a renamed public import. Archive a chapter when
+its central implementation model is superseded. Empty drafts and Docusaurus starter tutorials do not belong in
+the active application journey.
+
+The initial reorganization retained current authorization, management, Resource Studio, provider, environment,
+and testing material. It replaced older middleware/bootstrap, theme, localization, feedback, settings, and API
+introductions with focused current guides. The archive records the reason and replacement for each group.
+
+## Retire a page without losing its readers
+
+1. Identify the closest current concept, workflow, or API contract for the retired page.
+2. Add the page to a group under the single **Obsulete** section in the structure manifest and remove it from the
+   active chapter. Include the historical reason and current replacement.
+3. Add a visible historical warning and replacement link to the page. Preserve its original content and URL
+   when practical, so saved links open with useful context.
+4. Search CloudIgniter Users, Dictionary, CloudIgniter Developers, and API Reference for inbound links. Update
+   them to the current replacement, including labels and anchors. Keep deliberate historical links within the
+   archive and its overview.
+5. If a URL must change, update source links and navigation together; account for existing bookmarks with an
+   explicit redirect or a retained migration page. Do not leave a deleted page as a link target.
+6. Preserve creation dates. Transfer the registry entry before a physical rename, then refresh updated dates for
+   actual content changes. Dates remain in UTC.
+
+Keeping a historical page reachable does not mean its APIs are supported. The active guide must not teach
+removed exports or make readers complete an obsolete chapter before a current one.
+
+## Validate the whole navigation change
+
+Run the guide's structural check, date check, typecheck, and production build. Inspect the generated navigation
+for duplicate, missing, or misplaced pages. Check internal destinations and heading anchors across all guide
+surfaces, and verify that active pages do not accidentally lead to historical instructions.
+
+The final operational lesson deliberately has no next-page link into the archive. New lessons added at the end
+of the current path should preserve that boundary. See the [authoring workflow](./authoring-workflow) for the full
+content and date-maintenance process.

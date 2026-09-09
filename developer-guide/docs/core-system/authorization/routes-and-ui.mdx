@@ -77,7 +77,7 @@ import type {
   CiAccessScope,
   CiAuthorizationSubject,
   CiRouteDefinition,
-} from "@cloudigniter/emberguard/types";
+} from "@cloudigniter/core/types";
 
 import { appAuthorizer } from "@/custom/auth/app-authorizer";
 
@@ -246,7 +246,7 @@ Treat catalog ownership as server-derived metadata. Use `ciGetAccessControlEntry
 import {
   ciCanOverrideCoreAccessControl,
   ciGetAccessControlEntryOrigin,
-} from "@cloudigniter/emberguard/lib";
+} from "@cloudigniter/core/lib";
 
 const origin = ciGetAccessControlEntryOrigin(reference);
 const canOverrideCore = ciCanOverrideCoreAccessControl(

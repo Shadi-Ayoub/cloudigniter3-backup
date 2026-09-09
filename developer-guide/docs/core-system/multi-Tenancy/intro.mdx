@@ -1,19 +1,25 @@
 ---
-title: Introduction
+title: Tenants and Org Units
+description: Learn organization boundaries, request scopes, routing, and shared Org Unit trees.
 sidebar_position: 1
 ---
 
-# Tenants Management in CloudIgniter
+# Tenants and Org Units
 
-CloudIgniter is designed as a **multi-tenant platform by default**, enabling a single deployed system to securely
-serve multiple organizations (companies, schools, departments, institutions, or environments) while maintaining
-strong isolation, scalability, and extensibility.
+A Tenant identifies an organization boundary in the application. An Org Unit describes a node in an
+organizational tree and can be attached to more than one Tenant. Scope determines the context of an operation;
+authorization determines whether the current actor may perform it.
 
-This document explains:
+## Work through the chapter
 
-- Core tenant concepts and definitions
-- The tenant data model and lifecycle
-- DynamoDB table structure and access patterns
-- Strategies used for isolation, scoping, and extensibility
-- Seeding tenants for demos and testing
-- Practical examples for developers
+1. Read [Core Tenant concepts](./core-concepts) to distinguish identity, slug, status, and organizational structure.
+2. Learn the [system, global, and tenant scopes](./core-concepts/tenant-scope).
+3. Configure [routing modes](./configuration/routing-modes) and build [public navigation links](./client-side).
+4. Manage [Org Unit trees and sharing](./org-unit-management).
+5. Apply [Tenant status, Trash, and restoration](./lifecycle-operations).
+6. Consult [control-plane storage](./ddb-table-structure) when you need the persistence model.
+
+Environment isolation is separate from tenancy. A Tenant is not a substitute for an isolated development
+backend. Similarly, selecting a Tenant in the URL does not establish membership or permission to access its data.
+
+After this chapter, [build your first application page](/docs/building-features/first-page).

@@ -2,6 +2,16 @@
 sidebar_position: 2
 ---
 
+:::warning Obsulete — historical documentation
+
+These are the original Docusaurus site-authoring samples, not CloudIgniter application tutorials.
+
+Continue with [the current guide](/docs/intro). This page is retained for historical reference
+and is outside the current learning path.
+
+:::
+
+
 # Translate your site
 
 Let's translate `docs/intro.md` to French.

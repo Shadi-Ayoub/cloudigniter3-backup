@@ -1,18 +1,15 @@
 ---
-title: Introduction
+title: Testing foundations
+description: Establish explicit deployment isolation and verify real feature boundaries.
 sidebar_position: 1
 ---
 
-# Introduction
+# Testing foundations
 
-CloudIgniter provides a fully isolated, safe-by-design testing system that lets
-developers run automated tests, manual tests, and mock data scenarios **without
-ever risking production (live) data**.
+Use separate development, test, staging, and production deployments. Tests should exercise the same validation,
+permission checks, provider adapters, and key conventions as ordinary application behavior. An environment label
+alone does not isolate data or grant access to developer tools.
 
-This section explains:
-
-- How testing ties into **environment modes**
-- How test data is separated at the **Table** level
-- The **helpers and tools** you should use (not re-implement)
-- How **Amplify handlers** and **Next.js client components** should behave
-- Recommended E2E testing workflows and best practices
+Begin with [Testing goals](./testing-goals), then follow the [testing strategy](/docs/testing-strategy).
+Use [development seeders](/docs/environment-modes/development-tools-and-seeding) only in their supported
+mode with an authenticated developer and explicit fixture ownership.

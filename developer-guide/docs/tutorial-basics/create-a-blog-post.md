@@ -2,6 +2,16 @@
 sidebar_position: 3
 ---
 
+:::warning Obsulete — historical documentation
+
+These are the original Docusaurus site-authoring samples, not CloudIgniter application tutorials.
+
+Continue with [the current guide](/docs/intro). This page is retained for historical reference
+and is outside the current learning path.
+
+:::
+
+
 # Create a Blog Post
 
 Docusaurus creates a **page for each blog post**, but also a **blog index page**, a **tag system**, an **RSS** feed...

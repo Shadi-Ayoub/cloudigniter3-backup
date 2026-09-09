@@ -54,14 +54,14 @@ be permanently deleted directly from the active tenant table.
 
 ## Retention and failed actions
 
-The tenant pilot does not automatically empty Trash and does not attach a DynamoDB TTL. A privileged administrator
-must explicitly restore or permanently delete each tenant. If a lifecycle request fails, CloudIgniter keeps the row
+Tenants remain in Trash until an authorized administrator restores or permanently deletes them. Trash has no
+automatic expiration. If a lifecycle request fails, CloudIgniter keeps the row
 in its current view and reports the error; retrying is protected by conditional state transitions so a stale request
 cannot silently advance a tenant from the wrong state.
 
-This first implementation covers tenant control-plane records. Applying the strategy to users, roles, or other
-resources requires that resource's own provider-participant plan—for example, Cognito disable/enable/delete steps
-for a user identity.
+Tenant lifecycle operations manage tenant control-plane records. Other resources have their own lifecycle
+requirements. For account suspension, restoration, and deletion, follow
+[User administration](/docs/users-management/intro#seeder-status-and-deletion).
 
 :::warning
 Permanent deletion removes the tenant control-plane record. Before enabling it for an application with additional
@@ -69,46 +69,12 @@ tenant-owned provider resources, extend the lifecycle participant plan so those 
 explicit policy.
 :::
 
-## Creating a Tenant
+## Create and seed Tenants
 
-Tenant creation is handled through controlled server utilities:
+Use the supported Tenant management workflow and its authorized server/provider operations. In development,
+authenticated actors with exact `developer` membership can use **Seeder** to create disposable fixture Tenants
+and Org Units. It is unavailable in test, staging, and production modes.
 
-- Enforces environment restrictions
-- Validates tenant uniqueness
-- Applies consistent key structure
-- Optionally seeds default settings
-
-```ts title="Example (server-side)"
-await createTenant({
-  tenantId: "school-dubai",
-  name: "School Dubai",
-  status: "active",
-  meta: { region: "DXB" },
-});
-```
-
----
-
-## Seeding Tenants (Developer Tooling)
-
-CloudIgniter includes a **Seeder Tool** intended for:
-
-- Sandbox environments
-- Local development
-- Automated test setups
-
-Seeder features:
-
-- Environment-aware execution
-- Idempotent operations
-- Marker items for tracking seeded data
-- Safe clearing of seeded tenants
-
----
-
-## Clearing Seeded Tenants
-
-Seeded tenants are tagged with internal markers so they can be removed safely without affecting real data.
-
-> Clearing is explicit and opt-in.  
-> Production tenants are never cleared automatically.
+Follow [Development tools and application seeding](/docs/environment-modes/development-tools-and-seeding) for
+manifest configuration, ownership markers, retries, and cleanup. Cleanup removes only records whose seeder
+provenance matches; it is separate from an administrator's ordinary Trash workflow.

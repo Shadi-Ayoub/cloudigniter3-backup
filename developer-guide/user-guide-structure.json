@@ -1,0 +1,256 @@
+{
+  "chapters": [
+    {
+      "label": "Start here",
+      "overview": "intro",
+      "items": ["getting-started/before-you-start", "getting-started/run-template"]
+    },
+    {
+      "label": "Architecture and concepts",
+      "overview": "architecture/overview",
+      "items": [
+        "architecture/application-structure",
+        "architecture/request-lifecycle"
+      ]
+    },
+    {
+      "label": "Configure your application",
+      "overview": "configuration/overview",
+      "items": [
+        "core-system/configurations/cloudigniter.config.ts",
+        "environment-modes/intro",
+        "environment-modes/supported-modes",
+        "environment-modes/CI_ENV_MODE",
+        "environment-modes/saving-env-mode",
+        "configuration/localization",
+        "configuration/themes",
+        "configuration/settings"
+      ]
+    },
+    {
+      "label": "Identity and access",
+      "overview": "identity/authentication",
+      "items": [
+        "users-management/intro",
+        "core-system/authorization/overview",
+        "core-system/authorization/quick-start",
+        "core-system/authorization/catalog-and-permissions",
+        "core-system/authorization/roles-and-precedence",
+        "core-system/authorization/scopes-and-assignments",
+        "core-system/authorization/subjects-and-providers",
+        "core-system/authorization/enforcing-access",
+        "core-system/authorization/routes-and-ui",
+        "core-system/authorization/scenarios",
+        "core-system/authorization/dynamodb-persistence",
+        "core-system/authorization/testing-and-troubleshooting",
+        "core-system/authorization/reference-and-checklist"
+      ]
+    },
+    {
+      "label": "Tenants and Org Units",
+      "overview": "core-system/multi-Tenancy/intro",
+      "items": [
+        "core-system/multi-Tenancy/core-concepts",
+        "core-system/multi-Tenancy/core-concepts/tenant-scope",
+        "core-system/multi-Tenancy/configuration/routing-modes",
+        "core-system/multi-Tenancy/client-side",
+        "core-system/multi-Tenancy/org-unit-management",
+        "core-system/multi-Tenancy/lifecycle-operations",
+        "core-system/multi-Tenancy/ddb-table-structure"
+      ]
+    },
+    {
+      "label": "Build features",
+      "overview": "building-features/first-page",
+      "items": [
+        "ui-components/smart-form",
+        "ui-components/data-table",
+        "ui-components/data-entity-manager",
+        "building-features/api-and-feedback",
+        "ui-components/confirmation-dialogs",
+        "resource-studio/overview",
+        "resource-studio/data-entities"
+      ]
+    },
+    {
+      "label": "Data and providers",
+      "overview": "data/overview",
+      "items": [
+        "aws-amplify-setup/intro",
+        "aws-amplify-setup/folder-structure",
+        "providers/aws/extending-amplify-backend",
+        "library/dynamodb/table-key-convention"
+      ]
+    },
+    {
+      "label": "Testing and operations",
+      "overview": "operations/overview",
+      "items": [
+        "testing-strategy/intro",
+        "testing-strategy/testing-goals",
+        "testing-strategy/testing-strategy",
+        "testing-strategy/env-modes-n-testing",
+        "testing-strategy/helpers-utilities",
+        "environment-modes/development-tools-and-seeding",
+        "environment-modes/example-code",
+        "environment-modes/best-practices",
+        "environment-modes/summary",
+        "cli/overview",
+        "resource-studio/deployment-and-rollback"
+      ]
+    }
+  ],
+  "obsolete": [
+    {
+      "label": "Docusaurus sample tutorials",
+      "replacement": "intro",
+      "reason": "These are the original Docusaurus site-authoring samples, not CloudIgniter application tutorials.",
+      "items": [
+        "obsolete/docusaurus-intro",
+        "tutorial-basics/congratulations",
+        "tutorial-basics/create-a-blog-post",
+        "tutorial-basics/create-a-document",
+        "tutorial-basics/create-a-page",
+        "tutorial-basics/deploy-your-site",
+        "tutorial-basics/markdown-features",
+        "tutorial-extras/manage-docs-versions",
+        "tutorial-extras/translate-your-site"
+      ]
+    },
+    {
+      "label": "Previous bootstrap and middleware",
+      "replacement": "architecture/request-lifecycle",
+      "reason": "These chapters describe the previous bootstrap, middleware, and wrapper contracts. The current template uses proxy.ts, CiRequestContext, appBootstrap, CiLayout, and CiPage.",
+      "items": [
+        "bootstraping-cloudigniter/authenticator-setup",
+        "bootstraping-cloudigniter/client-error-handling",
+        "bootstraping-cloudigniter/extensibility-checklist",
+        "bootstraping-cloudigniter/framework-boot",
+        "bootstraping-cloudigniter/intro",
+        "bootstraping-cloudigniter/layout-composition",
+        "bootstraping-cloudigniter/locale-resolution",
+        "bootstraping-cloudigniter/page-bootstrapping/definitions",
+        "bootstraping-cloudigniter/page-bootstrapping/intro",
+        "bootstraping-cloudigniter/page-bootstrapping/page",
+        "bootstraping-cloudigniter/page-bootstrapping/page-bootstrapping",
+        "bootstraping-cloudigniter/page-bootstrapping/page-client-wrapper",
+        "bootstraping-cloudigniter/root-bootstrapping",
+        "bootstraping-cloudigniter/styles-first-then-children",
+        "bootstraping-cloudigniter/theme-css-loading",
+        "core-system/bootstrap",
+        "core-system/intro",
+        "core-system/middleware"
+      ]
+    },
+    {
+      "label": "Previous API and handler architecture",
+      "replacement": "building-features/api-and-feedback",
+      "reason": "These examples use previous request/response names and package paths such as @cloudigniter/next/utility or @CI. Use the current CiRequest, CiResponse, and ciCall contracts.",
+      "items": [
+        "api/appsync",
+        "api/client-call-strategy",
+        "api/end-to-end",
+        "api/error-handling-strategy",
+        "api/graphql-response.mdx",
+        "api/intro",
+        "api/lambda-handler-strategy",
+        "api/request",
+        "api/response",
+        "api/route-handler-strategy",
+        "api/server-api-wrapper-strategy",
+        "api/summary",
+        "api/toc",
+        "cloudigniter-api/api-calls-on-server",
+        "cloudigniter-api/handlers",
+        "cloudigniter-api/helper-utilities",
+        "cloudigniter-api/intro",
+        "handler-architecture/intro"
+      ]
+    },
+    {
+      "label": "Previous authentication customization",
+      "replacement": "identity/authentication",
+      "reason": "These customization examples use the earlier kernel/provider and Authenticator integration. The current custom hooks live under src/custom/authenticator.",
+      "items": ["auth/authentication/authenticator-custom"]
+    },
+    {
+      "label": "Previous theme setup",
+      "replacement": "configuration/themes",
+      "reason": "These pages describe the previous CloudIgniterProvider and kernel Tailwind configuration. Use the current layout providers and custom CSS/theme hooks.",
+      "items": [
+        "theme-system/amplify-authenticator-theme",
+        "theme-system/configurations",
+        "theme-system/css-styling",
+        "theme-system/dark-mode",
+        "theme-system/intro",
+        "theme-system/tailwindcss",
+        "theme-system/theme-provider",
+        "theme-system/theme-switcher"
+      ]
+    },
+    {
+      "label": "Previous localization setup",
+      "replacement": "configuration/localization",
+      "reason": "These pages describe the earlier i18n request path, locale storage, and provider setup. Current messages are registered under src/custom/locales and selected from resolved route context.",
+      "items": [
+        "internationalization/backend-setup",
+        "internationalization/configurations",
+        "internationalization/custom-languages",
+        "internationalization/intro",
+        "internationalization/language-switcher",
+        "internationalization/rtl-support"
+      ]
+    },
+    {
+      "label": "Previous feedback and error handling",
+      "replacement": "building-features/api-and-feedback",
+      "reason": "These pages use previous feedback, error-store, and component entry points. The current feedback API is exported from @cloudigniter/ui/client.",
+      "items": [
+        "client-feedback-system/intro",
+        "error-handling/client-side-errors",
+        "error-handling/intro",
+        "error-handling/next-error-handling",
+        "error-handling/server-side-errors"
+      ]
+    },
+    {
+      "label": "Previous settings registry",
+      "replacement": "configuration/settings",
+      "reason": "This page claims automatic boot-time registry integration and uses removed Next.js settings exports. The current bootstrap settings integration has different behavior.",
+      "items": ["core-system/settings/registry"]
+    },
+    {
+      "label": "Superseded Tenant drafts",
+      "replacement": "core-system/multi-Tenancy/core-concepts",
+      "reason": "These earlier Tenant drafts contain empty placeholders, previous unprefixed types, or assumptions about environment and scope that the current Tenant guide replaces.",
+      "items": [
+        "core-system/multi-Tenancy/best-practices",
+        "core-system/multi-Tenancy/configuration/tenant-configuration",
+        "core-system/multi-Tenancy/core-concepts/tenant-context",
+        "core-system/multi-Tenancy/core-concepts/tenant-definition",
+        "core-system/multi-Tenancy/core-concepts/tenant-identity",
+        "core-system/multi-Tenancy/core-concepts/tenant-routing-mode",
+        "core-system/multi-Tenancy/core-concepts/tenant-status",
+        "core-system/multi-Tenancy/isolation-n-security",
+        "core-system/multi-Tenancy/management-strategy",
+        "core-system/multi-Tenancy/summary",
+        "core-system/multi-Tenancy/type-shapes"
+      ]
+    },
+    {
+      "label": "Previous developer dashboard and trace APIs",
+      "replacement": "environment-modes/development-tools-and-seeding",
+      "reason": "These pages describe the previous trace entry points and dashboard. Use current Dev Beacon, developer-tool access gates, and the API Reference.",
+      "items": [
+        "developer-dashboard/intro",
+        "developer-dashboard/trace-logging-system"
+      ]
+    },
+    {
+      "label": "Previous DynamoDB write helper",
+      "replacement": "library/dynamodb/table-key-convention",
+      "reason": "This standalone writeItem draft describes an older helper contract. Use current provider APIs and canonical Core table-key helpers for application persistence.",
+      "items": ["library/dynamodb/write-dynamodb-item"]
+    }
+  ]
+}

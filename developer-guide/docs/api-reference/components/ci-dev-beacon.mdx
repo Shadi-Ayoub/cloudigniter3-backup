@@ -32,6 +32,23 @@ Keyboard users can press **Alt + Arrow key** while the button is focused to move
 to move it by 32 pixels. The custom location is client-session state: a reload, remount, or new `position` prop
 restores the selected preset. Viewport resizing clamps a custom location so the button remains available.
 
+## Org Unit resolution report
+
+Both the Tenant and Org Unit checkup dialogs offer **View JSON Report**. It opens a read-only JSON view of the
+selected area, its summary, and every test, including probe paths, messages, states, and complete expected/actual
+values. Unavailable expected or actual values appear as `null`. **Copy JSON** copies the entire displayed report
+with indentation and confirms success; if clipboard access fails, the JSON remains selectable for manual copying.
+**View Test Results** returns to the test cards.
+
+The resolution checkup exercises the configured internal lookup endpoint with five reserved scenarios: active
+root, deep active, missing, suspended, and archived [Org Unit](/dictionary/o#org-unit). In the template, the
+reserved probe tenant resolves from built-in fixtures only after the trusted developer-access check succeeds.
+Ordinary tenant/path lookups remain provider-backed. The resolver forwards the session cookie to the same-origin
+lookup and refuses redirects; lookup responses use `Cache-Control: no-store`.
+
+See [Check Org Unit resolution](../../environment-modes/development-tools-and-seeding#check-org-unit-resolution)
+for expected results and troubleshooting.
+
 ## Props
 
 `CiDevBeacon` accepts `CiDevBeaconProps<CiNextContext>` from `@cloudigniter/core/types`.

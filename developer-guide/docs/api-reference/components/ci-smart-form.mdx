@@ -1,0 +1,52 @@
+---
+title: CiSmartForm
+description: Client renderer for compiled or declarative CloudIgniter Smart Forms.
+sidebar_position: 12
+---
+
+# `CiSmartForm`
+
+```tsx
+import { CiSmartForm } from "@cloudigniter/ui/client";
+import type { CiSmartFormProps, CiSmartFormFieldRenderProps, CiSmartFormActionContext } from "@cloudigniter/ui/types";
+```
+
+This Client Component is generic over an object of values. Its [contracts](../type-definitions/CiSmartFormTypes.mdx)
+are runtime-neutral Core types; callback and React renderer contracts belong to UI.
+
+| Prop | Contract / behavior |
+| --- | --- |
+| `coreForm` | Authoritative `CiCompiledSmartForm<T>`; fixed category ignores all definition/layout overrides |
+| `definition` | Precompiled `CiCompiledSmartForm<T>`; preferred for production |
+| `specifications`, `template` | `CiSmartFormSpec<T>` and optional `CiSmartFormTemplate<T>`; cached compilation when no `definition` applies |
+| `data` | `Partial<T>` initial record; reset uses latest data, a changed React key starts a new session |
+| `disabled` | Disables controls and actions; action pending state also locks the form |
+| `fieldState` | Per-field `{ disabled?, readOnly?, hidden? }` presentation state |
+| `buttonState` | Per-button `{ label?, pendingLabel?, disabled? }` runtime wording and availability |
+| `className`, `locale` | Additional form classes; option collation locale overrides spec locale, default `en-US` |
+| `callbacks` | Keyed functions receiving `CiSmartFormActionContext<T>`, returning void or a promise |
+| `onSubmit` | `(values: T, context) => void \| Promise<void>` fallback for create/update/save |
+| `onValuesChange` | Called with all values after a field edit |
+| `onError` | Receives normalized `CiErrorPayload` for an action exception |
+| `renderers` | Keyed `ComponentType<CiSmartFormFieldRenderProps<T>>` components |
+| `validators` | Keyed `(value: unknown, values: T) => string \| undefined \| Promise<string \| undefined>` |
+| `options` | Runtime option-source arrays; kept outside cached specifications |
+| `icons`, `animations` | Keyed React nodes; icons otherwise use `CiIcon`, pending animation otherwise uses the spinner |
+| `children` | Domain controls in a disabled-aware fieldset before form buttons |
+
+Provide at least a core form, definition, or specification. Missing/unsupported definitions and missing custom
+renderers throw during rendering. Unknown callback/validator keys become form errors. No buttons specified
+means a default Save button; `buttons: []` deliberately renders no actions.
+
+`CiSmartFormActionContext<T>` contains `values`, `button`, `reset()`, and `setFieldError(name, message)`.
+`CiSmartFormFieldRenderProps<T>` contains `field`, `id`, `value`, `values`, `disabled`, `readOnly`, `error?`,
+`describedBy?`, `onChange(value)`, `onBlur()`, and `onError(message?)`. Custom draft errors block submission until
+cleared. Wire the id, description, invalid state, and callbacks into an accessible control.
+
+Validation occurs on blur and before submit-type actions. Error alerts default to top placement and are
+dismissible. Controls and groups use accessible names, required/invalid descriptions, responsive grid rows,
+and inherited theme tokens. Pending actions are guarded synchronously against double submission, expose live
+status, and show contained loading feedback. Reset remounts draft editors. Conditional fields retain their
+values while hidden and skip validation. These presentation controls never replace server authorization.
+
+See the [Smart Forms guide](../../ui-components/smart-form.mdx) for complete setup and customization examples.

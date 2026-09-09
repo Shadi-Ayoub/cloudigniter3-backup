@@ -7,6 +7,14 @@ description: Keep the CloudIgniter Docusaurus developer guide synchronized with 
 
 Treat documentation as a required product deliverable. Derive claims, imports, signatures, and workflows from the current source, public exports, tests, and configuration.
 
+Maintain the Created and Updated footer dates for every guide page, including rendered Skills sources.
+Display dates in UTC as `YYYY-MM-DD HH:mm:ss UTC` for a worldwide audience, independently of the viewer's locale or time zone. After
+finishing page edits, run `pnpm --filter developer-guide dates:update`, then `pnpm --filter developer-guide dates:check`.
+The tracked `developer-guide/page-dates.json` registry preserves `createdAt`, changes `updatedAt` only for edited
+content, and initializes both fields for new pages. Never reset creation dates or derive dates from build time,
+filesystem modification times, or Git history. Follow the page-date rules in
+[workflow-and-validation.md](references/workflow-and-validation.md), including preservation during renames.
+
 Use this skill together with `cloudigniter-development` when a change depends on CloudIgniter architecture, package ownership, runtime boundaries, request lifecycle, page rendering, or EmberGuard layering.
 
 ## Load the relevant references
@@ -34,6 +42,14 @@ Load more than one section reference when a change crosses audiences. A new publ
 8. Run the developer-guide typecheck and production build. Resolve broken links, invalid MDX, sidebar failures, and documentation regressions caused by the change.
 9. Review the implementation diff and documentation diff together. Do not report a product-change task as complete until affected guide content is current.
 
+## Learning path and retired pages
+
+Maintain the explicit Users learning sequence in `developer-guide/user-guide-structure.json`. Keep the API Reference
+out of the Users sidebar. Put superseded pages and starter tutorials only under **Obsulete**, with a historical
+notice and current replacement link. When removing, renaming, or retiring a page, update inbound links and anchors
+across Users, Dictionary, Developers, and API Reference in the same change. Preserve page dates and existing URLs
+where practical. Follow the navigation rules in [workflow-and-validation.md](references/workflow-and-validation.md).
+
 ## Dictionary links
 
 Treat every term listed in `developer-guide/dictionary-sidebars.ts` as an identified Dictionary term. Whenever an identified term appears in guide prose, make the displayed term a canonical Markdown link to its definition, for example `[proxy](/dictionary/p#proxy)`. The guide's `remark-dictionary-terms` transform enforces this across CloudIgniter Users, CloudIgniter Developers, and API Reference prose when an author misses an explicit link. These links open the Dictionary Viewer without leaving the current guide page; the same URLs still provide normal navigation when JavaScript is unavailable or the reader is already in the Dictionary tab.
@@ -47,6 +63,7 @@ For a capability, behavior, contract, configuration, architecture, provider work
 - update every affected guide section in the same change;
 - update navigation or category metadata when discoverability changes;
 - update related repository architecture-skill references when architecture changes;
+- refresh and validate page-date metadata after all documentation and rendered skill-source edits;
 - run `pnpm --filter developer-guide typecheck`;
 - run `pnpm --filter developer-guide build`;
 - report which audiences and pages changed.

@@ -1,0 +1,48 @@
+---
+title: Localization and direction
+description: Configure languages and register route-scoped application translations using the request lifecycle.
+sidebar_position: 2
+---
+
+# Localization and direction
+
+CloudIgniter uses next-intl with a server-resolved locale and route messages. The template's `i18n` configuration
+defines `locales`, `defaultLocale`, and `cookieName`; its locale switcher persists the selected locale in that cookie.
+
+## Add application messages
+
+1. Add JSON messages beneath `src/custom/locales/<locale>/`.
+2. Import and register every new file in `src/custom/locales/index.ts` for each supported locale.
+3. Set the logical route's `namespace` to the message chain that should load.
+4. Verify the same route in every supported locale, including shared navigation and page-owned content.
+
+For namespace `dashboard.settings`, the loader selects `common`, `dashboard`, and `dashboard-settings`.
+It merges core common and namespace files first, followed by custom common and namespace files. Custom keys
+therefore override their core equivalents. A file omitted from the locale registry is not loaded automatically.
+
+Use the next-intl `useTranslations` hook inside a Client Component:
+
+```tsx
+"use client";
+
+import { useTranslations } from "next-intl";
+
+export function SaveLabel() {
+  const t = useTranslations("common");
+  return <span>{t("save")}</span>;
+}
+```
+
+Define `common.save` in each locale's registered messages before using this example.
+
+## Preserve the rendering boundary
+
+The root layout derives `lang` and `dir` from the resolved context. The root wrapper supplies the initial
+next-intl provider, and `CiPage` supplies the page's message boundary. Its `setup.messages` can override the
+page bundle deliberately. Ordinary pages use the resolved route messages.
+
+Use logical spacing and direction-aware controls in custom UI. Keep initial server and browser text identical:
+format dates using explicit inputs and a shared time zone, and avoid host-default locale formatting during render.
+
+If a message is missing, trace the [request lifecycle](/docs/architecture/request-lifecycle) before changing
+translation files. Next: [Themes and styling](/docs/configuration/themes).

@@ -3,7 +3,7 @@
 import { useField } from "formik";
 import { AlertCircle } from "lucide-react";
 import { Input } from "@ci-ui/client";
-import { CiSmartFormField } from "./CiSmartFormField";
+import { CiSmartFormFieldContext } from "./CiSmartFormFieldContext";
 import { CiSmartFormItem } from "./CiSmartFormItem";
 import { CiSmartFormLabel } from "./CiSmartFormLabel";
 import { CiSmartFormControl } from "./CiSmartFormControl";
@@ -24,16 +24,16 @@ export function CiSmartInputField(props: CiFormFieldProps) {
   const [field, meta] = useField(name);
 
   return (
-    <CiSmartFormField name={name}>
+    <CiSmartFormFieldContext.Provider value={{ name }}>
       <CiSmartFormItem className={className}>
         {label && <CiSmartFormLabel htmlFor={name}>{label}</CiSmartFormLabel>}
         <CiSmartFormControl>
           <div className="relative">
             <Input
               id={name}
-              type={inputType}
               {...field}
               {...rest}
+              type={inputType}
               className={cn(
                 "w-full rounded border px-3 py-2 transition-colors focus:outline-none",
                 meta.touched && meta.error
@@ -67,6 +67,6 @@ export function CiSmartInputField(props: CiFormFieldProps) {
           {meta.touched && meta.error && meta.error}
         </CiSmartFormMessage>
       </CiSmartFormItem>
-    </CiSmartFormField>
+    </CiSmartFormFieldContext.Provider>
   );
 }

@@ -23,12 +23,17 @@ import type {
   CICreateUserAssignmentInput,
   CICreateUserInput,
   CIUser,
+  CiSmartFormValues,
 } from "@cloudigniter/core/types";
 import {
   CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE,
+  CI_USER_CREATE_FORM,
+  CI_USER_EDIT_FORM,
+  ciMapSmartFormData,
   ciCanManageAdministrator,
   ciIsAdministratorRole,
 } from "@cloudigniter/core/lib";
+import { CiSmartForm } from "../components/smart-form";
 import type { CiUserManagementPageProps } from "@ci-ui/types";
 import { ciFormatDateTime } from "../../lib/ci-format-date-time";
 import { CiDataTable, ciDefineDataTable } from "../components/data-table";
@@ -174,6 +179,7 @@ export function CiUserManagementPage({
   onRestore,
   onPurge,
   developmentSeeder,
+  forms,
 }: CiUserManagementPageProps) {
   const [rows, setRows] = useState(users);
   const [editorMode, setEditorMode] = useState<EditorMode | null>(null);
@@ -199,30 +205,7 @@ export function CiUserManagementPage({
   } | null>(null);
   const [reason, setReason] = useState("");
   const [confirmation, setConfirmation] = useState("");
-  const [email, setEmail] = useState("");
-  const [givenName, setGivenName] = useState("");
-  const [middleName, setMiddleName] = useState("");
-  const [familyName, setFamilyName] = useState("");
-  const [displayName, setDisplayName] = useState("");
-  const [title, setTitle] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [locale, setLocale] = useState("");
-  const [timeZone, setTimeZone] = useState("");
-  const [gender, setGender] = useState("");
-  const [addressLine1, setAddressLine1] = useState("");
-  const [addressLine2, setAddressLine2] = useState("");
-  const [addressLocality, setAddressLocality] = useState("");
-  const [addressRegion, setAddressRegion] = useState("");
-  const [addressPostalCode, setAddressPostalCode] = useState("");
-  const [addressCountryCode, setAddressCountryCode] = useState("");
-  const [avatarKey, setAvatarKey] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
-  const [temporaryPassword, setTemporaryPassword] = useState("");
-  const [sendInvitation, setSendInvitation] = useState(true);
-  const [extensionsJson, setExtensionsJson] = useState("");
-  const [selectedRoles, setSelectedRoles] = useState<string[]>([
-    roleOptions[0]?.id ?? "user",
-  ]);
+  const [editorData, setEditorData] = useState<CiSmartFormValues>({});
   // Draft IDs are created only after a browser interaction. The initial render
   // stays deterministic across SSR and hydration.
   const [assignmentDrafts, setAssignmentDrafts] = useState<AssignmentDraft[]>(
@@ -262,28 +245,7 @@ export function CiUserManagementPage({
   const resetEditor = () => {
     setEditorMode(null);
     setTarget(null);
-    setEmail("");
-    setGivenName("");
-    setMiddleName("");
-    setFamilyName("");
-    setDisplayName("");
-    setTitle("");
-    setPhoneNumber("");
-    setLocale("");
-    setTimeZone("");
-    setGender("");
-    setAddressLine1("");
-    setAddressLine2("");
-    setAddressLocality("");
-    setAddressRegion("");
-    setAddressPostalCode("");
-    setAddressCountryCode("");
-    setAvatarKey("");
-    setAvatarUrl("");
-    setTemporaryPassword("");
-    setSendInvitation(true);
-    setExtensionsJson("");
-    setSelectedRoles([roleOptions[0]?.id ?? "user"]);
+    setEditorData({ roles: [roleOptions[0]?.id ?? "user"] });
     setAssignmentDrafts([
       createAssignment(
         assignmentRoleOptions[0]?.id ?? roleOptions[0]?.id ?? "user",
@@ -372,28 +334,39 @@ export function CiUserManagementPage({
           }
         | undefined;
       setTarget(fullUser);
-      setEmail(fullUser.email ?? "");
-      setGivenName(identity?.givenName ?? profile.givenName ?? "");
-      setMiddleName(identity?.middleName ?? profile.middleName ?? "");
-      setFamilyName(identity?.familyName ?? profile.familyName ?? "");
-      setDisplayName(profile.displayName ?? fullUser.displayName);
-      setTitle(profile.title ?? "");
-      setPhoneNumber(profile.phoneNumber ?? "");
-      setLocale(profile.locale ?? "");
-      setTimeZone(profile.timeZone ?? "");
-      setGender(profile.gender ?? "");
-      setAvatarKey(profile.avatarKey ?? "");
-      setAvatarUrl(profile.avatarUrl ?? "");
-      setAddressLine1(profile.address?.line1 ?? "");
-      setAddressLine2(profile.address?.line2 ?? "");
-      setAddressLocality(profile.address?.locality ?? "");
-      setAddressRegion(profile.address?.region ?? "");
-      setAddressPostalCode(profile.address?.postalCode ?? "");
-      setAddressCountryCode(profile.address?.countryCode ?? "");
-      setExtensionsJson(
-        profile.extensions ? JSON.stringify(profile.extensions, null, 2) : "",
-      );
-      setSelectedRoles(fullUser.roles);
+      setEditorData({
+        ...ciMapSmartFormData(fullUser, {
+          email: "email",
+          displayName: "displayName",
+          roles: "roles",
+          givenName: () => identity?.givenName ?? profile.givenName ?? "",
+          middleName: () => identity?.middleName ?? profile.middleName ?? "",
+          familyName: () => identity?.familyName ?? profile.familyName ?? "",
+          title: "profile.title",
+          phoneNumber: "profile.phoneNumber",
+          locale: "profile.locale",
+          timeZone: "profile.timeZone",
+          gender: "profile.gender",
+          avatarKey: "profile.avatarKey",
+          avatarUrl: "profile.avatarUrl",
+          addressLine1: "profile.address.line1",
+          addressLine2: "profile.address.line2",
+          addressLocality: "profile.address.locality",
+          addressRegion: "profile.address.region",
+          addressPostalCode: "profile.address.postalCode",
+          addressCountryCode: "profile.address.countryCode",
+          profileExtensions: "profile.extensions",
+        }),
+        ...ciMapSmartFormData(
+          fullUser,
+          Object.fromEntries(
+            (forms?.extensionFields ?? []).map((name) => [
+              name,
+              `profile.extensions.${name}`,
+            ]),
+          ),
+        ),
+      });
       setAssignmentDrafts(
         fullUser.assignments.length
           ? fullUser.assignments.map(fromUserAssignment)
@@ -802,22 +775,76 @@ export function CiUserManagementPage({
     ],
   );
 
-  const saveEditor = async () => {
+  const saveEditor = async (values: CiSmartFormValues) => {
     if (!editorMode) return;
     setPending(true);
     try {
-      let extensions: Record<string, unknown> | undefined;
-      if (extensionsJson.trim()) {
-        const parsed: unknown = JSON.parse(extensionsJson);
-        if (
-          typeof parsed !== "object" ||
-          parsed === null ||
-          Array.isArray(parsed)
-        ) {
-          throw new Error("Profile extensions must be a JSON object.");
-        }
-        extensions = parsed as Record<string, unknown>;
+      const email = typeof values.email === "string" ? values.email : "";
+      const givenName =
+        typeof values.givenName === "string" ? values.givenName : "";
+      const middleName =
+        typeof values.middleName === "string" ? values.middleName : "";
+      const familyName =
+        typeof values.familyName === "string" ? values.familyName : "";
+      const displayName =
+        typeof values.displayName === "string" ? values.displayName : "";
+      const title = typeof values.title === "string" ? values.title : "";
+      const phoneNumber =
+        typeof values.phoneNumber === "string" ? values.phoneNumber : "";
+      const locale = typeof values.locale === "string" ? values.locale : "";
+      const timeZone =
+        typeof values.timeZone === "string" ? values.timeZone : "";
+      const gender = typeof values.gender === "string" ? values.gender : "";
+      const avatarKey =
+        typeof values.avatarKey === "string" ? values.avatarKey : "";
+      const avatarUrl =
+        typeof values.avatarUrl === "string" ? values.avatarUrl : "";
+      const temporaryPassword =
+        typeof values.temporaryPassword === "string"
+          ? values.temporaryPassword
+          : "";
+      const addressLine1 =
+        typeof values.addressLine1 === "string" ? values.addressLine1 : "";
+      const addressLine2 =
+        typeof values.addressLine2 === "string" ? values.addressLine2 : "";
+      const addressLocality =
+        typeof values.addressLocality === "string"
+          ? values.addressLocality
+          : "";
+      const addressRegion =
+        typeof values.addressRegion === "string" ? values.addressRegion : "";
+      const addressPostalCode =
+        typeof values.addressPostalCode === "string"
+          ? values.addressPostalCode
+          : "";
+      const addressCountryCode =
+        typeof values.addressCountryCode === "string"
+          ? values.addressCountryCode
+          : "";
+      const sendInvitation = values.sendInvitation === true;
+      const selectedRoles = Array.isArray(values.roles)
+        ? values.roles.filter(
+            (role): role is string => typeof role === "string",
+          )
+        : [];
+      const rawExtensions = values.profileExtensions;
+      if (
+        rawExtensions &&
+        (typeof rawExtensions !== "object" || Array.isArray(rawExtensions))
+      ) {
+        throw new Error("Profile extensions must be a JSON object.");
       }
+      const extensions = {
+        ...(target?.profile?.extensions ?? {}),
+        ...(typeof rawExtensions === "object" && rawExtensions !== null
+          ? rawExtensions
+          : {}),
+        ...Object.fromEntries(
+          (forms?.extensionFields ?? [])
+            .filter((name) => Object.hasOwn(values, name))
+            .map((name) => [name, values[name]]),
+        ),
+      };
       const address = {
         ...(addressLine1.trim() ? { line1: addressLine1.trim() } : {}),
         ...(addressLine2.trim() ? { line2: addressLine2.trim() } : {}),
@@ -944,10 +971,7 @@ export function CiUserManagementPage({
       }
       resetEditor();
     } catch (error) {
-      setFeedback({
-        ok: false,
-        message: ciNormalizeClientThrownError(error).message,
-      });
+      throw error;
     } finally {
       setPending(false);
     }
@@ -1240,457 +1264,96 @@ export function CiUserManagementPage({
             </DialogDescription>
           </DialogHeader>
 
-          <div className="grid gap-5 py-2">
-            <section className="grid gap-3" aria-labelledby="account-heading">
-              <h3 id="account-heading" className="text-sm font-semibold">
-                Account
-              </h3>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="grid gap-1.5 sm:col-span-2">
-                  <Label htmlFor="ci-user-email">Email</Label>
-                  <Input
-                    id="ci-user-email"
-                    type="email"
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    disabled={pending}
-                  />
-                </div>
-                <div className="grid gap-1.5">
-                  <Label htmlFor="ci-user-given-name">Given name</Label>
-                  <Input
-                    id="ci-user-given-name"
-                    value={givenName}
-                    onChange={(event) => setGivenName(event.target.value)}
-                    disabled={pending}
-                  />
-                </div>
-                <div className="grid gap-1.5">
-                  <Label htmlFor="ci-user-family-name">Family name</Label>
-                  <Input
-                    id="ci-user-family-name"
-                    value={familyName}
-                    onChange={(event) => setFamilyName(event.target.value)}
-                    disabled={pending}
-                  />
-                </div>
-                <div className="grid gap-1.5 sm:col-span-2">
-                  <Label htmlFor="ci-user-middle-name">Middle name</Label>
-                  <Input
-                    id="ci-user-middle-name"
-                    value={middleName}
-                    onChange={(event) => setMiddleName(event.target.value)}
-                    disabled={pending}
-                  />
-                </div>
-                {editorMode === "create" ? (
-                  <>
-                    <div className="grid gap-1.5 sm:col-span-2">
-                      <Label htmlFor="ci-user-temporary-password">
-                        Temporary password (optional)
-                      </Label>
-                      <Input
-                        id="ci-user-temporary-password"
-                        type="password"
-                        autoComplete="new-password"
-                        value={temporaryPassword}
-                        onChange={(event) =>
-                          setTemporaryPassword(event.target.value)
-                        }
-                        disabled={pending}
-                      />
-                    </div>
-                    <label className="flex min-h-11 items-center gap-3 rounded-md border border-border px-3 text-sm sm:col-span-2">
-                      <Checkbox
-                        checked={sendInvitation}
-                        onCheckedChange={(checked) =>
-                          setSendInvitation(checked === true)
-                        }
-                        disabled={pending}
-                      />
-                      Send the Cognito invitation message
-                    </label>
-                  </>
-                ) : null}
-              </div>
-            </section>
-
-            <section className="grid gap-3" aria-labelledby="profile-heading">
-              <h3 id="profile-heading" className="text-sm font-semibold">
-                CloudIgniter profile
-              </h3>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="grid gap-1.5 sm:col-span-2">
-                  <Label htmlFor="ci-user-display-name">Display name</Label>
-                  <Input
-                    id="ci-user-display-name"
-                    value={displayName}
-                    onChange={(event) => setDisplayName(event.target.value)}
-                    disabled={pending}
-                  />
-                </div>
-                <div className="grid gap-1.5">
-                  <Label htmlFor="ci-user-title">Title</Label>
-                  <Input
-                    id="ci-user-title"
-                    placeholder="Dr, Ms, Mr, Prof"
-                    value={title}
-                    onChange={(event) => setTitle(event.target.value)}
-                    disabled={pending}
-                  />
-                </div>
-                <div className="grid gap-1.5">
-                  <Label htmlFor="ci-user-gender">Gender</Label>
-                  <Select
-                    value={gender || "not-specified"}
-                    onValueChange={(value) =>
-                      setGender(value === "not-specified" ? "" : value)
+          {editorMode && (
+            <CiSmartForm
+              key={`${editorMode}-${target?.id ?? "new"}`}
+              coreForm={
+                editorMode === "create"
+                  ? CI_USER_CREATE_FORM
+                  : CI_USER_EDIT_FORM
+              }
+              definition={editorMode === "create" ? forms?.create : forms?.edit}
+              data={editorData}
+              locale={renderLocale}
+              disabled={pending}
+              buttonState={
+                managementKind === "administrators" && editorMode === "create"
+                  ? {
+                      save: {
+                        label: "Create administrator",
+                        pendingLabel: "Creating administrator...",
+                      },
                     }
-                    disabled={pending}
-                  >
-                    <SelectTrigger
-                      id="ci-user-gender"
-                      className="min-h-11 w-full"
-                    >
-                      <SelectValue placeholder="Not specified" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="not-specified">
-                        Not specified
-                      </SelectItem>
-                      <SelectItem value="female">Female</SelectItem>
-                      <SelectItem value="male">Male</SelectItem>
-                      <SelectItem value="non-binary">Non-binary</SelectItem>
-                      <SelectItem value="self-described">
-                        Self-described
-                      </SelectItem>
-                      <SelectItem value="prefer-not-to-say">
-                        Prefer not to say
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid gap-1.5">
-                  <Label htmlFor="ci-user-phone">Phone number</Label>
-                  <Input
-                    id="ci-user-phone"
-                    type="tel"
-                    value={phoneNumber}
-                    onChange={(event) => setPhoneNumber(event.target.value)}
-                    disabled={pending}
-                  />
-                </div>
-                <div className="grid gap-1.5">
-                  <Label htmlFor="ci-user-locale">Locale</Label>
-                  <Select
-                    value={locale || "application-default"}
-                    onValueChange={(value) =>
-                      setLocale(value === "application-default" ? "" : value)
-                    }
-                    disabled={pending}
-                  >
-                    <SelectTrigger
-                      id="ci-user-locale"
-                      className="min-h-11 w-full"
-                    >
-                      <SelectValue placeholder="Application default" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="application-default">
-                        Application default
-                      </SelectItem>
-                      {localeOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid gap-1.5 sm:col-span-2">
-                  <Label htmlFor="ci-user-time-zone">Time zone</Label>
-                  <Select
-                    value={timeZone || "application-default"}
-                    onValueChange={(value) =>
-                      setTimeZone(value === "application-default" ? "" : value)
-                    }
-                    disabled={pending}
-                  >
-                    <SelectTrigger
-                      id="ci-user-time-zone"
-                      className="min-h-11 w-full"
-                    >
-                      <SelectValue placeholder="Application default" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="application-default">
-                        Application default
-                      </SelectItem>
-                      {timeZoneOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid gap-1.5 sm:col-span-2">
-                  <Label htmlFor="ci-user-address-line-1">
-                    Residence address
-                  </Label>
-                  <Input
-                    id="ci-user-address-line-1"
-                    placeholder="Address line 1"
-                    value={addressLine1}
-                    onChange={(event) => setAddressLine1(event.target.value)}
-                    disabled={pending}
-                  />
-                  <Input
-                    aria-label="Residence address line 2"
-                    placeholder="Address line 2 (optional)"
-                    value={addressLine2}
-                    onChange={(event) => setAddressLine2(event.target.value)}
-                    disabled={pending}
-                  />
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    <Input
-                      aria-label="Residence city or locality"
-                      placeholder="City / locality"
-                      value={addressLocality}
-                      onChange={(event) =>
-                        setAddressLocality(event.target.value)
-                      }
-                      disabled={pending}
-                    />
-                    <Input
-                      aria-label="Residence state or region"
-                      placeholder="State / region"
-                      value={addressRegion}
-                      onChange={(event) => setAddressRegion(event.target.value)}
-                      disabled={pending}
-                    />
-                    <Input
-                      aria-label="Residence postal code"
-                      placeholder="Postal code"
-                      value={addressPostalCode}
-                      onChange={(event) =>
-                        setAddressPostalCode(event.target.value)
-                      }
-                      disabled={pending}
-                    />
-                    <Input
-                      aria-label="Residence country code"
-                      placeholder="Country code (AE)"
-                      maxLength={2}
-                      value={addressCountryCode}
-                      onChange={(event) =>
-                        setAddressCountryCode(event.target.value)
-                      }
-                      disabled={pending}
-                    />
-                  </div>
-                </div>
-                <div className="grid gap-1.5 sm:col-span-2">
-                  <Label htmlFor="ci-user-avatar-key">Profile photo</Label>
-                  <Input
-                    id="ci-user-avatar-key"
-                    placeholder="user-avatars/{userId}/profile.webp"
-                    value={avatarKey}
-                    onChange={(event) => setAvatarKey(event.target.value)}
-                    disabled={pending}
-                  />
-                  <Input
-                    aria-label="Profile photo resolved URL"
-                    type="url"
-                    placeholder="Resolved or signed S3 URL"
-                    value={avatarUrl}
-                    onChange={(event) => setAvatarUrl(event.target.value)}
-                    disabled={pending}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Store the durable S3 object key; treat the URL as a
-                    replaceable delivery value because signed URLs expire.
-                  </p>
-                </div>
-                <div className="grid gap-1.5 sm:col-span-2">
-                  <Label htmlFor="ci-user-extensions">
-                    Profile extensions (JSON object)
-                  </Label>
-                  <Textarea
-                    id="ci-user-extensions"
-                    value={extensionsJson}
-                    onChange={(event) => setExtensionsJson(event.target.value)}
-                    placeholder={'{ "department": "Engineering" }'}
-                    disabled={pending}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Use this one extension field for application-specific
-                    profile data.
-                  </p>
-                </div>
-              </div>
-            </section>
-
-            {editorMode && !target?.isRootUser ? (
-              <section className="grid gap-4" aria-labelledby="access-heading">
-                <h3 id="access-heading" className="text-sm font-semibold">
-                  Roles and assignments
-                </h3>
-                <div className="grid gap-2">
-                  <Label>Identity roles</Label>
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    {roleOptions.map((role) => (
-                      <label
-                        key={role.id}
-                        className="flex min-h-11 items-center gap-3 rounded-md border border-border px-3 text-sm"
-                      >
-                        <Checkbox
-                          checked={selectedRoles.includes(role.id)}
-                          onCheckedChange={(checked) =>
-                            setSelectedRoles((current) =>
-                              checked === true
-                                ? Array.from(
-                                    new Set([...current, role.id]),
-                                  ).sort()
-                                : current.filter((id) => id !== role.id),
-                            )
-                          }
-                          disabled={pending || !capabilities.canAssignRoles}
-                        />
-                        {role.label}
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="grid gap-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <Label>Scoped assignments</Label>
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        Org Unit scope IDs use tenant-id:org-unit-id.
-                      </p>
-                    </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="min-h-11"
-                      onClick={() =>
-                        setAssignmentDrafts((current) => [
-                          ...current,
-                          createAssignment(
-                            assignmentRoleOptions[0]?.id ?? roleOptions[0]?.id,
-                          ),
-                        ])
-                      }
-                      disabled={pending || !capabilities.canAssignRoles}
-                    >
-                      <Plus aria-hidden /> Add assignment
-                    </Button>
-                  </div>
-                  {assignmentDrafts.map((draft, index) => (
-                    <div
-                      key={draft.id}
-                      className="grid gap-2 rounded-lg border border-border p-3 sm:grid-cols-2"
-                    >
-                      <Select
-                        value={draft.roleId}
-                        onValueChange={(value) =>
-                          setAssignmentDrafts((current) =>
-                            current.map((item) =>
-                              item.id === draft.id
-                                ? {
-                                    ...item,
-                                    roleId: value,
-                                    ...(value ===
-                                    CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE
-                                      ? {
-                                          scopeKind: "system" as const,
-                                          scopeId: "",
-                                          propagation: "exact" as const,
-                                        }
-                                      : {}),
-                                  }
-                                : item,
+                  : undefined
+              }
+              options={{
+                roles: roleOptions.map((role) => ({
+                  value: role.id,
+                  label: role.label,
+                })),
+                locales: localeOptions,
+                timeZones: timeZoneOptions,
+              }}
+              fieldState={{
+                roles: {
+                  disabled: !capabilities.canAssignRoles,
+                  hidden: target?.isRootUser === true,
+                },
+              }}
+              callbacks={{ cancel: resetEditor }}
+              onSubmit={saveEditor}
+            >
+              {!target?.isRootUser ? (
+                <section className="grid gap-4" aria-label="Scoped assignments">
+                  <div className="grid gap-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <Label>Scoped assignments</Label>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          Org Unit scope IDs use tenant-id:org-unit-id.
+                        </p>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="min-h-11"
+                        onClick={() =>
+                          setAssignmentDrafts((current) => [
+                            ...current,
+                            createAssignment(
+                              assignmentRoleOptions[0]?.id ??
+                                roleOptions[0]?.id,
                             ),
-                          )
+                          ])
                         }
-                        disabled={
-                          pending ||
-                          (draft.roleId ===
-                            CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE &&
-                            !capabilities.canDelegateSystemSuperAdminManagement)
-                        }
+                        disabled={pending || !capabilities.canAssignRoles}
                       >
-                        <SelectTrigger
-                          aria-label={`Assignment ${index + 1} role`}
-                        >
-                          <SelectValue placeholder="Role" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {assignmentRoleOptions.map((role) => (
-                            <SelectItem
-                              key={role.id}
-                              value={role.id}
-                              disabled={
-                                role.id ===
-                                  CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE &&
-                                !capabilities.canDelegateSystemSuperAdminManagement
-                              }
-                            >
-                              {role.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Select
-                        value={draft.scopeKind}
-                        onValueChange={(value) =>
-                          setAssignmentDrafts((current) =>
-                            current.map((item) =>
-                              item.id === draft.id
-                                ? {
-                                    ...item,
-                                    scopeKind:
-                                      value as AssignmentDraft["scopeKind"],
-                                    scopeId: "",
-                                  }
-                                : item,
-                            ),
-                          )
-                        }
-                        disabled={
-                          pending ||
-                          draft.roleId === CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE
-                        }
+                        <Plus aria-hidden /> Add assignment
+                      </Button>
+                    </div>
+                    {assignmentDrafts.map((draft, index) => (
+                      <div
+                        key={draft.id}
+                        className="grid gap-2 rounded-lg border border-border p-3 sm:grid-cols-2"
                       >
-                        <SelectTrigger
-                          aria-label={`Assignment ${index + 1} scope`}
-                        >
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="system">System</SelectItem>
-                          <SelectItem value="global">Global</SelectItem>
-                          <SelectItem value="tenant">Tenant</SelectItem>
-                          <SelectItem value="orgUnit">Org Unit</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      {draft.scopeKind === "tenant" ||
-                      draft.scopeKind === "orgUnit" ? (
-                        <Input
-                          aria-label={`Assignment ${index + 1} scope ID`}
-                          placeholder={
-                            draft.scopeKind === "tenant"
-                              ? "tenant-id"
-                              : "tenant-id:org-unit-id"
-                          }
-                          value={draft.scopeId}
-                          onChange={(event) =>
+                        <Select
+                          value={draft.roleId}
+                          onValueChange={(value) =>
                             setAssignmentDrafts((current) =>
                               current.map((item) =>
                                 item.id === draft.id
-                                  ? { ...item, scopeId: event.target.value }
+                                  ? {
+                                      ...item,
+                                      roleId: value,
+                                      ...(value ===
+                                      CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE
+                                        ? {
+                                            scopeKind: "system" as const,
+                                            scopeId: "",
+                                            propagation: "exact" as const,
+                                          }
+                                        : {}),
+                                    }
                                   : item,
                               ),
                             )
@@ -1701,93 +1364,147 @@ export function CiUserManagementPage({
                               CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE &&
                               !capabilities.canDelegateSystemSuperAdminManagement)
                           }
-                        />
-                      ) : null}
-                      <Select
-                        value={draft.propagation}
-                        onValueChange={(value) =>
-                          setAssignmentDrafts((current) =>
-                            current.map((item) =>
-                              item.id === draft.id
-                                ? {
-                                    ...item,
-                                    propagation:
-                                      value as AssignmentDraft["propagation"],
-                                  }
-                                : item,
-                            ),
-                          )
-                        }
-                        disabled={
-                          pending ||
-                          draft.roleId === CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE
-                        }
-                      >
-                        <SelectTrigger
-                          aria-label={`Assignment ${index + 1} propagation`}
                         >
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="exact">Exact scope</SelectItem>
-                          <SelectItem value="descendants">
-                            Include descendants
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                      {assignmentDrafts.length > 1 ? (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          className="min-h-11 sm:col-span-2"
-                          onClick={() =>
+                          <SelectTrigger
+                            aria-label={`Assignment ${index + 1} role`}
+                          >
+                            <SelectValue placeholder="Role" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {assignmentRoleOptions.map((role) => (
+                              <SelectItem
+                                key={role.id}
+                                value={role.id}
+                                disabled={
+                                  role.id ===
+                                    CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE &&
+                                  !capabilities.canDelegateSystemSuperAdminManagement
+                                }
+                              >
+                                {role.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Select
+                          value={draft.scopeKind}
+                          onValueChange={(value) =>
                             setAssignmentDrafts((current) =>
-                              current.filter((item) => item.id !== draft.id),
+                              current.map((item) =>
+                                item.id === draft.id
+                                  ? {
+                                      ...item,
+                                      scopeKind:
+                                        value as AssignmentDraft["scopeKind"],
+                                      scopeId: "",
+                                    }
+                                  : item,
+                              ),
                             )
                           }
                           disabled={
                             pending ||
-                            (draft.roleId ===
-                              CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE &&
-                              !capabilities.canDelegateSystemSuperAdminManagement)
+                            draft.roleId === CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE
                           }
                         >
-                          Remove assignment
-                        </Button>
-                      ) : null}
-                    </div>
-                  ))}
-                </div>
-              </section>
-            ) : null}
-          </div>
-
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              className="min-h-11"
-              onClick={resetEditor}
-              disabled={pending}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              className="min-h-11"
-              onClick={() => void saveEditor()}
-              disabled={pending}
-              aria-busy={pending}
-            >
-              {pending
-                ? "Saving..."
-                : editorMode === "create"
-                  ? managementKind === "administrators"
-                    ? "Create administrator"
-                    : "Create user"
-                  : "Save changes"}
-            </Button>
-          </DialogFooter>
+                          <SelectTrigger
+                            aria-label={`Assignment ${index + 1} scope`}
+                          >
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="system">System</SelectItem>
+                            <SelectItem value="global">Global</SelectItem>
+                            <SelectItem value="tenant">Tenant</SelectItem>
+                            <SelectItem value="orgUnit">Org Unit</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        {draft.scopeKind === "tenant" ||
+                        draft.scopeKind === "orgUnit" ? (
+                          <Input
+                            aria-label={`Assignment ${index + 1} scope ID`}
+                            placeholder={
+                              draft.scopeKind === "tenant"
+                                ? "tenant-id"
+                                : "tenant-id:org-unit-id"
+                            }
+                            value={draft.scopeId}
+                            onChange={(event) =>
+                              setAssignmentDrafts((current) =>
+                                current.map((item) =>
+                                  item.id === draft.id
+                                    ? { ...item, scopeId: event.target.value }
+                                    : item,
+                                ),
+                              )
+                            }
+                            disabled={
+                              pending ||
+                              (draft.roleId ===
+                                CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE &&
+                                !capabilities.canDelegateSystemSuperAdminManagement)
+                            }
+                          />
+                        ) : null}
+                        <Select
+                          value={draft.propagation}
+                          onValueChange={(value) =>
+                            setAssignmentDrafts((current) =>
+                              current.map((item) =>
+                                item.id === draft.id
+                                  ? {
+                                      ...item,
+                                      propagation:
+                                        value as AssignmentDraft["propagation"],
+                                    }
+                                  : item,
+                              ),
+                            )
+                          }
+                          disabled={
+                            pending ||
+                            draft.roleId === CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE
+                          }
+                        >
+                          <SelectTrigger
+                            aria-label={`Assignment ${index + 1} propagation`}
+                          >
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="exact">Exact scope</SelectItem>
+                            <SelectItem value="descendants">
+                              Include descendants
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        {assignmentDrafts.length > 1 ? (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            className="min-h-11 sm:col-span-2"
+                            onClick={() =>
+                              setAssignmentDrafts((current) =>
+                                current.filter((item) => item.id !== draft.id),
+                              )
+                            }
+                            disabled={
+                              pending ||
+                              (draft.roleId ===
+                                CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE &&
+                                !capabilities.canDelegateSystemSuperAdminManagement)
+                            }
+                          >
+                            Remove assignment
+                          </Button>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              ) : null}
+            </CiSmartForm>
+          )}
         </DialogContent>
       </Dialog>
 

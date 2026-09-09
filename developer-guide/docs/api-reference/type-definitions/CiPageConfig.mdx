@@ -1,5 +1,17 @@
 ---
-title: CiPageConfig
+title: Migrate CiPageConfig to CiNextContext
+description: Replace the former page config contract with current context and page setup types.
 ---
 
-# CiPageConfig
+# Migrate CiPageConfig to CiNextContext
+
+`CiPageConfig` is a previous guide name, not a current public Next.js type. Current pages receive
+`CiNextContext`, and their presentation options use `CiNextPageSetup`, both from `@cloudigniter/next/types`.
+
+```ts
+import type { CiNextContext, CiNextPageSetup, CiPageProps } from "@cloudigniter/next/types";
+```
+
+Use the server bootstrap result as `CiPage`'s `context` prop. Do not rebuild the previous `config.ciConfig`
+structure. Consult [`CiPage`](/docs/api-reference/components/page) and the
+[request lifecycle](/docs/architecture/request-lifecycle) for the current composition.

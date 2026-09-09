@@ -1,0 +1,53 @@
+---
+title: Smart Form helpers
+description: Merge, compile, cache, map, initialize, and generate Smart Forms without a framework or provider dependency.
+sidebar_position: 14
+---
+
+# Smart Form helpers
+
+The following runtime-neutral functions are exported from `@cloudigniter/core/lib`. Their generic types are
+available from `@cloudigniter/core/types`.
+
+```ts
+ciCompileSmartForm<T extends object = CiSmartFormValues>(specifications: CiSmartFormSpec<T>, template?: CiSmartFormTemplate<T>): CiCompiledSmartForm<T>
+ciDefineSmartForm<T extends object = CiSmartFormValues>(specifications: CiSmartFormSpec<T>, template?: CiSmartFormTemplate<T>): CiCompiledSmartForm<T>
+ciMergeSmartFormSpecifications<T extends object = CiSmartFormValues>(core: CiSmartFormSpec<T>, extension: CiSmartFormSpecExtension<T>): CiSmartFormSpec<T>
+ciMergeSmartFormTemplates<T extends object = CiSmartFormValues>(core: CiSmartFormTemplate<T>, extension: CiSmartFormTemplateExtension<T>): CiSmartFormTemplate<T>
+ciMapSmartFormData<TSource, TValues extends object = CiSmartFormValues>(source: TSource, mapping: CiSmartFormDataMap<TSource, TValues>): Partial<TValues>
+ciSmartFormInitialValues<T extends object = CiSmartFormValues>(spec: CiSmartFormSpec<T>, data?: Partial<T>): T
+ciIsSmartFormFieldVisible<T extends object>(field: CiSmartFormFieldSpec<T>, values: T): boolean
+ciGenerateSmartFormModule(forms: Readonly<Record<string, CiCompiledSmartForm>>): string
+```
+
+| Helper | Behavior and failures |
+| --- | --- |
+| `ciCompileSmartForm` | Clones and freezes a resolved plan. Rejects invalid/duplicate field/group/row names, unknown or repeated placeholders, wrong-group fields, unknown field kinds, invalid options, and unsafe/nonserializable configuration. Appends unplaced fields and orders main first. |
+| `ciDefineSmartForm` | Same result with a WeakMap cache keyed by definition and template identity; callers must replace changed input objects. |
+| `ciMergeSmartFormSpecifications` | Nonmutating named merge, validates result, ignores extension for fixed core. Main group edits throw. Supplied field type replaces its whole union member; props/validation merge by property. Explicit remove deletes named items. |
+| `ciMergeSmartFormTemplates` | Nonmutating group/row merge. Supplied fields replaces placement. Duplicate patches and removing main throw. Compile with specifications afterward to validate placeholders and group ownership. |
+| `ciMapSmartFormData` | Projects own paths or calls transforms. Rejects unsafe path segments/target names. Defaults apply only to undefined; unmapped store properties are omitted. |
+| `ciSmartFormInitialValues` | Picks specified data values or independently cloned defaults. Unspecified data keys are omitted. Boolean/multi-select/text defaults are false storage value, empty array, and empty string. |
+| `ciIsSmartFormFieldVisible` | Evaluates equals and notEquals using JSON comparison; no condition means visible. |
+| `ciGenerateSmartFormModule` | Revalidates named plans and returns a deterministic TypeScript module exporting ciGeneratedSmartForms. Performs no filesystem writes. Export keys obey field-name conventions. Never include record data in input. |
+
+The packaged user definitions are `CI_USER_CREATE_FORM_SPEC`, `CI_USER_EDIT_FORM_SPEC`, `CI_USER_FORM_TEMPLATE`,
+and `CI_USER_EDIT_FORM_TEMPLATE`. Production-ready compiled defaults are `CI_USER_CREATE_FORM` and
+`CI_USER_EDIT_FORM`. All six are exported from `@cloudigniter/core/lib`.
+
+The reusable synchronous UI validator is exported from `@cloudigniter/ui/lib`:
+
+```ts
+ciValidateSmartForm<T extends object>(
+  spec: CiSmartFormSpec<T>,
+  values: T,
+  optionSources?: Readonly<Record<string, readonly CiSmartFormOption[]>>,
+): Record<string, string>
+```
+
+It returns errors keyed by field name, excluding hidden/disabled/read-only fields. It checks required values,
+email/URL/number/boolean types, option membership with scalar types preserved, JSON object constraints, and
+declarative limits/patterns. The component additionally runs named async validators and rejects malformed editor
+drafts. Server/provider validation remains authoritative.
+
+See the [workflow guide](../../ui-components/smart-form.mdx) and [renderer](../components/ci-smart-form.mdx).

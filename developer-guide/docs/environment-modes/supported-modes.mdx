@@ -22,5 +22,5 @@ export type CiEnvMode =
 `test` is deliberately not a developer-tools bypass. Tests should invoke focused functions with explicit test
 fixtures or exercise a development deployment; they must not make deployed mutation handlers broadly available.
 
-The old `live` and `sandbox` values are not members of `CiEnvMode`. Use `production` and `development`
-respectively when migrating older configuration.
+Use these exact values in environment files and application configuration. A deployment label such as
+“sandbox” does not change the accepted `CiEnvMode` values.

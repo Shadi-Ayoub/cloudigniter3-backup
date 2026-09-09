@@ -1,0 +1,64 @@
+---
+title: Smart Form contracts
+description: Serializable specification, field, template, extension, compiled-plan, and data mapping contracts.
+sidebar_position: 14
+---
+
+# Smart Form contracts
+
+Import every contract below from `@cloudigniter/core/types`. Value-object generics default to
+`CiSmartFormValues` (`Record<string, unknown>`); `CiSmartFormFieldName<T>` restricts names to string keys of `T`.
+
+| Type | Shape |
+| --- | --- |
+| `CiSmartFormSpec<T>` | Required `id`, `fields`; optional category, title, subtitle, introduction, className, direction, locale, groups, buttons, errors |
+| `CiSmartFormFieldSpec<T>` | Required name; optional group, required, label, type, props, className, description, defaultValue, disabled, readOnly, visibleWhen, validation |
+| `CiSmartFormGroupSpec` | name, label?, collapsible?, defaultCollapsed?, className?, order? |
+| `CiSmartFormButtonSpec` | id, label, type; optional callback, icon, animation, className, order, validate, pendingLabel, disabled |
+| `CiSmartFormTemplate<T>` | className?, groups: array of name and rows |
+| `CiSmartFormTemplateRow<T>` | id, fields: field-name array, columns?: 1/2/3/4, className? |
+| `CiSmartFormSpecExtension<T>` | Partial form properties except id/category; named partial fields/groups/buttons with remove? |
+| `CiSmartFormTemplateExtension<T>` | className?, named group patches with remove? and optional partial row patches keyed by id with remove? |
+| `CiCompiledSmartForm<T>` | version: 1, specifications, fully resolved template |
+| `CiSmartFormDataMap<Source, Values>` | Optional value keys mapped to path strings, objects with path/defaultValue, or functions from source to the corresponding value |
+| `CiSmartFormCondition<T>` | field, equals?, notEquals?; both supplied comparisons must match |
+| `CiSmartFormScalar` | string, number, boolean |
+| `CiSmartFormJson` | JSON scalars including null, arrays, and string-keyed JSON objects |
+| `CiSmartFormOption` | value: scalar, label: string, disabled? |
+| `CiSmartFormOptions` | options?, optionsSource?, sortOptions? |
+
+Category is `customizable` by default or `fixed`. Direction is `ltr`, `rtl`, or `auto`; omitted direction inherits.
+Labels are strings or `{ text, position?: "top" | "side" }`. Default position is top. Fields default to optional
+text inputs in the implicit first `main` group. Groups have no label/classes and do not collapse by default.
+`props` contains JSON-compatible native/custom component properties. Managed identity, type, value, event,
+required/disabled/read-only, and HTML injection props cannot override the renderer's ownership.
+
+`validation` accepts `min`, `max`, `minLength`, `maxLength`, `pattern`, `message`, and `validator` (registry key).
+`errors` accepts `placement: "top" | "bottom" | "none"`, `dismissible`, `title`, `validationMessage`, and
+`focusFirstInvalid`. Defaults are top, dismissible, and first-invalid focus enabled.
+
+`CiSmartFormFieldType` is an object union discriminated by `kind`:
+
+```ts
+// Native kinds
+{ kind: "text" | "password" | "email" | "tel" | "url" | "search" |
+        "number" | "range" | "date" | "datetime-local" | "time" |
+        "month" | "week" | "color" | "hidden" | "textarea" }
+// Boolean scalar
+{ kind: "boolean" | "checkbox"; display?: "switch" | "radio" | "checkbox";
+  orientation?: "row" | "column"; trueOption?: CiSmartFormOption; falseOption?: CiSmartFormOption }
+// One choice, with CiSmartFormOptions
+{ kind: "singleSelect" | "select" | "radio"; display?: "dropdown" | "radio" | "slider";
+  orientation?: "row" | "column"; options?: readonly CiSmartFormOption[];
+  optionsSource?: string; sortOptions?: boolean }
+// Multiple choices, with the same options properties
+{ kind: "multiSelect"; display?: "dropdown" | "checkbox" | "chips";
+  orientation?: "row" | "column"; options?: readonly CiSmartFormOption[];
+  optionsSource?: string; sortOptions?: boolean }
+{ kind: "jsonEditor"; objectOnly?: boolean }
+{ kind: "custom"; renderer: string }
+```
+
+Button types are `create`, `update`, `save`, `delete`, `cancel`, and `custom`. Callback/icon/animation values are
+registry keys, preserving serializable definitions. Executable bindings are [UI props](../components/ci-smart-form.mdx).
+See [helpers](../shared-apis/ci-smart-form.mdx) for merge, naming, compilation, and mapping failure behavior.

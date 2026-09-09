@@ -1,9 +1,9 @@
 ---
-title: The Folders Structure
+title: The folder structure
 sidebar_position: 2
 ---
 
-AWS Amplify Gen 2 requires an `amplify` folder at the application root. CloudIgniter's platform definitions and thin composition entry points live in its core subfolders; application additions live only under `amplify/custom`. The former `amplify_extended` convention is obsolete.
+AWS Amplify Gen 2 requires an `amplify` folder at the application root. CloudIgniter's platform definitions and thin composition entry points live in its core subfolders; application additions live only under `amplify/custom`.
 
 Resource Studio follows the same rule and writes Data Entities beneath `amplify/custom/data/schemata/data-entities`. See the [Resource Studio overview](../resource-studio/overview) for its exact generated tree.
 
@@ -32,105 +32,40 @@ The backend shape strictly merges CloudIgniter core factories with `customBacken
 
 ### auth/resource.ts
 
-Amplify Auth is powered by [Amazon Cognito](https://aws.amazon.com/cognito/). Cognito is a robust user directory service that handles user registration, authentication, account recovery, and other operations ([Read more](https://docs.amplify.aws/nextjs/build-a-backend/auth/concepts/)).
+The Auth resource binds the composed authentication configuration to Amplify:
 
-This resource is provided by the file `resource.ts` in the `auth` folder root.
-
-```ts {10-11,17-18} title="auth/resource.ts" showLineNumbers
+```ts title="auth/resource.ts" showLineNumbers
 import { defineAuth } from "@aws-amplify/backend";
+import { backendAuth } from "./backend-auth";
 
-import { backendAuth, backendAuthAccess } from "./backend-auth";
+type AmplifyAuthResource = ReturnType<typeof defineAuth>;
 
-export const auth = defineAuth({
-  ...backendAuth,
-  access: (allow) => [...backendAuthAccess(allow)],
-});
+export const auth: AmplifyAuthResource = defineAuth(backendAuth);
 ```
-
-The auth backend settings have two parts: the Cognito resource definition and the function `access` definition.
-Platform composition lives in `amplify/auth/backend-auth.ts`; application additions come from the custom backend
-configuration and are merged without duplicating the core role list.
 
 #### auth/backend-auth.ts
 
-```ts {4,7,17,21,33} title="auth/backend-auth.ts" showLineNumbers
-import { CI_CORE_ROLES_BY_PRECEDENCE } from "@cloudigniter/core/lib";
+This composition file combines CloudIgniter’s core roles with the application’s `customBackendAuth`
+configuration. It keeps the core role order and the Cognito Root marker under platform control.
 
-import { CI_CORE_AMPLIFY_FUNCTION_RESOURCES } from "../backend/ci-core-amplify-manifest";
+Configure application authentication in `amplify/custom/auth/custom-backend-auth.ts`, exported through
+`amplify/custom/backend.ts`. The template configures email sign-in, required given and family names, and an
+optional middle name. Use this custom definition for application groups, user attributes, verification messages,
+and other supported Auth settings. Keep core groups intact when adding application groups.
 
-const {
-  createCognitoUserHandler,
-  deleteCognitoUserHandler,
-  getCognitoUserHandler,
-  listCognitoUsersHandler,
-  setCognitoUserEnabledHandler,
-  setCognitoUserPasswordHandler,
-  updateCognitoUserHandler,
-} = CI_CORE_AMPLIFY_FUNCTION_RESOURCES;
-
-const coreBackendAuth: AmplifyAuthProps = {
-  loginWith: {
-    email: true,
-  },
-  userAttributes: {
-    givenName: {
-      mutable: true,
-      required: true,
-    },
-    familyName: {
-      mutable: true,
-      required: true,
-    },
-  },
-  groups: [...CI_CORE_ROLES_BY_PRECEDENCE], // Earlier groups receive stronger Cognito precedence.
-};
-
-const coreBackendAuthAccess = (allow: AuthAccessBuilder) => {
-  const accessArray: AuthAccessDefinition[] = [
-    allow.resource(deleteCognitoUserHandler).to(["deleteUser"]),
-    allow.resource(getCognitoUserHandler).to(["getUser"]),
-    allow.resource(listCognitoUsersHandler).to(["listUsers"]),
-    allow.resource(createCognitoUserHandler).to(["createUser", "addUserToGroup", "getUser"]),
-    allow.resource(setCognitoUserPasswordHandler).to(["setUserPassword"]),
-    allow.resource(setCognitoUserEnabledHandler).to(["disableUser", "enableUser"]),
-    allow.resource(updateCognitoUserHandler).to(["updateUserAttributes"]),
-  ];
-
-  return accessArray;
-};
-
-export { coreBackendAuth, coreBackendAuthAccess };
-```
-
-The core auth definition is intentionally kept simple. The following points describe the core definition as per the code above:
-
-1. We kept the Amplify Auth default, which is scaffolded with `email` as the default method for user sign-in.
-2. The `loginWith` property definition will result in Amplify Auth automatically configure an `email` attribute that is required for sign-in. In addition, we extended the user profile by configuring two additional attributes namely, `givenName` and `familyName` and we made them required fields.
-3. We configure `groups` from `CI_CORE_ROLES_BY_PRECEDENCE`, keeping Cognito group order aligned with CloudIgniter's current core-role catalog. Add application groups through the custom backend auth configuration rather than duplicating the core list.
-4. The core handler resources receive only the Cognito actions needed to list, create, read, update, enable,
-   disable, and permanently delete identities. Dashboard authorization remains a separate server-side check.
-
-:::warning
-
-- Please note that after you create your auth resource, you cannot switch an attribute between `required` and not required.
-- The core groups are part of the platform authorization contract and should not be deleted or renamed. Add application-owned groups through the supported extension configuration.
-
-Furthermore, please note that some initial configuration options cannot be changed after the backend resources are configured:
-
-- User attributes that are used to identify your individual users (such as `email` and phone) cannot be renamed or deleted.
-- Sign-in methods (including username, `email`, and phone) cannot be added or changed after the initial configuration. This includes both defining which attributes are used to sign in and which attributes are required. `Required` attributes must have a value for all users once set.
-- `Verification` methods (including username and email) are the same as required attributes and cannot be removed once configured.
-- The `sub` attribute is a unique identifier within each user pool that cannot be modified and can be used to index and search users.
-- If `MFA` (Multi-Factor Authentication) is set to required with phone number for all users, you will need to include MFA setup (i.e. mandating phone number) when users sign up.
-  :::
+Auth configuration affects the deployed identity service and sign-in flow. Before changing an existing User
+Pool, review the provider’s constraints for the settings involved and plan any required user migration. Test
+sign-in, verification, recovery, and required attributes against the intended deployment.
 
 ### data/resource.ts
 
-With [Amplify Data](https://docs.amplify.aws/nextjs/build-a-backend/data/), developers can build a secure, real-time API backed by a database in minutes. After you define your data model using TypeScript, Amplify will deploy a real-time API for you. This API is powered by [AWS AppSync](https://us-east-1.console.aws.amazon.com/appsync/) and connected to an [Amazon DynamoDB](https://us-east-1.console.aws.amazon.com/dynamodbv2/) database. You can secure your API with authorization rules and scale to custom use cases with AWS Lambda.
+[Amplify Data](https://docs.amplify.aws/nextjs/build-a-backend/data/) defines the application’s models and API in TypeScript. CloudIgniter composes core and custom schema fragments into the deployed Data resource.
 
 The `data/resource.ts` is the central location of the data backend configuration. The most important element is the schema object, which defines your backend data models (a.model()) and custom queries (a.query()), mutations (a.mutation()), and subscriptions (a.subscription()).
 
-```ts {5,6,11,13} title="data/resource.ts" showLineNumbers
+The following example shows schema composition and the default authorization mode:
+
+```ts title="data/resource.ts (schema composition)" showLineNumbers
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 import { ciMergeAmplifyDataSchemas } from "@cloudigniter/aws/server/backend";
 
@@ -148,8 +83,6 @@ export const data = defineData({
   },
 });
 ```
-
-More TBD...
 
 ## The `amplify/custom` folder
 

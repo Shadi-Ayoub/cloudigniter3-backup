@@ -129,10 +129,9 @@ The manager supplies the same full-width header used by other `CiDataTable` mana
 Use `tableProps` to replace the badge, chips, icon, or semantic icon tone when the page needs more specific
 context. The default mixed row-action layout shows one icon-only action before the labeled overflow menu.
 
-The render boundary is intentional. Generated `CiBooksManager.tsx` code visibly renders
-`<CiDataTable {...props} />`, while the reusable manager augments those props with stable create, edit, and
-delete actions. This keeps the generated page easy to inspect and customize without duplicating interaction
-logic.
+Use the render callback to compose `<CiDataTable {...props} />` with your page. The manager supplies the table
+props and create, edit, and delete actions, so you can customize presentation while retaining the shared
+interaction behavior.
 
 ## Field behavior
 

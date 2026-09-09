@@ -6,7 +6,8 @@ import type {
   CiOrgUnitStatus,
 } from "@cloudigniter/core/types";
 
-type CiOrgUnitLookupRequest = Pick<Request, "url">;
+type CiOrgUnitLookupRequest = Pick<Request, "url"> &
+  Partial<Pick<Request, "headers">>;
 
 /**
  * Looks up an Org Unit through the configured internal Org Unit lookup endpoint.
@@ -63,11 +64,18 @@ export async function ciLookupOrgUnit(
     //   orgUnitPath: normalizedOrgUnitPath,
     // });
 
+    const lookupHeaders = new Headers({ accept: "application/json" });
+    const cookie = request.headers?.get("cookie");
+    if (cookie) {
+      lookupHeaders.set("cookie", cookie);
+    }
+
     const response = await fetch(lookupUrl, {
       method: "GET",
-      headers: {
-        accept: "application/json",
-      },
+      // This same-origin request must retain the authenticated session so
+      // developer-only probe fixtures can repeat their access check.
+      headers: lookupHeaders,
+      redirect: "error",
       cache: "no-store",
     });
 

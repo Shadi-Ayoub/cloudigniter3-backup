@@ -129,6 +129,7 @@ const dictionaryTermsByLetter = {
     ["Server Action", "server-action"],
     ["Server Component", "server-component"],
     ["Shared Subtree", "shared-subtree"],
+    ["Smart Form", "smart-form"],
     ["Soft Delete", "soft-delete"],
     ["Subject", "subject"],
     ["Super Admin Role", "super-admin-role"],

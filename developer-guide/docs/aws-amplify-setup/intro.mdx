@@ -1,16 +1,19 @@
 ---
-title: Introduction
+title: AWS Amplify setup
 sidebar_position: 1
 ---
 
-The CloudIgniter ecosystem adopts AWS Amplify Gen 2 in its core. AWS Amplify provides a TypeScript-based, code-first approach to backend development, streamlining the developer experience (DX). With a unified DX, Amplify integrates hosting, backend, and UI-building capabilities, empowering developers to define cloud infrastructure directly in TypeScript. By expressing your app's data model, business logic, authentication, and authorization rules in code, Amplify handles the automatic provisioning of the necessary AWS resources. This eliminates the need to manually integrate individual AWS services, allowing developers to focus on building their applications without worrying about underlying infrastructure complexities.
+The CloudIgniter application template uses AWS Amplify Gen 2 to define authentication, data models, and backend
+resources in TypeScript. The AWS provider connects these resources to CloudIgniter’s application contracts.
+Application-specific infrastructure belongs in `amplify/custom`.
 
-This chapter will describe the implementaion of AWS Amplify in Cloudigniter including the part were developers can extend and/or override the initial setup.
+For your first application, complete [AWS preparation](../getting-started/before-you-start) and
+[Run the Application Template](../getting-started/run-template) before extending the backend.
 
-:::tip
-CloudIgniter promotes the use of AWS Amplify for end-to-end full-stack development using TypeScript.
-:::
+Start with [The folder structure](./folder-structure) to understand how Auth, Data, and backend resources are
+composed. Then follow [Extending the Amplify backend](../providers/aws/extending-amplify-backend) to register
+application resources and configure their permissions. For generated Data Entities and management pages, use
+[Resource Studio](../resource-studio/overview).
 
-:::warning
-CloudIgniter owns the Amplify core folders and composition entry points. Put application-owned Amplify code only under `amplify/custom`; do not modify sibling core schemas, functions, or manifests. Resource Studio follows the same boundary. See [The folder structure](./folder-structure) for the supported registries and hooks.
-:::
+CloudIgniter owns the core Amplify folders and composition entry points. Add application behavior through the
+custom registries and hooks so that template upgrades can preserve your application code.

@@ -1,0 +1,45 @@
+---
+title: Testing and operations
+description: Verify feature behavior, diagnose failures, and operate CloudIgniter with explicit deployment and data ownership.
+sidebar_position: 1
+---
+
+# Testing and operations
+
+Validate the feature from its public route through its final provider operation. A successful UI render does
+not prove that authorization, persistence, retries, or cleanup behave correctly.
+
+## Build a useful verification sequence
+
+1. Test pure validation, permissions, scopes, and key construction with deterministic inputs.
+2. Exercise missing authentication, wrong roles, unsupported Tenant scopes, and invalid data.
+3. Verify server and provider failures preserve the current UI state and produce useful feedback.
+4. Check direct navigation, route changes, translations, light/dark themes, keyboard use, and narrow screens.
+5. Test persistence and cleanup against an explicitly selected disposable deployment.
+
+Follow the [testing strategy](/docs/testing-strategy) for focused, integration, and cleanup
+coverage. Separate deployments and resources provide environment isolation; the environment mode alone does not.
+
+## Diagnose the request before changing the feature
+
+In development, authenticated users with exact `developer` membership can open Dev Beacon and Debug Probe.
+Tenant and Org Unit checkups include a **View JSON Report** action for copying expected and actual probe results.
+These built-in probes check resolver behavior; they do not prove that application data exists in the backend.
+
+Use the [development tools and seeding guide](/docs/environment-modes/development-tools-and-seeding) for access
+requirements and fixture ownership. For a route or translation problem, trace the
+[request lifecycle](/docs/architecture/request-lifecycle) in order.
+
+## Prepare an operational change
+
+Confirm the provider target, application/backend revision, environment mode, and expected schema before
+deployment. Use the [CLI](/docs/cli/overview) and the
+[Resource Studio deployment workflow](/docs/resource-studio/deployment-and-rollback) for their supported operations.
+
+Tenant and User deletion moves records to Trash for restoration; permanent deletion is a separate privileged
+action. See [Tenant lifecycle](/docs/core-system/multi-Tenancy/lifecycle-operations)
+and [User administration](/docs/users-management/intro) for supported administration workflows.
+
+Use the [API Reference](/docs/api-reference/overview) for contracts, and
+[CloudIgniter Developers](/company-developers/documentation/authoring-workflow) when
+contributing changes to the platform or its documentation.

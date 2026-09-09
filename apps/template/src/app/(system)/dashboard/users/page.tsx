@@ -1,3 +1,4 @@
+import { appUserForms } from "@/custom/user";
 import {
   ciCreateAuthorizer,
   ciCanAccessDeveloperTools,
@@ -97,6 +98,7 @@ export default async function UsersPage() {
       context={context}
     >
       <CiUserManagementPage
+        forms={appUserForms}
         users={users}
         providerLabel="Amazon Cognito"
         roleOptions={definition.roles

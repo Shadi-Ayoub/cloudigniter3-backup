@@ -2,7 +2,7 @@
 
 import { useField } from "formik";
 import { AlertCircle, AlertTriangle } from "lucide-react";
-import { CiSmartFormField } from "./CiSmartFormField";
+import { CiSmartFormFieldContext } from "./CiSmartFormFieldContext";
 import { CiSmartFormItem } from "./CiSmartFormItem";
 import { CiSmartFormLabel } from "./CiSmartFormLabel";
 import { CiSmartFormControl } from "./CiSmartFormControl";
@@ -30,7 +30,7 @@ export function CiSmartTextareaField(props: SmartTextareaFieldProps) {
   const Icon = iconType === "warning" ? AlertTriangle : AlertCircle;
 
   return (
-    <CiSmartFormField name={name}>
+    <CiSmartFormFieldContext.Provider value={{ name }}>
       <CiSmartFormItem className={className}>
         {label && <CiSmartFormLabel htmlFor={name}>{label}</CiSmartFormLabel>}
         <CiSmartFormControl>
@@ -43,8 +43,8 @@ export function CiSmartTextareaField(props: SmartTextareaFieldProps) {
                 typeof field.value === "string"
                   ? field.value
                   : field.value != null
-                  ? JSON.stringify(field.value, null, 2) // Prettified JSON for objects
-                  : ""
+                    ? JSON.stringify(field.value, null, 2) // Prettified JSON for objects
+                    : ""
               }
               rows={10}
               className={cn(
@@ -83,6 +83,6 @@ export function CiSmartTextareaField(props: SmartTextareaFieldProps) {
           {meta.touched && meta.error && meta.error}
         </CiSmartFormMessage>
       </CiSmartFormItem>
-    </CiSmartFormField>
+    </CiSmartFormFieldContext.Provider>
   );
 }

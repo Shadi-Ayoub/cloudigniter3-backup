@@ -1,20 +1,18 @@
 ---
-title: Testing Goals
+title: Testing goals
+description: Cover success, denial, scope isolation, user feedback, and cleanup behavior.
 sidebar_position: 2
 ---
 
-# Testing Goals
+# Testing goals
 
-CloudIgniter's testing strategy is built around the following goals:
+A feature's verification should cover:
 
-- ✅ Completely isolate test data from live data
-- ✅ Support rich automated integration tests (Cypress / Playwright / etc.)
-- ✅ Allow easy seeding of realistic mock tenants / roles / OUs / settings
-- ✅ Provide reliable cleanup/reset utilities
-- ✅ Prevent accidental interaction with real tenants, users, roles, etc.
-- ✅ Require minimal special-case code in the application itself
+- successful behavior with the intended actor and scope;
+- denial for missing identity, wrong permissions, and another Tenant's data;
+- validation failures and provider failures without misleading success UI;
+- deterministic fixture ownership, retries, and cleanup;
+- direct navigation, translations, accessibility, and narrow-screen behavior.
 
-Testing must **never** interfere with:
-
-- Real live data
-- Real authentication flows
+Use an explicitly disposable deployment for integration tests. Keep production credentials and resources outside
+that test configuration. See the [testing strategy](/docs/testing-strategy) for the complete sequence.

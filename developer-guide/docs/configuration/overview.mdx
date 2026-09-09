@@ -1,0 +1,30 @@
+---
+title: Configure your application
+description: Separate application configuration, environment mode, settings, localization, and presentation.
+sidebar_position: 1
+---
+
+# Configure your application
+
+Start with the complete `cloudigniter.config.ts` supplied by the template. It satisfies `CiNextCoreConfig` from
+`@cloudigniter/next/types`. Adjust the relevant block while retaining the other required application wiring.
+
+| Concern | Configuration or workflow |
+| --- | --- |
+| Login and access-control policy | [`auth`](/docs/core-system/configurations/cloudigniter.config.ts) |
+| Scope selection and routing | [`tenant` and logical routes](/docs/core-system/multi-Tenancy/configuration/routing-modes) |
+| Next.js, browser, and backend runtime mode | [Environment modes](/docs/environment-modes/intro) |
+| Languages, messages, and direction | [Localization](/docs/configuration/localization) |
+| Theme selection and application CSS | [Themes and styling](/docs/configuration/themes) |
+| Values consumed by the running application | [Settings](/docs/configuration/settings) |
+| Provider credentials and generated resources | [Data and providers](/docs/data/overview) |
+
+The file-level configuration and resolved runtime settings have different roles. Do not assume editing a
+registry persists a value or changing a public environment variable grants access. Verify the consuming
+server path and the effective context for the running application.
+
+## Work through the configuration chapter
+
+First align environment modes across the Next.js application and backend. Then configure localization,
+presentation, and settings resolution. Afterward, continue with
+[Authentication and identity](/docs/identity/authentication) before enabling protected business features.

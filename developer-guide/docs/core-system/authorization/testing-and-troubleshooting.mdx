@@ -36,7 +36,7 @@ import {
   ciCreateAuthorizer,
   ciCreateRoleAssignment,
   ciTenantAccessScope,
-} from "@cloudigniter/emberguard/lib";
+} from "@cloudigniter/core/lib";
 
 import { appAccessControl } from "./app-access-control";
 
@@ -174,7 +174,7 @@ silently changing security semantics.
 ```ts
 import {
   ciValidateAccessControlDefinition,
-} from "@cloudigniter/emberguard/lib";
+} from "@cloudigniter/core/lib";
 
 const issues = ciValidateAccessControlDefinition(appAccessControl);
 const errors = issues.filter((issue) => issue.severity === "error");
@@ -261,15 +261,11 @@ flags from the same server policy and keep the API check authoritative.
 
 Check catalog-version and subject-assignment cache invalidation. Do not key compiled authorizers only by role ID.
 
-## Package verification commands
+## Run your authorization tests
 
-The core package currently uses:
-
-```bash
-pnpm --filter @cloudigniter/emberguard check
-pnpm --filter @cloudigniter/emberguard test
-```
-
-Application authorization suites should run in the application's normal test pipeline as well.
+Include authorization tests in your application’s normal test pipeline. Exercise your configured catalog through
+the public Core APIs, and verify that server operations enforce the resulting decisions. Cover allowed and denied
+actions, Tenant and Org Unit boundaries, expired assignments, and role changes. Run these checks whenever you
+change the catalog, identity adapter, or protected operations.
 
 Next: [API Reference and Production Checklist](./reference-and-checklist).

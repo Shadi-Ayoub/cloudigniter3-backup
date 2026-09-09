@@ -315,3 +315,4 @@ export {
 //   CiTenantsPage,
 //   CiThemePresentationPage,
 // } from "./pages";
+export { CiSmartForm } from "./components/smart-form";

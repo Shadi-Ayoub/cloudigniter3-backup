@@ -1,3 +1,13 @@
+
+
+:::warning Obsulete — historical documentation
+
+This standalone writeItem draft describes an older helper contract. Use current provider APIs and canonical Core table-key helpers for application persistence.
+
+Continue with [the current guide](/docs/library/dynamodb/table-key-convention). This page is retained for historical reference
+and is outside the current learning path.
+
+:::
 # `writeItem`
 
 A single, typed helper that unifies **Put** and **Update** behaviors for DynamoDB using `@aws-sdk/lib-dynamodb`. It supports:

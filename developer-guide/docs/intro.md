@@ -1,47 +1,30 @@
 ---
+title: Welcome to CloudIgniter
+description: Follow the application developer learning path from a running template to secure, scoped features.
 sidebar_position: 1
+slug: /intro
 ---
 
-# Tutorial Intro
+# Welcome to CloudIgniter
 
-Let's discover **Docusaurus in less than 5 minutes**.
+CloudIgniter helps you build applications using shared routing, identity, authorization, Tenant management,
+UI, and provider capabilities. This guide is for developers who build **applications with CloudIgniter**.
+You do not need to understand every package's internals before creating your first feature.
 
-## Getting Started
+## Follow the learning path
 
-Get started by **creating a new site**.
+| Step | Chapter | What you will learn |
+| --- | --- | --- |
+| 1 | [Start here](/docs/getting-started/before-you-start) | Prepare AWS access, download the application template, and run your sandbox. |
+| 2 | [Architecture and concepts](/docs/architecture/overview) | Understand package responsibilities, custom code ownership, and how a request becomes a page. |
+| 3 | [Configure your application](/docs/configuration/overview) | Align environments and configure languages, themes, and runtime values. |
+| 4 | [Identity and access](/docs/identity/authentication) | Connect authentication, users, roles, permissions, and enforcement. |
+| 5 | [Tenants and Org Units](/docs/core-system/multi-Tenancy/intro) | Apply scope, routing, shared organizational trees, and lifecycle rules. |
+| 6 | [Build features](/docs/building-features/first-page) | Create pages, forms, tables, API interactions, and generated management features. |
+| 7 | [Data and providers](/docs/data/overview) | Extend the backend and use appropriate persistence and key conventions. |
+| 8 | [Testing and operations](/docs/operations/overview) | Verify behavior, diagnose failures, seed development data, and prepare deployments. |
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+Read the chapter introductions in order on your first visit. Once you understand the foundations, use the
+sidebar to jump to a specific task. Each chapter ends with links to the next useful step or deeper contracts.
 
-### What you'll need
-
-- [Node.js](https://nodejs.org/en/download/) version 18.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
-
-## Generate a new site
-
-Generate a new Docusaurus site using the **classic template**.
-
-The classic template will automatically be added to your project after you run the command:
-
-```bash
-npm init docusaurus@latest my-website classic
-```
-
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
-
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+Begin with [Before you start: AWS preparation](/docs/getting-started/before-you-start).

@@ -1,0 +1,177 @@
+---
+title: "Before you start: AWS preparation"
+description: Prepare an AWS development account, Developer 1 SSO access, deployment permissions, and a local AWS profile.
+sidebar_position: 1
+---
+
+# Before you start: AWS preparation
+
+CloudIgniter’s Next.js and AWS template runs the application on your computer and its backend in an AWS Amplify
+cloud sandbox. Complete this preparation before [running the application template](./run-template).
+
+This walkthrough calls the person deploying the sandbox **Developer 1** and names their AWS CLI profile
+`developer1`. An AWS SSO identity grants access to AWS resources. CloudIgniter application accounts and the
+application’s `developer` role are configured separately.
+
+## 1. Prepare an AWS account and Region
+
+Use an AWS account designated for application development. If your organization provides one, obtain its account
+ID and the Region where you should deploy. Otherwise, follow [AWS account registration](https://docs.aws.amazon.com/accounts/latest/reference/getting-started.html)
+and complete its contact, payment, and verification steps. Sandbox resources run in your account and incur AWS
+usage charges.
+
+Choose one deployment Region and use it throughout this walkthrough. You also need an AWS administrator who can
+configure IAM Identity Center, assign account access, and initialize Amplify in that account and Region.
+
+## 2. Create the Developer 1 SSO identity
+
+Have your AWS administrator open **IAM Identity Center** in the chosen SSO Region. If it is not enabled, choose
+**Enable**, select **Enable with AWS Organizations**, and create the organization if prompted. Use an organization
+instance so users can receive AWS account permissions. If your organization already uses an external
+identity provider, have its administrator provision Developer 1 through that identity source. See
+[AWS’s Identity Center setup guide](https://docs.aws.amazon.com/singlesignon/latest/userguide/quick-start-default-idc.html).
+
+For the built-in Identity Center directory:
+
+1. Open **Users → Add user**.
+2. Set the username to `developer1`, the display name to **Developer 1**, and the email to the developer’s own address.
+3. Choose email-based password setup and finish creating the user.
+4. Accept the invitation, set a password, and complete your organization’s MFA setup.
+
+Keep the AWS access portal URL and the Region hosting Identity Center. That SSO Region can differ from the Region
+chosen for your application. See [Add users to Identity Center](https://docs.aws.amazon.com/singlesignon/latest/userguide/addusers.html).
+
+## 3. Grant sandbox deployment permissions
+
+In IAM Identity Center, have the administrator create a **custom permission set** named
+`CloudIgniterSandboxDeveloper`. Attach the AWS managed policy **AmplifyBackendDeployFullAccess**:
+
+```text
+arn:aws:iam::aws:policy/service-role/AmplifyBackendDeployFullAccess
+```
+
+This policy allows Amplify backend deployment through CDK, including the relevant deployment roles and services.
+It grants substantial deployment capabilities, so assign it to the intended development account. See the
+[AWS policy definition](https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmplifyBackendDeployFullAccess.html)
+and [permission-set creation instructions](https://docs.aws.amazon.com/singlesignon/latest/userguide/howtocreatepermissionset.html).
+
+Then assign the permission set:
+
+1. Open **AWS accounts** and select the development account.
+2. Choose **Assign users or groups** and select Developer 1, or a development group containing that user.
+3. Select `CloudIgniterSandboxDeveloper`, submit the assignment, and wait for provisioning to finish.
+4. Sign in to the AWS access portal as Developer 1 and confirm that the account and permission set appear.
+
+Creating a permission set alone does not grant account access. Follow AWS’s
+[account-assignment procedure](https://docs.aws.amazon.com/singlesignon/latest/userguide/assignusers.html) to complete it.
+
+### CloudIgniter initialization permissions
+
+After the first sandbox deployment, an administrator must also authorize the application initialization commands.
+The deployment policy does not provide the direct Cognito administration and User Profile write permissions
+used to create the application’s Root User.
+
+Open the permission set’s **Permissions** tab and add an inline policy for these operations, scoped to that
+sandbox’s resources:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "InitializeCloudIgniterAccessControl",
+      "Effect": "Allow",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:lambda:<region>:<account-id>:function:<bootstrap-function-name>"
+    },
+    {
+      "Sid": "InitializeCloudIgniterRootIdentity",
+      "Effect": "Allow",
+      "Action": [
+        "cognito-idp:AdminGetUser",
+        "cognito-idp:AdminCreateUser",
+        "cognito-idp:AdminSetUserPassword",
+        "cognito-idp:AdminUpdateUserAttributes",
+        "cognito-idp:AdminAddUserToGroup",
+        "cognito-idp:ListUsersInGroup"
+      ],
+      "Resource": "arn:aws:cognito-idp:<region>:<account-id>:userpool/<user-pool-id>"
+    },
+    {
+      "Sid": "InitializeCloudIgniterRootProfile",
+      "Effect": "Allow",
+      "Action": "dynamodb:UpdateItem",
+      "Resource": "arn:aws:dynamodb:<region>:<account-id>:table/<user-profile-table-name>"
+    }
+  ]
+}
+```
+
+Replace every placeholder before saving. Use the account ID verified by STS and these values from the sandbox’s
+generated `amplify_outputs.json`:
+
+| Placeholder | Output field |
+| --- | --- |
+| `<region>` | `auth.aws_region` |
+| `<user-pool-id>` | `auth.user_pool_id` |
+| `<user-profile-table-name>` | `custom.cloudigniter.userProfileTableName` |
+| `<bootstrap-function-name>` | `custom.cloudigniter.emberguardAccessBootstrapFunctionName` |
+
+Reprovision the updated permission set to the account and sign in again before initializing the application.
+The access-control initializer invokes the deployed Lambda; it does not require direct access to the
+authorization table from your computer. These grants cover the template’s initialization workflow. Additional
+application resources can require additional permissions, and organization policies or permission boundaries
+can restrict otherwise allowed operations.
+
+## 4. Configure the local developer1 profile
+
+Install [AWS CLI version 2](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) for your
+operating system and check that `aws --version` reports version 2. Then run:
+
+```bash
+aws configure sso --profile developer1
+```
+
+Use these values in the wizard:
+
+| Setting | Value |
+| --- | --- |
+| SSO session name | `cloudigniter-development` |
+| SSO start URL | Your AWS access portal URL |
+| SSO Region | The Region hosting IAM Identity Center |
+| Registration scope | `sso:account:access` |
+| AWS account | Your development account |
+| Role / permission set | `CloudIgniterSandboxDeveloper` |
+| Default client Region | Your sandbox deployment Region |
+| Output format | `json` |
+| Profile name | `developer1` |
+
+Complete browser authorization as Developer 1. The profile stores the SSO configuration used to obtain temporary
+credentials. See [AWS CLI SSO configuration](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sso.html).
+
+Verify the profile:
+
+```bash
+aws sso login --profile developer1
+aws sts get-caller-identity --profile developer1
+aws configure get region --profile developer1
+```
+
+Confirm that the returned account ID and configured Region match your development target. STS identifies the
+signed-in AWS principal; this check alone does not prove deployment permissions. See
+[`get-caller-identity`](https://docs.aws.amazon.com/cli/latest/reference/sts/get-caller-identity.html).
+
+## 5. Prepare the account for Amplify
+
+Amplify needs a one-time bootstrap for each account and deployment Region. This creates the CDK deployment
+resources, including the `CDKToolkit` stack. AWS’s setup procedure requires an administrator with
+`AdministratorAccess` for this initialization. Have the administrator complete it using
+[AWS’s Amplify account setup instructions](https://docs.amplify.aws/react/start/account-setup/).
+
+If your first sandbox command reports that the Region has not been bootstrapped, open the console link it
+provides, have the administrator complete **Initialize setup now**, and retry. Developer 1 can then use the
+deployment permission set for sandbox work.
+
+Continue with [Run the Application Template](./run-template) to download the application, install its npm
+packages, and create the sandbox. Return to the initialization-permissions section after the sandbox has
+generated its resource identifiers.

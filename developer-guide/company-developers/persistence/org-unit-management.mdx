@@ -43,6 +43,20 @@ The provider returns the moved canonical root only after `TransactWriteItems` su
 
 Each moved canonical record and attachment is rewritten once; attachment count is the primary transaction and write-capacity multiplier. The existing System table, GSI1 management ordering, GSI2 child collection, IAM boundary, backup settings, and capacity mode remain unchanged. The cheapest safe alternative—client-only parent editing—was rejected because it leaves routing and authorization ancestry stale. A multi-transaction resumable migration could support larger trees, but would require explicit migration state and dual-path routing; the current interactive contract instead fails before writing when its transaction exceeds 100 operations.
 
+## Development resolution probes
+
+The template's `appGetOrgUnitLookupByPath` selects the built-in `CI_MOCK_ORG_UNITS` source only for the exact
+reserved active probe tenant in `CI_DEV_TENANT_RESOLUTION_PROBES`, after `appGetDevBeaconAccess` verifies the
+environment, authenticated actor, and enabled developer capability. All other requests retain the Amplify
+`GetOrgUnitByPath` lookup. Missing candidates within the authorized probe tenant return `exists: false` without
+querying the database. Probe fixtures include explicit predecessor IDs for nested nodes.
+
+`packages/next` owns the internal HTTP transport: `ciLookupOrgUnit` forwards only the session cookie alongside
+the JSON accept header to the same-origin lookup and refuses redirects. It does not forward page context as
+authorization evidence. The endpoint repeats session authorization and returns uncached responses. This keeps
+the [Dev Beacon](/dictionary/d#dev-beacon) report exercising the actual lookup and longest-prefix resolver after
+application data moves to DynamoDB, without creating probe records in the System table.
+
 ## Safety and IAM
 
 Creation verifies every active tenant and parent containment. Editing verifies optimistic version, parent containment, and each direct child's tenant requirements before detaching a tenant. The list handler receives only `Query`; route lookup receives only `GetItem`; writers receive the minimum strong reads and transactional write action. No handler scans the System table.

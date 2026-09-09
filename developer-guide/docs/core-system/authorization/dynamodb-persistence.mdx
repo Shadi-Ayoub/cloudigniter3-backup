@@ -30,9 +30,9 @@ PK = CI#EMBERGUARD#ACCESS_CONTROL
 SK = CI#DEFINITION#ACTIVE
 ```
 
-All saves and reads use only this address. Because the convention was adopted before production, CloudIgniter
-does not retain a fallback or dual-write path for the previous development key. Reset or reseed disposable
-development data when adopting the new key.
+All saves and reads use this canonical address; records stored under other keys are not resolved automatically.
+If you import an existing catalog, migrate its record to this address before enabling authorization. See
+[Changing an existing key](/docs/library/dynamodb/table-key-convention#changing-an-existing-key) for migration considerations.
 
 The `sandbox:bootstrap` workflow conditionally creates this item when it is absent, using
 `CI_DEFAULT_ACCESS_CONTROL_DEFINITION` imported through `@cloudigniter/core/lib`. Runtime definition reads apply
@@ -182,23 +182,19 @@ representation of the policy.
 }
 ```
 
-## Legacy privilege-title compatibility
+## Loading catalogs with missing titles {#legacy-privilege-title-compatibility}
 
-Persisted definitions created before privilege titles became required may omit `title`. EmberGuard normalizes
-that missing property in memory during the provider read path. It first recovers the title from a matching
-privilege in the configured catalog, then derives a deterministic human-readable label from the stable ID for
+When a stored definition omits a privilege’s `title`, CloudIgniter supplies it when loading the catalog. It first
+recovers the title from a matching privilege in the configured catalog, then derives a human-readable label from the stable ID for
 an unknown custom privilege. For example, `approve-invoices` becomes `Approve invoices`.
 
-The compatibility step does not mutate the provider response or silently write to DynamoDB. The next deliberate
-catalog save persists the generated titles. Explicitly blank titles and unrelated invalid catalog fields are
-not repaired and continue to fail validation; this keeps new writes strict and prevents a migration from hiding
-policy corruption.
+Loading these values does not write them to DynamoDB. Review the generated titles and save the catalog to persist
+them. Explicitly blank titles and unrelated invalid catalog fields still fail validation and require correction.
 
 Role suspension is stored in the active definition as `status: "suspended"` plus `statusChange` metadata with
 `changedAt`, `changedBy`, and `reason`. Assignments remain untouched, so restoration does not require rebuilding
 subject-role relationships. Provider reads must load the active definition before authorization, and compiled
-authorizers must be recreated after a status-changing write. An omitted status is interpreted as `active` for
-backward compatibility.
+authorizers must be recreated after a status-changing write. An omitted status is interpreted as `active`.
 
 Resource-domain and individual-resource suspension use the same additive `status` and `statusChange` pattern in
 the active definition. They reuse the existing optimistic `SetEmberguardDefinition` transaction, so the

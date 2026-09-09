@@ -38,3 +38,10 @@ The core `platform.org-units` resource separates `read`, `create`, `update`, `sh
 ## Development seeding
 
 Tenant fixtures may contain parent-first `orgUnits`. Create tenants before nodes. Give every canonical Org Unit its own marker in the same seeder partition and delete seeded nodes deepest-first before deleting tenants. Cleanup must remove all tenant/path attachments with the canonical node and marker conditionally, prune the deleted child from its predecessor, and preserve any node with surviving children.
+
+Dev Beacon resolution probes use the built-in `CI_MOCK_ORG_UNITS` fixtures only for the exact reserved active
+probe tenant, after the template lookup repeats `appGetDevBeaconAccess`. Normal tenant/path requests remain
+provider-backed. The Next.js lookup transport forwards the session cookie to the same-origin endpoint, refuses
+redirects, and does not forward request-context headers as authorization evidence. Return uncached lookup
+responses and preserve explicit ancestor IDs in nested probe fixtures. Do not replace persisted application
+Org Units with mock data or require database seeding merely to run these reserved routing probes.

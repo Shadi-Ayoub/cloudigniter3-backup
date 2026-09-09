@@ -1,0 +1,35 @@
+---
+title: Themes and styling
+description: Customize presentation through the theme provider, custom overrides, and application styles.
+sidebar_position: 3
+---
+
+# Themes and styling
+
+The standard layout installs `CiThemeProvider` through `CiClientWrapper`. It combines the resolved theme inputs
+with the application overrides exported from `src/custom/theme/customTheme.ts`. Keep one provider stack per layout.
+
+## Customize the application
+
+- Use `src/custom/theme/customTheme.ts` for the supplied `appThemeProviderProps` override hook.
+- Add application CSS under `src/custom/styles`; the template includes `src/custom/styles/standard/style.css`.
+- Use the theme's existing semantic tokens so custom components remain readable in light and dark modes.
+- Customize the login experience through `src/custom/authenticator`, including its props and token-based theme hooks.
+
+The application template uses Tailwind's CSS-based setup. Add application styles to the custom stylesheet and
+keep its imports aligned with the application's PostCSS configuration.
+
+## Theme switching and rendering
+
+`CiThemeSwitcher` and `CiThemeProvider` are exported from `@cloudigniter/next/client`. Use the existing layout's
+switcher and provider before adding your own. System preference, supported themes, persistence, and forced-theme
+behavior depend on the effective provider configuration.
+
+A Client Component provider can receive server-rendered children. You do not need to mark route pages or layouts
+with `"use client"` merely because the layout installs a theme provider. Isolate interactive controls beneath
+the existing server page.
+
+Check custom colors, focus indicators, dialogs, and tables in light/dark themes, at narrow widths, and with RTL
+content. For the provider and wrapper sequence, see [How a request becomes a page](/docs/architecture/request-lifecycle).
+
+Next: [Settings and runtime values](/docs/configuration/settings).

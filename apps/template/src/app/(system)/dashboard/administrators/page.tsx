@@ -1,3 +1,4 @@
+import { appUserForms } from "@/custom/user";
 import {
   CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE,
   ciCreateAuthorizer,
@@ -127,6 +128,7 @@ export default async function AdministratorsPage() {
       context={context}
     >
       <CiUserManagementPage
+        forms={appUserForms}
         managementKind="administrators"
         users={users}
         providerLabel="Amazon Cognito"

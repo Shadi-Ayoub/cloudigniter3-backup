@@ -19,6 +19,11 @@ import type { CiUserManagementPageProps } from "@cloudigniter/ui/types";
 ```ts
 type CiUserManagementPageProps = {
   mode?: "active" | "trash";
+  forms?: {
+    create?: CiCompiledSmartForm;
+    edit?: CiCompiledSmartForm;
+    extensionFields?: readonly string[];
+  };
   users: CIUser[];
   providerLabel: string;
   roleOptions: Array<{ id: string; label: string }>;
@@ -51,6 +56,12 @@ type CiUserManagementPageProps = {
 repeat authorization and validation on the server.
 
 ## Behavior
+
+Create/edit dialogs now render [Smart Forms](../../ui-components/smart-form.mdx). Optional `forms` supplies compiled
+application definitions; `extensionFields` maps additional fields to same-name `profile.extensions` keys while
+preserving unrelated data. Defaults come from Core. Account/profile/address/role fields use shared validation and
+feedback, with scoped assignments composed inside the form. Import `CiCompiledSmartForm` from
+`@cloudigniter/core/types`. Existing mutation callback contracts remain unchanged.
 
 The component uses `CiDataTable` with stable user IDs, searchable columns, table/compact/card formats, 25-row
 default pagination, column-width/format/page-size persistence, reserved action space, loading overlay, empty state,

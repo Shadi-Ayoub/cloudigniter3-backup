@@ -97,7 +97,7 @@ preserve the administration and break-glass recovery paths. Core resources other
 assigned, system-scoped `system-super-admin` to suspend or restore; application resources require application
 access-control management authority.
 
-The current engine authorizes the resource **type** and request scope. If access depends on a record's owner,
+Authorization evaluates the resource **type** and request scope. If access depends on a record's owner,
 classification, workflow state, or another relationship, resolve those facts in the service and perform the
 additional object-level check there. Never assume that access to one invoice means access to every invoice in
 the same tenant.
@@ -145,11 +145,10 @@ Every privilege has:
 
 The concrete tenant or Org Unit belongs to the assignment, not the privilege.
 
-:::note Existing catalogs
-`title` is now part of every complete privilege definition. CloudIgniter's persisted-catalog read paths migrate
-an absent legacy title from the matching configured catalog privilege. Unknown custom privileges receive a
-deterministic label derived from their ID, so catalogs saved before this field existed remain loadable. Review
-and save the catalog to persist those recovered or generated labels.
+:::note Privilege titles
+Every complete privilege definition requires a non-empty `title`. When a persisted catalog contains a privilege
+without a title, CloudIgniter recovers it from the matching configured privilege or derives a deterministic label
+from the privilege ID. Review these labels and save the catalog to persist them.
 
 Explicitly blank titles are not migrated and still fail validation. Add non-empty titles to application source
 definitions and correct blank or malformed persisted values. IDs remain unchanged and continue to be the
@@ -231,7 +230,7 @@ import {
   ciFormatPermission,
   ciMatchesPermission,
   ciParsePermission,
-} from "@cloudigniter/emberguard/lib";
+} from "@cloudigniter/core/lib";
 
 ciFormatPermission("identity.users", "read");
 // "identity.users.read"
@@ -266,7 +265,7 @@ entire security model.
 inspect structured issues without throwing:
 
 ```ts
-import { ciValidateAccessControlDefinition } from "@cloudigniter/emberguard/lib";
+import { ciValidateAccessControlDefinition } from "@cloudigniter/core/lib";
 
 const issues = ciValidateAccessControlDefinition(appAccessControl);
 
@@ -384,7 +383,7 @@ the resolved catalog:
 import {
   ciApplyCoreAccessControlOverrides,
   ciCreateCoreAccessControlOverride,
-} from "@cloudigniter/emberguard/lib";
+} from "@cloudigniter/core/lib";
 
 const override = ciCreateCoreAccessControlOverride({
   id: "core-override-2026-08-05-001",
@@ -433,7 +432,7 @@ invalidation are ready. The engine accepts serialized definitions, but dynamic p
 operational security feature—not merely a form.
 
 :::tip Recommended starting strategy
-Keep the protected core catalog in `@cloudigniter/emberguard/lib`, application additions in application code, and
+Keep the protected core catalog in `@cloudigniter/core/lib`, application additions in application code, and
 scoped assignments in DynamoDB. Add dynamic tenant roles and audited core overrides only through trusted
 server-side administration workflows.
 :::

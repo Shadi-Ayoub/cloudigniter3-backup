@@ -115,6 +115,40 @@ example, compatibility status, and related guidance.
 
 ## Completion checklist
 
+### Maintain Created and Updated dates
+
+Every document footer across CloudIgniter Users, CloudIgniter Developers, API Reference, Dictionary, and Skills
+shows **Created** and **Updated** timestamps in UTC using `YYYY-MM-DD HH:mm:ss UTC` (for example,
+`2026-09-09 15:54:15 UTC`). Both dates were initialized together on
+9 September 2026 as the starting point for tracking future edits.
+
+The tracked `developer-guide/page-dates.json` registry stores UTC ISO timestamps and a content hash under each
+repository-relative Markdown/MDX source path. Category metadata files are tracked too, giving generated category
+index pages their own dates. Skills entries refer to `.agents/skills` or `.codex/skills`; the generated staging
+tree remains disposable. The shared `PageDates` component is used by the Docusaurus document-footer and category-page
+wrappers. The sidebar generator attaches each category's source key while preserving normal navigation. Dates
+use a year-first date and 24-hour UTC time, independent of the reader's locale and time zone, for consistent
+server and browser output. Changing the display format preserves the recorded instants.
+
+After finishing edits, run:
+
+```bash
+pnpm --filter developer-guide dates:update
+pnpm --filter developer-guide dates:check
+```
+
+The update command preserves each existing creation date, advances the updated date only when that page's source
+content changes, and initializes both dates for a new page. It leaves unchanged pages untouched and removes
+entries for deleted pages. When renaming or moving a document, transfer its existing registry entry to the new
+source path before running the command so its creation date survives.
+
+The standard start and build commands validate metadata without changing it. A stale or missing entry fails
+validation and names the affected source. Rebuilding, changing site styles, and checking out the repository do
+not advance page dates. The guide-authoring skill requires this maintenance for future document and rendered
+skill-source edits.
+
+### Validate the change
+
 Before completing a product change:
 
 - search all guide surfaces for the changed symbols and terminology;
@@ -123,6 +157,7 @@ Before completing a product change:
 - verify defaults, runtime boundaries, provider assumptions, and failure behavior;
 - synchronize contributor architecture with the relevant
   `.agents/skills/cloudigniter-development/references` file;
+- refresh page dates and verify that only edited or newly created pages received new timestamps;
 - run the implementation's focused tests;
 - run the guide checks:
 
@@ -150,3 +185,10 @@ rule rather than a one-off preference.
 ### Skills
 
 The Skills tab is a generated, read-only view of skill entrypoints and Markdown references. It preserves nested reference folders as navigation categories, including deliberate labels and ordering for architecture, CLI, and authoring guidance. Do not edit generated files or duplicate them in this guide. Skill changes normally flow from their source folders without a separate guide edit; if a skill itself can be improved, update it in its owning folder and rebuild the guide.
+
+## Maintain the Users learning path
+
+Use [Users guide structure and page retirement](./users-guide-structure) when organizing a chapter, replacing
+older guidance, or removing a page. Update the structure manifest and all inbound links across Users, Dictionary,
+Developers, and API Reference together. Keep historical pages under the single **Obsulete** section with current
+replacement links.

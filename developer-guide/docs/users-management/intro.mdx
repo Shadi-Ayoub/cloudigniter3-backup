@@ -110,38 +110,43 @@ Restore clears deletion metadata and re-enables the identity unless independentl
 requires a reason and exact user-ID confirmation, then removes assignments, provider identity, and profile. The
 current actor cannot suspend or delete their own account, and Root cannot be lifecycle-managed by another actor.
 
-## Deterministic dates
+## Date display
 
-User tables pass the server-resolved application locale to `ciFormatDateTime`, which uses a fixed `UTC` time zone
-and deterministic fallback. Use the same locale and time zone for SSR and the first client render; do not derive
-the initial value from browser locale, `Date.now()`, or client-only state. This prevents hydration differences such
-as `2 Aug 2026, 13:16` versus `Aug 2, 2026, 1:16 PM`.
+User tables display dates using the server-resolved application locale and the UTC time zone. When customizing
+date rendering with `ciFormatDateTime`, pass the same locale on the server and client; the helper fixes the time
+zone to UTC so that values remain consistent during page loading.
 
-:::warning Deployment compatibility
+## Troubleshoot deployment and profile data
 
-Treat the Amplify `UserProfile` source, generated GraphQL model/input client, `amplify_outputs.json`, deployed
-AppSync schema, and backing resources as one contract. After changing profile fields, deploy or regenerate the
-current backend outputs before using the page. An error that a field is not defined on `CreateUserProfileInput`
-means the client/source and deployed schema are out of sync; update the deployment instead of silently dropping the
-field.
+The Amplify `UserProfile` definition, generated GraphQL client, `amplify_outputs.json`, deployed AppSync schema,
+and backing resources must describe the same deployment. When changing profile fields, deploy the corresponding
+schema and regenerate the client and outputs as required before using those fields in the application.
 
-An invalid-value error is a different check. In the current schema, `address`, `extensions`, `statusChange`, and
-`deletion` are `AWSJSON`. Fixtures and `CIUserProfile` keep these values as objects; the AWS adapter converts them
-to JSON strings only in the AppSync mutation variables and decodes them on read. If `Variable 'address' has an
-invalid value` persists after updating the application, verify that the deployed field is `AWSJSON` and that the
-current server bundle is running. Do not stringify `users.json`, because that would corrupt the domain shape and
-the seeder provenance round trip.
+### A profile field is not defined in the input schema
 
-Legacy username-keyed profile rows must be migrated or reseeded before enabling immutable Cognito `sub` keys.
-Cognito sign-in and required attributes are also deployment-time choices; verify them before updating an existing
-User Pool.
+If AppSync reports that a field is not defined on `CreateUserProfileInput`, compare the application’s input with
+the deployed schema and confirm that its outputs point to the intended backend. Align the application and backend
+contracts before retrying; dropping a required field can lose profile data.
 
-If deployment reports a circular dependency between the Auth and Data nested stacks, update to the current
-CloudIgniter backend composition before retrying. Cognito administration operations are AppSync resolvers owned by
-Data, while their Lambda-owned policies reference the User Pool in Auth. The expected dependency direction is
-Data → Auth; Auth must not import the EmberGuard access table or a Data resolver role.
+### An AWSJSON field has an invalid value
 
-:::
+`address`, `extensions`, `statusChange`, and `deletion` use `AWSJSON` in the schema. Fixtures and `CIUserProfile`
+represent these values as objects. The AWS adapter serializes them in AppSync mutation variables and decodes them
+on read. For an error such as `Variable 'address' has an invalid value`, check the deployed field type and the
+adapter’s serialization. Keep values in `users.json` as objects to preserve validation and seeder provenance.
+
+### Importing profiles from an existing identity system
+
+Profile keys use the immutable Cognito `sub` identifier. If imported profiles use usernames as keys, migrate them
+to the corresponding `sub` values while preserving their data and assignments. Review Cognito sign-in and
+required-attribute settings before changing an existing User Pool.
+
+### Auth and Data deployment reports a circular dependency
+
+Check custom backend configuration for dependencies from Auth to Data resources. Cognito administration
+resolvers belong to Data and reference Auth, so adding a reverse dependency can prevent deployment. Follow
+[Extending the Amplify backend](../providers/aws/extending-amplify-backend) to place resource configuration and
+permissions in the supported custom hooks.
 
 See the [`CIUser` contracts](../api-reference/type-definitions/ci-user-types),
 the [AppSync AWSJSON helpers](../api-reference/shared-apis/ci-aws-json),

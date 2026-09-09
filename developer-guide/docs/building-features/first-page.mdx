@@ -1,0 +1,79 @@
+---
+title: Build your first application page
+description: Register a logical route and render a scoped page with the CloudIgniter context and layout.
+sidebar_position: 1
+---
+
+# Build your first application page
+
+This exercise adds a read-only Notes page to the global application workspace. Start with a running template,
+a signed-in development account, and the [application structure](/docs/architecture/application-structure).
+
+## 1. Register the logical route
+
+Add this entry to `manualCustomRoutes` in `src/custom/routes/routes.ts`, retaining the existing map and generated
+route composition:
+
+```ts
+"/dashboard/notes": {
+  title: "Notes",
+  namespace: "dashboard",
+  protected: true,
+  tenantScopes: ["global"],
+},
+```
+
+The existing `dashboard` namespace supplies the shared message chain. If you introduce `dashboard.notes`,
+register the corresponding `dashboard-notes` files for each locale first.
+
+## 2. Create the scoped page
+
+Create `src/app/(ci-global)/ci-global/(ci-custom)/dashboard/notes/page.tsx`:
+
+```tsx
+import { CiPage } from "@cloudigniter/next/client";
+import { appBootstrap } from "@/kernel/server";
+
+export default async function NotesPage() {
+  const context = await appBootstrap();
+
+  return (
+    <CiPage
+      context={context}
+      name="notes"
+      setup={{ title: "Notes", showBreadcrumbs: false }}
+    >
+      <section className="p-6" aria-label="Notes content">
+        <p>Your first CloudIgniter application page is ready.</p>
+      </section>
+    </CiPage>
+  );
+}
+```
+
+The parent global layout already supplies `CiLayout` and its providers. Keep the route page on the server and
+add separate Client Components when you need interaction. `appBootstrap` is the template's composition helper;
+the reusable `CiPage` component comes from the public Next.js package.
+
+## 3. Open the public route
+
+In slug mode with the template's `/t` base path, visit `/t/global/dashboard/notes`. The proxy matches
+`/dashboard/notes` and rewrites into the global page tree. Do not link to `/ci-global/dashboard/notes` from UI.
+
+Use [`ciBuildTenantPublicPathname`](/docs/api-reference/shared-apis/ci-build-tenant-public-pathname) when building
+links from a resolved Tenant context. To add a Tenant-only version, create the equivalent page beneath
+`(ci-tenant)/ci-tenant/(ci-custom)` and declare the route's intended Tenant scopes.
+
+## 4. Verify and extend
+
+Check that the page loads after sign-in, rejects an unsupported Tenant scope, and shares the existing theme and
+layout. Test direct navigation and navigation from another page. Add resource permissions and server enforcement
+before introducing reads or writes of protected business data.
+
+Next, choose the feature tools you need:
+
+- [Smart Forms](/docs/ui-components/smart-form) for editable records.
+- [Data tables](/docs/ui-components/data-table) for collections and actions.
+- [Data entity manager](/docs/ui-components/data-entity-manager) for a composed management interface.
+- [API calls, errors, and feedback](/docs/building-features/api-and-feedback) for mutations and their results.
+- [Resource Studio](/docs/resource-studio/overview) to generate a complete supported Data Entity.

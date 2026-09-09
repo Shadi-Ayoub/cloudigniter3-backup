@@ -54,6 +54,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(result.body, {
       status: result.statusCode,
+      headers: { "Cache-Control": "no-store" },
     });
   } catch (error: unknown) {
     const normalizedError = ciNormalizeThrownError(error);

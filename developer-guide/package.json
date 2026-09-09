@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
-    "prestart": "docusaurus clear",
+    "prestart": "pnpm guide:check && pnpm dates:check && docusaurus clear",
     "start": "docusaurus start -p 3010",
-    "prebuild": "docusaurus clear",
+    "prebuild": "pnpm guide:check && pnpm dates:check && docusaurus clear",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
@@ -14,10 +14,15 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "dates:update": "node scripts/page-dates.mjs --update",
+    "dates:check": "node scripts/page-dates.mjs --check",
+    "test:dates": "node --test scripts/page-dates.test.mjs",
+    "guide:check": "node scripts/check-user-guide.mjs"
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.2",
+    "@docusaurus/plugin-content-docs": "^3.10.2",
     "@docusaurus/preset-classic": "^3.10.2",
     "@docusaurus/theme-mermaid": "^3.10.2",
     "@mdx-js/react": "^3.0.0",

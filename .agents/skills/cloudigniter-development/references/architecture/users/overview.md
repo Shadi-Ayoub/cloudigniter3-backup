@@ -84,6 +84,10 @@ owner-readable but administration-writable.
 
 ## Presentation and deterministic rendering
 
+Create/edit dialogs use Core's static Smart Form definitions and the shared UI renderer. Application form
+extensions live in `src/custom/user`; registered fields round-trip through `profile.extensions`. Keep authorized
+role choices and Root field-state restrictions outside cached definitions. See [Smart Forms](../ui/smart-form.md).
+
 Use the shared `CiDataTable` convention on both management pages. Keep the identity provider as an icon-bearing,
 colored page-header chip rather than a repeated row value. Show a generic avatar icon when no image is available.
 Display role and assignment counts in the table and reveal complete values in dismissible dialogs; mark the

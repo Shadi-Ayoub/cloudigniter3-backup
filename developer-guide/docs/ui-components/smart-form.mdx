@@ -1,0 +1,178 @@
+---
+title: Smart Forms
+description: Build, extend, validate, and precompile CloudIgniter forms from serializable specifications and layouts.
+sidebar_position: 4
+---
+
+# Smart Forms
+
+A [Smart Form](/dictionary/s#smart-form) describes fields, groups, validation rules, and action buttons in a
+serializable specification. `CiSmartForm` renders it with an optional layout template and an initial data object. Core owns
+the serializable contracts and compilation helpers. UI owns rendering, validation, feedback, and callbacks.
+The existing Formik `CiSmartFormField`, input, textarea, checkbox, and JSON editor exports remain available.
+
+## Create a form
+
+Define stable objects outside the component. `introduction` is the optional summary, instructions, or guidelines
+shown beneath the title and subtitle. Labels default to the field name; explicit labels improve the result.
+
+```tsx
+"use client";
+import { ciDefineSmartForm } from "@cloudigniter/core/lib";
+import { CiSmartForm } from "@cloudigniter/ui/client";
+import type { CiSmartFormSpec } from "@cloudigniter/core/types";
+
+type ProfileValues = { givenName: string; email: string; active: boolean };
+const specifications: CiSmartFormSpec<ProfileValues> = {
+  id: "profile",
+  category: "customizable",
+  title: "Edit profile",
+  introduction: "Keep your contact details up to date.",
+  fields: [
+    { name: "givenName", label: "Given name", required: true },
+    { name: "email", label: "Email", required: true, type: { kind: "email" } },
+    { name: "active", label: { text: "Active", position: "side" }, type: { kind: "boolean" } },
+  ],
+  buttons: [
+    { id: "cancel", label: "Cancel", type: "cancel", order: 0 },
+    { id: "save", label: "Save changes", type: "save", order: 1 },
+  ],
+};
+const definition = ciDefineSmartForm(specifications);
+
+export function ProfileForm({ data, save }: {
+  data: ProfileValues;
+  save: (values: ProfileValues) => Promise<void>;
+}) {
+  return <CiSmartForm definition={definition} data={data} onSubmit={save} />;
+}
+```
+
+`data` initializes a form instance; it does not overwrite edits when a parent rerenders. Change the React `key`
+to load another record, or call the action context's `reset()` to restore the latest `data`.
+Text-like fields default to `""`, multi-selects to `[]`, and booleans to their configured false value. Supply
+`defaultValue` or `data` when a numeric or structured field needs a different initial value.
+
+## Choose field views
+
+| Type | Views and data |
+| --- | --- |
+| `text`, `password`, `email`, `tel`, `url`, `search` | Native text input; `text` is the default |
+| `number`, `range`, `date`, `datetime-local`, `time`, `month`, `week`, `color`, `hidden` | Native inputs; number/range changes produce numbers |
+| `textarea` | Multiline string |
+| `boolean` | Switch by default; radio or checkbox view; one scalar storage value |
+| `checkbox` | Checkbox by default; required means the configured true value must be selected |
+| `singleSelect`, `select`, `radio` | Dropdown, radio group, or discrete slider; one string, number, or boolean |
+| `multiSelect` | Dropdown with ticks, checkbox group, or removable chips; array of scalar values |
+| `jsonEditor` | JSON textarea that returns structured values; malformed drafts block submission |
+| `custom` | A named component in the `renderers` registry |
+
+Radio and checkbox groups default to a column. Set `orientation: "row"` for a row. Boolean `trueOption` and
+`falseOption` each define `{ label, value }`; their values must differ. Single and multi-select options are
+`{ label, value, disabled? }` objects. Use `optionsSource` for a key in the per-instance `options` registry, for
+example authorized role choices or locale options. Unordered options and chips sort by label using an explicit
+locale (`en-US` by default). `sortOptions: false` preserves semantic order; sliders preserve their option order.
+
+Use `custom` for file upload, rich text, repeatable address collections, remote autocomplete, or domain-specific
+controls. File objects and executable components belong in runtime state/registries, never in a compiled definition.
+Custom renderers receive the field, id, value, all values, disabled/read-only state, error, description id, and
+`onChange`, `onBlur`, and `onError` callbacks. Connect those accessibility and validation props to the control.
+
+## Extend a core form
+
+The user and administrator create/edit dialogs already consume generated Smart Forms. Application-owned
+specifications and templates live in `apps/template/src/custom/user/smart-form.ts`. The supplied Department and
+Job title example stores values in the same-name keys of `profile.extensions`, preserving unrelated extension data.
+The core-managed route pages import `appUserForms` and pass it into `CiUserManagementPage`.
+
+```ts
+import {
+  ciCompileSmartForm, ciMergeSmartFormSpecifications, ciMergeSmartFormTemplates,
+  CI_USER_CREATE_FORM_SPEC, CI_USER_FORM_TEMPLATE,
+} from "@cloudigniter/core/lib";
+
+const specifications = ciMergeSmartFormSpecifications(CI_USER_CREATE_FORM_SPEC, {
+  groups: [{ name: "employment", label: "Employment", collapsible: true, order: 20 }],
+  fields: [{ name: "department", group: "employment", label: "Department" }],
+});
+const template = ciMergeSmartFormTemplates(CI_USER_FORM_TEMPLATE, {
+  groups: [{ name: "employment", rows: [{ id: "details", fields: ["department"] }] }],
+});
+const definition = ciCompileSmartForm(specifications, template);
+```
+
+Specifications merge fields/groups/buttons by name or id, preserving unmentioned items. `remove: true` removes an
+item explicitly. Field `props` and `validation` merge by property; a supplied `type` replaces the previous type
+object. Row patches merge by id; supplying `fields` replaces that row's placement. Remove an old placement when
+moving a field to another row. Compilation rejects duplicate or unknown placeholders and wrong-group placement.
+Unplaced fields receive automatic rows in their group, so an added custom field is not silently omitted.
+
+Field and group names must begin with an ASCII letter and contain letters/digits only. Prefer camelCase.
+Prototype-sensitive names are rejected. The implicit `main` group is first, has no label or extra class by default,
+and is reserved: extensions cannot redefine or remove it. They may place fields and layout rows in it.
+Other groups may have labels, additional classes, ordering, and opt-in collapse behavior.
+
+For a noncustomizable form, pass its imported core definition as `coreForm` with `category: "fixed"`.
+The renderer then ignores replacement `definition`, `specifications`, and `template` props. Specification merging
+also ignores extensions for fixed forms. This is a UI customization rule; trusted mutations still authorize and
+validate every submitted value.
+
+## Map store records
+
+`ciMapSmartFormData` runs on a server, in a lambda, or in a browser. It projects only explicitly mapped fields;
+it does not serialize AWSJSON or perform persistence.
+
+```ts
+import { ciMapSmartFormData } from "@cloudigniter/core/lib";
+const data = ciMapSmartFormData({ profile: { given_name: "Ada", enabled: false } }, {
+  givenName: "profile.given_name",
+  active: { path: "profile.enabled", defaultValue: true },
+});
+// { givenName: "Ada", active: false }
+```
+
+Paths support nested own properties and numeric array segments. Missing values are omitted unless a default is
+provided; `false`, `0`, `""`, and `null` are preserved. Function mapping rules support transformations when running
+in code; they are not part of the serializable specification or the generated form cache.
+
+## Validation, actions, and feedback
+
+Mark required fields and add `validation` constraints or a named runtime validator. Validation runs on blur and
+before create/update/save actions. Hidden, disabled, and read-only fields skip validation. Input errors appear
+beside fields. The default dismissible danger alert appears at the top. `errors` controls its placement, title,
+dismissibility, validation summary, and first-invalid-field focus; collapsed groups open for invalid controls.
+
+Buttons order ascending by `order` in logical LTR/RTL order. They support `icon`, `className`, `pendingLabel`, and
+an `animation` registry key. Icon keys use the existing `CiIcon` registry unless the `icons` prop supplies a node.
+Action callbacks live in `callbacks`, selected by the button's `callback` key (or id). Create/update/save fall
+back to `onSubmit`; cancel resets unless a callback is supplied. Delete/custom actions require a callback and
+skip validation unless `validate: true`. Compose the existing `CiAlertDialog` for domain deletion confirmation.
+Throw on mutation failure to keep the form open with normalized feedback. Pending actions block duplicate
+submission and disable the form. `children` adds domain controls before the action footer.
+
+## Build and cache
+
+`ciDefineSmartForm` caches immutable compiled definitions by specification/template object identity. Reuse
+module-level objects; replace those objects when their configuration changes. The cache contains no record data,
+callbacks, permissions, or option-source results.
+
+For published applications, use generated definitions:
+
+```bash
+# From apps/template; also runs automatically before dev and build
+pnpm forms:generate
+```
+
+The custom generator merges and compiles source definitions, then writes
+`src/custom/forms/smart-forms.generated.ts`. Commit this artifact. After changing the custom `.ts` definitions
+during a running development session, rerun the command. Generation is deterministic, leaves unchanged output
+untouched, and refuses to replace a file without the generated ownership header. Core's `pnpm forms:generate`
+similarly refreshes the packaged default forms and runs before its JavaScript build.
+
+Production imports these plans through `definition`; it does not merge or compile layouts per request. React
+still renders controls and binds each record's state and callbacks. Form values and permissions are never cached
+in a static artifact. Changing a specification requires regeneration/redeployment, not clearing a data cache.
+
+See [component reference](../api-reference/components/ci-smart-form.mdx),
+[contracts](../api-reference/type-definitions/CiSmartFormTypes.mdx), and
+[helper reference](../api-reference/shared-apis/ci-smart-form.mdx).

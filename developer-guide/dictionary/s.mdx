@@ -36,6 +36,13 @@ A React component rendered on the server that may resolve trusted context and se
 An Org Unit node and its descendants reused by several tenants through tenant attachments. Sharing preserves one canonical identity and does not permit authorization to cross tenant boundaries automatically.
 
 
+## Smart Form
+
+A CloudIgniter form defined by a serializable specification of fields, groups, validation rules, and action buttons, with an optional layout template. The `CiSmartForm` component renders the definition with data and callbacks supplied for each form instance. Definitions can be extended, compiled, and reused without caching record data or permissions.
+
+See the [Smart Forms user guide](/docs/ui-components/smart-form) for creating forms, choosing field views, customizing core forms, mapping records, handling actions, and generating reusable definitions.
+
+
 ## Soft Delete
 
 The default user-facing Delete behavior. It preserves the authoritative record and deletion metadata, removes the resource from ordinary resolution, and exposes it in Trash for restore or separately authorized purge.

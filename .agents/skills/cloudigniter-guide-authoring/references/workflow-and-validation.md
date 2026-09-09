@@ -74,7 +74,45 @@ Search at minimum for:
 - Do not claim an API is stable, public, or supported unless it is reachable from an intentional package entry point.
 - Do not present application-template customization as reusable package behavior.
 
+## Navigation and page retirement
+
+- Maintain `developer-guide/user-guide-structure.json` as the Users chapter and archive membership source.
+- Keep each Users document in exactly one current chapter or archive group. Keep the API Reference in its own sidebar.
+- Classify obsolete guidance from the current implementation and exports, not file age alone. Correct local drift in otherwise useful pages.
+- Put superseded pages under **Obsulete** with a clear historical notice, reason, and current replacement. Preserve their URLs when practical.
+- Before removing or moving a source, search Users, Dictionary, Developers, API Reference, navigation, and landing pages for inbound links. Update destination, label, and heading fragment together.
+- A retained archive URL is for historical access; active guidance should point to the current replacement.
+- Preserve creation dates through physical moves, and advance updated dates only for source changes.
+- Keep the current path's last lesson from paginating directly into the archive.
+- Run `pnpm --filter developer-guide guide:check`, then the usual date, typecheck, and production-build checks. Inspect generated links and sidebar membership as well as build output.
+
 ## Validation sequence
+
+### Maintain page dates
+
+Every Markdown/MDX page in `developer-guide/docs`, `developer-guide/company-developers`, and
+`developer-guide/dictionary`, plus Markdown sources rendered from `.agents/skills` and `.codex/skills`, has an
+entry in `developer-guide/page-dates.json`. Category metadata (`_category_.json`, `.yml`, or `.yaml`) is tracked
+as well, so generated category index pages have dates. Keys are repository-relative source paths, never `.generated` paths.
+The initial Created and Updated values were initialized together on 9 September 2026 as the start of date
+tracking, rather than reconstructed historical dates. The footer displays the stored UTC instants as
+`YYYY-MM-DD HH:mm:ss UTC`, using a year-first date and 24-hour time. Keep this format independent of the viewer's
+locale and time zone, and preserve the original instants when changing their presentation.
+
+- Finish all page and rendered skill-source edits, then run `pnpm --filter developer-guide dates:update`.
+  The command reads the actual current clock once, preserves each existing `createdAt`, and updates `updatedAt`
+  only when the source content hash changes. New pages receive the same current value for both fields.
+- Preserve both existing dates when a page is unchanged. Styling, builds, checkout times, and navigation alone
+  must not make every page appear newly updated. Do not manually regenerate the registry or reset its baseline.
+- When moving or renaming a page, move its existing registry entry to the new repository-relative source key
+  before running `dates:update`; this preserves its creation history. The command removes entries for deleted
+  pages. Edits to a rendered skill or Markdown reference update its own entry without changing the source's
+  frontmatter or copying source content into the guide.
+- Run `pnpm --filter developer-guide dates:check` before delivery. It checks complete coverage, content hashes,
+  valid UTC ISO timestamps, and `updatedAt >= createdAt`. Standard guide start/build commands run the same
+  read-only check and fail on stale metadata; builds never advance timestamps automatically.
+
+### Run validation
 
 1. Review changed pages alongside the implementation diff.
 2. Verify every code block and import against source and package entry points.
@@ -83,6 +121,9 @@ Search at minimum for:
 5. Run:
 
 ```bash
+pnpm --filter developer-guide guide:check
+pnpm --filter developer-guide dates:update
+pnpm --filter developer-guide dates:check
 pnpm --filter developer-guide typecheck
 pnpm --filter developer-guide build
 ```

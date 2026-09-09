@@ -1,4 +1,5 @@
 ---
+pagination_next: null
 title: Deployment, drop, and rollback
 description: Refresh AWS SSO, run an explicit one-shot Amplify sandbox, reverse local generation safely, and understand what cannot be restored.
 sidebar_position: 3
@@ -50,7 +51,7 @@ pnpm exec ampx sandbox --once \
   --identifier <sandbox-identifier>
 ```
 
-The command runs from the target application root with the verified Region pinned. It is not a continuously running sandbox process, and it is never chained automatically to local generation. Deployment requires a supported Node.js LTS runtime; V1 accepts Node.js 22 and 24, while offline Data Entity editing remains available under an unsupported runtime.
+The command runs from the target application root with the verified Region pinned. It is not a continuously running sandbox process, and it is never chained automatically to local generation. Deployment requires a supported Node.js LTS runtime; Node.js 22 and 24 are supported, while offline Data Entity editing remains available under an unsupported runtime.
 
 If credentials have expired, the target changed, generated files drifted, or the intent expired, deployment stops and leaves the local generated transaction available for retry or rollback.
 
@@ -91,7 +92,7 @@ Before changing any target file, undo checks **all** tracked after-images. If yo
 
 For a manual testing session containing several applied transactions, choose **Undo latest local change** repeatedly. Each successful undo exposes the preceding applied transaction as the latest one, producing last-in, first-out reversal. This reconstructs the local file state from before the session only while the relevant journals remain available and every transaction passes its drift check.
 
-The guarantee is intentionally limited. Local rollback does not restore:
+Local rollback restores tracked application files. It does not restore:
 
 - files outside the recorded transaction or edits made by other tools;
 - dependency-install effects, build output, caches, or untracked runtime side effects;

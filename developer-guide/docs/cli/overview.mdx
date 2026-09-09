@@ -6,13 +6,7 @@ sidebar_position: 1
 
 The `@cloudigniter/cli` package provides the supported `ci` executable for application developers and system operators. It replaces application-local utility scripts with stable commands, shared help, consistent errors, and automation-safe flags.
 
-The application executable intentionally excludes CloudIgniter's own package build and release commands. Maintainers use a separate `ci-dev` executable documented in the [contributor command reference](/company-developers/tooling/cli-command-reference).
-
-:::note Command rename
-
-`ci` replaces the former `cloudigniter` command, and `ci-dev` replaces `cloudigniter-dev`. The old executable names are not aliases; update local scripts and CI configuration before upgrading `@cloudigniter/cli`.
-
-:::
+Use `ci` for application operations. CloudIgniter package maintainers use `ci-dev`, documented in the [contributor command reference](/company-developers/tooling/cli-command-reference).
 
 ## Discover commands
 
@@ -32,7 +26,7 @@ From the application root:
 pnpm exec ci resources studio
 ```
 
-This starts a loopback-only browser workspace for application-owned resources. In V1, Resource Studio creates AWS Amplify Data Entities together with Tenant- or Global-scoped administration pages. Local generation is offline and transactional; it does not refresh AWS SSO or deploy a sandbox automatically.
+This starts a loopback-only browser workspace for application-owned resources. Resource Studio creates AWS Amplify Data Entities together with Tenant- or Global-scoped administration pages. Local generation is offline and transactional; it does not refresh AWS SSO or deploy a sandbox automatically.
 
 The browser opens by default on an operating-system-assigned localhost port. Use `--no-open` to print the secured URL without opening it, or `--port=<number>` to request a fixed local port. `--profile=<name>` and `--identifier=<value>` preselect the explicit deployment target; the Amplify sandbox identifier must contain 1–15 letters, numbers, or hyphens.
 
@@ -42,18 +36,18 @@ Resource Studio also keeps machine-local before/after images so an unchanged gen
 
 ## Deploy generated resources from the terminal
 
-Use the public headless command when you intentionally want one verified deployment without opening Resource Studio:
+Run one verified deployment from the terminal without opening Resource Studio. Replace `my-profile` with your AWS profile and `ci-books` with your sandbox identifier:
 
 ```bash
 pnpm exec ci amplify sandbox deploy \
-  --profile=developer1 \
+  --profile=my-profile \
   --identifier=ci-books \
   --no-interactive
 ```
 
-For non-interactive use, `--profile` and `--identifier` are required. The command verifies the current generated plan, resolves and prints the AWS account, caller ARN, and Region, rechecks the plan and target, pins that Region, and then runs one `ampx sandbox --once`. It never runs automatically after generation and does not refresh SSO. If STS reports expired credentials, run `aws sso login --profile developer1` and invoke the deploy command again.
+For non-interactive use, `--profile` and `--identifier` are required. The command verifies the current generated plan, resolves and prints the AWS account, caller ARN, and Region, rechecks the plan and target, pins that Region, and then runs one `ampx sandbox --once`. It never runs automatically after generation and does not refresh SSO. If STS reports expired credentials, run `aws sso login --profile my-profile` and invoke the deploy command again.
 
-Deployment currently requires Node.js LTS major 22 or 24. An unsupported runtime disables deployment before local state or AWS setup, but it does not prevent offline Data Entity editing.
+Deployment requires Node.js LTS major 22 or 24. An unsupported runtime disables deployment before local state or AWS setup, but it does not prevent offline Data Entity editing.
 
 ## Validate application modules
 
@@ -73,7 +67,7 @@ Create or verify the default access-control definition:
 
 ```bash
 pnpm exec ci amplify bootstrap access-control \
-  --profile=developer1 \
+  --profile=my-profile \
   --no-interactive
 ```
 
@@ -81,7 +75,7 @@ Create or verify the configured root user and repair its profile when needed:
 
 ```bash
 pnpm exec ci amplify bootstrap root-user \
-  --profile=developer1 \
+  --profile=my-profile \
   --no-interactive
 ```
 
@@ -89,7 +83,7 @@ Run a one-shot sandbox followed by both bootstrap operations:
 
 ```bash
 pnpm exec ci amplify sandbox bootstrap \
-  --profile=developer1 \
+  --profile=my-profile \
   --no-interactive
 ```
 

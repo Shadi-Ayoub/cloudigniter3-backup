@@ -1,0 +1,34 @@
+---
+title: Settings and runtime values
+description: Define application settings and connect validated values to the features that use them.
+sidebar_position: 4
+---
+
+# Settings and runtime values
+
+Configuration selects application behavior; settings hold values used by the running application. Public,
+private, and user settings have different audiences. Private settings must remain in trusted server operations.
+
+## How settings are resolved
+
+The application template’s `appBootstrap()` calls `appGetSettings()` in the kernel server settings module. The
+supplied resolver returns static values. It does not automatically load a custom registry or persist
+application-specific settings.
+
+Use `src/custom/settings` to define application-owned types, validation schemas, defaults, and registry entries.
+Registering a setting describes its contract; loading and saving its value requires an explicit connection to
+the consuming feature and its persistence service.
+
+## Add a settings feature
+
+1. Define which values are public, private, or scoped to a user or Tenant.
+2. Put application definitions and validation under `src/custom/settings`.
+3. Connect the consuming feature to an application settings service that loads, validates, and saves its values.
+4. Enforce scope and permissions on writes and sanitize data before it crosses into browser code.
+5. Verify loading, saving, invalid input, denied access, and fallback defaults.
+
+Keep application-specific settings logic in custom areas and use supported provider APIs for persistence. A
+feature that needs persisted settings must load them through its settings service rather than assuming the
+shared bootstrap has populated them. See [Application structure](/docs/architecture/application-structure).
+
+Continue with [Authentication and identity](/docs/identity/authentication).
