@@ -14,6 +14,20 @@ Use this reference for every CloudIgniter guide task.
 
 Respect the plugin boundary. Links into `company-developers` use that plugin's route base; API reference pages remain under the default docs plugin.
 
+## Package references by audience
+
+Write the Dictionary, CloudIgniter Users, API Reference, and other end-user guide content for readers who have
+the application template from GitHub and CloudIgniter packages from npm. Refer to packages by their published
+`@cloudigniter/<name>` names, including in definitions, prose, tables, diagrams, and code comments. Keep repository
+package paths such as `packages/<name>` and package implementation details in CloudIgniter Developers, whose
+audience is system developers at the company that owns CloudIgniter. Source skills rendered in the Skills tab
+retain their maintainer instructions and repository paths.
+
+For example, identify EmberGuard as `@cloudigniter/emberguard` while continuing to direct application developers
+to supported generic APIs through `@cloudigniter/core`. Naming a package does not make its internal modules
+supported application imports. Check all end-user guide surfaces for repository package paths when updating
+package references; preserve valid internal paths in CloudIgniter Developers.
+
 ## Determine documentation impact
 
 Use the following as a minimum routing matrix:

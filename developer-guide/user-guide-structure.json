@@ -25,7 +25,8 @@
         "environment-modes/saving-env-mode",
         "configuration/localization",
         "configuration/themes",
-        "configuration/settings"
+        "configuration/settings",
+        "configuration/resolution"
       ]
     },
     {

@@ -72,8 +72,9 @@ export default {
 ```
 
 `providers.aws.cognito.client.region` configures the Cognito client; use the region of your deployed backend.
-The template also loads `amplify_outputs.json` into `providers.aws.amplify.amplifyOutputs` when resolving its
-runtime configuration. That generated file supplies the deployed authentication connection details.
+The template automatically imports the generated `amplify_outputs.json` file and includes its contents at
+`providers.aws.amplify.amplifyOutputs` in the resolved application configuration. That generated file supplies
+the deployed authentication connection details.
 
 `auth.loginRoute` identifies the login destination; see [Routes configuration](/docs/configuration/routes)
 for how destinations are registered. `auth.authUi` controls login presentation: `custom.merge` merges your

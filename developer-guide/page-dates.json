@@ -273,8 +273,8 @@
     },
     ".agents/skills/cloudigniter-guide-authoring/references/workflow-and-validation.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-11T06:08:20.044Z",
-      "contentHash": "e6f7f95866792103cc2f4cfab591d73b675e67616434dca4df70f4388f87aaef"
+      "updatedAt": "2026-09-11T18:42:31.893Z",
+      "contentHash": "61d2f84fbbc241a191e33732353d63565ab559eba415e03bbc7f27e59ba0a5c2"
     },
     ".agents/skills/design-system/SKILL.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -678,8 +678,8 @@
     },
     "developer-guide/dictionary/e.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T15:54:15.343Z",
-      "contentHash": "239c8e1eee74906a4da768a9d695110130a921bd86f235f427029e3e2b254eb4"
+      "updatedAt": "2026-09-11T18:42:31.893Z",
+      "contentHash": "aa392286fbc9a2cfc5f39843fbb5628c49ea73cd17fc9a74fb8c97e60b320997"
     },
     "developer-guide/dictionary/f.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -703,8 +703,8 @@
     },
     "developer-guide/dictionary/index.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T15:54:15.343Z",
-      "contentHash": "c2efd074f3408ce9cca442e4c436edee0cb47c46cad71f516b1e3087fe3a070f"
+      "updatedAt": "2026-09-11T18:42:31.893Z",
+      "contentHash": "a748099fef2aea73096473bd2d6bfa14797792462a29a842347e063b3b95c626"
     },
     "developer-guide/dictionary/k.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -1483,8 +1483,13 @@
     },
     "developer-guide/docs/configuration/overview.mdx": {
       "createdAt": "2026-09-09T16:26:08.097Z",
-      "updatedAt": "2026-09-11T05:57:10.429Z",
-      "contentHash": "bbb14d00b2593bb4ecd6c78624a1d8d3bccf525155356bf753b7020e1f9069cd"
+      "updatedAt": "2026-09-11T19:06:11.675Z",
+      "contentHash": "a190f52d40e9441b626cc1214f31811c558d99ceea7c6e6314c8550524e5fb32"
+    },
+    "developer-guide/docs/configuration/resolution.mdx": {
+      "createdAt": "2026-09-11T19:06:11.675Z",
+      "updatedAt": "2026-09-11T19:06:11.675Z",
+      "contentHash": "7389bcdc04057909962ae95611876304269ae5ae927e06f323fa56bd4ebd4500"
     },
     "developer-guide/docs/configuration/routes.mdx": {
       "createdAt": "2026-09-11T05:57:10.429Z",
@@ -1493,8 +1498,8 @@
     },
     "developer-guide/docs/configuration/settings.mdx": {
       "createdAt": "2026-09-09T16:26:08.097Z",
-      "updatedAt": "2026-09-09T17:47:57.835Z",
-      "contentHash": "c57d7f58a23349571d4676df74bf93f58342c3f7294e8dd856ff2149170a1801"
+      "updatedAt": "2026-09-11T19:06:11.675Z",
+      "contentHash": "233876fb68e3723600d99293ba39de99239e8acf588f8419c560932cabf21b9b"
     },
     "developer-guide/docs/configuration/themes.mdx": {
       "createdAt": "2026-09-09T16:26:08.097Z",
@@ -1703,8 +1708,8 @@
     },
     "developer-guide/docs/core-system/multi-Tenancy/type-shapes.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T16:26:08.097Z",
-      "contentHash": "cffa9c53873a46f8a64ce1e5905a0deb1652c80bcd3a6e7c9b22df7f92b94858"
+      "updatedAt": "2026-09-11T18:42:31.893Z",
+      "contentHash": "a7f105dd48452a3cfba3a5d46b5ee5365082782a52ea53f19b4a29b4298a4665"
     },
     "developer-guide/docs/core-system/settings/_category_.json": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -1828,8 +1833,8 @@
     },
     "developer-guide/docs/identity/authentication.mdx": {
       "createdAt": "2026-09-09T16:26:08.097Z",
-      "updatedAt": "2026-09-11T06:56:14.724Z",
-      "contentHash": "a029cf0868dc08eea52e5c98b548925bddb3c0c7ff7990209980c748b4685fd2"
+      "updatedAt": "2026-09-11T18:57:25.371Z",
+      "contentHash": "07146834bb4dac99353b8c51c81b5618658de76c8b719270eb0a9a1d52532d2c"
     },
     "developer-guide/docs/internationalization/_category_.json": {
       "createdAt": "2026-09-09T15:54:15.343Z",

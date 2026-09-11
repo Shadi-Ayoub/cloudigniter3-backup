@@ -8835,8 +8835,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/multi-Tenancy/type-shapes.mdx": {
-    "mtime": 1788970736.44,
-    "ast_hash": "e54cb5f3d8e8ad5498b40922b3bf0a23",
+    "mtime": 1789152141.48,
+    "ast_hash": "b4d83ecbc821ba0daa3246c94c3b6188",
     "semantic_hash": ""
   },
   "developer-guide/docs/core-system/settings/registry.mdx": {
@@ -10700,8 +10700,8 @@
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-guide-authoring/references/workflow-and-validation.md": {
-    "mtime": 1789106890.86,
-    "ast_hash": "e445247832ad267a957968f1e50442c8",
+    "mtime": 1789152141.53,
+    "ast_hash": "3f4105ac417ba76a84f5c025aacb5a02",
     "semantic_hash": ""
   },
   "developer-guide/company-developers/documentation/authoring-workflow.mdx": {
@@ -12320,8 +12320,8 @@
     "semantic_hash": ""
   },
   "developer-guide/dictionary/e.mdx": {
-    "mtime": 1788104610.48,
-    "ast_hash": "2caa128cdf49d0a65e14b8098cae4dd5",
+    "mtime": 1789152141.36,
+    "ast_hash": "c2d31487749f5c8a3f5f4f88f314fe72",
     "semantic_hash": ""
   },
   "developer-guide/dictionary/f.mdx": {
@@ -12345,8 +12345,8 @@
     "semantic_hash": ""
   },
   "developer-guide/dictionary/index.mdx": {
-    "mtime": 1788109382.94,
-    "ast_hash": "bb59fe4b3836f0bd12e9bf172507ee9e",
+    "mtime": 1789152141.42,
+    "ast_hash": "54821a9a2e5a9d982384bda0b5e5b057",
     "semantic_hash": ""
   },
   "developer-guide/dictionary/k.mdx": {
@@ -12835,8 +12835,8 @@
     "semantic_hash": ""
   },
   "developer-guide/page-dates.json": {
-    "mtime": 1789109774.72,
-    "ast_hash": "602ef9540cc80c38b07d90401ba8d6a7",
+    "mtime": 1789153045.37,
+    "ast_hash": "5d0401eeeaceafaaedc28aeb4f3f82dd",
     "semantic_hash": ""
   },
   "developer-guide/plugins/sidebar-page-dates.ts": {
@@ -12875,8 +12875,8 @@
     "semantic_hash": ""
   },
   "developer-guide/user-guide-structure.json": {
-    "mtime": 1789106158.25,
-    "ast_hash": "517e333149ae3261be35aede8f98e002",
+    "mtime": 1789153496.93,
+    "ast_hash": "362be8ebb856ec8fd502b91d351c3bda",
     "semantic_hash": ""
   },
   "developer-guide/company-developers/documentation/users-guide-structure.mdx": {
@@ -12915,13 +12915,13 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/configuration/overview.mdx": {
-    "mtime": 1789106158.19,
-    "ast_hash": "e3029b0db6b9442c2d4a4f33e69b7113",
+    "mtime": 1789153496.82,
+    "ast_hash": "6ea8e74641869514d622a828e954c1e3",
     "semantic_hash": ""
   },
   "developer-guide/docs/configuration/settings.mdx": {
-    "mtime": 1788975997.91,
-    "ast_hash": "d74d9e4326863703726c5afe715ff68c",
+    "mtime": 1789153496.87,
+    "ast_hash": "62039a561933267db3677810eee61741",
     "semantic_hash": ""
   },
   "developer-guide/docs/configuration/themes.mdx": {
@@ -12940,8 +12940,8 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/identity/authentication.mdx": {
-    "mtime": 1789109742.77,
-    "ast_hash": "e1ad08e916252bd8c06df45ea8d1f64b",
+    "mtime": 1789153040.77,
+    "ast_hash": "5be914db02c1a3d1ea1400ad54928660",
     "semantic_hash": ""
   },
   "developer-guide/docs/obsolete/docusaurus-intro.md": {
@@ -12972,6 +12972,11 @@
   "apps/template/src/kernel/server/routes.ts": {
     "mtime": 1789109742.46,
     "ast_hash": "aa20356cd017748d9d870e93834e8693",
+    "semantic_hash": ""
+  },
+  "developer-guide/docs/configuration/resolution.mdx": {
+    "mtime": 1789153496.76,
+    "ast_hash": "e2c5a8934de749fdc2b6413ea2d2a310",
     "semantic_hash": ""
   }
 }
