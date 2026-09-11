@@ -1,6 +1,6 @@
 import { ciGetRoutes } from "@cloudigniter/core/lib";
 
-import { customRoutes } from "./src/custom/routes";
+import { customRoutes } from "../../custom/routes";
 
 /**
  * Application route composition. Core definitions remain package-owned while

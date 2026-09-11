@@ -7,8 +7,15 @@ description: Keep the CloudIgniter Docusaurus developer guide synchronized with 
 
 Treat documentation as a required product deliverable. Derive claims, imports, signatures, and workflows from the current source, public exports, tests, and configuration.
 
-Maintain the Created and Updated footer dates for every guide page, including rendered Skills sources.
-Display dates in UTC as `YYYY-MM-DD HH:mm:ss UTC` for a worldwide audience, independently of the viewer's locale or time zone. After
+Stop the application's Docusaurus development server **before editing** `developer-guide` or source skills
+rendered in its Skills tab. Keep it stopped during edits, date updates, cache cleanup, and validation. Once the
+update and checks are complete, start the guide again and verify it responds successfully. Follow the
+[Docusaurus edit lifecycle](references/workflow-and-validation.md#docusaurus-edit-lifecycle); do not rely on hot reload
+or leave the guide stopped after a completed update unless the user explicitly requests that.
+
+Display only the Updated footer timestamp for every guide page, including rendered Skills sources and category pages.
+Keep creation timestamps as internal registry metadata. Display the Updated timestamp in UTC as `YYYY-MM-DD HH:mm:ss UTC`
+for a worldwide audience, independently of the viewer's locale or time zone. After
 finishing page edits, run `pnpm --filter developer-guide dates:update`, then `pnpm --filter developer-guide dates:check`.
 The tracked `developer-guide/page-dates.json` registry preserves `createdAt`, changes `updatedAt` only for edited
 content, and initializes both fields for new pages. Never reset creation dates or derive dates from build time,
@@ -36,11 +43,12 @@ Load more than one section reference when a change crosses audiences. A new publ
 2. Trace the current implementation before trusting existing documentation. Inspect canonical exports, package `exports`, types, tests, examples, configuration, and consumers.
 3. Search the guide for existing coverage, terminology, stale imports, and related links before creating a page.
 4. Select all affected documentation sections using the routing rules in the references.
-5. Update existing pages before adding parallel explanations. Create new pages and category metadata only when the current information architecture has no suitable home.
+5. Confirm Docusaurus is stopped before editing. Update existing pages before adding parallel explanations. Create new pages and category metadata only when the current information architecture has no suitable home.
 6. Keep conceptual guidance, contributor architecture, and symbol-level reference distinct. Cross-link them instead of copying the same explanation into every section.
 7. Validate code examples, import paths, runtime labels, defaults, edge cases, and navigation against source.
 8. Run the developer-guide typecheck and production build. Resolve broken links, invalid MDX, sidebar failures, and documentation regressions caused by the change.
 9. Review the implementation diff and documentation diff together. Do not report a product-change task as complete until affected guide content is current.
+10. Restart the guide after the edits and checks finish, verify the affected page responds, and report its URL. Stop it again first if further edits are needed.
 
 ## Learning path and retired pages
 
@@ -66,6 +74,7 @@ For a capability, behavior, contract, configuration, architecture, provider work
 - refresh and validate page-date metadata after all documentation and rendered skill-source edits;
 - run `pnpm --filter developer-guide typecheck`;
 - run `pnpm --filter developer-guide build`;
+- restart the Docusaurus guide after validation and verify it responds, unless the user explicitly asks to leave it stopped;
 - report which audiences and pages changed.
 
 If a change is genuinely internal and has no documentation impact, inspect the guide anyway and state the concrete reason no page changed. Do not manufacture documentation churn for formatting-only, test-only, generated-file-only, or dependency-maintenance changes that preserve documented behavior.

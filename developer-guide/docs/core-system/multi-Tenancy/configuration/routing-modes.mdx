@@ -12,25 +12,28 @@ page in the physical route tree for the scopes where it is available.
 ## Scope-specific route trees
 
 ```text
-apps/template/src/app/
+src/app/
   (ci-global)/
     ci-global/
-      dashboard/books/page.tsx
+      (ci-custom)/dashboard/books/page.tsx
   (ci-tenant)/
     ci-tenant/
-      dashboard/books/page.tsx
+      (ci-custom)/dashboard/books/page.tsx
 ```
 
 The parenthesized directories are Next.js route groups and do not contribute a
 URL segment. The nested `ci-global` and `ci-tenant` directories are internal
 rewrite targets and must remain present.
 
-Register either page by its logical feature pathname:
+Register either page by its logical feature pathname in the existing `manualCustomRoutes` map under
+`src/custom/routes/routes.ts`. The kernel file `src/kernel/server/routes.ts` composes custom and core routes
+for `cloudigniter.config.ts`; see [Routes configuration](/docs/configuration/routes) for the complete wiring.
+Keep the other manual entries and the merge with generated routes when adding this example:
 
-```ts title="apps/template/routes.ts"
+```ts title="src/custom/routes/routes.ts (manualCustomRoutes excerpt)"
 import type { CiRoutesMap } from "@cloudigniter/core/types";
 
-export const routes = {
+const manualCustomRoutes = {
   "/dashboard/books": {
     title: "Manage Books",
     namespace: "dashboard.books",

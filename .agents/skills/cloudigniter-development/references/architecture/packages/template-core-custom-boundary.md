@@ -34,7 +34,7 @@ A template-core file may bridge package core and custom inputs only when a frame
 - remain CloudIgniter-managed and free of application business logic;
 - reject duplicate keys instead of giving custom code implicit override precedence.
 
-Examples include root route composition, Amplify schema composition, and Amplify backend composition. Application developers edit the custom registry or hook, not the bridge.
+Examples include route composition in `src/kernel/server/routes.ts`, Amplify schema composition, and Amplify backend composition. Application developers edit the custom registry or hook, not the bridge.
 
 If another CloudIgniter application would need substantially the same algorithm, the bridge is too thick. Move the behavior to its package owner first.
 

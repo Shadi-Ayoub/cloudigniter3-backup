@@ -1,10 +1,9 @@
 import React from "react";
-import { CalendarPlus, Clock3 } from "lucide-react";
+import { Clock3 } from "lucide-react";
 import registry from "../../../page-dates.json";
 import styles from "./styles.module.css";
 
-const pages: Record<string, { createdAt: string; updatedAt: string }> =
-  registry.pages;
+const pages: Record<string, { updatedAt: string }> = registry.pages;
 function formatUtcDateTime(timestamp: string): string {
   return `${new Date(timestamp)
     .toISOString()
@@ -24,17 +23,6 @@ export default function PageDates({
   return (
     <footer className={styles.footer} aria-label="Page dates">
       <dl className={styles.dates}>
-        <div>
-          <dt className={styles.label}>
-            <CalendarPlus size={16} aria-hidden="true" />
-            Created
-          </dt>
-          <dd className={styles.value}>
-            <time dateTime={dates.createdAt}>
-              {formatUtcDateTime(dates.createdAt)}
-            </time>
-          </dd>
-        </div>
         <div>
           <dt className={styles.label}>
             <Clock3 size={16} aria-hidden="true" />

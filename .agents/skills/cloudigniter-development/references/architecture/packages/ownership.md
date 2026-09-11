@@ -84,7 +84,7 @@ Treat the list above as responsibility, not permission to mix ownership in one f
 
 The template should demonstrate consumption of package APIs. When an app-local implementation is reusable, extract the behavior before integrating it.
 
-Within the template, CloudIgniter owns core entry points/default composition and application developers own only `amplify/custom/**`, `src/custom/**`, and scoped `(ci-custom)` page trees. Root route, Amplify data, and Amplify backend files may remain thin core-managed bridges that strictly compose custom registries/hooks. Do not put user business logic in those bridges or allow duplicate custom keys to override core.
+Within the template, CloudIgniter owns core entry points/default composition and application developers own only `amplify/custom/**`, `src/custom/**`, and scoped `(ci-custom)` page trees. Route composition in `src/kernel/server/routes.ts`, Amplify data, and Amplify backend files may remain thin core-managed bridges that strictly compose custom registries/hooks. Do not put user business logic in those bridges or allow duplicate custom keys to override core.
 
 Application-facing generators retain ownership only over their registered entity folders and generated registries inside the custom seams. A collision with core, manual custom, another generated resource, or an unregistered path is an error, not a precedence rule. See [template-core-custom-boundary.md](template-core-custom-boundary.md).
 
@@ -121,7 +121,8 @@ If a feature spans rows, split it across layers rather than assigning the entire
 route metadata contract        → packages/core/types
 generic matching               → packages/core/lib
 Next.js request adaptation     → packages/next/server
-application route registry     → apps/template/routes.ts
+application route composition  → apps/template/src/kernel/server/routes.ts
+custom route definitions       → apps/template/src/custom/routes
 route entry/composition        → apps/template
 ```
 

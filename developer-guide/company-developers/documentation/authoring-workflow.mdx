@@ -115,19 +115,18 @@ example, compatibility status, and related guidance.
 
 ## Completion checklist
 
-### Maintain Created and Updated dates
+### Maintain the Updated timestamp {#maintain-created-and-updated-dates}
 
 Every document footer across CloudIgniter Users, CloudIgniter Developers, API Reference, Dictionary, and Skills
-shows **Created** and **Updated** timestamps in UTC using `YYYY-MM-DD HH:mm:ss UTC` (for example,
-`2026-09-09 15:54:15 UTC`). Both dates were initialized together on
-9 September 2026 as the starting point for tracking future edits.
+shows only the **Updated** timestamp in UTC using `YYYY-MM-DD HH:mm:ss UTC` (for example,
+`2026-09-09 15:54:15 UTC`). Creation timestamps remain internal metadata and are not displayed.
 
 The tracked `developer-guide/page-dates.json` registry stores UTC ISO timestamps and a content hash under each
 repository-relative Markdown/MDX source path. Category metadata files are tracked too, giving generated category
-index pages their own dates. Skills entries refer to `.agents/skills` or `.codex/skills`; the generated staging
+index pages their own Updated timestamp. Skills entries refer to `.agents/skills` or `.codex/skills`; the generated staging
 tree remains disposable. The shared `PageDates` component is used by the Docusaurus document-footer and category-page
-wrappers. The sidebar generator attaches each category's source key while preserving normal navigation. Dates
-use a year-first date and 24-hour UTC time, independent of the reader's locale and time zone, for consistent
+wrappers. The sidebar generator attaches each category's source key while preserving normal navigation. The timestamp
+uses a year-first date and 24-hour UTC time, independent of the reader's locale and time zone, for consistent
 server and browser output. Changing the display format preserves the recorded instants.
 
 After finishing edits, run:

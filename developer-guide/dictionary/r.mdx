@@ -6,6 +6,11 @@ description: CloudIgniter terms beginning with R.
 # R
 
 
+## Reference Application
+
+A working starter application that demonstrates how CloudIgniter packages are configured and connected. The Next.js + AWS template is a reference application that can be used as the starting point for your own application. Its AWS integration is sometimes called the reference provider; this means the supplied [AWS provider](/dictionary/a#aws-provider), not a separate identity service. See [Run the application template](/docs/getting-started/run-template).
+
+
 ## Request Context
 
 A minimal, versioned snapshot of the current request containing resolved Tenant, Org Unit, logical feature pathname, and route information. The proxy forwards authoritative context in a same-request header; cookies are only a revalidated cross-request bridge. See [the request lifecycle](/docs/architecture/request-lifecycle).
@@ -53,7 +58,7 @@ A logical application destination registered by feature pathname, namespace, sco
 
 ## Route Definition
 
-The application configuration record describing a route’s logical pathname and runtime rules. The resolved definition is kept minimal when included in request context.
+The application configuration record describing a route’s logical pathname and runtime rules. The resolved definition is kept minimal when included in request context. See [Routes configuration](/docs/configuration/routes) for `src/kernel/server/routes.ts`, `src/custom/routes`, and the supported fields.
 
 
 ## Route Namespace

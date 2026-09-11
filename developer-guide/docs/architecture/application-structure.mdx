@@ -17,7 +17,7 @@ Paths below are relative to `apps/template`.
 | --- | --- |
 | `cloudigniter.config.ts` | Configure capabilities, providers, routing, authentication, localization, and development tools. |
 | `next.config.ts` | Next.js build settings and next-intl registration. |
-| `routes.ts` | Thin composition of core routes and the custom route registry. |
+| `src/kernel/server/routes.ts` | Thin composition of core routes and the custom route registry, imported by `cloudigniter.config.ts`. |
 | `src/proxy.ts` | Thin request entry point and matcher. |
 | `src/kernel` | CloudIgniter-managed application integration; inspect it to diagnose behavior. |
 | `src/custom` | Your route definitions, access-control additions, messages, forms, styles, and feature code. |

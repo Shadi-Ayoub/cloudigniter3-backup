@@ -58,6 +58,31 @@ Search at minimum for:
 - existing category metadata, sidebar placement, index pages, and cross-links;
 - old names, aliases, imports, and examples that must change together.
 
+## Docusaurus edit lifecycle
+
+Apply this sequence whenever changing guide content, navigation, components, configuration, or source skills
+rendered in the Skills tab:
+
+1. Before the first edit, identify this checkout's Docusaurus development server and its terminal/process.
+   The guide's `start` script uses port `3010`; check `developer-guide/package.json` and any explicit launch
+   arguments for a different port. If no guide server is running, proceed with it stopped.
+2. Stop the confirmed guide server gracefully through its owning terminal/session, or send a termination
+   signal to its verified process. Confirm it has exited and released the guide port before writing files.
+   Do not stop unrelated Next.js applications, other checkouts, or all Node processes.
+3. Keep Docusaurus stopped throughout the update, including source-skill edits, page-date refreshes,
+   generated-content/cache cleanup, typechecking, and the production build. The guide's start/build hooks
+   clear generated metadata, so do not run these checks alongside an active development server.
+4. After the edits and required checks finish, start the guide from the repository root with
+   `pnpm --filter developer-guide start --no-open` (or `pnpm start --no-open` inside `developer-guide`).
+   Preserve an explicitly configured host/port and keep the server in a managed terminal/session that
+   remains running after the task. Start it even if it was already stopped when work began, unless the user
+   explicitly asks to leave it stopped.
+5. Wait for successful startup, then request the local guide URL and an affected page to verify successful
+   HTTP responses. Report the URL and any startup failure accurately. If more edits or cache-clearing checks
+   are needed after startup, stop the server again before continuing and restart after those checks.
+
+Read-only guide inspection does not require stopping Docusaurus.
+
 ## Shared authoring standards
 
 - Spell the product name `CloudIgniter`.
@@ -95,9 +120,10 @@ Every Markdown/MDX page in `developer-guide/docs`, `developer-guide/company-deve
 entry in `developer-guide/page-dates.json`. Category metadata (`_category_.json`, `.yml`, or `.yaml`) is tracked
 as well, so generated category index pages have dates. Keys are repository-relative source paths, never `.generated` paths.
 The initial Created and Updated values were initialized together on 9 September 2026 as the start of date
-tracking, rather than reconstructed historical dates. The footer displays the stored UTC instants as
-`YYYY-MM-DD HH:mm:ss UTC`, using a year-first date and 24-hour time. Keep this format independent of the viewer's
-locale and time zone, and preserve the original instants when changing their presentation.
+tracking, rather than reconstructed historical dates. Every document and category footer displays only the Updated
+timestamp as `YYYY-MM-DD HH:mm:ss UTC`, using a year-first date and 24-hour time. Keep `createdAt` as internal
+registry metadata without displaying it. Keep the display format independent of the viewer's locale and time zone,
+and preserve the original instants when changing their presentation.
 
 - Finish all page and rendered skill-source edits, then run `pnpm --filter developer-guide dates:update`.
   The command reads the actual current clock once, preserves each existing `createdAt`, and updates `updatedAt`
@@ -113,6 +139,8 @@ locale and time zone, and preserve the original instants when changing their pre
   read-only check and fail on stale metadata; builds never advance timestamps automatically.
 
 ### Run validation
+
+Keep the Docusaurus development server stopped for this sequence.
 
 1. Review changed pages alongside the implementation diff.
 2. Verify every code block and import against source and package entry points.
@@ -130,6 +158,8 @@ pnpm --filter developer-guide build
 
 6. Run focused code tests that substantiate documented behavior when they were not already run for the implementation.
 7. Run `graphify update .` after code or architecture-document changes, following repository instructions.
+8. Complete the [Docusaurus edit lifecycle](#docusaurus-edit-lifecycle): restart the guide, verify startup and
+   successful HTTP responses, and leave it running unless the user requested otherwise.
 
 The Docusaurus build is mandatory because it catches invalid MDX, unresolved imports, duplicate routes, invalid sidebars, and broken links that a prose review misses.
 
@@ -142,6 +172,7 @@ Report:
 - public entry points documented;
 - navigation changes;
 - validation performed;
+- guide restart status and local URL;
 - any remaining documentation debt or suggested authoring improvement.
 
 Do not treat successful Docusaurus compilation as proof that the content is technically correct. Validate both structure and claims.

@@ -118,13 +118,13 @@
     },
     ".agents/skills/cloudigniter-development/references/architecture/overview.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T15:54:15.343Z",
-      "contentHash": "79890a54c672dc54550f7345f47fcca99527a6ca4945aa9b0158f5433ed6f06f"
+      "updatedAt": "2026-09-11T06:56:14.724Z",
+      "contentHash": "2df8edbd03b506adfca855913602fbf81abb779f61192f3e744b790ec5102592"
     },
     ".agents/skills/cloudigniter-development/references/architecture/packages/ownership.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T15:54:15.343Z",
-      "contentHash": "b9ce94b33eea0e1fe836a210cc056f4511085eb2480662798efee3fa333eb4ed"
+      "updatedAt": "2026-09-11T06:56:14.724Z",
+      "contentHash": "445c9131b93b2a0dd426be7112be7bb7b9c8c4733a22d061668ae50a1c834f7f"
     },
     ".agents/skills/cloudigniter-development/references/architecture/packages/public-api-and-runtime.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -133,8 +133,8 @@
     },
     ".agents/skills/cloudigniter-development/references/architecture/packages/template-core-custom-boundary.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T15:54:15.343Z",
-      "contentHash": "b463e48c8c74ed5e25cc076279abed7bc2c49dfc791b0f3c31740b4802864de6"
+      "updatedAt": "2026-09-11T06:56:14.724Z",
+      "contentHash": "4f0d39fad0e10470cc5a587f04742f8b8d06fed912f22a157c101a68c5a972d0"
     },
     ".agents/skills/cloudigniter-development/references/architecture/persistence/dynamodb.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -193,8 +193,8 @@
     },
     ".agents/skills/cloudigniter-development/references/architecture/tenants/bootstrap-and-diagnostics.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T15:54:15.343Z",
-      "contentHash": "48c305aa78dce99bb2158f6b7649330c234e3dcb065ecbace1214e8c29a6a17d"
+      "updatedAt": "2026-09-11T06:56:14.724Z",
+      "contentHash": "2d508d69b5c3834291f6f6646d12ed247a3e3c997c3c4476c14ccf4f67a077eb"
     },
     ".agents/skills/cloudigniter-development/references/architecture/tenants/context-and-localization.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -213,8 +213,8 @@
     },
     ".agents/skills/cloudigniter-development/references/architecture/tenants/routing.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T15:54:15.343Z",
-      "contentHash": "646d128f28c598ccb735bcaae5e3d1c6575e31d889ed092aa59ab0dbbed2fe98"
+      "updatedAt": "2026-09-11T06:56:14.724Z",
+      "contentHash": "a88c1a8bedddb0c475d234d6cb57c4027010dd7b43b70ca4cb7a42af9c1da540"
     },
     ".agents/skills/cloudigniter-development/references/architecture/ui/data-table.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -253,8 +253,8 @@
     },
     ".agents/skills/cloudigniter-guide-authoring/SKILL.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T16:26:08.097Z",
-      "contentHash": "a819a02e235fc655f82c8e19345f87139d4d897c4277b3e96b774c2f3fb162c5"
+      "updatedAt": "2026-09-11T06:08:20.044Z",
+      "contentHash": "79f0bb4a9d7909997c4e473c8c546b26d39433a008a601c873e8780f3760220b"
     },
     ".agents/skills/cloudigniter-guide-authoring/references/api-reference.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -273,8 +273,8 @@
     },
     ".agents/skills/cloudigniter-guide-authoring/references/workflow-and-validation.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T16:26:08.097Z",
-      "contentHash": "001c765286a232ff009d84d0015f38ac4ab6ccf359b6d1519aefaf568d42a4a9"
+      "updatedAt": "2026-09-11T06:08:20.044Z",
+      "contentHash": "e6f7f95866792103cc2f4cfab591d73b675e67616434dca4df70f4388f87aaef"
     },
     ".agents/skills/design-system/SKILL.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -543,8 +543,8 @@
     },
     "developer-guide/company-developers/architecture/core-custom-ownership.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T15:54:15.343Z",
-      "contentHash": "42ea1ad26a534cc8b35d315689557a80afb3be30f88156dea43bfecd075cc552"
+      "updatedAt": "2026-09-11T06:56:14.724Z",
+      "contentHash": "d24c5b0cae55d9ac64c4f85b945dc75299e1a83604ae0284abff50b48c59c448"
     },
     "developer-guide/company-developers/architecture/smart-forms.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -568,8 +568,8 @@
     },
     "developer-guide/company-developers/documentation/authoring-workflow.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T16:26:08.097Z",
-      "contentHash": "1527c6fead837a64b05f9e348cec74cd827bcd4322a4c5024f1679a056e037f5"
+      "updatedAt": "2026-09-11T06:01:36.855Z",
+      "contentHash": "5aa011f4ef206adb7f544ea4bef1da8ab0b7de70aeea9d863cd103eef6d97399"
     },
     "developer-guide/company-developers/documentation/users-guide-structure.mdx": {
       "createdAt": "2026-09-09T16:26:08.097Z",
@@ -633,8 +633,8 @@
     },
     "developer-guide/company-developers/routing/tenant-route-lifecycle.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T15:54:15.343Z",
-      "contentHash": "555b0a4e7290304999b91c683e8abc9be51bc090b07ed3cb551533e64cf0ce27"
+      "updatedAt": "2026-09-11T06:56:14.724Z",
+      "contentHash": "d419f6db85f123eb2f4b741f8438fcf4287ade1dce4ef8c175ef8e1d811ac374"
     },
     "developer-guide/company-developers/tooling/_category_.json": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -658,8 +658,8 @@
     },
     "developer-guide/dictionary/a.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T15:54:15.343Z",
-      "contentHash": "29bdfc6748c2a85e67af47ab2eb1daa09df7b4c54927ceb84a2682530a4af103"
+      "updatedAt": "2026-09-11T05:57:10.429Z",
+      "contentHash": "6be829f4823964d14fbc06ebb94bd7b3cb1c8f5b64b8f3f11f6f6a1f5cc44e36"
     },
     "developer-guide/dictionary/b.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -668,13 +668,13 @@
     },
     "developer-guide/dictionary/c.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T16:26:08.097Z",
-      "contentHash": "360aaef24e9fda6e52e54e6e6f6ddc19cf0a46746cc1d05a5d436ff2aed8dc28"
+      "updatedAt": "2026-09-11T05:57:10.429Z",
+      "contentHash": "40561aaece86f9d436af9e72d400649d5f61053e7a8827d148393cbdf6b38bb0"
     },
     "developer-guide/dictionary/d.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T15:54:15.343Z",
-      "contentHash": "b6f3ac42ba6b1e558bb56c55f26265ea9e282d65bc1bf6b713a51181a713a409"
+      "updatedAt": "2026-09-11T05:57:10.429Z",
+      "contentHash": "52849d3c686b9928a13f038dbcaebf6b7e89fa21d764a49cebab6419f589fbb2"
     },
     "developer-guide/dictionary/e.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -698,8 +698,8 @@
     },
     "developer-guide/dictionary/i.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T16:26:08.097Z",
-      "contentHash": "163be2f4d347bc84ad571429c41fbf567846620197efe8d3547da8e4df296d1a"
+      "updatedAt": "2026-09-11T05:57:10.429Z",
+      "contentHash": "72ca9ed60248c31bd3c34a8c4593a0b37f322062fd7d7499c423172246b4ee0f"
     },
     "developer-guide/dictionary/index.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -738,13 +738,13 @@
     },
     "developer-guide/dictionary/r.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T16:26:08.097Z",
-      "contentHash": "99a2108180074165061f76afce07a1e340eb3a215144e53691a097c76913986e"
+      "updatedAt": "2026-09-11T06:56:14.724Z",
+      "contentHash": "9bd91dc1c5080dd5f26f0d38ebcf6ece6d6a088226ea5721012a76364285eba8"
     },
     "developer-guide/dictionary/s.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T15:54:15.343Z",
-      "contentHash": "054c8710f7f1a5f726b4e7fa457291f13cf5899c5623cbaabf07744049679500"
+      "updatedAt": "2026-09-11T05:57:10.429Z",
+      "contentHash": "7a94c2508a9bbbaaa495db114cfaa196875b3f76db918c85276e5bfe82ebcaba"
     },
     "developer-guide/dictionary/t.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -1193,8 +1193,8 @@
     },
     "developer-guide/docs/api-reference/type-definitions/CiRouteDefinition.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T15:54:15.343Z",
-      "contentHash": "642971e9decfe74a3c7be4a40c847a485bf19f3987a0b03dca205beaa7709c14"
+      "updatedAt": "2026-09-11T06:56:14.724Z",
+      "contentHash": "bfee985dcf79425f24bc43d76556c9bc97bfa299dc53b76521cccd68124f03b8"
     },
     "developer-guide/docs/api-reference/type-definitions/CiSeederTypes.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -1293,8 +1293,8 @@
     },
     "developer-guide/docs/architecture/application-structure.mdx": {
       "createdAt": "2026-09-09T16:26:08.097Z",
-      "updatedAt": "2026-09-09T16:26:08.097Z",
-      "contentHash": "20ba6f3d22ddb37abab3288d4b8c299265ea7b314d5de85489a0101892566041"
+      "updatedAt": "2026-09-11T06:56:14.724Z",
+      "contentHash": "a86c3aa679002f12bdb8af6b50ba9c56ce39772930c0e699a45f17283fcbf3f0"
     },
     "developer-guide/docs/architecture/overview.mdx": {
       "createdAt": "2026-09-09T16:26:08.097Z",
@@ -1483,8 +1483,13 @@
     },
     "developer-guide/docs/configuration/overview.mdx": {
       "createdAt": "2026-09-09T16:26:08.097Z",
-      "updatedAt": "2026-09-09T17:49:26.240Z",
-      "contentHash": "f8efb0cd874e3f97905b997feff5c088e667ea0ba381158c510667a47ef811a3"
+      "updatedAt": "2026-09-11T05:57:10.429Z",
+      "contentHash": "bbb14d00b2593bb4ecd6c78624a1d8d3bccf525155356bf753b7020e1f9069cd"
+    },
+    "developer-guide/docs/configuration/routes.mdx": {
+      "createdAt": "2026-09-11T05:57:10.429Z",
+      "updatedAt": "2026-09-11T06:56:14.724Z",
+      "contentHash": "69592b0290edcdea6e0ace45b2bbc01f6a3041ea9c7963eafe76ba246a3a2081"
     },
     "developer-guide/docs/configuration/settings.mdx": {
       "createdAt": "2026-09-09T16:26:08.097Z",
@@ -1543,8 +1548,8 @@
     },
     "developer-guide/docs/core-system/authorization/routes-and-ui.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T16:26:08.097Z",
-      "contentHash": "4278e862ce449a9dbb2299ebd1bcaae17ca679738068f0f2689a06b8da8680c6"
+      "updatedAt": "2026-09-11T06:56:14.724Z",
+      "contentHash": "69542a48fcba1f4c4b3a22b460c43900dd02b75e2ee77e45f7dbddecab475018"
     },
     "developer-guide/docs/core-system/authorization/scenarios.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -1613,8 +1618,8 @@
     },
     "developer-guide/docs/core-system/multi-Tenancy/configuration/routing-modes.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-09-09T15:54:15.343Z",
-      "contentHash": "46eb4cd267b0ad9f830416649c2f1102678ea08e3572a6ff2403eb8f420e1b11"
+      "updatedAt": "2026-09-11T06:56:14.724Z",
+      "contentHash": "92b44939cbccf13fd110aefdca82a52479f4b02726cc10e1bc47f8867810535d"
     },
     "developer-guide/docs/core-system/multi-Tenancy/configuration/tenant-configuration.mdx": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -1823,8 +1828,8 @@
     },
     "developer-guide/docs/identity/authentication.mdx": {
       "createdAt": "2026-09-09T16:26:08.097Z",
-      "updatedAt": "2026-09-09T16:26:08.097Z",
-      "contentHash": "6b737c5acf09f099b7111932128262f2410457fc78bf7c07ed38b813bd8c1c52"
+      "updatedAt": "2026-09-11T06:56:14.724Z",
+      "contentHash": "a029cf0868dc08eea52e5c98b548925bddb3c0c7ff7990209980c748b4685fd2"
     },
     "developer-guide/docs/internationalization/_category_.json": {
       "createdAt": "2026-09-09T15:54:15.343Z",

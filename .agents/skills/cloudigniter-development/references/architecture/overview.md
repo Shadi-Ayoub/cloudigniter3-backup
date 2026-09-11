@@ -92,10 +92,14 @@ Keep configuration responsibilities distinct:
 
 - `next.config.ts`: Next.js build/framework/plugin composition;
 - `cloudigniter.config.ts`: application CloudIgniter capability configuration;
-- `routes.ts`: thin core/custom route composition; application metadata is registered under `src/custom`;
+- `src/kernel/server/routes.ts`: thin core/custom route composition imported directly by `cloudigniter.config.ts`; application metadata is registered under `src/custom`;
 - `proxy.ts`: request-time application entry point that supplies configuration to reusable Next.js handling.
 
 Do not move request-time business logic into `next.config.ts`, and do not use framework configuration as a second CloudIgniter configuration store.
+
+Keep route composition static and import its leaf module directly from configuration. Do not route that import
+through the `src/kernel/server` barrel or add request-scoped APIs to the composition module; configuration is
+also consumed before request bootstrap, including by the proxy.
 
 ## Architecture smells
 

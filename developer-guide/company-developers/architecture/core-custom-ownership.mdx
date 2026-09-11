@@ -33,7 +33,7 @@ A template-core entry point may import a custom registry or hook when the framew
 
 Current examples are:
 
-- `apps/template/routes.ts`, which composes package-owned core routes with `src/custom/routes`;
+- `apps/template/src/kernel/server/routes.ts`, which composes package-owned core routes with `src/custom/routes` and is imported directly by `cloudigniter.config.ts`;
 - `apps/template/amplify/data/resource.ts`, which composes core and custom schema fragments;
 - `apps/template/amplify/backend.ts` and its backend shape, which compose the core backend with `amplify/custom/backend.ts` and call the custom post-construction hook.
 
@@ -72,7 +72,7 @@ The Resource Studio work establishes these upgrade-safe seams:
 
 | Area | V1 result |
 | --- | --- |
-| Routes | `apps/template/routes.ts` is a thin composition file; manual and generated custom routes live under `src/custom/routes`; strict merging rejects shadowing. |
+| Routes | `apps/template/src/kernel/server/routes.ts` is a thin composition file; manual and generated custom routes live under `src/custom/routes`; strict merging rejects shadowing. |
 | Scoped pages | Generated management pages live under Tenant/Global `(ci-custom)` trees and route metadata restricts the allowed Tenant scope. |
 | Data schema | `amplify/custom/data/schemata/index.ts` keeps a manual fragment separate from `registry.generated.ts`; strict schema merging rejects duplicate model/type keys. |
 | Backend resources | The backend shape merges core and custom resource maps with duplicate-key protection; `amplify/custom/backend.ts` is the application hook. |

@@ -12,7 +12,8 @@ Start with the complete `cloudigniter.config.ts` supplied by the template. It sa
 | Concern | Configuration or workflow |
 | --- | --- |
 | Login and access-control policy | [`auth`](/docs/core-system/configurations/cloudigniter.config.ts) |
-| Scope selection and routing | [`tenant` and logical routes](/docs/core-system/multi-Tenancy/configuration/routing-modes) |
+| Route registration, sign-in requirements, and permissions | [Routes configuration](/docs/configuration/routes) |
+| Tenant selection and public URL structure | [Routing modes](/docs/core-system/multi-Tenancy/configuration/routing-modes) |
 | Next.js, browser, and backend runtime mode | [Environment modes](/docs/environment-modes/intro) |
 | Languages, messages, and direction | [Localization](/docs/configuration/localization) |
 | Theme selection and application CSS | [Themes and styling](/docs/configuration/themes) |
@@ -25,6 +26,7 @@ server path and the effective context for the running application.
 
 ## Work through the configuration chapter
 
-First align environment modes across the Next.js application and backend. Then configure localization,
+First register your [application routes](/docs/configuration/routes) and align environment modes across the
+Next.js application and backend. Then configure localization,
 presentation, and settings resolution. Afterward, continue with
 [Authentication and identity](/docs/identity/authentication) before enabling protected business features.

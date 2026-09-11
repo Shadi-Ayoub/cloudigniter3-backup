@@ -1,6 +1,6 @@
 import type { CiCoreConfig } from "@cloudigniter/core/types";
 
-import { routes } from "./routes";
+import { routes } from "./src/kernel/server/routes";
 
 export default {
   auth: {

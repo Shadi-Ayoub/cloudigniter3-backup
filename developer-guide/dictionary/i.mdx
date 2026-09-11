@@ -6,9 +6,14 @@ description: CloudIgniter terms beginning with I.
 # I
 
 
+## Identity Group
+
+A named collection of users managed by an identity provider, such as a Cognito user-pool group. CloudIgniter's AWS template reads group names from the `cognito:groups` token claim to resolve role IDs, with separate handling for the root identity group. Group membership supplies identity information; the catalog defines privileges and trusted scoped assignments determine where those privileges apply.
+
+
 ## Identity Provider
 
-A service that authenticates identities and supplies claims or group memberships. Provider data is assignment input; it is not proof that an arbitrary tenant or Org Unit scope is valid.
+A service that verifies who is signing in and supplies information about the authenticated account, such as its ID and group memberships. That information can be carried as [claims](/dictionary/c#claim) in a session token. CloudIgniter's Next.js + AWS template uses [Cognito](/dictionary/c#cognito). Provider data is assignment input; it is not proof that an arbitrary Tenant or Org Unit scope is valid.
 
 
 ## Immutable Slug

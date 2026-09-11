@@ -31,6 +31,11 @@ A Next.js server function invoked from a client interaction. CloudIgniter server
 A React component rendered on the server that may resolve trusted context and server-only data. It passes only serializable values into Client Components.
 
 
+## Session
+
+The authentication state used to recognize a signed-in account across requests, represented by provider-issued tokens and the application's cookie integration in the AWS template. CloudIgniter resolves the session on the server to identify the caller. Sessions can expire or be invalidated; a visible signed-in screen does not establish that a later server operation is authorized.
+
+
 ## Shared Subtree
 
 An Org Unit node and its descendants reused by several tenants through tenant attachments. Sharing preserves one canonical identity and does not permit authorization to cross tenant boundaries automatically.

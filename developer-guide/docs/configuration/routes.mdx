@@ -1,0 +1,135 @@
+---
+title: Routes configuration
+description: Register application routes, understand their settings, and connect logical paths to Next.js pages.
+sidebar_position: 2
+---
+
+# Routes configuration
+
+Register each application [route](/dictionary/r#route) so CloudIgniter can resolve its title, message
+[namespace](/dictionary/r#route-namespace), sign-in requirement, and supported
+[Tenant](/dictionary/t#tenant) contexts. Keep hand-written definitions in `src/custom/routes`.
+The kernel file `src/kernel/server/routes.ts` combines them with CloudIgniter's built-in routes, and `cloudigniter.config.ts`
+includes the resulting registry.
+
+## Understand the configuration files
+
+Paths on this page are relative to your application root.
+
+| File | Responsibility |
+| --- | --- |
+| `src/custom/routes/routes.ts` | Defines `manualCustomRoutes` and merges it with generated routes. Add your hand-written route entries here. |
+| `src/custom/routes/resource-studio.generated.ts` | Contains registrations maintained by [Resource Studio](/dictionary/r#resource-studio). Use Studio to update its generated entries. |
+| `src/custom/routes/index.ts` | Exports `customRoutes` for application composition. |
+| `src/kernel/server/routes.ts` | Calls `ciGetRoutes(customRoutes)` to combine the custom registry with package-owned core routes. This is CloudIgniter-managed composition; edit route definitions in `src/custom/routes`. |
+| `cloudigniter.config.ts` | Supplies the composed `routes` to CloudIgniter's runtime configuration. |
+
+The template supplies these composition steps:
+
+```ts title="src/custom/routes/index.ts"
+export { customRoutes } from "./routes";
+```
+
+```ts title="src/kernel/server/routes.ts"
+import { ciGetRoutes } from "@cloudigniter/core/lib";
+import { customRoutes } from "../../custom/routes";
+
+export const routes = ciGetRoutes(customRoutes);
+```
+
+```ts title="cloudigniter.config.ts (routes excerpt)"
+import { routes } from "./src/kernel/server/routes";
+
+export default {
+  // Keep the other configuration supplied by the template.
+  routes,
+};
+```
+
+`ciGetRoutes()` retains the core registrations and adds your custom ones. Both it and `ciMergeRouteMaps()`
+reject duplicate pattern keys, so a custom entry cannot replace an existing core or generated entry with the
+same key. Choose a distinct application path.
+
+## Add a custom route
+
+For example, add a support users page to the existing `manualCustomRoutes` map. Preserve the other manual
+entries and the generated registry import when applying this example.
+
+```ts title="src/custom/routes/routes.ts" showLineNumbers
+import { ciMergeRouteMaps } from "@cloudigniter/core/lib";
+import type { CiRoutesMap } from "@cloudigniter/core/types";
+
+import { resourceStudioRoutes } from "./resource-studio.generated";
+
+const manualCustomRoutes = {
+  // Keep your other hand-written routes here.
+  "/dashboard/support-users": {
+    title: "Support users",
+    namespace: "dashboard",
+    protected: true,
+    tenantScopes: ["tenant"],
+    access: {
+      resource: "identity.users",
+      action: "read",
+    },
+  },
+} satisfies CiRoutesMap;
+
+export const customRoutes = ciMergeRouteMaps(
+  manualCustomRoutes,
+  resourceStudioRoutes,
+);
+```
+
+Registering metadata does not create a Next.js `page.tsx` file or load its data. Add the corresponding page
+using [Create your first feature page](/docs/building-features/first-page), then connect its server permission
+check as shown in [Authentication and identity](/docs/identity/authentication#protect-a-route-and-its-operations).
+
+## Understand the route fields
+
+The public `CiRouteDefinition` type from `@cloudigniter/core/types` defines each entry.
+
+| Field | Meaning |
+| --- | --- |
+| Map key, such as `/dashboard/support-users` | The logical [feature pathname](/dictionary/f#feature-pathname) or pattern to match. |
+| `title` | The route's display title. |
+| `namespace` | The [route namespace](/dictionary/r#route-namespace) used to select translation messages. See [Localization](/docs/configuration/localization). |
+| `protected` | Required boolean. `true` requires sign-in; `false` permits the route to pass the sign-in gate without a user session. |
+| `tenantScopes` | Optional list of supported routing contexts: `system`, `global`, or `tenant`. Omitted allows all three; an empty list allows none. It does not grant membership in any Tenant. |
+| `access` | Optional `{ resource, action }` [permission](/dictionary/p#permission) requirement, which server code must enforce through the [authorizer](/dictionary/a#authorizer). |
+
+`protected` and `access` serve different purposes. A signed-in user may still lack a permission. A route with
+no `access` declares no catalog permission requirement, even when it requires sign-in. Likewise,
+`tenantScopes: ["tenant"]` limits where the page is available; it does not authorize the user in every Tenant.
+See the [protected route and catalog example](/docs/identity/authentication#protect-a-route-and-its-operations)
+for a role, scoped assignment, and server guard that enforce this route's `identity.users` / `read` requirement.
+
+## Use logical paths and matching patterns
+
+With the template's slug routing mode and `/t` base path, the example can have these paths:
+
+| Purpose | Path |
+| --- | --- |
+| Browser URL for the Tenant with slug `acme` | `/t/acme/dashboard/support-users` |
+| Registry key after Tenant resolution | `/dashboard/support-users` |
+| Application-owned Next.js page | `src/app/(ci-tenant)/ci-tenant/(ci-custom)/dashboard/support-users/page.tsx` |
+
+The [proxy](/dictionary/p#proxy) resolves the Tenant and any [Org Unit](/dictionary/o#org-unit) before matching
+the logical path. Register the logical path without the `/t/acme` prefix. The parenthesized Next.js route
+groups do not add URL segments; `ci-tenant` is an internal rewrite destination. Use browser-facing paths in
+links. See [Routing modes](/docs/core-system/multi-Tenancy/configuration/routing-modes) for other URL forms.
+
+CloudIgniter supports these pattern forms:
+
+| Pattern | Matches |
+| --- | --- |
+| `/dashboard/support-users` | That exact logical path. |
+| `/dashboard/support-users/:id` | One additional segment, such as `/dashboard/support-users/user-456`. |
+| `/dashboard/support-users/*` | The base path and all paths below it. |
+
+When patterns overlap, the matcher chooses the most specific definition. Settings come from that selected
+entry; a parent wildcard's protection or permission is not merged into a more specific entry. Declare the
+intended sign-in and permission settings on each route you add.
+
+Continue with [Authentication and identity](/docs/identity/authentication) to connect these settings to
+sign-in, the current user, and permission enforcement.

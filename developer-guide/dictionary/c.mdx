@@ -16,6 +16,11 @@ The single authoritative Org Unit record whose identity can be shared by several
 CloudIgniter’s reusable management-table component, with consistent sorting, filtering, responsive formats, actions, feedback, accessibility, and provider-backed data behavior. Its default sort is newest creation date first. See [Data table](/docs/ui-components/data-table).
 
 
+## Claim
+
+A statement about an identity carried in an authentication token, such as a user ID, email verification status, or group membership. CloudIgniter's AWS integration reads these values from the provider session. Claims supply identity information; a claimed role or group does not by itself establish permission in a particular Tenant.
+
+
 ## Client Component
 
 A React component that executes in the browser and may own state, effects, events, and browser APIs. CloudIgniter keeps provider clients, credentials, filesystem APIs, and other server-only values outside this boundary.
@@ -48,12 +53,17 @@ Application developers, integrators, and operators who consume CloudIgniter thro
 
 ## Cognito
 
-Amazon Cognito, the AWS identity provider used by the reference provider for users, sessions, claims, and group membership. Cognito-specific structures are normalized before they reach generic CloudIgniter contracts.
+Amazon Cognito, the AWS service that manages user accounts, sign-in, account recovery, and identity groups for CloudIgniter's Next.js + AWS template. It is the template's [identity provider](/dictionary/i#identity-provider). [Amplify](/dictionary/a#amplify) libraries connect the application to Cognito, and CloudIgniter adapts the returned identity information into its current-user and authorization contracts. See [Authentication and identity](/docs/identity/authentication).
 
 
 ## Combining Algorithm
 
 The rule used when several applicable privileges disagree. CloudIgniter defaults to `deny-overrides`; `highest-precedence` is available when the strongest assigned responsibility is intentionally authoritative.
+
+
+## Current User
+
+The identity resolved for the current request from the configured authentication session. In the CloudIgniter Next.js template, `appBootstrap()` exposes it as `context.auth.user`, with an ID, authentication state, role IDs, and available profile fields. An anonymous request has no user ID and is not authenticated. This identity still needs scoped assignments for permission checks. See [the resolved user example](/docs/identity/authentication#understand-the-resolved-current-user-and-roles).
 
 
 ## Custom Seam

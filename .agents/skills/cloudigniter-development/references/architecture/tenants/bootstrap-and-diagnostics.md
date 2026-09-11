@@ -45,7 +45,7 @@ Do not generalize this diagnostic cookie strategy into authentication or authori
 | Application proxy entry and matcher                  | `apps/template/src/proxy.ts`                           |
 | Reusable Next.js proxy/context algorithms            | `packages/next`                                        |
 | Generic request-context contracts/serialization      | `packages/core`                                        |
-| Application route registry                           | manual/generated definitions under `apps/template/src/custom/routes`; thin composition in `apps/template/routes.ts` |
+| Application route registry                           | manual/generated definitions under `apps/template/src/custom/routes`; thin composition in `apps/template/src/kernel/server/routes.ts` |
 | Route Tenant-scope contract and public-path building | `packages/core`                                        |
 | Generic namespace resolution                         | `packages/core` when runtime-neutral                   |
 | Reusable Next.js i18n integration                    | `packages/next`                                        |

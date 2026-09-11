@@ -1,6 +1,6 @@
 import type { CiNextCoreConfig } from "@cloudigniter/next/types";
 
-import { routes } from "./routes";
+import { routes } from "./src/kernel/server/routes";
 
 export default {
   request: {

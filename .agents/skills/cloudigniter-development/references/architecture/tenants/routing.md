@@ -91,8 +91,11 @@ continues to use the logical feature pathname:
 ```text
 /t/global/dashboard/books → /ci-global/dashboard/books
 /t/acme/dashboard/books   → /ci-tenant/dashboard/books
-routes.ts key              → /dashboard/books
+src/custom/routes key      → /dashboard/books
 ```
+
+`apps/template/src/kernel/server/routes.ts` combines custom registrations with the package-owned core routes.
+`cloudigniter.config.ts` imports that static composition module directly.
 
 The parenthesized App Router groups `(ci-global)` and `(ci-tenant)` do not add
 URL segments. Their nested `ci-global` and `ci-tenant` directories are required

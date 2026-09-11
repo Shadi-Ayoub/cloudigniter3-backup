@@ -1,0 +1,6 @@
+{
+  "runs": [],
+  "total_input_tokens": 0,
+  "total_output_tokens": 0,
+  "usage_note": "Host-agent semantic token usage was not exposed by the collaboration runtime. Zeroes indicate unavailable accounting, not zero semantic work."
+}

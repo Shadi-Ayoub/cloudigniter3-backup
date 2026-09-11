@@ -36,6 +36,11 @@ The authenticated identity responsible for a trusted operation. Lifecycle metada
 The canonical `admin` role for business administration within global, Tenant, or Org Unit scopes. It belongs to the business role lane and does not grant technical system administration.
 
 
+## Amplify
+
+AWS Amplify, a collection of tools and libraries for building applications and connecting them to AWS services. The CloudIgniter Next.js + AWS template uses Amplify Gen 2 to define its backend and Amplify libraries to connect application code to it. Amplify Auth works with [Cognito](/dictionary/c#cognito) for authentication; [Authenticator](/dictionary/a#authenticator) supplies the React sign-in interface. See [Authentication and identity](/docs/identity/authentication) and [AWS's Amplify Auth introduction](https://docs.amplify.aws/react/build-a-backend/auth/set-up-auth/).
+
+
 ## Amplify Backend
 
 The AWS Amplify Gen 2 infrastructure assembled by the template from CloudIgniter package manifests, concrete resources, custom application resources, environment bindings, and least-privilege policies. See [Extend the Amplify backend](/docs/providers/aws/extending-amplify-backend).
@@ -64,6 +69,11 @@ A time- and scope-bounded link from a subject to a role or direct privilege. Ass
 ## Authentication
 
 The process of establishing who a user or service is and resolving a trusted identity or session. Authentication answers “who are you?”; authorization answers “what may you do?”.
+
+
+## Authenticator
+
+The Amplify UI component that presents sign-in, account confirmation, password recovery, and related authentication forms. CloudIgniter's AWS login page configures the React component through options, custom components, and theme values exported from `src/custom/authenticator`. Changing its appearance does not authorize server operations. See [Customize the login page](/docs/identity/authentication#customize-the-login-page) and [AWS's Authenticator customization guide](https://ui.docs.amplify.aws/react/connected-components/authenticator/customization).
 
 
 ## Authorization

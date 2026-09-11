@@ -6,28 +6,344 @@ sidebar_position: 1
 
 # Authentication and identity
 
-Authentication establishes who is making a request. Authorization decides whether that actor can perform a
-particular operation on a resource in a particular scope. Learn both before adding protected data features.
+[Authentication](/dictionary/a#authentication) establishes who is making a request.
+[Authorization](/dictionary/a#authorization) decides whether that [actor](/dictionary/a#actor) can perform an
+[action](/dictionary/a#action) on a [resource](/dictionary/r#resource) in a particular
+[scope](/dictionary/s#scope). Learn both before adding protected data features.
 
 ## Use the configured identity provider
 
-The reference application uses Amplify and Cognito. `cloudigniter.config.ts` configures the login route and
-authentication UI; provider-specific inputs belong under the provider configuration. The server bootstrap
-resolves the current user and roles for its context.
+The CloudIgniter Next.js + AWS template is a [reference application](/dictionary/r#reference-application): a
+working starter application that demonstrates how to connect CloudIgniter's packages. Its
+[AWS provider](/dictionary/a#aws-provider) connects the application to AWS services. When documentation calls
+this the reference provider, it means the AWS integration supplied with that template.
 
-Customize the login page using `src/custom/authenticator`: its exported hooks include the login shell,
-Authenticator props, and token-based theme override. Keep authentication/session checks in the configured
-server integration; visual customization does not replace those checks.
+Three names appear in this sign-in setup:
+
+- [Amplify](/dictionary/a#amplify) is AWS's collection of tools and libraries for building applications and
+  connecting them to cloud services. CloudIgniter uses its authentication libraries to work with Cognito.
+- [Cognito](/dictionary/c#cognito) is the [identity provider](/dictionary/i#identity-provider): the AWS service
+  that manages user accounts and authenticates sign-in requests.
+- [Authenticator](/dictionary/a#authenticator) is the Amplify UI React component that displays the sign-in,
+  account confirmation, and password recovery forms.
+
+AWS explains the connection between these pieces in
+[Set up Amplify Auth](https://docs.amplify.aws/react/build-a-backend/auth/set-up-auth/).
+Complete [Run the application template](/docs/getting-started/run-template) first so the backend is deployed
+and the application has its generated `amplify_outputs.json` connection file.
+
+### Locate the authentication configuration
+
+The following excerpt shows the relevant parts of the template's `cloudigniter.config.ts`. Keep the rest of
+your existing configuration when editing these blocks.
+
+```ts title="cloudigniter.config.ts (authentication excerpt)"
+export default {
+  // Other application configuration remains here.
+  providers: {
+    aws: {
+      cognito: {
+        client: { region: "us-east-1" },
+      },
+      // Other AWS service configuration remains here.
+    },
+  },
+  auth: {
+    loginRoute: "/login",
+    emberguard: {
+      accessControl: {
+        combiningAlgorithm: "deny-overrides",
+      },
+    },
+    authUi: {
+      custom: {
+        merge: true,
+        loadingText: "Signing you in. Please wait...",
+      },
+      visibility: {
+        minHeightPx: 16,
+        debounceMs: 0,
+        initialMountSuppressMs: 1200,
+        minVisibleStableMs: 300,
+      },
+    },
+  },
+};
+```
+
+`providers.aws.cognito.client.region` configures the Cognito client; use the region of your deployed backend.
+The template also loads `amplify_outputs.json` into `providers.aws.amplify.amplifyOutputs` when resolving its
+runtime configuration. That generated file supplies the deployed authentication connection details.
+
+`auth.loginRoute` identifies the login destination; see [Routes configuration](/docs/configuration/routes)
+for how destinations are registered. `auth.authUi` controls login presentation: `custom.merge` merges your
+theme override with the CloudIgniter base theme, `loadingText` labels the sign-in loader, and `visibility`
+contains timing and size thresholds for that loader. Most applications can retain the visibility values.
+The [EmberGuard](/dictionary/e#emberguard) [combining algorithm](/dictionary/c#combining-algorithm) is a
+separate authorization setting: `deny-overrides` makes a matching deny take priority over matching allows.
+
+### Understand the resolved current user and roles
+
+The server [bootstrap](/dictionary/b#bootstrap), `appBootstrap()` in
+`src/kernel/server/bootstrap/app-bootstrap.ts`, reads the request's authentication
+[session](/dictionary/s#session) through the configured AWS integration. It places the
+[current user](/dictionary/c#current-user) in `context.auth.user`.
+
+For example, a signed-in account whose Cognito [identity groups](/dictionary/i#identity-group) include
+`user` and `admin` can produce this selected subset of the resolved context. The values are illustrative;
+credentials and other context fields are omitted.
+
+```json title="Example result: context.auth (selected fields)"
+{
+  "mode": "userPool",
+  "user": {
+    "id": "a13b7f25-8e04-4c61-912f-46a2ed089bc3",
+    "authenticated": true,
+    "email": "alex@example.com",
+    "emailVerified": true,
+    "displayName": "Alex Morgan",
+    "roles": ["user", "admin"],
+    "primaryRole": "admin"
+  }
+}
+```
+
+`userPool` means the request uses Cognito user authentication. `id` is the stable identity ID.
+`roles` contains the role IDs obtained from provider group membership; the template handles its special
+root identity group separately. `primaryRole` selects the highest-priority recognized role using the core
+[precedence](/dictionary/p#precedence) rules, so `admin` takes priority over `user` in this example.
+Without a signed-in session, the user has `id: null`, `authenticated: false`, `roles: []`, and
+`primaryRole: null`.
+
+A [role](/dictionary/r#role) name alone does not establish access to a particular
+[Tenant](/dictionary/t#tenant). A permission check also needs trusted
+[role assignments](/dictionary/r#role-assignment) and the scope of the requested operation. The route
+example below shows those additional inputs.
+
+### Customize the login page
+
+The login page is a server entry point that resolves context and passes it to the interactive
+[page client wrapper](/dictionary/p#page-client-wrapper). This is the template's page code:
+
+```tsx title="src/app/(system)/login/page.tsx" showLineNumbers
+import { appBootstrap } from "@/kernel/server";
+import { AppLoginPageClientWrapper } from "@/kernel/client";
+
+export default async function LoginPage() {
+  const context = await appBootstrap();
+
+  return <AppLoginPageClientWrapper context={context} />;
+}
+```
+
+The wrapper at `src/kernel/client/auth/AppLoginPageClientWrapper.tsx` combines the Amplify connection,
+Authenticator options, theme, and surrounding page. It imports the application customization exports from
+`src/custom/authenticator/index.ts`. Edit the corresponding custom files for the change you want:
+
+| What you want to change | File under `src/custom/authenticator/` | How it is used |
+| --- | --- | --- |
+| Logo, welcome text, account navigation, and support link | `app-login-page-content.ts` | Supplies content to the login page and form headers. |
+| Layout around the sign-in form | `AppLoginPageShell.tsx` | Exports `AppLoginPageShell`, the surrounding page structure. |
+| Form labels, field order, custom headers, or the initial form | `amplify-authenticator-custom-props.tsx` | Exports `buildAmplifyAuthenticatorCustomProps()`, which returns React props (component options) for Authenticator. |
+| Form colors, borders, spacing, and focus styles | `build-custom-amplify-authenticator-theme-from-tokens.ts` | Exports `buildCustomAmplifyAuthenticatorThemeOverride()`, which maps [design tokens](/dictionary/d#design-token) such as `var(--color-primary)` into an Amplify theme. |
+
+For example, change the welcome title in `app-login-page-content.ts`, or change a field's `label` and
+`placeholder` in `buildAmplifyAuthenticatorCustomProps()`. These exports are customization entry points;
+they include a React component and builder functions, rather than all being React hooks. Theme tokens here
+are named visual values, unrelated to authentication credentials.
+
+See AWS's [Authenticator customization guide](https://ui.docs.amplify.aws/react/connected-components/authenticator/customization)
+for form fields and component overrides, the
+[configuration guide](https://ui.docs.amplify.aws/react/connected-components/authenticator/configuration)
+for component options, and [Amplify UI theming](https://ui.docs.amplify.aws/react/theming) for theme tokens.
+CloudIgniter's [Themes and styling](/docs/configuration/themes) explains the application theme.
+
+Keep session resolution in the configured server integration when changing these files. A different logo,
+form layout, or hidden button does not prove that a request is authenticated or authorized. The server must
+still resolve the caller and enforce the requested permission before returning protected data or changing it.
 
 ## Protect a route and its operations
 
-Set `protected: true` on a custom logical route when it requires sign-in. Add its actual permission requirements
-through the access-control catalog and route authorization contract. A protected page alone does not protect
-an independent Server Action, API endpoint, or provider mutation.
+Start with [Routes configuration](/docs/configuration/routes) in **Configure your application**. It explains
+`src/kernel/server/routes.ts`, `src/custom/routes`, and the fields of a [route definition](/dictionary/r#route-definition).
+In that configuration, `protected: true` requires sign-in, while `access` names the
+[resource](/dictionary/r#resource) and [action](/dictionary/a#action) that the server must authorize.
+
+### Register a protected route
+
+Suppose a support team needs a page to read users within one Tenant. Add this entry to the existing
+`manualCustomRoutes` map; preserve your other entries and the merge with generated routes.
+
+```ts title="src/custom/routes/routes.ts (manualCustomRoutes entry)"
+"/dashboard/support-users": {
+  title: "Support users",
+  namespace: "dashboard",
+  protected: true,
+  tenantScopes: ["tenant"],
+  access: {
+    resource: "identity.users",
+    action: "read",
+  },
+},
+```
+
+The [route settings](/docs/configuration/routes#understand-the-route-fields) make this a signed-in page
+available in Tenant context. Its URL is a destination; `identity.users` is the capability being protected.
+The same capability can protect several pages or operations.
+
+### Grant the permission in the catalog
+
+The [access-control catalog](/dictionary/a#access-control-catalog) defines which roles grant that capability.
+The core catalog already registers `identity.users` and its `read` action. Add a custom role with an allow
+[privilege](/dictionary/p#privilege) for reading users at Tenant scope:
+
+```ts title="src/custom/auth/app-access-control.ts" showLineNumbers
+import { ciCreateAppAccessControl } from "@cloudigniter/core/lib";
+import type { CiAccessControlLayer } from "@cloudigniter/core/types";
+
+export const appAccessControlExtension = {
+  roles: [
+    {
+      id: "support-agent",
+      title: "Support Agent",
+      precedence: 50,
+      privileges: [
+        {
+          id: "read-tenant-users",
+          title: "Read tenant users",
+          effect: "allow",
+          resource: "identity.users",
+          action: "read",
+          scopeKinds: ["tenant"],
+        },
+      ],
+    },
+  ],
+} as const satisfies CiAccessControlLayer;
+
+export const appAccessControl = ciCreateAppAccessControl(appAccessControlExtension);
+```
+
+Merge this role into any existing application additions. Creating the role defines a responsibility; it does
+not assign that responsibility to anyone. The resource and action IDs must match the route's `access` values.
+For new business capabilities, register the domain, resource, and actions as explained in
+[Catalog and Permission Design](/docs/core-system/authorization/catalog-and-permissions).
 
 The application-owned access-control extension lives in `src/custom/auth/app-access-control.ts`.
-`src/custom/auth/app-authorizer.ts` compiles the resolved catalog with the configured policy. Generic helpers
-and public types come from `@cloudigniter/core/lib` and `@cloudigniter/core/types`.
+The template's `src/custom/auth/app-authorizer.ts` compiles it with the configured policy:
+
+```ts title="src/custom/auth/app-authorizer.ts"
+import { ciCreateAppAuthorizer } from "@cloudigniter/core/lib";
+import config from "@/../cloudigniter.config";
+import { appAccessControl } from "./app-access-control";
+
+export const appAuthorizer = ciCreateAppAuthorizer(
+  appAccessControl,
+  config.auth.emberguard?.accessControl,
+);
+```
+
+### Enforce the route authorization contract
+
+`CiRouteDefinition.access` is a declaration, not an automatic permission check. The template's routing
+integration checks sign-in and supported Tenant scopes; your server page or operation must also evaluate
+the declared permission. This application guard connects the route contract to the
+[authorizer](/dictionary/a#authorizer) and stops execution when access is denied:
+
+```ts title="src/custom/auth/require-route-access.ts" showLineNumbers
+import "server-only";
+
+import type {
+  CiAccessScope,
+  CiAuthorizationSubject,
+  CiRouteDefinition,
+} from "@cloudigniter/core/types";
+
+import { appAuthorizer } from "./app-authorizer";
+
+export function requireRouteAccess(input: {
+  route: CiRouteDefinition;
+  subject: CiAuthorizationSubject;
+  scope: CiAccessScope;
+}) {
+  const { route, subject, scope } = input;
+
+  if (route.protected && (!subject.authenticated || !subject.id)) {
+    throw new Error("Sign-in required");
+  }
+
+  if (route.access && !appAuthorizer.can({ subject, scope, ...route.access })) {
+    throw new Error("Access denied");
+  }
+}
+```
+
+Call this guard in the server page before loading protected data. Supply the registered route, the
+server-resolved [subject](/dictionary/s#subject) with its trusted assignments, and the requested
+[access scope](/dictionary/a#access-scope). Handle the errors at the application boundary with the appropriate
+sign-in or forbidden response. The guard is an example custom function, not a built-in CloudIgniter export.
+
+Here is a complete in-memory example of those inputs and the resulting decisions. It represents a user
+already assigned `support-agent` in `tenant-123`; it does not save a role assignment or grant a Cognito group.
+
+```ts title="Example: a scoped support-agent permission check"
+import {
+  ciCreateAuthorizationSubject,
+  ciCreateRoleAssignment,
+  ciTenantAccessScope,
+} from "@cloudigniter/core/lib";
+
+import { customRoutes } from "@/custom/routes";
+import { appAuthorizer } from "@/custom/auth/app-authorizer";
+import { requireRouteAccess } from "@/custom/auth/require-route-access";
+
+const scope = ciTenantAccessScope("tenant-123");
+const subject = ciCreateAuthorizationSubject(
+  { id: "user-456", authenticated: true },
+  [ciCreateRoleAssignment("support-agent", scope, "exact")],
+);
+const route = customRoutes["/dashboard/support-users"];
+
+requireRouteAccess({ route, subject, scope }); // Returns: read is allowed.
+
+appAuthorizer.can({
+  subject,
+  scope,
+  resource: "identity.users",
+  action: "update",
+}); // false: this role grants read, not update.
+
+appAuthorizer.can({
+  subject,
+  scope: ciTenantAccessScope("tenant-999"),
+  resource: "identity.users",
+  action: "read",
+}); // false: the assignment only covers tenant-123.
+```
+
+In a real request, obtain the identity from the server session, resolve assignments from trusted provider
+mapping or persisted assignments, and resolve the target Tenant from authoritative server context. Never
+create an assignment just because the browser supplied a role name or Tenant ID. See
+[Subjects and Providers](/docs/core-system/authorization/subjects-and-providers) and
+[Scopes and Assignments](/docs/core-system/authorization/scopes-and-assignments) for that resolution.
+
+:::warning Protect every server operation
+
+A protected page alone does not protect an independent [Server Action](/dictionary/s#server-action), API
+endpoint, or provider mutation (a backend operation that changes data). Those entry points can be invoked
+directly, without visiting the page or using its buttons. Some API and internal paths also bypass the
+template's page [proxy](/dictionary/p#proxy).
+
+At each [trusted boundary](/dictionary/t#trusted-boundary), resolve the caller's session, assignments, and
+target scope again, then authorize the actual action **before** reading or changing data. Permission to
+`read` users does not grant `update`, `invite`, or `delete`. Keep equivalent checks in a provider operation
+that can be called independently, and stop the operation when the check denies access. Hiding a button or
+passing a successful page check cannot replace these checks.
+
+See [Routes, Handlers, and UI](/docs/core-system/authorization/routes-and-ui) for enforcement examples across
+server pages, API handlers, and provider resolvers.
+
+:::
 
 ## Follow the access-control chapter
 
@@ -35,7 +351,7 @@ Read [Authorization concepts](/docs/core-system/authorization/overview), then th
 [quick start](/docs/core-system/authorization/quick-start). Continue through catalogs, roles, scopes, subjects,
 and enforcement before using the scenarios and troubleshooting pages.
 
-For account creation, profiles, administrator levels, suspension, and Trash, see
+For account creation, profiles, administrator levels, and suspension, see
 [User administration](/docs/users-management/intro). Provider identity, application profile, role assignment,
 and Tenant membership are related records with distinct responsibilities.
 

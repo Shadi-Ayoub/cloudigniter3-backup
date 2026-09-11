@@ -35,10 +35,14 @@ interface CiRouteDefinition {
 | `tenantScopes` | No       | `system`, `global`, and/or `tenant` scopes where the route exists. Omission allows every scope; an empty array allows none. |
 | `access`       | No       | Independent resource/action authorization requirement.                                                                      |
 
-```ts title="apps/template/routes.ts"
+Add custom definitions to the existing `manualCustomRoutes` map in `src/custom/routes/routes.ts`, retaining
+the other entries and its merge with generated routes. `src/kernel/server/routes.ts` composes the core and
+custom registries consumed by `cloudigniter.config.ts`; see [Routes configuration](/docs/configuration/routes).
+
+```ts title="src/custom/routes/routes.ts (manualCustomRoutes excerpt)"
 import type { CiRoutesMap } from "@cloudigniter/core/types";
 
-export const routes = {
+const manualCustomRoutes = {
   "/dashboard/books": {
     title: "Manage Books",
     namespace: "dashboard.books",
