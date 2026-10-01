@@ -1,0 +1,101 @@
+---
+title: Publisher
+description: Build, verify, inspect and request publication from a local developer interface.
+sidebar_position: 3
+---
+
+**Publisher** is the browser interface for the private [CloudIgniter Developer Toolkit](./index.mdx). It brings package maintenance and reviewed release workflows into one local workspace. Start it with `dev publisher`; the [command manual](/commands/dev/publisher) documents startup options and troubleshooting.
+
+## Workspace and identity
+
+Publisher organizes detected projects into four navigation groups:
+
+- **Packages:** an alphabetical dropdown of detected packages.
+- **Websites:** an alphabetical dropdown, currently containing **JODARIS Website**. **CloudIgniter Website** appears when its project is added and detected.
+- **Templates:** an alphabetical dropdown of application templates, currently **template-next-aws**. Application targets also belong to this group.
+- **Docs:** opens the CloudIgniter guide directly.
+
+Discovery uses pnpm workspace packages, explicit repository source paths, and optional root metadata. Empty groups are omitted. The reserved `apps/docs` folder has no executable project and does not appear. Display labels come from `publisher.config.json` without renaming package manifests or project directories. Each dropdown remembers its last selected project for the current page session; the active selection also survives a workspace refresh when the project remains present.
+
+Open dropdowns with a click, Enter, Space or the up/down arrow keys. Use arrows, Home, End or a starting letter to navigate choices; Enter or Space selects a project. Escape closes the menu and restores focus. The active project controls the actions, configuration editor, build viewer and destination header.
+
+The sticky header shows the verified Publisher identity, the shell's active GitHub account, and the selected target's source/build destination. **Switch profile** verifies the configured account before changing the identity used by subsequent commands. Named profiles reuse DEV's per-command credential handling; tokens remain in GitHub CLI storage. The organization that owns a repository is a destination, not an authenticating user.
+
+Add named identities in `.cloudigniter/github-profiles.json`. Initial browser sign-in remains a terminal operation through `dev github auth login`. Profile selection is local to the current Publisher server and does not change GitHub CLI's shared active account.
+
+## Build and verify
+
+Buttons are generated from supported scripts in each `package.json`. Build, test, typecheck, quality, artifact validation, asset/theme generation, coverage and source/distribution switching appear only where supported. Script details remain visible under **Detected package scripts**. Long-running watch/development servers are not launched as publishing jobs.
+
+Governed package builds use the existing package recipe and preserve quality checks before cleanup. Choose development or production, then use the recipe's obfuscation default or explicitly enable/disable obfuscation. This is also available as `--obfuscation=configured|on|off` on `dev package build`. An application or docs project uses `build:dev`, `build:prod`, or its production `build` script; it does not acquire an artificial development build capability.
+
+**Use source** and **Use distribution** run the corresponding package aliases. The displayed mode is inferred from current manifest exports. These commands can update package and application mappings; they are not build validation.
+
+**Build viewer** displays the current configured output directories, file sizes and missing-output states. Development and production commonly write to the same folder, so the viewer reflects the latest build rather than retaining two snapshots. It bounds large trees, omits caches and refuses symlinks.
+
+## Review actions and results
+
+Every action first shows its exact arguments, working directory, profile and destination. Editing an option invalidates the preview. A preview expires after two minutes; changed metadata, scripts, release settings or profile selection requires a new preview.
+
+Select **Review command** to inspect each command in a highlighted, monospaced panel with its working directory directly above it. Long commands wrap within the panel, and the command text remains selectable in both light and dark themes.
+
+The activity console streams output as the command emits it, records duration and exit status, and provides a structured response when the result is JSON. Some existing workers buffer their own steps, so those sections appear when the step finishes. One command job runs at a time. Cancelling stops the process tree on macOS/Linux and the direct process on Windows; completed writes are not rolled back.
+
+Release planning can include dependency updates. **All pending Changesets**, version application, candidate creation and candidate delivery can affect multiple packages even when launched from one selected package. The preview identifies this broader scope. Build release candidates in a clean disposable integration checkout after committing approved version changes.
+
+Publisher invokes the existing source-review, template-review and build-review commands. GitHub approval, exact archive verification and final npm 2FA remain governed by the [publication workflow](/company-developers/tooling/github-npm-publishing). A successful job or merged request is not proof of npm publication.
+
+For static websites, Publisher can build/check the project and scaffold its configured delivery workflow. Commit the reviewed public artifact under `site/` in its build repository and complete remote AWS/OIDC setup separately. The GUI does not upload a site, provision infrastructure or deploy server-rendered `.next` output. **Publishing flow** explains these branches, previews, approval gates and failure/recovery paths.
+
+## Linked configuration editor
+
+The global **Configuration** button lists relevant JSON, YAML, Markdown and source configuration under `.changeset`, `.cloudigniter` and `.github`, plus root workspace configuration. **Package configuration** opens the same editor scoped to a target's manifest, DEV recipe, Publisher metadata, TypeScript, bundler, framework and coverage settings.
+
+Select a filename to read and edit its real disk contents. The editor validates JSON syntax and the Publisher metadata schema, checks the loaded content revision before writing, and refuses stale drafts. Other text formats require their normal tool validation after editing. It refuses symlinks, traversal, files outside the discovered configuration inventory, and files over 1 MiB. Secret-named files are omitted, but configuration files must still contain no credentials. Changes remain local until the developer reviews and commits them.
+
+## Optional project metadata
+
+Place `publisher.config.json` at a project root when a capability cannot be inferred. It is optional for ordinary workspace packages. Metadata roots are discovered at `apps/*`, `packages/*`, and top-level project folders; deeper projects must be workspace members or have an explicit repository source path.
+
+```json
+{
+  "schemaVersion": 1,
+  "label": "JODARIS Website",
+  "kind": "website",
+  "project": "jodaris-website",
+  "buildDirectories": ["dist"],
+  "assets": false,
+  "staticHosting": true,
+  "commands": {
+    "build-static": {
+      "label": "Build static release",
+      "command": "bash",
+      "args": ["scripts/prepare-static-deploy.sh"]
+    },
+    "check-static": {
+      "label": "Check static site",
+      "command": "node",
+      "args": ["scripts/check.mjs"]
+    }
+  }
+}
+```
+
+| Field | Contract |
+| --- | --- |
+| `schemaVersion` | Required, currently `1`. Unknown fields fail validation. |
+| `label` | Optional project display label used for alphabetical dropdown sorting; required to discover a project without a package manifest. |
+| `kind` | Optional `package`, `app`, `template`, `website` or `docs`; selects the navigation group. `app` and `template` belong to Templates. |
+| `project` | Explicit key in `.cloudigniter/repositories.json`; cannot contradict its non-null source path. |
+| `buildDirectories` | Up to ten project-relative output folders. Defaults to `dist`, `.next` for a Next application, or `build` for the guide. |
+| `assets` | Optional informational declaration. The package-owned build recipe still controls asset generation. |
+| `staticHosting` | Explicit eligibility for static delivery workflow scaffolding. |
+| `commands` | Named reviewed commands: `node` or `bash` with a confined local script as the first argument, or `pnpm` with exactly `run` and a package script name. |
+
+Metadata is trusted developer configuration, like `package.json` scripts. Commands use argument arrays rather than a browser-provided shell string. Do not put credentials into metadata, script arguments, or logs. The static JODARIS metadata delegates to its existing release-staging script; it does not modify the website runtime.
+
+## Implementation ownership
+
+Publisher belongs to `packages/dev`. Its loopback server, workspace/file service, action catalog and job runner are private internal modules; its static browser assets ship inside the DEV package. It has no framework/provider runtime dependency. Build and publication rules remain in the existing command implementations and package-local recipes.
+
+The server requires its ephemeral bearer session for every API operation, rejects foreign origins/hosts, and offers no arbitrary command or file endpoint. Logs are redacted and bounded; job history is in memory. Keep Publisher local and close it when finished.

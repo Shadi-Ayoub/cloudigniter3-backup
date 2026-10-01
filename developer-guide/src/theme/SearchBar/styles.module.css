@@ -1,0 +1,46 @@
+.search {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: var(--ci-doc-navbar-control-height);
+  padding: 0 0.65rem;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: var(--ci-doc-surface);
+  color: var(--ifm-font-color-secondary);
+  font: inherit;
+  font-size: 0.8125rem;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.search kbd {
+  padding: 0.2rem 0.3rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+  font: inherit;
+  font-size: 0.7rem;
+}
+.search:hover {
+  border-color: var(--ifm-color-primary);
+  color: var(--ifm-font-color-base);
+}
+.search:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 3px;
+}
+@media (pointer: coarse) {
+  .search {
+    /* Keep the compact surface with a larger transparent touch target. */
+    border-block: 4px solid transparent;
+    background-clip: padding-box;
+  }
+}
+@media (max-width: 576px) {
+  .search kbd {
+    display: none;
+  }
+}

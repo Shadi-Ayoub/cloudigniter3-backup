@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "repository": null,
+  "baseBranch": "main",
+  "registry": "https://registry.npmjs.org",
+  "reviewers": [
+    "jodaris"
+  ],
+  "tags": [
+    "latest",
+    "next",
+    "alpha",
+    "beta",
+    "rc"
+  ],
+  "packages": {
+    "@cloudigniter/core": {
+      "path": "packages/core",
+      "access": "public"
+    },
+    "@cloudigniter/next": {
+      "path": "packages/next",
+      "access": "public"
+    },
+    "@cloudigniter/ui": {
+      "path": "packages/ui",
+      "access": "public"
+    },
+    "@cloudigniter/emberguard": {
+      "path": "packages/emberguard",
+      "access": "public"
+    },
+    "@cloudigniter/cli": {
+      "path": "packages/cli",
+      "access": "public"
+    },
+    "@cloudigniter/aws": {
+      "path": "packages/aws",
+      "access": "public"
+    },
+    "@cloudigniter/dev": {
+      "path": "packages/dev",
+      "access": "restricted"
+    }
+  },
+  "topology": "paired"
+}

@@ -1,5 +1,6 @@
 body {
-  background-color: var(--color-white);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
 }
 
 .ci-page-container {

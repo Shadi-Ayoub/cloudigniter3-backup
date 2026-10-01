@@ -145,6 +145,27 @@ function assertCoreOverrideBootstrapInvariants(
     coreOverrideAccess.scopeKinds[0] !== "system"
   ) {
     throw new Error(
+      "Core access-control override must preserve system-super-admin bootstrap access.",
+    );
+  }
+
+  if (
+    !ciCanOverrideCoreAccessControl(
+      {
+        id: "core-bootstrap-validation",
+        authenticated: true,
+        roleAssignments: [
+          {
+            roleId: "system-super-admin",
+            scope: { kind: "system" },
+            propagation: "exact",
+          },
+        ],
+      },
+      definition,
+    )
+  ) {
+    throw new Error(
       "Core access-control override must preserve system-super-admin bootstrap access."
     );
   }

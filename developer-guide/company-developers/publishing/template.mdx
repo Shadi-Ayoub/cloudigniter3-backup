@@ -1,0 +1,57 @@
+---
+title: Publish the template
+description: Prepare a public application export, request private review and deliver approved bytes without private history.
+sidebar_position: 9
+---
+
+## Source, request and public destinations
+
+Private template source and review requests use `cloudigniter-io/source-cloudigniter-next-aws-v1`. Approved public output goes to `cloudigniter-io/cloudigniter-next-aws-v1`. The public repository’s **Template repository** setting lets customers create their own repository from it.
+
+The developer requests approval; the approver delivers reviewed bytes. Both repositories need an initialized `main` branch. Grant the approver the required publication access. Public branch rules must permit this approved direct fast-forward delivery; a rule requiring a PR for every public update would block this implementation.
+
+## Prepare the export
+
+```bash
+dev template export --source=apps/template --output=../public-template
+dev template check --source=apps/template --output=../public-template
+```
+
+`export` reads the explicit template policy and writes a new external directory containing the standalone public application. `--source` is workspace-relative and may select another configured application below `apps`; output is a separate directory whose parent exists. Export excludes private toolkit dependencies and workspace-specific material according to the reviewed policy.
+
+`check` compares the pristine export with the selected source and policy without modifying it. Run it before installing dependencies, building or initializing Git in that directory, because extra files make the pristine comparison fail.
+
+For file selection, overlays, version pins and explicit replacement of old output, read [Public template export](/company-developers/tooling/template-export). Make sure the public package versions used by the export exist on npm.
+
+## Request private review
+
+```bash
+dev template publish --source=apps/template --output=../public-template \
+  --summary="Update the application starter" --profile=developer
+```
+
+This requires clean committed source and opens a private review request containing the integration commit, source selection, policy selection and export digest. The digest fingerprints the exported files. It does not upload private Git history to the public repository or automatically migrate all template source to the private source repository.
+
+Maintain private template source through ordinary source PRs. The reviewer reproduces the export from the recorded integration commit, inspects the selected files for customer use and verifies the digest before approving and merging the request.
+
+```bash
+dev template status 123 --profile=developer
+```
+
+Replace `123` with the private request PR number. This reads the request’s state; a merged request is not proof that public delivery has occurred.
+
+## Deliver as the approver
+
+```bash
+dev template deliver 123 --profile=approver --dry-run
+dev template deliver 123 --profile=approver
+```
+
+The preview reads the private request and remote state and checks the exact approval and export digest, without writing files or GitHub content. The second command delivers the approved export to the public base branch.
+
+Delivery preserves public `.github` governance and files not owned by the export inventory. It removes only stale previously managed files. Public commits use only public parents; private history is not joined into that repository. The update is non-force, so a concurrent branch change is a reason to inspect and retry.
+
+If you used `--policy`, `--name` or `--package-version` during export, repeat the same selections when checking and requesting publication. Those selections are recorded for delivery. A new file selection or byte change needs new review.
+
+This publication updates the public branch. It creates neither an npm version nor a GitHub Release object.
+

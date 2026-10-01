@@ -32,28 +32,29 @@
     "src"
   ],
   "scripts": {
-    "switch:src": "ci-dev package switch --target=src",
-    "switch:dist": "ci-dev package switch --target=dist",
-    "clean": "rimraf dist .tsbuildinfo",
-    "clean:maps": "ci-dev package clean-maps",
-    "clean:dts": "ci-dev package clean-dts",
-    "build": "pnpm run build:dev",
-    "build:dev": "ci-dev package build --mode=dev",
-    "build:prod": "ci-dev package build --mode=prod",
-    "build:js": "tsup --config tsup.config.ts",
-    "build:types:clean": "rm -rf dist/.types",
-    "build:types": "NODE_OPTIONS=--max-old-space-size=12288 rollup -c rollup.config.js",
-    "build:types:raw": "tsc -p tsconfig.build.json",
-    "build:assets": "pnpm -v",
-    "obfuscate": "ci-dev package obfuscate",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
-    "check:package": "npm pack --dry-run",
-    "test": "node --import=tsx --test __tests__/*.test.ts __tests__/security/*.test.ts",
-    "dev": "tsup --watch",
-    "typecheck:tools": "tsc -p tsconfig.tools.json --noEmit",
-    "check": "pnpm run typecheck && pnpm run typecheck:tools",
-    "scan:client-directives": "ci-dev quality scan-client-directives",
-    "list:client-files": "ci-dev quality list-client-files"
+    "switch:src": "dev package switch --target=src",
+    "switch:dist": "dev package switch --target=dist",
+    "clean": "dev package clean",
+    "clean:maps": "dev package clean-maps",
+    "clean:dts": "dev package clean-dts",
+    "build": "dev package build --mode=dev",
+    "build:dev": "dev package build --mode=dev",
+    "build:prod": "dev package build --mode=prod",
+    "build:js": "dev package build-js",
+    "build:types:clean": "dev package clean-types",
+    "build:types": "dev package build-types",
+    "build:types:raw": "dev package build-types-raw",
+    "build:assets": "dev package build-assets",
+    "obfuscate": "dev package obfuscate",
+    "typecheck": "dev package typecheck",
+    "check:package": "dev package check-package",
+    "test": "dev package test",
+    "dev": "dev package watch",
+    "typecheck:tools": "dev package typecheck --scope=tools",
+    "check": "dev package check",
+    "scan:client-directives": "dev quality scan-client-directives",
+    "list:client-files": "dev quality list-client-files",
+    "test:watch": "dev package test --watch"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -89,7 +90,7 @@
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
-    "@cloudigniter/cli": "workspace:*",
+    "@cloudigniter/dev": "workspace:*",
     "@cloudigniter/config-ts": "workspace:*",
     "@cloudigniter/core": "workspace:*",
     "@rollup/plugin-alias": "^6.0.0",
@@ -97,6 +98,7 @@
     "@types/aws-lambda": "^8.10.161",
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "esbuild": "^0.28.0",
     "esbuild-plugin-preserve-directives": "^0.0.11",
     "rimraf": "^6.0.1",
@@ -104,5 +106,9 @@
     "rollup-plugin-dts": "^6.4.1",
     "tsup": "^8.5.1",
     "typescript": "^6.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cloudigniter-io/build-cloudigniter-ui.git"
   }
 }

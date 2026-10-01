@@ -1,6 +1,6 @@
 ---
 title: ciCreateAuthorizer
-package: "@cloudigniter/emberguard"
+package: "@cloudigniter/core"
 availability: Shared
 sidebar_position: 10
 ---
@@ -55,3 +55,9 @@ assignments, and requests with no matching allow. Reuse the instance while its p
 
 Use [`ciCreateAppAuthorizer()`](./ci-create-app-authorizer) when the core default catalog should be available as
 the omitted-definition default.
+
+Active privileges with `readOnly: true` veto writes before either combining algorithm. This includes direct
+user grants, inherited privileges, and weaker roles. The veto uses the resource pattern and assigned scope,
+ignores the restricting privilege's action pattern, and returns `reason: "read-only"` with the restricting
+privileges in `decidingMatches`. Read requests retain normal authorization rules. See
+[CiPrivilege](/docs/api-reference/authorization/ci-privilege) for action classification.

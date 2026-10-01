@@ -2,6 +2,7 @@
 export type CiAuthorizationDecisionReason =
   | "allowed"
   | "explicit-deny"
+  | "read-only"
   | "unauthenticated"
   | "unknown-resource"
   | "unknown-action"

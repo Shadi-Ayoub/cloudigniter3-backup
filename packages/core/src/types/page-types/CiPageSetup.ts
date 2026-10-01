@@ -20,7 +20,7 @@ export type CiPageSetup = {
 
   /** Breadcrumb configuration. */
   showBreadcrumbs?: boolean;
-  /** Show child-route shortcut menus for breadcrumb items that provide `children`. */
+  /** Show recursive child-route shortcut menus; parent links remain navigable. */
   withBreadcrumbChildrenMenu?: boolean;
   breadcrumbs?: CiBreadcrumbItem[];
   includeHomeInBreadcrumbs?: boolean;

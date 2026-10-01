@@ -25,8 +25,13 @@ packages/ui
     reusable presentation primitives and shared UI behavior
 
 packages/cli
-    application/system CLI plus workspace-gated maintainer CLI
-    shared command, terminal, process, and build-tooling infrastructure
+    public application/system CLI, exposed as ci
+    shared application module validation and target-project package loading
+
+packages/dev
+    restricted company developer toolkit, exposed as dev
+    workspace builds, quality, Next tooling, module maintenance and build exports
+    Changesets release proposals and GitHub review requests
 ```
 
 The diagram describes responsibility. Confirm actual package dependencies before adding an import and never introduce a cycle merely to mimic the diagram.

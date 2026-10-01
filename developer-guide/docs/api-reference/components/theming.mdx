@@ -1,0 +1,135 @@
+---
+title: Theme provider, switcher, and color mode
+sidebar_position: 8
+description: Public theme components, resolution helpers, configuration fields, and the applied color-mode hook.
+---
+
+# Theme provider, switcher, and color mode
+
+Use the [theming guide](/docs/configuration/themes) for configuration strategies and examples.
+
+## Public imports and runtimes
+
+```ts
+// Client components
+import { CiThemeProvider, CiThemeSwitcher } from "@cloudigniter/next/client";
+import { useCiColorMode } from "@cloudigniter/ui/client";
+
+// Runtime-neutral resolution
+import {
+  CI_DEFAULT_NEXT_THEME_PROVIDER_PROPS,
+  ciMapThemeConfigToNextThemeProviderProps,
+  ciResolveNextThemeProviderProps,
+} from "@cloudigniter/next/lib";
+
+import type { CiThemeConfig, CiThemeAttributeStrategy } from "@cloudigniter/core/types";
+import type {
+  CiNextThemeConfig,
+  CiThemeProviderProps,
+  CiThemeSwitcherProps,
+} from "@cloudigniter/next/types";
+```
+
+## `CiThemeProvider<TTheme extends string = string>`
+
+| Prop | Type | Meaning |
+| --- | --- | --- |
+| `children` | `ReactNode` | Content inside the provider |
+| `config` | `CiNextThemeConfig<TTheme>` (optional) | `{ theme?: CiThemeConfig<TTheme>, themeProviderProps?: Omit<ThemeProviderProps, "children"> }` |
+
+The provider resolves defaults, generic theme fields, and raw `next-themes` overrides in that order. Only defined
+values override previous inputs. Defaults are `attribute: "class"`, `defaultTheme: "system"`,
+`enableSystem: true`, `enableColorScheme: true`, and `storageKey: "ci-theme"`.
+
+```tsx
+"use client";
+
+import { CiThemeProvider } from "@cloudigniter/next/client";
+
+export function Preview() {
+  return (
+    <CiThemeProvider config={{ theme: { attributeStrategy: "data-theme", defaultTheme: "dark" } }}>
+      <div className="bg-background p-4 text-foreground">Themed preview</div>
+    </CiThemeProvider>
+  );
+}
+```
+
+Standard layouts already install this provider; the example is for an independent surface. The provider uses
+browser-local persistence and may update the document theme and native color scheme. When system preference
+is disabled, an effective `system` default resolves to the first supported theme or `light`. A persisted
+`system` selection is corrected to that default in a client effect. A forced theme changes appearance without
+changing a valid saved Light/Dark choice.
+
+## Generic configuration mapping
+
+Every field in `CiThemeConfig<TTheme>` is optional:
+
+| Field | Type | Provider field / behavior |
+| --- | --- | --- |
+| `defaultTheme` | `TTheme` | `defaultTheme` |
+| `useSystemPreference` | `boolean` | `enableSystem` |
+| `enableSystem` | `boolean` | Legacy fallback when `useSystemPreference` is omitted |
+| `enableColorScheme` | `boolean` | `enableColorScheme` |
+| `disableTransitionOnChange` | `boolean` | `disableTransitionOnChange` |
+| `supportedThemes` | `TTheme[]` | `themes`; use concrete names, since System is added by the provider |
+| `attributeStrategy` | `"class" \| "data-theme"` | `attribute` |
+| `themeValueMap` | `Record<TTheme, string>` | `value`; logical names mapped to DOM values |
+| `storageKey` | `string` | `storageKey` |
+| `nonce` | `string` | `nonce` for the initialization script |
+| `metadata` | `Record<string, unknown>` | Extension data; not passed to `next-themes` |
+
+`CiThemeAttributeStrategy` is exactly `"class" | "data-theme"`. Raw `themeProviderProps` is an escape hatch for
+`next-themes` options such as `forcedTheme`; custom attributes/values need matching CSS and widget integration.
+See [the upstream provider options](https://github.com/pacocoursey/next-themes#themeprovider).
+
+```ts
+ciMapThemeConfigToNextThemeProviderProps<TTheme extends string = string>(
+  input?: CiThemeConfig<TTheme>,
+): Omit<ThemeProviderProps, "children">;
+
+ciResolveNextThemeProviderProps<TTheme extends string = string>(
+  input?: CiNextThemeConfig<TTheme>,
+): Omit<ThemeProviderProps, "children">;
+```
+
+Mapping omits undefined fields. Resolution adds defaults, defined raw overrides, and the disabled-System default
+fallback. These helpers are pure; browser persistence and DOM changes belong to the provider.
+
+## `CiThemeSwitcher`
+
+| Prop | Type | Meaning |
+| --- | --- | --- |
+| `dir` | `CiLocaleDirection` | Menu direction (`ltr` or `rtl`) |
+| `config` | `CiNextConfig` | Resolved CloudIgniter configuration, including trace configuration |
+
+Use inside the theme and next-intl providers installed by the standard layouts. Choices come from the effective
+provider's supported themes, including System only when enabled. Light, Dark, System, and the accessible trigger
+label use the `themeSwitcher` message namespace; custom theme names are displayed literally.
+
+The selected checkmark comes from provider state after mounting. Theme actions are disabled before mounting and
+while a theme is forced. An unsupported forced name produces `errorTheme.criticalThemeNotExist` through the
+shared critical-feedback channel. Selecting a choice delegates persistence and DOM updates to `next-themes`.
+
+## `useCiColorMode()`
+
+```ts
+function useCiColorMode(): "light" | "dark";
+```
+
+This browser-safe React hook takes no arguments. It returns the applied document mode for widgets that cannot
+consume CSS tokens. It observes changes to the root `class` and `data-theme` attributes and to OS preference:
+
+1. `.dark` or `[data-theme="dark"]` selects Dark.
+2. Otherwise, `.light` or `[data-theme="light"]` selects Light.
+3. With neither standard marker, it follows OS preference.
+
+If conflicting markers exist, Dark wins, matching the standard CSS selectors. The initial server and hydration
+value is `light`; observation starts after mounting and cleans up on unmount. No provider or storage access is
+required by the hook. Standard document markers allow it to follow mapped logical themes and forced appearance.
+It does not interpret arbitrary DOM values, custom attribute names, or page-local theme containers.
+
+Use semantic CSS tokens for ordinary content. Use this hook for integration with a chart, editor, or provider
+widget that requires a concrete Light/Dark setting. Monaco and the Next.js AWS authenticator bridge use it.
+`CiFeedbackProvider` also uses it when the effective toaster theme is omitted or `system`; an explicit toaster
+`light` or `dark` override takes precedence.

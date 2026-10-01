@@ -1,0 +1,47 @@
+---
+title: "dev github check"
+description: "Verify the GitHub account against configured company identities."
+sidebar_label: "dev github check"
+sidebar_custom_props:
+  audience: developer
+---
+
+Verify the GitHub account against configured company identities.
+
+## Syntax
+
+```text
+dev github check [--profile=<name>] [--json]
+```
+
+## Prerequisites
+
+Run in the private workspace with [GitHub CLI prepared by DEV](./github-setup.mdx) and the relevant company policies configured. Online commands use the selected named GitHub profile; credentials remain in GitHub CLI storage.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--profile=<name>` | Named profile. |
+| `--json` | Accepted; the report is structured JSON. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Reads the active account and reports configured destinations and identities without printing credentials. Does not change repository permissions.
+
+## Examples
+
+```bash
+pnpm exec dev github check --profile=developer --json
+```
+
+## Errors and recovery
+
+An account outside the configured requester/reviewer identities fails.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/publishing/github-commands)

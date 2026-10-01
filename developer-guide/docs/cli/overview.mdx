@@ -6,7 +6,7 @@ sidebar_position: 1
 
 The `@cloudigniter/cli` package provides the supported `ci` executable for application developers and system operators. It replaces application-local utility scripts with stable commands, shared help, consistent errors, and automation-safe flags.
 
-Use `ci` for application operations. CloudIgniter package maintainers use `ci-dev`, documented in the [contributor command reference](/company-developers/tooling/cli-command-reference).
+Use `ci` for application operations. CloudIgniter package maintainers use `dev`, documented in [CloudIgniter Commands](/commands/dev).
 
 ## Discover commands
 
@@ -55,7 +55,7 @@ From the application root:
 
 ```bash
 pnpm exec ci modules validate \
-  --root=src/modules \
+  --root=src/custom/modules \
   --no-interactive
 ```
 
@@ -103,3 +103,7 @@ These commands can change AWS resources. Review the application configuration an
 - Usage errors return exit code `2`; operational failures return `1`; a cancelled prompt returns `130`.
 
 Package scripts in `apps/template/package.json` provide short aliases such as `pnpm bootstrap:root` and `pnpm sandbox:bootstrap`.
+
+## Module discovery
+
+Run `pnpm modules:generate` in your application after adding a trusted folder under `src/custom/modules`. The template also runs discovery before `dev`, `build`, and `sandbox`. This generates local registries only; deploying the backend and choosing Install on the Dashboard are separate actions. See [modules](/docs/building-features/modules).

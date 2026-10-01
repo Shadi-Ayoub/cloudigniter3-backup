@@ -1,5 +1,6 @@
 import ar_common from "./ar/common.json";
 import ar_dashboard from "./ar/dashboard.json";
+import ar_modules from "./ar/dashboard-modules.json";
 import ar_dev from "./ar/dashboard-dev.json";
 import ar_home from "./ar/home.json";
 import ar_settings from "./ar/dashboard-settings.json";
@@ -9,6 +10,7 @@ import ar_theme from "./ar/dashboard-theme.json";
 
 import en_common from "./en/common.json";
 import en_dashboard from "./en/dashboard.json";
+import en_modules from "./en/dashboard-modules.json";
 import en_dev from "./en/dashboard-dev.json";
 import en_home from "./en/home.json";
 import en_settings from "./en/dashboard-settings.json";
@@ -24,6 +26,7 @@ const locales: {
   ar: {
     common: ar_common,
     dashboard: ar_dashboard,
+    "dashboard-modules": ar_modules,
     "dashboard-dev": ar_dev,
     home: ar_home,
     "dashboard-settings": ar_settings,
@@ -34,6 +37,7 @@ const locales: {
   en: {
     common: en_common,
     dashboard: en_dashboard,
+    "dashboard-modules": en_modules,
     "dashboard-dev": en_dev,
     home: en_home,
     "dashboard-settings": en_settings,

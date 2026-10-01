@@ -11,6 +11,9 @@ export type CiSettingsDefinition = {
    */
   scope: CiSettingsScope;
 
+  /** Include this group on every eligible request. Defaults to false. */
+  alwaysLoad?: boolean;
+
   /**
    * Default values for this settings domain.
    */

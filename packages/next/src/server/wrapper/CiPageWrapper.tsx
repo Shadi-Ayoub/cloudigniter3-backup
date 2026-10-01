@@ -1,3 +1,5 @@
+import { ciResolveSettingsPreferences } from "@cloudigniter/core/lib";
+import { CiSettingsProvider } from "@ci-next/client/settings";
 import type { ReactNode } from "react";
 import { ciCanAccessDeveloperTools } from "@cloudigniter/core/lib";
 import { ciStartTraceServer } from "@cloudigniter/core/server";
@@ -32,10 +34,10 @@ export async function CiPageWrapper({
 
   const locale = await ciGetServerLocale({
     cookieName: context.config.appCoreConfig.i18n.cookieName,
-    defaultLocale: context.config.appCoreConfig.i18n.defaultLocale,
+    defaultLocale: context.config.appResolvedCoreConfig.locale,
   });
 
-  const settings = context.settings as CiSettings;
+  const settings: CiSettings = context.settings ?? {};
   const developerToolsEnabled = ciCanAccessDeveloperTools({
     envMode: context.env.mode,
     actor: {
@@ -51,7 +53,8 @@ export async function CiPageWrapper({
   return (
     <CiClientWrapper
       themeConfig={{
-        ...context.config.appCoreConfig.theme,
+        settingsPreference: ciResolveSettingsPreferences(context.settings ?? {}).theme,
+        theme: context.config.appCoreConfig.theme,
         themeProviderProps:
           context.config.appNextResolvedConfig.appThemeProviderProps,
       }}
@@ -81,7 +84,7 @@ export async function CiPageWrapper({
         viewportBottomOffset="0px"
       /> */}
 
-      {children}
+      <CiSettingsProvider settings={settings}>{children}</CiSettingsProvider>
     </CiClientWrapper>
   );
 }

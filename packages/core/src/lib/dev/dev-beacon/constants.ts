@@ -4,11 +4,9 @@ import type {
   CiDevBeaconPosition,
 } from "@ci-core/types";
 
+/** Selects the original image in Light mode and the built-in outline icon in Dark mode. */
 export const CI_DEV_BEACON_LOGO: CiDevBeaconLogoSpec = {
-  kind: "image",
-  src: "/images/cloudigniter-icon-1.png",
-  alt: "CloudIgniter",
-  sizePx: 28,
+  kind: "default",
 };
 
 export const CI_DEFAULT_DEV_BEACON_OPTIONS: Required<CiDevBeaconOptions> = {

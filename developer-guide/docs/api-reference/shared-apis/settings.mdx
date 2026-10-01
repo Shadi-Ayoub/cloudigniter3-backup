@@ -1,0 +1,275 @@
+---
+title: Settings registry and management
+description: Registry, request selection, guarded management, provider integration, and Settings UI contracts.
+---
+
+# Settings registry and management
+
+## Runtime-neutral registry and manager
+
+```ts
+import {
+  ciCreateCoreSettingsRegistry,
+  ciDefineSettingsRegistry,
+  ciCreateSettingsManager,
+  ciResolveSettingsPreferences,
+} from "@cloudigniter/core/lib";
+import type {
+  CiSettingsRegistryMap, CiSettingsManagerOptions, CiSettingsManager,
+  CiSettingsGroup, CiRequestSettings, CiSettingsScope,
+  CiSettingsUpdate,
+} from "@cloudigniter/core/types";
+```
+
+`ciDefineSettingsRegistry(entries)` validates IDs, scopes, and schema/default compatibility and returns
+`get(id)`, `list()`, and `listByScope(scope)`. `ciCreateCoreSettingsRegistry(extensions = {})` includes
+`public.general`, `public.preferences`, `private.email`, and `user.preferences`; collisions with these IDs throw.
+
+| Registry entry field | Contract |
+| --- | --- |
+| `scope` | Required `public`, `private`, or `user`. |
+| `defaults` | JSON object used for missing persisted fields. |
+| `schema` | Zod schema; required for saving. Validate the complete submitted object, preferably strictly. |
+| `fields` | Serializable `readonly CiSmartFormFieldSpec[]` for the management section. |
+| `meta` | Optional `title`, `description`, and numeric `order`. Equal-order groups sort by title. |
+| `alwaysLoad` | Optional boolean, false when omitted. Include on every eligible request. |
+| `cookies` | Optional field-to-cookie-name map; existing cookie values override request fields. |
+
+Legacy `allowClientRead`, `allowClientWrite`, and `mergeWithCore` metadata are retained for compatibility with
+older services. They do not grant access or change selection in the guarded manager.
+
+```ts
+const manager = ciCreateSettingsManager({ registry, store, actor, canManage });
+await manager.read("public.general");
+await manager.list("public");
+await manager.save("public.general", { applicationName: "Example" }, 0);
+await manager.loadRequest(["public.general"], { "ci-theme": "dark" });
+```
+
+`actor` is `{ id: string | null, authenticated: boolean }`, obtained from a trusted session.
+`canManage(action, target?)` accepts `read`, `update`, `enforce`, or `overwrite` and returns a boolean or promise
+from the authoritative `platform.settings` authorizer. `target` defaults to `{ scope: "system" }`; alternatives
+are `{ scope: "global" }` and `{ scope: "tenant", tenantId: string }`. Optional `validateTarget(target)` resolves
+existence/status at the trusted provider boundary. A storage adapter must implement `CiSettingsStore`; guarded saves pass
+`expectedRevision` to it.
+
+| Method | Result and authorization |
+| --- | --- |
+| `read(id)` | `Promise<CiSettingsGroup>`; anonymous Public access, authenticated Private access, session-bound Personal owner. |
+| `list(scope)` | `Promise<CiSettingsGroup[]>`; signed-in owner for Personal; read permission for Public/Private. |
+| `save(id, value, revision)` | `Promise<CiSettingsGroup>`; owner or update permission, schema validation, conditional revision. |
+| `saveAll(updates)` | `Promise<CiSettingsGroup[]>`; validates every `{ id, value, revision }` before one atomic provider write; one category and session-bound owner only. |
+| `overwrite(selection)` | `Promise<CiSettingsGroup[]>`; copy selected saved System fields to this GLOBAL/Tenant target atomically, requiring System overwrite permission and target restrictions. |
+| `loadRequest(ids = [], cookies = {})` | `Promise<CiRequestSettings>`; selected plus always-loaded groups, anonymous filtering, cookie precedence. |
+
+`CiSettingsGroup` contains `id`, `scope`, `title`, optional `description`, `fields`, `value`, `revision`, and
+`alwaysLoad`, optional `enforcement` rules at System, and optional `lockedFields` / `systemRevision` on GLOBAL/Tenant
+groups. Revision zero represents an unsaved group. Request snapshots have the shape
+`Partial<Record<CiSettingsScope, Record<string, CiSettings>>>`; absent groups stay absent.
+`ciResolveSettingsPreferences(snapshot)` returns optional string `locale`, `theme`, `timeFormat`, and `timeZone`
+values, choosing non-empty Personal values before Public values after request cookie resolution.
+
+Unknown IDs, invalid values/revisions, missing schemas on save, access denial, and provider conflicts throw.
+System and Personal reads do not write defaults. GLOBAL/Tenant reads create a missing group copy once, conditional
+on the saved System revision. There is no caller-selected personal user ID.
+`CiSettingsUpdate` is `{ id: string; value: unknown; revision: number; systemRevision?: number; enforcement?: readonly CiSettingsEnforcementRule[] }`.
+GLOBAL/Tenant updates require the observed `systemRevision`. Empty batches, duplicate IDs, mixed
+categories, invalid revisions, and invalid schemas fail before writes. `CiSettingsStore.setMany?` accepts a readonly
+array of `CiSettingsStoreSetInput`, optional readonly `CiSettingsStoreCondition[]`, and returns
+`Promise<CiSettingsRecord[]>`; writes and conditions must be atomic. A condition is a record lookup plus
+`revision`. Providers without
+it continue to support System/Personal `save` but reject `saveAll` and tenant saves, rather than attempting partial writes.
+
+`CiSettingsStore.initialize?(input, sourceCondition)` creates a missing tenant copy once, returns a concurrent
+winner without overwriting it, and rejects a changed source. GLOBAL/Tenant resolution requires this method.
+Records and write inputs accept optional `enforcement`. Existing System and owner keys remain unchanged.
+
+```ts
+import {
+  ciParseSettingsTarget, ciSettingsTargetKey, ciParseSettingsEnforcement,
+  ciSettingsSelectionFields, ciCanManageSettings, ciResolveRequestSettings,
+} from "@cloudigniter/core/lib";
+import type {
+  CiSettingsTarget, CiSettingsTenantTarget, CiSettingsEnforcementRule,
+  CiSettingsManagementAction, CiSettingsOverwriteSelection,
+  CiSettingsTargetOption, CiSettingsTargetPage, CiSettingsStoreCondition,
+} from "@cloudigniter/core/types";
+
+const rule: CiSettingsEnforcementRule = {
+  fields: ["theme"], // "*" selects all top-level fields
+  targets: [{ scope: "global" }, { scope: "tenant", tenantId: "tenant-a" }],
+  // targets: "*" includes GLOBAL and future tenants
+};
+```
+
+`ciParseSettingsTarget(value?)` defaults omitted input to System and rejects extra fields or malformed IDs.
+`ciSettingsTargetKey(target)` returns `system`, `global`, or `tenant:<id>` for UI identity.
+`ciSettingsSelectionFields(value, registryEntry)` validates `"*"` or a nonempty unique array of registered field
+names. `ciParseSettingsEnforcement(value, registryEntry)` validates rules, rejects System targets, and permits at
+most 100 rules with at most 100 explicit targets or fields per rule.
+
+`ciCanManageSettings(authorizer, subject, action, target?)` permits scoped grants or explicit System administration
+for read/update. Target denies, read-only restrictions, suspension, and unsupported catalogs block System fallback.
+Enforcement requires System scope. Overwrite requires System permission even with a scoped grant. It does not
+change EmberGuard's general scope-inheritance rules.
+
+`CiSettingsOverwriteSelection` is `{ id, fields: "*" | readonly string[], systemRevision }`. `overwrite` preserves
+unselected local fields, does not change enforcement rules, and rejects changed source values before writing.
+`save(id, value, revision, options?)` accepts optional `{ systemRevision?, enforcement? }` for single-group calls.
+`ciResolveRequestSettings(registry, actor, read, ids?, cookies?)` shares selective loading and cookie precedence
+between local managers and remote transports; `read` must return an already tenant-resolved group.
+
+## Next.js and AWS integration
+
+```ts
+import { ciCreateNextAwsSettingsManager } from "@cloudigniter/next/server";
+import type { CiNextAwsSettingsManagerOptions } from "@cloudigniter/next/types";
+import { ciCreateAwsSettingsHandlers } from "@cloudigniter/aws/server/backend";
+import type { CiAwsSettingsHandlerOptions } from "@cloudigniter/aws/types";
+```
+
+The Next.js factory takes manager options without `store`, plus
+`operations.get({ id, target?, manage? }, authenticated)` and `operations.set({ id, value, revision, target?, systemRevision?, enforcement? })`, returning
+`Promise<CiGraphQLResponse>`. `provisioned` defaults to true; false means reads return registry defaults and
+writes throw. Use false only when the generated client has no Settings operations, never as a fallback for
+provider failures.
+Whole-form saves also supply `operations.setMany({ groups: CiSettingsUpdate[], target? })`, returning an envelope with
+`body: { groups: CiSettingsGroup[] }`. The adapter checks returned IDs, scopes, and incremented revisions. This
+operation is optional for compatibility with integrations using only single-group `save`.
+Optional `operations.overwrite({ selection, target })` transports an overwrite and returns the same groups envelope.
+The remote adapter preserves effective values, lock metadata, and source revisions; it never recomputes a tenant
+copy from a resolved response or silently treats an older System-only response as tenant data.
+
+The AWS factory takes `{ registry, client? }` and returns AppSync `get(event)` / `set(event)` handlers. Get input
+is `{ id, manage?: boolean }`; `manage: true` also requires management read permission for Public/Private.
+A separate Get input `{ access: true, target? }` returns `{ read, update, enforce, overwrite }` capabilities for the verified actor, without exposing the catalog or requiring Security Administration access. Set input is `{ id, value, revision, target?, systemRevision?, enforcement? }`. Inputs travel as `inputString`; responses use CloudIgniter's
+`{ ok, statusCode, body }` envelope. Additional input fields, including `userId`, are rejected. The backend reads
+verified identity claims and the persisted access-control catalog independently of the page's authorization.
+`SetSettings` also accepts `{ target?, groups: CiSettingsUpdate[] }` and returns `{ groups }` in the
+response body. It rejects extra batch or item fields, duplicate IDs, mixed categories, and more than 100 groups.
+All group writes use one DynamoDB transaction with revision conditions. Single-group request shapes remain supported.
+Both operations accept an optional strict `target`. Get `{ targets: true, nextToken? }` requires System settings
+read permission and returns `CiSettingsTargetPage`: `{ items: { target, label }[], nextToken? }`, in pages of up to
+50 tenant records plus GLOBAL on the first page. Discovery uses a GSI; operations strongly validate each selected
+tenant's active base record. Set `{ target, overwrite: CiSettingsOverwriteSelection[] }` overwrites one target.
+System enforcement metadata is returned only for management reads. Runtime values do not include rules or target lists.
+AWS transactions allow 100 System/Personal groups or 50 GLOBAL/Tenant groups because each tenant write also checks
+its System record. Requests exceeding 300,000 bytes fail before processing. No cross-target transaction is implied.
+
+## Management UI
+
+```ts
+import { CiSettingsManager } from "@cloudigniter/ui/client";
+import type { CiSettingsManagerProps } from "@cloudigniter/ui/types";
+```
+
+This client component takes `title`, optional `description`, initial `groups`, `canUpdate`, optional `notice`,
+optional `saveUnavailableReason`,
+optional `onClose()`, and `onSave(updates: readonly CiSettingsUpdate[], target?: CiSettingsTarget)`. The callback returns a promise of `{ ok: true, groups }` or
+`{ ok: false, message }`. Capability props control presentation; the callback and backend must still authorize.
+
+The component keeps saved group state locally, opens editable when `canUpdate` is true, offers a read-only JSON
+preview of the current draft, and builds one `CiSmartForm` for all sections. `canUpdate` describes permission,
+independently of storage readiness. Set `saveUnavailableReason` to display a warning and disable Save while
+allowing authorized draft edits. It does not grant access or provide offline persistence. Read-only users have
+no Save button. Form actions remain visible in JSON view. Section switching preserves all
+draft values and JSON parse errors. One **Save** submits every section; validation reveals the first invalid
+section before focusing its field. Save failures retain edits; successful saves leave the form editable.
+**Cancel** discards the whole draft and returns to view mode, where **Edit settings** enables editing again.
+Navigation and actions are disabled during saving. Optional **Close** sits beside Save and confirms discarding
+unsaved changes before calling `onClose`. Remount the manager to replace all groups from an external source.
+Its management header follows `CiDataTable` styling and displays the group count and editing capability.
+The group selector sits beside the form on large screens and wraps above it on smaller screens. Breadcrumb
+navigation is supplied by the containing page, rather than by `CiSettingsManager`.
+
+Optional `tenancy: CiSettingsTenancyProps` enables the scope selector, rules, and overwrite controls. Its fields are
+`target`, `canEnforce`, `canOverwrite`, `onLoad(target): Promise<CiSettingsManagementView>`,
+`onListTargets(nextToken?): Promise<CiSettingsTargetPage>`, and `onOverwrite(target, selection): Promise<void>`.
+`CiSettingsManagementView` contains `groups`, `canUpdate`, `canEnforce`, and `canOverwrite`. Both UI types are
+exported from `@cloudigniter/ui/types`. Callbacks throw on failure. The Save callback receives an optional second
+`target` argument. Rule drafts are merged into the corresponding group updates and share the form's Save/Cancel.
+The UI confirms discarding drafts on scope switches and confirms every one-time overwrite. All-target overwrites
+enumerate every page before writing, deduplicate targets, detect repeated tokens, and cap discovery at 200 pages.
+They save each target separately and report failures. An overwrite requires saved System values, so its action is
+disabled while drafts are dirty. Inactive fields remain mounted and locked fields use effective System values.
+
+```ts
+import { CiNextSettingsManager } from "@cloudigniter/next/ui/client";
+import type { CiNextSettingsManagerProps } from "@cloudigniter/next/types";
+```
+
+The Next.js adapter accepts the same props except `onClose`, plus optional `closeHref`. Supplying `closeHref`
+enables Close and starts the page loader before navigating. External, invalid, or current-page targets fall
+back to `/dashboard`. The template passes the `returnTo` query parameter captured by the **My Preferences** menu
+item; the route remains `/account/settings` and the category remains `user`.
+
+**Migration:** replace the earlier `onSave(id, value, revision)` UI callback with `onSave(updates)` and return all
+saved groups instead of one group. Deploy the backend's batch handler before enabling this form.
+
+## Route contract
+
+`CiRouteDefinition.settings?: readonly string[]` selects registry IDs, preserved in resolved `CiRoute` values,
+Resource Studio descriptors, and generated route maps. The forwarded context contains these IDs only.
+`CiNextContext.settings?: CiRequestSettings` contains resolved values after bootstrap.
+
+The earlier static `CiCoreSettings` bootstrap shape and aggregate `public`/`private`/`user` registry IDs are
+replaced by domain IDs on this path. Update consumers to category-and-ID lookup. The older low-level settings
+service remains available; it is not the management authorization boundary.
+
+See [Settings configuration](/docs/configuration/settings) for extension and deployment examples.
+
+
+## Expected access failures
+
+```ts
+import { ciGetNextAwsSettingsAccess } from "@cloudigniter/next/server";
+import type { CiGraphQLResponse, CiResult, CiSettingsManagementAction } from "@cloudigniter/core/types";
+
+// Server integration: bind the application's trusted generated client and target.
+const access = await ciGetNextAwsSettingsAccess(() =>
+  client.queries.GetSettings(
+    { inputString: JSON.stringify({ access: true, target: { scope: "system" } }) },
+    { authMode: "userPool" },
+  ),
+);
+```
+
+Signature: `ciGetNextAwsSettingsAccess(getAccess: () => Promise<CiGraphQLResponse>):
+Promise<CiResult<Record<CiSettingsManagementAction, boolean>>>`.
+
+A valid management-read grant returns `ok: true` and boolean `read`, `update`, `enforce`, and `overwrite` fields.
+Legacy responses with only boolean `read`/`update` default the other actions to false. A denied `read` capability,
+HTTP-style 403 envelope, or an explicit AppSync/GraphQL authorization error returns a safe 403 error result.
+An explicit 401 envelope or GraphQL `UNAUTHENTICATED` result offers sign-in recovery. Failed calls, missing or
+malformed capabilities, and other provider failures return a retryable 500 result. A permission check never falls
+back to granting access because the provider is unavailable.
+
+Error results use the existing `CiErrorBody`: `body.error` contains a safe message and `body.errorMeta` supplies
+`title`, `message`, `severity`, `showRetry`, and a stable code (`SETTINGS_ACCESS_DENIED`,
+`SETTINGS_SIGN_IN_REQUIRED`, or `SETTINGS_ACCESS_UNAVAILABLE`). Raw provider messages are not copied into the result.
+Handle these results explicitly in the server page. A confirmed 403 invokes Next.js `forbidden()` and the
+application's illustrated boundary. Other failures retain inline recovery. The result status is application data;
+rendering `CiErrorPage` alone does not set the HTTP response status.
+
+```tsx
+import { forbidden } from "next/navigation";
+import { CiErrorPage } from "@cloudigniter/ui/client";
+import { CiNextNavigateWithLoader } from "@cloudigniter/next/client";
+
+if (!access.ok && access.statusCode === 403) forbidden();
+// Other failures render within the page's CiPage shell.
+if (!access.ok) {
+  return <CiErrorPage
+    {...access.body.errorMeta}
+    message={access.body.error}
+    actions={<CiNextNavigateWithLoader href="/dashboard">Back to Dashboard</CiNextNavigateWithLoader>}
+  />;
+}
+```
+
+`CiErrorPageProps` is exported from `@cloudigniter/core/types`. Its additive `actions?: ReactNode` slot renders
+recovery links or other controls beside Retry; existing `title`, required `message`, `severity`, `showRetry`,
+`onRetry`, and `retryLabel` behavior is unchanged. Without `onRetry`, Retry reloads the page. The template provides
+a sign-in link for 401 results and a Dashboard link for verification failures. A 403 uses the
+[HTTP error-page boundary](/docs/api-reference/components/error-pages). Expected failures do not render the settings
+form or fetch its management values.

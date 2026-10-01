@@ -115,6 +115,7 @@ test("discovers authored pages and canonical skill sources while ignoring genera
       "developer-guide/docs/api-reference/example.md",
       "developer-guide/company-developers/workflow.mdx",
       "developer-guide/dictionary/a.mdx",
+      "developer-guide/developer-dictionary/a.mdx",
       ".agents/skills/example/SKILL.md",
       ".codex/skills/example/references/workflow.md",
       "developer-guide/.generated/skills/agents/skills/example/SKILL.md",
@@ -127,7 +128,8 @@ test("discovers authored pages and canonical skill sources while ignoring genera
       fs.writeFileSync(filename, "Example content\n");
     }
     const found = collectPageHashes(root);
-    assert.equal(Object.keys(found).length, 7);
+    assert.equal(Object.keys(found).length, 8);
+    assert.ok(found["developer-guide/developer-dictionary/a.mdx"]);
     assert.ok(found["developer-guide/docs/_category_.json"]);
     assert.ok(found[".agents/skills/example/SKILL.md"]);
     assert.ok(found[".codex/skills/example/references/workflow.md"]);

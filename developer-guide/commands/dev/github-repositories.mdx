@@ -1,0 +1,46 @@
+---
+title: "dev github repositories"
+description: "List configured source, build, and public repository destinations."
+sidebar_label: "dev github repositories"
+sidebar_custom_props:
+  audience: developer
+---
+
+List configured source, build, and public repository destinations.
+
+## Syntax
+
+```text
+dev github repositories [--json]
+```
+
+## Prerequisites
+
+Run in the private workspace with the relevant company policies configured. This local command does not require GitHub CLI or authentication.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--json` | Accepted; output is structured JSON. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Reads the repository inventory locally. It does not create repositories or verify their remote state.
+
+## Examples
+
+```bash
+pnpm exec dev github repositories --json
+```
+
+## Errors and recovery
+
+Invalid or missing repository inventory fails validation.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/publishing/github-commands)

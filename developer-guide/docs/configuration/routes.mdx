@@ -96,6 +96,7 @@ The public `CiRouteDefinition` type from `@cloudigniter/core/types` defines each
 | `namespace` | The [route namespace](/dictionary/r#route-namespace) used to select translation messages. See [Localization](/docs/configuration/localization). |
 | `protected` | Required boolean. `true` requires sign-in; `false` permits the route to pass the sign-in gate without a user session. |
 | `tenantScopes` | Optional list of supported routing contexts: `system`, `global`, or `tenant`. Omitted allows all three; an empty list allows none. It does not grant membership in any Tenant. |
+| `settings` | Optional array of settings group IDs, such as `["public.branding"]`. Loads these plus `alwaysLoad` groups into the server page context; authentication filters Private/Personal values. See [Settings](/docs/configuration/settings). |
 | `access` | Optional `{ resource, action }` [permission](/dictionary/p#permission) requirement, which server code must enforce through the [authorizer](/dictionary/a#authorizer). |
 
 `protected` and `access` serve different purposes. A signed-in user may still lack a permission. A route with
@@ -103,6 +104,8 @@ no `access` declares no catalog permission requirement, even when it requires si
 `tenantScopes: ["tenant"]` limits where the page is available; it does not authorize the user in every Tenant.
 See the [protected route and catalog example](/docs/identity/authentication#protect-a-route-and-its-operations)
 for a role, scoped assignment, and server guard that enforce this route's `identity.users` / `read` requirement.
+
+Resource Studio exposes **Route settings groups** on generated management pages. Enter comma-separated registry IDs; preview, save, and regeneration preserve this selection. An empty selection still includes always-loaded groups.
 
 ## Use logical paths and matching patterns
 

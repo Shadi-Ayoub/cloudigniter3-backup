@@ -1,0 +1,51 @@
+---
+title: "dev github pull"
+description: "Fast-forward a configured external checkout\u2019s clean base branch."
+sidebar_label: "dev github pull"
+sidebar_custom_props:
+  audience: developer
+---
+
+Fast-forward a configured external checkout’s clean base branch.
+
+## Syntax
+
+```text
+dev github pull <project> --output=<checkout> [--repository-kind=source|build] [--dry-run]
+```
+
+## Prerequisites
+
+Run in the private workspace with [GitHub CLI prepared by DEV](./github-setup.mdx) and the relevant company policies configured. Online commands use the selected named GitHub profile; credentials remain in GitHub CLI storage.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `<project>` | Configured project ID. |
+| `--output=<checkout>` | Existing external checkout. |
+| `--repository-kind=source\|build` | Defaults to source. |
+| `--profile=<name>` | GitHub profile. |
+| `--dry-run` | Validate and preview without pulling. |
+| `--json` | Accepted; output is structured JSON. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Checks the checkout and updates the configured base branch using fast-forward only. It does not reset local work or create merge commits.
+
+## Examples
+
+```bash
+pnpm exec dev github pull core --output=../core-source --profile=developer --dry-run
+```
+
+## Errors and recovery
+
+Dirty checkouts, wrong branches/remotes, or divergent history fail; resolve them explicitly before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/publishing/github-commands)

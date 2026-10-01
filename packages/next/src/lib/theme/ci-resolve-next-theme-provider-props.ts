@@ -16,9 +16,19 @@ export function ciResolveNextThemeProviderProps<TTheme extends string = string>(
 ): Omit<ThemeProviderProps, "children"> {
   const ciMappedProps = ciMapThemeConfigToNextThemeProviderProps(input?.theme);
 
-  return {
+  const props = {
     ...CI_DEFAULT_NEXT_THEME_PROVIDER_PROPS,
     ...ciMappedProps,
-    ...input?.themeProviderProps,
+    ...Object.fromEntries(
+      Object.entries(input?.themeProviderProps ?? {}).filter(
+        ([, value]) => value !== undefined,
+      ),
+    ),
   };
+
+  if (props.enableSystem === false && props.defaultTheme === "system") {
+    props.defaultTheme = props.themes?.[0] ?? "light";
+  }
+
+  return props;
 }

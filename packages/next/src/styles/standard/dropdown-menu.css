@@ -8,7 +8,14 @@
   }
 
   .ci-menu-content {
-    @apply z-menu w-auto min-w-max bg-popover text-popover-foreground;
+    @apply z-menu isolate w-auto min-w-max rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-lg;
+  }
+
+  /* The fixed Popper wrapper owns the stacking context. Override Radix's inline
+     snapshot of the panel's z-index so the menu layer also follows CSS updates. */
+  [data-radix-popper-content-wrapper]:has(> [data-slot="dropdown-menu-content"]),
+  [data-radix-popper-content-wrapper]:has(> [data-slot="dropdown-menu-sub-content"]) {
+    z-index: var(--z-index-menu) !important;
   }
 
   .ci-menu-item-check-icon {

@@ -1,0 +1,132 @@
+---
+title: "dev commands"
+description: "Alphabetical reference for every dev command."
+slug: /dev
+sidebar_position: 0
+sidebar_custom_props:
+  audience: developer
+---
+
+Use `dev` from the private `@cloudigniter/dev` toolkit for company package maintenance, GitHub operations, template delivery, and release requests. These commands are for CloudIgniter maintainers. Run `pnpm exec dev` with installed workspace dependencies; it prints help without a command. `pnpm dev` runs a package script and does not invoke this parser.
+
+## Command reference A–Z
+
+Select a letter, then a command to read its syntax, parameters, prerequisites, effects, examples, and errors. Commands are alphabetized after the `dev` executable.
+
+[G](#g) · [M](#m) · [N](#n) · [P](#p) · [Q](#q) · [T](#t)
+
+### G
+
+| Command | Description |
+| --- | --- |
+| [`dev github auth login`](./github-auth-login.mdx) | Sign in through the browser for a named GitHub profile. |
+| [`dev github auth status`](./github-auth-status.mdx) | Inspect GitHub authentication or verify a configured profile. |
+| [`dev github check`](./github-check.mdx) | Verify the GitHub account against configured company identities. |
+| [`dev github clone`](./github-clone.mdx) | Clone a configured source or build repository into an external checkout. |
+| [`dev github issue list`](./github-issue-list.mdx) | List issues in the selected repository. |
+| [`dev github issue view`](./github-issue-view.mdx) | Read a specific issue. |
+| [`dev github pr checks`](./github-pr-checks.mdx) | Read the checks for a pull request. |
+| [`dev github pr create`](./github-pr-create.mdx) | Open a pull request from an already-pushed feature branch. |
+| [`dev github pr diff`](./github-pr-diff.mdx) | Read a pull request’s changes. |
+| [`dev github pr list`](./github-pr-list.mdx) | List pull requests in the selected repository. |
+| [`dev github pr merge`](./github-pr-merge.mdx) | Squash-merge an inspected pull request at its exact reviewed head. |
+| [`dev github pr review`](./github-pr-review.mdx) | Submit a review for an inspected pull request. |
+| [`dev github pr view`](./github-pr-view.mdx) | Inspect a pull request and its exact head commit. |
+| [`dev github profiles`](./github-profiles.mdx) | List configured developer and approver profiles. |
+| [`dev github pull`](./github-pull.mdx) | Fast-forward a configured external checkout’s clean base branch. |
+| [`dev github repo view`](./github-repo-view.mdx) | Show the selected configured repository. |
+| [`dev github repositories`](./github-repositories.mdx) | List configured source, build, and public repository destinations. |
+| [`dev github run list`](./github-run-list.mdx) | List GitHub Actions runs. |
+| [`dev github run view`](./github-run-view.mdx) | Inspect a GitHub Actions run. |
+| [`dev github scaffold`](./github-scaffold.mdx) | Generate local workflow files for a configured build project. |
+| [`dev github setup`](./github-setup.mdx) | Prepare or check the GitHub CLI executable used by DEV. |
+| [`dev github workflow list`](./github-workflow-list.mdx) | List the repository’s available Actions workflows. |
+
+### M
+
+| Command | Description |
+| --- | --- |
+| [`dev modules sync`](./modules-sync.mdx) | Synchronize dependencies declared by core module manifests. |
+| [`dev modules validate`](./modules-validate.mdx) | Validate core or application module manifests in the private workspace. |
+
+### N
+
+| Command | Description |
+| --- | --- |
+| [`dev next build-theme`](./next-build-theme.mdx) | Generate the Next package’s combined theme stylesheet. |
+| [`dev next test-style`](./next-test-style.mdx) | Compile one Next style for focused validation. |
+| [`dev npm candidate`](./npm-candidate.mdx) | Build and pack approved, committed versions into a candidate directory. |
+| [`dev npm deliver`](./npm-deliver.mdx) | Request build-repository review of verified package archives. |
+| [`dev npm plan`](./npm-plan.mdx) | Calculate an offline release proposal without changing files. |
+| [`dev npm publish`](./npm-publish.mdx) | Submit a GitHub release review request for versioned source. |
+| [`dev npm stage`](./npm-stage.mdx) | Stage a verified candidate through the legacy single-repository release workflow. |
+| [`dev npm status`](./npm-status.mdx) | Read the GitHub status of a release request. |
+| [`dev npm version`](./npm-version.mdx) | Apply reviewed release versions and update the local lockfile. |
+
+### P
+
+| Command | Description |
+| --- | --- |
+| [`dev package build`](./package-build.mdx) | Run the package-owned development or production build. |
+| [`dev package build-assets`](./package-build-assets.mdx) | Compile configured themes and copy package locale assets. |
+| [`dev package build-js`](./package-build-js.mdx) | Generate package sources and compile JavaScript with tsup. |
+| [`dev package build-types`](./package-build-types.mdx) | Bundle TypeScript declarations using Rollup. |
+| [`dev package build-types-raw`](./package-build-types-raw.mdx) | Emit raw declarations using the package build TypeScript configuration. |
+| [`dev package check`](./package-check.mdx) | Run the package’s configured quick-check recipe. |
+| [`dev package check-package`](./package-check-package.mdx) | Validate packaged artifacts without publishing. |
+| [`dev package clean`](./package-clean.mdx) | Remove generated distribution files and incremental build state. |
+| [`dev package clean-dts`](./package-clean-dts.mdx) | Remove generated declarations outside dist. |
+| [`dev package clean-maps`](./package-clean-maps.mdx) | Remove distribution source maps. |
+| [`dev package clean-types`](./package-clean-types.mdx) | Remove temporary bundled-declaration inputs. |
+| [`dev package obfuscate`](./package-obfuscate.mdx) | Obfuscate compiled package JavaScript in place. |
+| [`dev package prepublish`](./package-prepublish.mdx) | Run configured validation before a publication request. |
+| [`dev package quality`](./package-quality.mdx) | Run the package’s complete configured quality recipe. |
+| [`dev package release-check`](./package-release-check.mdx) | Run the package-owned release-validation hook. |
+| [`dev package switch`](./package-switch.mdx) | Switch package exports and TypeScript mappings between source and distribution. |
+| [`dev package test`](./package-test.mdx) | Run the package’s configured tests, optionally in watch or coverage mode. |
+| [`dev package test-build-gate`](./package-test-build-gate.mdx) | Verify that failed quality gates preserve existing build artifacts. |
+| [`dev package typecheck`](./package-typecheck.mdx) | Check configured TypeScript scopes without emitting output. |
+| [`dev package watch`](./package-watch.mdx) | Watch and rebuild package JavaScript during development. |
+| [`dev publisher`](./publisher.mdx) | Open the local GUI for builds, checks and reviewed publication. |
+
+### Q
+
+| Command | Description |
+| --- | --- |
+| [`dev quality list-client-files`](./quality-list-client-files.mdx) | List source files with client-component or browser-only signals. |
+| [`dev quality scan-client-directives`](./quality-scan-client-directives.mdx) | Check compiled JavaScript for missing client directives. |
+
+### T
+
+| Command | Description |
+| --- | --- |
+| [`dev template check`](./template-check.mdx) | Compare a template export byte-for-byte with current source and policy. |
+| [`dev template deliver`](./template-deliver.mdx) | Publish an approved template export to its configured public branch. |
+| [`dev template export`](./template-export.mdx) | Export the policy-approved application as a standalone template. |
+| [`dev template publish`](./template-publish.mdx) | Submit a verified template export for private company review. |
+| [`dev template status`](./template-status.mdx) | Read the status of a private template review request. |
+
+## Common options
+
+| Option | Meaning |
+| --- | --- |
+| `--workspace-root=<path>` | Select workspace discovery; does not change the package working directory. |
+| `--no-interactive` | Disable maintenance prompts. Release commands never prompt; browser login requires interaction. |
+| `--verbose`, `-v` | Include diagnostic stack traces. |
+| `--help`, `-h` | Show the complete executable help. |
+| `--version` | Print the toolkit version. |
+
+`--clear` applies to package, quality, Next, and module maintenance commands. `--json`, `--profile`, and `--dry-run` are accepted only where listed on the command page; maintenance workers do not require GitHub login. A GitHub profile can also come from `CLOUDIGNITER_PROFILE` for online operations. Use only the options supported by the selected command.
+
+`dev github setup` prepares the GitHub CLI executable and also works outside a workspace. It does not select or authenticate a company profile.
+
+Package commands require the current directory to be `packages/<name>`. Use `pnpm --filter @cloudigniter/next exec dev package test` to select a package from the workspace root. Recipe steps such as `typecheck-tools`, `typecheck-tests`, and `test-coverage` are internal configuration names, not separate executable commands.
+
+## Help and exit status
+
+```bash
+pnpm exec dev --help
+pnpm exec dev --version
+```
+
+Exit code `0` indicates success, `1` an operational/validation failure, and `2` invalid usage or workspace/policy configuration. Cancelled maintenance prompts use `130`; child processes may preserve their own nonzero status.

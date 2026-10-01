@@ -60,38 +60,38 @@ const Output = forwardRef<OutputHandle, OutputProps>(({ input }, ref) => {
       // Highlight timestamp patterns inside square brackets, including trailing colon
       .replace(
         /(\[[^:]+, \w+ \d{1,2}, \d{4} at \d{2}:\d{2}:\d{2} [APM]+]:)/g,
-        '<span class="text-purple-500">$1</span>'
+        '<span class="text-primary">$1</span>'
       )
 
       // // Handle timestamps: Add a non-breaking space instead of <br />
       // .replace(timestampPattern, (match) => {
       //   if (firstOccurrence) {
       //     firstOccurrence = false;
-      //     return `<span class="text-purple-500">${match}</span>`; // No break before first occurrence
+      //     return `<span class="text-primary">${match}</span>`; // No break before first occurrence
       //   }
-      //   return `<span class="text-purple-500 block">${match}</span>`; // CSS handles new line
+      //   return `<span class="text-primary block">${match}</span>`; // CSS handles new line
       // })
 
       // Highlight JSON keys in blue
-      .replace(/(".*?")(\s*:\s*)/g, '<span class="text-blue-500">$1</span>$2')
+      .replace(/(".*?")(\s*:\s*)/g, '<span class="text-info-surface-foreground">$1</span>$2')
 
       // Highlight string values in green
-      .replace(/(:\s*)"([^"]*)"/g, '$1<span class="text-green-500">"$2"</span>')
+      .replace(/(:\s*)"([^"]*)"/g, '$1<span class="text-success-surface-foreground">"$2"</span>')
 
       // Highlight numbers in blue (avoid affecting times inside brackets)
       .replace(
         /(:\s*)(\b\d+\b)(?![^[]*])/g,
-        '$1<span class="text-blue-700">$2</span>'
+        '$1<span class="text-info-surface-foreground">$2</span>'
       )
 
       // Highlight booleans in yellow
       .replace(
         /(:\s*true|:\s*false)/g,
-        '<span class="text-yellow-500">$1</span>'
+        '<span class="text-warning-surface-foreground">$1</span>'
       )
 
       // Highlight null values in red
-      .replace(/(:\s*null)/g, '<span class="text-red-500">$1</span>');
+      .replace(/(:\s*null)/g, '<span class="text-danger-surface-foreground">$1</span>');
 
     if (highlightRef.current) {
       highlightRef.current.innerHTML = highlightedText; // Remove the extra <br />
@@ -110,12 +110,12 @@ const Output = forwardRef<OutputHandle, OutputProps>(({ input }, ref) => {
     <div className='relative mt-4 w-full'>
       <div
         ref={highlightRef}
-        className='absolute inset-0 mb-1 overflow-x-auto overflow-y-hidden whitespace-pre-wrap break-words bg-white p-3 font-mono text-sm dark:bg-gray-800'
+        className='absolute inset-0 mb-1 overflow-x-auto overflow-y-hidden whitespace-pre-wrap break-words bg-background p-3 font-mono text-sm text-foreground'
         aria-hidden='true'
       />
       <textarea
         ref={textareaRef}
-        className='relative max-h-[600px] min-h-[350px] w-full resize-y overflow-y-scroll rounded border border-gray-300 bg-transparent p-3 font-mono text-sm text-transparent caret-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 dark:border-gray-600 dark:text-gray-200 dark:focus:ring-green-400'
+        className='relative max-h-[600px] min-h-[350px] w-full resize-y overflow-y-scroll rounded border border-input bg-transparent p-3 font-mono text-sm text-transparent caret-foreground focus:outline-none focus:ring-2 focus:ring-ring'
         value={
           outputHistory.length !== 0 ? outputHistory.join('\n').trim() : ''
         }

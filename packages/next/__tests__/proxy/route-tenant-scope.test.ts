@@ -3,7 +3,7 @@ import test from "node:test";
 
 import { NextRequest } from "next/server";
 
-import type { CiRoutesMap, CiTenantScope } from "@ci-core/types";
+import type { CiRoutesMap, CiTenantScope } from "@cloudigniter/core/types";
 
 import { ciHandleRouteLogic } from "../../src/server/proxy/ci-handle-route-logic";
 

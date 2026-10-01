@@ -1,3 +1,4 @@
+import { forbidden } from "next/navigation";
 import type { Metadata } from "next";
 import { CiPage } from "@cloudigniter/next/client";
 import { CiNextDashboardOverview } from "@cloudigniter/next/ui/server";
@@ -22,7 +23,7 @@ export default async function SecurityPage() {
   const security = appCreateSecurityAdministration(context, definition);
   const capabilities = security.capabilities;
   if (!capabilities.canRead) {
-    throw new Error("You do not have permission to view the security center.");
+    forbidden();
   }
   const [assignments, roleCounters] = await Promise.all([
     security.loadAssignments(),

@@ -114,3 +114,5 @@ export type { CiAwsStatus } from "./status-types";
 // tenant
 // ─────────────────────────────────────────────────────────────
 export type { CiTenantCommonArgs } from "./tenant-types";
+export type { CiAwsSettingsStoreOptions, CiAwsSettingsHandlerOptions } from "./settings-types";
+export type { CiAwsExtensionDefinition, CiAwsExtensionExecutionContext, CiAwsExtensionProviderOptions, CiAwsExtensionHandlersOptions, CiAwsExtensionHandler, CiAwsExtensionPoliciesOptions } from "./module-types";

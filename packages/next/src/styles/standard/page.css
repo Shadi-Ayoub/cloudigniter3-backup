@@ -1,6 +1,6 @@
 @layer components {
   .ci-page-icon {
-    @apply text-foreground dark:text-muted-50;
+    @apply text-foreground;
   }
 
   .ci-page-content {

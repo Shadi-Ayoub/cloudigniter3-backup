@@ -12,6 +12,6 @@
   }
 
   .ci-main-footer-env-text {
-    @apply text-primary-900 dark:text-primary-500;
+    @apply text-muted-foreground;
   }
 }

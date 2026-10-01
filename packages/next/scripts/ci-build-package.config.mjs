@@ -1,4 +1,5 @@
 const ciBuildPackageConfig = {
+  qualityScript: "quality",
   steps: {
     dev: [
       {

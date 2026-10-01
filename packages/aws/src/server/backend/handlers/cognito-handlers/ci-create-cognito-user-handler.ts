@@ -1,3 +1,4 @@
+import { ciCheckReadOnlyAccess } from "../../access-control/ci-check-read-only-access";
 import { ciCreateCognitoUser, ciCreateLambdaHandler } from "@ci-aws/lib";
 import type { CiCreateCognitoUserInterface } from "@ci-aws/types";
 
@@ -33,6 +34,9 @@ export const ciCreateCognitoUserHandler = ciProtectCognitoUserMutationHandler(
       if (!decision.allowed) {
         return ciValidationError(decision.reason, decision.statusCode);
       }
+      await ciCheckReadOnlyAccess(event, [
+        { resource: "identity.users", action: "create" },
+      ]);
     },
     run: ({ input, env, region }) =>
       ciCreateCognitoUser({

@@ -2,6 +2,10 @@
 
 Use this reference before completing a non-trivial CloudIgniter change.
 
+## Enforced package gates
+
+For `@cloudigniter/next`, follow [TDD and package release gates](testing-and-release.md). `pnpm quality:next` must pass before development or production package builds. A publish request additionally requires `pnpm release:check:next`, a verified tarball and checksum, and maintainer review. A successful build does not authorize publishing. Do not reset frozen coverage exceptions to make a failing check green.
+
 ## Select validation by scope
 
 Consider:

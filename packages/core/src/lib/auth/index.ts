@@ -26,6 +26,7 @@ export {
   ciCreateAppAuthorizer,
   ciCreateAuthorizationSubject,
   ciCreateAuthorizer,
+  ciIsAuthorizationSuspended,
   ciCreateCoreAccessControlOverride,
   ciCreateCoreAccessControl,
   ciCreateRoleAssignment,

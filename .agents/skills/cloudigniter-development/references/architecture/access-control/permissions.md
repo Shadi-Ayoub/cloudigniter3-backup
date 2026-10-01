@@ -53,3 +53,15 @@ Use the narrowest assignment that expresses the responsibility:
 - [Roles](roles.md)
 - [Assignments and enforcement](assignments.md)
 - [Validation](validation.md)
+
+## Forced read-only restrictions
+
+- `CiPrivilege.readOnly: true` vetoes every write on its matching resource pattern and effective assignment
+  scope, independently of the privilege action pattern, effect, or combining algorithm.
+- Apply restrictions from active inherited roles and direct scoped user privileges before precedence selection;
+  preserve grant windows, scope propagation, role suspension, and auditable `read-only` decision evidence.
+- Reads still need a normal matching allow. Omitted/false flags preserve ordinary behavior.
+- Registered action `accessMode` may be `read` or `write`. Defaults classify read/get/list/view/search as reads
+  and every other verb as a write. `sensitive` does not determine side effects.
+- Validate flags and modes on catalog writes. Reuse the EmberGuard engine through the Core public facade.
+- Enforce at trusted mutation boundaries using fresh persisted policy and assignments; UI state is advisory.

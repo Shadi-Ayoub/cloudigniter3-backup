@@ -41,6 +41,7 @@ export {
   ciCanAny,
   ciCreateAppAuthorizer,
   ciCreateAuthorizer,
+  ciIsAuthorizationSuspended,
 } from "./ci-create-authorizer";
 export {
   ciAssertValidAccessControlDefinition,

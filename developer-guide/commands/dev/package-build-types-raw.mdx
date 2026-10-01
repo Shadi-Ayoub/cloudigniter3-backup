@@ -1,0 +1,45 @@
+---
+title: "dev package build-types-raw"
+description: "Emit raw declarations using the package build TypeScript configuration."
+sidebar_label: "dev package build-types-raw"
+sidebar_custom_props:
+  audience: developer
+---
+
+Emit raw declarations using the package build TypeScript configuration.
+
+## Syntax
+
+```text
+dev package build-types-raw
+```
+
+## Prerequisites
+
+Run from the owning `packages/<name>` directory in the private CloudIgniter workspace after installing its dependencies. `--workspace-root` selects discovery and does not change the current package.
+
+## Parameters
+
+This command has no command-specific options.
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Runs the declaration-emission worker against `tsconfig.build.json`. Output follows that configuration and supplies inputs for later declaration bundling.
+
+## Examples
+
+```bash
+cd packages/next
+pnpm exec dev package build-types-raw
+```
+
+## Errors and recovery
+
+A missing required configuration or tool fails the command. A failed subprocess stops the workflow and returns a nonzero status. Inspect the first reported failure before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/package-workflows)

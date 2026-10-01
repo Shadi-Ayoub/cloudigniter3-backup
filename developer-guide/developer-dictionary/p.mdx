@@ -1,0 +1,25 @@
+---
+title: "P · Developer Dictionary"
+sidebar_label: "P"
+description: Internal CloudIgniter developer terms beginning with P.
+sidebar_position: 16
+custom_edit_url: null
+customProps:
+  audience: developer
+---
+
+## Package Entry Point {#package-entry-point}
+
+An intentional import path exposed by a package, such as `@cloudigniter/core/types` or `@cloudigniter/next/server`. Each entry should expose a coherent public surface and preserve its runtime boundary. A file’s presence in `src` does not make it a supported entry point.
+
+## Package Ownership {#package-ownership}
+
+The assignment of reusable behavior, contracts, and implementation to the appropriate CloudIgniter layer. Generic public APIs belong in `core`, internal EmberGuard behavior in `emberguard`, Next.js integration in `next`, AWS implementations in `aws`, shared UI in `ui`, and company tooling in `dev`. See [core and custom ownership](/company-developers/architecture/core-custom-ownership).
+
+## pnpm Workspace {#pnpm-workspace}
+
+The local package workspace used to develop CloudIgniter’s related projects together. Root scripts use pnpm filters to select packages or the documentation site. Workspace linking supports local development; published consumers still need intentional package exports and declared dependencies.
+
+## Provider Binding {#provider-binding}
+
+The integration step that connects a generic capability to its selected provider implementation. CloudIgniter’s Next.js integration wires generic EmberGuard contracts to the configured provider, such as AWS. Provider selection must not leak into framework-independent contracts or the generic internal capability.

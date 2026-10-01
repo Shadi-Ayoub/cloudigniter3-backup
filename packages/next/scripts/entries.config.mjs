@@ -1,4 +1,4 @@
-import { ENTRY_KIND } from "@cloudigniter/cli/tooling/entries";
+import { ENTRY_KIND } from "@cloudigniter/dev/tooling/entries";
 
 export const ciEntriesConfig = {
   barrels: [
@@ -21,14 +21,14 @@ export const ciEntriesConfig = {
       barrel: "src/server/index.ts",
       outPrefix: "server",
       srcRoot: "src/server",
-      preserveStructure: false,
+      preserveStructure: true,
     },
     {
       kind: ENTRY_KIND.OTHER,
       barrel: "src/lib/index.ts",
       outPrefix: "lib",
       srcRoot: "src/lib",
-      preserveStructure: false,
+      preserveStructure: true,
     },
   ],
 
@@ -51,6 +51,8 @@ export const ciEntriesConfig = {
   ],
 
   staticEntryPaths: [
+    { kind: ENTRY_KIND.OTHER, path: "src/index.ts" },
+    { kind: ENTRY_KIND.OTHER, path: "src/tooling/modules.ts" },
     { kind: ENTRY_KIND.OTHER, path: "src/server/index.ts" },
     { kind: ENTRY_KIND.OTHER, path: "src/server/proxy/index.ts" },
     { kind: ENTRY_KIND.OTHER, path: "src/lib/index.ts" },

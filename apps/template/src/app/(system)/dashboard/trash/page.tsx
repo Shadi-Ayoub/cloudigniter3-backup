@@ -1,3 +1,4 @@
+import { forbidden } from "next/navigation";
 import { appUserForms } from "@/custom/user";
 import { CiPage } from "@cloudigniter/next/client";
 import {
@@ -62,7 +63,7 @@ export default async function TrashPage() {
     assignments,
   );
   if (!canRestore && !canRestoreUsers && !canManageSystemSuperAdmins) {
-    throw new Error("You do not have permission to view Trash.");
+    forbidden();
   }
   const result = canRestore
     ? await appListTenantRecords({ deletionState: "deleted", limit: 100 })

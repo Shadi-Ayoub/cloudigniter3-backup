@@ -1,0 +1,49 @@
+---
+title: "dev github run view"
+description: "Inspect a GitHub Actions run."
+sidebar_label: "dev github run view"
+sidebar_custom_props:
+  audience: developer
+---
+
+Inspect a GitHub Actions run.
+
+## Syntax
+
+```text
+dev github run view --project=<id|workspace> --run-id=<number> [--profile=<name>]
+```
+
+## Prerequisites
+
+Run in the private workspace with [GitHub CLI prepared by DEV](./github-setup.mdx) and the relevant company policies configured. Online commands use the selected named GitHub profile; credentials remain in GitHub CLI storage.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--project=<id\|workspace>` | Required configured project ID, or workspace for the integration monorepo. |
+| `--repository-kind=source\|build` | Defaults to source. workspace has no build repository. |
+| `--profile=<name>` | Named GitHub profile; also selected through CLOUDIGNITER_PROFILE. |
+| `--run-id=<number>` | Required positive PR/issue number or Actions run ID. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Displays the selected run and its status without changing it.
+
+## Examples
+
+```bash
+pnpm exec dev github run view --project=workspace --run-id=123 --profile=developer
+```
+
+## Errors and recovery
+
+Unknown projects, invalid IDs, unavailable repositories, or missing profile permissions fail before a useful result. GitHub errors retain a nonzero status.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/publishing/github-commands)

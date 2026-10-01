@@ -1,58 +1,692 @@
-/**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
- */
+/* Changesets-inspired documentation theme; retain native Docusaurus behavior. */
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/inter-latin-variable.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Averia Serif Libre";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/averia-serif-libre-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Averia Serif Libre";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/averia-serif-libre-latin-700-normal.woff2") format("woff2");
+}
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* You can override the default Infima variables here. */
-:root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
-  --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+html:root {
+  --ifm-color-primary: #006dcc;
+  --ifm-color-primary-dark: #0062b8;
+  --ifm-color-primary-darker: #005dad;
+  --ifm-color-primary-darkest: #004c8f;
+  --ifm-color-primary-light: #1680db;
+  --ifm-color-primary-lighter: #4097e3;
+  --ifm-color-primary-lightest: #dceeff;
+  --ifm-background-color: #fff;
+  --ifm-background-surface-color: #fff;
+  --ifm-font-color-base: #3c3c43;
+  --ifm-font-color-secondary: #626269;
+  --ifm-heading-color: #364c6c;
+  --ifm-color-emphasis-100: #f6f6f7;
+  --ifm-color-emphasis-200: #eeeef0;
+  --ifm-color-emphasis-300: #e2e2e5;
+  --ifm-color-emphasis-600: #67676e;
+  --ifm-color-emphasis-700: #56565e;
+  --ifm-font-family-base: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  --ifm-heading-font-family: "Averia Serif Libre", Georgia, serif;
+  --ifm-font-family-monospace: ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, monospace;
+  --ifm-font-size-base: 16px;
+  --ifm-line-height-base: 1.75;
+  --ifm-heading-font-weight: 700;
+  --ifm-heading-line-height: 1.3;
+  --ifm-h1-font-size: 2rem;
+  --ifm-h2-font-size: 1.75rem;
+  --ifm-h3-font-size: 1.25rem;
+  --ifm-code-font-size: 0.875em;
+  --ifm-code-border-radius: 4px;
+  --ifm-code-background: #f0f1f4;
+  --ifm-global-radius: 8px;
+  --ifm-global-shadow-lw: none;
+  --ifm-navbar-height: 4rem;
+  --ifm-navbar-shadow: none;
+  --ifm-navbar-background-color: var(--ifm-background-color);
+  --ifm-navbar-link-color: var(--ifm-font-color-base);
+  --ifm-navbar-padding-horizontal: 2rem;
+  --ifm-menu-color: var(--ifm-font-color-secondary);
+  --ifm-menu-color-background-active: #e8f1fa;
+  --ifm-menu-color-background-hover: #eeeef0;
+  --ifm-menu-link-padding-vertical: 0.375rem;
+  --ifm-menu-link-padding-horizontal: 0.75rem;
+  --ifm-toc-border-color: var(--ifm-color-emphasis-300);
+  --ifm-table-border-color: var(--ifm-color-emphasis-300);
+  --ifm-table-stripe-background: var(--ifm-background-color);
+  --ifm-table-head-background: var(--ifm-color-emphasis-100);
+  --ifm-table-cell-padding: 0.75rem 1rem;
+  --ifm-link-hover-decoration: underline;
+  --ifm-footer-background-color: var(--ifm-color-emphasis-100);
+  --ifm-footer-color: var(--ifm-font-color-secondary);
+  --ifm-footer-title-color: var(--ifm-heading-color);
+  --ifm-footer-link-color: var(--ifm-font-color-secondary);
+  --doc-sidebar-width: 272px;
+  --ci-doc-navbar-control-height: 36px;
+  --ci-doc-surface: #f6f6f7;
+  --ci-doc-brand-soft: #e8f1fa;
+  --ci-doc-content-width: 688px;
+  --docusaurus-highlighted-code-line-bg: #006dcc10;
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
-[data-theme="dark"] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+/* Outrank Infima and the base tokens, regardless of stylesheet bundling order. */
+html:root[data-theme="dark"] {
+  --ifm-color-primary: #9ccfff;
+  --ifm-color-primary-dark: #80c1ff;
+  --ifm-color-primary-darker: #68b5ff;
+  --ifm-color-primary-darkest: #4d9ee4;
+  --ifm-color-primary-light: #b2daff;
+  --ifm-color-primary-lighter: #c4e3ff;
+  --ifm-color-primary-lightest: #d9edff;
+  --ifm-background-color: #1b1b1f;
+  --ifm-background-surface-color: #202127;
+  --ifm-font-color-base: #dfdfe5;
+  --ifm-font-color-secondary: #a8a8b2;
+  --ifm-heading-color: #c7dbeb;
+  --ifm-color-emphasis-100: #25252c;
+  --ifm-color-emphasis-200: #2e2e35;
+  --ifm-color-emphasis-300: #38383f;
+  --ifm-color-emphasis-600: #a8a8b2;
+  --ifm-color-emphasis-700: #b9b9c2;
+  --ifm-code-background: #2a2a32;
+  --ifm-menu-color-background-active: #9ccfff14;
+  --ifm-menu-color-background-hover: #ffffff08;
+  --ci-doc-surface: #161618;
+  --ci-doc-brand-soft: #9ccfff14;
+  --docusaurus-highlighted-code-line-bg: #9ccfff12;
 }
 
-div[class^="codeBlockTitle"]::before {
-  content: url("../../docs/assets/icons/code.svg");
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  margin-right: 0.5rem;
-  vertical-align: middle;
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+::selection {
+  background: var(--ifm-color-primary-lightest);
+  color: #243953;
+}
+:where(a, button, input, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 4px;
 }
 
-.red {
-  color: red;
+/* Header and the documentation navigation share the same compact type scale. */
+.navbar {
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+}
+.navbar__brand {
+  flex-shrink: 0;
+  margin-inline-end: 2rem;
+  gap: 0.5rem;
+}
+.navbar__logo {
+  height: 1.75rem;
+  margin: 0;
+}
+.navbar__title {
+  font-family: var(--ifm-heading-font-family);
+  font-size: 1.25rem;
+  color: var(--ifm-heading-color);
+}
+.ci-navbar-docs {
+  color: var(--ifm-font-color-secondary);
+  font-weight: 400;
+}
+.navbar__link {
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding-inline: 0.75rem;
+  white-space: nowrap;
+}
+.navbar__link--active {
+  color: var(--ifm-color-primary);
+}
+.navbar__item.dropdown {
+  font-size: 0.875rem;
+}
+.dropdown__menu {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  box-shadow: 0 8px 24px #0000000d;
+  padding: 0.5rem;
+}
+.dropdown__link {
+  border-radius: 4px;
+  font-size: 0.875rem;
+  padding: 0.5rem 0.75rem;
+}
+.theme-doc-sidebar-container {
+  background: var(--ci-doc-surface);
+  border-inline-end: 1px solid var(--ifm-color-emphasis-300);
+}
+.theme-doc-sidebar-menu {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.theme-doc-sidebar-menu > .menu__list-item {
+  margin-block: 0.5rem;
+}
+.theme-doc-sidebar-menu
+  > .menu__list-item
+  > .menu__list-item-collapsible
+  > .menu__link {
+  font-weight: 600;
+  color: var(--ifm-font-color-base);
+}
+.menu__link {
+  min-height: 2rem;
+  border-radius: 5px;
+  overflow-wrap: anywhere;
+}
+.menu__link:hover {
+  text-decoration: none;
+}
+.menu__link--active {
+  font-weight: 600;
+}
+.menu__list-item-collapsible {
+  border-radius: 5px;
+}
+.menu__list .menu__list {
+  margin-inline-start: 0.8rem;
+  padding-inline-start: 0.5rem;
+  border-inline-start: 1px solid var(--ifm-color-emphasis-300);
+}
+.menu__caret::before,
+.menu__link--sublist-caret::after {
+  background-size: 1.1rem;
+}
+.theme-doc-breadcrumbs {
+  margin-bottom: 1.5rem;
+}
+.breadcrumbs__link {
+  font-size: 0.75rem;
+  border-radius: 4px;
+}
+.breadcrumbs__item--active .breadcrumbs__link {
+  color: var(--ifm-color-primary);
+  background: var(--ci-doc-brand-soft);
 }
 
-.table-container {
+/* Reading rhythm follows the reference: 16/28 body, 32/40 title, 28/36 h2. */
+.markdown {
+  --ifm-heading-vertical-rhythm-top: 2;
+  --ifm-heading-vertical-rhythm-bottom: 1;
+  overflow-wrap: break-word;
+}
+.markdown h1,
+:where([class*="generatedIndexPage"]) h1 {
+  font-size: 2rem;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+}
+.markdown h2 {
+  margin: 3rem 0 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--ifm-color-emphasis-300);
+  font-size: 1.75rem;
+  line-height: 1.286;
+  letter-spacing: -0.02em;
+}
+.markdown h3 {
+  margin: 2rem 0 1rem;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+.markdown h4 {
+  font-size: 1.0625rem;
+}
+.markdown p,
+.markdown ul,
+.markdown ol {
+  margin-block: 1rem;
+}
+.markdown li + li {
+  margin-top: 0.375rem;
+}
+.markdown li > p {
+  margin-block: 0.5rem;
+}
+.markdown a:not(.hash-link):not(.card) {
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: color-mix(
+    in srgb,
+    var(--ifm-color-primary) 35%,
+    transparent
+  );
+  text-underline-offset: 3px;
+}
+.markdown a:hover {
+  text-decoration-color: currentColor;
+}
+.markdown strong {
+  font-weight: 600;
+}
+.markdown code:not(pre code) {
+  color: var(--ifm-color-primary);
+  border: 0;
+  padding: 0.2em 0.4em;
+  overflow-wrap: anywhere;
+}
+.markdown pre {
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+.markdown blockquote {
+  color: var(--ifm-font-color-secondary);
+  border-inline-start: 2px solid var(--ifm-color-emphasis-300);
+  padding-inline: 1rem;
+}
+.markdown hr {
+  height: 1px;
+  margin-block: 2.5rem;
+  background: var(--ifm-color-emphasis-300);
+}
+.markdown img {
+  border-radius: 8px;
+}
+.theme-code-block {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  box-shadow: none;
+  background: var(--ci-doc-surface);
+}
+.theme-code-block pre,
+.theme-code-block pre code {
+  background: var(--ci-doc-surface);
+}
+/* Docusaurus exposes no stable class for code titles. Match the module prefix. */
+div[class*="codeBlockTitle"] {
+  padding: 0.75rem 1.25rem;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ifm-font-color-secondary);
+  background: var(--ci-doc-surface);
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+}
+.markdown table {
+  display: block;
   width: 100%;
-  margin-bottom: 24px;
-  /* text-align: center; */
+  max-width: 100%;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  border-collapse: collapse;
+}
+.markdown table th {
+  font-weight: 600;
+  text-align: start;
+}
+.markdown table th,
+.markdown table td {
+  border: 1px solid var(--ifm-table-border-color);
+}
+.markdown table td {
+  vertical-align: top;
+}
+.markdown table tr:nth-child(2n) {
+  background: var(--ci-doc-surface);
+}
+.theme-admonition {
+  --ifm-alert-shadow: none;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-inline-start: 3px solid var(--ifm-alert-foreground-color);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  font-size: 0.875rem;
+}
+.theme-admonition h5 {
+  font-family: var(--ifm-font-family-base);
+  font-size: 0.875rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.theme-admonition p:last-child {
+  margin-bottom: 0;
+}
+.alert--info,
+.alert--secondary {
+  --ifm-alert-background-color: var(--ci-doc-surface);
+  --ifm-alert-foreground-color: var(--ifm-font-color-secondary);
+}
+.alert--success {
+  --ifm-alert-background-color: var(--ci-doc-brand-soft);
+  --ifm-alert-foreground-color: var(--ifm-color-primary);
+}
+.tabs {
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+.tabs__item {
+  padding: 0.75rem 1rem;
+  font-weight: 500;
+  border-bottom-width: 2px;
+  border-radius: 0;
+}
+.tabs__item--active {
+  font-weight: 600;
 }
 
+.table-of-contents {
+  padding: 0;
+  padding-inline-start: 1rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+.table-of-contents li {
+  margin: 0.625rem 0;
+}
+.table-of-contents__link {
+  color: var(--ifm-font-color-secondary);
+}
+.table-of-contents__link--active {
+  color: var(--ifm-color-primary);
+  font-weight: 500;
+}
+.theme-doc-toc-mobile {
+  font-size: 0.875rem;
+  background: var(--ci-doc-surface);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 6px;
+}
+.pagination-nav {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--ifm-color-emphasis-300);
+  gap: 1rem;
+}
+.pagination-nav__link {
+  padding: 1rem;
+  border-radius: 8px;
+  border-color: var(--ifm-color-emphasis-300);
+  transition: border-color 150ms, background-color 150ms;
+}
+.pagination-nav__link:hover {
+  background: var(--ci-doc-surface);
+  text-decoration: none;
+}
+.pagination-nav__sublabel {
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.75rem;
+}
+.pagination-nav__label {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.card {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  background: var(--ci-doc-surface);
+  box-shadow: none;
+}
+a.card:hover {
+  border-color: var(--ifm-color-primary);
+  box-shadow: none;
+}
+.card h2 {
+  border: 0;
+  padding: 0;
+  margin: 0 0 0.5rem;
+  font-family: var(--ifm-font-family-base);
+  font-size: 1rem;
+}
+.card p {
+  color: var(--ifm-font-color-secondary);
+  line-height: 1.6;
+}
+.footer {
+  border-top: 1px solid var(--ifm-color-emphasis-300);
+  font-size: 0.8125rem;
+  padding: 2.5rem 2rem;
+}
+.footer__title {
+  font-family: var(--ifm-font-family-base);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+.footer__copyright {
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.75rem;
+}
+.red {
+  color: var(--ifm-color-danger-dark);
+}
+.table-container,
 .center-table {
   width: 100%;
-  margin: auto;
+  max-width: 100%;
+  overflow-x: auto;
+}
+.table-container {
+  margin-bottom: 1.5rem;
+}
+.center-table {
+  margin-inline: auto;
+}
+
+@media (min-width: 997px) {
+  .theme-doc-sidebar-container .menu {
+    padding: 1.5rem 1rem 2rem;
+  }
+  .main-wrapper main > .container {
+    max-width: 1200px;
+    padding: 2.5rem 3rem 4rem !important;
+  }
+  .main-wrapper main > .container > .row {
+    flex-wrap: nowrap;
+    gap: 3rem;
+    margin-inline: 0;
+  }
+  .main-wrapper main > .container > .row > .col {
+    padding-inline: 0;
+    min-width: 0;
+  }
+  .main-wrapper main > .container > .row > .col:first-child {
+    flex: 1 1 0;
+    width: 100%;
+    max-width: var(--ci-doc-content-width) !important;
+    margin-inline: auto;
+  }
+  .main-wrapper main > .container > .row > .col--3 {
+    flex: 0 0 180px;
+    max-width: 180px;
+  }
+  .theme-doc-toc-desktop::before {
+    content: "On this page";
+    display: block;
+    margin-bottom: 0.75rem;
+    padding-inline-start: 1rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+}
+@media (min-width: 997px) and (max-width: 1199px) {
+  .main-wrapper main > .container {
+    padding-inline: 2rem !important;
+  }
+  .main-wrapper main > .container > .row {
+    gap: 1.5rem;
+  }
+  .main-wrapper main > .container > .row > .col--3 {
+    flex-basis: 144px;
+    max-width: 144px;
+  }
+  .navbar__brand {
+    margin-inline-end: 1rem;
+  }
+  .navbar__link {
+    padding-inline: 0.5rem;
+    font-size: 0.8125rem;
+  }
+}
+@media (max-width: 996px) {
+  html:root {
+    --ifm-navbar-padding-horizontal: 1.25rem;
+  }
+  .navbar-sidebar {
+    background: var(--ifm-background-color);
+  }
+  .navbar-sidebar .menu__link,
+  .navbar-sidebar .menu__caret {
+    min-height: 44px;
+  }
+  .theme-doc-sidebar-menu {
+    font-size: 0.9375rem;
+  }
+  .main-wrapper main > .container {
+    padding: 1.5rem 1.5rem 3rem !important;
+  }
+  .main-wrapper main > .container > .row {
+    margin-inline: 0;
+  }
+  .main-wrapper main > .container > .row > .col {
+    padding-inline: 0;
+  }
+  .theme-doc-breadcrumbs {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (pointer: coarse) {
+  html:root { --ci-doc-navbar-control-height: 44px; }
+}
+
+/* Keep the guide search and menu usable together on narrow screens. */
+@media (min-width: 997px) and (max-width: 1599px) {
+  .navbar__brand { margin-inline-end: 1rem; }
+  .navbar__link { padding-inline: 0.5rem; }
+}
+@media (min-width: 997px) and (max-width: 1399px) {
+  html:root { --ifm-navbar-padding-horizontal: 1rem; }
+  .navbar__title { display: none; }
+  .navbar__brand { margin-inline-end: 0.5rem; }
+}
+@media (max-width: 576px) {
+  .navbar__title { display: none; }
+}
+@media (max-width: 576px) {
+  .markdown h1,
+  :where([class*="generatedIndexPage"]) h1 {
+    font-size: 1.75rem;
+    line-height: 1.4;
+  }
+  .markdown h2 {
+    margin-top: 2.25rem;
+  }
+  .main-wrapper main > .container {
+    padding-inline: 1.25rem !important;
+  }
+  .pagination-nav {
+    grid-template-columns: 1fr;
+  }
+  .pagination-nav__link--next {
+    grid-column: 1;
+  }
+  .footer {
+    padding: 2rem 1.25rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (min-width: 997px) {
+  .main-wrapper main [class*="generatedIndexPage"] {
+    max-width: var(--ci-doc-content-width) !important;
+    margin-inline: auto;
+  }
+}
+
+/* Dictionary audiences share the docs theme; contributor terminology is green. */
+html:root {
+  --ci-doc-developer-accent: #14733f;
+  --ci-doc-developer-strong: #10532f;
+  --ci-doc-developer-soft: #e8f5ec;
+  --ci-doc-developer-border: #afd8bb;
+}
+
+html:root[data-theme="dark"] {
+  --ci-doc-developer-accent: #8fddb1;
+  --ci-doc-developer-strong: #c2f2d6;
+  --ci-doc-developer-soft: #203d2e;
+  --ci-doc-developer-border: #3d7956;
+}
+
+[data-dictionary-audience="developer"],
+.plugin-id-developerDictionary .main-wrapper {
+  --ifm-color-primary: var(--ci-doc-developer-accent);
+  --ifm-color-primary-dark: var(--ci-doc-developer-strong);
+  --ifm-color-primary-darker: var(--ci-doc-developer-strong);
+  --ifm-color-primary-darkest: var(--ci-doc-developer-strong);
+  --ifm-color-primary-light: var(--ci-doc-developer-accent);
+  --ifm-color-primary-lighter: var(--ci-doc-developer-border);
+  --ifm-color-primary-lightest: var(--ci-doc-developer-soft);
+  --ifm-link-color: var(--ci-doc-developer-accent);
+  --ifm-link-hover-color: var(--ci-doc-developer-strong);
+  --ifm-menu-color-active: var(--ci-doc-developer-accent);
+  --ifm-menu-color-background-active: var(--ci-doc-developer-soft);
+  --ci-doc-brand-soft: var(--ci-doc-developer-soft);
+}
+
+html:root .developer-dictionary-link,
+html:root button[data-dictionary-audience="developer"],
+html:root .markdown a[href^="/developer-dictionary/"] {
+  color: var(--ci-doc-developer-accent);
+}
+
+html:root .developer-dictionary-link:hover,
+html:root button[data-dictionary-audience="developer"]:hover {
+  color: var(--ci-doc-developer-strong);
+  background-color: var(--ci-doc-developer-soft);
+}
+
+/* Compact desktop keeps both viewer tools; full pages remain in the footer. */
+@media (min-width: 997px) and (max-width: 1199px) {
+  .navbar__items > .user-dictionary-link,
+  .navbar__items > .developer-dictionary-link {
+    display: none;
+  }
+}
+
+html:root button[data-dictionary-audience="user"] {
+  color: var(--ifm-color-primary);
+}
+
+@media (max-width: 996px) {
+  /* Docusaurus positions search absolutely on mobile; reserve its width beside
+     the two dictionary tools so their touch targets remain unobstructed. */
+  .navbar [class*="navbarSearchContainer"] {
+    position: static;
+  }
 }

@@ -119,6 +119,18 @@ function validatePrivilege(
   validateTitle(privilege.title, `${path}.title`, issues);
   validateScopeKinds(privilege.scopeKinds, `${path}.scopeKinds`, issues);
 
+  if (
+    privilege.readOnly !== undefined &&
+    typeof privilege.readOnly !== "boolean"
+  ) {
+    issues.push({
+      severity: "error",
+      code: "invalid-read-only",
+      path: `${path}.readOnly`,
+      message: "The read-only restriction must be a boolean.",
+    });
+  }
+
   if (!CI_AUTHORIZATION_RESOURCE_PATTERN.test(privilege.resource)) {
     validateIdentifier(
       privilege.resource,
@@ -281,7 +293,8 @@ export function ciValidateAccessControlDefinition(
         severity: "error",
         code: "invalid-domain-status",
         path: `${path}.status`,
-        message: 'Resource-domain status must be either "active" or "suspended".',
+        message:
+          'Resource-domain status must be either "active" or "suspended".',
       });
     }
 
@@ -371,7 +384,10 @@ export function ciValidateAccessControlDefinition(
       });
     }
 
-    if (resource.status === "suspended" && resource.statusChange === undefined) {
+    if (
+      resource.status === "suspended" &&
+      resource.statusChange === undefined
+    ) {
       issues.push({
         severity: "error",
         code: "invalid-resource-status",
@@ -413,6 +429,18 @@ export function ciValidateAccessControlDefinition(
     }
 
     for (const [actionIndex, action] of resource.actions.entries()) {
+      if (
+        action.accessMode !== undefined &&
+        action.accessMode !== "read" &&
+        action.accessMode !== "write"
+      ) {
+        issues.push({
+          severity: "error",
+          code: "invalid-action-access-mode",
+          path: `${path}.actions[${actionIndex}].accessMode`,
+          message: 'Action access mode must be "read" or "write".',
+        });
+      }
       validateIdentifier(
         action.id,
         `${path}.actions[${actionIndex}].id`,

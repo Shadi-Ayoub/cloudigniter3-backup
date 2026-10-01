@@ -5,6 +5,9 @@ import {
   CiUserSettingsFormSchema,
 } from "@ci-core/lib";
 import type { CiTenantScope } from "@ci-core/types";
+import type { CiSmartFormFieldSpec } from "../smart-form-types";
+import type { CiSettingsEnforcementRule } from "./CiSettingsManagement";
+export type * from "./CiSettingsManagement";
 //------
 export type { CiAppSettings } from "./CiAppSettings";
 export type { CiCoreSettings } from "./CiCoreSettings";
@@ -55,6 +58,8 @@ export type CiSettingsRecord<TSettings extends CiSettings = CiSettings> = {
   value: Partial<TSettings>;
   createdAt?: string;
   updatedAt?: string;
+  revision?: number;
+  enforcement?: readonly CiSettingsEnforcementRule[];
 };
 
 export type CiSettingsRegistryEntry<TSettings extends CiSettings = CiSettings> =
@@ -65,6 +70,12 @@ export type CiSettingsRegistryEntry<TSettings extends CiSettings = CiSettings> =
     allowClientRead?: boolean;
     allowClientWrite?: boolean;
     mergeWithCore?: boolean;
+    /** Include this group on every eligible request, even without a route selection. */
+    alwaysLoad?: boolean;
+    /** Serializable form fields; validation schemas stay on the server. */
+    fields?: readonly CiSmartFormFieldSpec[];
+    /** Field-to-cookie mapping. Existing cookies override values only during request resolution. */
+    cookies?: Readonly<Record<string, string>>;
     meta?: {
       title?: string;
       description?: string;
@@ -95,11 +106,28 @@ export type CiSettingsStoreGetInput = {
 export type CiSettingsStoreSetInput<TSettings extends CiSettings = CiSettings> =
   CiSettingsStoreGetInput & {
     value: Partial<TSettings>;
+    /** Compare-and-set revision; zero means the record must not exist. */
+    expectedRevision?: number;
+    enforcement?: readonly CiSettingsEnforcementRule[];
   };
+
+export type CiSettingsStoreCondition = CiSettingsStoreGetInput & {
+  revision: number;
+};
 
 export type CiSettingsStoreDeleteInput = CiSettingsStoreGetInput;
 
 export type CiSettingsStore = {
+  /** Optional atomic multi-group write. Never implement this as independent writes. */
+  setMany?: (
+    inputs: readonly CiSettingsStoreSetInput[],
+    conditions?: readonly CiSettingsStoreCondition[],
+  ) => Promise<CiSettingsRecord[]>;
+  /** Create a tenant copy once, conditional on the source revision; return a concurrent winner. */
+  initialize?: (
+    input: CiSettingsStoreSetInput,
+    source: CiSettingsStoreCondition,
+  ) => Promise<CiSettingsRecord>;
   get: <TSettings extends CiSettings = CiSettings>(
     input: CiSettingsStoreGetInput,
   ) => Promise<CiSettingsRecord<TSettings> | null>;

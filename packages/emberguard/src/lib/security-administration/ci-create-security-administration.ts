@@ -148,6 +148,7 @@ function buildPermissionRecords(
         effect: privilege.effect,
         resource: privilege.resource,
         action: privilege.action,
+        readOnly: privilege.readOnly ?? false,
         scopeKinds: [...privilege.scopeKinds],
         sensitive: action?.sensitive ?? privilege.action === "*",
         ...getEntryState(
@@ -170,7 +171,9 @@ function buildResourceRecords(
     title: resource.title,
     description: resource.description,
     status: resource.status ?? "active",
-    statusChange: resource.statusChange ? { ...resource.statusChange } : undefined,
+    statusChange: resource.statusChange
+      ? { ...resource.statusChange }
+      : undefined,
     domainId: resource.domainId,
     actions: resource.actions.map((action) => action.id),
     scopeKinds: [...resource.scopeKinds],
@@ -194,7 +197,9 @@ function buildResourceDomainRecords(
       title: domain.title,
       description: domain.description,
       status: domain.status ?? "active",
-      statusChange: domain.statusChange ? { ...domain.statusChange } : undefined,
+      statusChange: domain.statusChange
+        ? { ...domain.statusChange }
+        : undefined,
       resourceCount: definition.resources.filter(
         (resource) => resource.domainId === domain.id
       ).length,
@@ -278,8 +283,8 @@ function buildIdentityGroupRecords(
     const status = !role
       ? "unmapped"
       : providerRank.get(group.id) === catalogRank.get(group.id)
-      ? "mapped"
-      : "drift";
+        ? "mapped"
+        : "drift";
 
     return {
       kind: "identity-group",
@@ -502,6 +507,9 @@ function buildAccessControlLayer(
               effect: record.effect,
               resource: record.resource,
               action: record.action,
+              ...(record.readOnly === undefined
+                ? {}
+                : { readOnly: record.readOnly }),
               scopeKinds: record.scopeKinds,
             },
           ],
@@ -564,17 +572,17 @@ function removeCatalogRecord(
       record.kind === "role"
         ? current.roles.filter((item) => item.id !== record.id)
         : record.kind === "permission"
-        ? current.roles.map((role) =>
-            role.id === record.roleId
-              ? {
-                  ...role,
-                  privileges: role.privileges.filter(
-                    (item) => item.id !== record.id
-                  ),
-                }
-              : role
-          )
-        : current.roles,
+          ? current.roles.map((role) =>
+              role.id === record.roleId
+                ? {
+                    ...role,
+                    privileges: role.privileges.filter(
+                      (item) => item.id !== record.id,
+                    ),
+                  }
+                : role,
+            )
+          : current.roles,
   };
   ciAssertValidAccessControlDefinition(next);
   return next;
@@ -692,7 +700,9 @@ export function ciCreateSecurityAdministration(
   ): Promise<void> {
     const reason = input.reason.trim();
     if (!reason) {
-      throw new Error("A reason is required to change a resource domain's status.");
+      throw new Error(
+        "A reason is required to change a resource domain's status.",
+      );
     }
     if (input.status !== "active" && input.status !== "suspended") {
       throw new Error(
@@ -765,7 +775,9 @@ export function ciCreateSecurityAdministration(
       throw new Error("A reason is required to change a resource's status.");
     }
     if (input.status !== "active" && input.status !== "suspended") {
-      throw new Error('Resource status must be either "active" or "suspended".');
+      throw new Error(
+        'Resource status must be either "active" or "suspended".',
+      );
     }
     if (
       input.status === "suspended" &&
@@ -870,7 +882,9 @@ export function ciCreateSecurityAdministration(
       const currentResource = current.resources.find(
         (resource) => resource.id === record.id
       );
-      if ((record.status ?? "active") !== (currentResource?.status ?? "active")) {
+      if (
+        (record.status ?? "active") !== (currentResource?.status ?? "active")
+      ) {
         await setResourceStatus({
           resourceId: record.id,
           status: record.status ?? "active",

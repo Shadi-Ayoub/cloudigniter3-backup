@@ -123,6 +123,8 @@ Each `CiLayout` wraps its structure with `CiPageWrapper`. The server wrapper res
 - `CiInitialLoader`;
 - route children inside the active providers.
 
+Theme configuration reaches `CiClientWrapper` as `{ theme: appCoreConfig.theme, themeProviderProps: appNextResolvedConfig.appThemeProviderProps }`. The client wrapper forwards it unchanged. Defined raw overrides take precedence over mapped generic fields and defaults. Read [theming](../ui/theming.md) for the shared class/data-theme selectors, semantic colors, widget mode observation, and validation contract.
+
 Use `CiLayout` consistently so pages receive the same structural, theme, diagnostics, component-registry, feedback, and initial-loading behavior. Add reusable layout behavior to the owning package wrapper rather than repeating it in application route layouts.
 
 ## 5. Page layer
@@ -142,6 +144,57 @@ Server page components call `appBootstrap()` and pass the same resolved context 
 The page-level provider uses `setup.messages` when supplied and otherwise uses `context.config.appNextResolvedConfig.messages`. This creates an intentional page override boundary beneath the root provider. It must wrap the complete `CiPageShell`, including breadcrumb and header slots, so every page-owned translation follows the current route's messages during client navigation.
 
 Do not attribute this second next-intl provider to `CiLayout`: the root provider is installed by `CiNextRootWrapper`, while the nested provider is installed by `CiPage`.
+
+### Breadcrumb shortcuts
+
+- `CiPage` passes `setup.withBreadcrumbChildrenMenu` to the Next.js-owned `CiBreadcrumbs`; the default is false.
+- `CiBreadcrumbItem.children` is recursive. Keep parent `href` values clickable while hovering exposes children;
+  leaf destinations have no submenu. Template composition supplies the route tree, not rendering algorithms.
+- Resolve translated labels and alphabetize siblings with the active locale. Exclude hidden subtrees and current
+  leaves, but retain current sections as non-navigating parents when they have visible descendants.
+- Reuse UI dropdown/submenu primitives for keyboard focus, RTL, pointer grace, collision handling, and portals.
+  Keep the root menu open while the pointer traverses any descendant portal. Provide a touch disclosure target
+  on parents and retain Enter navigation plus directional-arrow/Space submenu access.
+- Navigation adapters used with `asChild` must pass anchor attributes, handlers, and refs through to the native
+  anchor and honor `preventDefault()` before navigation. A slotted submenu trigger receives one complete child.
+- Keep popover surface/foreground and menu-layer tokens; constrain submenu size to the viewport and available height.
+
+### HTTP error boundaries
+
+- `app/forbidden.tsx` and `app/not-found.tsx` delegate to application-owned `AppHttpErrorPage` branding.
+  Generic illustrated rendering extends `CiErrorPage` in UI; `CiNextHttpErrorPage` in Next owns Image/Link integration.
+  Core exports additive `CiErrorPageProps`; Next exports `CiNextHttpErrorPageProps` through canonical `/types`.
+- Use `forbidden()` in server page guards for confirmed permission denials, before protected data loading.
+  Preserve `notFound()` for missing/disabled resources, login redirects for sign-out, and retryable failures for
+  provider unavailability. Never detect authorization failure by matching a free-text error message.
+- Native `forbidden()` requires `experimental.authInterrupts: true`; it remains an experimental Next.js API.
+  Do not invoke it in the root layout or let broad catches normalize its framework interrupt. Already streamed
+  responses cannot change status headers. The presentation component alone does not enforce access or set status.
+- HTTP error copy lives under `httpErrors` in Next's English/Arabic common locales, with application common overrides.
+  The error composition resolves the configured locale cookie/default and loads common messages directly; it does
+  not invoke the route-dependent next-intl request hook again. The optional suspension resolver separately uses
+  cached appBootstrap for trusted context and retains ordinary denial on failure. Normal-page i18n remains unchanged.
+- `/error-preview/access-denied` is a system-scope, public diagnostic route. The thin template page delegates to
+  Next's `CiNextAccessDeniedPreview`, which calls `forbidden()` only in development and `notFound()` otherwise.
+  It changes no permissions or resources and is not a bypass for actual page or provider authorization.
+- Distinguish ordinary 403 (intact locked cloud) from confirmed suspended access (retained cracked locked cloud).
+  `CiNextHttpErrorPage.accessSuspended` selects suspension copy only for 403. Use Core's
+  `ciIsAuthorizationSuspended` with the actual guard's trusted catalog, subject, requests, and options: a retained
+  grant must allow access if only suspension is hypothetically lifted. Never grant from this diagnostic result,
+  infer prior access from a suspended entry alone, or select suspension from query strings/free-text errors.
+  The template's custom resolver covers Security, Users, Administrators, and user restoration in Trash; unknown
+  guards and failed evidence stay ordinary denial. Both variants have English/Arabic common-message overrides.
+  `/error-preview/access-suspended` shares the development-only 403 preview gate and simulates this state explicitly.
+- Cover confirmed denials before protected reads, missing resources, signed-out redirects, provider outages,
+  translation overrides, both themes, RTL, and the non-development preview guard. Check HTTP behavior separately
+  from component rendering.
+- Next.js 16.2.2's bundled React development profiler can throw on negative error/abort end timestamps. The
+  workspace persists `patches/next@16.2.2.patch` through pnpm `patchedDependencies`; guard only the invalid profiling
+  entries in all four browser-development clients. Keep native interrupts and valid timing entries intact.
+  Revalidate on Next upgrades and carry registration explicitly into standalone distributions; CloudIgniter package
+  imports cannot apply an application's dependency patch. Run the installed-runtime regression in
+  `packages/next/__tests__/page/rsc-performance.test.cjs`, then verify previews after restarting Next. Do not infer
+  browser success from HTTP status alone, add arbitrary waits, or globally override the Performance API.
 
 ## 6. Provider hierarchy
 

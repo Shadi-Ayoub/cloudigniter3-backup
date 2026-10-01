@@ -1,5 +1,6 @@
 import { defineConfig } from "tsup";
-import { ciCreateTsupConfig } from "@cloudigniter/cli/tooling/tsup";
+import { ciRewriteRscImports } from "./scripts/ci-build-imports.mjs";
+import { ciCreateTsupConfig } from "@cloudigniter/dev/tooling/tsup";
 
 const externalPackages = [
   "react",
@@ -29,17 +30,28 @@ const externalPackages = [
   "@cloudigniter/aws/types",
 ];
 
-export default defineConfig(async () =>
-  ciCreateTsupConfig({
+export default defineConfig(async () => {
+  const configs = await ciCreateTsupConfig({
     mode: "next",
     external: externalPackages,
     clientDirectiveTargets: ["dist/client", "dist/ui/client"],
-  }),
-);
+  });
+  return configs.map((config) => {
+    if (config.bundle !== false) return config;
+    const complete = config.onSuccess;
+    return {
+      ...config,
+      onSuccess: async () => {
+        if (typeof complete === "function") await complete();
+        await ciRewriteRscImports(["dist/ui/server", "dist/ui/common", "dist/layout"]);
+      },
+    };
+  });
+});
 
 // import { defineConfig } from "tsup";
 // import { preserveDirectivesPlugin } from "esbuild-plugin-preserve-directives";
-// import { getAllEntries } from "@cloudigniter/cli/tooling/entries";
+// import { getAllEntries } from "@cloudigniter/dev/tooling/entries";
 
 // const isProduction = process.env.NODE_ENV === "production";
 

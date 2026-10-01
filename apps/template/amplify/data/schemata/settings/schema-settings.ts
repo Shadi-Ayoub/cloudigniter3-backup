@@ -1,26 +1,11 @@
-// import { a } from '@aws-amplify/backend';
-
-// import { getSettingsHandler } from '../../../functions/system/settings/get-settings/resource';
-// import { setSettingsHandler } from '../../../functions/system/settings/set-settings/resource';
-
-// const schemaSettings = {
-//   getSettings: a
-//     .query()
-//     .arguments({
-//       inputString: a.string(),
-//     })
-//     .handler(a.handler.function(getSettingsHandler))
-//     .returns(a.json())
-//     .authorization((allow) => [allow.publicApiKey(), allow.authenticated()]),
-
-//   setSettings: a
-//     .mutation()
-//     .arguments({
-//       inputString: a.string(),
-//     })
-//     .handler(a.handler.function(setSettingsHandler))
-//     .returns(a.json())
-//     .authorization((allow) => [allow.group('system-admin')]),
-// };
-
-// export default schemaSettings;
+import { a } from "@aws-amplify/backend";
+import { CI_CORE_AMPLIFY_FUNCTION_RESOURCES } from "../../../backend/ci-core-amplify-manifest";
+const { getSettingsHandler, setSettingsHandler } = CI_CORE_AMPLIFY_FUNCTION_RESOURCES;
+export default {
+  GetSettings: a.query().arguments({ inputString: a.string().required() })
+    .handler(a.handler.function(getSettingsHandler)).returns(a.json())
+    .authorization(allow => [allow.publicApiKey(), allow.authenticated()]),
+  SetSettings: a.mutation().arguments({ inputString: a.string().required() })
+    .handler(a.handler.function(setSettingsHandler)).returns(a.json())
+    .authorization(allow => [allow.authenticated()]),
+};

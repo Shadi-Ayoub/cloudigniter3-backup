@@ -1,0 +1,47 @@
+---
+title: "dev quality list-client-files"
+description: "List source files with client-component or browser-only signals."
+sidebar_label: "dev quality list-client-files"
+sidebar_custom_props:
+  audience: developer
+---
+
+List source files with client-component or browser-only signals.
+
+## Syntax
+
+```text
+dev quality list-client-files [--root=<path>]
+```
+
+## Prerequisites
+
+Run from the owning `packages/<name>` directory in the private CloudIgniter workspace after installing its dependencies. `--workspace-root` selects discovery and does not change the current package.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--root=<path>` | Source root relative to the current directory; defaults to src. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Prints a diagnostic file inventory without changing directives. A single positional path remains supported; do not combine it with `--root`.
+
+## Examples
+
+```bash
+cd packages/ui
+pnpm exec dev quality list-client-files --root=src
+```
+
+## Errors and recovery
+
+A missing required configuration or tool fails the command. A failed subprocess stops the workflow and returns a nonzero status. Inspect the first reported failure before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/cli-architecture)

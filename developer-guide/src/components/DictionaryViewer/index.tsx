@@ -1,10 +1,5 @@
-import type {
-  ComponentType,
-  LazyExoticComponent,
-  MouseEvent as ReactMouseEvent,
-} from "react";
+import type { MouseEvent as ReactMouseEvent } from "react";
 import React, {
-  lazy,
   Suspense,
   useEffect,
   useLayoutEffect,
@@ -13,126 +8,25 @@ import React, {
   useState,
 } from "react";
 import { BookOpen, ExternalLink, Search, X } from "lucide-react";
-import dictionarySidebars from "../../../dictionary-sidebars";
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import { useLocation } from "@docusaurus/router";
+import { dictionaries, type Dictionary } from "./dictionaries";
+import type { DictionaryTerm } from "../../../dictionary-catalog";
+import { findDictionaryTerm } from "./links";
 import { DICTIONARY_VIEWER_OPEN_EVENT } from "./events";
 import styles from "./styles.module.css";
 
-type DictionaryLetter =
-  | "A"
-  | "B"
-  | "C"
-  | "D"
-  | "E"
-  | "F"
-  | "G"
-  | "H"
-  | "I"
-  | "K"
-  | "L"
-  | "M"
-  | "N"
-  | "O"
-  | "P"
-  | "R"
-  | "S"
-  | "T"
-  | "U";
-
-type DictionarySidebarCategory = {
-  items: Array<{ href: string; label: string; type: "link" }>;
-  label: DictionaryLetter;
-  type: "category";
-};
-
-type DictionaryTerm = {
-  anchor: string;
-  label: string;
-  letter: DictionaryLetter;
-};
-
-type DictionarySelection = DictionaryTerm | null;
-
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
-const dictionaryTermsByLetter = Object.fromEntries(
-  (
-    dictionarySidebars.dictionarySidebar as unknown as Array<
-      DictionarySidebarCategory | string
-    >
-  )
-    .filter(
-      (item): item is DictionarySidebarCategory =>
-        typeof item !== "string" && item.type === "category",
-    )
-    .map((category) => [
-      category.label,
-      category.items.map((item) => [
-        item.label,
-        item.href.slice(item.href.indexOf("#") + 1),
-      ]),
-    ]),
-) as Record<DictionaryLetter, Array<[label: string, anchor: string]>>;
-
-const dictionaryPages: Record<
-  DictionaryLetter,
-  LazyExoticComponent<ComponentType>
-> = {
-  A: lazy(() => import("../../../dictionary/a.mdx")),
-  B: lazy(() => import("../../../dictionary/b.mdx")),
-  C: lazy(() => import("../../../dictionary/c.mdx")),
-  D: lazy(() => import("../../../dictionary/d.mdx")),
-  E: lazy(() => import("../../../dictionary/e.mdx")),
-  F: lazy(() => import("../../../dictionary/f.mdx")),
-  G: lazy(() => import("../../../dictionary/g.mdx")),
-  H: lazy(() => import("../../../dictionary/h.mdx")),
-  I: lazy(() => import("../../../dictionary/i.mdx")),
-  K: lazy(() => import("../../../dictionary/k.mdx")),
-  L: lazy(() => import("../../../dictionary/l.mdx")),
-  M: lazy(() => import("../../../dictionary/m.mdx")),
-  N: lazy(() => import("../../../dictionary/n.mdx")),
-  O: lazy(() => import("../../../dictionary/o.mdx")),
-  P: lazy(() => import("../../../dictionary/p.mdx")),
-  R: lazy(() => import("../../../dictionary/r.mdx")),
-  S: lazy(() => import("../../../dictionary/s.mdx")),
-  T: lazy(() => import("../../../dictionary/t.mdx")),
-  U: lazy(() => import("../../../dictionary/u.mdx")),
-};
-
-const dictionaryTerms: DictionaryTerm[] = Object.entries(
-  dictionaryTermsByLetter,
-).flatMap(([letter, terms]) =>
-  terms.map(([label, anchor]) => ({
-    anchor,
-    label,
-    letter: letter as DictionaryLetter,
-  })),
-);
-
-const termsByAnchor = new Map(
-  dictionaryTerms.map((term) => [
-    `${term.letter.toLowerCase()}/${term.anchor}`,
-    term,
-  ]),
-);
-
-function getDictionaryTerm(href: string): DictionaryTerm | null {
-  const url = new URL(href, window.location.href);
-  const match = url.pathname.match(/\/dictionary\/([a-z])\/?$/i);
-
-  if (url.origin !== window.location.origin || !match || !url.hash) {
-    return null;
-  }
-
-  return (
-    termsByAnchor.get(
-      `${match[1].toLowerCase()}/${decodeURIComponent(url.hash.slice(1))}`,
-    ) ?? null
-  );
-}
-
-function DictionaryDefinition({ selection }: { selection: DictionaryTerm }) {
+function DictionaryDefinition({
+  selection,
+  dictionary,
+}: {
+  selection: DictionaryTerm;
+  dictionary: Dictionary;
+}) {
   const contentRef = useRef<HTMLDivElement>(null);
-  const DictionaryPage = dictionaryPages[selection.letter];
+  const DictionaryPage = dictionary.pages[selection.letter];
 
   useLayoutEffect(() => {
     const content = contentRef.current;
@@ -150,8 +44,7 @@ function DictionaryDefinition({ selection }: { selection: DictionaryTerm }) {
 
       const children = Array.from(currentContent.children);
       const hasDefinitionHeading = children.some(
-        (child) =>
-          child instanceof HTMLHeadingElement && child.tagName === "H2",
+        (child) => child instanceof HTMLHeadingElement && child.tagName === "H2"
       );
       let showSection = false;
 
@@ -188,10 +81,14 @@ function DictionaryDefinition({ selection }: { selection: DictionaryTerm }) {
 }
 
 export default function DictionaryViewer(): React.JSX.Element | null {
+  const baseUrl = useBaseUrl("/");
+  const location = useLocation();
+  const [dictionary, setDictionary] = useState(dictionaries[0]);
+  const dictionaryTerms = dictionary.terms;
   const dialogRef = useRef<HTMLDialogElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
-  const [selection, setSelection] = useState<DictionarySelection>(null);
-  const [activeLetter, setActiveLetter] = useState<DictionaryLetter>("A");
+  const [selection, setSelection] = useState<DictionaryTerm | null>(null);
+  const [activeLetter, setActiveLetter] = useState("A");
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
@@ -200,17 +97,23 @@ export default function DictionaryViewer(): React.JSX.Element | null {
 
     if (normalizedQuery) {
       return dictionaryTerms.filter((term) =>
-        term.label.toLocaleLowerCase().includes(normalizedQuery),
+        [term.label, ...term.aliases].some((name) =>
+          name.toLocaleLowerCase().includes(normalizedQuery)
+        )
       );
     }
 
     return dictionaryTerms.filter((term) => term.letter === activeLetter);
-  }, [activeLetter, query]);
+  }, [activeLetter, query, dictionaryTerms]);
 
   useEffect(() => {
-    function openFromNavbar() {
+    function openFromNavbar(event: Event) {
+      const id = event instanceof CustomEvent ? event.detail : "user";
+      const nextDictionary = dictionaries.find((item) => item.id === id);
+      if (!nextDictionary) return;
+      setDictionary(nextDictionary);
       setSelection(null);
-      setActiveLetter("A");
+      setActiveLetter(nextDictionary.terms[0].letter);
       setQuery("");
       setIsOpen(true);
     }
@@ -228,8 +131,7 @@ export default function DictionaryViewer(): React.JSX.Element | null {
         event.metaKey ||
         event.ctrlKey ||
         event.shiftKey ||
-        event.altKey ||
-        window.location.pathname.startsWith("/dictionary")
+        event.altKey
       ) {
         return;
       }
@@ -241,14 +143,26 @@ export default function DictionaryViewer(): React.JSX.Element | null {
         return;
       }
 
-      const term = getDictionaryTerm(link.href);
-
-      if (!term) {
+      const match = findDictionaryTerm(
+        link.href,
+        window.location.href,
+        baseUrl,
+        dictionaries
+      );
+      if (!match) return;
+      const { dictionary: targetDictionary, term } = match;
+      // Full dictionary pages keep ordinary in-page navigation.
+      const path = `${baseUrl}${targetDictionary.basePath.slice(1)}`;
+      if (
+        !link.closest("dialog") &&
+        (window.location.pathname === path ||
+          window.location.pathname.startsWith(`${path}/`))
+      )
         return;
-      }
 
       event.preventDefault();
       event.stopPropagation();
+      setDictionary(targetDictionary);
       setSelection(term);
       setActiveLetter(term.letter);
       setQuery("");
@@ -259,7 +173,11 @@ export default function DictionaryViewer(): React.JSX.Element | null {
     document.addEventListener("click", openFromDictionaryLink, true);
     return () =>
       document.removeEventListener("click", openFromDictionaryLink, true);
-  }, []);
+  }, [baseUrl]);
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname, location.hash]);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -287,11 +205,11 @@ export default function DictionaryViewer(): React.JSX.Element | null {
   }
 
   function selectLetter(letter: string) {
-    if (!(letter in dictionaryTermsByLetter)) {
+    if (!dictionaryTerms.some((term) => term.letter === letter)) {
       return;
     }
 
-    setActiveLetter(letter as DictionaryLetter);
+    setActiveLetter(letter);
     setSelection(null);
     setQuery("");
   }
@@ -305,6 +223,7 @@ export default function DictionaryViewer(): React.JSX.Element | null {
     <dialog
       aria-labelledby="dictionary-viewer-title"
       className={styles.dialog}
+      data-dictionary-audience={dictionary.id}
       id="dictionary-viewer-dialog"
       onCancel={closeViewer}
       onClick={handleBackdropClick}
@@ -318,14 +237,14 @@ export default function DictionaryViewer(): React.JSX.Element | null {
               <BookOpen size={22} strokeWidth={1.8} />
             </span>
             <div>
-              <p className={styles.eyebrow}>User guide tool</p>
+              <p className={styles.eyebrow}>{dictionary.audience}</p>
               <h2 id="dictionary-viewer-title" className={styles.title}>
-                Dictionary
+                {dictionary.title}
               </h2>
             </div>
           </div>
           <button
-            aria-label="Close dictionary"
+            aria-label={`Close ${dictionary.title.toLowerCase()}`}
             className={styles.closeButton}
             onClick={closeViewer}
             type="button"
@@ -339,7 +258,9 @@ export default function DictionaryViewer(): React.JSX.Element | null {
           className={styles.alphabet}
         >
           {alphabet.map((letter) => {
-            const available = letter in dictionaryTermsByLetter;
+            const available = dictionaryTerms.some(
+              (term) => term.letter === letter
+            );
             const active = available && letter === activeLetter && !query;
 
             return (
@@ -414,13 +335,16 @@ export default function DictionaryViewer(): React.JSX.Element | null {
           <main className={styles.content}>
             {selection ? (
               <>
-                <DictionaryDefinition selection={selection} />
+                <DictionaryDefinition
+                  key={`${dictionary.id}/${selection.letter}/${selection.anchor}`}
+                  selection={selection}
+                  dictionary={dictionary}
+                />
                 <a
                   className={styles.fullPageLink}
                   data-dictionary-navigation="page"
-                  href={`/dictionary/${selection.letter.toLowerCase()}#${
-                    selection.anchor
-                  }`}
+                  href={`${baseUrl}${selection.href.slice(1)}`}
+                  onClick={closeViewer}
                 >
                   Open the full dictionary page
                   <ExternalLink aria-hidden="true" size={16} />
@@ -431,8 +355,8 @@ export default function DictionaryViewer(): React.JSX.Element | null {
                 <BookOpen aria-hidden="true" size={30} strokeWidth={1.5} />
                 <h3>Choose a term</h3>
                 <p>
-                  Select a term from the list or search the complete
-                  CloudIgniter dictionary.
+                  Select a term from the list or search the complete{" "}
+                  {dictionary.title.toLowerCase()}.
                 </p>
               </div>
             )}

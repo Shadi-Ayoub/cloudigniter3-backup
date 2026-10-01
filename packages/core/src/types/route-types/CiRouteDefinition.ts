@@ -6,6 +6,8 @@ export interface CiRouteDefinition {
   title: string;
   namespace: string;
   protected: boolean;
+  /** Settings group IDs loaded into page context, in addition to alwaysLoad groups. */
+  settings?: readonly string[];
 
   /**
    * Tenant scopes in which this logical route is available.

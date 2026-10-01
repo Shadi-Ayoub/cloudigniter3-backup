@@ -106,19 +106,6 @@ export const appBootstrap = cache(async (): Promise<CiNextContext> => {
       mode: envMode,
     };
 
-    // TBD
-    // const settings = await ciGetSettings({
-    //   authMode: auth.mode,
-    //   tenantId: requestContext.tenant?.id || undefined,
-    //   userId: currentUser.userId ?? undefined,
-    //   include:
-    //     auth.mode === "userPool"
-    //       ? ["public", "private", "user"]
-    //       : ["public"],
-    //   userSettingIds:
-    //     auth.mode === "userPool" ? ["notifications"] : [],
-    // });
-
     const status: CiNextStatus = {
       providers: {
         aws: {

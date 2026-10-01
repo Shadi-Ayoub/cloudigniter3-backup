@@ -1,0 +1,49 @@
+---
+title: "ci amplify sandbox deploy"
+description: "Verify generated resources and deploy them to an explicitly selected sandbox."
+sidebar_label: "ci amplify sandbox deploy"
+sidebar_custom_props:
+  audience: public
+---
+
+Verify generated resources and deploy them to an explicitly selected sandbox.
+
+## Syntax
+
+```text
+ci amplify sandbox deploy --profile=<name> --identifier=<value> [--no-interactive]
+```
+
+## Prerequisites
+
+Use a Resource Studio application with generated resources, valid AWS credentials, and Node.js LTS major 22 or 24. Both target options must be explicit in non-interactive automation.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--app-root=<path>` | Application root; defaults to the current directory. |
+| `--workspace-root=<path>` | Override workspace discovery and package resolution. |
+| `--profile=<name>` | Required AWS profile; prompted for only when interactive. |
+| `--identifier=<value>` | Required stable sandbox identifier: 1–15 letters, digits, or hyphens. |
+
+See the [ci common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Validates the generated resource plan, checks AWS identity and Region, and prints the target. It checks the plan again before the shared deployment runtime repeats preflight and runs `ampx sandbox --once`. This is an explicit cloud mutation.
+
+## Examples
+
+```bash
+pnpm exec ci amplify sandbox deploy --app-root=. --profile=developer1 --identifier=ci-books --no-interactive
+```
+
+## Errors and recovery
+
+A changed plan, identity, target, or Region fails before Amplify starts. Expired credentials require a separate SSO refresh; this command does not run `aws sso login`.
+
+## Related documentation
+
+- [ci Commands A–Z](./index.mdx)
+- [Workflow guide](/docs/resource-studio/overview)

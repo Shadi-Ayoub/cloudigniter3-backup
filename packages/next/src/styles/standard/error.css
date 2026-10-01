@@ -15,6 +15,20 @@
     @apply border-warning-border bg-warning-surface text-warning-surface-foreground;
   }
 
+  .notification-card-success,
+  .notification-dialog-content-success {
+    @apply border-success-border bg-success-surface text-success-surface-foreground;
+  }
+
+  .notification-card-success-icon,
+  .dialog-title-icon-success {
+    @apply text-success-surface-foreground;
+  }
+
+  .dialog-close-btn-success {
+    @apply border-success-border bg-success-surface text-success-surface-foreground hover:bg-success hover:text-success-foreground focus-visible:outline-2 focus-visible:outline-success;
+  }
+
   .notification-card-warning-icon {
     @apply text-warning-surface-foreground;
   }
@@ -120,6 +134,6 @@
   }
 
   .ci-error-page-retry-button {
-    @apply flex items-center gap-2 rounded bg-primary px-4 py-2 text-primary-foreground transition-colors hover:bg-primary-700 focus-visible:outline-2 focus-visible:outline-ring;
+    @apply flex items-center gap-2 rounded bg-primary px-4 py-2 text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-ring;
   }
 }

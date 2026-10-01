@@ -1,0 +1,45 @@
+---
+title: CloudIgniter Developer Toolkit
+description: The private toolkit for CloudIgniter company developers and automation.
+sidebar_position: 1
+slug: /tooling/dev-toolkit
+sidebar_label: Toolkit introduction
+---
+
+**CloudIgniter Developers** use the **CloudIgniter Developer Toolkit**, also called
+**DEV**, to maintain the platform. The `@cloudigniter/dev` package exposes the `dev`
+executable for package builds, tests, quality checks, framework assets, module
+maintenance, public template preparation and reviewed release workflows.
+
+The toolkit runs on company developers' machines and in company automation. Its
+manifest configures npm access as `restricted`; registry permissions control who
+can install it. Application developers use the public [CloudIgniter CLI](../ci/index.mdx)
+for application operations.
+
+## Start with the workspace
+
+[Workspace setup and migration](./workspace.mdx) explains prerequisites, package
+selection and migration from the former `ci-dev` executable. Use
+[dev commands](/commands/dev) for syntax, flags, examples and errors.
+
+## Follow the development workflow
+
+| Stage | Guide |
+| --- | --- |
+| Use the local publishing interface | [Publisher](./publisher.mdx) |
+| Maintain a platform package | [Package workflows](./package-workflows.mdx) |
+| Define package-owned tests and checks | [Package configuration](./package-configuration.mdx) |
+| Develop and validate behavior | [Testing and quality gates](./testing-and-release.mdx) |
+| Verify what will be distributed | [Release artifacts](./release-artifacts.mdx) |
+| Prepare a standalone application | [Template export](./template-export.mdx) and [template policy](./template-policy.mdx) |
+| Propose versions and request review | [Release requests](./release-requests.mdx) |
+| Extend the toolkit | [DEV architecture](./architecture.mdx) |
+
+GitHub repositories, profiles, approval rules and npm access are configured through
+[GitHub, npm and website publication](/company-developers/tooling/github-npm-publishing).
+Committed toolkit configuration and workflow files do not establish that remote
+permissions or publication have been enabled.
+
+The development executors live in DEV. Tests, build configuration, coverage policy
+and artifact checks remain with each package. This keeps company workflows shared
+while preserving package ownership.

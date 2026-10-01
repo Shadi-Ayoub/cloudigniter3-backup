@@ -53,6 +53,9 @@ Applications collect only the fields they need.
 `{"acme.departmentId":"finance"}` and validate them in the owning adapter. Do not add application-specific columns
 to the fixed contract, store credentials in `extensions`, or copy every Cognito attribute into the profile.
 
+To add fields to both management forms, follow [Extending user profiles](/docs/extending-application/user-profile).
+The template’s Department and Job title fields demonstrate the profile extension and form-mapping workflow.
+
 Store the durable S3 reference in `avatarKey` under an identity-owned prefix such as
 `user-avatars/{userId}/profile.webp`. Treat signed or CDN `avatarUrl` values as replaceable delivery data because
 they may expire. The application must register Amplify Storage and an upload adapter before the editor can upload

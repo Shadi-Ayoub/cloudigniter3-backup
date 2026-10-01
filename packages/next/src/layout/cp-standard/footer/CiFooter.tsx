@@ -36,7 +36,7 @@ export const CiFooter = ({ context, children }: FooterInterface) => {
 
       <div className="flex-1 text-right">
         <span>{ciCapitalizeFirstLetter(t("environment"))}:</span>&nbsp;
-        <span className="text-secondary-400">{t(process.env.NODE_ENV)}</span>
+        <span className="ci-main-footer-env-text">{t(process.env.NODE_ENV)}</span>
       </div>
     </footer>
   );

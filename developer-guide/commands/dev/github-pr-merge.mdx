@@ -1,0 +1,51 @@
+---
+title: "dev github pr merge"
+description: "Squash-merge an inspected pull request at its exact reviewed head."
+sidebar_label: "dev github pr merge"
+sidebar_custom_props:
+  audience: developer
+---
+
+Squash-merge an inspected pull request at its exact reviewed head.
+
+## Syntax
+
+```text
+dev github pr merge --project=<id|workspace> --number=<number> --head-sha=<sha>
+```
+
+## Prerequisites
+
+Run in the private workspace with [GitHub CLI prepared by DEV](./github-setup.mdx) and the relevant company policies configured. Online commands use the selected named GitHub profile; credentials remain in GitHub CLI storage.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--project=<id\|workspace>` | Required configured project ID, or workspace for the integration monorepo. |
+| `--repository-kind=source\|build` | Defaults to source. workspace has no build repository. |
+| `--profile=<name>` | Named GitHub profile; also selected through CLOUDIGNITER_PROFILE. |
+| `--number=<number>` | Required positive PR number. |
+| `--head-sha=<sha>` | Exact 40-character lowercase commit SHA from pr view. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Requests a squash merge using GitHub CLI’s matching-head check. The PR must be open, non-draft, on the configured base, and authored by someone else. GitHub protections enforce required reviews and checks.
+
+## Examples
+
+```bash
+# Replace REVIEWED_HEAD_SHA with the inspected 40-character headRefOid.
+pnpm exec dev github pr merge --project=workspace --number=123 --head-sha=REVIEWED_HEAD_SHA --profile=approver
+```
+
+## Errors and recovery
+
+A changed head, wrong base, self-review, draft/closed PR, or unauthorized reviewer is refused. Reinspect the latest head before making a new decision.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/publishing/github-commands)

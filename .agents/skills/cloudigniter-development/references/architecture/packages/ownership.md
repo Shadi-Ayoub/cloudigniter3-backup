@@ -93,11 +93,25 @@ Application-facing generators retain ownership only over their registered entity
 Own reusable command-line product behavior:
 
 - the public `ci` executable for application and system operations;
-- the workspace-gated `ci-dev` executable for maintainers;
 - command parsing, help, prompts, terminal feedback, error normalization, and subprocess policy;
-- reusable package build and quality workers and tooling exports.
+- shared application module validation and target-project package loading APIs.
 
 Keep application/provider configuration in the target application and package-specific build configuration in the package it configures. Resolve provider APIs from the target application rather than making the generic CLI depend on a provider package.
+
+### Company developer toolkit: `packages/dev`
+
+Own the separately distributed private `@cloudigniter/dev` package and `dev`
+executable. It owns workspace-gated package builds, quality scans, Next tooling,
+module maintenance, build exports, public template preparation, company policy and GitHub release requests.
+It consumes shared module validation and package loading through public CLI APIs;
+CLI never depends on DEV. It has no framework/provider runtime dependency.
+
+The npm request command versions temporary source snapshots for review; it leaves
+local versions unchanged and does not build, pack, approve or publish a release.
+Separate DEV version/candidate/deliver commands orchestrate approved version changes,
+package-owned gates and native npm staging; final approval requires npm 2FA.
+Do not describe a release-intent PR as an approved artifact. Build
+workers live in DEV; package-local build configuration stays with each package.
 
 ## Ownership decision table
 
@@ -109,7 +123,8 @@ Keep application/provider configuration in the target application and package-sp
 | Uses AWS/Cognito/Amplify-specific APIs or structures?                     | `packages/aws`        |
 | Reusable presentation with no application knowledge?                      | `packages/ui`         |
 | Selects, configures, or composes capabilities for this application?       | `apps/template`       |
-| Reusable command parsing, terminal UX, subprocess, or workspace tooling?   | `packages/cli`        |
+| Public application commands or shared application module validation? | `packages/cli` |
+| Private build/quality/module tooling, build exports or release requests? | `packages/dev` |
 
 If a feature spans rows, split it across layers rather than assigning the entire feature to the first file that needs it.
 

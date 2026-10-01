@@ -571,6 +571,8 @@ A feature is not complete if its implementation exists but cannot be consumed th
 
 ## 23. Validate Changes
 
+Use red–green–refactor for package behavior changes: establish an observable failing test before implementation, make it pass, then refactor while keeping it green. The first enforced rollout is `@cloudigniter/next`; run `pnpm quality:next` before its build and `pnpm release:check:next` before requesting publication. Keep test-first evidence in the PR. Coverage exceptions are frozen legacy debt, not permission to weaken checks for changed code. Read the development skill’s `references/authoring/testing-and-release.md` for commands, thresholds, and review requirements. Other packages are migrated explicitly in later rollouts.
+
 Before considering a task complete, run the relevant validation available in the repository.
 
 Depending on the affected scope, this may include:

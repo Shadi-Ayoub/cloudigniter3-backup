@@ -68,16 +68,7 @@ export const CiClientWrapper = ({
 
     return (
       <>
-        <CiThemeProvider
-          config={{
-            ...themeConfig,
-            themeProviderProps: {
-              ...themeConfig.themeProviderProps,
-              attribute: "class", // a must!
-              defaultTheme: "system",
-            },
-          }}
-        >
+        <CiThemeProvider config={themeConfig}>
           <CiDebugProbeProvider
             enabled={
               developerToolsEnabled && devConfig.debug.debugProbe.enabled

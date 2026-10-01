@@ -20,6 +20,13 @@ export function ciIsRoute(value: unknown): value is CiRoute {
     typeof value.namespace === "string" &&
     typeof value.protected === "boolean" &&
     hasValidTenantScopes &&
+    (value.settings === undefined ||
+      (Array.isArray(value.settings) &&
+        value.settings.every(
+          (id) =>
+            typeof id === "string" &&
+            /^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)*$/.test(id),
+        ))) &&
     typeof value.pathname === "string" &&
     typeof value.publicPathname === "string" &&
     typeof value.matchedPattern === "string" &&

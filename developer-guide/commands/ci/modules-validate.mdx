@@ -1,0 +1,48 @@
+---
+title: "ci modules validate"
+description: "Validate the structure, manifests, runtime boundaries, and dependencies of application modules."
+sidebar_label: "ci modules validate"
+sidebar_custom_props:
+  audience: public
+---
+
+Validate the structure, manifests, runtime boundaries, and dependencies of application modules.
+
+## Syntax
+
+```text
+ci modules validate [--root=<path>] [--no-interactive]
+```
+
+## Prerequisites
+
+Run from the application with `@cloudigniter/cli` installed. In a monorepo, pass the workspace-relative module path, such as `apps/template/src/custom/modules`.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--app-root=<path>` | Application root; defaults to the current directory. |
+| `--workspace-root=<path>` | Override workspace discovery and package resolution. |
+| `--root=<path>` | Override the module directory, resolved relative to the workspace root. Without it the validator uses the application’s default module directory. |
+
+See the [ci common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Checks module root entries, manifests, exports, types, runtime folders, dependency graphs, and package declarations. Validation does not generate or install modules. A missing application module directory means there is nothing to validate.
+
+## Examples
+
+```bash
+pnpm exec ci modules validate --app-root=. --root=src/custom/modules --no-interactive
+```
+
+## Errors and recovery
+
+Invalid layouts, missing exports, cycles, and undeclared dependencies cause a nonzero exit. Correct the reported module before rerunning.
+
+## Related documentation
+
+- [ci Commands A–Z](./index.mdx)
+- [Workflow guide](/docs/building-features/modules)

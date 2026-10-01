@@ -1,0 +1,49 @@
+---
+title: "ci amplify sandbox bootstrap"
+description: "Deploy an Amplify sandbox once, then bootstrap access control and the root user."
+sidebar_label: "ci amplify sandbox bootstrap"
+sidebar_custom_props:
+  audience: public
+---
+
+Deploy an Amplify sandbox once, then bootstrap access control and the root user.
+
+## Syntax
+
+```text
+ci amplify sandbox bootstrap [--profile=<name>] [--identifier=<value>] [--no-interactive]
+```
+
+## Prerequisites
+
+Use an installed Amplify application with the local `ampx` executable, configured AWS integration, bootstrap settings, and permissions to provision the sandbox.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--app-root=<path>` | Application root; defaults to the current directory. |
+| `--workspace-root=<path>` | Override workspace discovery and package resolution. |
+| `--profile=<name>` | AWS profile. If omitted, uses the default credential chain; an interactive terminal may ask for a profile. |
+| `--identifier=<value>` | Optional Amplify sandbox identifier forwarded to ampx. |
+
+See the [ci common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Runs `ampx sandbox --once` in the application directory. On success it runs access-control bootstrap, then root-user bootstrap. A failed step stops the sequence; completed cloud changes are not rolled back.
+
+## Examples
+
+```bash
+pnpm exec ci amplify sandbox bootstrap --profile=developer1 --identifier=ci-sandbox --no-interactive
+```
+
+## Errors and recovery
+
+Sandbox failure prevents both bootstrap workers. If a later bootstrap fails, inspect its reported error and reconcile that step; do not assume sandbox resources were removed.
+
+## Related documentation
+
+- [ci Commands A–Z](./index.mdx)
+- [Workflow guide](/docs/cli/overview)

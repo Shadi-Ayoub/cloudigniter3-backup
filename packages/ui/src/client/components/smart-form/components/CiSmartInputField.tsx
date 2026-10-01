@@ -38,7 +38,7 @@ export function CiSmartInputField(props: CiFormFieldProps) {
                 "w-full rounded border px-3 py-2 transition-colors focus:outline-none",
                 meta.touched && meta.error
                   ? "border-red-500 ring-red-500 focus-visible:ring-red-500"
-                  : "focus-visible:ring-ring border-gray-300",
+                  : "focus-visible:ring-ring border-input",
                 className,
               )}
               aria-invalid={!!meta.error}
@@ -48,12 +48,12 @@ export function CiSmartInputField(props: CiFormFieldProps) {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <AlertCircle
-                    className="absolute top-1/2 right-3 -translate-y-1/2 text-red-500"
+                    className="absolute top-1/2 right-3 -translate-y-1/2 text-danger"
                     size={18}
                     aria-label="Field error"
                   />
                 </TooltipTrigger>
-                <TooltipContent className="max-w-xs text-sm text-red-500">
+                <TooltipContent className="max-w-xs text-sm text-danger">
                   {meta.error}
                 </TooltipContent>
               </Tooltip>
@@ -62,7 +62,7 @@ export function CiSmartInputField(props: CiFormFieldProps) {
         </CiSmartFormControl>
         <CiSmartFormMessage
           id={`${name}-error`}
-          className="text-sm text-red-500"
+          className="text-sm text-danger"
         >
           {meta.touched && meta.error && meta.error}
         </CiSmartFormMessage>

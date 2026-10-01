@@ -52,3 +52,4 @@ export {
   ciDefineAccessControl,
   ciValidateAccessControlDefinition,
 } from "./ci-validate-access-control";
+export { ciIsAuthorizationSuspended } from "./ci-is-authorization-suspended";

@@ -21,3 +21,7 @@ Use this checklist after applying the relevant rules from [overview.md](overview
 ## Broader validation
 
 Also complete the repository-wide [validation and final review](../../authoring/validation.md).
+
+- Test forced read-only against stronger roles and direct allows under both algorithms, inherited/direct grants,
+  action classification, resource wildcards, scoped propagation, inactive grants, suspension, read denials,
+  persistence/copy/clear flows, and backend mutation bypass attempts. Preserve bootstrap recovery invariants.

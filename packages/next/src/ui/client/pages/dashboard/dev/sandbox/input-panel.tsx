@@ -28,15 +28,15 @@ const InputPanel = forwardRef<InputHandle, InputProps>(
     return (
       <div className="col-span-2 grid grid-rows-1 gap-4">
         {/* Lower Section - Editable Input Object */}
-        <div className="min-h-[200px] rounded border border-gray-300 bg-gray-50 p-4 shadow dark:border-gray-700 dark:bg-gray-800">
-          <div className="rounded bg-yellow-500 p-2 text-white dark:bg-yellow-600">
+        <div className="min-h-[200px] rounded border border-border bg-surface text-surface-foreground p-4 shadow">
+          <div className="rounded bg-warning-surface p-2 text-warning-surface-foreground">
             <h2 className="text-lg font-semibold">Input (JSON Format)</h2>
           </div>
           <textarea
-            className={`mt-4 max-h-[600px] min-h-[350px] w-full resize-y overflow-x-auto overflow-y-auto rounded border border-gray-300 bg-white p-3 whitespace-nowrap text-gray-700 focus:ring-2 focus:ring-yellow-500 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:focus:ring-yellow-400 ${
+            className={`mt-4 max-h-[600px] min-h-[350px] w-full resize-y overflow-x-auto overflow-y-auto rounded border border-input p-3 whitespace-nowrap text-foreground focus:ring-2 focus:ring-ring focus:outline-none ${
               selectedMethod.defaultInput === ""
-                ? "bg-gray-300 dark:bg-gray-700"
-                : "bg-white dark:bg-gray-800"
+                ? "bg-muted"
+                : "bg-background"
             }`}
             value={inputValue}
             onFocus={(e) => e.preventDefault()} // Prevent jumping to top

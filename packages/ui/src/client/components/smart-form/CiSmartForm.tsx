@@ -159,6 +159,7 @@ export function CiSmartForm<T extends object = CiSmartFormValues>(
         const next = await validate(values);
         setErrors(next);
         if (Object.keys(next).length) {
+          props.onValidationErrors?.(next);
           setFailure(
             spec.errors?.validationMessage ??
               "Please correct the highlighted fields.",

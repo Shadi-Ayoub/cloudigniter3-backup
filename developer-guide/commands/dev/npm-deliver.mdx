@@ -1,0 +1,49 @@
+---
+title: "dev npm deliver"
+description: "Request build-repository review of verified package archives."
+sidebar_label: "dev npm deliver"
+sidebar_custom_props:
+  audience: developer
+---
+
+Request build-repository review of verified package archives.
+
+## Syntax
+
+```text
+dev npm deliver --manifest=<file> [--dry-run]
+```
+
+## Prerequisites
+
+Run in the private workspace with installed dependencies and configured release policy. Online operations need GitHub CLI authentication for the selected `--profile` (or `CLOUDIGNITER_PROFILE`).
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--manifest=<file>` | Path to candidate manifest.json. |
+| `--dry-run` | Read and verify GitHub approval without creating build requests. |
+| `--profile=<name>` | GitHub profile. |
+| `--json` | Print structured output. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Revalidates exact archives and approved source requests, then creates review requests in paired build repositories. It does not stage or publish packages on npm.
+
+## Examples
+
+```bash
+pnpm exec dev npm deliver --manifest=../npm-candidate/manifest.json --profile=developer --dry-run
+```
+
+## Errors and recovery
+
+Changed archives, missing approvals, or repository policy mismatches fail. Multi-repository delivery is not atomic; inspect completed requests before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/release-requests)

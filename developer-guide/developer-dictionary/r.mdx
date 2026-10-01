@@ -1,0 +1,25 @@
+---
+title: "R · Developer Dictionary"
+sidebar_label: "R"
+description: Internal CloudIgniter developer terms beginning with R.
+sidebar_position: 18
+custom_edit_url: null
+customProps:
+  audience: developer
+---
+
+## Release Candidate {#release-candidate}
+
+A concrete package artifact prepared for validation and review before publication. CloudIgniter release checks must examine the intended archive and its contents; a successful source build alone does not establish that the distributed package works. See [testing and release gates](/company-developers/tooling/testing-and-release).
+
+## Release Request {#release-request}
+
+A company review request for a proposed versioned source snapshot or release artifact. DEV commands prepare and submit requests according to company policy. Request creation, approval, staging, and final registry publication are separate operations. See [DEV release requests](/company-developers/tooling/release-requests).
+
+## Remark Transform {#remark-transform}
+
+A build-time function that processes a Markdown syntax tree before the guide renders. CloudIgniter uses remark transforms for command references and dictionary links. The developer dictionary transform adds internal terms only in contributor documentation and dev command manuals, preserving the user dictionary’s scope.
+
+## Runtime Boundary {#runtime-boundary}
+
+The separation between code that can run in the client, on the server, during builds, or without a specific runtime. Public entry points and transitive imports must preserve that separation. CloudIgniter client code must not pull in server APIs, credentials, or provider server SDKs through a shared barrel.

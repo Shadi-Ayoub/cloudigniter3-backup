@@ -32,6 +32,38 @@ Keyboard users can press **Alt + Arrow key** while the button is focused to move
 to move it by 32 pixels. The custom location is client-session state: a reload, remount, or new `position` prop
 restores the selected preset. Viewport resizing clamps a custom location so the button remains available.
 
+## Appearance
+
+The button uses semantic information colors with a subdued navy face in Dark mode. Light mode displays the
+original cloud-and-orange-flame image. Dark mode displays the dedicated SVG cloud and flame as unfilled outlines,
+using `currentColor` to follow the button's semantic foreground. The
+blue loading-complete ripple sits behind the opaque face and is hidden by `prefers-reduced-motion: reduce`.
+Appearance follows the document's `class` or `data-theme` strategy through CSS.
+
+Omitting `logo`, supplying `{ kind: "default" }`, or using `CI_DEV_BEACON_LOGO` selects this theme-specific icon pair.
+Both icons retain a 28-pixel square footprint and fit the original 17:13 artwork proportions inside it. The outline
+uses the original wide cloud silhouette and a flat base; CSS switches visibility without changing the initial markup.
+System appearance follows its resolved Light or Dark value. The Light icon requires `/images/cloudIgniter-icon-1.png`
+in the application's public assets, with that exact filename case. To supply custom artwork, use `{ kind: "image", src,
+alt, sizePx, priority }`; only `kind` and `src` are required. Custom images retain their colors, so choose artwork
+that is readable on both light and dark surfaces.
+
+### CiDevBeaconIcon
+
+`CiDevBeaconIcon` is a reusable SVG component exported from `@cloudigniter/ui/client`. It accepts React's standard
+`SVGProps<SVGSVGElement>`. Defaults are 28 × 28 pixels, a `0 0 34 26` view box, rounded strokes of width `1.2`,
+`stroke="currentColor"`, and `fill="none"`. `preserveAspectRatio="xMidYMid meet"` centers the wide mark without stretching it. It is decorative by default (`aria-hidden="true"`, `focusable="false"`);
+give the containing control an accessible label. Standard SVG attributes and CSS classes can override its size
+and stroke styling.
+
+```tsx
+import { CiDevBeaconIcon } from "@cloudigniter/ui/client";
+
+<button type="button" aria-label="Open developer dashboard">
+  <CiDevBeaconIcon className="text-info-surface-foreground" />
+</button>;
+```
+
 ## Org Unit resolution report
 
 Both the Tenant and Org Unit checkup dialogs offer **View JSON Report**. It opens a read-only JSON view of the

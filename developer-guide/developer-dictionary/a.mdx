@@ -1,0 +1,17 @@
+---
+title: "A · Developer Dictionary"
+sidebar_label: "A"
+description: Internal CloudIgniter developer terms beginning with A.
+sidebar_position: 1
+custom_edit_url: null
+customProps:
+  audience: developer
+---
+
+## Abstract Syntax Tree {#abstract-syntax-tree}
+
+A structured representation of source code or markup. The Docs dictionary linker walks Markdown syntax nodes to identify prose terms while preserving headings, code, and existing links. This keeps automatic linking from changing executable examples.
+
+## API Facade {#api-facade}
+
+The supported public surface that exposes a capability while hiding its internal implementation. In CloudIgniter, `packages/core` exposes generic EmberGuard helpers and public types; application developers should not need imports into `packages/emberguard` internals. See [package ownership](/company-developers/architecture/core-custom-ownership).

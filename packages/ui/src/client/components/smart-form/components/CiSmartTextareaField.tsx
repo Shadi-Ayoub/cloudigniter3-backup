@@ -51,7 +51,7 @@ export function CiSmartTextareaField(props: SmartTextareaFieldProps) {
                 "w-full rounded border px-3 py-2 transition-colors focus:outline-none",
                 meta.touched && meta.error
                   ? "border-red-500 ring-red-500 focus-visible:ring-red-500"
-                  : "focus-visible:ring-ring border-gray-300",
+                  : "focus-visible:ring-ring border-input",
                 className,
               )}
               aria-invalid={!!meta.error}
@@ -61,14 +61,14 @@ export function CiSmartTextareaField(props: SmartTextareaFieldProps) {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Icon
-                    className="animate-fade-in absolute top-3 right-3 text-red-500"
+                    className="animate-fade-in absolute top-3 right-3 text-danger"
                     size={18}
                     aria-label="Field error"
                   />
                 </TooltipTrigger>
                 <TooltipContent
                   side="top"
-                  className="max-w-xs text-sm text-red-500"
+                  className="max-w-xs text-sm text-danger"
                 >
                   {meta.error}
                 </TooltipContent>
@@ -78,7 +78,7 @@ export function CiSmartTextareaField(props: SmartTextareaFieldProps) {
         </CiSmartFormControl>
         <CiSmartFormMessage
           id={`${name}-error`}
-          className="text-sm text-red-500"
+          className="text-sm text-danger"
         >
           {meta.touched && meta.error && meta.error}
         </CiSmartFormMessage>

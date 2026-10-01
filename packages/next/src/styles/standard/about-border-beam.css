@@ -3,7 +3,7 @@
 }
 
 .ci-about-border-beam-box {
-  @apply bg-muted dark:bg-muted relative m-auto flex h-[500px] w-[700px] flex-col items-center justify-center overflow-hidden rounded-lg border-0 md:shadow-xl;
+  @apply bg-surface text-surface-foreground relative m-auto flex h-[500px] w-[700px] flex-col items-center justify-center overflow-hidden rounded-lg border-0 md:shadow-xl;
 }
 
 .ci-about-border-beam-title {
@@ -11,7 +11,7 @@
 }
 
 .ci-about-border-beam-primary-text {
-  @apply pointer-events-none bg-clip-text text-center text-2xl leading-normal font-semibold whitespace-pre-wrap dark:text-white;
+  @apply pointer-events-none bg-clip-text text-center text-2xl leading-normal font-semibold whitespace-pre-wrap text-foreground;
 }
 
 .ci-about-border-beam-secondary-text {

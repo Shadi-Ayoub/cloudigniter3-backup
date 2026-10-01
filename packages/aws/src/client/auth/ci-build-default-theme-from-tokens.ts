@@ -31,14 +31,16 @@ export function ciBuildDefaultThemeFromTokens(tokens: CiAmplifyTokens, themeMode
 
   const surfaceBorder = isDark ? tokenValue(n['80'], tokenValue(n['70'])) : tokenValue(n['20'], tokenValue(n['30']));
 
-  const primaryButtonBg = isDark ? tokenValue(p['60']) : tokenValue(p['80']);
-  const primaryButtonText = tokenValue(n['10']); // light text
+  const primaryButtonBg = isDark ? tokenValue(p['40']) : tokenValue(p['80']);
+  const primaryButtonText = isDark ? tokenValue(n['100']) : tokenValue(n['10']);
+  const foreground = isDark ? tokenValue(n['10']) : tokenValue(n['90']);
+  const mutedForeground = isDark ? tokenValue(n['40']) : tokenValue(n['80']);
 
-  const linkColor = isDark ? tokenValue(p['60']) : tokenValue(p['80']);
-  const focusRing = isDark ? tokenValue(p['50']) : tokenValue(p['60']);
+  const linkColor = isDark ? tokenValue(p['40']) : tokenValue(p['80']);
+  const focusRing = isDark ? tokenValue(p['40']) : tokenValue(p['60']);
   const tabText = isDark ? tokenValue(n['40'], tokenValue(n['50'])) : tokenValue(n['80'], tokenValue(n['90']));
-  const tabActiveText = isDark ? tokenValue(p['60']) : tokenValue(p['80']);
-  const tabActiveBorder = isDark ? tokenValue(p['60']) : tokenValue(p['80']);
+  const tabActiveText = isDark ? tokenValue(p['40']) : tokenValue(p['80']);
+  const tabActiveBorder = isDark ? tokenValue(p['40']) : tokenValue(p['80']);
   const shadowColor = isDark ? tokenValue(o['40']) : tokenValue(o['10']);
 
   // IMPORTANT:
@@ -48,6 +50,15 @@ export function ciBuildDefaultThemeFromTokens(tokens: CiAmplifyTokens, themeMode
   const theme: any = {
     name: `ci-authenticator-default-style-theme-${mode}`,
     tokens: {
+      colors: {
+        background: { primary: surfaceBg, secondary: surfaceBg },
+        border: { primary: surfaceBorder },
+        font: {
+          primary: foreground,
+          secondary: mutedForeground,
+          interactive: linkColor,
+        },
+      },
       components: {
         authenticator: {
           router: {
@@ -63,7 +74,7 @@ export function ciBuildDefaultThemeFromTokens(tokens: CiAmplifyTokens, themeMode
           primary: {
             backgroundColor: primaryButtonBg,
             color: primaryButtonText,
-            _hover: { backgroundColor: isDark ? tokenValue(p['70']) : tokenValue(p['90']) },
+            _hover: { backgroundColor: isDark ? tokenValue(p['20']) : tokenValue(p['90']) },
           },
           link: {
             color: linkColor,
@@ -75,6 +86,7 @@ export function ciBuildDefaultThemeFromTokens(tokens: CiAmplifyTokens, themeMode
         },
         fieldcontrol: {
           backgroundColor: surfaceBg,
+          color: foreground,
           borderColor: surfaceBorder,
           _focus: {
             boxShadow: `0 0 0 2px ${focusRing}`,

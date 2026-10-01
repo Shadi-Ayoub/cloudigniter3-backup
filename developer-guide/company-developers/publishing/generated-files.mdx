@@ -1,0 +1,162 @@
+---
+title: Generated files and workflows
+description: Understand every package and website scaffold file, release record and monorepo GitHub workflow.
+sidebar_position: 6
+---
+
+## What scaffolding does
+
+Scaffolding generates a small **build-repository setup**, not a compiled package and not a copy of the entire monorepo. Run it in the complete workspace so the toolkit can read project and release policy.
+
+```bash
+dev github scaffold cloudigniter-core --output=../build-core-setup
+dev github scaffold cloudigniter-dev --output=../build-dev-setup
+```
+
+The first command selects Core’s source/build pair and public npm access. The second selects the developer toolkit’s pair and restricted npm access. Each creates a new sibling directory; the parent must already exist and the destination must not exist. Neither needs authentication, creates repositories nor pushes files.
+
+Repeat for each of the seven packages. The generated files embed that package’s identity and destination, so do not copy Core’s policy into another package’s build repository.
+
+```text
+build-core-setup/
+├── README.md
+├── release-policy.json
+└── .github/
+    ├── CODEOWNERS
+    ├── scripts/
+    │   └── npm-stage.mjs
+    └── workflows/
+        └── npm-stage.yml
+```
+
+An approver reviews these files and commits them at the root of `cloudigniter-io/build-cloudigniter-core`. The directory name `build-core-setup` is only a local destination; it is not included as an extra folder in that repository.
+
+## README.md: instructions for maintainers
+
+The README identifies the package and its private source repository, explains the repository’s archive-only purpose, and lists the required GitHub/npm setup. It reminds maintainers to review the exact archive and complete final npm approval with 2FA.
+
+It is documentation, not an executable installer. Its instructions do not create protection rules, the npm environment or a trusted publisher.
+
+## release-policy.json: the build repository’s contract
+
+This is generated at the **root of the build repository**. It differs from the broader monorepo file `.cloudigniter/release-policy.json`: it describes one package only.
+
+| Field | Meaning and why the verifier needs it |
+| --- | --- |
+| `schemaVersion` | Format version understood by the verifier; currently `1`. |
+| `name` | Exact npm package identity, such as `@cloudigniter/core`. |
+| `repository` | Exact publishing repository, such as `cloudigniter-io/build-cloudigniter-core`. Prevents reuse from an unintended repository. |
+| `sourceRepository` | Approved source destination recorded with the release. |
+| `baseBranch` | The protected branch allowed to stage; normally `main`. |
+| `registry` | The allowed npm registry URL. |
+| `access` | `public` for product packages; `restricted` for the internal toolkit. |
+| `tags` | Allowed npm channels such as `latest`, `beta` or `rc`. Prereleases cannot use `latest`. |
+| `reviewers` | Personal account names allowed to dispatch and rerun staging. These must be people/accounts, not the organization name. |
+
+The script compares the archive manifest against this policy. Review policy changes as carefully as workflow changes because they alter what may be staged.
+
+## .github/CODEOWNERS: who reviews changes
+
+The generated file contains:
+
+```text
+* @jodaris
+```
+
+The wildcard assigns the approver to all files, including archives, policy and workflow code. `jodaris` must have write access to the organization repository. Additional eligible owners can be added through a reviewed change as the team grows.
+
+GitHub reads this file to request ownership review. Enable **Require review from Code Owners** on protected `main` to make the review mandatory. See [Code Owners syntax and enforcement](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners).
+
+## .github/workflows/npm-stage.yml: when and where staging runs
+
+Files under `.github/workflows/` are GitHub Actions workflow definitions. YAML expresses events, jobs and ordered steps. The generated workflow is named **Stage approved package** and contains one staging job.
+
+### Event, permissions and concurrency
+
+| YAML section | Behavior |
+| --- | --- |
+| `workflow_dispatch` | A person starts the workflow manually from Actions; merging a PR does not stage automatically. |
+| `inputs.version` | The exact version directory under `releases/`, for example `0.1.1`. It is not a package-name or branch input. |
+| `permissions.contents: read` | The workflow can read repository files; it does not need to push commits. |
+| `concurrency` | Staging runs share a group. A later run does not cancel an active upload. |
+| Job `if` | Only the configured base branch can run the job. |
+| `environment: npm-staging` | Selects the environment whose branch restrictions, variables/secrets and available protection rules apply. |
+| Job `id-token: write` | Allows GitHub to issue the OIDC identity used by npm’s trusted-publisher configuration. It is not repository write permission. |
+
+### Ordered steps
+
+1. **Checkout** downloads the selected repository revision. `persist-credentials: false` avoids retaining checkout credentials for later Git commands.
+2. **Set up Node** selects Node 24 and configures the npm registry.
+3. **Select npm** installs the workflow’s pinned npm version, currently `11.19.1`, which supports native staging.
+4. **Stage the approved archive** passes the version input, an optional read-only npm token and disabled provenance to the verifier. The script performs the checks explained below before uploading.
+5. **Upload result evidence** attempts to retain `staging-result.json` as the `npm-staging-result` workflow artifact even if another step fails. If staging failed before producing that file, there may be no result artifact; inspect the logs.
+
+The workflow does not install package dependencies or rebuild the committed archive. Its trusted publisher must be configured on npm with the organization, exact build repository, filename `npm-stage.yml` and environment `npm-staging`. See [npm setup](./npm-setup) and [GitHub workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax).
+
+## .github/scripts/npm-stage.mjs: what is verified
+
+This Node.js module uses built-in Node libraries and invokes `tar` and npm. It is copied from `packages/dev/src/ci/npm-stage.mjs` so the build repository can verify an archive without installing the private toolkit.
+
+The script performs these checks in sequence:
+
+1. Read `release-policy.json` and validate the requested semantic version, preventing the input from selecting an arbitrary filesystem path.
+2. Require execution in GitHub Actions, the exact repository, the configured base branch and a configured approver as both the original and rerun actor.
+3. Read `releases/<version>/manifest.json` and compare package, version, source/build destinations, registry, access, channel and release request ID against policy.
+4. Require a regular archive file and calculate its SHA-256 hash. A hash is a fingerprint of file bytes; any byte change produces a different expected value.
+5. Read `package/package.json` inside the tarball using `tar`. Verify package/version, repository metadata and publish settings. Reject `private: true` and conflicting registry/access/tag settings.
+6. Require a supported npm version and query npm to confirm the package already exists. A first-ever publication requires the separate bootstrap process.
+7. Recheck the hash, then call native `npm stage publish` on this exact tarball with explicit access, tag and registry, with package scripts disabled.
+8. Write a result identifying the package, version, hash and npm response, marked `awaiting-npm-approval` and `published: false`.
+
+The verifier does not independently re-review a PR or configure protection rules. Its trust in the protected base branch depends on [GitHub enforcement](./github-setup#enforce-review-on-main).
+
+## Files added by release delivery
+
+Scaffolding does not create this directory. `dev npm deliver` later opens a build PR containing it:
+
+```text
+releases/
+└── 0.1.1/
+    ├── package.tgz
+    └── manifest.json
+```
+
+`package.tgz` is the compressed npm package archive built and checked in the integration workspace. `manifest.json` records the package name/version, access, tag, registry, source/build destinations, common release request ID, integration commit, SHA-256 and the archive filename. It is evidence linking an approved source request to exact output.
+
+Treat a merged version directory as immutable. If bytes change, prepare and review a new candidate/version; do not replace an archive under an already delivered version.
+
+## Website scaffold files
+
+```bash
+dev github scaffold cloudigniter-developer-guide --hosting=static --output=../build-guide-setup
+```
+
+`--hosting=static` explicitly selects a website contract: a folder of files containing `index.html` that S3/CloudFront can serve. It is required for websites and rejected for package scaffolds.
+
+The generated website setup contains `README.md`, `.github/CODEOWNERS` and `.github/workflows/deploy-aws.yml`. It has no npm policy or npm verifier.
+
+| File or workflow stage | Purpose |
+| --- | --- |
+| `README.md` | Identifies the source repository, required `site/` output and AWS environment settings. |
+| `CODEOWNERS` | Assigns review of all deployment files and website output to configured approvers. |
+| `deploy-aws.yml` event and job condition | Manual dispatch, exact repository and protected branch, and configured original/rerun approver. |
+| Checkout and validation steps | Check out the selected commit, require environment values and `site/index.html`, and reject symlinks or non-regular output files. |
+| AWS credentials step | Exchanges the GitHub OIDC identity for the configured AWS role’s temporary credentials. |
+| Upload step | Syncs reviewed `site/` files to S3 without following symlinks, then invalidates CloudFront’s cache. It does not delete old S3 objects. |
+
+`site/` is supplied later by a reviewed website build PR. The scaffold creates no bucket, distribution, certificate, DNS record or AWS role. See [Publish websites](./websites) for their relationship.
+
+## The full monorepo’s existing .github files
+
+These files belong in the complete workspace. They serve a different purpose from the small scaffold copied to each build repository.
+
+| File | Responsibility |
+| --- | --- |
+| `CODEOWNERS` | Assigns `@jodaris` to governance, policies, Changesets, the toolkit, package manifests and the lockfile. Other code still needs a general required PR approval; this file currently does not assign every source path an owner. |
+| `pull_request_template.md` | Supplies the PR description prompts: observable behavior, ownership, red/green test evidence and validation. It is a writing aid, not a CI check. |
+| `workflows/dev-quality.yml` | Runs toolkit checks and package validation on Node 22/24. On Node 24 it exports/checks a template candidate, and it retains packed toolkit archives for inspection. No publication occurs. |
+| `workflows/next-quality.yml` | Runs Next quality on Node 22/24, then a production build and archive validation. A separate job checks/builds the guide. Artifacts provide review evidence; their existence is not release approval. |
+| `workflows/npm-stage.yml` | Legacy single-repository staging, guarded by explicit topology/repository variables. The active paired layout uses each build repository’s generated workflow instead. Leave the legacy route inactive for paired publishing. |
+
+When changing the scaffolding implementation, regenerate into a **new** directory, compare with the existing build repository, and submit the differences for review. Regeneration does not overwrite existing output or roll out workflow changes remotely.
+

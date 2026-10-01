@@ -1,0 +1,94 @@
+.main {
+  width: min(100% - 2.5rem, 760px);
+  margin: 3rem auto 5rem;
+}
+.main h1 {
+  font-size: 2rem;
+}
+.main label {
+  display: block;
+  font-weight: 600;
+  margin-block: 1rem 0.4rem;
+}
+.queryRow {
+  display: flex;
+  gap: 0.75rem;
+}
+.main input,
+.main select,
+.main button {
+  font: inherit;
+  border-radius: 8px;
+  min-height: 44px;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  background: var(--ifm-background-color);
+  color: var(--ifm-font-color-base);
+}
+.main input {
+  width: 100%;
+  min-width: 0;
+}
+.main select {
+  max-width: 100%;
+}
+.main button {
+  cursor: pointer;
+  font-weight: 600;
+}
+.main button:hover {
+  background: var(--ci-doc-brand-soft);
+  border-color: var(--ifm-color-primary);
+}
+.main :is(input, select, button):focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 3px;
+}
+.status {
+  margin-block: 2rem 0;
+  color: var(--ifm-font-color-secondary);
+}
+.results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.results li {
+  padding-block: 1.5rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+  overflow-wrap: anywhere;
+}
+.results h2 {
+  font-size: 1.35rem;
+  margin-block: 0.3rem 0.5rem;
+}
+.results p {
+  margin-block: 0;
+}
+.scope {
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.8125rem;
+}
+.results mark {
+  color: inherit;
+  background: var(--ci-doc-brand-soft);
+  font-weight: 600;
+}
+.empty {
+  margin-block: 2rem;
+  padding: 1.5rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  background: var(--ci-doc-surface);
+}
+.empty h2 {
+  font-size: 1.35rem;
+}
+.results + button {
+  margin-top: 1.5rem;
+}
+@media (max-width: 420px) {
+  .queryRow {
+    flex-direction: column;
+  }
+}

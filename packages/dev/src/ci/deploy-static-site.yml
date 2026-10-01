@@ -1,0 +1,57 @@
+name: Deploy reviewed static website
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: website-production
+  cancel-in-progress: false
+jobs:
+  deploy:
+    if: github.repository == '__REPOSITORY__' && github.ref == 'refs/heads/__BASE__' && (__APPROVERS__)
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify static output and deployment settings
+        env:
+          SITE_BUCKET: ${{ vars.SITE_BUCKET }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
+          CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
+        run: |
+          test -n "$SITE_BUCKET" && test -n "$AWS_REGION" && test -n "$AWS_ROLE_ARN" && test -n "$CLOUDFRONT_DISTRIBUTION_ID"
+          test -f site/index.html
+          node --input-type=module <<'JS'
+          import { readdir, lstat } from 'node:fs/promises';
+          import path from 'node:path';
+          async function check(dir) {
+            if ((await lstat(dir)).isSymbolicLink()) throw new Error('Static output cannot contain symlinks');
+            for (const item of await readdir(dir, { withFileTypes: true })) {
+              if (item.isSymbolicLink()) throw new Error('Static output cannot contain symlinks');
+              if (item.isDirectory()) await check(path.join(dir, item.name));
+              else if (!item.isFile()) throw new Error('Static output must contain regular files');
+            }
+          }
+          await check('site');
+          JS
+      - uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Upload the reviewed static files
+        env:
+          SITE_BUCKET: ${{ vars.SITE_BUCKET }}
+          CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
+        run: |
+          aws s3 sync site/ "s3://$SITE_BUCKET/" --no-follow-symlinks
+          aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" --paths '/*'

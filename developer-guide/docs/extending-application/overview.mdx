@@ -1,0 +1,44 @@
+---
+title: Extend your application
+description: Add routes, settings, application configuration, profile fields, and optional modules through CloudIgniter extension points.
+sidebar_position: 1
+---
+
+# Extend your application
+
+Extend CloudIgniter with the pages, data, and behavior your application needs. Start with the custom areas supplied
+by the application template: `src/custom` for application code, scoped `(ci-custom)` folders for pages, and
+`amplify/custom` for AWS backend additions. Keep CloudIgniter's core capabilities and generated files under their
+existing ownership.
+
+After [configuring your application](/docs/configuration/overview), work through these extension points:
+
+| Extension | What you add | Where to start |
+| --- | --- | --- |
+| [Routes and pages](./routes) | A new application destination with its scope, messages, and access requirements | `src/custom/routes/routes.ts` and a scoped `(ci-custom)` page |
+| [Settings](./settings) | A validated group of values that authorized users can manage | `src/custom/settings/ci-settings-registry.ts` |
+| [Application configuration](./configuration) | Code-defined options for your own feature and its consumers | An application-owned configuration module under `src/custom` |
+| [User profiles](./user-profile) | Application-specific profile fields and their editing forms | `profile.extensions` and `src/custom/user/smart-form.ts` |
+| [Modules](./modules) | Manage optional features or create your own with settings, permissions, a dashboard page, and backend resources | The module-management and module-authoring lessons |
+
+The first four lessons extend your application directly. The **Modules** section then introduces two lessons.
+**Optional modules** uses **To-Do List** as
+an example of managing a packaged feature. Its source is included in the template, but the module starts
+**uninstalled**. You will install and enable it, disable it while retaining its data, and explicitly uninstall it.
+Then build your own **Personal note** module, including its AWS infrastructure, in the module-authoring lesson.
+
+## Other extension points
+
+Connect each feature to the services it needs:
+
+- Declare resource actions and scoped grants in `src/custom/auth/app-access-control.ts`, then enforce them at the
+  server boundary. See [application permissions](/docs/core-system/authorization/quick-start).
+- Register messages in `src/custom/locales` and select them through the route namespace. See
+  [localization](/docs/configuration/localization).
+- Apply branding and shared styles through the [theme customization points](/docs/configuration/themes).
+- Add application-owned schemas, functions, and provider resources through the
+  [backend extension hooks](/docs/providers/aws/extending-amplify-backend).
+- Use [Resource Studio](/docs/resource-studio/overview) when you want to generate a supported data feature. Keep
+  generated files separate from your hand-written implementation.
+
+Begin with [Extending routes and pages](./routes).

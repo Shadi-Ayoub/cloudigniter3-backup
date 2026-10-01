@@ -181,3 +181,27 @@ base `user` access but gains no business-administration privileges through inher
 See [Roles, Inheritance, and Precedence](/docs/core-system/authorization/roles-and-precedence) for application
 design guidance and [`CI_DEFAULT_ACCESS_CONTROL_DEFINITION`](/docs/api-reference/authorization/default-access-control-definition)
 for the public built-in catalog.
+
+## Forced read-only enforcement
+
+`CiPrivilege.readOnly` is an additive, persisted resource/scope restriction, implemented by EmberGuard and
+exposed through the Core facade. Keep one evaluator and validator; framework and provider consumers must use
+the same engine. Active inherited and direct restrictions veto writes before both combining algorithms and
+produce auditable `read-only` decisions. Action `accessMode` classifies custom operations; unclassified custom
+verbs default to writes. Read-only does not grant extra access or bypass an explicit read denial.
+
+The security permission editor, catalog projection, and complete role-privilege copies must preserve the flag.
+Missing flags retain legacy behavior; malformed flags or action modes are rejected. Existing core-override
+recovery invariants continue to reject changes that permanently disable bootstrap authority.
+
+Settings already authorizes against the current persisted catalog. Legacy Cognito, tenant, Org Unit, and
+security mutation handlers add a read-only check before writing, while retaining their existing group/target
+guards. This check strongly reads the active catalog and a bounded, paginated base-table subject assignment
+collection, without a GSI or scan. It never grants access. Storage errors fail closed. The added reads use the
+existing EmberGuard table and only GetItem/Query permissions; no new table or index is needed. Generated direct
+EmberGuard model mutations are disabled so policy edits pass through the handler checks. Deploy the updated
+backend handlers, schema, and IAM plan together; changing only the frontend does not update deployed enforcement.
+
+Every application-specific or generated-provider mutation must enforce the relevant resource/action at its
+trusted boundary. A catalog flag cannot intercept a write that never calls EmberGuard; do not rely on hidden
+buttons, action names, or Cognito group membership to enforce this restriction.

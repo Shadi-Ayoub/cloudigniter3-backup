@@ -1,0 +1,127 @@
+---
+title: "dev github setup"
+description: "Prepare or check the GitHub CLI executable used by DEV."
+sidebar_label: "dev github setup"
+sidebar_custom_props:
+  audience: developer
+---
+
+Prepare GitHub CLI (`gh`) for DEV's GitHub operations. Installing `@cloudigniter/dev`
+runs this setup automatically through its `postinstall` hook when package-manager
+policy permits the hook.
+
+## Syntax
+
+```text
+dev github setup [--check] [--json]
+```
+
+## Prerequisites
+
+Install DEV with Node 22.14 or newer. Setup also works outside the private workspace
+and requires no GitHub account or company policy. Downloads require HTTPS access
+to GitHub release assets and system `tar`; macOS and Windows need its ZIP support.
+A compatible existing installation or valid cached copy can be used offline.
+
+Managed downloads support macOS, Linux and Windows on x64 and arm64. Other systems
+can use a compatible `gh` already on PATH. Git remains a separate prerequisite for
+repository operations.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--check` | Resolve an available executable without downloading or writing files. Fail if none is available. |
+| `--json` | Print `path`, `version`, `source` (`system` or `managed`) and `installed` as JSON. |
+
+`installed` is true only when this invocation installs a new managed copy.
+`--help` and `--version` retain the common DEV behavior. Setup does not select a
+workspace, repository or GitHub profile.
+
+## Remarks and effects
+
+DEV first searches the machine's PATH for a stable GitHub CLI version
+`>=2.102.0 <3.0.0`, excluding package-local `node_modules` shims and relative PATH
+entries. It reuses a compatible executable without changing it. Otherwise it
+reuses its verified cache or downloads the pinned official release `2.102.0`.
+
+Before installation, DEV verifies the archive against a SHA-256 digest shipped
+with the package. It checks the extracted executable's version, keeps its upstream
+license and activates the completed version directory. Subsequent resolution
+checks the managed executable against its local integrity receipt. Updating the
+pin requires a new DEV package release; setup does not follow GitHub's latest tag.
+
+| System | Default tools directory |
+| --- | --- |
+| macOS | `~/Library/Caches/cloudigniter/tools` |
+| Linux | `$XDG_CACHE_HOME/cloudigniter/tools`, or `~/.cache/cloudigniter/tools` |
+| Windows | `%LOCALAPPDATA%\cloudigniter\tools`, or `~/AppData/Local/cloudigniter/tools` |
+
+Set `CLOUDIGNITER_TOOLS_DIR` to an absolute directory to select another cache.
+Managed versions use separate `gh-<version>-<platform>-<architecture>` directories.
+DEV invokes the executable directly, without administrator access, global package
+installation or edits to the shell's PATH. A managed copy therefore does not make
+`gh` a new command in other terminals. Existing GitHub CLI credentials remain in
+its normal credential storage.
+
+The automatic hook warns if setup cannot complete and lets package installation
+finish. Local package builds and checks remain available. Explicit setup reports
+an error with exit code `1`; invalid arguments use `2`. Ordinary GitHub operations
+resolve an existing executable and never download software.
+
+### Package-manager script policy
+
+An install hook runs only when permitted by the package manager. For DEV installed
+as a dependency, pnpm 10.33 supports this scoped setting in `pnpm-workspace.yaml`:
+
+```yaml
+allowBuilds:
+  '@cloudigniter/dev': true
+```
+
+Merge this entry with existing approvals. `--ignore-scripts` still skips hooks.
+See [pnpm's allowBuilds setting](https://pnpm.io/10.x/settings#allowbuilds).
+If the hook was skipped or failed, run the explicit setup command below. Set
+`CLOUDIGNITER_SKIP_GH_INSTALL=1` during package installation to intentionally skip
+only DEV's automatic setup; explicit setup remains available.
+
+## Examples
+
+Recover after a skipped install hook:
+
+```bash
+pnpm exec dev github setup
+```
+
+Check the selected executable without changing the machine:
+
+```bash
+pnpm exec dev github setup --check --json
+```
+
+After setup, sign in from the configured company workspace using
+[dev github auth login](./github-auth-login.mdx). Installation itself does not
+open a browser, authenticate an account or change repository permissions.
+
+## Errors and recovery
+
+- **Download unavailable:** restore network access and rerun setup, or make a
+  compatible system `gh` available on PATH. A cached copy needs no download.
+- **Checksum or version mismatch:** installation is refused. Check the network
+  and the package's release policy before retrying; do not bypass verification.
+- **Invalid cache:** inspect the exact version directory named by the error,
+  remove that directory if repair is needed, and rerun setup. Other versions and
+  files are retained.
+- **Setup locked:** wait for the other installer. If it has stopped, inspect the
+  named lock before removing it and retrying.
+- **Missing archive tool or unsupported platform:** install the required system
+  archive tool, or provide a compatible GitHub CLI on PATH.
+- **Permission denied:** select a user-writable absolute tools directory through
+  `CLOUDIGNITER_TOOLS_DIR` and rerun setup.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workspace setup](/company-developers/tooling/dev/workspace)
+- [GitHub roles and authentication](/company-developers/publishing/github-setup)
+- [Pinned upstream release](https://github.com/cli/cli/releases/tag/v2.102.0)

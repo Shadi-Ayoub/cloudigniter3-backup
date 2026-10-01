@@ -82,9 +82,22 @@
   --color-border: var(--color-muted-200);
   --color-input: var(--color-muted-200);
   --color-ring: var(--color-primary-500);
+
+  /* Shared primitives use these semantic aliases; keep them on the CI palette. */
+  --color-destructive: var(--color-danger);
+  --color-destructive-foreground: var(--color-danger-foreground);
+  --color-sidebar: var(--color-surface);
+  --color-sidebar-foreground: var(--color-surface-foreground);
+  --color-sidebar-primary: var(--color-primary);
+  --color-sidebar-primary-foreground: var(--color-primary-foreground);
+  --color-sidebar-accent: var(--color-accent);
+  --color-sidebar-accent-foreground: var(--color-accent-foreground);
+  --color-sidebar-border: var(--color-border);
+  --color-sidebar-ring: var(--color-ring);
 }
 
-.dark {
+.dark,
+[data-theme="dark"] {
   --color-background: var(--color-muted-950);
   --color-foreground: var(--color-muted-50);
 
@@ -100,8 +113,8 @@
   --color-popover: var(--color-surface);
   --color-popover-foreground: var(--color-surface-foreground);
 
-  --color-primary: var(--color-primary-500);
-  --color-primary-foreground: var(--color-ci-white);
+  --color-primary: var(--color-primary-400);
+  --color-primary-foreground: var(--color-ci-gray-950);
 
   --color-secondary: var(--color-secondary-800);
   --color-secondary-foreground: var(--color-secondary-100);

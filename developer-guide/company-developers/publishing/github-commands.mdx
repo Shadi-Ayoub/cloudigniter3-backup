@@ -1,0 +1,137 @@
+---
+title: GitHub commands with dev
+description: Company login, repository inspection, pull requests, issues, workflow runs and safe checkouts.
+sidebar_position: 5
+---
+
+Run these commands from the complete workspace. [Set up the dev entry point](./index.mdx#use-dev-as-the-entry-point) first. DEV prepares GitHub CLI during installation. If setup was skipped or failed, follow [dev github setup](/commands/dev/github-setup) before signing in. Company developers use `dev` for the GitHub operations listed here.
+
+## Log in and choose an account
+
+```bash
+dev github auth login --profile=developer
+dev github auth login --profile=approver
+```
+
+Run the first command to store the developer’s credential, choosing `Shadi-Ayoub` in the browser. Run the second only if you also operate the approver account, choosing `jodaris`. Both wrap `gh auth login --hostname github.com --web --git-protocol https` and verify the resulting account. These are interactive setup commands; `--no-interactive` is rejected for login.
+
+GitHub CLI normally uses the operating system credential store but can fall back to a plaintext configuration file if that store is unavailable. Check its login message and storage status. See [GitHub CLI login](https://cli.github.com/manual/gh_auth_login).
+
+```bash
+dev github auth status
+dev github auth status --profile=developer
+dev github profiles
+dev github check --profile=developer
+```
+
+| Command | What it establishes |
+| --- | --- |
+| `auth status` | GitHub CLI’s stored-account status. It does not request or print a token. |
+| `auth status --profile=developer` | The selected profile has a credential and GitHub confirms the configured user. |
+| `profiles` | The local profile names, usernames and roles. This is an offline read. |
+| `check --profile=developer` | The authenticated account is in company requester or approver policy, and reports publication destinations. It does not audit remote protections. |
+
+For later commands, `--profile` takes precedence over `CLOUDIGNITER_PROFILE`. Without either, the GitHub CLI’s active account is used and policy checks still apply. Prefer an explicit profile in shared instructions and automation.
+
+```bash
+export CLOUDIGNITER_PROFILE=developer
+```
+
+This selects a default for the current terminal and its children. It does not switch other terminals. An explicit profile retrieves the account’s stored credential and passes it only to the operation’s GitHub/Git subprocesses. It ignores competing inherited GitHub token overrides. GitHub profile selection does not authenticate npm or AWS.
+
+## Select the repository explicitly
+
+```bash
+dev github repositories
+dev github repo view --project=cloudigniter-core --profile=developer
+dev github repo view --project=cloudigniter-core --repository-kind=build --profile=developer
+dev github repo view --project=workspace --profile=developer
+```
+
+`repositories` lists the configured product pairs. The two Core commands inspect `cloudigniter-io/cloudigniter-core` and `cloudigniter-io/build-cloudigniter-core`, respectively. `workspace` resolves the full-monorepo destination from `github-policy.workspaceRepository`. It has no build-repository variant.
+
+Everyday commands require `--project`, so the toolkit never guesses a destination from your current Git remote. It checks remote identity, visibility and archive status before continuing. A missing or incorrectly configured remote must be fixed by its administrator.
+
+## Inspect and manage pull requests
+
+```bash
+dev github pr list --project=workspace --profile=developer
+dev github pr view --project=workspace --number=123 --profile=developer
+dev github pr diff --project=workspace --number=123 --profile=developer
+dev github pr checks --project=workspace --number=123 --profile=developer
+```
+
+| Action | Result and intended use |
+| --- | --- |
+| `list` | Lists open PRs using GitHub CLI’s default bounded listing. It is a working queue, not an exhaustive audit. |
+| `view --number=123` | Prints structured details including `headRefOid`, description, author, base branch, review decision and check results. Use this SHA for review/merge. |
+| `diff --number=123` | Prints changed file contents for review. It does not check out the branch or modify your files. |
+| `checks --number=123` | Lists CI checks. A nonzero result can indicate pending or failed checks; inspect the output before proceeding. |
+
+The same actions work for a product source or build repository by changing `--project` and, for builds, adding `--repository-kind=build`.
+
+### Create a PR from a pushed branch
+
+```bash
+dev github pr create --project=workspace --head=feature/example \
+  --title="Describe the behavior change" --body-file=/tmp/pr-description.md \
+  --profile=developer
+```
+
+Create the description file first. The command uses its UTF-8 contents verbatim, the configured base branch, the already-pushed `--head` branch and the configured reviewers other than the author. `--draft` is optional. It does not push local files. Creation requires a configured requester account and another configured reviewer. If GitHub reports an existing PR or a partial failure, inspect `pr list` and `pr view` before retrying.
+
+For source release snapshots use `dev npm publish`; for exported templates use `dev template publish`. Ordinary PR creation does not produce their required release metadata.
+
+### Review and merge a specific revision
+
+```bash
+dev github pr review --project=workspace --number=123 \
+  --head-sha=REVIEWED_HEAD_SHA --review=approve \
+  --body-file=/tmp/pr-review.md --profile=approver
+dev github pr merge --project=workspace --number=123 \
+  --head-sha=REVIEWED_HEAD_SHA --profile=approver
+```
+
+Replace the placeholder with the actual 40-character `headRefOid` from `pr view`. The review file explains the decision. Choose `approve`, `request-changes` or `comment`. The toolkit rejects self-review, a draft/closed PR, an unexpected base branch, a changed head and an unconfigured approver. The review is attached to that exact commit.
+
+Merge uses squash and GitHub’s matching-head condition. It does not request administrator bypass, delete the branch or publish packages. The repository’s rules must require approval and successful checks. If new commits arrive, review them and obtain the new SHA; do not replace the SHA merely to silence the refusal.
+
+See [GitHub PR creation](https://cli.github.com/manual/gh_pr_create), [reviews](https://docs.github.com/en/rest/pulls/reviews#create-a-review-for-a-pull-request) and [merge behavior](https://cli.github.com/manual/gh_pr_merge).
+
+## Inspect issues and Actions
+
+```bash
+dev github issue list --project=workspace --profile=developer
+dev github issue view --project=workspace --number=45 --profile=developer
+dev github workflow list --project=workspace --profile=developer
+dev github run list --project=workspace --profile=developer
+dev github run view --project=workspace --run-id=123456789 --profile=developer
+```
+
+`issue list` shows the default queue of open issues; `issue view` reads the chosen issue and description. `workflow list` lists available Actions workflows. `run list` shows recent executions; copy a run ID into `run view` to inspect jobs and their result. Numbers are repository-specific: an issue number is not a workflow run ID.
+
+These commands read GitHub. They do not dispatch, rerun or cancel production jobs. Approvers currently dispatch package staging and website deployment through the repository’s Actions page, where the workflow, protected branch and version input can be checked together.
+
+## Clone or update a product checkout
+
+```bash
+dev github clone cloudigniter-core --output=../cloudigniter-core-source --profile=developer
+dev github pull cloudigniter-core --output=../cloudigniter-core-source --profile=developer
+```
+
+`clone` creates a new directory outside the integration workspace from the configured repository’s base branch. Its parent directory must exist; an existing output is refused. `pull` operates on that existing checkout only if its origin is the exact configured HTTPS URL, its checked-out branch is the configured base, and its working tree is clean. It fetches and fast-forwards; it does not reset changes.
+
+Add `--repository-kind=build` to select the build repository. Add `--dry-run` to inspect the operation without authentication, fetching or writing. These checkout commands take the project ID as an operand, while the everyday commands above use `--project`. Neither copies the checkout over the monorepo.
+
+## Generate publication files locally
+
+```bash
+dev github scaffold cloudigniter-core --output=../build-core-setup
+```
+
+This reads the Core project and release policy and writes a new external directory. It requires no GitHub login and refuses an existing output. It creates no remote repository and pushes nothing. Review the [file-by-file explanation](./generated-files) before committing that output to its matching build repository.
+
+## Supported boundaries
+
+These are deliberate wrappers around named workflows, with strict flags. Arbitrary `gh` argument forwarding is not supported. Administration, local Git branch/commit/push operations, production workflow dispatch and final npm approval retain their native interfaces. `dev --help` is the authoritative inventory for the installed toolkit version.
+

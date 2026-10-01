@@ -4,6 +4,8 @@ export type CiAccessControlValidationIssue = {
   code:
     | "invalid-identifier"
     | "invalid-title"
+    | "invalid-read-only"
+    | "invalid-action-access-mode"
     | "duplicate-identifier"
     | "invalid-precedence"
     | "invalid-domain-status"

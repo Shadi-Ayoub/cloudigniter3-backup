@@ -64,7 +64,7 @@ export async function CiNextRootWrapper({
           position="bottom-right"
           visibleWhenEnv={null} // always visible
           defaultTab="status"
-          logo={CI_DEV_BEACON_LOGO} // Plain logo spec (client will render next/image)
+          logo={CI_DEV_BEACON_LOGO} // Serializable specification for the theme-specific default icons.
           extraTabSpecs={[
             {
               kind: "trace-log-text",

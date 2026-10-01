@@ -1,0 +1,54 @@
+---
+title: "dev template publish"
+description: "Submit a verified template export for private company review."
+sidebar_label: "dev template publish"
+sidebar_custom_props:
+  audience: developer
+---
+
+Submit a verified template export for private company review.
+
+## Syntax
+
+```text
+dev template publish --output=<directory> --summary=<text> [--dry-run]
+```
+
+## Prerequisites
+
+Run in the private company workspace with configured template export policy. Online commands also need the configured GitHub profile and repository permissions.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--output=<directory>` | Required external directory, relative to the invoking directory; parent must exist. |
+| `--source=<path>` | Application below apps, relative to the workspace; defaults to the selected policy. |
+| `--policy=<path>` | Workspace-relative policy; default .cloudigniter/template-policy.json. |
+| `--name=<name>` | Override the exported package name; defaults to policy. |
+| `--package-version=<version>` | Optional exact version for all policy-listed public packages; otherwise use policy versions. |
+| `--json` | Print structured validation details. |
+| `--summary=<text>` | Required review description. |
+| `--dry-run` | Validate offline without contacting GitHub. |
+| `--profile=<name>` | Authorized requester GitHub profile. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Verifies the export, then creates a private company review request containing metadata. Requires a clean company base branch and an independent reviewer. No public template upload occurs before approval.
+
+## Examples
+
+```bash
+pnpm exec dev template publish --output=../public-app --summary="Update the starter" --profile=developer --dry-run
+```
+
+## Errors and recovery
+
+A mismatched export, invalid requester, dirty base, or missing independent reviewer blocks submission.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/template-export)

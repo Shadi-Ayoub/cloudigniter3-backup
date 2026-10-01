@@ -14,6 +14,17 @@ export function ciMergeRouteMaps(
             "Choose a different custom management path instead of replacing a core route.",
         );
       }
+      if (
+        definition.settings !== undefined &&
+        (!Array.isArray(definition.settings) ||
+          definition.settings.some(
+            (id) =>
+              typeof id !== "string" ||
+              !/^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)*$/.test(id),
+          ))
+      ) {
+        throw new Error(`Invalid settings selection for route "${pattern}".`);
+      }
       merged[pattern] = definition;
     }
   }

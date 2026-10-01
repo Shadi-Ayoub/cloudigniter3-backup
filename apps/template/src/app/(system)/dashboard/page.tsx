@@ -1,7 +1,11 @@
+import { appAccessControl } from "@/custom/auth/app-access-control";
+import { appSettingsAccess } from "@/kernel/server/settings/app-settings-access";
+import { appModules } from "@/kernel/server/modules/app-modules";
 import { CiPage } from "@cloudigniter/next/client";
 import { CiNextDashboardOverview } from "@cloudigniter/next/ui/server";
 import {
   ciCreateAuthorizer,
+  ciCanAccessDeveloperTools,
   ciGlobalAccessScope,
   ciSystemAccessScope,
 } from "@cloudigniter/core/lib";
@@ -16,10 +20,24 @@ import { setup } from "./setup";
 
 export default async function CPHomePage() {
   const context = await appBootstrap();
+  const extensions = await appModules(context).enabled();
+  const canManageModules = context.auth.user.roles.includes("developer") && ciCanAccessDeveloperTools({ envMode: context.env.mode, actor: { authenticated: context.auth.user.authenticated, roles: context.auth.user.roles } });
+  const extensionCards = extensions.ok ? extensions.body.filter(item => item.manifest.dashboard).map(item => ({
+    id: `extension-${item.manifest.id}`, icon: "ci:shape-outline" as const, label: item.manifest.dashboard!.title,
+    description: item.manifest.dashboard!.description ?? item.manifest.description ?? "",
+    route: `/dashboard/extensions/${item.manifest.id}`, namespace: "dashboard", meta: `Module v${item.manifest.version}`,
+  })) : [];
+  const settingsAccess = await appSettingsAccess(context);
+  const canReadSettings = settingsAccess.ok && settingsAccess.body.read;
+  const canReadSecurityCatalog = context.auth.user.roles.some(
+    (role) => role === "system-admin" || role === "system-super-admin",
+  );
   const security = appCreateSecurityAdministration(context);
   const [definition, assignments] = await Promise.all([
-    security.loadDefinition(),
-    security.loadAssignments(),
+    canReadSecurityCatalog
+      ? security.loadDefinition()
+      : Promise.resolve(appAccessControl),
+    canReadSecurityCatalog ? security.loadAssignments() : Promise.resolve([]),
   ]);
   const subject = appCreateUserManagementAuthorizationSubject(
     context,
@@ -65,13 +83,27 @@ export default async function CPHomePage() {
         showPageHeader: false,
         withBreadcrumbChildrenMenu: true,
         breadcrumbs: [
-          { label: "Dashboard", children: dashboardBreadcrumbChildren },
+          { label: "Dashboard", children: [...dashboardBreadcrumbChildren, ...(canManageModules ? [{ label: "Modules", href: "/dashboard/modules" }] : []), ...extensionCards.map(item => ({ label: item.label, href: item.route }))] },
         ],
       }}
       context={context}
     >
       <CiNextDashboardOverview
-        setup={setup.filter((card) => {
+        setup={[...setup, ...extensionCards].filter((card) => {
+          if (card.id === "dashboard-modules") return canManageModules;
+          if (card.id === "dashboard-settings") return canReadSettings;
+          if (
+            !canReadSecurityCatalog &&
+            [
+              "dashboard-security",
+              "dashboard-users",
+              "dashboard-administrators",
+              "dashboard-org-units",
+              "dashboard-tenants",
+              "dashboard-trash",
+            ].includes(card.id)
+          )
+            return false;
           if (card.id === "dashboard-security") return canReadSecurity;
           if (card.id === "dashboard-users") return canReadUsers;
           if (card.id === "dashboard-administrators")

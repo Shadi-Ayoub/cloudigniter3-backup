@@ -94,3 +94,14 @@ npx ampx sandbox --profile your-profile
 
 Never commit `.env` values, Amplify secrets, generated outputs, or account-specific
 ARNs. Use Amplify secrets and deployment configuration for sensitive values.
+
+## Independently installed modules
+
+For functionality with its own install, disable, and uninstall lifecycle, use the
+[optional module contract](/docs/building-features/modules). The bundled To-Do List example has a dedicated
+[Amplify configuration walkthrough](/docs/building-features/modules#amplify-configuration), covering its AWS entry
+point, environment files, deployment commands, and task-table properties.
+
+The core backend supplies shared lifecycle handlers and a registry. Installing the example through the Dashboard
+creates its separate CloudFormation stack; disabling preserves its table, while confirmed uninstall deletes it.
+Static backend extensions remain part of the normal Amplify deployment.

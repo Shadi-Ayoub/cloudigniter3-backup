@@ -1,0 +1,53 @@
+---
+title: "dev template export"
+description: "Export the policy-approved application as a standalone template."
+sidebar_label: "dev template export"
+sidebar_custom_props:
+  audience: developer
+---
+
+Export the policy-approved application as a standalone template.
+
+## Syntax
+
+```text
+dev template export --output=<directory> [options]
+```
+
+## Prerequisites
+
+Run in the private company workspace with configured template export policy. Online commands also need the configured GitHub profile and repository permissions.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--output=<directory>` | Required external directory, relative to the invoking directory; parent must exist. |
+| `--source=<path>` | Application below apps, relative to the workspace; defaults to the selected policy. |
+| `--policy=<path>` | Workspace-relative policy; default .cloudigniter/template-policy.json. |
+| `--name=<name>` | Override the exported package name; defaults to policy. |
+| `--package-version=<version>` | Optional exact version for all policy-listed public packages; otherwise use policy versions. |
+| `--json` | Print structured validation details. |
+| `--overwrite` | Replace all contents of an existing approved output directory after validation and staging. |
+| `--dry-run` | Validate and preview without writing or replacing files. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Copies only allowed application files, resolves public package versions, applies standalone configuration, and validates the export. It does not install, build, push, or verify registry availability.
+
+## Examples
+
+```bash
+pnpm exec dev template export --output=../public-app --dry-run
+```
+
+## Errors and recovery
+
+Existing directories require --overwrite. Symlink destinations, protected paths, and Git checkouts are refused for replacement. Review the destination: overwrite removes all of its contents.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/template-export)

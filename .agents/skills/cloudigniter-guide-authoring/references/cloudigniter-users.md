@@ -60,7 +60,7 @@ source to verify behavior without exposing the maintainer checkout as the user's
 - Write paths relative to the downloaded application root, such as `.env.local`, `amplify/.env`, and `src/custom`.
   Do not instruct users to enter `apps/template` or install/build the CloudIgniter monorepo.
 - Use application commands such as `pnpm install`, `pnpm sso`, `pnpm sandbox`, and `pnpm dev`. Keep workspace
-  filters, workspace dependencies, package-build steps, and `ci-dev` workflows in CloudIgniter Developers.
+  filters, workspace dependencies, package-build steps, and `dev` workflows in CloudIgniter Developers.
 - Put AWS account, IAM Identity Center, permission-set, local profile, and account/Region bootstrap preparation
   in `docs/getting-started/before-you-start.mdx`, immediately before the run-template page in the sidebar.
 - Use **Developer 1** and the `developer1` AWS profile consistently in this onboarding walkthrough. Explain the
@@ -82,14 +82,17 @@ source to verify behavior without exposing the maintainer checkout as the user's
 
 Search the existing concept and workflow hierarchy before adding a page. Prefer updating the page a reader would already visit.
 
-The sidebar follows eight stages: Start here; Architecture and concepts; Configure your application; Identity and
-access; Tenants and Org Units; Build features; Data and providers; Testing and operations. The canonical ordering
+The sidebar follows nine stages: Start here; Architecture and concepts; Configure your application; Extend your
+application; Identity and access; Tenants and Org Units; Build features; Data and providers; Testing and operations. The canonical ordering
 and page membership live in `developer-guide/user-guide-structure.json`, consumed by `sidebars.ts`.
 
 - Start new readers at `docs/intro.md` and `docs/getting-started`.
 - Use `docs/architecture` for application-facing package, ownership, and request concepts.
-- Use `docs/configuration`, `docs/identity`, `docs/building-features`, `docs/data`, and `docs/operations` for chapter introductions and current workflows.
+- Use `docs/configuration`, `docs/extending-application`, `docs/identity`, `docs/building-features`, `docs/data`, and `docs/operations` for chapter introductions and current workflows.
 - Existing current documents retain their established paths, including authorization and tenancy beneath `docs/core-system`, plus provider, Resource Studio, UI, environment, and testing domains. Sidebar grouping determines their learning order.
+- Keep **Extend your application** immediately after **Configure your application**, with routes, settings, application configuration, and user profiles before optional modules. Keep the module chapter title generic (**Optional modules**); use the template’s bundled, initially uninstalled To-Do List module as the install/enable/disable/uninstall example, not as the chapter subject.
+- Follow optional-module management with **Creating your own modules**. Teach a complete application-owned example through public manifest, client, shared validation/types, and provider contracts. Include Amplify generation/deployment before installation, settings and permission enforcement, ownership and lifecycle races, packaging, limitations, and verification. Check copyable examples against public exports; keep package internals in contributor guidance and do not silently add tutorial modules to the template.
+- Group **Optional modules** and **Creating your own modules** as child pages of **Modules** under **Extend your application**. Give the parent a real overview page and preserve the child URLs. Represent nested groups with `label`, `overview`, and `items` in the structure manifest; the sidebar and membership check must traverse every level and count each overview and lesson exactly once.
 - Keep API Reference separate; link to exact contracts from the relevant lesson.
 - Keep the Dictionary focused on stable definitions, not complete tutorials.
 

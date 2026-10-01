@@ -1,0 +1,36 @@
+---
+title: CloudIgniter Commands
+description: Find every application and maintainer command, with syntax, parameters, examples, and operational guidance.
+slug: /
+sidebar_position: 0
+---
+
+Look up a command by name, browse the alphabetical catalogs, or use **Search guides** to find a command, option, or example. Each command has its own reference page.
+
+## ci Commands
+
+Application developers and operators use `ci` from `@cloudigniter/cli` to validate modules, edit Data Entity resources, and manage Amplify bootstrapping and sandbox deployment.
+
+[Browse ci Commands A–Z](./ci/index.mdx)
+
+```bash
+pnpm exec ci --help
+```
+
+## dev commands
+
+CloudIgniter maintainers use the private `dev` toolkit for package builds, testing, quality checks, GitHub workflows, template exports, and reviewed release delivery.
+
+[Browse dev commands A–Z](./dev/index.mdx)
+
+```bash
+pnpm exec dev --help
+```
+
+## Reading command syntax
+
+- Square brackets indicate optional input.
+- Angle brackets indicate a value to replace; do not type the brackets.
+- A vertical bar separates alternatives.
+- Examples use `pnpm exec` to resolve the installed executable without requiring a global install.
+- Commands that change files, cloud resources, or remote repositories describe those effects in **Remarks and effects**. Use a preview flag only when that command documents one.

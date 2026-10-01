@@ -11,15 +11,32 @@ The [CloudIgniter Users guide](/docs/intro) teaches application development in t
 1. [Start here](/docs/getting-started/before-you-start): AWS and SSO preparation, standalone template download, npm dependencies, sandbox creation, and first run.
 2. [Architecture and concepts](/docs/architecture/overview): packages, ownership, and request/rendering flow.
 3. [Configure your application](/docs/configuration/overview): environments, localization, themes, and settings.
-4. [Identity and access](/docs/identity/authentication): users, authentication, catalogs, assignments, and enforcement.
-5. [Tenants and Org Units](/docs/core-system/multi-Tenancy/intro): scopes, routing, organizational trees, and lifecycle.
-6. [Build features](/docs/building-features/first-page): pages, forms, tables, feedback, and Resource Studio.
-7. [Data and providers](/docs/data/overview): provider extension and persistence conventions.
-8. [Testing and operations](/docs/operations/overview): verification, diagnostics, seeders, and deployment.
+4. [Extend your application](/docs/extending-application/overview): routes, settings, application configuration, user profiles, then optional modules.
+5. [Identity and access](/docs/identity/authentication): users, authentication, catalogs, assignments, and enforcement.
+6. [Tenants and Org Units](/docs/core-system/multi-Tenancy/intro): scopes, routing, organizational trees, and lifecycle.
+7. [Build features](/docs/building-features/first-page): pages, forms, tables, feedback, and Resource Studio.
+8. [Data and providers](/docs/data/overview): provider extension and persistence conventions.
+9. [Testing and operations](/docs/operations/overview): verification, diagnostics, seeders, and deployment.
 
 The learning sequence is maintained explicitly in `developer-guide/user-guide-structure.json`, consumed by
-`sidebars.ts`. A current page belongs to exactly one chapter, either as its overview or an item. The API Reference
+`sidebars.ts`. Chapter items can be document IDs or nested groups with `label`, `overview`, and `items`; each group
+links to its own overview page. The sidebar renderer and structural checker traverse these groups recursively.
+A current page belongs to exactly one chapter, including its nested groups, as an overview or lesson. The API Reference
 has its own sidebar and is reached through purposeful links, rather than duplicated in the Users tree.
+
+## Extension lessons and examples
+
+Keep **Extend your application** immediately after **Configure your application**. Teach direct application
+extension points before the **Modules** parent page. Nest **Optional modules** and **Creating your own modules**
+beneath it, in that order. **Optional modules** uses
+the template's included, initially uninstalled To-Do List module as a worked example for installation, enablement,
+disabling, and uninstallation. The example's feature name does not belong in the chapter title.
+
+The module page retains `/docs/building-features/modules` for existing links; its sidebar membership places it in
+the extension chapter's Modules group. The authoring lesson retains `/docs/extending-application/creating-modules`,
+and the parent overview uses `/docs/extending-application/modules`.
+Configuration reference pages continue to explain configured values and management, while
+the extension lessons teach adding application-owned definitions and fields.
 
 ## Classify content using the current implementation
 

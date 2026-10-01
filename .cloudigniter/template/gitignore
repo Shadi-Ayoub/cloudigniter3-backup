@@ -1,0 +1,13 @@
+node_modules/
+.next/
+.amplify/
+.cloudigniter/local/
+.env*
+amplify_outputs*.json
+amplify/custom/root-user.json
+amplify/custom/config.json
+amplify/.logs/
+*.log
+*.tsbuildinfo
+.DS_Store
+._*

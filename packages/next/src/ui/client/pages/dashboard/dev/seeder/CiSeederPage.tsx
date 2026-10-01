@@ -332,7 +332,7 @@ export function CiSeederPage() {
                   </div>
                 ) : (
                   <div className="h-full w-full overflow-hidden">
-                    <div className="bg-background text-foreground h-full w-full font-mono text-sm dark:bg-black dark:text-white">
+                    <div className="bg-background text-foreground h-full w-full font-mono text-sm">
                       {/* Terminal header */}
                       {/* <div className='flex items-center justify-between border-b px-3 py-2 dark:border-white/10'>
                         <div className='flex items-center gap-2'>

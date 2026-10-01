@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "profiles": {
+    "developer": { "username": "Shadi-Ayoub", "role": "developer" },
+    "approver": { "username": "jodaris", "role": "approver" }
+  }
+}

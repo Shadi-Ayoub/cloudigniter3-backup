@@ -1,5 +1,15 @@
 export { ciCreateCoreSettingsRegistry } from "./ci-create-core-settings-registry";
 export { ciCreateSettingsService } from "./ci-create-settings-service";
+export { ciCreateSettingsManager } from "./ci-create-settings-manager";
+export {
+  ciParseSettingsTarget,
+  ciSettingsTargetKey,
+  ciSettingsSelectionFields,
+  ciParseSettingsEnforcement,
+} from "./ci-settings-target";
+export { ciResolveRequestSettings } from "./ci-resolve-request-settings";
+export { ciCanManageSettings } from "./ci-settings-access";
+export { ciResolveSettingsPreferences } from "./ci-resolve-settings-preferences";
 export { ciDefineSettingsRegistry } from "./ci-define-settings-registry";
 export { ciGetSettingsValueAtPath } from "./ci-get-settings-value-at-path";
 export { ciMergeSettings } from "./ci-merge-settings";

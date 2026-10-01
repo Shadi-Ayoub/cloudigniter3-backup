@@ -13,14 +13,14 @@
       "@ci-core/*": [
         "../../packages/core/src/*"
       ],
-      "@ci-aws/*": [
-        "../../packages/aws/src/*"
-      ],
       "@ci-ui/*": [
         "../../packages/ui/src/*"
       ],
       "@ci-next/*": [
         "../../packages/next/src/*"
+      ],
+      "@ci-aws/*": [
+        "../../packages/aws/src/*"
       ]
     },
     "plugins": [

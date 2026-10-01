@@ -1,0 +1,51 @@
+---
+title: Package script compatibility
+description: Map retained package scripts to the canonical DEV command manuals.
+sidebar_position: 11
+---
+
+Existing package scripts remain aliases for CI, Turbo and developer shortcuts.
+Prefer DEV commands in new automation. DEV executes tools directly instead of
+calling the same package script recursively.
+
+| Existing script | Command manual |
+| --- | --- |
+| `switch:src` | [`dev package switch --target=src`](/commands/dev/package-switch) |
+| `switch:dist` | [`dev package switch --target=dist`](/commands/dev/package-switch) |
+| `clean` | [`dev package clean`](/commands/dev/package-clean) |
+| `clean:maps` | [`dev package clean-maps`](/commands/dev/package-clean-maps) |
+| `clean:dts` | [`dev package clean-dts`](/commands/dev/package-clean-dts) |
+| `test`, `test:next` | [`dev package test`](/commands/dev/package-test) |
+| `test:watch` | [`dev package test --watch`](/commands/dev/package-test) |
+| `test:coverage` | [`dev package test --coverage`](/commands/dev/package-test) |
+| `test:style` | [`dev next test-style --style=standard`](/commands/dev/next-test-style) |
+| `build`, `build:dev`, `build:dev2` | [`dev package build --mode=dev`](/commands/dev/package-build) |
+| `build:prod`, `build:prod2` | [`dev package build --mode=prod`](/commands/dev/package-build) |
+| `build:js` | [`dev package build-js`](/commands/dev/package-build-js) |
+| `build:types:clean` | [`dev package clean-types`](/commands/dev/package-clean-types) |
+| `build:types` | [`dev package build-types`](/commands/dev/package-build-types) |
+| `build:types:raw` | [`dev package build-types-raw`](/commands/dev/package-build-types-raw) |
+| `build:assets` | [`dev package build-assets`](/commands/dev/package-build-assets) |
+| `build:theme` | [`dev next build-theme`](/commands/dev/next-build-theme) |
+| `obfuscate` | [`dev package obfuscate`](/commands/dev/package-obfuscate) |
+| `typecheck` | [`dev package typecheck`](/commands/dev/package-typecheck) |
+| `typecheck:tools` | [`dev package typecheck --scope=tools`](/commands/dev/package-typecheck) |
+| `typecheck:tests` | [`dev package typecheck --scope=tests`](/commands/dev/package-typecheck) |
+| `check` | [`dev package check`](/commands/dev/package-check) |
+| `check:package` | [`dev package check-package`](/commands/dev/package-check-package) |
+| `dev` | [`dev package watch`](/commands/dev/package-watch) |
+| `scan:client-directives` | [`dev quality scan-client-directives`](/commands/dev/quality-scan-client-directives) |
+| `list:client-files` | [`dev quality list-client-files --root=src`](/commands/dev/quality-list-client-files) |
+| `quality`, `quality:next` | [`dev package quality`](/commands/dev/package-quality) |
+| `release:check`, `release:check:next` | [`dev package release-check`](/commands/dev/package-release-check) |
+| `prepublishOnly` | [`dev package prepublish`](/commands/dev/package-prepublish) |
+| `test:build-gate` | [`dev package test-build-gate`](/commands/dev/package-test-build-gate) |
+
+The `build:dev2` and `build:prod2` aliases have no separate modes. `config-ts` has
+no applicable package scripts. Application scripts, documentation commands and
+root Turbo orchestration retain their respective owners.
+
+For older Next test scripts, replace the positional test selector with the filter
+option documented in [dev package test](/commands/dev/package-test). See
+[workspace migration](./workspace.mdx#migrating-from-ci-dev) for the executable and
+build-export migration.

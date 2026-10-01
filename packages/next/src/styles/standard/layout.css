@@ -4,7 +4,7 @@
   }
 
   .ci-body {
-    @apply h-dvh min-h-0 overflow-hidden bg-background;
+    @apply h-dvh min-h-0 overflow-hidden bg-background text-foreground;
   }
 
   /* .ci-main is the fixed inset frame: keep ONLY insets, NO padding */
@@ -23,7 +23,7 @@
   }
 
   .ci-main-header {
-    @apply h-primary-header-height z-layout fixed inset-x-0 top-0 flex w-full items-center justify-between border-b border-border bg-background/60 text-foreground shadow-md;
+    @apply h-primary-header-height z-layout fixed inset-x-0 top-0 flex w-full items-center justify-between border-b border-border bg-surface/95 text-surface-foreground shadow-md;
     margin-bottom: -1px; /* cancels the 1px border from scrollHeight */
   }
 
@@ -38,7 +38,7 @@
   }
 
   .ci-breadcrumb {
-    @apply z-layout text-muted-700 dark:text-muted-300 fixed inset-x-0 ml-2 text-sm rtl:mr-2 rtl:ml-0;
+    @apply z-layout text-muted-foreground fixed inset-x-0 ml-2 text-sm rtl:mr-2 rtl:ml-0;
   }
 
   .ci-container {
@@ -53,7 +53,7 @@
   }
 
   .ci-main-footer {
-    @apply h-footer-height z-layout fixed inset-x-0 bottom-0 left-0 flex w-full items-center justify-between bg-background/60 px-8 text-foreground shadow-md backdrop-blur;
+    @apply h-footer-height z-layout fixed inset-x-0 bottom-0 left-0 flex w-full items-center justify-between border-t border-border bg-surface/95 px-8 text-surface-foreground shadow-md backdrop-blur;
   }
 
   .ci-viewport-center {
@@ -75,6 +75,6 @@
   }
 
   .ci-main-login-footer {
-    @apply h-footer-height z-layout fixed inset-x-0 bottom-0 left-0 flex w-full items-center justify-center bg-background/60 px-8 text-foreground shadow-md backdrop-blur;
+    @apply h-footer-height z-layout fixed inset-x-0 bottom-0 left-0 flex w-full items-center justify-center border-t border-border bg-surface/95 px-8 text-surface-foreground shadow-md backdrop-blur;
   }
 }

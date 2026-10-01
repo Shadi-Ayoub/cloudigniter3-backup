@@ -68,6 +68,8 @@ export type CiSmartFormProps<T extends object = CiSmartFormValues> = {
     context: CiSmartFormActionContext<T>,
   ) => void | Promise<void>;
   onValuesChange?: (values: T) => void;
+  /** Reveal an invalid section before the form focuses its first invalid field. */
+  onValidationErrors?: (errors: Readonly<Record<string, string>>) => void;
   onError?: (error: CiErrorPayload) => void;
   renderers?: Readonly<
     Record<string, ComponentType<CiSmartFormFieldRenderProps<T>>>

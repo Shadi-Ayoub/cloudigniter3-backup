@@ -1,0 +1,46 @@
+---
+title: "dev github auth login"
+description: "Sign in through the browser for a named GitHub profile."
+sidebar_label: "dev github auth login"
+sidebar_custom_props:
+  audience: developer
+---
+
+Sign in through the browser for a named GitHub profile.
+
+## Syntax
+
+```text
+dev github auth login --profile=<name>
+```
+
+## Prerequisites
+
+Run in the private workspace with [GitHub CLI prepared by DEV](./github-setup.mdx) and the relevant company policies configured. Online commands use the selected named GitHub profile; credentials remain in GitHub CLI storage.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--profile=<name>` | Required configured profile; the browser account must match its username. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Opens GitHub CLI browser authentication, stores the credential through GitHub CLI, and verifies the account just authenticated. This command is interactive; do not use --no-interactive.
+
+## Examples
+
+```bash
+pnpm exec dev github auth login --profile=developer
+```
+
+## Errors and recovery
+
+A cancelled login or a different browser account fails verification. Retry using the same intended profile.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/publishing/github-commands)

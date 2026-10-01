@@ -31,40 +31,6 @@ export const ciPublicHelp = `
     $ ci resources studio --profile=developer1 --no-open
     $ ci modules validate --root=src/modules
     $ ci amplify bootstrap root-user --profile=developer1
-    $ ci amplify sandbox bootstrap --profile=developer1 --identifier=ci-dev
-    $ ci amplify sandbox deploy --profile=developer1 --identifier=ci-dev
-`;
-
-export const ciDeveloperHelp = `
-  CloudIgniter monorepo maintainer toolkit.
-
-  Usage
-    $ ci-dev <group> <command> [options]
-
-  Package commands
-    package build --mode=dev|prod
-    package switch --target=src|dist
-    package clean-maps
-    package clean-dts
-    package obfuscate
-    package build-assets
-
-  Quality commands
-    quality scan-client-directives
-    quality list-client-files --root=src
-
-  Next.js package commands
-    next build-theme
-    next test-style --style=standard
-
-  Module commands
-    modules validate --kind=core|user [--root=<path>]
-    modules sync [--check]
-
-  Global options
-    --workspace-root <path> Override the detected CloudIgniter workspace
-    --verbose               Include diagnostic error details
-    --clear                 Clear an interactive terminal before rendering
-    --help                  Show help
-    --version               Show version
+    $ ci amplify sandbox bootstrap --profile=developer1 --identifier=ci-sandbox
+    $ ci amplify sandbox deploy --profile=developer1 --identifier=ci-sandbox
 `;

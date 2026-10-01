@@ -9,18 +9,30 @@ Use this reference for every CloudIgniter guide task.
 | CloudIgniter Users | `developer-guide/docs` excluding `api-reference` | Default docs plugin / `userGuideSidebar` | Application developers, integrators, and operators |
 | CloudIgniter Developers | `developer-guide/company-developers` | `companyDevelopers` plugin / `cloudIgniterDevelopersSidebar` | CloudIgniter contributors and provider/package maintainers |
 | Dictionary | `developer-guide/dictionary` | `dictionary` plugin / `dictionarySidebar` | Readers looking up stable CloudIgniter ecosystem terminology by letter |
+| Developer Dictionary | `developer-guide/developer-dictionary` | `developerDictionary` plugin / `developerDictionarySidebar` | Company contributors looking up internal implementation and technology terms |
 | API Reference | `developer-guide/docs/api-reference` | Default docs plugin / `apiReferenceSidebar` | Developers looking up stable public contracts |
+| CloudIgniter Commands | `developer-guide/commands` | `commands` plugin / `commandsSidebar` | Application operators in `ci`; company maintainers in `dev` |
 | Skills | `.agents/skills` and `.codex/skills` (rendered through generated build content) | Skills docs plugin / `skillsSidebar` | Codex and maintainers inspecting reusable authoring instructions |
 
 Respect the plugin boundary. Links into `company-developers` use that plugin's route base; API reference pages remain under the default docs plugin.
 
+The navbar labels CloudIgniter Users as **User guide** and CloudIgniter Developers as **Developer guide**.
+The live Skills section is available under **Resources → Skills**. These labels do not change the audience,
+source folders, plugin IDs, or routes above.
+
 ## Package references by audience
+
+The internal CloudIgniter developer toolkit (`@cloudigniter/dev`, executable `dev`)
+and publishing-only vocabulary belong in CloudIgniter Developers and the `dev commands` reference, not the customer
+Dictionary. Define them in the Developer Dictionary and link the relevant contributor page. Prefer one clear
+purpose, prerequisites, effects and expected result for each operational command;
+distinguish committed setup configuration from verified remote setup history.
 
 Write the Dictionary, CloudIgniter Users, API Reference, and other end-user guide content for readers who have
 the application template from GitHub and CloudIgniter packages from npm. Refer to packages by their published
 `@cloudigniter/<name>` names, including in definitions, prose, tables, diagrams, and code comments. Keep repository
 package paths such as `packages/<name>` and package implementation details in CloudIgniter Developers, whose
-audience is system developers at the company that owns CloudIgniter. Source skills rendered in the Skills tab
+audience is system developers at the company that owns CloudIgniter. Source skills rendered in the Skills section
 retain their maintainer instructions and repository paths.
 
 For example, identify EmberGuard as `@cloudigniter/emberguard` while continuing to direct application developers
@@ -44,7 +56,8 @@ Use the following as a minimum routing matrix:
 | Deprecation, rename, removal, or breaking behavior | Every page using the old contract, API Reference migration notes, and compatibility guidance |
 | Bug fix that changes observable behavior | Correct the pages that described or worked around the old behavior; add troubleshooting guidance when the failure mode is likely to recur |
 | Internal refactor with identical documented behavior | Verify all three surfaces; record why no guide edit is needed if none is affected |
-| Skill or skill reference change | The Skills tab updates from its source folders; improve the source skill only when warranted, without copying it into the guide |
+| Skill or skill reference change | The Skills section updates from its source folders; improve the source skill only when warranted, without copying it into the guide |
+| Guide theme, layout, homepage, or navigation change | Follow [guide-presentation.md](guide-presentation.md); check the affected guide surfaces and interactions without rewriting unchanged API or conceptual content |
 
 ## Establish the source of truth
 
@@ -75,7 +88,7 @@ Search at minimum for:
 ## Docusaurus edit lifecycle
 
 Apply this sequence whenever changing guide content, navigation, components, configuration, or source skills
-rendered in the Skills tab:
+rendered in the Skills section:
 
 1. Before the first edit, identify this checkout's Docusaurus development server and its terminal/process.
    The guide's `start` script uses port `3010`; check `developer-guide/package.json` and any explicit launch
@@ -96,6 +109,10 @@ rendered in the Skills tab:
    are needed after startup, stop the server again before continuing and restart after those checks.
 
 Read-only guide inspection does not require stopping Docusaurus.
+
+For visual work, the completed production build may be served temporarily on a separate local port while the
+development server remains stopped. Inspect the built result, stop that preview before rebuilding, then complete
+the normal development-server restart. See [visual verification](guide-presentation.md#visual-verification).
 
 ## Shared authoring standards
 
@@ -130,7 +147,7 @@ Read-only guide inspection does not require stopping Docusaurus.
 ### Maintain page dates
 
 Every Markdown/MDX page in `developer-guide/docs`, `developer-guide/company-developers`, and
-`developer-guide/dictionary`, plus Markdown sources rendered from `.agents/skills` and `.codex/skills`, has an
+`developer-guide/dictionary`, `developer-guide/developer-dictionary`, and `developer-guide/commands`, plus Markdown sources rendered from `.agents/skills` and `.codex/skills`, has an
 entry in `developer-guide/page-dates.json`. Category metadata (`_category_.json`, `.yml`, or `.yaml`) is tracked
 as well, so generated category index pages have dates. Keys are repository-relative source paths, never `.generated` paths.
 The initial Created and Updated values were initialized together on 9 September 2026 as the start of date

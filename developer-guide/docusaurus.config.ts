@@ -2,8 +2,10 @@ import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 import remarkDictionaryTerms from "./plugins/remark-dictionary-terms";
+import remarkCommandReferences from "./plugins/remark-command-references";
 import sidebarPageDates from "./plugins/sidebar-page-dates";
 import { prepareSkillsDocs } from "./scripts/prepare-skills-docs";
+import guideSearch from "./plugins/guide-search";
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -12,12 +14,12 @@ import { prepareSkillsDocs } from "./scripts/prepare-skills-docs";
 prepareSkillsDocs(__dirname);
 
 const config: Config = {
-  title: "CloudIgniter Guides",
+  title: "CloudIgniter Docs",
   tagline: "Build and extend applications with CloudIgniter",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
-  url: "https://your-docusaurus-site.example.com",
+  url: "https://docs.cloudigniter.io",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: "/",
@@ -46,11 +48,7 @@ const config: Config = {
         docs: {
           sidebarPath: "./sidebars.ts",
           sidebarItemsGenerator: sidebarPageDates,
-          remarkPlugins: [remarkDictionaryTerms],
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
+          remarkPlugins: [remarkCommandReferences, remarkDictionaryTerms],
         },
         blog: {
           showReadingTime: true,
@@ -58,10 +56,6 @@ const config: Config = {
             type: ["rss", "atom"],
             xslt: true,
           },
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
           // Useful options to enforce blogging best practices
           onInlineTags: "warn",
           onInlineAuthors: "warn",
@@ -75,6 +69,21 @@ const config: Config = {
   ],
 
   plugins: [
+    guideSearch,
+    [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "commands",
+        path: "commands",
+        routeBasePath: "commands",
+        sidebarPath: "./commands-sidebars.ts",
+        sidebarItemsGenerator: sidebarPageDates,
+        remarkPlugins: [
+          remarkCommandReferences,
+          [remarkDictionaryTerms, { audience: "commands" }],
+        ],
+      },
+    ],
     [
       "@docusaurus/plugin-content-docs",
       {
@@ -82,6 +91,17 @@ const config: Config = {
         path: "dictionary",
         routeBasePath: "dictionary",
         sidebarPath: "./dictionary-sidebars.ts",
+        remarkPlugins: [remarkCommandReferences],
+      },
+    ],
+    [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "developerDictionary",
+        path: "developer-dictionary",
+        routeBasePath: "developer-dictionary",
+        sidebarPath: "./developer-dictionary-sidebars.ts",
+        remarkPlugins: [remarkCommandReferences],
       },
     ],
     [
@@ -92,7 +112,10 @@ const config: Config = {
         routeBasePath: "company-developers",
         sidebarPath: "./company-sidebars.ts",
         sidebarItemsGenerator: sidebarPageDates,
-        remarkPlugins: [remarkDictionaryTerms],
+        remarkPlugins: [
+          remarkCommandReferences,
+          [remarkDictionaryTerms, { audience: "developer" }],
+        ],
       },
     ],
     [
@@ -104,43 +127,33 @@ const config: Config = {
         routeBasePath: "skills",
         sidebarPath: "./skills-sidebars.ts",
         include: ["**/*.md"],
+        remarkPlugins: [remarkCommandReferences],
       },
     ],
   ],
 
   themeConfig: {
-    // Replace with your project's social card
-    image: "img/docusaurus-social-card.jpg",
+    colorMode: { respectPrefersColorScheme: true },
     navbar: {
-      title: "CloudIgniter",
+      title: "CloudIgniter Docs",
       logo: {
         alt: "CloudIgniter logo",
         src: "img/logo.png",
+        srcDark: "img/logo-dark.svg",
       },
       items: [
         {
           type: "docSidebar",
-          docsPluginId: "dictionary",
-          sidebarId: "dictionarySidebar",
-          position: "left",
-          label: "Dictionary",
-        },
-        {
-          type: "custom-dictionaryViewer",
-          position: "left",
-        },
-        {
-          type: "docSidebar",
           sidebarId: "userGuideSidebar",
           position: "left",
-          label: "CloudIgniter Users",
+          label: "User guide",
         },
         {
           type: "docSidebar",
           docsPluginId: "companyDevelopers",
           sidebarId: "cloudIgniterDevelopersSidebar",
           position: "left",
-          label: "CloudIgniter Developers",
+          label: "Developer guide",
         },
         {
           type: "docSidebar",
@@ -149,72 +162,98 @@ const config: Config = {
           label: "API Reference",
         },
         {
-          type: "doc",
-          docsPluginId: "skills",
-          docId: "agents/skills/banner-design/SKILL",
+          type: "docSidebar",
+          docsPluginId: "commands",
+          sidebarId: "commandsSidebar",
           position: "left",
-          label: "Skills",
+          label: "CloudIgniter Commands",
         },
-        { to: "/blog", label: "Blog", position: "left" },
+        { type: "search", position: "right" },
+        { type: "custom-dictionaryViewer", position: "right" },
         {
-          href: "https://github.com/facebook/docusaurus",
-          label: "GitHub",
+          type: "docSidebar",
+          docsPluginId: "dictionary",
+          sidebarId: "dictionarySidebar",
           position: "right",
+          label: "Dictionary",
+          className: "user-dictionary-link",
+        },
+        {
+          type: "custom-dictionaryViewer",
+          dictionary: "developer",
+          position: "right",
+        },
+        {
+          type: "docSidebar",
+          docsPluginId: "developerDictionary",
+          sidebarId: "developerDictionarySidebar",
+          position: "right",
+          label: "Developer Dictionary",
+          className: "developer-dictionary-link",
+        },
+        {
+          type: "dropdown",
+          label: "Resources",
+          position: "right",
+          items: [
+            {
+              type: "doc",
+              docsPluginId: "skills",
+              docId: "agents/skills/banner-design/SKILL",
+              label: "Skills",
+            },
+            { to: "/blog", label: "Blog" },
+          ],
         },
       ],
     },
     footer: {
-      style: "dark",
+      style: "light",
       links: [
         {
-          title: "Docs",
+          title: "Guides",
           items: [
+            { label: "CloudIgniter Users", to: "/docs/intro" },
             {
-              label: "CloudIgniter Users",
-              to: "/docs/intro",
-            },
-            {
-              label: "Dictionary",
-              to: "/dictionary",
+              label: "CloudIgniter Developers",
+              to: "/company-developers/architecture/core-custom-ownership",
             },
           ],
         },
         {
-          title: "Community",
+          title: "Reference",
           items: [
-            {
-              label: "Stack Overflow",
-              href: "https://stackoverflow.com/questions/tagged/docusaurus",
-            },
-            {
-              label: "Discord",
-              href: "https://discordapp.com/invite/docusaurus",
-            },
-            {
-              label: "X",
-              href: "https://x.com/docusaurus",
-            },
+            { label: "API Reference", to: "/docs/api-reference/overview" },
+            { label: "CloudIgniter Commands", to: "/commands" },
+            { label: "Dictionary", to: "/dictionary" },
+            { label: "Developer Dictionary", to: "/developer-dictionary" },
           ],
         },
         {
-          title: "More",
+          title: "Resources",
           items: [
             {
-              label: "Blog",
-              to: "/blog",
+              label: "Skills",
+              to: "/skills/agents/skills/banner-design/SKILL",
             },
-            {
-              label: "GitHub",
-              href: "https://github.com/facebook/docusaurus",
-            },
+            { label: "Blog", to: "/blog" },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} CloudIgniter. Built with Docusaurus.`,
+      copyright: `© ${new Date().getFullYear()} CloudIgniter. Documentation for builders and maintainers.`,
     },
     prism: {
       theme: prismThemes.github,
-      darkTheme: prismThemes.dracula,
+      darkTheme: {
+        ...prismThemes.oneDark,
+        styles: [
+          ...prismThemes.oneDark.styles,
+          {
+            types: ["comment", "prolog", "cdata"],
+            style: { color: "#9da5b4" },
+          },
+        ],
+      },
     },
   } satisfies Preset.ThemeConfig,
   themes: ["@docusaurus/theme-mermaid"],

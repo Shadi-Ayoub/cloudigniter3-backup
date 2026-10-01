@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import type {
   CiBreadcrumbItem,
   CiLocaleDirection,
@@ -12,9 +12,14 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuPortal,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@cloudigniter/ui/client";
 import { CiNextNavigateWithLoader } from "../navigation";
+import { ciResolveBreadcrumbMenuItems } from "./ci-resolve-breadcrumb-menu-items";
 
 export interface CiBreadcrumbsProps {
   items: CiBreadcrumbItem[];
@@ -23,8 +28,8 @@ export interface CiBreadcrumbsProps {
   /** If true, injects JSON-LD microdata for breadcrumbs. */
   withStructuredData?: boolean; // a simple on/off switch for emitting standards-compliant breadcrumb SEO metadata
   /**
-   * If true, breadcrumb items with `children` expose those routes in a menu.
-   * The menu opens on mouse hover and is also available by keyboard or tap.
+   * If true, recursively expose `children` in hover menus. Parent labels remain
+   * links; arrows and keyboard controls open submenus without navigating.
    */
   withChildrenMenu?: boolean;
 }
@@ -36,9 +41,104 @@ interface CiBreadcrumbChildrenMenuProps {
   dir: CiLocaleDirection;
 }
 
-function ciNormalizeBreadcrumbPath(path: string): string {
-  const pathname = path.split(/[?#]/, 1)[0] ?? path;
-  return pathname === "/" ? pathname : pathname.replace(/\/+$/, "");
+interface CiBreadcrumbMenuItemsProps {
+  items: ReturnType<typeof ciResolveBreadcrumbMenuItems>;
+  onNavigate: () => void;
+  cancelClose: () => void;
+  scheduleClose: () => void;
+}
+
+const menuItemClassName = "min-h-11 cursor-pointer gap-2 transition-colors duration-150 focus:bg-accent focus:text-accent-foreground motion-reduce:transition-none";
+
+function CiBreadcrumbMenuItems({ items, ...menuProps }: CiBreadcrumbMenuItemsProps) {
+  return items.map((entry, index) => {
+    const key = entry.item.href ?? entry.item.i18nKey ?? `${entry.label}-${index}`;
+    if (entry.children.length) {
+      return <CiBreadcrumbSubmenu key={key} entry={entry} {...menuProps} />;
+    }
+
+    const content = <>
+      {entry.item.icon ? <span className="size-4 shrink-0">{entry.item.icon}</span> : null}
+      <span>{entry.label}</span>
+    </>;
+
+    return entry.item.href ? (
+      <DropdownMenuItem key={key} asChild textValue={entry.label}>
+        <CiNextNavigateWithLoader
+          href={entry.item.href}
+          onNavigateStart={menuProps.onNavigate}
+          className={menuItemClassName}
+        >
+          {content}
+        </CiNextNavigateWithLoader>
+      </DropdownMenuItem>
+    ) : (
+      <DropdownMenuItem key={key} disabled>{content}</DropdownMenuItem>
+    );
+  });
+}
+
+function CiBreadcrumbSubmenu({
+  entry,
+  ...menuProps
+}: Omit<CiBreadcrumbMenuItemsProps, "items"> & {
+  entry: CiBreadcrumbMenuItemsProps["items"][number];
+}) {
+  const [open, setOpen] = useState(false);
+  const content = <>
+    {entry.item.icon ? <span className="size-4 shrink-0">{entry.item.icon}</span> : null}
+    <span className="flex-1">{entry.label}</span>
+  </>;
+
+  return (
+    <DropdownMenuSub open={open} onOpenChange={setOpen}>
+      {entry.item.href && !entry.current ? (
+        <DropdownMenuSubTrigger asChild textValue={entry.label}>
+          <CiNextNavigateWithLoader
+            href={entry.item.href}
+            onNavigateStart={menuProps.onNavigate}
+            className={`${menuItemClassName} py-0 pe-0`}
+            onKeyDown={(event) => {
+              // Enter follows the parent link; Space/directional arrows retain
+              // Radix's submenu controls, including the reversed RTL direction.
+              if (event.key === "Enter") {
+                event.preventDefault();
+                event.currentTarget.click();
+              }
+            }}
+          >
+            {content}
+            <span
+              data-breadcrumb-expand=""
+              aria-hidden="true"
+              className="ms-auto inline-flex min-h-11 w-11 shrink-0 items-center justify-center self-stretch"
+              onClick={(event) => {
+                event.preventDefault();
+                setOpen(true);
+              }}
+            >
+              <ChevronRight className="size-4 rtl:rotate-180" />
+            </span>
+          </CiNextNavigateWithLoader>
+        </DropdownMenuSubTrigger>
+      ) : (
+        <DropdownMenuSubTrigger textValue={entry.label} className={menuItemClassName}>
+          {content}
+        </DropdownMenuSubTrigger>
+      )}
+      <DropdownMenuPortal>
+        <DropdownMenuSubContent
+          sideOffset={4}
+          collisionPadding={8}
+          className="min-w-48 max-w-[calc(100vw-1rem)] max-h-(--radix-dropdown-menu-content-available-height) overflow-y-auto duration-200 motion-reduce:animate-none"
+          onMouseEnter={menuProps.cancelClose}
+          onMouseLeave={menuProps.scheduleClose}
+        >
+          <CiBreadcrumbMenuItems items={entry.children} {...menuProps} />
+        </DropdownMenuSubContent>
+      </DropdownMenuPortal>
+    </DropdownMenuSub>
+  );
 }
 
 function CiBreadcrumbChildrenMenu({
@@ -48,45 +148,56 @@ function CiBreadcrumbChildrenMenu({
   dir,
 }: CiBreadcrumbChildrenMenuProps) {
   const t = useTranslations();
+  const locale = useLocale();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const keyboardInteraction = useRef(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
   );
-  const children = (item.children ?? [])
-    .filter(
-      (child) =>
-        !child.hidden &&
-        !child.current &&
-        (!child.href ||
-          ciNormalizeBreadcrumbPath(child.href) !==
-            ciNormalizeBreadcrumbPath(pathname)),
-    )
-    .map((child, index) => ({
-      child,
-      index,
-      label: child.i18nKey ? t(child.i18nKey) : child.label ?? "",
-    }))
-    .sort((left, right) => left.label.localeCompare(right.label));
+  const children = ciResolveBreadcrumbMenuItems(item.children ?? [], pathname, t, locale);
 
-  const cancelClose = () => {
+  const cancelClose = useCallback(() => {
     if (closeTimer.current) {
       clearTimeout(closeTimer.current);
       closeTimer.current = undefined;
     }
-  };
+  }, []);
+
+  const resetMenu = useCallback(() => {
+    cancelClose();
+    keyboardInteraction.current = false;
+    setOpen(false);
+    if (document.activeElement === triggerRef.current) {
+      triggerRef.current?.blur();
+    }
+  }, [cancelClose]);
 
   const scheduleClose = () => {
     cancelClose();
-    closeTimer.current = setTimeout(() => setOpen(false), 150);
+    closeTimer.current = setTimeout(() => {
+      // Moving the mouse away must not dismiss an active keyboard interaction.
+      if (!keyboardInteraction.current) resetMenu();
+    }, 150);
   };
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    const onVisibilityChange = () => {
+      if (document.hidden) resetMenu();
+    };
+    window.addEventListener("blur", resetMenu);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
       cancelClose();
-    },
-    [],
-  );
+      window.removeEventListener("blur", resetMenu);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, [cancelClose, resetMenu]);
+
+  useEffect(() => {
+    resetMenu();
+  }, [pathname, resetMenu]);
 
   if (!children.length) {
     return isClickable ? (
@@ -110,7 +221,10 @@ function CiBreadcrumbChildrenMenu({
     <DropdownMenu open={open} onOpenChange={setOpen} modal={false} dir={dir}>
       <span
         className="inline-flex items-center"
+        onKeyDownCapture={() => { keyboardInteraction.current = true; }}
+        onPointerDownCapture={() => { keyboardInteraction.current = false; }}
         onMouseEnter={() => {
+          keyboardInteraction.current = false;
           cancelClose();
           setOpen(true);
         }}
@@ -119,6 +233,7 @@ function CiBreadcrumbChildrenMenu({
         {isClickable ? (
           <CiNextNavigateWithLoader
             href={item.href!}
+            onNavigateStart={resetMenu}
             className="hover:bg-muted-100 dark:hover:bg-muted-900 focus-visible:ring-ring/60 rounded-s px-1 py-0.5 underline-offset-4 transition hover:underline focus-visible:ring-2 focus-visible:outline-none active:scale-[0.98]"
           >
             {content}
@@ -133,8 +248,9 @@ function CiBreadcrumbChildrenMenu({
         )}
 
         <DropdownMenuTrigger
+          ref={triggerRef}
           aria-label={`Show pages in ${item._label}`}
-          className="group hover:bg-muted-100 dark:hover:bg-muted-900 focus-visible:ring-ring/60 inline-flex size-6 items-center justify-center rounded-e transition-colors duration-200 focus-visible:ring-2 focus-visible:outline-none motion-reduce:transition-none"
+          className="group hover:bg-muted-100 dark:hover:bg-muted-900 focus-visible:ring-ring/60 inline-flex size-6 pointer-coarse:size-11 items-center justify-center rounded-e transition-colors duration-200 focus-visible:ring-2 focus-visible:outline-none motion-reduce:transition-none"
         >
           <ChevronDown
             className="size-3.5 opacity-70 transition-transform duration-200 group-hover:scale-110 group-data-[state=open]:rotate-180 motion-reduce:transition-none"
@@ -146,32 +262,30 @@ function CiBreadcrumbChildrenMenu({
       <DropdownMenuContent
         align="start"
         sideOffset={4}
-        className="min-w-48 duration-200"
+        collisionPadding={8}
+        className="min-w-48 max-w-[calc(100vw-1rem)] duration-200 motion-reduce:animate-none"
         onMouseEnter={cancelClose}
         onMouseLeave={scheduleClose}
+        onKeyDownCapture={() => { keyboardInteraction.current = true; }}
+        onPointerMoveCapture={() => { keyboardInteraction.current = false; }}
+        onPointerDownCapture={() => { keyboardInteraction.current = false; }}
+        onCloseAutoFocus={(event) => {
+          // Radix normally restores focus to the disclosure after every close.
+          // Only keyboard dismissal should leave that button focused.
+          if (!keyboardInteraction.current) {
+            event.preventDefault();
+            if (document.activeElement === triggerRef.current) {
+              triggerRef.current?.blur();
+            }
+          }
+        }}
       >
-        {children.map(({ child, index, label }) => {
-          return child.href ? (
-            <DropdownMenuItem key={`${child.i18nKey ?? child.label ?? index}`} asChild>
-              <CiNextNavigateWithLoader
-                href={child.href}
-                onNavigateStart={() => setOpen(false)}
-                className="cursor-pointer transition-colors duration-150 hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground motion-reduce:transition-none"
-              >
-                {child.icon ? <span className="size-4">{child.icon}</span> : null}
-                <span>{label}</span>
-              </CiNextNavigateWithLoader>
-            </DropdownMenuItem>
-          ) : (
-            <DropdownMenuItem
-              key={`${child.i18nKey ?? child.label ?? index}`}
-              disabled
-            >
-              {child.icon ? <span className="size-4">{child.icon}</span> : null}
-              <span>{label}</span>
-            </DropdownMenuItem>
-          );
-        })}
+        <CiBreadcrumbMenuItems
+          items={children}
+          onNavigate={resetMenu}
+          cancelClose={cancelClose}
+          scheduleClose={scheduleClose}
+        />
       </DropdownMenuContent>
     </DropdownMenu>
   );

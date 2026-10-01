@@ -21,4 +21,4 @@ Validate application modules from the monorepo root with the public CLI alias:
 pnpm modules:validate:user
 ```
 
-Framework module dependency synchronization is intentionally separated into the maintainer-only `ci-dev` executable. Do not run synchronization during application startup or `postinstall`; it can update package manifests and the workspace lockfile.
+Framework module dependency synchronization is intentionally separated into the maintainer-only `dev` executable. Do not run synchronization during application startup or `postinstall`; it can update package manifests and the workspace lockfile.

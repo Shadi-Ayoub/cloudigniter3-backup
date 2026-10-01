@@ -105,7 +105,7 @@ type CiSecurityDataPageProps = {
 ```
 
 The role graph metadata filters cycle-causing inheritance suggestions. Privilege options retain the complete
-policy statement so selection copies `id`, `title`, `effect`, `resource`, `action`, scopes, and description into
+policy statement so selection copies `id`, `title`, `effect`, `resource`, `action`, scopes, `readOnly`, and description into
 the edited role.
 
 Both fields use a keyboard-accessible search-first multi-select. Selected direct values appear as removable
@@ -158,3 +158,14 @@ domain remains active. Domain suspension has higher precedence, so restoring an 
 restore access while its parent domain is suspended; the restore dialog explains that condition. The
 `platform.authorization` and `platform.authorization.core` recovery resources expose no executable suspension
 path, and the trusted server adapter enforces the same protection.
+
+## Forced read-only permissions
+
+The permission editor includes **Force read-only**, with a label-associated checkbox and an explanation of its
+resource/scope-wide effect. The table shows **Forced** or **Off** in its Read-only column. Saving sets
+`CiSecurityPermissionRecord.readOnly`; the administration projection and role privilege picker retain it.
+Turning the option off restores ordinary policy evaluation rather than granting writes automatically.
+
+The template's `/dashboard/security/permissions` page consumes this shared editor. Select an Allow permission
+with action `read`, enable **Force read-only**, and save to create an audit permission. Assign its role to the
+user at the intended boundary. Existing protected-core editing and reason requirements still apply.

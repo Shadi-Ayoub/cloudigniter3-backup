@@ -1,35 +1,204 @@
 ---
-title: Themes and styling
-description: Customize presentation through the theme provider, custom overrides, and application styles.
+title: Theming strategies
+description: Understand CloudIgniter appearance modes, DOM strategies, semantic colors, and component theming.
 sidebar_position: 3
 ---
 
-# Themes and styling
+# Theming strategies
 
-The standard layout installs `CiThemeProvider` through `CiClientWrapper`. It combines the resolved theme inputs
-with the application overrides exported from `src/custom/theme/customTheme.ts`. Keep one provider stack per layout.
+CloudIgniter applies one appearance across application pages, dashboard layouts, login screens, headers,
+footers, menus, forms, tables, and feedback. Customize that appearance through configuration and semantic
+color tokens; the standard layouts install the shared `CiThemeProvider` for you.
 
-## Customize the application
+## Three parts of a theme
 
-- Use `src/custom/theme/customTheme.ts` for the supplied `appThemeProviderProps` override hook.
-- Add application CSS under `src/custom/styles`; the template includes `src/custom/styles/standard/style.css`.
-- Use the theme's existing semantic tokens so custom components remain readable in light and dark modes.
-- Customize the login experience through `src/custom/authenticator`, including its props and token-based theme hooks.
+| Part | Responsibility | Example |
+| --- | --- | --- |
+| Appearance selection | Chooses and persists the user's preference | Light, Dark, or System |
+| DOM strategy | Publishes the effective appearance on the document's `<html>` element | `class="dark"` or `data-theme="dark"` |
+| Semantic tokens | Assigns colors to presentation roles | `bg-background`, `text-foreground`, `border-border` |
 
-The application template uses Tailwind's CSS-based setup. Add application styles to the custom stylesheet and
-keep its imports aligned with the application's PostCSS configuration.
+System is a preference, not a third color palette. It resolves to Light or Dark using the operating system's
+appearance setting. Selecting Light or Dark explicitly takes priority over the operating system.
 
-## Theme switching and rendering
+## Configure appearance and persistence
 
-`CiThemeSwitcher` and `CiThemeProvider` are exported from `@cloudigniter/next/client`. Use the existing layout's
-switcher and provider before adding your own. System preference, supported themes, persistence, and forced-theme
-behavior depend on the effective provider configuration.
+Set the generic options in the `theme` section of `cloudigniter.config.ts`. For example:
 
-A Client Component provider can receive server-rendered children. You do not need to mark route pages or layouts
-with `"use client"` merely because the layout installs a theme provider. Isolate interactive controls beneath
-the existing server page.
+```ts
+// The theme section of your existing CloudIgniter configuration.
+theme: {
+  defaultTheme: "system",
+  useSystemPreference: true,
+  supportedThemes: ["light", "dark"],
+  attributeStrategy: "class",
+  storageKey: "ci-theme",
+  enableColorScheme: true,
+  disableTransitionOnChange: true,
+},
+```
 
-Check custom colors, focus indicators, dialogs, and tables in light/dark themes, at narrow widths, and with RTL
-content. For the provider and wrapper sequence, see [How a request becomes a page](/docs/architecture/request-lifecycle).
+The defaults are `class`, `system`, system-preference detection enabled, browser color-scheme synchronization
+enabled, and the browser-local storage key `ci-theme`. Transition suppression is opt-in. The user's saved
+choice takes priority over `defaultTheme`; changing a default does not reset an existing choice. Persistence
+is local to the browser origin and storage key, rather than synchronized to the user's account.
+
+The existing `enableSystem` option is a legacy spelling used when `useSystemPreference` is omitted. Prefer
+`useSystemPreference` in new configuration. Setting it to `false` removes System from the switcher. If the
+default is still `system`, CloudIgniter uses the first supported theme, or `light` when no list was provided.
+A saved `system` choice is replaced with that concrete default after mounting; an explicit saved Light or Dark
+choice is preserved.
+
+### Provider overrides and forced appearance
+
+For Next.js-specific options, edit the supplied hook in `src/custom/theme/customTheme.ts`:
+
+```ts
+import type { ThemeProviderProps } from "next-themes";
+
+export const appThemeProviderProps: ThemeProviderProps = {
+  forcedTheme: "dark",
+  disableTransitionOnChange: true,
+};
+```
+
+Configuration precedence is:
+
+1. CloudIgniter defaults.
+2. Generic `theme` configuration.
+3. Defined fields in `appThemeProviderProps`.
+
+An omitted field or `undefined` does not erase a lower-precedence value. A `forcedTheme` controls the rendered
+appearance and disables theme choices without replacing the saved preference. Remove the force to return to
+the saved choice. Force only a supported theme; the switcher reports an unsupported forced name through the
+shared critical-feedback channel.
+
+## Choose a DOM strategy
+
+Both built-in strategies work with the standard stylesheet:
+
+| `attributeStrategy` | Light | Dark |
+| --- | --- | --- |
+| `"class"` (default) | `<html class="light">` | `<html class="dark">` |
+| `"data-theme"` | `<html data-theme="light">` | `<html data-theme="dark">` |
+
+Semantic tokens and Tailwind's `dark:` variant respond to both strategies. Keep the variant supplied by
+`@cloudigniter/next/styles/standard/style.css`; an application-local class-only replacement would break
+`data-theme` support. Let the provider own theme attributes and persistence instead of updating them separately
+in a component. [Tailwind explains custom dark selectors](https://tailwindcss.com/docs/dark-mode).
+
+Logical names can map to the standard palette values:
+
+```ts
+theme: {
+  defaultTheme: "night",
+  useSystemPreference: false,
+  supportedThemes: ["day", "night"],
+  themeValueMap: { day: "light", night: "dark" },
+},
+```
+
+The switcher shows custom names as supplied and stores the logical choice, while the document receives the
+mapped value. Use `light` or `dark` values to keep standard components, editors, and authentication styling
+aligned. Arbitrary attribute names or values supplied through raw provider overrides require your own selectors
+and widget integration. Native color-scheme handling for custom logical names also requires custom integration;
+the built-in names provide the complete standard behavior.
+
+## Style components with semantic tokens
+
+Choose a surface and its matching foreground together:
+
+| UI role | Background | Text |
+| --- | --- | --- |
+| Page | `bg-background` | `text-foreground` |
+| Header or footer surface | `bg-surface` | `text-surface-foreground` |
+| Card | `bg-card` | `text-card-foreground` |
+| Menu, dialog, or popover | `bg-popover` | `text-popover-foreground` |
+| Subtle panel | `bg-muted` | `text-muted-foreground` |
+| Main action | `bg-primary` | `text-primary-foreground` |
+| Selected or highlighted item | `bg-accent` | `text-accent-foreground` |
+| Status message | `bg-success-surface` | `text-success-surface-foreground` |
+
+The status pattern also supports `info`, `warning`, and `danger`, each with surface, foreground, and border
+tokens. Shared primitives map `destructive` to the danger family and `sidebar` to the standard surface/action
+roles. Use `border-border`, `border-input`, and `ring-ring` for boundaries and focus indicators.
+
+```tsx
+export function AccountSummary() {
+  return (
+    <section className="rounded-lg border border-border bg-card p-6 text-card-foreground">
+      <h2 className="font-semibold">Account summary</h2>
+      <p className="text-muted-foreground">Your workspace details appear here.</p>
+    </section>
+  );
+}
+```
+
+This component follows either mode without a `dark:` override. Use `dark:` when the presentation itself differs,
+such as swapping an illustration. Fixed colors such as `bg-white`, `text-black`, or a palette shade are not
+semantic: they need an intentional pair for each appearance. Decorative brand colors and overlay scrims can
+remain fixed when they stay readable and do not determine body-text contrast.
+
+### Customize the palette
+
+Add application styles in `src/custom/styles/standard/style.css`, which loads after the standard CloudIgniter
+styles. For example, customize the action and focus colors for both strategies:
+
+```css
+:root {
+  --color-primary: var(--color-ci-blue-700);
+  --color-primary-foreground: var(--color-ci-white);
+  --color-ring: var(--color-ci-blue-600);
+}
+
+:root.dark,
+:root[data-theme="dark"] {
+  --color-primary: var(--color-ci-blue-300);
+  --color-primary-foreground: var(--color-ci-gray-950);
+  --color-ring: var(--color-ci-blue-400);
+}
+```
+
+Keep Tailwind's package source discovery entries and the standard stylesheet imports in `src/app/globals.css`.
+Missing sources can remove utility styles used inside installed CloudIgniter components. Do not edit generated
+package CSS or add a second theme provider to a page to compensate for a styling problem.
+
+## Editors, authentication, and notifications
+
+CSS styles most components directly. Widgets that require a concrete mode use `useCiColorMode()` from
+`@cloudigniter/ui/client`. It observes the applied document class or `data-theme` value, including forced and
+mapped themes. Monaco editors, Smart Form JSON editors, and the Next.js AWS authenticator bridge use this
+appearance. Notifications configured with `theme: "system"` follow the application's applied mode; explicit
+notification Light or Dark overrides remain available.
+
+The hook initially returns `light` on both the server and first client render, then synchronizes after mounting.
+Use tokens for normal markup and reserve the hook for widget integration. A theme provider can receive
+server-rendered children; route layouts and pages do not need `"use client"` merely because they use a standard
+layout. Keep a single layout provider stack and preserve the template's `<html>` hydration handling.
+
+## Verify and troubleshoot
+
+- **Page is dark but content is unreadable:** inspect both surface and foreground colors, including helper text,
+  placeholders, disabled controls, selected items, and hover/focus states. Replace fixed colors with role tokens.
+- **Header, footer, or menu has a different appearance:** check the shared styles and local overrides. Portaled
+  menus and dialogs inherit the document theme; a theme class on only one page container cannot cover them.
+- **A dropdown looks transparent or sits behind the header:** keep its opaque `bg-popover` surface,
+  `text-popover-foreground`, and `border-border`. The shared dropdown and submenu use `z-menu` above the fixed
+  header, including their outer positioning wrappers. Raising only the visible panel's `z-index` cannot lift
+  a wrapper trapped below the header. Preserve the shared dropdown styling when customizing language, theme,
+  and profile menus; adjust `--z-index-menu` to customize their layer together.
+- **Changing the default seems ineffective:** check the saved browser preference, effective storage key, and
+  `forcedTheme`. A default is used when no preference has been saved.
+- **System is unexpectedly present or absent:** check generic options and raw provider overrides; the switcher
+  follows the final provider configuration.
+- **A custom theme changes colors but leaves a widget in Light:** map its DOM value to `dark` or provide a custom
+  integration. Prefer `useCiColorMode()` over comparing the logical theme name to `"dark"`.
+
+Review Light, Dark, System, forced appearance, and a reload in application, dashboard, and login layouts.
+Include open menus/dialogs, loading and error states, narrow screens, keyboard focus, and RTL content. Check
+manual Light on a dark OS and manual Dark on a light OS independently.
+
+See the [theme API reference](/docs/api-reference/components/theming) for exact imports, fields, and hook behavior,
+and [How a request becomes a page](/docs/architecture/request-lifecycle) for provider placement.
 
 Next: [Settings and runtime values](/docs/configuration/settings).

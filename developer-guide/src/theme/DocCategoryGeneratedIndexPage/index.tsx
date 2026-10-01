@@ -3,10 +3,11 @@ import { useCurrentSidebarCategory } from "@docusaurus/plugin-content-docs/clien
 import OriginalCategoryPage from "@theme-original/DocCategoryGeneratedIndexPage";
 import type { Props } from "@theme/DocCategoryGeneratedIndexPage";
 import PageDates from "../../components/PageDates";
+import DocFeedback from "../../components/DocFeedback";
 import styles from "./styles.module.css";
 
 export default function DocCategoryGeneratedIndexPage(
-  props: Props,
+  props: Props
 ): React.JSX.Element {
   const category = useCurrentSidebarCategory();
   const sourceKey = category.customProps?.pageDatesSource;
@@ -17,6 +18,10 @@ export default function DocCategoryGeneratedIndexPage(
       <OriginalCategoryPage {...props} />
       <div className={styles.footerWidth}>
         <PageDates sourceKey={sourceKey} />
+        {!sourceKey.startsWith("developer-guide/dictionary/") &&
+          !sourceKey.startsWith("developer-guide/developer-dictionary/") && (
+            <DocFeedback title={category.label} />
+          )}
       </div>
     </>
   );

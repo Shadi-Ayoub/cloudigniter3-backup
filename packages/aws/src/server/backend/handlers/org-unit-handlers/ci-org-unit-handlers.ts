@@ -1,3 +1,4 @@
+import { ciCheckReadOnlyAccess } from "../../access-control/ci-check-read-only-access";
 import { ciCreateLambdaHandler } from "@ci-aws/lib";
 import type { CiAppSyncResolverEvent } from "@ci-aws/types";
 import type {
@@ -20,7 +21,8 @@ const ORG_UNIT_ENV = [CI_ENV.CI_SYSTEM_TABLE_NAME] as const;
 
 function claims(event: CiAppSyncResolverEvent): Record<string, unknown> {
   return (
-    (event.identity as { claims?: Record<string, unknown> } | null)?.claims ?? {}
+    (event.identity as { claims?: Record<string, unknown> } | null)?.claims ??
+    {}
   );
 }
 
@@ -38,7 +40,10 @@ function groups(event: CiAppSyncResolverEvent): string[] {
   } catch {
     // Cognito can serialize groups as comma-separated text.
   }
-  return value.split(",").map((item) => item.trim()).filter(Boolean);
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
 }
 
 function assertOrgUnitAdministrator(event: CiAppSyncResolverEvent): void {
@@ -47,7 +52,9 @@ function assertOrgUnitAdministrator(event: CiAppSyncResolverEvent): void {
     !actorGroups.includes("system-admin") &&
     !actorGroups.includes("system-super-admin")
   ) {
-    throw new Error("Org Unit management requires system administrator privileges.");
+    throw new Error(
+      "Org Unit management requires system administrator privileges.",
+    );
   }
 }
 
@@ -83,8 +90,16 @@ export const ciCreateOrgUnitHandler = ciCreateLambdaHandler<
     assertOrgUnitAdministrator(event);
     return { ...input, actorId: actorId(event), now: new Date().toISOString() };
   },
-  run: ({ input, env, clientConfig }) =>
-    ciCreateOrgUnit({ tableName: env.CI_SYSTEM_TABLE, clientConfig, input }),
+  run: async ({ input, env, clientConfig, event }) => {
+    await ciCheckReadOnlyAccess(event, [
+      { resource: "platform.org-units", action: "create" },
+    ]);
+    return ciCreateOrgUnit({
+      tableName: env.CI_SYSTEM_TABLE,
+      clientConfig,
+      input,
+    });
+  },
 });
 
 export const ciUpdateOrgUnitHandler = ciCreateLambdaHandler<
@@ -98,8 +113,16 @@ export const ciUpdateOrgUnitHandler = ciCreateLambdaHandler<
     assertOrgUnitAdministrator(event);
     return { ...input, actorId: actorId(event), now: new Date().toISOString() };
   },
-  run: ({ input, env, clientConfig }) =>
-    ciUpdateOrgUnit({ tableName: env.CI_SYSTEM_TABLE, clientConfig, input }),
+  run: async ({ input, env, clientConfig, event }) => {
+    await ciCheckReadOnlyAccess(event, [
+      { resource: "platform.org-units", action: "update" },
+    ]);
+    return ciUpdateOrgUnit({
+      tableName: env.CI_SYSTEM_TABLE,
+      clientConfig,
+      input,
+    });
+  },
 });
 
 /** Minimal public routing lookup; it returns no management or tenant inventory. */

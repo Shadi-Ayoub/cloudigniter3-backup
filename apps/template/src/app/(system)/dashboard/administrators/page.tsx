@@ -1,3 +1,4 @@
+import { forbidden } from "next/navigation";
 import { appUserForms } from "@/custom/user";
 import {
   CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE,
@@ -44,29 +45,37 @@ export default async function AdministratorsPage() {
     assignments,
   );
   const administratorActor = appResolveAdministratorActor(context, assignments);
-  const policyCan = (action: string) =>
-    [ciSystemAccessScope(), ciGlobalAccessScope()].some((scope) =>
-      authorizer.can({
+  const decisionsFor = (action: string) =>
+    [ciSystemAccessScope(), ciGlobalAccessScope()].map((scope) =>
+      authorizer.authorize({
         subject,
         resource: "identity.users",
         action,
         scope,
       }),
     );
+  const policyCan = (action: string) => {
+    const decisions = decisionsFor(action);
+    return (
+      !decisions.some((decision) => decision.reason === "read-only") &&
+      decisions.some((decision) => decision.allowed)
+    );
+  };
   const can = (action: string) =>
-    policyCan(action) ||
-    (canManageSystemSuperAdmins &&
-      [
-        "assign-role",
-        "delete",
-        "email",
-        "purge",
-        "read",
-        "restore",
-        "update",
-      ].includes(action));
+    !decisionsFor(action).some((decision) => decision.reason === "read-only") &&
+    (policyCan(action) ||
+      (canManageSystemSuperAdmins &&
+        [
+          "assign-role",
+          "delete",
+          "email",
+          "purge",
+          "read",
+          "restore",
+          "update",
+        ].includes(action)));
   if (!can("read")) {
-    throw new Error("You cannot view Administrator administration.");
+    forbidden();
   }
 
   const canReadAllAdministrators = policyCan("read");

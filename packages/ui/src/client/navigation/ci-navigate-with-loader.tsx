@@ -1,8 +1,9 @@
 "use client";
 
-import type { MouseEvent, PropsWithChildren } from "react";
+import type { ComponentPropsWithRef, MouseEvent } from "react";
 
-export interface CiNavigateWithLoaderProps extends PropsWithChildren {
+export interface CiNavigateWithLoaderProps
+  extends Omit<ComponentPropsWithRef<"a">, "href" | "target"> {
   href: string;
   className?: string;
 
@@ -93,10 +94,14 @@ export function CiNavigateWithLoader({
   navigate,
   refreshRoute,
   children,
+  onClick,
+  ...anchorProps
 }: CiNavigateWithLoaderProps) {
   const isExternal = ciIsExternalHref(href);
 
   async function ciHandleNavigate(event: MouseEvent<HTMLAnchorElement>) {
+    onClick?.(event);
+
     /**
      * Always allow default behavior for:
      * - external links
@@ -149,7 +154,9 @@ export function CiNavigateWithLoader({
   if (isExternal) {
     return (
       <a
+        {...anchorProps}
         href={href}
+        onClick={onClick}
         className={className}
         target={externalTarget}
         rel={externalTarget === "_blank" ? "noopener noreferrer" : undefined}
@@ -165,7 +172,7 @@ export function CiNavigateWithLoader({
    * - optionally delegate navigation to a framework adapter
    */
   return (
-    <a href={href} onClick={ciHandleNavigate} className={className}>
+    <a {...anchorProps} href={href} onClick={ciHandleNavigate} className={className}>
       {children}
     </a>
   );

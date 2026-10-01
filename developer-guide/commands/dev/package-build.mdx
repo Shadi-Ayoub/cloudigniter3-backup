@@ -1,0 +1,50 @@
+---
+title: "dev package build"
+description: "Run the package-owned development or production build."
+sidebar_label: "dev package build"
+sidebar_custom_props:
+  audience: developer
+---
+
+Run the package-owned development or production build.
+
+## Syntax
+
+```text
+dev package build --mode=dev|prod [--obfuscation=configured|on|off] [--no-interactive]
+```
+
+## Prerequisites
+
+Run from the owning `packages/<name>` directory in the private CloudIgniter workspace after installing its dependencies. `--workspace-root` selects discovery and does not change the current package.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--mode=dev\|prod` | Required build mode; may be prompted for interactively. |
+| `--obfuscation=configured\|on\|off` | Default `configured` preserves the recipe. `off` removes only its obfuscation step; `on` includes one obfuscation step before distribution switching, or at the end when no switch exists. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Runs the package generation hook and `scripts/ci-build-package.config.mjs` pipeline. A configured quality gate must pass before cleanup, export switching, or compilation. The build can replace artifacts and package mappings.
+
+Obfuscation selection changes only that step. It does not bypass quality checks or change other package-owned build stages. Publisher exposes the same choices in its build dialog.
+
+## Examples
+
+```bash
+cd packages/next
+pnpm exec dev package build --mode=dev --no-interactive
+```
+
+## Errors and recovery
+
+A missing required configuration or tool fails the command. A failed subprocess stops the workflow and returns a nonzero status. Inspect the first reported failure before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/package-workflows)

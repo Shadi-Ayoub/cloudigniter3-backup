@@ -71,13 +71,14 @@ type CiAuthorizationDecision = {
 ```
 
 - `matches` contains all applicable policy evidence.
-- `decidingMatches` contains the privileges selected by the combining algorithm.
+- `decidingMatches` contains the privileges that decide the result, including forced read-only restrictions before combining.
 - `evaluatedRoleIds` contains active roles whose assignment scope included the request.
 
 Stable decision reasons are:
 
 | Reason                  | Meaning                                                                                    |
 | ----------------------- | ------------------------------------------------------------------------------------------ |
+| `read-only` | An active scoped privilege forces read-only access on this resource; the requested action writes. |
 | `allowed`               | Matching policy resolved to allow.                                                         |
 | `explicit-deny`         | A selected deny privilege blocked the operation.                                           |
 | `unauthenticated`       | Subject authentication or ID is missing.                                                   |

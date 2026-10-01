@@ -23,6 +23,7 @@ export {
   ciCreateAppAuthorizer,
   ciCreateAuthorizationSubject,
   ciCreateAuthorizer,
+  ciIsAuthorizationSuspended,
   ciCreateCoreAccessControlOverride,
   ciCreateCoreAccessControl,
   ciCreateRoleAssignment,
@@ -319,3 +320,18 @@ export {
 // ─────────────────────────────────────────────────────────────
 // export { ciStartTrace } from "./trace";
 export * from "./smart-form";
+export {
+  ciCreateSettingsManager,
+  ciResolveSettingsPreferences,
+} from "./settings";
+export {
+  ciParseSettingsTarget,
+  ciSettingsTargetKey,
+  ciSettingsSelectionFields,
+  ciParseSettingsEnforcement,
+  ciResolveRequestSettings,
+} from "./settings";
+export { ciCanManageSettings } from "./settings";
+export { ciCreateExtensionManager, CI_FIXED_MODULES, ciValidateExtensionManifest, ciIsExtensionCompatible, ciResolveExtensionConfiguration } from "./module";
+export { ciParseTodoCommand } from "./module/ci-todo-module";
+export { ciExtensionAccessControl } from "./module/ci-extension-access-control";

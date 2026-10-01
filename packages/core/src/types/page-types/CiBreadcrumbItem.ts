@@ -20,8 +20,8 @@ export interface CiBreadcrumbItem {
   current?: boolean;
 
   /**
-   * Routes directly beneath this item. When enabled on `CiBreadcrumbs`, these
-   * are shown in its shortcut menu.
+   * Routes beneath this item. Shortcut menus recursively display nested
+   * children; a parent may keep its own href as well as child destinations.
    */
   children?: CiBreadcrumbItem[];
 }

@@ -57,7 +57,7 @@ Region should already be prepared as described in [Before you start](./before-yo
 Sign in with the **Developer 1** profile before creating or updating the sandbox:
 
 ```bash
-pnpm sso
+pnpm sso --profile developer1
 ```
 
 This runs `aws sso login --profile developer1`. Complete the browser sign-in, then confirm your AWS target:
@@ -70,7 +70,7 @@ aws configure get region --profile developer1
 Check the account ID and Region, then create the backend:
 
 ```bash
-pnpm sandbox
+pnpm sandbox --profile developer1
 ```
 
 The command runs `ampx sandbox --once --profile developer1`. It deploys the application’s backend to your AWS
@@ -82,7 +82,7 @@ If AWS requests account initialization, complete the
 outputs with this application so it connects to the sandbox you just created. See
 [AWS’s cloud sandbox guide](https://docs.amplify.aws/react/deploy-and-host/sandbox-environments/setup/) for sandbox behavior.
 
-When the SSO session expires, run `pnpm sso` again. Run `pnpm sandbox` again after changing your backend definitions.
+When the SSO session expires, run `pnpm sso --profile developer1` again. Run `pnpm sandbox --profile developer1` again after changing your backend definitions.
 
 ## Initialize your application administrator
 
@@ -90,7 +90,7 @@ For a new sandbox, create the initial authorization catalog and Root User before
 administrator apply the [initialization permissions](./before-you-start#cloudigniter-initialization-permissions)
 using the resource identifiers in the generated outputs.
 
-Set your application administrator’s details in `amplify/custom/root-user.json`, replacing the sample values:
+Create `amplify/custom/root-user.json` with your application administrator’s details, replacing these example values. This local file is excluded from the public template and ignored by Git:
 
 ```json
 {
@@ -103,9 +103,9 @@ Set your application administrator’s details in `amplify/custom/root-user.json
 Then run:
 
 ```bash
-pnpm sso
-pnpm bootstrap:access-control
-pnpm bootstrap:root
+pnpm sso --profile developer1
+pnpm bootstrap:access-control --profile=developer1
+pnpm bootstrap:root --profile=developer1
 ```
 
 For a new Root User, enter and confirm its password when prompted in the terminal. Use that email and password
@@ -130,7 +130,7 @@ Your first run is ready when:
 2. The login page loads at the local URL.
 3. Your application administrator can sign in and open `/dashboard`.
 
-If the sandbox reports expired credentials, repeat `pnpm sso`. For a deployment permission error, verify the
+If the sandbox reports expired credentials, repeat `pnpm sso --profile developer1`. For a deployment permission error, verify the
 account assignment and grants in [AWS preparation](./before-you-start#3-grant-sandbox-deployment-permissions).
 If sign-in fails, use the application administrator credentials from initialization and confirm the application
 is using the outputs from the intended sandbox.

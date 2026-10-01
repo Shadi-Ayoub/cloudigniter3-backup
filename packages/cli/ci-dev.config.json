@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "typecheck": [
+    "source"
+  ],
+  "test": {
+    "files": [
+      "__tests__/*.test.mjs"
+    ]
+  },
+  "check": [
+    "typecheck",
+    "test"
+  ]
+}

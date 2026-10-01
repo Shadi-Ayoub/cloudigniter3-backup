@@ -34,6 +34,25 @@ Omitting `tenantScopes` intentionally preserves existing behavior. A present
 empty array denies every scope. This allows applications to introduce explicit
 scope declarations incrementally.
 
+## Authentication service failures
+
+`packages/next` owns both the session decision in `ciHandleRouteLogic()` and its HTTP response in
+`ciNextProxyResponse()`. The session request forwards the caller's cookies to
+`POST /ci-internal/auth/session` with caching disabled and redirects rejected.
+
+- `401` establishes a signed-out decision.
+- A successful JSON response must contain a boolean `authenticated` field.
+- Network failures, other unsuccessful statuses, or invalid response bodies produce the internal
+  `auth-unavailable` decision. The proxy returns `503` with `Cache-Control: no-store` and `Retry-After: 5`.
+  It does not redirect, rewrite, or persist resolved route context for this failure.
+- Public pages other than `/login` do not depend on this session check.
+
+Never collapse an unavailable service into sign-out: a browser can retain its authenticated Amplify
+state while the server endpoint fails, leaving Authenticator hidden after a misleading login redirect.
+Cover the protected settings path, authenticated return navigation, genuine sign-out, and service
+failures in the proxy regression tests. Check actual endpoint routing as well: unit tests with a mocked
+session response cannot detect a missing Next.js development route registration.
+
 ## Physical routing invariants
 
 - Route registry keys never include `/ci-global` or `/ci-tenant`.
@@ -50,3 +69,7 @@ and the template consumer. See the user guide's
 [Routing modes](/docs/core-system/multi-Tenancy/configuration/routing-modes)
 and the API reference for
 [`CiRouteDefinition`](/docs/api-reference/type-definitions/CiRouteDefinition).
+
+## Root-domain normalization
+
+The Next tenant adapter accepts bare hosts, host-and-port pairs such as `localhost:3000`, and HTTP(S) URLs in `rootDomains`. Normalize bare values with an explicit scheme before URL parsing, then remove the port and lowercase the host. A domain match requires the exact root or a dot-delimited subdomain; a lookalike suffix must not select a tenant. The routing contract tests cover these cases.

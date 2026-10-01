@@ -1,6 +1,6 @@
 import { defineConfig } from "tsup";
 
-import { ciCreateTsupConfig } from "@cloudigniter/cli/tooling/tsup";
+import { ciCreateTsupConfig } from "@cloudigniter/dev/tooling/tsup";
 
 const externalPackages = [
   "react",
@@ -22,7 +22,7 @@ export default defineConfig(async () =>
 
 // import { defineConfig } from "tsup";
 // import type { BuildOptions } from "esbuild";
-// import { getAllEntries } from "@cloudigniter/cli/tooling/entries";
+// import { getAllEntries } from "@cloudigniter/dev/tooling/entries";
 
 // const isProduction = process.env.NODE_ENV === "production";
 

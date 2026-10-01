@@ -1,0 +1,126 @@
+---
+title: Error pages
+description: Shared inline errors and illustrated 403 and 404 boundaries for Next.js applications.
+---
+
+# Error pages
+
+## CiNextHttpErrorPage
+
+Server presentation adapter exported from `@cloudigniter/next/ui/server`. It uses the shared `CiErrorPage`
+layout with Next.js Image and Link. It neither authorizes a request nor changes its HTTP status.
+
+```tsx
+import { CiNextHttpErrorPage } from "@cloudigniter/next/ui/server";
+import type { CiNextHttpErrorPageProps } from "@cloudigniter/next/types";
+
+export default function Forbidden() {
+  return <CiNextHttpErrorPage
+    statusCode={403}
+    imageSrc="/images/logo-access-denied-1.png"
+  />;
+}
+```
+
+| Prop | Type | Behavior |
+| --- | --- | --- |
+| `statusCode` | `403 \| 404` | Required; selects default title and description. |
+| `accessSuspended` | `boolean` | Defaults to `false`; selects suspension copy only for 403. Supply `true` only with trusted evidence of a retained grant blocked by suspension. |
+| `imageSrc` | `string` | Optional application-owned artwork URL; omitted means no artwork. |
+| `messages` | `{ title?: string; message?: string; errorLabel?: string; homeLabel?: string }` | Optional localized overrides; missing values use English defaults. |
+
+The recovery link targets `/`. Artwork is decorative and has empty alt text; the visible heading supplies the meaning.
+The layout uses semantic colors, responsive image/text sizes, a visible keyboard focus ring, and a minimum 44px
+recovery target. Grayscale artwork uses the shared Light/Dark selectors.
+
+Use the adapter in `src/app/forbidden.tsx` or `src/app/not-found.tsx`. The template delegates both boundaries to
+`src/custom/errors/AppHttpErrorPage.tsx`, which selects application artwork and merges common-locale overrides.
+Its copy lives under `httpErrors` in common locales: `errorLabel`, `homeLabel`, `403.title`, `403.message`,
+`404.title`, `404.message`, `suspended.title`, and `suspended.message`. Ordinary denial uses
+`/images/logo-access-denied-1.png`; confirmed suspension retains `/images/logo-access-not-allowed-1.png`.
+The template resolves suspension from the same subject and scopes as its supported page guards. Unclassified
+403 results use ordinary denial; an arbitrary HTTP status or suspended catalog entry does not prove prior access.
+
+Native `forbidden()` requires `experimental.authInterrupts: true`. Next.js labels this API experimental;
+see its [reference](https://nextjs.org/docs/app/api-reference/functions/forbidden). Call it in a server page's
+authorization guard, outside a catch that would swallow the interrupt, before protected data is loaded.
+Do not call it from the root layout. Headers already sent by streaming cannot be changed afterward.
+
+## CiErrorPage
+
+Client component exported from `@cloudigniter/ui/client`, with framework-neutral presentation.
+Import `CiErrorPageProps` from `@cloudigniter/core/types`.
+
+| Prop | Type | Default / behavior |
+| --- | --- | --- |
+| `message` | `string` | Required safe user-facing description. |
+| `title` | `string` | `Something went wrong`. |
+| `severity` | `CiErrorSeverity` | `error`; controls the inline icon. |
+| `showRetry` | `boolean` | `false`; displays Retry in inline mode. |
+| `onRetry` | `() => void` | Reloads the browser page when omitted. |
+| `retryLabel` | `string` | `Retry`. |
+| `actions` | `ReactNode` | Optional recovery controls. |
+| `statusCode` | `403 \| 404` | Omitted means inline mode; supplied selects the full-height illustrated HTTP layout. |
+| `illustration` | `ReactNode` | Optional decorative content in HTTP mode, hidden from assistive technology. |
+| `errorLabel` | `string` | `Error`; shown above the status in HTTP mode. |
+
+HTTP mode renders `actions` below the description and omits the inline severity icon and Retry control.
+Supply a heading that matches the status; `CiNextHttpErrorPage` supplies the standard defaults automatically.
+The component does not interpret errors or inspect permissions.
+
+## CiNextAccessDeniedPreview
+
+Server component exported from `@cloudigniter/next/ui/server`; accepts no props and never returns content.
+In CloudIgniter development mode it invokes `forbidden()`. In every other environment, including an unset mode,
+it invokes `notFound()`. The template exposes it at `/error-preview/access-denied` through a thin system page
+and a core route registration with namespace `common` and `protected: false`. The additional
+`/error-preview/access-suspended` route delegates to the same component; application error composition selects the
+suspension variant for that exact trusted route only in development.
+
+The preview deliberately denies every visitor in development, including administrators; it never changes roles,
+reads feature data, or grants access. It follows the application's normal root bootstrap and common messages.
+
+See [page access errors and examples](/docs/building-features/api-and-feedback#page-access-403-and-404) and the
+[Settings access-result adapter](/docs/api-reference/shared-apis/settings#expected-access-failures).
+
+### Development timing compatibility
+
+Next.js 16.2.2 bundles React development profiling code that can call `performance.measure()` with a negative
+end timestamp when a Server Component errors or is aborted. The resulting runtime overlay can obscure the real
+403 or 404 boundary. This is tracked in [Next.js issue 86060](https://github.com/vercel/next.js/issues/86060).
+
+The CloudIgniter workspace carries a version-specific pnpm patch for `next@16.2.2`. It skips invalid error/abort
+profiling entries in both webpack and Turbopack development clients, preserving valid measurements and framework
+interrupts. It does not change production bundles or the component's public contract. Dependency patches belong
+to the consuming application: installing `@cloudigniter/next` alone does not apply the workspace patch.
+
+For a standalone application using that exact Next.js version, use `pnpm patch next@16.2.2` and persist the change
+with `pnpm patch-commit`, following the [contributor compatibility note](/company-developers/architecture/error-pages#development-profiler-compatibility).
+Restart the development server and reload the page after installation. Revalidate the patch when upgrading Next.js;
+do not replace native permission interrupts with client effects or globally override `performance.measure()`.
+
+
+## ciIsAuthorizationSuspended
+
+Provider-neutral diagnostic helper exported from `@cloudigniter/core/lib`. Its contracts are exported through
+`@cloudigniter/core/types`:
+
+```ts
+function ciIsAuthorizationSuspended(
+  definition: CiAccessControlDefinition,
+  requests: readonly CiAuthorizationRequest[],
+  options?: CiAuthorizerOptions,
+): boolean;
+```
+
+Pass the same trusted catalog, authenticated subject, action, scopes, and combining algorithm used by the actual
+page guard. The request list represents alternative grants for that page. The helper returns `true` only when none
+currently allow access and at least one would allow access after role/resource/domain suspensions are hypothetically
+lifted. It also rejects a current read-only veto. The authorizer still validates grant windows, scope propagation,
+authentication, explicit denials, and inheritance. Both evaluations share one clock instant.
+
+The helper does not modify the catalog, grants, or provider state. Its result is presentation evidence, never a grant
+or a replacement for `authorize()`/`can()`. Empty requests, unauthenticated subjects, no suspended entries, already
+allowed access, and grants that remain insufficient return `false`. Invalid suspended catalogs throw through normal
+authorizer validation. If provider evidence cannot be loaded, the template resolver falls back to ordinary denial.
+This does not establish historical access from an audit log; it establishes an otherwise valid retained grant.

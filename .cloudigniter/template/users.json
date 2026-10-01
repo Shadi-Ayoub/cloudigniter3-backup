@@ -1,0 +1,83 @@
+[
+  {
+    "email": "cloudigniter-demo-1@example.com",
+    "givenName": "Demo",
+    "familyName": "User 1",
+    "sendInvitation": false,
+    "roles": ["user"],
+    "assignments": [
+      {
+        "roleId": "user",
+        "scope": {
+          "kind": "global"
+        },
+        "propagation": "exact"
+      }
+    ],
+    "profile": {
+      "displayName": "Demo User 1",
+      "title": "Mr",
+      "gender": "male",
+      "locale": "en",
+      "timeZone": "Asia/Dubai",
+      "address": {
+        "locality": "Dubai",
+        "countryCode": "AE"
+      }
+    }
+  },
+  {
+    "email": "cloudigniter-demo-2@example.com",
+    "givenName": "Demo",
+    "familyName": "User 2",
+    "sendInvitation": false,
+    "roles": ["admin"],
+    "assignments": [
+      {
+        "roleId": "admin",
+        "scope": {
+          "kind": "global"
+        },
+        "propagation": "exact"
+      }
+    ],
+    "profile": {
+      "displayName": "Demo User 2",
+      "title": "Mr",
+      "gender": "male",
+      "locale": "en",
+      "timeZone": "Asia/Dubai",
+      "address": {
+        "locality": "Dubai",
+        "countryCode": "AE"
+      }
+    }
+  },
+  {
+    "email": "cloudigniter-demo-3@example.com",
+    "givenName": "Demo",
+    "familyName": "User 3",
+    "sendInvitation": false,
+    "roles": ["super-admin"],
+    "assignments": [
+      {
+        "roleId": "super-admin",
+        "scope": {
+          "kind": "global"
+        },
+        "propagation": "exact"
+      }
+    ],
+    "profile": {
+      "displayName": "Demo User 3",
+      "title": "Mr",
+      "gender": "male",
+      "locale": "en",
+      "timeZone": "Asia/Dubai",
+      "address": {
+        "locality": "Dubai",
+        "countryCode": "AE"
+      }
+    }
+  }
+]

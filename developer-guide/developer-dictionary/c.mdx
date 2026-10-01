@@ -1,0 +1,26 @@
+---
+title: "C · Developer Dictionary"
+sidebar_label: "C"
+description: Internal CloudIgniter developer terms beginning with C.
+sidebar_position: 3
+custom_edit_url: null
+customProps:
+  audience: developer
+---
+
+## Changeset {#changeset}
+
+A version-change proposal consumed by the Changesets tooling. CloudIgniter’s DEV release planning uses Changesets to calculate package versions and dependency propagation in a temporary workspace. A proposal or plan does not publish packages. See [DEV release requests](/company-developers/tooling/release-requests).
+
+## Client Directive {#client-directive}
+
+The `"use client"` directive that marks a React client entry in framework integration code. CloudIgniter’s package tooling scans and preserves these boundaries during builds. Add the directive when the component needs the client runtime; it does not make server-only dependencies safe to import. See [package workflows](/company-developers/tooling/package-workflows).
+
+## CloudIgniter Developer {#cloudigniter-developers}
+
+A company developer who implements or maintains the CloudIgniter platform itself, including its packages, providers, framework integrations, generators, and architecture. This profile uses the [DEV Toolkit](/developer-dictionary/d#dev-toolkit), invoked with `dev`, for company maintenance. The plural is **CloudIgniter Developers**. This profile is distinct from a [CloudIgniter User](/developer-dictionary/c#cloudigniter-users), who builds applications with the platform, and from an application's [Developer Role](/dictionary/d#developer-role), which controls application capabilities. A company developer may also work as a CloudIgniter User when developing an application. See [Developer tooling](/company-developers/tooling) for the two profiles and their tools.
+
+
+## CloudIgniter User {#cloudigniter-users}
+
+An application developer, integrator, or operator who builds and runs applications using CloudIgniter's supported configuration, package entry points, generated resources, and operational workflows. The plural is **CloudIgniter Users**. This profile uses the public [CloudIgniter CLI](/dictionary/c#cloudigniter-cli), invoked with `ci`. It describes a developer using the platform, rather than an end user signed into an application. Follow the [Users learning path](/docs/intro).

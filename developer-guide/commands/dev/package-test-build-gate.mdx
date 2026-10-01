@@ -1,0 +1,45 @@
+---
+title: "dev package test-build-gate"
+description: "Verify that failed quality gates preserve existing build artifacts."
+sidebar_label: "dev package test-build-gate"
+sidebar_custom_props:
+  audience: developer
+---
+
+Verify that failed quality gates preserve existing build artifacts.
+
+## Syntax
+
+```text
+dev package test-build-gate
+```
+
+## Prerequisites
+
+Run from the owning `packages/<name>` directory in the private CloudIgniter workspace after installing its dependencies. `--workspace-root` selects discovery and does not change the current package.
+
+## Parameters
+
+This command has no command-specific options.
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Runs DEV’s shipped regression tests for quality-before-cleanup behavior. It validates build orchestration rather than compiling a release.
+
+## Examples
+
+```bash
+cd packages/next
+pnpm exec dev package test-build-gate
+```
+
+## Errors and recovery
+
+A missing required configuration or tool fails the command. A failed subprocess stops the workflow and returns a nonzero status. Inspect the first reported failure before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/package-workflows)

@@ -1,11 +1,12 @@
 import schemaCognitoUser from "./schema-cognito-user";
+import schemaModules from "./schema-modules";
 import schemaEmberguard from "./schema-emberguard";
 // import schemaOU from './schema-ou';
 // import schemaSeeder from './schema-seeder';
-// import schemaSettings from './settings/schema-settings';
-// import schemaPublicSettings from './settings/schema-public-settings';
-// import schemaPrivateSettings from './settings/schema-private-settings';
-// import schemaUserSettings from './settings/schema-user-settings';
+import schemaSettings from './settings/schema-settings';
+import schemaPublicSettings from './settings/schema-public-settings';
+import schemaPrivateSettings from './settings/schema-private-settings';
+import schemaUserSettings from './settings/schema-user-settings';
 import schemaSystem from "./schema-system";
 import schemaOrgUnit from "./schema-org-unit";
 import schemaTenant from "./schema-tenant";
@@ -14,14 +15,15 @@ import schemaUser from "./schema-user";
 import { customDataSchemas } from "../../custom/backend";
 
 const coreSchemas = {
+  ...schemaModules,
   ...schemaCognitoUser,
   ...schemaEmberguard,
   // ...schemaOU,
   // ...schemaSeeder,
-  // ...schemaSettings,
-  // ...schemaPublicSettings,
-  // ...schemaPrivateSettings,
-  // ...schemaUserSettings,
+  ...schemaSettings,
+  ...schemaPublicSettings,
+  ...schemaPrivateSettings,
+  ...schemaUserSettings,
   ...schemaSystem,
   ...schemaOrgUnit,
   ...schemaTenant,

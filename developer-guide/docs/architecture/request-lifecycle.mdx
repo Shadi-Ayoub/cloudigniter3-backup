@@ -23,6 +23,11 @@ register features correctly and locate failures without adding a second resolver
 For example, a resolved request for `/t/acme/finance/dashboard/books` can select Tenant `acme`, Org Unit
 `finance`, and feature route `/dashboard/books`. Register the feature route, without the Tenant or Org Unit prefix.
 
+For protected pages and `/login`, the session check distinguishes sign-out from an unavailable service.
+A confirmed signed-out protected request redirects to login with its return destination. An unreachable,
+failed, or malformed session response stops the request with a non-cacheable `503`, before page context
+or a rewrite is produced. See [authentication troubleshooting](/docs/identity/authentication#diagnose-an-empty-login-form-or-an-unavailable-session-check).
+
 ## Load messages and bootstrap
 
 `next.config.ts` registers `src/kernel/server/i18n/request.ts`. That hook reads the resolved request context,

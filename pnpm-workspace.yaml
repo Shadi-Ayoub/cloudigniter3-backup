@@ -2,3 +2,5 @@ packages:
   - "developer-guide"
   - "apps/*"
   - "packages/*"
+patchedDependencies:
+  next@16.2.2: patches/next@16.2.2.patch

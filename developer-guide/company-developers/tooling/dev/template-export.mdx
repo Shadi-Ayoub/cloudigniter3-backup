@@ -1,0 +1,64 @@
+---
+title: Template export workflow
+description: Prepare, compare and hand off a standalone public application template from the private workspace.
+sidebar_position: 7
+slug: /tooling/template-export
+---
+
+DEV prepares a standalone application from an approved source below `apps`. The
+public template consumes published packages and contains only the reviewed export;
+it has no dependency on private DEV tooling or company repository history.
+
+## Prepare the inputs
+
+Choose the application and its reviewed [template policy](./template-policy.mdx).
+The checked-in policy selects `apps/template`; applications may have other names
+and nested locations under `apps`. Source folder, exported package name and output
+folder are independent choices.
+
+Select an output outside the private workspace, with an existing parent directory.
+Use a separate staging directory before updating a public Git repository. The
+[export manual](/commands/dev/template-export) defines path restrictions, selection
+overrides, preview and explicit replacement options.
+
+## Export and compare
+
+1. Preview the selected export and inspect its complete file inventory, dependency
+   versions and transformations.
+2. Export into the selected staging directory. Replacing an existing export
+   replaces all its contents, including customizations and stale files.
+3. Run [dev template check](/commands/dev/template-check) using the same source,
+   policy, name and version selections.
+4. Preserve the pristine candidate and its digest for review. Install dependencies
+   and validate the application in a separate copy.
+
+Comparison rebuilds the expected candidate from the **current working tree and
+policy**, then compares every byte. Missing, changed, extra or symlinked files fail.
+A lockfile, `node_modules`, `.git`, cloud outputs and build caches are extra files;
+check before generating them. Changed inputs require a new export.
+
+## Replacement and recovery
+
+DEV validates all inputs and stages replacement files in a temporary sibling
+before removing old output. Invalid inputs or staging write failures preserve the
+existing directory. Removal and final rename are separate filesystem operations;
+a failure after deletion starts can leave output partial or missing. Inspect the
+error before creating a fresh export. The command manual lists the destination
+checks and recovery options.
+
+## Hand off for publication
+
+After local comparison, follow the [template publication workflow](/company-developers/publishing/template)
+for private review and owner delivery. [dev template publish](/commands/dev/template-publish)
+submits export metadata for review; [dev template deliver](/commands/dev/template-deliver)
+checks approval and delivers the exact approved digest using only public Git history.
+Maintain private source changes through ordinary source PRs.
+
+Local export can include uncommitted changes. Publication requests require a clean,
+synchronized company base branch. The DEV quality workflow exports and compares an
+unapproved candidate on Node 24 and uploads `public-template-candidate`; its report
+lives outside the application folder.
+
+Verify that the selected public package versions exist before consumers install
+the template. Repository setup, licensing, registry availability and application
+validation remain part of the [publication handoff](/company-developers/tooling/github-npm-publishing).

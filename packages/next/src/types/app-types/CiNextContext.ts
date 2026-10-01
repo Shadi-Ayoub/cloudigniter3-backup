@@ -1,6 +1,6 @@
 import type {
   CiAuthMode,
-  CiCoreSettings,
+  CiRequestSettings,
   CiEnvMode,
   CiOrgUnitContext,
   CiRoute,
@@ -11,7 +11,7 @@ import type { CiNextConfig, CiNextStatus } from "@ci-next/types";
 
 export type CiNextContext = {
   config: CiNextConfig;
-  settings?: CiCoreSettings & Record<string, unknown>;
+  settings?: CiRequestSettings;
   auth: {
     mode: CiAuthMode;
     user: CiUser;

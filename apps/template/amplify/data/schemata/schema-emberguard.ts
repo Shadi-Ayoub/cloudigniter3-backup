@@ -48,8 +48,8 @@ const schemaEmberguard = {
     .secondaryIndexes((index) => [
       index("GSI1PK").sortKeys(["GSI1SK"]).name("GSI1"),
     ])
-    // Direct model access bypasses the custom-handler policy checks below, so
-    // only the super administrator may use generated model operations.
+    // Policy writes must pass the handlers' read-only and core-policy checks.
+    .disableOperations(["create", "update", "delete"])
     .authorization((allow) => [allow.group("system-super-admin")]),
 
   GetEmberguardDefinition: a

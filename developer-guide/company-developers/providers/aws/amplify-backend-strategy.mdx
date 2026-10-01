@@ -656,3 +656,7 @@ stack cycle, inspect the generated root template parameters to identify both tok
 directions before changing stack ownership or removing a dependency. For the
 expected CloudIgniter graph, the Auth nested stack has no parameter sourced from
 Data; Data may consume User Pool, identity-role, and Auth-trigger outputs.
+
+## Optional module stacks
+
+The core composition includes the Modules registry and two Data-group handlers through `backend/modules.ts`. Optional resources belong to separate CloudFormation root stacks created through the guarded module lifecycle, rather than being merged into the fixed core resource manifest. Keep creation and cleanup IAM scoped to the current environment. See [module architecture](/company-developers/architecture/modules).

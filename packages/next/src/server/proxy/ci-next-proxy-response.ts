@@ -8,7 +8,7 @@ import {
   ciSerializeRequestContext,
 } from "@cloudigniter/core/lib";
 
-import type { CiRequestContext, CiTenantRoutingOptions } from "@cloudigniter/core/types";
+import type { CiRequestContext, CiServerErrorPayload, CiTenantRoutingOptions } from "@cloudigniter/core/types";
 
 import type { CiNextProxyResponseInterface } from "./types";
 
@@ -146,6 +146,18 @@ export async function ciNextProxyResponse({
     routes,
     tenantScope: tenantResult.tenant.scope,
   });
+
+  if (routeResult.action === "auth-unavailable") {
+    return NextResponse.json(
+      {
+        title: "Authentication temporarily unavailable",
+        message: "Unable to check your session. Please reload this page to try again.",
+        severity: "error",
+        showRetry: true,
+      } satisfies CiServerErrorPayload,
+      { status: 503, headers: { "Cache-Control": "no-store", "Retry-After": "5" } },
+    );
+  }
 
   // -------------------------------------------------------
   // Unregistered route information page

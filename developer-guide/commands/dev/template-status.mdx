@@ -1,0 +1,48 @@
+---
+title: "dev template status"
+description: "Read the status of a private template review request."
+sidebar_label: "dev template status"
+sidebar_custom_props:
+  audience: developer
+---
+
+Read the status of a private template review request.
+
+## Syntax
+
+```text
+dev template status <pull-request-number> [--profile=<name>] [--json]
+```
+
+## Prerequisites
+
+Run in the private company workspace with configured template export policy. Online commands also need the configured GitHub profile and repository permissions.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `<pull-request-number>` | Private template review PR number. |
+| `--profile=<name>` | GitHub profile. |
+| `--json` | Print structured output. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Reports open, closed, or merged request state. This is a read-only lookup and is not evidence of a later public delivery.
+
+## Examples
+
+```bash
+pnpm exec dev template status 123 --profile=developer --json
+```
+
+## Errors and recovery
+
+An invalid or inaccessible private request fails. Select a profile with access to the configured review repository.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/template-export)

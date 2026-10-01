@@ -7,8 +7,8 @@ import {
   CI_DEFAULT_REQUEST_CONTEXT_COOKIE_NAME,
   CI_DEFAULT_REQUEST_CONTEXT_HEADER_NAME,
   ciSerializeRequestContext,
-} from "@ci-core/lib";
-import type { CiRequestContext, CiRoutePattern } from "@ci-core/types";
+} from "@cloudigniter/core/lib";
+import type { CiRequestContext, CiRoutePattern } from "@cloudigniter/core/types";
 import { ciResolveRequestContextFromRequest } from "../../src/server/context/ci-resolve-request-context-from-request";
 
 function createContext(pathname: CiRoutePattern, namespace: string): CiRequestContext {

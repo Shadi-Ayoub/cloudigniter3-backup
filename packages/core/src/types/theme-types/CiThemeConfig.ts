@@ -8,7 +8,8 @@ import type { CiThemeAttributeStrategy } from "./CiThemeAttributeStrategy";
  */
 export type CiThemeConfig<TTheme extends string = string> = {
   /**
-   * Enable/disable the 'system' theme selector option. Keep only "light" and "dark" if decided.
+   * Legacy system-preference flag. Used when useSystemPreference is omitted.
+   * The switcher follows the effective provider configuration.
    */
   enableSystem?: boolean;
 
@@ -48,7 +49,6 @@ export type CiThemeConfig<TTheme extends string = string> = {
    * Examples:
    * - "class"
    * - "data-theme"
-   * - "data-mode"
    */
   attributeStrategy?: CiThemeAttributeStrategy;
 

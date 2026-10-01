@@ -2,11 +2,11 @@ import type { CiCoreFunctionId } from "./functions";
 
 export const CI_CORE_TABLE_KEYS = [
   "emberguardAccessTable",
-  // 'privateSettingsTable',
-  // 'publicSettingsTable',
+  "privateSettingsTable",
+  "publicSettingsTable",
   "systemTable",
   "userProfileTable",
-  // 'userSettingsTable',
+  "userSettingsTable",
 ] as const;
 
 export type CiCoreTableKey = (typeof CI_CORE_TABLE_KEYS)[number];

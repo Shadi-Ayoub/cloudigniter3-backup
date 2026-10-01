@@ -1,6 +1,6 @@
 ---
 name: cloudigniter-development
-description: Apply CloudIgniter architecture and ownership conventions, including developer-role feature gates and JSON seed/cleanup workflows, reversible resource deletion and Trash workflows, Resource Studio and Data Entity planners, generated backend/frontend artifacts, collision-safe create/update/drop/undo transactions, local Studio security, AWS SSO/STS verification and one-shot Amplify sandbox deployment, macOS AppleDouble cleanup safety, DynamoDB persistence and table keys, hydration-safe Next.js routing and rendering, access control, CiDataTable management pages, public APIs, runtime boundaries, and validation. Use when implementing, debugging, refactoring, reviewing, or documenting CloudIgniter code in packages/cli, packages/core, packages/emberguard, packages/next, packages/aws, packages/ui, apps/template, or the developer guide.
+description: Apply CloudIgniter architecture, package ownership, public API and runtime boundaries, TDD, and release gates. Covers modules, developer-role gates and JSON seeding, reversible deletion and Trash, Resource Studio and Data Entity generation, collision-safe transactions, Studio security, AWS SSO/STS and Amplify deployment, AppleDouble safety, DynamoDB keys, hydration-safe routing/rendering, semantic theming, access control, CiDataTable, and the private DEV company toolkit and release requests. Use when implementing, debugging, refactoring, reviewing, or documenting packages/cli, packages/dev, packages/core, packages/emberguard, packages/next, packages/aws, packages/ui, apps/template, or the developer guide.
 ---
 
 # CloudIgniter Development Workflow
@@ -24,18 +24,24 @@ The references are grouped by reading level: `architecture` for system and domai
 - Read [users and identity administration](references/architecture/users/overview.md) for application users, Cognito identities, user profiles, user-role creation, user management pages, suspension, soft deletion, restoration, or purge.
 - Read [page rendering](references/architecture/rendering/page-rendering.md) for root layouts, route-group layouts, pages, bootstrap wrappers, providers, `CiLayout`, `CiPageWrapper`, `CiClientWrapper`, `CiPage`, or server/client hydration mismatches involving locale, time zone, clocks, randomness, browser-only branches, or mutable snapshots.
 - Read [DynamoDB design](references/architecture/persistence/dynamodb.md) for any persisted DynamoDB record or table decision, and [table keys](references/architecture/persistence/table-keys.md) for `PK`, `SK`, or secondary-index keys.
+- Read [theming across CloudIgniter UI](references/architecture/ui/theming.md) for every UI component, page, layout, style, theme configuration, or widget integration; preserve semantic color pairs and both Light/Dark DOM strategies.
 - Read the [data-table interaction contract](references/architecture/ui/data-table.md) for management pages built around `CiDataTable`.
 - Read [Smart Forms](references/architecture/ui/smart-form.md) for declarative form contracts, field rendering, customization, mapping, static generation, caching, and user form integration.
 - Read [collection ordering and resource recency](references/architecture/ui/presentation-defaults.md) when work renders chips, dropdown options, trees, data-table sorting, or newly created-resource badges.
 - Start with the [resources overview](references/architecture/resources/overview.md). For Resource Studio, select its [overview](references/architecture/resources/studio/overview.md), [data entities and generation](references/architecture/resources/studio/data-entities-and-generation.md), [transactions](references/architecture/resources/studio/transactions.md), [deployment and security](references/architecture/resources/studio/deployment-and-security.md), and [validation](references/architecture/resources/studio/validation.md) as needed. Read the [resource deletion lifecycle](references/architecture/resources/deletion.md) for deletion, restoration, purge, retention, Trash UI, or provider cleanup.
 
+- Read [optional modules](references/architecture/modules.md) for trusted module folders, discovery, install/uninstall, enable/disable, configuration, dashboard host slots, module permissions, provider resource ownership, or the To-Do reference module.
+
 ### CLI
 
-- Read [CLI development](references/cli/development.md) for `@cloudigniter/cli`, `ci`, `ci-dev`, commands, flags, prompts, subprocesses, terminal output, exit codes, publishing, or invoking package scripts.
+- Read [GitHub delivery and npm staging](references/cli/publishing.md) for named GitHub profiles, paired source/build repositories, template publication, exact approved archives, native npm staging, static AWS workflow scaffolds and remote setup.
+- Read [CLI development](references/cli/development.md) for shared command design, `@cloudigniter/cli`, `ci`, `dev`, flags, prompts, subprocesses, terminal output, exit codes, or invoking package scripts.
+- Read [DEV company toolkit](references/cli/dev-toolkit.md) for `packages/dev`, the `dev` executable, shared package scripts and `ci-dev.config.json` recipes, public template exports from any application under `apps`, source/name/policy selection and explicit output replacement, company release policy, Changesets proposals, GitHub release requests, or future company-tooling domains. Keep this reference and the CloudIgniter Developers DEV pages current in the same change as each toolkit contract or design decision.
 - Read [development tools and seeding](references/cli/development-tools-and-seeding.md) for developer-role gates, Dev Beacon, Debug Probe, development-only UI, seed manifests/fixtures, the canonical single-action Seeder dialog, cleanup operations, provenance markers, garbage collectors, seeder commands, or fixture/payload drift from a deployed Amplify schema and generated outputs.
 
 ### Authoring and review
 
+- Read [TDD and package release gates](references/authoring/testing-and-release.md) for package behavior changes, tests, coverage, builds, release candidates, or publish requests. `@cloudigniter/next` is the first enforced package; other packages retain their current scripts until explicitly migrated.
 - Read [validation and final review](references/authoring/validation.md) before validating a non-trivial change or reviewing its final diff.
 
 Do not load every reference by default. Select the smallest set that fully covers the task.
@@ -54,7 +60,7 @@ Do not load every reference by default. Select the smallest set that fully cover
 10. Build CloudIgniter-owned table keys with the public core helpers; never introduce a new manually concatenated PK, SK, or secondary-index key.
 11. Use bounded-context tables: combine related entity types only when their access patterns, security boundary, lifecycle, and operational profile align. Never default to one platform-wide table or one table per entity.
 12. Treat every new table, index, scan, stream, replica, backup mode, capacity-mode change, and consistency choice as a cost and safety decision. Document the access pattern and cheaper safe alternative before implementing it.
-13. Keep application/system commands under `ci` and monorepo-only commands under the workspace-gated `ci-dev` executable; share infrastructure through `packages/cli` without mixing their help trees.
+13. Keep application/system commands under `ci` in public `packages/cli`. Restricted `packages/dev` owns `dev` package builds, quality scans, Next tooling, module maintenance, build exports and release-intent commands. Share application module validation through the CLI's explicit tooling API; never make the public CLI depend on private DEV. Keep package-owned quality gates and npm publication approval separate from release intent.
 14. Keep application-owned implementation only in `amplify/custom`, `src/custom`, and scoped `(ci-custom)` route trees. Template-core files may bridge custom inputs only through thin, strict composition; reusable code belongs in packages.
 15. Let generators rewrite only registered generated-owned resource folders and generated registries. Reject every core/manual/generated key or path collision before mutating files, and never silently adopt or overwrite hand-written code.
 16. Keep local generation and cloud deployment separate. A generated-resource deployment requires an explicit target, a short-lived single-use intent bound to the exact generated plan and verified provider identity/Region, and a complete recheck immediately before the provider subprocess.
@@ -66,6 +72,10 @@ Do not load every reference by default. Select the smallest set that fully cover
 22. Expose each management-page seeder through one top-level `Seeder` action. Put seed and cleanup choices inside its dialog, and require a separate destructive confirmation for cleanup.
 23. Keep Amplify AppSync resolver functions that consume Data resources in the `data` resource group, even when they administer Cognito. Grant their Cognito access from Lambda-owned policies in the consumer stack; do not attach Data-stack resolver roles through `defineAuth(...access)`, because the Auth-owned policy creates the reverse nested-stack edge. Keep actual Cognito trigger functions in `auth`.
 24. Keep domain JSON values and seeder fixtures structured. For Amplify `a.json()` fields, serialize exactly once when writing an AppSync `AWSJSON` variable and decode at the provider read boundary; cover every JSON-backed field together. Never fix an invalid-variable error by stringifying fixture files, weakening the domain type, or serializing before the provider boundary.
+
+25. Build every CloudIgniter UI surface against the [shared theming contract](references/architecture/ui/theming.md), including Light/Dark/System behavior, semantic foreground/background pairs, portals, and imperative widgets.
+
+Read [Settings](references/architecture/settings/overview.md) for category/owner isolation, tenant copies, System enforcement and overwrites, route-selected loading, generated forms, cookie precedence, and settings persistence.
 
 ## Workflow
 
@@ -164,7 +174,9 @@ For request context, explicitly identify:
 - whether the target path bypasses the proxy;
 - how stale, missing, malformed, or mismatched context is rejected.
 
-### 5. Implement package capability first
+### 5. Test first, then implement package capability
+
+For `@cloudigniter/next`, write the behavior/regression test and observe the expected failure before changing production code. Apply red–green–refactor and the [coverage and release policy](references/authoring/testing-and-release.md).
 
 When behavior is reusable:
 

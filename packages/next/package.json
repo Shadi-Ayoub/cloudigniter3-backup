@@ -13,6 +13,10 @@
   "module": "./src/index.ts",
   "types": "./src/types/index.ts",
   "exports": {
+    "./tooling/modules": {
+      "types": "./src/tooling/modules.ts",
+      "import": "./src/tooling/modules.ts"
+    },
     ".": {
       "types": "./src/index.ts",
       "import": "./src/index.ts"
@@ -68,32 +72,42 @@
     "./styles/standard/theme.css": "./src/styles/standard/theme.css"
   },
   "scripts": {
-    "switch:src": "ci-dev package switch --target=src",
-    "switch:dist": "ci-dev package switch --target=dist",
-    "clean": "rimraf dist .tsbuildinfo",
-    "clean:maps": "ci-dev package clean-maps",
-    "clean:dts": "ci-dev package clean-dts",
-    "test": "tsx --tsconfig tsconfig.test.json --test __tests__/**/*.test.ts",
-    "test:style": "ci-dev next test-style",
-    "build": "pnpm --silent run build:dev",
-    "build:dev": "ci-dev package build --mode=dev",
-    "build:prod": "ci-dev package build --mode=prod",
-    "build:dev2": "NODE_ENV=development pnpm run clean && pnpm run switch:src && pnpm run build:js && pnpm run build:types:raw && pnpm run build:types && pnpm run build:assets",
-    "build:prod2": "NODE_ENV=production pnpm run clean && pnpm run switch:src && pnpm run build:js && pnpm run build:types:raw && pnpm run build:types && pnpm run build:types:clean && pnpm run build:assets && pnpm run clean:maps &&  pnpm run obfuscate && pnpm run switch:dist",
-    "build:js": "tsup --config tsup.config.ts",
-    "build:types:clean": "rimraf dist/.types",
-    "build:types": "NODE_OPTIONS=--max-old-space-size=12288 rollup -c rollup.config.js",
-    "build:types:raw": "tsc -p tsconfig.build.json",
-    "build:assets": "ci-dev package build-assets && pnpm -v",
-    "build:theme": "ci-dev next build-theme",
-    "obfuscate": "ci-dev package obfuscate",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
-    "check:package": "npm pack --dry-run",
-    "dev": "tsup --watch",
-    "typecheck:tools": "tsc -p tsconfig.tools.json --noEmit",
-    "check": "pnpm run typecheck && pnpm run typecheck:tools",
-    "scan:client-directives": "ci-dev quality scan-client-directives",
-    "list:client-files": "ci-dev quality list-client-files"
+    "switch:src": "dev package switch --target=src",
+    "switch:dist": "dev package switch --target=dist",
+    "clean": "dev package clean",
+    "clean:maps": "dev package clean-maps",
+    "clean:dts": "dev package clean-dts",
+    "test": "dev package test",
+    "test:style": "dev next test-style",
+    "build": "dev package build --mode=dev",
+    "build:dev": "dev package build --mode=dev",
+    "build:prod": "dev package build --mode=prod",
+    "build:dev2": "dev package build --mode=dev",
+    "build:prod2": "dev package build --mode=prod",
+    "build:js": "dev package build-js",
+    "build:types:clean": "dev package clean-types",
+    "build:types": "dev package build-types",
+    "build:types:raw": "dev package build-types-raw",
+    "build:assets": "dev package build-assets",
+    "build:theme": "dev next build-theme",
+    "obfuscate": "dev package obfuscate",
+    "typecheck": "dev package typecheck",
+    "check:package": "dev package check-package",
+    "dev": "dev package watch",
+    "typecheck:tools": "dev package typecheck --scope=tools",
+    "check": "dev package check",
+    "scan:client-directives": "dev quality scan-client-directives",
+    "list:client-files": "dev quality list-client-files",
+    "test:watch": "dev package test --watch",
+    "test:coverage": "dev package test --coverage",
+    "typecheck:tests": "dev package typecheck --scope=tests",
+    "quality": "dev package quality",
+    "quality:next": "dev package quality",
+    "test:next": "dev package test",
+    "release:check:next": "dev package release-check",
+    "release:check": "dev package release-check",
+    "prepublishOnly": "dev package prepublish",
+    "test:build-gate": "dev package test-build-gate"
   },
   "dependencies": {
     "@ant-design/nextjs-registry": "^1.3.0",
@@ -136,7 +150,11 @@
     "tailwindcss-animate": "^1.0.7",
     "zod": "^4.3.6",
     "zod-formik-adapter": "^2.0.0",
-    "zustand": "^5.0.14"
+    "zustand": "^5.0.14",
+    "@cloudigniter/core": "workspace:*",
+    "@cloudigniter/aws": "workspace:*",
+    "@cloudigniter/ui": "workspace:*",
+    "@cloudigniter/cli": "workspace:*"
   },
   "peerDependencies": {
     "next": "^16.2.1",
@@ -144,21 +162,23 @@
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
-    "@cloudigniter/cli": "workspace:*",
+    "@cloudigniter/dev": "workspace:*",
     "@cloudigniter/config-ts": "workspace:*",
-    "@cloudigniter/aws": "workspace:*",
-    "@cloudigniter/core": "workspace:*",
-    "@cloudigniter/ui": "workspace:*",
     "@rollup/plugin-alias": "^6.0.0",
     "@tailwindcss/cli": "^4.3.0",
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "c8": "10.1.3",
     "esbuild-plugin-preserve-directives": "^0.0.11",
     "rimraf": "^6.0.1",
     "rollup": "^4.60.4",
     "rollup-plugin-dts": "^6.4.1",
     "tsup": "^8.5.0",
     "typescript": "^6.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cloudigniter-io/build-cloudigniter-next.git"
   }
 }

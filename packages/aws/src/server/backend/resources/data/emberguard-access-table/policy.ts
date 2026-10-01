@@ -7,7 +7,20 @@ const readHandlers = [
   "ciListEmberguardCustomDomainsHandler",
 ] as const;
 
-const cognitoMutationAssignmentReaders = [
+const authorizationReaders = [
+  "ciCleanupSeededTenantsHandler",
+  "ciDeleteTenantHandler",
+  "ciPurgeTenantHandler",
+  "ciRestoreTenantHandler",
+  "ciSeedTenantsHandler",
+  "ciSetTenantStatusHandler",
+  "ciCreateOrgUnitHandler",
+  "ciUpdateOrgUnitHandler",
+  "ciPutEmberguardResourceInventoryHandler",
+  "ciPutEmberguardCustomDomainHandler",
+  "ciDeleteEmberguardCustomDomainHandler",
+  "ciGetSettingsHandler",
+  "ciSetSettingsHandler",
   "ciCreateCognitoUserHandler",
   "ciDeleteCognitoUserHandler",
   "ciSetCognitoUserEnabledHandler",
@@ -51,7 +64,7 @@ export function ciMakeEmberguardAccessTablePolicies(
           },
         ],
       })),
-      ...cognitoMutationAssignmentReaders.map((handlerId) => ({
+      ...authorizationReaders.map((handlerId) => ({
         for: handlerId,
         id: "EmberguardCognitoMutationAssignmentRead",
         statements: [

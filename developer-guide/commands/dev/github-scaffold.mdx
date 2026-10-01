@@ -1,0 +1,49 @@
+---
+title: "dev github scaffold"
+description: "Generate local workflow files for a configured build project."
+sidebar_label: "dev github scaffold"
+sidebar_custom_props:
+  audience: developer
+---
+
+Generate local workflow files for a configured build project.
+
+## Syntax
+
+```text
+dev github scaffold <project> --output=<new-directory> [--hosting=static]
+```
+
+## Prerequisites
+
+Run in the private workspace with the relevant company policies configured. This local command does not require GitHub CLI or authentication.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `<project>` | Configured project ID. |
+| `--output=<new-directory>` | Required new output directory. |
+| `--hosting=static` | Explicit static-site workflow; omit for package/npm workflows. |
+| `--json` | Accepted; output is structured JSON. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Writes package/npm workflow scaffolding or explicitly selected static website/AWS workflow files. It does not create remote repositories, configure secrets, or deploy the site.
+
+## Examples
+
+```bash
+pnpm exec dev github scaffold core --output=../core-build-scaffold
+```
+
+## Errors and recovery
+
+An unknown project, occupied output, or unsupported hosting selection fails. Review the generated setup before applying it.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/publishing/github-commands)

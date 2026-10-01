@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { getRequestConfig } from "next-intl/server";
 
-import { CI_DEFAULT_REQUEST_CONTEXT_HEADER_NAME, ciDeserializeRequestContext } from "@cloudigniter/core/lib";
+import { ciResolveSettingsPreferences, CI_DEFAULT_REQUEST_CONTEXT_HEADER_NAME, ciDeserializeRequestContext } from "@cloudigniter/core/lib";
 
 import type { CiServerErrorPayload } from "@cloudigniter/core/types";
 
@@ -9,6 +9,7 @@ import { ciGetServerLocale } from "@cloudigniter/next/server";
 
 import config from "@/../cloudigniter.config";
 
+import { appGetSettings } from "../settings/app-get-settings";
 import { ciLoadRouteMessages } from "./messages";
 
 function ciCreateRequestConfigError(message: string): Error {
@@ -23,9 +24,11 @@ function ciCreateRequestConfigError(message: string): Error {
 }
 
 export default getRequestConfig(async () => {
+  const preferences = ciResolveSettingsPreferences(await appGetSettings());
+  const defaultLocale = config.i18n.locales.some(locale => locale.code === preferences.locale) ? preferences.locale : config.i18n.defaultLocale;
   const locale = await ciGetServerLocale({
     cookieName: config.i18n.cookieName,
-    defaultLocale: config.i18n.defaultLocale,
+    defaultLocale,
   });
 
   const headerStore = await headers();
@@ -72,5 +75,6 @@ export default getRequestConfig(async () => {
   return {
     locale: result.locale,
     messages: result.messages,
+    timeZone: preferences.timeZone ?? "UTC",
   };
 });

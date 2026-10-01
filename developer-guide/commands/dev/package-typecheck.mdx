@@ -1,0 +1,47 @@
+---
+title: "dev package typecheck"
+description: "Check configured TypeScript scopes without emitting output."
+sidebar_label: "dev package typecheck"
+sidebar_custom_props:
+  audience: developer
+---
+
+Check configured TypeScript scopes without emitting output.
+
+## Syntax
+
+```text
+dev package typecheck [--scope=source|tools|tests|all]
+```
+
+## Prerequisites
+
+Run from the owning `packages/<name>` directory in the private CloudIgniter workspace after installing its dependencies. `--workspace-root` selects discovery and does not change the current package.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--scope=<scope>` | Defaults to source. all checks every configured scope; unsupported scopes fail. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Uses `tsconfig.json`, `tsconfig.tools.json`, or `tsconfig.test.json` with `--noEmit`. The enabled scopes come from `ci-dev.config.json`.
+
+## Examples
+
+```bash
+cd packages/next
+pnpm exec dev package typecheck --scope=all
+```
+
+## Errors and recovery
+
+A missing required configuration or tool fails the command. A failed subprocess stops the workflow and returns a nonzero status. Inspect the first reported failure before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/package-workflows)

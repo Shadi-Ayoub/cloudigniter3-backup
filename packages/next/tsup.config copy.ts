@@ -2,7 +2,7 @@
 import { defineConfig } from "tsup";
 import { preserveDirectivesPlugin } from "esbuild-plugin-preserve-directives";
 import { getAllEntries } from "./scripts/entries.mjs";
-import { ciInjectUseClient } from "@cloudigniter/cli/tooling/inject-use-client";
+import { ciInjectUseClient } from "@cloudigniter/dev/tooling/inject-use-client";
 
 const isProduction = process.env.NODE_ENV === "production";
 

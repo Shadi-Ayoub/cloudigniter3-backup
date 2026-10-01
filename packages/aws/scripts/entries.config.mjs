@@ -1,4 +1,4 @@
-import { ENTRY_KIND } from "@cloudigniter/cli/tooling/entries";
+import { ENTRY_KIND } from "@cloudigniter/dev/tooling/entries";
 
 export const ciEntriesConfig = {
   barrels: [

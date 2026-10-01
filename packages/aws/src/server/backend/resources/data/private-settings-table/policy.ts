@@ -6,39 +6,38 @@ export function ciMakePrivateSettingsTablePolicies(
   options: CiPlanOptions,
 ): CiPolicyFragment {
   if (!options.includeDefaultDynamoPolicies) return {};
-
   return {
     inlinePolicies: [
-      //   {
-      //     for: 'ciGetSettingsHandler',
-      //     id: 'PrivateSettingsDdbReadWrite',
-      //     statements: [
-      //       {
-      //         effect: 'Allow',
-      //         actions: ['dynamodb:GetItem', 'dynamodb:PutItem', 'dynamodb:UpdateItem'],
-      //         resources: [tables.privateSettings.arn],
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     for: 'ciSetSettingsHandler',
-      //     id: 'PrivateSettingsDdbReadWrite',
-      //     statements: [
-      //       {
-      //         effect: 'Allow',
-      //         actions: ['dynamodb:GetItem', 'dynamodb:PutItem', 'dynamodb:UpdateItem'],
-      //         resources: [tables.privateSettings.arn],
-      //       },
-      //     ],
-      //   },
-      // ],
-      // tableGrants: [
-      //   { for: 'ciGetSettingsHandler', table: 'privateSettingsTable', actions: ['Query', 'BatchWriteItem'] },
-      //   {
-      //     for: 'ciSetSettingsHandler',
-      //     table: 'privateSettingsTable',
-      //     actions: ['PutItem', 'DeleteItem', 'TransactWriteItems'],
-      //   },
+      {
+        for: "ciGetSettingsHandler",
+        id: "PrivateSettingsRead",
+        statements: [
+          {
+            effect: "Allow",
+            actions: [
+              "dynamodb:GetItem",
+              "dynamodb:PutItem",
+              "dynamodb:ConditionCheckItem",
+            ],
+            resources: [tables.privateSettings.arn],
+          },
+        ],
+      },
+      {
+        for: "ciSetSettingsHandler",
+        id: "PrivateSettingsWrite",
+        statements: [
+          {
+            effect: "Allow",
+            actions: [
+              "dynamodb:GetItem",
+              "dynamodb:PutItem",
+              "dynamodb:ConditionCheckItem",
+            ],
+            resources: [tables.privateSettings.arn],
+          },
+        ],
+      },
     ],
   };
 }

@@ -1,0 +1,56 @@
+---
+title: Extending application configuration
+description: Configure supported CloudIgniter capabilities and define typed options for your application features.
+sidebar_position: 4
+---
+
+# Extending application configuration
+
+Use code-defined configuration for choices that ship with a feature, such as a report's page size or export limit.
+Use [settings](./settings) for values that authorized users should change through the running application.
+
+## Configure supported capabilities
+
+The template's `cloudigniter.config.ts` satisfies `CiNextCoreConfig` from `@cloudigniter/next/types`. Extend its
+configured values through the declared fields, preserving the rest of the template's composition. For example,
+configure a supported language in `i18n.locales`, update `auth.authUi`, or adjust tenant routing through `tenant`.
+Follow the corresponding [configuration guide](/docs/configuration/overview) for any associated resources, messages,
+or UI wiring.
+
+Read configured values from `context.config.appCoreConfig` and request-resolved values from the other sections of
+`context.config`. See [How configuration is resolved](/docs/configuration/resolution) for the distinction. Adding
+an arbitrary property to the configuration file does not make it a supported capability or automatically expose
+it in the request context.
+
+## Define options for your own feature
+
+Keep new application-specific options in your custom feature code. For example:
+
+```ts title="src/custom/reports/config.ts"
+export type ReportsConfig = {
+  pageSize: number;
+  maxExportRows: number;
+};
+
+export const reportsConfig = {
+  pageSize: 25,
+  maxExportRows: 500,
+} satisfies ReportsConfig;
+```
+
+Import `reportsConfig` into your own report loader or export operation and use the values explicitly. A declaration
+alone does not change pagination or enforce an export limit. Pass the relevant non-secret values to a Client
+Component when its UI needs them. Keep credentials and other server-only values in server-only code and provider
+secret mechanisms.
+
+This file is an application-owned configuration module. It does not need a new property in `CiNextCoreConfig`, a
+settings group, or a module installation record. If an administrator later needs to edit the page size, move that
+choice into a validated settings group and change the consuming feature to read that group.
+
+## Verify the consuming behavior
+
+Change one option, restart or rebuild the application as its runtime requires, and verify the feature uses it.
+Deploy any backend consumer that embeds the same configuration. Validate external input at the server boundary;
+a TypeScript type and a browser-provided value do not enforce a runtime limit.
+
+Continue with [Extending user profiles](./user-profile).

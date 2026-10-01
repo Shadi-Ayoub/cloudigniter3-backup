@@ -1,0 +1,48 @@
+---
+title: "dev github pr list"
+description: "List pull requests in the selected repository."
+sidebar_label: "dev github pr list"
+sidebar_custom_props:
+  audience: developer
+---
+
+List pull requests in the selected repository.
+
+## Syntax
+
+```text
+dev github pr list --project=<id|workspace> [--profile=<name>]
+```
+
+## Prerequisites
+
+Run in the private workspace with [GitHub CLI prepared by DEV](./github-setup.mdx) and the relevant company policies configured. Online commands use the selected named GitHub profile; credentials remain in GitHub CLI storage.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--project=<id\|workspace>` | Required configured project ID, or workspace for the integration monorepo. |
+| `--repository-kind=source\|build` | Defaults to source. workspace has no build repository. |
+| `--profile=<name>` | Named GitHub profile; also selected through CLOUDIGNITER_PROFILE. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Lists PRs without modifying them.
+
+## Examples
+
+```bash
+pnpm exec dev github pr list --project=workspace --profile=developer
+```
+
+## Errors and recovery
+
+Unknown projects, invalid IDs, unavailable repositories, or missing profile permissions fail before a useful result. GitHub errors retain a nonzero status.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/publishing/github-commands)

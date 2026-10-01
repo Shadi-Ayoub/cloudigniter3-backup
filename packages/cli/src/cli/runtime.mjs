@@ -1,4 +1,4 @@
-import { access, readFile } from "node:fs/promises";
+import { access } from "node:fs/promises";
 import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -22,15 +22,10 @@ export function ciClearTerminal(enabled) {
   }
 }
 
-export function ciPrintWelcome({ developer = false } = {}) {
-  const label = developer ? "CloudIgniter Developer Toolkit" : "CloudIgniter";
-  const subtitle = developer
-    ? "Workspace build, quality, and release operations"
-    : "Application and system operations toolkit";
-
+export function ciPrintWelcome() {
   console.log();
-  console.log(pc.bold(pc.cyan(`  ${label}`)));
-  console.log(pc.dim(`  ${subtitle}`));
+  console.log(pc.bold(pc.cyan("  CloudIgniter")));
+  console.log(pc.dim("  Application and system operations toolkit"));
   console.log();
 }
 
@@ -66,29 +61,6 @@ export async function ciFindWorkspaceRoot(startDirectory = process.cwd()) {
     const parent = path.dirname(directory);
     if (parent === directory) return path.resolve(startDirectory);
     directory = parent;
-  }
-}
-
-export async function ciAssertDeveloperWorkspace(workspaceRoot) {
-  const manifestPath = path.join(workspaceRoot, "package.json");
-  let manifest;
-
-  try {
-    manifest = JSON.parse(await readFile(manifestPath, "utf8"));
-  } catch {
-    throw new CiCliUsageError(
-      `Developer commands require a CloudIgniter workspace; no package.json was found at ${workspaceRoot}.`,
-    );
-  }
-
-  if (
-    manifest.name !== "cloudigniter" ||
-    manifest.private !== true ||
-    !(await ciPathExists(path.join(workspaceRoot, "packages/cli/package.json")))
-  ) {
-    throw new CiCliUsageError(
-      `Developer commands are only available inside the private CloudIgniter monorepo (${workspaceRoot}).`,
-    );
   }
 }
 

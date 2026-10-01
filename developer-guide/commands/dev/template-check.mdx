@@ -1,0 +1,51 @@
+---
+title: "dev template check"
+description: "Compare a template export byte-for-byte with current source and policy."
+sidebar_label: "dev template check"
+sidebar_custom_props:
+  audience: developer
+---
+
+Compare a template export byte-for-byte with current source and policy.
+
+## Syntax
+
+```text
+dev template check --output=<directory> [options]
+```
+
+## Prerequisites
+
+Run in the private company workspace with configured template export policy. Online commands also need the configured GitHub profile and repository permissions.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--output=<directory>` | Required external directory, relative to the invoking directory; parent must exist. |
+| `--source=<path>` | Application below apps, relative to the workspace; defaults to the selected policy. |
+| `--policy=<path>` | Workspace-relative policy; default .cloudigniter/template-policy.json. |
+| `--name=<name>` | Override the exported package name; defaults to policy. |
+| `--package-version=<version>` | Optional exact version for all policy-listed public packages; otherwise use policy versions. |
+| `--json` | Print structured validation details. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Reads the existing export and compares its file inventory, bytes, and digest with the current plan. Use exactly the same source, policy, name, and version overrides as export. No files are modified.
+
+## Examples
+
+```bash
+pnpm exec dev template check --output=../public-app
+```
+
+## Errors and recovery
+
+Missing, changed, extra, or symlinked files fail validation. Regenerate or correct the export and rerun; --overwrite and --dry-run are export-only options.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/template-export)

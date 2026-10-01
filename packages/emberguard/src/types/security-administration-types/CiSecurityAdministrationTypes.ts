@@ -23,11 +23,7 @@ export type CiSecurityCapabilities = {
 };
 
 export type CiSecurityRecordKind =
-  | "role"
-  | "permission"
-  | "resource"
-  | "assignment"
-  | "identity-group";
+  "role" | "permission" | "resource" | "assignment" | "identity-group";
 
 export type CiSecurityBaseRecord = {
   id: string;
@@ -76,6 +72,7 @@ export type CiSecurityPermissionRecord = CiSecurityBaseRecord & {
   action: string;
   scopeKinds: CiAccessScopeKind[];
   sensitive: boolean;
+  readOnly?: boolean;
 };
 
 export type CiSecurityResourceRecord = CiSecurityBaseRecord & {
@@ -206,7 +203,9 @@ export type CiSecurityAdministration = {
   buildResourceDomains(
     definition: CiAccessControlDefinition
   ): CiSecurityResourceDomainRecord[];
-  createResourceDomain(input: CiCreateSecurityResourceDomainInput): Promise<void>;
+  createResourceDomain(
+    input: CiCreateSecurityResourceDomainInput,
+  ): Promise<void>;
   setResourceDomainStatus(
     input: CiSetSecurityResourceDomainStatusInput
   ): Promise<void>;

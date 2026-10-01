@@ -1,0 +1,49 @@
+---
+title: "dev template deliver"
+description: "Publish an approved template export to its configured public branch."
+sidebar_label: "dev template deliver"
+sidebar_custom_props:
+  audience: developer
+---
+
+Publish an approved template export to its configured public branch.
+
+## Syntax
+
+```text
+dev template deliver <private-pull-request-number> [--dry-run]
+```
+
+## Prerequisites
+
+Run in the private company workspace with configured template export policy. Online commands also need the configured GitHub profile and repository permissions.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `<private-pull-request-number>` | Merged private review request. |
+| `--dry-run` | Read approval remotely and verify the digest without publishing or writing files. |
+| `--profile=<name>` | Configured reviewer profile. |
+| `--json` | Print structured output. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Reviewer-only operation: checks the merged request, independent approval, and exact export digest, then updates the public branch without company Git history. This command publishes files to GitHub; it does not install dependencies or deploy AWS.
+
+## Examples
+
+```bash
+pnpm exec dev template deliver 123 --profile=approver --dry-run
+```
+
+## Errors and recovery
+
+Unmerged requests, missing independent approval, wrong accounts, or changed export bytes block delivery.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/template-export)

@@ -443,7 +443,22 @@ async function ciAtomicWriteAbsoluteFile(targetPath, bytes, mode, { replace }) {
     if (replace) {
       await rename(temporaryPath, targetPath);
     } else {
-      await link(temporaryPath, targetPath);
+      try {
+        await link(temporaryPath, targetPath);
+      } catch (error) {
+        if (!["ENOTSUP", "EOPNOTSUPP", "ENOSYS"].includes(error?.code)) throw error;
+        // Some removable filesystems have no hard links. Exclusive creation still
+        // refuses collisions; journal/hash verification rejects an interrupted
+        // partial write rather than adopting it on a subsequent operation.
+        const handle = await open(targetPath, "wx", mode);
+        try {
+          await handle.writeFile(bytes);
+          await handle.chmod(mode);
+          await handle.sync();
+        } finally {
+          await handle.close();
+        }
+      }
       await unlink(temporaryPath);
     }
     committed = true;

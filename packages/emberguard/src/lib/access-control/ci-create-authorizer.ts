@@ -153,12 +153,14 @@ function compileRolePrivileges(
 /** Checks whether one privilege applies to the requested resource/action/scope. */
 function privilegeMatches(
   privilege: CiPrivilege,
-  request: CiAuthorizationRequest
+  request: CiAuthorizationRequest,
+  isWrite: boolean,
 ): boolean {
   return (
     privilege.scopeKinds.includes(request.scope.kind) &&
     ciMatchesAuthorizationPattern(privilege.resource, request.resource) &&
-    ciMatchesAuthorizationPattern(privilege.action, request.action)
+    ((privilege.readOnly === true && isWrite) ||
+      ciMatchesAuthorizationPattern(privilege.action, request.action))
   );
 }
 
@@ -168,7 +170,8 @@ function privilegeMatches(
  * The authorizer denies by default. Under the default combining algorithm any
  * matching deny wins. The optional highest-precedence algorithm first selects
  * direct privileges or the numerically lowest role precedence, then applies
- * deny-overrides within that tier.
+ * deny-overrides within that tier. Active read-only restrictions deny writes
+ * before either combining algorithm, including grants from stronger roles.
  */
 export function ciCreateAuthorizer(
   definition: CiAccessControlDefinition,
@@ -205,7 +208,10 @@ export function ciCreateAuthorizer(
       return deny("suspended-resource");
     }
 
-    if (!resource.actions.some((action) => action.id === request.action)) {
+    const action = resource.actions.find(
+      (action) => action.id === request.action,
+    );
+    if (!action) {
       return deny("unknown-action");
     }
 
@@ -218,6 +224,10 @@ export function ciCreateAuthorizer(
     }
 
     const now = clock().getTime();
+    const isWrite =
+      action.accessMode === undefined
+        ? !["read", "get", "list", "view", "search"].includes(action.id)
+        : action.accessMode !== "read";
     const evaluatedRoleIds: string[] = [];
     const matches: CiAuthorizationMatch[] = [];
     let hasSuspendedScopedRole = false;
@@ -247,7 +257,7 @@ export function ciCreateAuthorizer(
       }
 
       for (const resolved of compiledRolePrivileges.get(role.id) ?? []) {
-        if (!privilegeMatches(resolved.privilege, request)) {
+        if (!privilegeMatches(resolved.privilege, request, isWrite)) {
           continue;
         }
 
@@ -270,7 +280,7 @@ export function ciCreateAuthorizer(
           request.scope,
           directPrivilege.propagation
         ) ||
-        !privilegeMatches(directPrivilege.privilege, request)
+        !privilegeMatches(directPrivilege.privilege, request, isWrite)
       ) {
         continue;
       }
@@ -300,13 +310,26 @@ export function ciCreateAuthorizer(
         hasScopedGrant
           ? "no-matching-privilege"
           : hasSuspendedScopedRole
-          ? "suspended-role"
-          : "no-role-assignment",
+            ? "suspended-role"
+            : "no-role-assignment",
         evaluatedRoleIds
       );
     }
 
     const sortedMatches = sortMatches(matches);
+    const readOnlyMatches = isWrite
+      ? sortedMatches.filter((match) => match.privilege.readOnly === true)
+      : [];
+    if (readOnlyMatches.length > 0) {
+      return {
+        allowed: false,
+        effect: "deny",
+        reason: "read-only",
+        matches: sortedMatches,
+        decidingMatches: readOnlyMatches,
+        evaluatedRoleIds,
+      };
+    }
     const decidingMatches = selectDecidingMatches(sortedMatches, algorithm);
     const allowed = decidingMatches.every(
       (match) => match.privilege.effect === "allow"

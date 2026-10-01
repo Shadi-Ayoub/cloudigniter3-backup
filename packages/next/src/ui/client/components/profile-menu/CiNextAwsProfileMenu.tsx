@@ -4,7 +4,11 @@ import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
 import { ciAwsSignOut } from "@cloudigniter/aws/client";
-import { CiProfileMenu, ciStartTraceClient, useCiPageLoaderStore } from "@cloudigniter/ui/client";
+import {
+  CiProfileMenu,
+  ciStartTraceClient,
+  useCiPageLoaderStore,
+} from "@cloudigniter/ui/client";
 import type { CiProfileMenuItem } from "@cloudigniter/core/types";
 
 import type { CiNextAwsProfileMenuProps } from "@ci-next/types";
@@ -64,8 +68,15 @@ export function CiNextAwsProfileMenu({
       },
       {
         id: "settings",
-        label: "Settings",
-        shortcut: "⌘S",
+        label: "My Preferences",
+        onSelect: () => {
+          if (window.location.pathname === "/account/settings") return;
+          const returnTo = window.location.pathname + window.location.search;
+          setLoading(true);
+          router.push(
+            `/account/settings?returnTo=${encodeURIComponent(returnTo)}`,
+          );
+        },
       },
       {
         id: "keyboard-shortcuts",
@@ -73,7 +84,7 @@ export function CiNextAwsProfileMenu({
         shortcut: "⌘K",
       },
     ],
-    [],
+    [router, setLoading],
   );
 
   const ciDefaultInviteItems = useMemo<CiProfileMenuItem[]>(

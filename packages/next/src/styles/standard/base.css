@@ -3,10 +3,10 @@
     @apply h-full;
   }
   body {
-    @apply m-0 h-full;
+    @apply m-0 h-full bg-background text-foreground;
   }
   #__next {
-    @apply bg-muted dark:bg-muted h-full;
+    @apply bg-background text-foreground h-full;
     /* If you need the flex root:
        @apply min-h-0 flex flex-col;
     */

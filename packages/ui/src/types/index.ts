@@ -151,3 +151,10 @@ export type {
   CiSmartFormFieldRenderProps,
   CiSmartFormActionContext,
 } from "./smart-form-types";
+
+export type {
+  CiSettingsManagerProps,
+  CiSettingsTenancyProps,
+  CiSettingsManagementView,
+} from "./settings-types";
+export type { CiModuleManagementMessages, CiModuleManagementPageProps, CiExtensionPageProps } from "./module-types";

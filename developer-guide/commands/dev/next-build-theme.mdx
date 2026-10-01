@@ -1,0 +1,45 @@
+---
+title: "dev next build-theme"
+description: "Generate the Next package\u2019s combined theme stylesheet."
+sidebar_label: "dev next build-theme"
+sidebar_custom_props:
+  audience: developer
+---
+
+Generate the Next package’s combined theme stylesheet.
+
+## Syntax
+
+```text
+dev next build-theme
+```
+
+## Prerequisites
+
+Run from the owning `packages/<name>` directory in the private CloudIgniter workspace after installing its dependencies. `--workspace-root` selects discovery and does not change the current package.
+
+## Parameters
+
+This command has no command-specific options.
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Orders folders under `src/styles/standard/theme` and replaces `theme.generated.css`. Edit the modular theme sources, then regenerate.
+
+## Examples
+
+```bash
+cd packages/next
+pnpm exec dev next build-theme
+```
+
+## Errors and recovery
+
+A missing required configuration or tool fails the command. A failed subprocess stops the workflow and returns a nonzero status. Inspect the first reported failure before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/cli-architecture)

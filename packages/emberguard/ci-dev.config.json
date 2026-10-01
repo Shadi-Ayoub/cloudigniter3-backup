@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "typecheck": [
+    "source",
+    "tools"
+  ],
+  "test": {
+    "files": [
+      "__tests__/auth/*.test.ts"
+    ],
+    "typescript": true
+  },
+  "check": [
+    "typecheck",
+    "typecheck-tools"
+  ]
+}

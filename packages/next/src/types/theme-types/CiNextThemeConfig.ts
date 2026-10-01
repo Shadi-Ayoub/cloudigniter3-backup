@@ -8,5 +8,7 @@ import type { CiThemeProviderConfig } from "./CiThemeProviderConfig";
  * - themeProviderProps: raw next-themes overrides
  */
 export type CiNextThemeConfig<TTheme extends string = string> = {
+  /** Effective request preference: cookie, personal choice, then public default. */
+  settingsPreference?: string;
   theme?: CiThemeConfig<TTheme>;
 } & CiThemeProviderConfig;

@@ -1,0 +1,48 @@
+---
+title: "ci amplify bootstrap root-user"
+description: "Create or verify the configured root identity and repair its UserProfile."
+sidebar_label: "ci amplify bootstrap root-user"
+sidebar_custom_props:
+  audience: public
+---
+
+Create or verify the configured root identity and repair its UserProfile.
+
+## Syntax
+
+```text
+ci amplify bootstrap root-user [--profile=<name>] [--app-root=<path>] [--no-interactive]
+```
+
+## Prerequisites
+
+Use the target Amplify application with installed AWS integration, deployed backend outputs, valid credentials, and its root-user configuration reviewed.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--app-root=<path>` | Application root; defaults to the current directory. |
+| `--workspace-root=<path>` | Override workspace discovery and package resolution. |
+| `--profile=<name>` | AWS profile. If omitted, uses the default credential chain; an interactive terminal may ask for a profile. |
+
+See the [ci common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Loads the AWS backend integration, creates or verifies the configured Cognito user, and repairs its UserProfile when needed. Success identifies the configured root email and whether the user was created. Re-running reconciles that configured identity.
+
+## Examples
+
+```bash
+pnpm exec ci amplify bootstrap root-user --profile=developer1 --no-interactive
+```
+
+## Errors and recovery
+
+An invalid root-user configuration or missing Cognito/data permissions fails the command. Resolve the configuration or credential error before retrying; this operation changes cloud identities and data.
+
+## Related documentation
+
+- [ci Commands A–Z](./index.mdx)
+- [Workflow guide](/docs/cli/overview)

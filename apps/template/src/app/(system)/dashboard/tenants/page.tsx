@@ -1,3 +1,4 @@
+import { forbidden } from "next/navigation";
 import { CiPage } from "@cloudigniter/next/client";
 import { CiTenantManagementPage } from "@cloudigniter/ui/client";
 import { ciCanAccessDeveloperTools } from "@cloudigniter/core/lib";
@@ -26,7 +27,7 @@ export default async function TenantsPage() {
     },
   });
   if (!canManage && !developerToolsAccess)
-    throw new Error("You do not have permission to manage tenants.");
+    forbidden();
   const result = await appListTenantRecords({
     deletionState: "active",
     limit: 100,

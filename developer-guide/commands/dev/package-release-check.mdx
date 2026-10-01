@@ -1,0 +1,45 @@
+---
+title: "dev package release-check"
+description: "Run the package-owned release-validation hook."
+sidebar_label: "dev package release-check"
+sidebar_custom_props:
+  audience: developer
+---
+
+Run the package-owned release-validation hook.
+
+## Syntax
+
+```text
+dev package release-check
+```
+
+## Prerequisites
+
+Run from the owning `packages/<name>` directory in the private CloudIgniter workspace after installing its dependencies. `--workspace-root` selects discovery and does not change the current package.
+
+## Parameters
+
+This command has no command-specific options.
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Requires a configured `releaseCheck` hook (currently Next) and runs its artifact checks. The hook may build or pack artifacts; this command does not publish or approve a release.
+
+## Examples
+
+```bash
+cd packages/next
+pnpm exec dev package release-check
+```
+
+## Errors and recovery
+
+A missing required configuration or tool fails the command. A failed subprocess stops the workflow and returns a nonzero status. Inspect the first reported failure before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/package-workflows)

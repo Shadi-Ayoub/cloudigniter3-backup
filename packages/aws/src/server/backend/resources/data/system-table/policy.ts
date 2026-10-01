@@ -11,6 +11,28 @@ export function ciMakeSystemTablePolicies(
     // DynamoDB transaction authorization requires TransactWriteItems plus the
     // action matching every ConditionCheck, Put, Update, or Delete component.
     inlinePolicies: [
+      ...(["ciGetSettingsHandler", "ciSetSettingsHandler"] as const).map(
+        (handler) => ({
+          for: handler,
+          id: "SettingsTenantLookup",
+          statements: [
+            {
+              effect: "Allow" as const,
+              actions: ["dynamodb:GetItem"],
+              resources: [tables.system.arn],
+            },
+            ...(handler === "ciGetSettingsHandler"
+              ? [
+                  {
+                    effect: "Allow" as const,
+                    actions: ["dynamodb:Query"],
+                    resources: [`${tables.system.arn}/index/GSI1`],
+                  },
+                ]
+              : []),
+          ],
+        }),
+      ),
       {
         for: "ciSeedTenantsHandler",
         id: "SystemDdbSeedTenants",

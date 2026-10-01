@@ -85,6 +85,14 @@ Redirects and rewrites differ:
 - a redirect creates a new browser request and cannot forward the current request's injected headers;
 - cross-request state needed after a redirect must use an appropriate transport and be revalidated.
 
+For protected routes and `/login`, distinguish a signed-out session from a failed session check.
+`401` or a successful JSON response with `authenticated: false` establishes sign-out; a successful
+boolean `true` establishes authentication. Reject session-endpoint redirects. Network errors,
+unexpected unsuccessful statuses, and malformed results return `auth-unavailable`, which the proxy
+maps to a non-cacheable `503` before creating resolved context or rewriting. Do not redirect a service
+failure to login: Amplify may still recognize the browser session and hide its form. Verify the actual
+`/ci-internal/auth/session` route as well as mocked session decisions when diagnosing redirect loops.
+
 Scope-specific pages use stable internal route roots while route registration
 continues to use the logical feature pathname:
 
@@ -102,6 +110,8 @@ URL segments. Their nested `ci-global` and `ci-tenant` directories are required
 because they are the targets of the proxy rewrite. Use
 `ciBuildTenantPublicPathname()` when application UI needs a browser-visible
 pathname for a logical feature route; do not link to either internal prefix.
+
+Configured root domains may be bare hosts, host:port pairs, or HTTP(S) URLs. Normalize a bare host:port with an explicit scheme before URL parsing; otherwise `localhost:3000` is parsed as a scheme and silently loses its host. Cover this together with subdomain-boundary rejection.
 
 ## Related references
 

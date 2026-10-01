@@ -1,0 +1,63 @@
+---
+title: "dev publisher"
+description: "Start Publisher, the local GUI for CloudIgniter builds and reviewed release workflows."
+sidebar_label: "dev publisher"
+sidebar_custom_props:
+  audience: developer
+---
+
+Start **Publisher**, the local browser interface supplied by the private CloudIgniter Developer Toolkit.
+
+## Syntax
+
+```text
+dev publisher [--port=4310] [--no-open] [--profile=<name>] [--workspace-root=<directory>]
+```
+
+## Prerequisites
+
+Install the workspace dependencies and run inside the private CloudIgniter pnpm workspace, or select it with `--workspace-root`. The server uses the installed Node.js runtime and existing DEV commands. Offline builds and checks do not require GitHub authentication. GitHub operations require the configured GitHub CLI and account credentials.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--port` | Loopback port, default `4310`. Use `0` to select an available port. |
+| `--no-open` | Print the session URL without opening the default browser. |
+| `--profile` | Initial named GitHub profile. Defaults to `CLOUDIGNITER_PROFILE`, then `developer` when configured, otherwise the active GitHub session. |
+| `--workspace-root` | Discover and validate the private workspace from this directory. |
+
+See [common options](./index.mdx#common-options) for help and diagnostics.
+
+## Remarks and effects
+
+Publisher binds only to `127.0.0.1`. The printed URL contains a local session token with an eight-hour lifetime. Keep the terminal running; Ctrl+C stops the server and cancels running local work. A browser refresh retains the session in that tab's session storage. Reopen the printed URL in a new tab to reconnect.
+
+Starting the server discovers targets and reads configuration. Actions require a command preview followed by an explicit execution. One action runs at a time. Configuration writes and profile changes are blocked during a running action. Logs and the most recent 30 actions remain in memory; download a log to retain it after shutdown.
+
+The GUI delegates to existing build, test, switch, release, template and GitHub commands. It preserves package quality gates and reviewed delivery rules. It does not expose PR review/merge controls or perform final npm 2FA approval. Website delivery requires reviewed artifact commits and configured remote workflows; the GUI provides local builds, checks, output inspection, and workflow scaffolding.
+
+See the [Publisher guide](/company-developers/tooling/dev/publisher) for project metadata, linked configuration files and workflow details.
+
+## Examples
+
+From the workspace root:
+
+```bash
+pnpm exec dev publisher
+pnpm exec dev publisher --port=0 --no-open --profile=developer
+```
+
+Use `dev publisher` directly when the workspace executable is already on `PATH`. `pnpm dev publisher` invokes the root's development script instead.
+
+## Errors and recovery
+
+- **Port already in use:** choose another port or `--port=0`.
+- **Expired or missing session:** restart Publisher after expiration and open its new URL. Do not forward its port or share the session URL.
+- **Missing target:** ensure it is a workspace package, has explicit repository `sourcePath`, or has `publisher.config.json` in a supported project root. Empty placeholder folders do not create tabs.
+- **Profile unavailable:** sign in using `dev github auth login --profile=<name>` in a terminal, then verify or switch in Publisher.
+- **File changed on disk:** copy the editor draft if needed, reload the file, and reconcile the external edit. Stale saves are refused.
+- **Action failed or cancelled:** inspect its exit code and log. Cancellation stops local processes; already completed filesystem changes and remote writes remain.
+- **Remote request refused:** resolve the underlying policy, authentication, clean-base, approval or artifact failure. Publisher never relaxes those gates.
+
+Usage errors return status `2`; operational startup failures return a nonzero status. Individual job failures appear in the GUI with the command's exit code.

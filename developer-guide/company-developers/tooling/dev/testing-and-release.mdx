@@ -1,0 +1,93 @@
+---
+title: Testing and quality gates
+description: Test-first development, package-owned coverage policy and quality enforcement before builds.
+sidebar_position: 5
+slug: /tooling/testing-and-release
+---
+
+CloudIgniter contributors use **red–green–refactor** to develop package behavior. Tests must pass before a package build can succeed, and a verified production package must exist before a maintainer reviews its publish request. `@cloudigniter/next` is the first enforced rollout. Other packages keep their existing workflows until explicitly migrated.
+
+## Contributor workflow
+
+1. Identify the owning package and the observable behavior. Include successful use, invalid inputs, denied access, provider failure and compatibility where relevant.
+2. Write a focused behavior test before implementation. Run it and confirm the expected assertion fails. A missing import, syntax error or broken environment does not prove the requested behavior is missing.
+3. Implement the smallest change that makes the test pass.
+4. Refactor while keeping the test green, then run the complete quality gate.
+5. Include the red and green commands/results in the pull request, using `.github/pull_request_template.md`. Reviewers check the test-first evidence; automation verifies the final result.
+6. Update affected skill references and guide pages, then obtain code review.
+
+For a bug, first reproduce the failure with a regression test. Existing code can start with characterization tests before its next behavior change. Avoid tests that merely repeat implementation statements or assert source text when observable runtime behavior can be tested.
+
+## Quality before the build
+
+Use the [test manual](/commands/dev/package-test) for focused feedback and the
+[quality manual](/commands/dev/package-quality) for complete validation. The
+[build manual](/commands/dev/package-build) defines development and production
+builds. Select the package as described in [workspace setup](./workspace.mdx).
+
+`build`, `build:dev2` and `build:prod2` route through the same gated pipeline. The shared `dev package build` executor reads `qualityScript: "quality"` from Next's package-local build configuration and runs it before deleting old artifacts or switching exports. A failing gate leaves the previous build intact. Other packages do not opt in automatically.
+
+Individual `build:js`, declaration/asset commands and watch mode are development tools. Their success is not release evidence. The Next Turbo build task is uncached so a cached bundle cannot substitute for current quality validation.
+
+## Test layers
+
+DEV owns the shared Node test runner and supplies `tsx` for TypeScript and JSX; Next selects its suite and strict requirements in `ci-dev.config.json`. Tests belong under `packages/next/__tests__`; recursive discovery includes `.test.ts`, `.test.tsx`, `.test.mjs` and `.test.cjs`, including future nested directories. Empty selections fail. Required runs reject skips and TODOs, use bounded timeouts, and write `coverage/junit.xml`.
+
+| Layer | Examples and expected evidence |
+| --- | --- |
+| Unit behavior | Theme defaults, navigation, tenant host/slug resolution, breadcrumb ordering and settings return paths |
+| Framework integration | Real `NextRequest` inputs, session redirects, request-context transport and tenant scope decisions |
+| Provider boundary | Settings operations, module management, denied access, malformed responses and provider exceptions with deterministic fake providers |
+| Rendering and consumer integration | Error-page rendering, translations and template composition using the actual components and controlled request dependencies |
+| Build and artifact contract | Gate failure before cleanup, production exports, declaration/CSS targets, client directives, allowed archive contents and resolved workspace dependency ranges |
+
+Keep tests offline and deterministic. Mock network, provider and framework request boundaries instead of making AWS calls. Restore mocks and remove only fixture-owned temporary files. These tests do not claim browser end-to-end coverage or prove a deployed AWS environment works. Changes that need those checks must include separate consumer/browser or authorized provider smoke evidence.
+
+Typechecks include production code, tooling and TypeScript test fixtures. A passing runtime test alone cannot hide an invalid fixture type.
+
+### Editor configuration
+
+The test runner and `typecheck:tests` explicitly select `packages/next/tsconfig.test.json`. Editors discover `packages/next/__tests__/tsconfig.json`, which extends that same configuration. This keeps test aliases, JSX handling and strict options aligned while production declaration builds continue to exclude tests.
+
+Use public cross-package imports in tests: `@cloudigniter/core/lib` for helpers and `@cloudigniter/core/types` for contracts. If the editor reports missing modules while command-line checks pass, verify that the test belongs to the `__tests__/tsconfig.json` project. After pulling configuration changes, use **TypeScript: Restart TS Server** if existing diagnostics remain.
+
+## Coverage and legacy adoption
+
+`packages/next/.c8rc.json` generates source-mapped HTML, LCOV and JSON reports for all active runtime TypeScript/TSX, including files no test loads. Type-only folders, declaration files, barrel files, retired `delete` files and example-only code are excluded. Packed exports are checked separately. Some historical VM-based rendering fixtures cannot attribute every executed component to its source; unmeasured code remains visible as debt.
+
+The per-file standard is:
+
+| Metric | New or changed runtime file |
+| --- | ---: |
+| Lines | 90% |
+| Statements | 90% |
+| Functions | 90% |
+| Branches | 80% |
+
+The existing package does **not** yet meet these thresholds across its entire implementation. `coverage-policy.json` records the rollout's legacy exceptions with a source SHA-256 and minimum percentages. An unchanged file may retain its recorded coverage floor. Any byte change invalidates that exception and activates the strict standard. Coverage cannot fall below an unchanged exception's floor, and a new runtime file gets no exception.
+
+Use `packages/next/coverage/index.html` to plan adoption of the remaining files. Prioritize authorization, routing, context, settings and provider failures. Remove legacy entries when they meet the standard, and raise remaining floors as coverage improves. Do not rehash exceptions, lower thresholds, expand exclusions or skip tests to make a failing check pass. A policy exception needs an explicit maintainer decision and rationale.
+
+A green gate means the current suite and this staged coverage policy passed; it does not mean every legacy component has 90% coverage. Coverage is a regression signal, not proof that assertions are useful. Review failure-path assertions and defect reproduction as well as percentages.
+
+## CI and required checks
+
+`.github/workflows/next-quality.yml` runs for pull requests, pushes to `main`, and manual dispatch. It validates Next on Node 22 and 24, then runs a fresh production build and pack check only after both test jobs pass. It uploads test reports even on failure and stores the successful candidate tarball, checksum and publish request. A separate job checks and builds the developer guide.
+
+Configure these checks as required in the repository's branch protection or ruleset:
+
+- `Next tests (Node 22)`
+- `Next tests (Node 24)`
+- `Next build and publish request`
+- `Developer guide`
+
+Workflow files do not configure repository protection settings by themselves. Require review of test/coverage/workflow policy changes and disable direct pushes to the protected release branch according to the team's repository policy. The workflow intentionally has read-only repository permissions and no registry credentials.
+
+## Preparing a release
+
+Continue with [Release artifacts](./release-artifacts.mdx) to validate the exact
+tarball and assemble the evidence needed for review.
+
+## Adopting the next package
+
+Complete the Next rollout review before extending enforcement. For each later package, inventory its runtime/public API boundaries, add meaningful behavior and failure-path tests, measure all active source, decide any explicit legacy baseline, opt into a package-local quality script, validate the actual packed artifact and add required CI checks. Preserve package ownership; the shared DEV executor supplies ordering while each package owns its test strategy.

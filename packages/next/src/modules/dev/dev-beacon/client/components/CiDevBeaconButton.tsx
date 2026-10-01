@@ -12,7 +12,7 @@ import {
 import { Spin } from "antd";
 import type { CiEnvMode } from "@cloudigniter/core/types";
 import { CI_DEFAULT_DEV_BEACON_POSITION_CLASSES } from "@cloudigniter/core/lib";
-import { cn } from "@cloudigniter/ui/client";
+import { CiDevBeaconIcon, cn } from "@cloudigniter/ui/client";
 
 import type {
   CiDevBeaconButtonProps,
@@ -47,14 +47,14 @@ const sizeMap: Record<CiDevBeaconSize, { btn: string; icon: string }> = {
 const envPulseClass = (env?: CiEnvMode) => {
   switch (env) {
     case "development":
-      return "bg-muted-200/35 dark:bg-muted-800/35";
+      return "bg-info/60";
 
     case "test":
     case "staging":
-      return "bg-warning/35 dark:bg-warning/40";
+      return "bg-warning/60";
 
     default:
-      return "bg-muted-200/35 dark:bg-muted-800/35";
+      return "bg-info/60";
   }
 };
 
@@ -340,12 +340,9 @@ const CiDevBeaconButton = forwardRef<HTMLButtonElement, CiDevBeaconButtonProps>(
             : undefined),
         }}
         className={cn(
-          "fixed isolate z-dev-beacon-button overflow-visible",
+          "ci-dev-beacon-button fixed isolate z-dev-beacon-button overflow-visible",
           "grid place-items-center text-sm font-medium select-none",
           "rounded-full shadow-xl transition-[background-color,box-shadow,opacity] duration-300",
-          "bg-muted-200 text-muted-800 hover:bg-muted-300",
-          "dark:bg-muted-800 dark:text-muted-100 dark:hover:bg-muted-700",
-          "border-0 border-muted-600 dark:border-muted-700",
           isDragging
             ? "cursor-grabbing shadow-2xl"
             : "cursor-grab hover:shadow-2xl",
@@ -361,23 +358,33 @@ const CiDevBeaconButton = forwardRef<HTMLButtonElement, CiDevBeaconButtonProps>(
           <span
             aria-hidden
             className={cn(
-              "pointer-events-none absolute -inset-3 -z-10 rounded-full opacity-60",
+              "pointer-events-none absolute -inset-3 -z-10 rounded-full motion-reduce:hidden",
               "ci-beacon-ping", // from @layer utilities
               haloColor,
             )}
           />
         )}
 
+        {/* Keep the translucent halo behind an opaque, theme-aware button face. */}
+        <span aria-hidden className="pointer-events-none absolute inset-0 z-0 rounded-[inherit] bg-inherit" />
+
         {!loaded ? (
-          <Spin className={cn("block leading-none", icon)} aria-hidden />
+          <Spin className={cn("relative z-10 block leading-none", icon)} aria-hidden />
         ) : (
-          <div className="relative">
+          <div className="relative z-10">
             {logo ?? (
-              <div
-                className={cn(icon, "rounded-full border")}
-                aria-hidden
-                title="CloudIgniter"
-              />
+              <>
+                <img
+                  src="/images/cloudIgniter-icon-1.png"
+                  alt=""
+                  aria-hidden="true"
+                  width={28}
+                  height={28}
+                  draggable={false}
+                  className="pointer-events-none block size-7 select-none object-contain dark:hidden"
+                />
+                <CiDevBeaconIcon className="pointer-events-none hidden select-none dark:block" />
+              </>
             )}
           </div>
         )}

@@ -1,0 +1,55 @@
+---
+title: Extending routes and pages
+description: Add an application route and connect it to the appropriate scoped Next.js page.
+sidebar_position: 2
+---
+
+# Extending routes and pages
+
+Add a route when your application needs a new page. A working destination combines a route definition, a page in
+the matching scope, and the server operations the page uses. The [routes configuration reference](/docs/configuration/routes)
+explains the available fields and matching rules.
+
+## Register the feature
+
+For example, add a Reports page to the existing `manualCustomRoutes` map in `src/custom/routes/routes.ts`:
+
+```ts
+"/dashboard/reports": {
+  title: "Reports",
+  namespace: "dashboard",
+  protected: true,
+  tenantScopes: ["global"],
+},
+```
+
+Keep the other entries and the existing merge with `resourceStudioRoutes`. Custom routes must have distinct keys;
+reusing a core or generated route's key is a collision. The `dashboard` namespace reuses the template's registered
+messages. If you introduce a namespace such as `dashboard.reports`, register its message files for each locale.
+
+## Add the scoped page
+
+Create `src/app/(ci-global)/ci-global/(ci-custom)/dashboard/reports/page.tsx`. Follow the server-page composition in
+[Build your first application page](/docs/building-features/first-page): resolve `appBootstrap()`, pass its context
+to `CiPage`, and put interactive behavior in separate Client Components.
+
+With the template's slug routing and `/t` base path, open `/t/global/dashboard/reports`. The registry key stays
+`/dashboard/reports`; the proxy resolves the public prefix before matching it. Build links with
+[`ciBuildTenantPublicPathname`](/docs/api-reference/shared-apis/ci-build-tenant-public-pathname) rather than exposing
+internal rewrite paths.
+
+For a tenant-scoped Reports page, create the corresponding page beneath
+`src/app/(ci-tenant)/ci-tenant/(ci-custom)` and declare `tenantScopes: ["tenant"]`. Declare both scopes only when
+both page implementations are available. Application-owned pages stay in these custom trees.
+
+## Connect data and permissions
+
+`protected: true` requires sign-in. Before loading sensitive report data, register the feature's resource and
+actions, declare the route's `access` requirement, and enforce the permission again in its server operations.
+Route metadata and a hidden navigation link do not replace a server authorization check. Follow the
+[route and permission example](/docs/identity/authentication#protect-a-route-and-its-operations).
+
+Select any settings groups the page needs through the route's `settings` array. Check direct navigation, navigation
+from another page, and rejection outside the declared scope before adding the destination to your application menu.
+
+Continue with [Extending settings](./settings).

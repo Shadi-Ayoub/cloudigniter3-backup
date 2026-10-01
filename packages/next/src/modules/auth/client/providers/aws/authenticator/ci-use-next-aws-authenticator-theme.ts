@@ -1,7 +1,7 @@
 "use client";
 
 import { type Theme } from "@aws-amplify/ui-react";
-import { useTheme as useNextTheme } from "next-themes";
+import { useCiColorMode } from "@cloudigniter/ui/client";
 
 import {
   useCiAmplifyAuthenticatorTheme,
@@ -12,7 +12,7 @@ export function useCiNextAwsAuthenticatorTheme(
   override?: CiAuthenticatorThemeOverride,
   merge = true,
 ): Theme {
-  const { resolvedTheme } = useNextTheme();
+  const colorMode = useCiColorMode();
 
-  return useCiAmplifyAuthenticatorTheme(resolvedTheme, override, merge);
+  return useCiAmplifyAuthenticatorTheme(colorMode, override, merge);
 }

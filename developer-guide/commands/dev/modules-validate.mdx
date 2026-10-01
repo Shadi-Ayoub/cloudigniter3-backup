@@ -1,0 +1,47 @@
+---
+title: "dev modules validate"
+description: "Validate core or application module manifests in the private workspace."
+sidebar_label: "dev modules validate"
+sidebar_custom_props:
+  audience: developer
+---
+
+Validate core or application module manifests in the private workspace.
+
+## Syntax
+
+```text
+dev modules validate [--kind=core|user] [--root=<path>]
+```
+
+## Prerequisites
+
+Run in the private CloudIgniter workspace with installed dependencies.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--kind=core\|user` | Defaults to core. |
+| `--root=<path>` | Override the module root, relative to the workspace. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Checks layouts, manifests, runtime boundaries, exports, dependencies, and cycles without writing modules. Defaults are `packages/next/src/modules` for core and `apps/template/src/modules` for user. Pass an explicit root for custom layouts.
+
+## Examples
+
+```bash
+pnpm exec dev modules validate --kind=core --workspace-root=.
+```
+
+## Errors and recovery
+
+A missing required configuration or tool fails the command. A failed subprocess stops the workflow and returns a nonzero status. Inspect the first reported failure before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/cli-architecture)

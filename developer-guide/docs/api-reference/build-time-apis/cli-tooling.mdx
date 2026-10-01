@@ -1,0 +1,80 @@
+---
+title: CLI tooling APIs
+description: Share application module validation and target-project package loading through the public CLI package.
+sidebar_position: 20
+---
+
+`@cloudigniter/cli` exposes Node-only tooling APIs for module validation and
+loading a package entry from a target project. Use them from trusted tooling,
+outside browser or application request code. For normal application validation,
+use `ci modules validate`; the CLI configures TypeScript loading for module files.
+
+## Module validation
+
+```ts
+import { ciValidateModules } from "@cloudigniter/cli/tooling/modules";
+// Import the input type from @cloudigniter/cli/types.
+type CiValidateModulesInput = {
+  workspaceRoot: string;
+  kind?: "core" | "user";
+  root?: string;
+};
+
+// Signature: ciValidateModules(input: CiValidateModulesInput): Promise<void>
+```
+
+`workspaceRoot` establishes package resolution and diagnostic paths. `kind`
+defaults to `user`. Pass `root` as an absolute path or a path relative to the
+workspace. Application tooling should pass its module folder explicitly:
+
+```ts
+await ciValidateModules({
+  workspaceRoot: process.cwd(),
+  kind: "user",
+  root: "src/modules",
+});
+```
+
+The validator checks module structure, manifests, dependency graphs and runtime
+boundaries. It prints diagnostics, sets `process.exitCode = 1` for validation
+errors, and resolves without returning a report. Filesystem, loading and invalid
+kind errors can reject the promise. A missing user module folder succeeds with
+a “nothing to validate” message; a missing core folder fails.
+
+The validator reads files and loads trusted TypeScript module manifests and
+CloudIgniter helpers. The calling process must support those imports, as the
+CLI's `tsx` loader does. It does not install dependencies or rewrite sources.
+This API does not perform the private toolkit's workspace eligibility checks.
+
+## Target-project package entries
+
+```ts
+import { ciImportPackageEntry } from "@cloudigniter/cli/runtime/package-entry";
+import type { CiImportPackageEntryInput } from "@cloudigniter/cli/types";
+
+// ciImportPackageEntry<TModule = Record<string, unknown>>(
+//   input: CiImportPackageEntryInput,
+// ): Promise<TModule>
+```
+
+| Input | Meaning |
+| --- | --- |
+| `baseDirectory: string` | Target project directory containing the installed package. |
+| `packageName: string` | Full package name. |
+| `subpath?: string` | Export subpath; defaults to `.`. |
+
+The loader reads the target package's export map and imports the selected entry.
+For example, a provider's `server/backend` subpath is supplied as
+`subpath: "server/backend"`. Missing packages and missing export paths throw;
+module execution errors propagate. Importing executes the package's code, so
+use a trusted target and package. The generic return type supplies a compile-time
+contract and does not validate the loaded module at runtime.
+
+## Build configuration migration
+
+Package build configuration belongs to the restricted `@cloudigniter/dev`
+toolkit. The former CLI `/tooling/tsup`, `/tooling/entries` and
+`/tooling/inject-use-client` exports have moved to the same DEV subpaths.
+Company maintainers can follow the
+[DEV migration guide](/company-developers/tooling/dev/workspace#migrating-from-ci-dev).
+Application users continue to install the public CLI for `ci` operations.

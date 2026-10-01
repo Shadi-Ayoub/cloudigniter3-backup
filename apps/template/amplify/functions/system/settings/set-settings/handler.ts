@@ -1,12 +1,5 @@
-// import { setSettingsHandler } from '@cloudigniter/next/server/backend';
-
-// import type { Schema } from '../../../../data/resource';
-
-// type Handler = Schema['getSettings']['functionHandler'];
-// /**
-//  * * @param event
-//  * @returns
-//  */
-// export const handler: Handler = async (event, context) => {
-//   return await setSettingsHandler(event, context);
-// };
+import { ciCreateAwsSettingsHandlers } from "@cloudigniter/aws/server/backend";
+import { ciBuildSettingsRegistry } from "../../../../../src/custom/settings/ci-settings-registry";
+import type { Schema } from "../../../../data/resource";
+const handlers = ciCreateAwsSettingsHandlers({ registry: ciBuildSettingsRegistry() });
+export const handler: Schema["SetSettings"]["functionHandler"] = event => handlers.set(event);

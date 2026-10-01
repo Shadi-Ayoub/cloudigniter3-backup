@@ -1,0 +1,81 @@
+name: Legacy monorepo npm staging
+
+on:
+  workflow_dispatch:
+    inputs:
+      request:
+        description: Reviewed release-request ID (24 hexadecimal characters); versions must already be merged
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudigniter-npm-stage
+  cancel-in-progress: false
+
+jobs:
+  candidate:
+    if: vars.CLOUDIGNITER_RELEASE_TOPOLOGY == 'monorepo' && github.repository == vars.CLOUDIGNITER_RELEASE_REPOSITORY && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Use the reviewed base branch
+        run: git switch -C main "$GITHUB_SHA"
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Build verified candidate archives
+        env:
+          RELEASE_REQUEST: ${{ inputs.request }}
+        run: pnpm exec dev npm candidate --request="$RELEASE_REQUEST" --output="$RUNNER_TEMP/npm-candidate"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: npm-candidate
+          path: ${{ runner.temp }}/npm-candidate/
+          if-no-files-found: error
+          retention-days: 14
+
+  stage:
+    needs: candidate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: npm-staging
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: https://registry.npmjs.org
+      - run: npm install --global npm@11.19.1
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - uses: actions/download-artifact@v4
+        with:
+          name: npm-candidate
+          path: ${{ runner.temp }}/npm-candidate
+      - name: Stage exact archives for npm maintainer approval
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_READ_TOKEN }}
+          NPM_CONFIG_PROVENANCE: 'false'
+        run: pnpm exec dev npm stage --manifest="$RUNNER_TEMP/npm-candidate/manifest.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: npm-staging-results
+          path: ${{ runner.temp }}/npm-candidate/staging-results.json
+          if-no-files-found: warn

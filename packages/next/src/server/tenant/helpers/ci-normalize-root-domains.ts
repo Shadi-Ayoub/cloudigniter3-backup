@@ -12,7 +12,8 @@ export function ciNormalizeRootDomains(domains: string[]): string[] {
   return domains
     .map((domain) => {
       try {
-        return ciStripPort(new URL(domain).host);
+        // A bare host:port is otherwise parsed as a URL scheme with no host.
+        return ciStripPort(new URL(domain.includes("://") ? domain : `http://${domain}`).host);
       } catch {
         return ciStripPort(
           domain.replace(/^https?:\/\//, "").replace(/\/$/, ""),

@@ -1,0 +1,39 @@
+.feedback {
+  border-top: 1px solid var(--ifm-color-emphasis-300);
+  margin-block: 2rem 1rem;
+  padding-block-start: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.feedback h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+.actions {
+  display: flex;
+  gap: 0.75rem;
+}
+.actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: var(--ifm-global-radius);
+  background: var(--ifm-background-color);
+  color: var(--ifm-font-color-base);
+  font: inherit;
+  cursor: pointer;
+}
+.actions button:hover {
+  background: var(--ci-doc-brand-soft);
+  border-color: var(--ifm-color-primary);
+}
+.actions button:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 3px;
+}

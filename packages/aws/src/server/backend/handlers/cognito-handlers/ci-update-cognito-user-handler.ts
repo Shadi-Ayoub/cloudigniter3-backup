@@ -1,3 +1,4 @@
+import { ciCheckReadOnlyAccess } from "../../access-control/ci-check-read-only-access";
 import { ciCreateLambdaHandler, ciUpdateCognitoUser } from "@ci-aws/lib";
 import type { CiUpdateCognitoUserInterface } from "@ci-aws/types";
 
@@ -36,6 +37,12 @@ export const ciUpdateCognitoUserHandler = ciProtectCognitoUserMutationHandler(
       if (!decision.allowed) {
         return ciValidationError(decision.reason, decision.statusCode);
       }
+      await ciCheckReadOnlyAccess(event, [
+        { resource: "identity.users", action: "update" },
+        ...(input.groups
+          ? [{ resource: "identity.users", action: "assign-role" }]
+          : []),
+      ]);
     },
     run: ({ input, env, region }) =>
       ciUpdateCognitoUser({

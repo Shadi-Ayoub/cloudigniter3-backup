@@ -221,6 +221,37 @@ Prefer literal privileges for `delete`, `approve`, `refund`, security configurat
 A broad wildcard may cover a sensitive action added in a future release.
 :::
 
+## Forced read-only audit access
+
+An audit permission can retain viewing access while vetoing writes granted elsewhere:
+
+```ts
+const auditInvoices = {
+  id: "audit-invoices",
+  title: "Audit invoices",
+  effect: "allow",
+  resource: "billing.invoices",
+  action: "read",
+  scopeKinds: ["tenant"],
+  readOnly: true,
+} as const satisfies CiPrivilege;
+```
+
+Use the same privilege inside a role or a direct scoped user grant. The veto applies to all write actions on
+matching resources within the active assignment's scope, including actions allowed by stronger roles. Reads
+still require a matching allow. A restriction on one resource or tenant does not restrict unrelated resources
+or tenants. No catalog migration is required: an omitted flag behaves as `false`.
+
+The action catalog can specify `accessMode: "read" | "write"`. Without it, `read`, `get`, `list`, `view`, and
+`search` are reads; other verbs are writes. For example, register a non-mutating custom preview as
+`{ id: "preview", title: "Preview invoice", accessMode: "read" }`. Leave approval, export jobs, email,
+impersonation, and other side effects classified as writes. Never infer this from `sensitive` or the HTTP verb.
+
+In the template, edit the permission at **Dashboard → Security → Permissions** and enable **Force read-only**.
+The setting survives catalog persistence, role copies, and inherited roles. A separate authorized administrator
+can remove the restriction; a restricted security administrator cannot use a write grant to remove it themselves.
+Protected core overrides must continue to preserve the built-in recovery capability.
+
 ## Dot-delimited permission helpers
 
 The core package includes helpers for dot-delimited permission strings:

@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
-import test from "node:test";
+import test, { mock } from "node:test";
+import { DynamoDBDocumentClient, GetCommand } from "@aws-sdk/lib-dynamodb";
 
 import {
+  CI_DEFAULT_ACCESS_CONTROL_DEFINITION,
   CI_ROOT_USER_IDENTITY_GROUP,
   CI_SYSTEM_SUPER_ADMIN_MANAGER_ROLE,
 } from "@cloudigniter/core/lib";
@@ -30,7 +32,7 @@ function resolverEvent(
 ): CiAppSyncResolverEvent {
   return {
     arguments: { inputString: JSON.stringify(input) },
-    identity: { claims: { "cognito:groups": groups } },
+    identity: { claims: { sub: "actor", "cognito:groups": groups } },
   } as unknown as CiAppSyncResolverEvent;
 }
 
@@ -40,9 +42,12 @@ async function invokeWithAccessTable(
   const key = "CI_EMBERGUARD_ACCESS_TABLE";
   const previous = process.env[key];
   process.env[key] = "EmberguardAccess";
+  const read = mock.method(DynamoDBDocumentClient.prototype, "send", async (command: unknown) =>
+    command instanceof GetCommand ? { Item: { state: { definition: CI_DEFAULT_ACCESS_CONTROL_DEFINITION } } } : { Items: [] });
   try {
     return await invoke();
   } finally {
+    read.mock.restore();
     if (previous === undefined) delete process.env[key];
     else process.env[key] = previous;
   }

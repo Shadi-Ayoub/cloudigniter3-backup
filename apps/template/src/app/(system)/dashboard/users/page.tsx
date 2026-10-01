@@ -1,3 +1,4 @@
+import { forbidden } from "next/navigation";
 import { appUserForms } from "@/custom/user";
 import {
   ciCreateAuthorizer,
@@ -41,16 +42,21 @@ export default async function UsersPage() {
   );
   const authorizer = ciCreateAuthorizer(definition);
   const can = (action: string) => {
-    return [ciSystemAccessScope(), ciGlobalAccessScope()].some((scope) =>
-      authorizer.can({
-        subject,
-        resource: "identity.users",
-        action,
-        scope,
-      }),
+    const decisions = [ciSystemAccessScope(), ciGlobalAccessScope()].map(
+      (scope) =>
+        authorizer.authorize({
+          subject,
+          resource: "identity.users",
+          action,
+          scope,
+        }),
+    );
+    return (
+      !decisions.some((decision) => decision.reason === "read-only") &&
+      decisions.some((decision) => decision.allowed)
     );
   };
-  if (!can("read")) throw new Error("You cannot view User administration.");
+  if (!can("read")) forbidden();
   const users = (await appListUserRecords(assignments)).filter(
     (user) =>
       !user.isRootUser &&

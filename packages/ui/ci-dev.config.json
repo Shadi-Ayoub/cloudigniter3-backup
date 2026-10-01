@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "typecheck": [
+    "source",
+    "tools"
+  ],
+  "test": {
+    "files": [
+      "__tests__/*.test.ts",
+      "__tests__/security/*.test.ts"
+    ],
+    "typescript": true
+  },
+  "check": [
+    "typecheck",
+    "typecheck-tools"
+  ]
+}

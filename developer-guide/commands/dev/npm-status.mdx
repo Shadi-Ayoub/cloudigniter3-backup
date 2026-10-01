@@ -1,0 +1,49 @@
+---
+title: "dev npm status"
+description: "Read the GitHub status of a release request."
+sidebar_label: "dev npm status"
+sidebar_custom_props:
+  audience: developer
+---
+
+Read the GitHub status of a release request.
+
+## Syntax
+
+```text
+dev npm status <pull-request-number> [--package=<name>] [--profile=<name>] [--json]
+```
+
+## Prerequisites
+
+Run in the private workspace with installed dependencies and configured release policy. Online operations need GitHub CLI authentication for the selected `--profile` (or `CLOUDIGNITER_PROFILE`).
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `<pull-request-number>` | Release request PR number. |
+| `--package=<name>` | Source package owning the PR under paired topology; selects its repository. |
+| `--profile=<name>` | GitHub profile. |
+| `--json` | Print structured status. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Reports request state and URL. A merged source PR does not establish final npm publication; publication remains unverified.
+
+## Examples
+
+```bash
+pnpm exec dev npm status 123 --package=@cloudigniter/core --profile=developer --json
+```
+
+## Errors and recovery
+
+An inaccessible or invalid request fails. Planning flags such as --changed, --summary, and --dry-run are refused.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/release-requests)

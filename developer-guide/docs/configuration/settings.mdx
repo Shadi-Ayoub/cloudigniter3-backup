@@ -1,34 +1,137 @@
 ---
 title: Settings and runtime values
-description: Define application settings and connect validated values to the features that use them.
+description: Manage public, private, and personal settings, extend their forms, and load only the groups each route needs.
 sidebar_position: 4
 ---
 
 # Settings and runtime values
 
-Configuration selects application behavior; settings hold values used by the running application. Public,
-private, and user settings have different audiences. Private settings must remain in trusted server operations.
+Settings are validated runtime values stored separately from application configuration. CloudIgniter provides three categories:
 
-## How settings are resolved
+| Category | Read access | Management access | Location |
+| --- | --- | --- | --- |
+| Public | Everyone, including anonymous visitors | `platform.settings` read/update for the selected scope, or System administration | Dashboard → Settings → Public settings |
+| Private | Authenticated users | `platform.settings` read/update for the selected scope, or System administration | Dashboard → Settings → Private settings |
+| Personal (`user` in code) | Signed-in owner | Signed-in owner only | User menu → My Preferences |
 
-The application template’s `appBootstrap()` calls `appGetSettings()` in the kernel server settings module. The
-supplied resolver returns static values. It does not automatically load a custom registry or persist
-application-specific settings.
+Public and Private settings have separate **System**, **GLOBAL**, and **Tenant** values. System is the primary
+source. Each GLOBAL or Tenant group receives an independent copy of the saved System values the first time that
+group is used. This happens once, including when there are no saved System values and registered defaults apply.
+Later System edits leave existing copies unchanged unless enforcement applies or an administrator overwrites them.
+New tenants and unused groups copy the System values available at their first use.
 
-Use `src/custom/settings` to define application-owned types, validation schemas, defaults, and registry entries.
-Registering a setting describes its contract; loading and saving its value requires an explicit connection to
-the consuming feature and its persistence service.
+Both default `system-admin` and `system-super-admin` roles can administer all settings scopes. Additional roles can
+receive read/update permissions at GLOBAL or a specific Tenant. Explicit target denies and forced read-only
+restrictions still apply to System administrators. Private settings remain authenticated application configuration;
+use a secrets service for credentials, tokens, and API keys.
 
-## Add a settings feature
+## Manage settings
 
-1. Define which values are public, private, or scoped to a user or Tenant.
-2. Put application definitions and validation under `src/custom/settings`.
-3. Connect the consuming feature to an application settings service that loads, validates, and saves its values.
-4. Enforce scope and permissions on writes and sanitize data before it crosses into browser code.
-5. Verify loading, saving, invalid input, denied access, and fallback defaults.
+The Settings landing page uses the Dashboard overview layout with Public and Private cards and registered group
+counts. Use the **Dashboard** breadcrumb menu to move between dashboard sections, or the **Settings** breadcrumb
+menu to switch categories. Dashboard's menu also exposes nested destinations: hover **Security**, then click
+**Roles** to open Roles directly. Clicking the **Security** label still opens its overview. On touch screens,
+tap the arrow beside a parent to reveal its children. Leaf items navigate on click and have no submenu.
+Category pages use the same management header as Security, with a category icon,
+group count, and **Can edit** or **View only** indicator.
 
-Keep application-specific settings logic in custom areas and use supported provider APIs for persistence. A
-feature that needs persisted settings must load them through its settings service rather than assuming the
-shared bootstrap has populated them. See [Application structure](/docs/architecture/application-structure).
+Use **Settings scope** on either category page to switch between **System — Primary settings**, **GLOBAL**, and
+a tenant. **Load more tenants** retrieves additional choices. Switching scope with unsaved changes asks before
+discarding values or rule edits. Suspended, deleted, and missing tenants cannot be managed.
 
-Next: [How configuration is resolved](/docs/configuration/resolution).
+Each category page has a group selector beside the form on wide screens and above it on smaller screens. Users
+with update permission start with editable fields and a visible **Save** button. Users with read-only access
+see the values without editing controls. Choose **JSON view** to inspect the selected group's current draft;
+the form actions remain visible. Switch between sections freely while editing; one draft retains all changes. The single **Save**
+button validates every section, including inactive sections, and saves the whole form together. Invalid fields
+reveal their section. A validation or concurrency failure leaves every section unsaved and retains the draft.
+After a successful save, the form remains editable. **Cancel** discards edits across all sections and returns to
+view mode; **Edit settings** starts editing again.
+
+**My Preferences** has the same form and JSON controls. Its user-menu link starts the page loader. **Close** sits
+beside **Save** and returns to the page that opened preferences, preserving its query string; a direct visit
+returns to Dashboard. Closing with unsaved changes asks whether to discard the draft. Neither the page nor its backend
+accepts another user's ID. An administrator cannot use this endpoint to edit someone else's preferences.
+
+Deploy the template's updated Amplify backend before saving settings. The backend adds three storage tables and
+guarded `GetSettings` / `SetSettings` operations, including the whole-form save handler. Before those operations appear in the generated outputs, pages
+show registered defaults. Authorized users can edit drafts, but **Save** is disabled with an explanation until
+storage is deployed. Drafts are not persisted or queued for later saving. Provider errors after
+provisioning are reported rather than replaced with defaults. Missing records in a provisioned table use defaults
+without creating rows on every read.
+Deploy an updated handler when upgrading from single-section saves: the frontend does not fall back to separate
+writes. The AWS provider supports up to 100 groups in a System or Personal form and 50 in a GLOBAL or Tenant form.
+
+## Enforce System values or overwrite tenant copies
+
+On **System — Primary settings**, expand **Enforcement and tenant overwrites**. Choose the current group and
+individual fields or all fields, or choose all registered groups in the category. Then choose specific tenants
+and/or GLOBAL, or all tenants including GLOBAL.
+
+**Add enforcement rule** stages a rule in the form. The same **Save** button saves values and rule changes across
+all sections together. Matching fields follow the latest saved System values and are read-only in tenant forms.
+All-tenant rules also cover future tenants. All-groups applies to groups currently registered in this category;
+add rules for groups introduced later. Removing a rule and saving restores each affected tenant's previous local
+values. Saving unrelated tenant fields never overwrites those preserved values. Overlapping rules are additive:
+a field stays enforced until every matching rule is removed. Field selections are top-level values; selecting an
+object field enforces the complete object. Select all fields when a schema requires dependent fields to change together.
+
+**Overwrite from saved System settings…** copies values once. Save or cancel outstanding drafts first, review the
+confirmation, then apply it. This replaces selected local values, preserves other fields, and leaves them editable
+unless an enforcement rule also applies. All-target overwrites enumerate every discovery page before starting.
+Each target is atomic; the operation reports completed targets and individual failures because an overwrite across
+many tenants is not one transaction. Keep the page open until completion. Reload and review failures before retrying.
+Tenant discovery is eventually consistent, so a tenant created concurrently might require a later overwrite.
+
+The separate System actions `enforce` and `overwrite` on the `platform.settings` resource control these operations. Ordinary update permission does not grant
+them. The default technical administrator roles include them; a role's explicit deny or read-only restriction wins.
+For an existing persisted access-control catalog, a privileged core-policy administrator must add the two actions
+and GLOBAL/Tenant scopes through the audited core override workflow before enabling tenant settings. Deployment
+does not silently replace saved authorization policy.
+
+## Extend a category
+
+Add your own groups through `appSettingsExtensions` in `src/custom/settings/ci-settings-registry.ts`. The
+[Extending settings](/docs/extending-application/settings) lesson explains how to define defaults, validation, and
+management fields, and how to keep the application and backend registry aligned. Core group IDs remain reserved.
+
+## Load only what a route needs
+
+A route's `settings` array selects registered group IDs; the loader adds groups marked `alwaysLoad: true`.
+Anonymous requests cannot load Private or Personal groups. The request context resolves Public/Private groups
+for the selected System, GLOBAL, or Tenant scope, while Personal values remain account-wide.
+
+Follow [Load the group for a feature](/docs/extending-application/settings#load-the-group-for-a-feature) for route
+registration and reading the resulting snapshot. Settings management pages load their category explicitly and
+do not depend on a feature route's selection.
+
+## Browser preference precedence
+
+For core preferences the order is an existing cookie, a non-empty Personal preference, then the Public default.
+An empty Personal field means “Application default.” The registered defaults apply when no persisted value is
+available. The core cookies are `ci-locale`, `ci-theme`, `ci-time-format`, and `ci-time-zone`. Saving a default
+does not overwrite a visitor's existing cookies. The theme switcher persists its explicit choice in `ci-theme`.
+Enforcement governs saved settings values; explicit browser preference cookies retain this precedence.
+The language, time zone, and theme providers consume resolved preferences; time format is available
+in the settings snapshot for application formatters.
+
+A custom group's optional `cookies` map associates field names with cookie names for request resolution.
+Cookies affect the request snapshot, not the saved values or management form. Cookie values are browser input,
+so do not use them as authorization evidence.
+
+See the [Settings API](/docs/api-reference/shared-apis/settings) and
+[contributor architecture](/company-developers/architecture/settings). Next: [Configuration resolution](/docs/configuration/resolution).
+
+
+## When Settings cannot be opened
+
+**403 — Access not allowed** means the current account is not permitted to manage these settings. The shared
+illustrated error page offers **Return to home**. Ask a system administrator for access; Retry cannot grant a
+missing permission. See [page access errors](/docs/building-features/api-and-feedback#page-access-403-and-404).
+A verified expired-session response instead offers **Sign in again** inside the Settings page.
+
+**Settings temporarily unavailable** means the app could not verify access, for example because the service failed
+or returned an incompatible response. Use **Retry**; if the problem continues, contact your administrator. This
+message does not mean your role lacks permission. Administrators should check the deployed Settings operations
+and access catalog. The page never grants access or shows editable settings when verification fails. Scope changes
+and Save failures keep the existing form and its draft visible.

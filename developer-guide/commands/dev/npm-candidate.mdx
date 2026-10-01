@@ -1,0 +1,49 @@
+---
+title: "dev npm candidate"
+description: "Build and pack approved, committed versions into a candidate directory."
+sidebar_label: "dev npm candidate"
+sidebar_custom_props:
+  audience: developer
+---
+
+Build and pack approved, committed versions into a candidate directory.
+
+## Syntax
+
+```text
+dev npm candidate --request=<release-id> --output=<new-directory>
+```
+
+## Prerequisites
+
+Run in the private workspace with installed dependencies and configured release policy. Online operations need GitHub CLI authentication for the selected `--profile` (or `CLOUDIGNITER_PROFILE`).
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--request=<release-id>` | Recorded 24-character release request ID. |
+| `--output=<new-directory>` | Required new candidate directory. |
+| `--profile=<name>` | Profile used to verify approval. |
+| `--json` | Print structured output. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Requires a clean configured base branch and exact approved source. Builds, checks, and packs packages; records archive hashes in manifest.json. Use a disposable checkout because package builds change local artifacts.
+
+## Examples
+
+```bash
+pnpm exec dev npm candidate --request=RELEASE_ID --output=../npm-candidate --profile=developer
+```
+
+## Errors and recovery
+
+Dirty checkouts, uncommitted reviewed versions, source mismatches, existing outputs, or failed package gates stop candidate creation.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/release-requests)

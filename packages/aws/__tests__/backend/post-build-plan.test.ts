@@ -33,6 +33,9 @@ const TEST_IAM_MODULE = {
 function createRuntime(): CiCoreRuntime {
   return {
     resources: {
+      publicSettingsTable: { name: "publicSettings", arn: "arn:public-settings" },
+privateSettingsTable: { name: "privateSettings", arn: "arn:private-settings" },
+userSettingsTable: { name: "userSettings", arn: "arn:user-settings" },
       userProfileTable: {
         name: USER_PROFILE_TABLE_NAME,
         arn: USER_PROFILE_TABLE_ARN,
@@ -388,4 +391,13 @@ test("strict apply rejects a missing table ARN before mutation", () => {
       }),
     /missing ARN.*userProfileTable/i,
   );
+});
+
+
+test("wires the access table into every system mutation that checks read-only policy", () => {
+  const plan = createPlan();
+  for (const handler of ["ciCreateOrgUnitHandler", "ciUpdateOrgUnitHandler", "ciSeedTenantsHandler", "ciCleanupSeededTenantsHandler", "ciDeleteTenantHandler", "ciPurgeTenantHandler", "ciRestoreTenantHandler", "ciSetTenantStatusHandler"] as const) {
+    assert.equal(plan.env[handler]?.[CI_ENV.CI_EMBERGUARD_ACCESS_TABLE_NAME], plan.env.ciSetEmberguardDefinitionHandler?.[CI_ENV.CI_EMBERGUARD_ACCESS_TABLE_NAME]);
+    assert.ok(plan.env[handler]?.[CI_ENV.CI_EMBERGUARD_ACCESS_TABLE_NAME]);
+  }
 });

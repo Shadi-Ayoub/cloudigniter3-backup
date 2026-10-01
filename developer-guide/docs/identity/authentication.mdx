@@ -163,6 +163,30 @@ Keep session resolution in the configured server integration when changing these
 form layout, or hidden button does not prove that a request is authenticated or authorized. The server must
 still resolve the caller and enforce the requested permission before returning protected data or changing it.
 
+### Diagnose an empty login form or an unavailable session check
+
+The browser's Authenticator and the server's route check must agree about your
+[session](/dictionary/s#session). Authenticator hides its form when it recognizes a signed-in user.
+The [proxy](/dictionary/p#proxy) checks `POST /ci-internal/auth/session` before allowing protected pages
+or redirecting an authenticated login visit to its internal `next` destination.
+
+A `401` response sends a protected request to login. An unreachable endpoint, unexpected HTTP status,
+or invalid response instead produces a non-cacheable `503` response at the requested URL. Reload after
+the service recovers; a service failure does not establish that you signed out.
+
+If login shows its surrounding content without a form, check the session endpoint and the application
+server logs. Without cookies, this diagnostic should return `401` and JSON with `authenticated: false`:
+
+```bash
+curl -i -X POST http://localhost:3000/ci-internal/auth/session
+```
+
+An HTML not-found page or a missing request-context error from that URL indicates a routing problem.
+The endpoint bypasses page bootstrap and does not need a page context. During local development, if
+the route file exists but Next.js no longer discovers it, restart `pnpm dev` and repeat the check.
+Then reload the original protected URL in your signed-in browser. Restarting the development server
+does not clear the browser's session.
+
 ## Protect a route and its operations
 
 Start with [Routes configuration](/docs/configuration/routes) in **Configure your application**. It explains

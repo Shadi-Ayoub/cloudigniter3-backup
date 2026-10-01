@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "typecheck": [
+    "source",
+    "tools"
+  ],
+  "test": {
+    "files": [
+      "__tests__/auth/access-control.test.ts",
+      "__tests__/dev/*.test.ts",
+      "__tests__/icon/ci-resolve-icon.test.ts",
+      "__tests__/resource/*.test.ts",
+      "__tests__/route/ci-merge-route-maps.test.ts",
+      "__tests__/route/tenant-route-scope.test.ts",
+      "__tests__/table/ci-table-key.test.ts",
+      "__tests__/smart-form/*.test.ts",
+      "__tests__/settings/*.test.ts",
+      "__tests__/module/*.test.ts"
+    ],
+    "typescript": true
+  },
+  "beforeBuild": "scripts/generate-smart-forms.ts",
+  "check": [
+    "typecheck",
+    "typecheck-tools"
+  ]
+}

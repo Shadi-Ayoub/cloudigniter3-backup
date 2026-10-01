@@ -1,0 +1,48 @@
+---
+title: "ci amplify bootstrap access-control"
+description: "Create or verify the application\u2019s default access-control definition."
+sidebar_label: "ci amplify bootstrap access-control"
+sidebar_custom_props:
+  audience: public
+---
+
+Create or verify the application’s default access-control definition.
+
+## Syntax
+
+```text
+ci amplify bootstrap access-control [--profile=<name>] [--app-root=<path>] [--no-interactive]
+```
+
+## Prerequisites
+
+Run in an Amplify application with installed `@cloudigniter/cli` and `@cloudigniter/aws`, deployed backend outputs, access-control configuration, and valid AWS credentials.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--app-root=<path>` | Application root; defaults to the current directory. |
+| `--workspace-root=<path>` | Override workspace discovery and package resolution. |
+| `--profile=<name>` | AWS profile. If omitted, uses the default credential chain; an interactive terminal may ask for a profile. |
+
+See the [ci common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Loads the installed AWS backend integration and creates or verifies the access-control definition in the configured table. Success reports whether the definition was created or verified. This command can write persisted AWS data.
+
+## Examples
+
+```bash
+pnpm exec ci amplify bootstrap access-control --profile=developer1 --no-interactive
+```
+
+## Errors and recovery
+
+Missing backend outputs, an unavailable provider entry point, invalid configuration, or denied AWS permissions stops the bootstrap. Check the selected account and application root before retrying.
+
+## Related documentation
+
+- [ci Commands A–Z](./index.mdx)
+- [Workflow guide](/docs/cli/overview)

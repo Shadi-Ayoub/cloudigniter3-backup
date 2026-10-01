@@ -1,0 +1,45 @@
+---
+title: "dev package build-types"
+description: "Bundle TypeScript declarations using Rollup."
+sidebar_label: "dev package build-types"
+sidebar_custom_props:
+  audience: developer
+---
+
+Bundle TypeScript declarations using Rollup.
+
+## Syntax
+
+```text
+dev package build-types
+```
+
+## Prerequisites
+
+Run from the owning `packages/<name>` directory in the private CloudIgniter workspace after installing its dependencies. `--workspace-root` selects discovery and does not change the current package.
+
+## Parameters
+
+This command has no command-specific options.
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Requires `rollup.config.js` and invokes the declaration bundler with a 12 GiB Node heap limit. It writes declaration artifacts and expects the package’s required inputs to exist.
+
+## Examples
+
+```bash
+cd packages/next
+pnpm exec dev package build-types
+```
+
+## Errors and recovery
+
+A missing required configuration or tool fails the command. A failed subprocess stops the workflow and returns a nonzero status. Inspect the first reported failure before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/package-workflows)

@@ -1,0 +1,46 @@
+---
+title: "dev modules sync"
+description: "Synchronize dependencies declared by core module manifests."
+sidebar_label: "dev modules sync"
+sidebar_custom_props:
+  audience: developer
+---
+
+Synchronize dependencies declared by core module manifests.
+
+## Syntax
+
+```text
+dev modules sync [--check]
+```
+
+## Prerequisites
+
+Run in the private CloudIgniter workspace with installed dependencies.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--check` | Read-only comparison; fail if synchronization would be needed. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Updates missing or changed dependencies in `packages/next/package.json`, sorts dependency sections, and runs a filtered pnpm install. With --check it writes nothing and does not install.
+
+## Examples
+
+```bash
+pnpm exec dev modules sync --check --workspace-root=.
+```
+
+## Errors and recovery
+
+A missing required configuration or tool fails the command. A failed subprocess stops the workflow and returns a nonzero status. Inspect the first reported failure before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/cli-architecture)

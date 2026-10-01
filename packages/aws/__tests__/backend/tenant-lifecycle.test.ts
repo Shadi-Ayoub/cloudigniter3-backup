@@ -124,6 +124,9 @@ test("uses bounded query access for Trash and separates soft delete from purge I
       auth: { enabled: true },
       emberguardAccessTable: { name: "Access", arn: "arn:access" },
       systemTable: { name: "System", arn: "arn:system" },
+      publicSettingsTable: { name: "publicSettings", arn: "arn:public-settings" },
+privateSettingsTable: { name: "privateSettings", arn: "arn:private-settings" },
+userSettingsTable: { name: "userSettings", arn: "arn:user-settings" },
       userProfileTable: { name: "Profiles", arn: "arn:profiles" },
     },
     region: "me-central-1",
@@ -134,7 +137,7 @@ test("uses bounded query access for Trash and separates soft delete from purge I
   const listActions = policies
     .filter((policy) => policy.for === "ciListTenantsHandler")
     .flatMap((policy) =>
-      policy.statements.flatMap((statement) => statement.actions),
+      policy.statements.filter((statement) => statement.resources.includes("arn:system")).flatMap((statement) => statement.actions),
     );
   assert.deepEqual(listActions, ["dynamodb:Query"]);
   assert.ok(!listActions.includes("dynamodb:Scan"));
@@ -142,12 +145,12 @@ test("uses bounded query access for Trash and separates soft delete from purge I
   const deleteActions = policies
     .filter((policy) => policy.for === "ciDeleteTenantHandler")
     .flatMap((policy) =>
-      policy.statements.flatMap((statement) => statement.actions),
+      policy.statements.filter((statement) => statement.resources.includes("arn:system")).flatMap((statement) => statement.actions),
     );
   const purgeActions = policies
     .filter((policy) => policy.for === "ciPurgeTenantHandler")
     .flatMap((policy) =>
-      policy.statements.flatMap((statement) => statement.actions),
+      policy.statements.filter((statement) => statement.resources.includes("arn:system")).flatMap((statement) => statement.actions),
     );
   assert.ok(deleteActions.includes("dynamodb:UpdateItem"));
   assert.ok(!deleteActions.includes("dynamodb:DeleteItem"));
@@ -156,7 +159,7 @@ test("uses bounded query access for Trash and separates soft delete from purge I
   const setStatusActions = policies
     .filter((policy) => policy.for === "ciSetTenantStatusHandler")
     .flatMap((policy) =>
-      policy.statements.flatMap((statement) => statement.actions),
+      policy.statements.filter((statement) => statement.resources.includes("arn:system")).flatMap((statement) => statement.actions),
     );
   assert.deepEqual(setStatusActions, [
     "dynamodb:GetItem",
@@ -166,12 +169,12 @@ test("uses bounded query access for Trash and separates soft delete from purge I
   const seedActions = policies
     .filter((policy) => policy.for === "ciSeedTenantsHandler")
     .flatMap((policy) =>
-      policy.statements.flatMap((statement) => statement.actions),
+      policy.statements.filter((statement) => statement.resources.includes("arn:system")).flatMap((statement) => statement.actions),
     );
   const cleanupActions = policies
     .filter((policy) => policy.for === "ciCleanupSeededTenantsHandler")
     .flatMap((policy) =>
-      policy.statements.flatMap((statement) => statement.actions),
+      policy.statements.filter((statement) => statement.resources.includes("arn:system")).flatMap((statement) => statement.actions),
     );
   assert.deepEqual(seedActions, [
     "dynamodb:ConditionCheckItem",
@@ -188,4 +191,11 @@ test("uses bounded query access for Trash and separates soft delete from purge I
     "dynamodb:UpdateItem",
   ]);
   assert.ok(!cleanupActions.includes("dynamodb:Scan"));
+  for (const handler of ["ciSeedTenantsHandler", "ciCleanupSeededTenantsHandler", "ciDeleteTenantHandler", "ciPurgeTenantHandler", "ciRestoreTenantHandler", "ciSetTenantStatusHandler"]) {
+    const policyReads = (fragment.inlinePolicies ?? []).filter((policy) => policy.for === handler)
+      .flatMap((policy) => policy.statements.filter((statement) => statement.resources.includes("arn:access")));
+    assert.deepEqual(policyReads.flatMap((statement) => statement.actions), ["dynamodb:GetItem", "dynamodb:Query"]);
+    assert.equal(policyReads.every((statement) => statement.resources.length === 1), true);
+  }
+
 });

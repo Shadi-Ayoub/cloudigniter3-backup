@@ -76,8 +76,18 @@ export const CI_DEFAULT_ACCESS_CONTROL_DEFINITION =
               title: "Update platform settings",
               sensitive: true,
             },
+            {
+              id: "enforce",
+              title: "Enforce System settings on tenants",
+              sensitive: true,
+            },
+            {
+              id: "overwrite",
+              title: "Overwrite tenant settings from System",
+              sensitive: true,
+            },
           ],
-          scopeKinds: ["system"],
+          scopeKinds: ["system", "global", "tenant"],
         },
         {
           id: "platform.tenants",
@@ -136,7 +146,11 @@ export const CI_DEFAULT_ACCESS_CONTROL_DEFINITION =
           domainId: "developer",
           title: "Developer tools",
           actions: [
-            { id: "access", title: "Access developer tools" },
+            {
+              id: "access",
+              title: "Access developer tools",
+              accessMode: "read",
+            },
             {
               id: "execute",
               title: "Execute developer tools",
@@ -278,7 +292,7 @@ export const CI_DEFAULT_ACCESS_CONTROL_DEFINITION =
               effect: "allow",
               resource: "platform.settings",
               action: "*",
-              scopeKinds: ["system"],
+              scopeKinds: ["system", "global", "tenant"],
             },
             {
               id: "manage-tenants",

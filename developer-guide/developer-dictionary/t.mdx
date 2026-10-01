@@ -1,0 +1,21 @@
+---
+title: "T · Developer Dictionary"
+sidebar_label: "T"
+description: Internal CloudIgniter developer terms beginning with T.
+sidebar_position: 20
+custom_edit_url: null
+customProps:
+  audience: developer
+---
+
+## Template Core {#template-core}
+
+CloudIgniter-owned entry points and default composition inside the reference application. Application developers extend the explicit custom seams; reusable platform behavior belongs in packages. Template-core bridges combine core and custom registrations and reject ownership collisions. See [core and custom ownership](/company-developers/architecture/core-custom-ownership).
+
+## tsup {#tsup}
+
+A build tool used by CloudIgniter package configurations to produce distributable package output. Shared CloudIgniter configuration helpers are exposed by `@cloudigniter/dev/tooling/tsup` for build-time use. Package-specific entry points, assets, and validation remain the owning package’s responsibility. See [package workflows](/company-developers/tooling/package-workflows).
+
+## Turborepo {#turborepo}
+
+The workspace task runner invoked by the root `turbo run` scripts for tasks such as builds, typechecks, tests, and development. It coordinates package tasks; the package scripts and DEV recipes still define what each task does.

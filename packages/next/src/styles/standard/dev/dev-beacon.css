@@ -32,20 +32,17 @@
   }
 
   .ci-dev-beacon-button {
-    @apply bg-muted-100 text-muted-900
-           border border-border
-           shadow-lg;
+    @apply border border-info-border bg-info-surface text-info-surface-foreground shadow-lg;
   }
 
-  .dark .ci-dev-beacon-button {
-    @apply bg-muted-800 text-muted-100
-           border-muted-700;
+  .ci-dev-beacon-button:hover {
+    @apply border-info;
   }
 
   .ci-log-component,
   .ci-log-func,
   .ci-log-component-value {
-    color: #0047fb; /* orange */
+    color: var(--color-primary);
     font-weight: 700;
   }
 }

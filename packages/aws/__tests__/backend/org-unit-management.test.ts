@@ -280,6 +280,9 @@ test("registers bounded Org Unit handlers and least-privilege access", () => {
       auth: { enabled: true },
       emberguardAccessTable: { name: "Access", arn: "arn:access" },
       systemTable: { name: "System", arn: "arn:system" },
+      publicSettingsTable: { name: "publicSettings", arn: "arn:public-settings" },
+privateSettingsTable: { name: "privateSettings", arn: "arn:private-settings" },
+userSettingsTable: { name: "userSettings", arn: "arn:user-settings" },
       userProfileTable: { name: "Profiles", arn: "arn:profiles" },
     },
     region: "me-central-1",
@@ -290,7 +293,7 @@ test("registers bounded Org Unit handlers and least-privilege access", () => {
     (fragment.inlinePolicies ?? [])
       .filter((policy) => policy.for === handler)
       .flatMap((policy) =>
-        policy.statements.flatMap((statement) => statement.actions),
+        policy.statements.filter((statement) => statement.resources.includes("arn:system")).flatMap((statement) => statement.actions),
       );
   assert.deepEqual(actionsFor("ciGetOrgUnitByPathHandler"), [
     "dynamodb:GetItem",
@@ -314,4 +317,11 @@ test("registers bounded Org Unit handlers and least-privilege access", () => {
     "dynamodb:TransactWriteItems",
     "dynamodb:UpdateItem",
   ]);
+  for (const handler of ["ciCreateOrgUnitHandler", "ciUpdateOrgUnitHandler"]) {
+    const policyReads = (fragment.inlinePolicies ?? []).filter((policy) => policy.for === handler)
+      .flatMap((policy) => policy.statements.filter((statement) => statement.resources.includes("arn:access")));
+    assert.deepEqual(policyReads.flatMap((statement) => statement.actions), ["dynamodb:GetItem", "dynamodb:Query"]);
+    assert.equal(policyReads.every((statement) => statement.resources.length === 1), true);
+  }
+
 });

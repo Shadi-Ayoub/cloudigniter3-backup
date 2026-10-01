@@ -25,7 +25,6 @@ export const CiHeader = ({ config, children }: HeaderInterface) => {
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
   return (
-    // <header dir='ltr' className='ci-main-header'>
-    <header dir="ltr">{children}</header>
+    <header dir="ltr" className="bg-surface text-surface-foreground">{children}</header>
   );
 };

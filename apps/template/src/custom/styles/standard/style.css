@@ -1,4 +1,4 @@
-@custom-variant dark (&:where(.dark, .dark *));
+/* The standard CloudIgniter stylesheet owns the shared dark variant. */
 
 @layer base {
 }

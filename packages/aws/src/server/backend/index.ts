@@ -168,3 +168,10 @@ export type {
   CiBackendModuleStatus,
   CiCompiledBackendManifest,
 } from "./resources";
+export { ciCreateAwsSettingsHandlers } from "./handlers/settings-handlers/ci-settings-handlers";
+export { ciCreateAwsExtensionHandlers } from "./modules/ci-aws-extension-handlers";
+export { ciCreateAwsExtensionStore } from "./modules/ci-aws-extension-store";
+export { ciCreateAwsExtensionProvider } from "./modules/ci-aws-extension-provider";
+export { ciCreateAwsTodoModule } from "./modules/ci-aws-todo-module";
+export { ciAwsExtensionPolicies } from "./modules/ci-aws-extension-policies";
+export { ciAwsExtensionWriteGuard } from "./modules/ci-aws-extension-write-guard";

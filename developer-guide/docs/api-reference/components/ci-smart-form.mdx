@@ -27,6 +27,7 @@ are runtime-neutral Core types; callback and React renderer contracts belong to 
 | `callbacks` | Keyed functions receiving `CiSmartFormActionContext<T>`, returning void or a promise |
 | `onSubmit` | `(values: T, context) => void \| Promise<void>` fallback for create/update/save |
 | `onValuesChange` | Called with all values after a field edit |
+| `onValidationErrors` | `(errors: Readonly<Record<string, string>>) => void`; called on action validation failure before deferred focus, so a containing selector can reveal invalid fields |
 | `onError` | Receives normalized `CiErrorPayload` for an action exception |
 | `renderers` | Keyed `ComponentType<CiSmartFormFieldRenderProps<T>>` components |
 | `validators` | Keyed `(value: unknown, values: T) => string \| undefined \| Promise<string \| undefined>` |

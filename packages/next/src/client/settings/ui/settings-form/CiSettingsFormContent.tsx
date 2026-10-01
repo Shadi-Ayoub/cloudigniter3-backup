@@ -71,7 +71,7 @@ export function CiSettingsFormContent({
   return (
     <div className="ci-settings-form-container">
       {loading && (
-        <div className="dark:bg-muted-900/20 absolute inset-0 z-[100] flex items-center justify-center bg-white/20 backdrop-blur-sm">
+        <div className="absolute inset-0 z-[100] flex items-center justify-center bg-background/60 backdrop-blur-sm">
           <CiSpinner />
         </div>
       )}
@@ -93,7 +93,7 @@ export function CiSettingsFormContent({
       >
         <div className="ci-settings-form-main">
           {/* Tabs sidebar */}
-          <aside className="w-1/5 border-0 border-gray-200 ltr:border-r ltr:pr-4 rtl:border-l rtl:pl-4">
+          <aside className="w-1/5 border-0 border-border ltr:border-r ltr:pr-4 rtl:border-l rtl:pl-4">
             <TabList
               aria-label={t("form.tabs.ariaLabel")}
               className="space-y-2"
@@ -102,10 +102,10 @@ export function CiSettingsFormContent({
                 <HeadlessTab
                   key={tab.id}
                   className={({ selected }) =>
-                    `flex w-full items-center justify-between rounded-md px-4 py-2 transition-colors duration-200 focus:ring-2 focus:ring-blue-500 focus:outline-none ${
+                    `flex w-full items-center justify-between rounded-md px-4 py-2 transition-colors duration-200 focus:ring-2 focus:ring-ring focus:outline-none ${
                       selected
-                        ? "bg-blue-100 font-semibold text-blue-800"
-                        : "hover:bg-gray-50"
+                        ? "bg-accent font-semibold text-accent-foreground"
+                        : "hover:bg-muted hover:text-foreground"
                     } rtl:flex-row-reverse`
                   }
                 >
@@ -114,7 +114,7 @@ export function CiSettingsFormContent({
                   </span>
                   {hasErrorInSection(tab.id) && (
                     <span
-                      className="text-sm text-red-500"
+                      className="text-sm text-danger"
                       title={t("form.errors.containsErrors")}
                     >
                       ⚠️
@@ -150,7 +150,7 @@ export function CiSettingsFormContent({
       </TabGroup>
       {/* Error Summary */}
       {formErrors.length > 0 && (
-        <div className="sticky top-4 mb-6 rounded-md border border-red-300 bg-red-50 p-4 text-red-700 shadow-md rtl:text-right">
+        <div className="sticky top-4 mb-6 rounded-md border border-danger-border bg-danger-surface p-4 text-danger-surface-foreground shadow-md rtl:text-right">
           <p className="mb-2 font-semibold">{t("form.errors.heading")}</p>
           <ul className="list-inside list-disc space-y-1 text-sm">
             {formErrors.map((err, idx) => (
@@ -158,7 +158,7 @@ export function CiSettingsFormContent({
                 <button
                   type="button"
                   onClick={() => setActiveTabId(err.section)}
-                  className="underline hover:text-red-900"
+                  className="underline hover:text-danger-surface-foreground"
                 >
                   {err.label}: {err.message}
                 </button>

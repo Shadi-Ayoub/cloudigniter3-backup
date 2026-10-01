@@ -1,6 +1,21 @@
 import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
 import structure from "./user-guide-structure.json";
 
+type GuideItem = string | {
+  label: string;
+  overview: string;
+  items: GuideItem[];
+};
+
+function guideItems(items: GuideItem[]): SidebarsConfig[string] {
+  return items.map((item) => typeof item === "string" ? item : {
+    type: "category" as const,
+    label: item.label,
+    link: { type: "doc" as const, id: item.overview },
+    items: guideItems(item.items),
+  });
+}
+
 // Keep the application learning path independent of the API Reference tree.
 // The manifest assigns each Users page to one current chapter or archive group.
 const sidebars: SidebarsConfig = {
@@ -9,7 +24,7 @@ const sidebars: SidebarsConfig = {
       type: "category" as const,
       label: chapter.label,
       link: { type: "doc" as const, id: chapter.overview },
-      items: chapter.items,
+      items: guideItems(chapter.items),
     })),
     {
       type: "category",

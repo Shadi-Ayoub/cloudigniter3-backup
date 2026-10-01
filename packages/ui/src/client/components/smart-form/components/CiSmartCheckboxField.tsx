@@ -63,7 +63,7 @@ export const CiSmartCheckboxField = ({
             <TooltipTrigger asChild>
               <span tabIndex={0}>
                 <Icon
-                  className="h-4 w-4 text-red-500"
+                  className="h-4 w-4 text-danger"
                   aria-label="Field error"
                 />
               </span>
@@ -80,7 +80,7 @@ export const CiSmartCheckboxField = ({
       {hasError && (
         <p
           id={`${name}-error`}
-          className="mt-1 text-sm text-red-500"
+          className="mt-1 text-sm text-danger"
           role="alert"
         >
           {meta.error}

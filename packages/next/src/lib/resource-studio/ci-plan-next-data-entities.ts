@@ -35,7 +35,7 @@ type CiFrontendEntity = {
   modelName: string;
   scope: "global" | "tenant";
   description: string;
-  managementPage: { path: string; title: string };
+  managementPage: { path: string; title: string; settings?: readonly string[] };
   listQueryField: string;
   fields: CiFrontendField[];
 };
@@ -63,6 +63,7 @@ function assertEntity(entity: CiFrontendEntity): void {
       `Invalid static management route "${entity.managementPage.path}".`,
     );
   }
+  if (entity.managementPage.settings !== undefined && (!Array.isArray(entity.managementPage.settings) || entity.managementPage.settings.some(id => typeof id !== "string" || !/^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)*$/.test(id)))) throw new Error("Invalid route settings selection.");
   if (entity.scope !== "global" && entity.scope !== "tenant") {
     throw new Error(`Unsupported management-page scope "${entity.scope}".`);
   }
@@ -297,7 +298,7 @@ function renderRoutes(entities: readonly CiFrontendEntity[]): string {
   const entries = entities
     .map(
       (entity) =>
-        `  ${JSON.stringify(entity.managementPage.path)}: {\n    title: ${JSON.stringify(entity.managementPage.title)},\n    namespace: "dashboard",\n    protected: true,\n    tenantScopes: [${JSON.stringify(entity.scope)}],\n  },`,
+        `  ${JSON.stringify(entity.managementPage.path)}: {\n    title: ${JSON.stringify(entity.managementPage.title)},\n    namespace: "dashboard",\n    protected: true,\n    tenantScopes: [${JSON.stringify(entity.scope)}],\n${entity.managementPage.settings === undefined ? "" : `    settings: ${JSON.stringify(entity.managementPage.settings)},\n`}  },`,
     )
     .join("\n");
   const routeMap = entries ? `{\n${entries}\n}` : "{}";

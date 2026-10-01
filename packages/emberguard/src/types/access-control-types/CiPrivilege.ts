@@ -17,5 +17,11 @@ export type CiPrivilege = {
   resource: string;
   action: string;
   scopeKinds: readonly CiAccessScopeKind[];
+  /**
+   * Forces read-only access on matching resources and scopes, regardless of
+   * other grants or precedence. The write restriction ignores this statement's
+   * action pattern; read access still requires a matching allow statement.
+   */
+  readOnly?: boolean;
   description?: string;
 };

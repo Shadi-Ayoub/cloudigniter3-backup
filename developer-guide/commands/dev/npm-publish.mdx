@@ -1,0 +1,55 @@
+---
+title: "dev npm publish"
+description: "Submit a GitHub release review request for versioned source."
+sidebar_label: "dev npm publish"
+sidebar_custom_props:
+  audience: developer
+---
+
+Submit a GitHub release review request for versioned source.
+
+## Syntax
+
+```text
+dev npm publish [<intent>] [--package=<name> | --changed] [--dry-run] [options]
+```
+
+## Prerequisites
+
+Run in the private workspace with installed dependencies and configured release policy. Online operations need GitHub CLI authentication for the selected `--profile` (or `CLOUDIGNITER_PROFILE`).
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `<intent>` | fix/patch, feature/minor, breaking, major, or initial. breaking uses minor before 1.0 and major afterward; initial proposes 0.1.0 only below that version. |
+| `--package=<name>` | Full package name; repeat for multiple packages. |
+| `--changed` | Plan pending Changesets; omit intent, package selection, and preid. |
+| `--summary=<text>` | Changelog description; required when submitting new intent. |
+| `--preid=<id>` | Enter an alpha, beta, or rc prerelease cycle. |
+| `--tag=<tag>` | Allowed npm channel; defaults to latest or the active prerelease identifier. |
+| `--access=<access>` | Assert public, private, or restricted; cannot override policy. |
+| `--json` | Print structured output. |
+| `--dry-run` | Calculate the offline plan without submitting requests. |
+| `--profile=<name>` | GitHub profile for request submission. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Requires a clean configured base branch, an authorized requester, and independent reviewers. Under paired topology it creates private source PRs with versioned source, changelogs, and release metadata. It does not publish to npm or update local package versions.
+
+## Examples
+
+```bash
+pnpm exec dev npm publish fix --package=@cloudigniter/core --summary="Correct request handling" --dry-run
+```
+
+## Errors and recovery
+
+Uncommitted changes, the wrong branch/account, missing reviewers, or modified existing request branches block submission. Inspect a partially completed request batch before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/release-requests)

@@ -1,0 +1,33 @@
+---
+title: Release artifacts
+description: Validate the exact distribution archive and preserve the evidence required for release approval.
+sidebar_position: 6
+---
+
+A release candidate binds tested package source to an exact distribution archive.
+Run the package's [testing and quality gates](./testing-and-release.mdx) before
+collecting artifact evidence. Next supplies the first enforced package-specific
+release-validation hook.
+
+## Validate the package contract
+
+Next's [release check](/commands/dev/package-release-check) creates a real tarball under `packages/next/coverage/release`, verifies its exports and packaged files, and writes `package-check.json` plus `publish-request.md`. The request is generated only after all checks succeed. The command restores the original package manifest, TypeScript aliases and template CSS source entries when it finishes or fails, so reviewing a release does not leave source development pointed at distribution output.
+
+The artifact validator rejects missing runtime/declaration/CSS export targets, source-mode exports, unexpected source/test/credential/intermediate files, source maps, AppleDouble companions and unresolved workspace dependency ranges. It checks the client directives in both client entry points, static relative imports, public self-imports, and declared runtime dependencies. Production builds emit the root and module-tooling entry points and rewrite workspace aliases in unbundled server components to supported package imports. This is package-contract validation; it does not replace a consuming application's build for public API changes.
+
+## Review the candidate
+
+A maintainer reviews:
+
+1. The successful CI run and committed candidate SHA. A local dirty-tree run is diagnostic evidence, not the committed release candidate.
+2. The Changeset, intended version, dependency releases and compatibility/migration notes.
+3. Test results, the complete coverage report and remaining legacy debt.
+4. The exact tarball and SHA-256 in the publish request.
+
+Publication is a separate maintainer action for the approved artifact. Re-run validation and obtain a new decision after any change. The workflow does not publish automatically. Once approved, the release operator publishes the exact verified tarball with the appropriate registry credentials, rather than rebuilding it after review.
+
+Directory publishing runs Next's `prepublishOnly` quality and distribution checks; a source-mode package is refused. Never bypass lifecycle scripts to avoid failures. The workspace-wide `pnpm release` command submits `dev npm publish --changed`; it does not publish to npm.
+
+Follow [Release requests](./release-requests.mdx) to connect source review, candidate
+creation and build-repository review. [Publication setup](/company-developers/tooling/github-npm-publishing)
+covers repository permissions, staging and final approval.

@@ -69,15 +69,19 @@ async function requireUserAction(action: UserAction) {
     assignments,
   );
   const authorizer = ciCreateAuthorizer(definition);
-  const policyAllowed = [ciSystemAccessScope(), ciGlobalAccessScope()].some(
+  const decisions = [ciSystemAccessScope(), ciGlobalAccessScope()].map(
     (scope) =>
-      authorizer.can({
+      authorizer.authorize({
         subject,
         resource: "identity.users",
         action,
         scope,
       }),
   );
+  if (decisions.some((decision) => decision.reason === "read-only")) {
+    throw new Error(`Read-only access blocks ${action} users.`);
+  }
+  const policyAllowed = decisions.some((decision) => decision.allowed);
   const delegatedAction = [
     "assign-role",
     "delete",

@@ -23,7 +23,7 @@ Use these terms consistently:
 | Data Store      | The persistence resource behind a Data Entity.                                                                |
 | Management Page | The generated administration page for a Data Entity.                                                          |
 
-Expose Resource Studio to application developers through `ci resources studio`. Do not add a `ci-dev` generator: CloudIgniter maintainers implement platform-owned entities natively in the package that owns them.
+Expose Resource Studio to application developers through `ci resources studio`. Do not add a `dev` generator: CloudIgniter maintainers implement platform-owned entities natively in the package that owns them.
 
 ## 2. Load the adjacent contracts
 

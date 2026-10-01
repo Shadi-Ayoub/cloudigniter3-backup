@@ -16,3 +16,4 @@ export type { CiResolvedModulePackageDependency } from "./CiResolvedModulePackag
 export type { CiResolveModuleGraphOptions } from "./CiResolveModuleGraphOptions";
 export type { CiServerModuleContext } from "./CiServerModuleContext";
 export type { CiServerModuleDefinition } from "./CiServerModuleDefinition";
+export type { CiExtensionConfiguration, CiExtensionSetting, CiExtensionManifest, CiExtensionStatus, CiExtensionInfrastructure, CiExtensionInstallation, CiExtensionSnapshot, CiExtensionCatalogEntry, CiExtensionCommand, CiExtensionStore, CiExtensionInfrastructureState, CiExtensionProvider, CiExtensionManagerOptions, CiExtensionCatalog, CiExtensionManager, CiTodoItem, CiTodoPage, CiTodoCommand } from "./CiExtension";

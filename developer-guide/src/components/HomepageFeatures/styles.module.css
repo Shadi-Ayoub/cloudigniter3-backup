@@ -1,11 +1,59 @@
-.features {
+.guides {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.guide {
+  display: flex;
+  flex-direction: column;
+  padding: 1.75rem;
+  color: var(--ifm-font-color-base);
+  background: var(--ci-doc-surface);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 10px;
+  transition: border-color 150ms, background-color 150ms;
+}
+.guide:hover {
+  color: var(--ifm-font-color-base);
+  border-color: var(--ifm-color-primary);
+  background: var(--ci-doc-brand-soft);
+  text-decoration: none;
+}
+.icon {
+  color: var(--ifm-color-primary);
+  margin-bottom: 1.5rem;
+}
+.audience {
+  margin: 0 0 0.5rem;
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.guide h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+}
+.description {
+  flex: 1;
+  margin: 0 0 1.5rem;
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.875rem;
+  line-height: 1.75;
+}
+.link {
   display: flex;
   align-items: center;
-  padding: 2rem 0;
-  width: 100%;
+  gap: 0.5rem;
+  color: var(--ifm-color-primary);
+  font-size: 0.8125rem;
+  font-weight: 600;
 }
-
-.featureSvg {
-  height: 200px;
-  width: 200px;
+@media (max-width: 768px) {
+  .guides {
+    grid-template-columns: 1fr;
+  }
+  .guide {
+    padding: 1.5rem;
+  }
 }

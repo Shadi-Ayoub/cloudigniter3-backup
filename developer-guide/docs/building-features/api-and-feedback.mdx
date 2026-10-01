@@ -52,11 +52,103 @@ fails; refresh or update it only after an authoritative success.
 Use [confirmation dialogs](/docs/ui-components/confirmation-dialogs) before destructive actions. Confirmation,
 in-progress state, and result feedback serve different purposes. None substitutes for server authorization.
 
-## Handle rendering failures separately
+## Page access: 403 and 404
 
-An expected validation or permission failure belongs in the operation's result path. An unexpected page-rendering
-failure belongs in the application's error boundary. Keep diagnostic details available to authorized developers
-while presenting an actionable message to the user.
+CloudIgniter uses matching illustrated error pages for missing pages and denied access. **404 — Page not found**
+uses the broken stone cloud. **403 — Access not allowed** uses an intact locked cloud and an active flame.
+**403 — Access suspended** retains the cracked locked cloud and extinguished flame, but only when trusted evidence
+confirms that an administrator's suspension blocks an otherwise valid grant. All variants offer **Return to home**.
+The text is available in English and Arabic and follows your common locale overrides.
+
+A suspended role, resource, or domain alone does not establish that a visitor ever had access. The suspension
+variant requires retained grants that would allow the same operation and scope if suspension were lifted. Expired,
+future, missing, out-of-scope, and explicitly denied grants remain ordinary denial. This comparison changes no policy
+and never authorizes the request.
+
+Call `forbidden()` from `next/navigation` when a server-side permission check denies access to an existing page.
+Call `notFound()` for a page or resource that does not exist. Check permission before loading protected content:
+
+```tsx
+import { forbidden } from "next/navigation";
+
+// In your Server Component, after resolving authoritative identity and permissions:
+if (!capabilities.canRead) forbidden();
+// Load and render the protected feature only after the check succeeds.
+```
+
+The template enables `experimental.authInterrupts` in `next.config.ts` and provides `src/app/forbidden.tsx`,
+parallel to `src/app/not-found.tsx`. Next.js still labels this API experimental; see its
+[forbidden reference](https://nextjs.org/docs/app/api-reference/functions/forbidden).
+Do not put the interrupt inside a catch that converts it to an ordinary error, or inside the root layout.
+It stops rendering through the framework's HTTP error boundary. A response already streaming cannot change its
+HTTP headers; the denied page still renders and protected content must never be returned.
+
+Dashboard page guards for Modules, Security, Users, Administrators, Tenants, Org Units, Trash, and Settings use
+this boundary when they confirm denial. Missing or disabled module pages retain 404. A signed-out visitor to a
+protected route is redirected to sign in. Route `access` metadata alone is not an authorization check: your custom
+pages and server operations must enforce their declared resource/action through the server authorizer.
+
+### Try the access-denied page
+
+With `CI_ENV_MODE=development`, open **`http://localhost:3000/error-preview/access-denied`**. This public development
+preview deliberately invokes the same 403 boundary, including for administrators. It does not change roles or data.
+It returns 404 outside development. Open **`http://localhost:3000/error-preview/access-suspended`** to preview the
+retained illustration and suspension message. This second development-only preview simulates confirmed suspension;
+it does not suspend an account. Replace the host and port if your development server uses different values.
+
+If development shows **Failed to execute 'measure' on 'Performance'** with a negative timestamp instead of the
+preview, React's development profiler has failed while processing the error boundary. This is separate from the
+permission decision. See the [runtime compatibility note](/docs/api-reference/components/error-pages#development-timing-compatibility)
+for the affected Next.js version and dependency patch. Restart the development server after applying dependency
+changes, then reload the preview.
+
+To exercise a real permission check, sign in with a test account that has no `developer` role and visit
+`/dashboard/modules`. It shows **Access not allowed**. In development, an authenticated account with the exact
+`developer` role can open the Modules manager. Compare with `/dashboard/extensions`, which has no page and shows
+404 after authentication.
+
+### Customize the error pages
+
+Edit `src/custom/errors/AppHttpErrorPage.tsx` to select your artwork. Its server resolver,
+`src/custom/errors/app-is-page-access-suspended.ts`, matches the actual Security, Users, Administrators, and user
+restoration guards in Trash. Other pages retain ordinary denial unless their own authoritative checks establish
+suspension. In particular, a plain 403 from Settings or a module is insufficient evidence. Extend this resolver
+alongside a custom page's guard, using the same subject, grants, scopes, catalog, and combining algorithm.
+Never select the suspension variant from an untrusted query parameter or by searching an error message. Override `httpErrors` in
+`src/custom/locales/en/common.json` or `src/custom/locales/ar/common.json`; the package defaults are merged first.
+For example:
+
+```json
+{
+  "httpErrors": {
+    "403": {
+      "title": "Access not allowed",
+      "message": "Contact your application administrator to request access."
+    },
+    "suspended": {
+      "title": "Access suspended",
+      "message": "Contact your administrator to request restoration of your access."
+    },
+    "homeLabel": "Return to home"
+  }
+}
+```
+
+The error composition loads only common messages using the configured locale cookie and default locale. It does
+not bootstrap the failed feature or require its route messages. The [error-page API](/docs/api-reference/components/error-pages)
+describes `CiNextHttpErrorPage` and the reusable `CiErrorPage` presentation.
+
+## Handle operation and service failures separately
+
+A validation or permission failure during an operation belongs in its result/feedback path, preserving form drafts.
+An unexpected rendering failure belongs in the application error boundary. Never present a provider outage as a
+confirmed permission denial or expose a raw provider response, stack trace, or credential.
+
+Use `CiErrorPage` from `@cloudigniter/ui/client` within `CiPage` for retryable service-verification failures.
+Its optional `actions` slot accepts recovery navigation such as `CiNextNavigateWithLoader`; `showRetry` enables
+Retry for recoverable failures. Settings pages map a confirmed 403 result to `forbidden()`, retain sign-in recovery
+for 401, and show Retry for a verification failure. Server Actions retain their result-based feedback behavior.
+See the [Settings adapter](/docs/api-reference/shared-apis/settings#expected-access-failures).
 
 Continue with [Data and providers](/docs/data/overview), or use the
 [development diagnostics](/docs/environment-modes/development-tools-and-seeding) to troubleshoot an integration.

@@ -1,0 +1,29 @@
+---
+title: CloudIgniter CLI for Users
+description: The public application CLI and its place in the CloudIgniter development workflow.
+sidebar_position: 1
+slug: /tooling/ci
+sidebar_label: CloudIgniter CLI
+---
+
+**CloudIgniter Users** use `ci`, supplied by the public `@cloudigniter/cli` package,
+to work on CloudIgniter applications. Here, a User is an application developer or
+operator using the platform, rather than a maintainer of its packages.
+
+The CLI operates against the target application and its installed CloudIgniter
+packages. It supports resource generation, application module validation and
+Amplify bootstrap/deployment workflows. Consumer applications can use this public
+package without installing the restricted company toolkit.
+
+## Choose the next reference
+
+| Task | Reference |
+| --- | --- |
+| Set up and use the application CLI | [User guide](/docs/cli/overview) |
+| Find syntax, options, examples or recovery steps | [ci Commands](/commands/ci) |
+| Extend parsing, workers or provider integration | [CLI architecture](./architecture.mdx) |
+| Understand local generation and verified deployment | [Resource Studio lifecycle](./resource-studio.mdx) |
+
+Company package builds, tests and release workflows belong to the
+[CloudIgniter Developer Toolkit](../dev/index.mdx). The public CLI keeps its
+application contract independent of that private package.

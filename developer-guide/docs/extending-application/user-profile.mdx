@@ -1,0 +1,69 @@
+---
+title: Extending user profiles
+description: Add application-specific profile fields through the extensions object and the template's user-form customization.
+sidebar_position: 5
+---
+
+# Extending user profiles
+
+Store application-specific user information in `CIUserProfile.extensions`. CloudIgniter's fixed profile already
+provides names, contact information, locale, time zone, and other shared fields. The `extensions` JSON object is
+the supported place for additional application data; see the
+[user contracts](/docs/api-reference/type-definitions/ci-user-types).
+
+## Start with the template's example fields
+
+The template includes **Department** and **Job title** in `src/custom/user/smart-form.ts`. Three exports work together:
+
+| Export | Responsibility |
+| --- | --- |
+| `appUserFormSpecifications` | Declares the application form fields. |
+| `appUserFormTemplate` | Places those fields in groups and rows. |
+| `appUserExtensionFields` | Identifies the fields to read from and write to `profile.extensions`. |
+
+For example, the two fields are persisted as an object:
+
+```json
+{
+  "department": "Engineering",
+  "jobTitle": "Support engineer"
+}
+```
+
+They extend the profile used by both **Dashboard → Users** and **Dashboard → Administrators**. They are not new
+Cognito attributes or separate columns in the fixed User Profile model.
+
+## Add another field
+
+To add an Office field, update the same file while preserving the included examples:
+
+1. Append `{ name: "office", group: "extensions", label: "Office" }` to the specification's `fields` array.
+2. Add a row such as `{ id: "office", fields: ["office"], columns: 1 }` to the `extensions` group's `rows`.
+3. Add `"office"` to `appUserExtensionFields` so the field participates in persistence as well as presentation.
+4. Regenerate the forms:
+
+   ```bash
+   pnpm forms:generate
+   ```
+
+`pnpm dev` and `pnpm build` also generate the forms. The existing `src/custom/user/index.ts` connects the generated
+create/edit forms and extension-field list to both management pages. Edit the custom specification and template;
+leave `src/custom/forms/smart-forms.generated.ts` to the generator.
+
+With an account allowed to update a user, open the editor, set Office, save, and reopen it. Confirm the value is
+restored and that the user's existing profile fields remain intact. Adding a key inside the existing `extensions`
+object does not require adding a new User Profile column.
+
+## Validate and consume profile extensions
+
+Core contracts require an object but do not validate your application-specific keys or values. Apply your domain
+validation in the server-side adapter that accepts the profile update; form validation alone is not authoritative.
+Use only the extension data your feature needs, and keep credentials and authorization grants out of the profile.
+
+Management summaries omit the full profile. Load the full user projection before reading
+`user.profile?.extensions?.office`; then validate or narrow that unknown value before displaying it. Read/write
+access continues to use the existing user-management permissions. See
+[User administration](/docs/users-management/intro) and [Smart Forms](/docs/ui-components/smart-form) for the editing
+workflow and customization contracts.
+
+Continue with [Modules](./modules) to manage or create features with a separate installation lifecycle.

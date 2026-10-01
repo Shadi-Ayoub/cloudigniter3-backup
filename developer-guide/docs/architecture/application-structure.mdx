@@ -49,3 +49,7 @@ application. Use public package entry points and import public types through `/t
 
 See [Core and custom ownership](/company-developers/architecture/core-custom-ownership) for the maintainer
 contract. Next: [How a request becomes a page](/docs/architecture/request-lifecycle).
+
+## Optional module folders
+
+`src/custom/modules/<id>` contains trusted optional module source. The build generates separate client, manifest, and AWS registries in its `.generated` folder. The core Dashboard hosts registered pages at `/dashboard/extensions/<id>`; module business logic stays in the custom folder or reusable packages. See [adding and managing modules](/docs/building-features/modules).

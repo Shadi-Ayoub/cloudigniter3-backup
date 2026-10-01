@@ -1,3 +1,4 @@
+import { ciCheckReadOnlyAccess } from "../../access-control/ci-check-read-only-access";
 import { randomUUID } from "node:crypto";
 import { ciCreateLambdaHandler } from "@ci-aws/lib";
 import {
@@ -141,8 +142,17 @@ export const ciSeedTenantsHandler = ciCreateLambdaHandler<
       now: new Date().toISOString(),
     };
   },
-  run: ({ input, env, clientConfig }) =>
-    ciSeedTenants({ tableName: env.CI_SYSTEM_TABLE, clientConfig, input }),
+  run: async ({ input, env, clientConfig, event }) => {
+    await ciCheckReadOnlyAccess(event, [
+      { resource: "platform.tenants", action: "create" },
+      { resource: "developer.tools", action: "execute" },
+    ]);
+    return ciSeedTenants({
+      tableName: env.CI_SYSTEM_TABLE,
+      clientConfig,
+      input,
+    });
+  },
 });
 
 export const ciCleanupSeededTenantsHandler = ciCreateLambdaHandler<
@@ -153,12 +163,17 @@ export const ciCleanupSeededTenantsHandler = ciCreateLambdaHandler<
   ciEnvVars: TENANT_ENV,
   validate: ({ event, env }) =>
     assertDeveloperInDevelopment(event, env.CI_ENV_MODE),
-  run: ({ input, env, clientConfig }) =>
-    ciCleanupSeededTenants({
+  run: async ({ input, env, clientConfig, event }) => {
+    await ciCheckReadOnlyAccess(event, [
+      { resource: "platform.tenants", action: "delete" },
+      { resource: "developer.tools", action: "execute" },
+    ]);
+    return ciCleanupSeededTenants({
       tableName: env.CI_SYSTEM_TABLE,
       clientConfig,
       input,
-    }),
+    });
+  },
 });
 
 export const ciDeleteTenantHandler = ciCreateLambdaHandler<
@@ -172,8 +187,16 @@ export const ciDeleteTenantHandler = ciCreateLambdaHandler<
     ...input,
     ...lifecycleContext(event),
   }),
-  run: ({ input, env, clientConfig }) =>
-    ciDeleteTenant({ tableName: env.CI_SYSTEM_TABLE, clientConfig, input }),
+  run: async ({ input, env, clientConfig, event }) => {
+    await ciCheckReadOnlyAccess(event, [
+      { resource: "platform.tenants", action: "delete" },
+    ]);
+    return ciDeleteTenant({
+      tableName: env.CI_SYSTEM_TABLE,
+      clientConfig,
+      input,
+    });
+  },
 });
 
 export const ciRestoreTenantHandler = ciCreateLambdaHandler<
@@ -187,8 +210,16 @@ export const ciRestoreTenantHandler = ciCreateLambdaHandler<
     ...input,
     ...lifecycleContext(event),
   }),
-  run: ({ input, env, clientConfig }) =>
-    ciRestoreTenant({ tableName: env.CI_SYSTEM_TABLE, clientConfig, input }),
+  run: async ({ input, env, clientConfig, event }) => {
+    await ciCheckReadOnlyAccess(event, [
+      { resource: "platform.tenants", action: "restore" },
+    ]);
+    return ciRestoreTenant({
+      tableName: env.CI_SYSTEM_TABLE,
+      clientConfig,
+      input,
+    });
+  },
 });
 
 export const ciPurgeTenantHandler = ciCreateLambdaHandler<
@@ -202,8 +233,16 @@ export const ciPurgeTenantHandler = ciCreateLambdaHandler<
     ...input,
     ...lifecycleContext(event),
   }),
-  run: ({ input, env, clientConfig }) =>
-    ciPurgeTenant({ tableName: env.CI_SYSTEM_TABLE, clientConfig, input }),
+  run: async ({ input, env, clientConfig, event }) => {
+    await ciCheckReadOnlyAccess(event, [
+      { resource: "platform.tenants", action: "purge" },
+    ]);
+    return ciPurgeTenant({
+      tableName: env.CI_SYSTEM_TABLE,
+      clientConfig,
+      input,
+    });
+  },
 });
 
 export const ciSetTenantStatusHandler = ciCreateLambdaHandler<
@@ -221,10 +260,14 @@ export const ciSetTenantStatusHandler = ciCreateLambdaHandler<
       now: context.now,
     };
   },
-  run: ({ input, env, clientConfig }) =>
-    ciSetTenantStatus({
+  run: async ({ input, env, clientConfig, event }) => {
+    await ciCheckReadOnlyAccess(event, [
+      { resource: "platform.tenants", action: "update" },
+    ]);
+    return ciSetTenantStatus({
       tableName: env.CI_SYSTEM_TABLE,
       clientConfig,
       input,
-    }),
+    });
+  },
 });

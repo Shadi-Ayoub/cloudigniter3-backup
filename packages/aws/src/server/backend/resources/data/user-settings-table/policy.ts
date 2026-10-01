@@ -6,47 +6,30 @@ export function ciMakeUserSettingsTablePolicies(
   options: CiPlanOptions,
 ): CiPolicyFragment {
   if (!options.includeDefaultDynamoPolicies) return {};
-
   return {
     inlinePolicies: [
       {
         for: "ciGetSettingsHandler",
-        id: "UserSettingsDdbReadWrite",
+        id: "UserSettingsRead",
         statements: [
           {
             effect: "Allow",
-            actions: [
-              "dynamodb:GetItem",
-              "dynamodb:PutItem",
-              "dynamodb:UpdateItem",
-            ],
+            actions: ["dynamodb:GetItem"],
             resources: [tables.userSettings.arn],
           },
         ],
       },
       {
         for: "ciSetSettingsHandler",
-        id: "UserSettingsDdbReadWrite",
+        id: "UserSettingsWrite",
         statements: [
           {
             effect: "Allow",
-            actions: [
-              "dynamodb:GetItem",
-              "dynamodb:PutItem",
-              "dynamodb:UpdateItem",
-            ],
+            actions: ["dynamodb:GetItem", "dynamodb:PutItem"],
             resources: [tables.userSettings.arn],
           },
         ],
       },
-    ],
-    tableGrants: [
-      // { for: 'ciGetSettingsHandler', table: 'userSettingsTable', actions: ['Query', 'BatchWriteItem'] },
-      // {
-      //   for: 'ciSetSettingsHandler',
-      //   table: 'userSettingsTable',
-      //   actions: ['PutItem', 'DeleteItem', 'TransactWriteItems'],
-      // },
     ],
   };
 }

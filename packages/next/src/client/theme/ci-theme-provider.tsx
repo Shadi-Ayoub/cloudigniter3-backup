@@ -1,9 +1,38 @@
 "use client";
 
-import { ThemeProvider } from "next-themes";
+import { useEffect } from "react";
+import { ThemeProvider, useTheme } from "next-themes";
 
 import { ciResolveNextThemeProviderProps } from "@ci-next/lib";
 import type { CiThemeProviderProps } from "@ci-next/types";
+
+function CiThemePreferenceGuard({
+  enableSystem,
+  defaultTheme,
+  settingsPreference,
+}: {
+  enableSystem?: boolean;
+  defaultTheme?: string;
+  settingsPreference?: string;
+}) {
+  const { theme, themes, setTheme, forcedTheme } = useTheme();
+
+  useEffect(() => {
+    if (!settingsPreference || forcedTheme) return;
+    const cookie = document.cookie.split("; ").find(item => item.startsWith("ci-theme="));
+    const preferred = cookie ? decodeURIComponent(cookie.slice("ci-theme=".length)) : settingsPreference;
+    if (themes.includes(preferred) && theme !== preferred) setTheme(preferred);
+  }, [settingsPreference, theme, themes, forcedTheme, setTheme]);
+
+  useEffect(() => {
+    // A saved system preference can outlive an application's configuration.
+    if (enableSystem === false && theme === "system") {
+      setTheme(defaultTheme ?? "light");
+    }
+  }, [enableSystem, defaultTheme, theme, setTheme]);
+
+  return null;
+}
 /**
  * CloudIgniter Next.js theme provider.
  *
@@ -27,6 +56,11 @@ export function CiThemeProvider<TTheme extends string = string>({
 
   return (
     <ThemeProvider {...ciThemeProviderProps} scriptProps={scriptProps}>
+      <CiThemePreferenceGuard
+        enableSystem={ciThemeProviderProps.enableSystem}
+        defaultTheme={ciThemeProviderProps.defaultTheme}
+        settingsPreference={config?.settingsPreference}
+      />
       {children}
     </ThemeProvider>
   );

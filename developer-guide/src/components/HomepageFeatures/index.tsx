@@ -1,71 +1,62 @@
-import clsx from 'clsx';
-import Heading from '@theme/Heading';
-import type {ComponentProps, ComponentType, ReactElement, ReactNode} from 'react';
-import styles from './styles.module.css';
+import Link from "@docusaurus/Link";
+import Heading from "@theme/Heading";
+import { ArrowRight, BookOpen, Code2, Layers, Terminal } from "lucide-react";
+import type { ReactElement } from "react";
+import styles from "./styles.module.css";
 
-type FeatureItem = {
-  title: string;
-  Svg: ComponentType<ComponentProps<'svg'>>;
-  description: ReactNode;
-};
-
-const FeatureList: FeatureItem[] = [
+const guides = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
-    description: (
-      <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
-      </>
-    ),
+    title: "User guide",
+    audience: "Build an application",
+    description:
+      "Set up your application, learn the core concepts, and build your first feature with CloudIgniter.",
+    to: "/docs/intro",
+    icon: BookOpen,
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
-    description: (
-      <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
-      </>
-    ),
+    title: "Developer guide",
+    audience: "Understand the platform",
+    description:
+      "Explore package architecture, ownership boundaries, and workflows for extending CloudIgniter itself.",
+    to: "/company-developers/architecture/core-custom-ownership",
+    icon: Layers,
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
-    description: (
-      <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
-      </>
-    ),
+    title: "API Reference",
+    audience: "Find the details",
+    description:
+      "Look up public APIs, components, configuration contracts, and examples as you work.",
+    to: "/docs/api-reference/overview",
+    icon: Code2,
+  },
+  {
+    title: "CloudIgniter Commands",
+    audience: "Work from the terminal",
+    description: "Browse ci and dev commands with syntax, parameters, examples, and operational guidance.",
+    to: "/commands",
+    icon: Terminal,
   },
 ];
 
-function Feature({title, Svg, description}: FeatureItem) {
-  return (
-    <div className={clsx('col col--4')}>
-      <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
-      </div>
-      <div className="text--center padding-horiz--md">
-        <Heading as="h3">{title}</Heading>
-        <p>{description}</p>
-      </div>
-    </div>
-  );
-}
-
 export default function HomepageFeatures(): ReactElement {
   return (
-    <section className={styles.features}>
-      <div className="container">
-        <div className="row">
-          {FeatureList.map((props, idx) => (
-            <Feature key={idx} {...props} />
-          ))}
-        </div>
-      </div>
+    <section className={styles.guides} aria-label="Explore the documentation">
+      {guides.map(({ title, audience, description, to, icon: Icon }) => (
+        <Link className={styles.guide} to={to} key={to}>
+          <Icon
+            size={22}
+            strokeWidth={1.6}
+            className={styles.icon}
+            aria-hidden="true"
+          />
+          <p className={styles.audience}>{audience}</p>
+          <Heading as="h2">{title}</Heading>
+          <p className={styles.description}>{description}</p>
+          <span className={styles.link}>
+            Explore <ArrowRight size={16} aria-hidden="true" />
+          </span>
+        </Link>
+      ))}
     </section>
   );
 }

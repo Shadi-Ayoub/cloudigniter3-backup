@@ -7,6 +7,9 @@ export {
   type CiNextDashboardOverviewProps,
 } from "./dashboard";
 
+export { CiNextHttpErrorPage } from "./page/CiNextHttpErrorPage";
+export { CiNextAccessDeniedPreview } from "./page/CiNextAccessDeniedPreview";
+
 // ─────────────────────────────────────────────────────────────
 // dev
 // ─────────────────────────────────────────────────────────────

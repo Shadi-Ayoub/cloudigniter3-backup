@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2022",
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "bin/**/*.mjs",
+    "src/*.mjs",
+    "src/*.d.mts",
+    "src/ci/**/*.mjs",
+    "src/tooling/**/*.ts",
+    "src/tooling/**/*.d.mts",
+    "src/types/**/*.d.mts"
+  ]
+}

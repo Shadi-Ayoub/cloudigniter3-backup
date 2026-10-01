@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo } from "react";
 import { Toaster, type ToasterProps } from "sonner";
+import { useCiColorMode } from "../../hooks/use-ci-color-mode";
 import {
   useCiFeedbackStore,
   type CiFeedbackSonnerConfig,
@@ -40,13 +41,12 @@ export function CiFeedbackProvider(props: {
   overrides?: CiFeedbackRuntimeOverrides;
 }) {
   const { config, setConfig } = useCiFeedbackStore();
+  const colorMode = useCiColorMode();
 
   // If your setConfig() internally resolves defaults, pass only initialConfig.
   useEffect(() => {
     setConfig(props.initialConfig);
   }, [props.initialConfig, setConfig]);
-
-  if (!config.enabled) return null;
 
   const toasterProps = useMemo(() => {
     // Merge order: resolved store config → runtime overrides (spread last)
@@ -71,5 +71,12 @@ export function CiFeedbackProvider(props: {
     props.overrides?.toneTokens,
   ]);
 
-  return <Toaster {...toasterProps} />;
+  if (!config.enabled) return null;
+
+  return (
+    <Toaster
+      {...toasterProps}
+      theme={toasterProps.theme === "system" || !toasterProps.theme ? colorMode : toasterProps.theme}
+    />
+  );
 }

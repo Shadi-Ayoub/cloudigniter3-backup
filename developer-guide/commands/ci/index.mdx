@@ -1,0 +1,60 @@
+---
+title: "ci Commands"
+description: "Alphabetical reference for every ci command."
+slug: /ci
+sidebar_position: 0
+sidebar_custom_props:
+  audience: public
+---
+
+Use `ci` from `@cloudigniter/cli` for application operations. Run `pnpm exec ci` from an installed application, or use `ci` directly when its binary is on your PATH. Running without a command opens a chooser in an interactive terminal; use explicit commands in automation.
+
+## Command reference A–Z
+
+Select a letter, then a command to read its syntax, parameters, prerequisites, effects, examples, and errors. Commands are alphabetized after the `ci` executable.
+
+[A](#a) · [M](#m) · [R](#r)
+
+### A
+
+| Command | Description |
+| --- | --- |
+| [`ci amplify bootstrap access-control`](./amplify-bootstrap-access-control.mdx) | Create or verify the application’s default access-control definition. |
+| [`ci amplify bootstrap root-user`](./amplify-bootstrap-root-user.mdx) | Create or verify the configured root identity and repair its UserProfile. |
+| [`ci amplify sandbox bootstrap`](./amplify-sandbox-bootstrap.mdx) | Deploy an Amplify sandbox once, then bootstrap access control and the root user. |
+| [`ci amplify sandbox deploy`](./amplify-sandbox-deploy.mdx) | Verify generated resources and deploy them to an explicitly selected sandbox. |
+
+### M
+
+| Command | Description |
+| --- | --- |
+| [`ci modules validate`](./modules-validate.mdx) | Validate the structure, manifests, runtime boundaries, and dependencies of application modules. |
+
+### R
+
+| Command | Description |
+| --- | --- |
+| [`ci resources studio`](./resources-studio.mdx) | Open the local browser editor for application-owned Data Entity resources. |
+
+## Common options
+
+| Option | Meaning |
+| --- | --- |
+| `--app-root=<path>` | Target application; defaults to the current directory. |
+| `--workspace-root=<path>` | Override workspace discovery and package resolution. |
+| `--no-interactive` | Disable prompts; provide all required values explicitly. |
+| `--verbose`, `-v` | Include diagnostic error details. |
+| `--clear` | Clear an interactive terminal before rendering. |
+| `--help` | Show executable help. |
+| `--version` | Print the CLI package version. |
+
+AWS profile, sandbox identifier, module root, and Studio options have command-specific effects; use the individual command page. In monorepos, module roots resolve from the workspace root.
+
+## Help and exit status
+
+```bash
+pnpm exec ci --help
+pnpm exec ci --version
+```
+
+Exit code `0` indicates success, `1` an operational/validation failure, and `2` invalid usage or workspace/policy configuration. Cancelled maintenance prompts use `130`; child processes may preserve their own nonzero status.

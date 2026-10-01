@@ -1,0 +1,58 @@
+name: Developer toolkit quality
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dev-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Dev toolkit (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: pnpm --filter @cloudigniter/dev check
+      - run: pnpm --filter @cloudigniter/dev check:package
+      - name: Export and verify the public template candidate
+        if: matrix.node == 24
+        run: |
+          pnpm exec dev template export --output="$RUNNER_TEMP/cloudigniter-template" --json > "$RUNNER_TEMP/template-export-report.json"
+          pnpm exec dev template check --output="$RUNNER_TEMP/cloudigniter-template"
+      - uses: actions/upload-artifact@v4
+        if: matrix.node == 24
+        with:
+          name: public-template-candidate
+          path: |
+            ${{ runner.temp }}/cloudigniter-template/
+            ${{ runner.temp }}/template-export-report.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
+      - name: Pack the private toolkit for review
+        working-directory: packages/dev
+        run: pnpm pack --pack-destination "$RUNNER_TEMP/dev-package"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dev-package-node-${{ matrix.node }}
+          path: ${{ runner.temp }}/dev-package/*.tgz
+          if-no-files-found: error
+          retention-days: 14

@@ -1,0 +1,45 @@
+---
+title: "dev package obfuscate"
+description: "Obfuscate compiled package JavaScript in place."
+sidebar_label: "dev package obfuscate"
+sidebar_custom_props:
+  audience: developer
+---
+
+Obfuscate compiled package JavaScript in place.
+
+## Syntax
+
+```text
+dev package obfuscate
+```
+
+## Prerequisites
+
+Run from the owning `packages/<name>` directory in the private CloudIgniter workspace after installing its dependencies. `--workspace-root` selects discovery and does not change the current package.
+
+## Parameters
+
+This command has no command-specific options.
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Rewrites `.js`, `.cjs`, and `.mjs` files below `dist`, merging `obfuscator.config.json` over defaults. An absent `dist` fails. Source, declarations, JSON, CSS, and maps are not obfuscated.
+
+## Examples
+
+```bash
+cd packages/next
+pnpm exec dev package obfuscate
+```
+
+## Errors and recovery
+
+A missing required configuration or tool fails the command. A failed subprocess stops the workflow and returns a nonzero status. Inspect the first reported failure before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/package-workflows)

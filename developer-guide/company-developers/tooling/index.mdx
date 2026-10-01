@@ -1,0 +1,54 @@
+---
+title: Developer tooling
+description: The two developer profiles, their tools, and the path from application operations to company package maintenance.
+sidebar_position: 1
+slug: /tooling
+sidebar_label: Introduction
+---
+
+CloudIgniter has two developer profiles. A **CloudIgniter User** builds and operates
+applications with the platform. A **CloudIgniter Developer** maintains the platform
+itself and the tools used to build, test and release it.
+
+| Profile | Tool | Package | Scope |
+| --- | --- | --- | --- |
+| CloudIgniter User | **`ci`**, the CloudIgniter CLI | Public `@cloudigniter/cli` | Application resources, modules and supported provider operations. |
+| CloudIgniter Developer | **`dev`**, the CloudIgniter Developer Toolkit (DEV) | Restricted `@cloudigniter/dev` | Company package maintenance, quality, template preparation and reviewed releases. |
+
+A company developer can also use `ci` while working on an application. Choose the
+tool by the work being performed: application operations belong to `ci`; maintaining
+CloudIgniter packages and company delivery workflows belongs to `dev`.
+
+These profiles describe development responsibilities. Application role IDs and
+GitHub/npm permissions are configured separately; choosing an executable does not
+grant access.
+
+## Application tooling with ci
+
+The [CloudIgniter CLI](./ci/index.mdx) section explains the public tool's ownership,
+application and provider boundaries, and Resource Studio architecture. Application
+setup and usage are covered in [CloudIgniter Users](/docs/cli/overview).
+
+## Company tooling with dev
+
+The [CloudIgniter Developer Toolkit](./dev/index.mdx) section introduces DEV, then
+covers the company workspace, package workflows and configuration, testing,
+release artifacts, template preparation and release requests. Its architecture
+reference explains how to extend the toolkit.
+
+## Command manuals
+
+[CloudIgniter Commands](/commands) is the reference for executable syntax,
+parameters, defaults, examples, effects and errors:
+
+- [ci Commands](/commands/ci) for application operations.
+- [dev commands](/commands/dev) for company development and delivery.
+
+Use this chapter to understand ownership and workflow decisions. Use the command
+manual for the exact invocation at each step.
+
+## Shared implementation guidance
+
+[Command design and extension](./cli-architecture.mdx) defines conventions for
+contributors to either executable. [In-application developer tools](./development-tools-and-seeding.mdx)
+covers server-authorized debugging and seeding capabilities.

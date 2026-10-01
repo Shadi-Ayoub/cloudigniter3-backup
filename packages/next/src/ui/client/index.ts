@@ -2,6 +2,7 @@
 // components
 // ─────────────────────────────────────────────────────────────
 export {
+  CiNextSettingsManager,
   // about border beam
   // CiAboutBorderBeam,
 
@@ -301,3 +302,4 @@ export {
   CiTenantsPage,
   CiThemePresentationPage,
 } from "./pages";
+export { CiNextModuleManagementPage } from "./components/modules/CiNextModuleManagementPage";

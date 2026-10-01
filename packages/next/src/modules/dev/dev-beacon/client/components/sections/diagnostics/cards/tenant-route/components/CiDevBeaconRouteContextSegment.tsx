@@ -118,6 +118,8 @@ export function CiDevBeaconRouteContextSegment({
           tooltipAriaLabel="About protected route"
         />
 
+        <CiDevBeaconCardRow label="Settings groups" value={route?.settings?.join(", ") || "Always-loaded groups only"} mono allowWrap tooltip="Selected registry IDs. Eligible always-loaded groups are added during server bootstrap." tooltipAriaLabel="About route settings groups" />
+
         <Button
           type="button"
           className={cn(

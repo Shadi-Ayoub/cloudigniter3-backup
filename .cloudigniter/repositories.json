@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "baseBranch": "main",
+  "projects": {
+    "cloudigniter-aws": {
+      "type": "package",
+      "package": "@cloudigniter/aws",
+      "sourcePath": "packages/aws",
+      "sourceRepository": "cloudigniter-io/cloudigniter-aws",
+      "buildRepository": "cloudigniter-io/build-cloudigniter-aws",
+      "buildVisibility": "private",
+      "delivery": "npm"
+    },
+    "cloudigniter-cli": {
+      "type": "package",
+      "package": "@cloudigniter/cli",
+      "sourcePath": "packages/cli",
+      "sourceRepository": "cloudigniter-io/cloudigniter-cli",
+      "buildRepository": "cloudigniter-io/build-cloudigniter-cli",
+      "buildVisibility": "private",
+      "delivery": "npm"
+    },
+    "cloudigniter-core": {
+      "type": "package",
+      "package": "@cloudigniter/core",
+      "sourcePath": "packages/core",
+      "sourceRepository": "cloudigniter-io/cloudigniter-core",
+      "buildRepository": "cloudigniter-io/build-cloudigniter-core",
+      "buildVisibility": "private",
+      "delivery": "npm"
+    },
+    "cloudigniter-dev": {
+      "type": "package",
+      "package": "@cloudigniter/dev",
+      "sourcePath": "packages/dev",
+      "sourceRepository": "cloudigniter-io/cloudigniter-dev",
+      "buildRepository": "cloudigniter-io/build-cloudigniter-dev",
+      "buildVisibility": "private",
+      "delivery": "npm"
+    },
+    "cloudigniter-emberguard": {
+      "type": "package",
+      "package": "@cloudigniter/emberguard",
+      "sourcePath": "packages/emberguard",
+      "sourceRepository": "cloudigniter-io/cloudigniter-emberguard",
+      "buildRepository": "cloudigniter-io/build-cloudigniter-emberguard",
+      "buildVisibility": "private",
+      "delivery": "npm"
+    },
+    "cloudigniter-next": {
+      "type": "package",
+      "package": "@cloudigniter/next",
+      "sourcePath": "packages/next",
+      "sourceRepository": "cloudigniter-io/cloudigniter-next",
+      "buildRepository": "cloudigniter-io/build-cloudigniter-next",
+      "buildVisibility": "private",
+      "delivery": "npm"
+    },
+    "cloudigniter-ui": {
+      "type": "package",
+      "package": "@cloudigniter/ui",
+      "sourcePath": "packages/ui",
+      "sourceRepository": "cloudigniter-io/cloudigniter-ui",
+      "buildRepository": "cloudigniter-io/build-cloudigniter-ui",
+      "buildVisibility": "private",
+      "delivery": "npm"
+    },
+    "cloudigniter-developer-guide": {
+      "type": "website",
+      "sourcePath": "developer-guide",
+      "sourceRepository": "cloudigniter-io/cloudigniter-developer-guide",
+      "buildRepository": "cloudigniter-io/build-cloudigniter-developer-guide",
+      "buildVisibility": "private",
+      "delivery": "aws"
+    },
+    "cloudigniter-next-aws-v1": {
+      "type": "template",
+      "sourcePath": "apps/template",
+      "sourceRepository": "cloudigniter-io/source-cloudigniter-next-aws-v1",
+      "buildRepository": "cloudigniter-io/cloudigniter-next-aws-v1",
+      "buildVisibility": "public",
+      "delivery": "github"
+    },
+    "cloudigniter-website": {
+      "type": "website",
+      "sourcePath": null,
+      "sourceRepository": "cloudigniter-io/cloudigniter-website",
+      "buildRepository": "cloudigniter-io/build-cloudigniter-website",
+      "buildVisibility": "private",
+      "delivery": "aws"
+    },
+    "jodaris-website": {
+      "type": "website",
+      "sourcePath": null,
+      "sourceRepository": "cloudigniter-io/jodaris-website",
+      "buildRepository": "cloudigniter-io/build-jodaris-website",
+      "buildVisibility": "private",
+      "delivery": "aws"
+    }
+  }
+}

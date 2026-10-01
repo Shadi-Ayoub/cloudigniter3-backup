@@ -18,6 +18,7 @@ type CiPrivilege = {
   resource: string;
   action: string;
   scopeKinds: readonly CiAccessScopeKind[];
+  readOnly?: boolean;
   description?: string;
 };
 ```
@@ -30,6 +31,7 @@ type CiPrivilege = {
 | `resource` | Registered resource identifier or supported wildcard pattern. |
 | `action` | Registered action identifier or `*`. |
 | `scopeKinds` | Non-empty list of scope kinds where the privilege may match. |
+| `readOnly` | Optional forced restriction. When true, denies every write on matching resources and scopes, regardless of other grants or precedence. Omitted/false retains ordinary behavior. |
 | `description` | Optional longer explanation for administrators. |
 
 ```ts
@@ -53,3 +55,19 @@ non-empty title is rejected.
 
 See [Catalog and Permission Design](/docs/core-system/authorization/catalog-and-permissions) for naming and
 wildcard guidance.
+
+## Forced read-only permissions
+
+Set `readOnly: true` on a role privilege or the privilege inside `CiScopedPrivilege` for a direct user grant.
+The restriction matches the resource pattern and assigned scope, independently of the privilege's action
+pattern. Thus a `read` permission can prevent `create`, `update`, `delete`, and custom mutations granted by
+another role. Inherited restrictions retain their original owning role in decision evidence.
+
+The flag never grants an extra read: the normal allow/deny and action matching rules still determine reading
+access. It also does not turn a deny statement into an allow. Expired grants, unrelated scopes, and suspended
+inheritance paths do not impose restrictions. The denial reason is `read-only` under either combining algorithm.
+
+Actions `read`, `get`, `list`, `view`, and `search` default to reads. Other actions, including unknown custom
+verbs, default to writes. A registered action can explicitly set `accessMode: "read"` or `"write"`; classify
+side effects accurately. Export/download actions need an explicit read classification when they only retrieve
+data. `sensitive` is independent of this classification.

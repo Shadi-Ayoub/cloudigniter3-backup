@@ -238,3 +238,5 @@ export type {
   // spinner
   // CiPageSpinnerProps,
 } from "./types";
+export { CiNextSettingsManager } from "./settings/CiNextSettingsManager";
+export { CiNextModuleManagementPage } from "./modules/CiNextModuleManagementPage";

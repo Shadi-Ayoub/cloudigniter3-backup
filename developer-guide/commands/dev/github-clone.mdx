@@ -1,0 +1,51 @@
+---
+title: "dev github clone"
+description: "Clone a configured source or build repository into an external checkout."
+sidebar_label: "dev github clone"
+sidebar_custom_props:
+  audience: developer
+---
+
+Clone a configured source or build repository into an external checkout.
+
+## Syntax
+
+```text
+dev github clone <project> --output=<checkout> [--repository-kind=source|build] [--dry-run]
+```
+
+## Prerequisites
+
+Run in the private workspace with [GitHub CLI prepared by DEV](./github-setup.mdx) and the relevant company policies configured. Online commands use the selected named GitHub profile; credentials remain in GitHub CLI storage.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `<project>` | Configured project ID. |
+| `--output=<checkout>` | Required new external checkout path. |
+| `--repository-kind=source\|build` | Defaults to source. |
+| `--profile=<name>` | GitHub profile. |
+| `--dry-run` | Preview the local checkout plan without cloning. |
+| `--json` | Accepted; output is structured JSON. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Uses the configured repository destination and selected profile to create an external checkout. It does not select an arbitrary repository URL.
+
+## Examples
+
+```bash
+pnpm exec dev github clone core --output=../core-source --profile=developer --dry-run
+```
+
+## Errors and recovery
+
+Invalid destinations, existing checkout paths, or failed repository/profile verification stop the clone.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/publishing/github-commands)

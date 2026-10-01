@@ -1,0 +1,49 @@
+---
+title: "dev github pr view"
+description: "Inspect a pull request and its exact head commit."
+sidebar_label: "dev github pr view"
+sidebar_custom_props:
+  audience: developer
+---
+
+Inspect a pull request and its exact head commit.
+
+## Syntax
+
+```text
+dev github pr view --project=<id|workspace> --number=<number> [--profile=<name>]
+```
+
+## Prerequisites
+
+Run in the private workspace with [GitHub CLI prepared by DEV](./github-setup.mdx) and the relevant company policies configured. Online commands use the selected named GitHub profile; credentials remain in GitHub CLI storage.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--project=<id\|workspace>` | Required configured project ID, or workspace for the integration monorepo. |
+| `--repository-kind=source\|build` | Defaults to source. workspace has no build repository. |
+| `--profile=<name>` | Named GitHub profile; also selected through CLOUDIGNITER_PROFILE. |
+| `--number=<number>` | Required positive PR/issue number or Actions run ID. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Returns PR identity, state, author, headRefOid, base, review decision, checks, and body as JSON. Use the inspected headRefOid for a later review or merge.
+
+## Examples
+
+```bash
+pnpm exec dev github pr view --project=workspace --number=123 --profile=developer
+```
+
+## Errors and recovery
+
+Unknown projects, invalid IDs, unavailable repositories, or missing profile permissions fail before a useful result. GitHub errors retain a nonzero status.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/publishing/github-commands)

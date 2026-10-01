@@ -170,6 +170,10 @@ flowchart TD
 This mode favors safe restrictions over group precedence. A lower-precedence restriction role can block an
 operation otherwise granted by an administrator role.
 
+A privilege with `readOnly: true` is a forced write veto under **both** algorithms. It is evaluated before
+precedence selection, so stronger roles and direct allow privileges cannot override it. Ordinary reads still
+follow the selected combining algorithm.
+
 ## Optional algorithm: highest precedence
 
 Use this algorithm only when the strongest applicable group should decide:

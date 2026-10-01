@@ -1,0 +1,257 @@
+---
+title: Optional modules
+description: Manage optional application features using the template's uninstalled To-Do List module as a worked example.
+sidebar_position: 6
+---
+
+# Optional modules
+
+Optional modules add features with their own installation, configuration, and enablement lifecycle. Manage them
+through **Dashboard → Modules**. Security, Tenants, Org Units, Appearance, Users, Administrators, Settings, and
+Modules remain fixed core capabilities.
+
+This walkthrough uses **To-Do List** as an example. Its source is already included in the application template at
+`src/custom/modules/todo`, but it starts **uninstalled**. You do not need to download or add a module folder to
+follow the example. You will install it, enable it, try its task page, disable it while preserving data, and
+optionally uninstall it to remove its resources.
+
+## Navigation and language
+
+The **Dashboard** breadcrumb opens the shared dashboard shortcuts on both Modules management and an enabled
+module's page. Parent destinations remain links, with disclosure controls for their child menus.
+
+Modules management uses the `dashboard.modules` route namespace, loading `common`, `dashboard`, and
+`dashboard-modules` messages. `@cloudigniter/next` supplies English and Arabic defaults. The template registers
+matching override files at `src/custom/locales/en/dashboard-modules.json` and
+`src/custom/locales/ar/dashboard-modules.json`; they start empty so package defaults remain available.
+
+To change a label, add only the values you want to override. For example:
+
+```json title="src/custom/locales/en/dashboard-modules.json"
+{
+  "modules": {
+    "title": "Application modules",
+    "refresh": "Refresh status"
+  }
+}
+```
+
+The `modules` message group covers management controls, status labels, notices, confirmation dialogs, and core
+module names. A module's own manifest name, description, permission titles, and setting labels remain supplied by
+its author. See [Localization and direction](/docs/configuration/localization) for message registration and overrides.
+
+## Before you begin
+
+Use a signed-in application account with the exact `developer` role. Module management requires `development`
+mode in both the application and its deployed backend. Enabled modules can be used by their authorized users in
+other environment modes. This example gives authenticated users access to their own personal tasks.
+
+## Amplify configuration
+
+The template already connects the To-Do List example to its Amplify backend. Its module-specific AWS entry point
+is `src/custom/modules/todo/server/aws/index.ts`:
+
+```ts title="src/custom/modules/todo/server/aws/index.ts"
+import { ciCreateAwsTodoModule } from "@cloudigniter/aws/server/backend";
+import { ciModuleManifest } from "../../manifest";
+
+export const ciModuleBackend = ciCreateAwsTodoModule(ciModuleManifest);
+```
+
+`ciCreateAwsTodoModule` supplies both the task operations and the CloudFormation template for the task table.
+The module manifest declares compatibility with Next.js and AWS. The template's shared Amplify configuration
+loads this definition and provides the endpoints and permissions needed to install and execute it.
+
+### Where the configuration lives
+
+All paths are relative to your application root. These connections are already supplied for the bundled example.
+
+| File or folder | Role in the example |
+| --- | --- |
+| `src/custom/modules/todo/manifest.ts` | Declares the `todo` module, its Next.js/AWS target, user permissions, and default task settings. |
+| `src/custom/modules/todo/server/aws/index.ts` | Exports the module's AWS definition through `ciCreateAwsTodoModule`. |
+| `src/custom/modules/.generated/aws.ts` | Generated registry that includes `ciModuleBackend`; the shared handlers consume it. |
+| `amplify/data/schemata/schema-modules.ts` | Declares `ManageModules` for application developers and `ExecuteModule` for authenticated module operations. |
+| `amplify/functions/system/modules/manage/` and `execute/` | Shared Lambda resource definitions and handlers. Both belong to the Amplify Data resource group. |
+| `amplify/backend/modules.ts` | Configures the shared Modules registry table, provisioning role, resource permissions, and handler environment variables. |
+| `amplify/backend.ts` | Calls `ciConfigureModulesBackend(backend)` after the backend resources are constructed. |
+
+Module source belongs in `src/custom/modules`; `.generated` files are maintained by the generator. The shared
+`amplify/backend` and `amplify/functions/system` files are CloudIgniter-managed composition. You can run the
+included example without adding a second set of resources to `amplify/custom` or editing those shared files.
+
+### Set the development environment
+
+For the development deployment used in this walkthrough, set these values in the application environment:
+
+```env title=".env.local"
+CI_ENV_MODE=development
+NEXT_PUBLIC_CI_ENV_MODE=development
+```
+
+Set the backend mode separately:
+
+```env title="amplify/.env"
+CI_ENV_MODE=development
+```
+
+`amplify/backend.ts` loads `amplify/.env`, and the module composition passes `CI_ENV_MODE` to the two handlers.
+Changing this file requires redeploying the backend; restarting Next.js alone does not change a deployed Lambda's
+mode. See [environment-mode configuration](/docs/environment-modes/CI_ENV_MODE).
+
+The module uses the account and Region of the Amplify deployment. The composition supplies `CI_MODULES_TABLE_NAME`,
+`CI_MODULES_PREFIX`, and the manager's `CI_MODULES_ACCOUNT`, `CI_MODULES_PARTITION`, and
+`CI_MODULES_SERVICE_ROLE_ARN` automatically. It also connects the EmberGuard access table. These generated resource
+identities do not need manual values in your environment files. The module's Settings dialog controls task defaults,
+such as priority; it does not select an AWS account or Region.
+
+### Generate and deploy the backend
+
+After completing [AWS preparation](/docs/getting-started/before-you-start), run the following from your application
+root. The template's SSO and sandbox scripts use the `developer1` AWS profile described in that walkthrough.
+
+```bash
+pnpm modules:generate
+pnpm exec ci modules validate --root=src/custom/modules --no-interactive
+pnpm sso
+pnpm sandbox
+pnpm dev
+```
+
+`pnpm sandbox` also generates the registry before deploying. Use the resulting `amplify_outputs.json` with the
+application. This file identifies the deployed shared backend. Sign in to the application with its `developer`
+account to manage modules; the AWS SSO profile used for deployment is a separate identity.
+
+The distinction between backend deployment and module installation is visible in their resources:
+
+| Step | Resources created |
+| --- | --- |
+| Deploy the Amplify backend | Shared Modules registry table, `ManageModules` and `ExecuteModule` handlers/endpoints, and the scoped IAM roles and permissions. The example module remains uninstalled. |
+| Select **Install** on To-Do List | A separate CloudFormation stack and the module's task table. Successful installation leaves the module disabled until you select Enable. |
+
+The shared registry has a retain policy. Installation uses the configured CloudFormation service role; the
+manager's stack permissions and the role's table permissions are scoped to this environment. The task executor
+receives access to the module table and performs its own ownership and permission checks.
+
+### The task-table configuration
+
+The table declaration is supplied by `ciCreateAwsTodoModule` from `@cloudigniter/aws/server/backend`. It defines a
+CloudFormation resource named `Tasks` with these properties:
+
+| Property | Example configuration |
+| --- | --- |
+| Table name | `ci-ext-<environment-id>-todo`, derived from the deployed Amplify environment. |
+| Partition and sort keys | String attributes `PK` and `SK`. Task operations resolve the owner from the authenticated identity. |
+| Capacity and class | `PAY_PER_REQUEST` billing mode and `STANDARD` table class. |
+| Encryption | `SSESpecification.SSEEnabled: true`. |
+| Secondary indexes | None declared. |
+| Stack deletion policy | `Delete`: confirmed module uninstallation removes the table and all tasks. |
+| Stack output | `TableName`, used by the task-operation handler. |
+
+Task creation, listing, and editing run through the shared `ExecuteModule` operation. When installation completes,
+the Modules registry records the actual stack ID and table output. The Dashboard reads those bindings at runtime;
+installing, enabling, or disabling this bundled module does not require another Amplify deployment or manual edits
+to `amplify_outputs.json`.
+
+After deployment, continue with the card below. Before Install, the expected state is a detected **To-Do List**
+module with **Not installed** status and no module task table. If the page reports that the backend is unavailable,
+check the generated registry, the deployed module endpoints, and that the application uses outputs from that same
+deployment. For provider contracts, see the [Module API](/docs/api-reference/shared-apis/modules#provider-and-storage-interfaces).
+
+## Find the included example
+
+Open **Dashboard → Modules**. On a fresh template deployment, the **To-Do List** card shows **Not installed** and
+an **Install** action. Its presence in the catalogue means CloudIgniter detected its source; it does not mean the
+feature or its resources are active.
+
+The page also lists installed modules, including retained installations whose source folder is missing. Fixed
+core capabilities appear separately. If To-Do List shows a backend-deployment message, deploy the matching backend
+and refresh the page before continuing.
+
+## Install and enable the example module
+
+1. Select **Install** on the To-Do List card. Its status becomes **Installing**. With the AWS provider, this starts
+   a dedicated CloudFormation stack containing the module's DynamoDB task table.
+2. Wait for the status to become **Disabled**. Installation has completed, but the feature remains unavailable
+   until you enable it. The page checks progress for up to five minutes; use **Refresh** for longer operations.
+3. Open the card's **Settings**. Choose a default task priority and whether completed tasks appear by default, then
+   select **Save settings**. These settings belong to this module installation.
+4. Select **Enable**. The status becomes **Enabled**, and To-Do List appears on the Dashboard.
+5. Select **Open module**, or open its Dashboard entry, to visit `/dashboard/extensions/todo`.
+
+## Check that the module works
+
+Create a task such as “Review the application setup.” Add a priority, notes, or a due date if useful. Mark it
+complete with the checkbox, or use Edit to change it. The page offers All tasks, Active, Completed, and Trash
+views. Search applies to loaded tasks; **Load more tasks** reads another page of up to 50.
+
+Tasks belong to the signed-in account and are personal, rather than tenant-shared. The backend enforces ownership,
+module permissions, and any applicable read-only restrictions. **Move to Trash** is reversible: restore a task
+from the module's Trash view to retain its prior completion state. Task Trash is separate from the platform's
+administrative Trash, and there is no permanent per-task delete action.
+
+Keep a sample task for the next step so you can see the difference between disabling and uninstalling.
+
+## Disable and re-enable the example module
+
+1. Return to **Dashboard → Modules** and select **Disable** on To-Do List.
+2. Confirm its status is **Disabled**. The module no longer appears as an enabled Dashboard feature, and opening
+   its page directly does not grant access.
+3. The task table, saved tasks, and installation settings remain in place. Select **Enable** again and open the
+   module using the same account: your sample task is still there.
+
+Use Disable when you want to stop using a module temporarily while retaining its data.
+
+## Uninstall the example module
+
+:::danger Permanent removal
+Uninstalling To-Do List permanently removes its task table and **every user's tasks**, including completed tasks
+and tasks in Trash. Task restoration cannot undo module uninstallation. Continue with this step only when the
+example data can be deleted; use Disable when you need to keep it.
+:::
+
+1. On **Dashboard → Modules**, select **Disable** if To-Do List is currently enabled.
+2. Select **Uninstall** on its card and review the destructive-action confirmation.
+3. Type the module ID, **`todo`**, exactly as requested. Select **Uninstall and delete data** to confirm.
+4. The status becomes **Uninstalling** while AWS removes the module's CloudFormation stack and resources. Wait for
+   completion or use **Refresh** to check progress.
+5. The card returns to **Not installed**. Its source folder remains in the template, so the module can still be
+   detected and installed again. A reinstall starts with empty task data and default module settings.
+
+| Action in the example | Feature access | Tasks and infrastructure | Installation settings |
+| --- | --- | --- | --- |
+| Install | Unavailable until enabled | Created | Initialized with defaults |
+| Enable | Available to authorized users | Preserved | Preserved |
+| Disable | Blocked | Preserved | Preserved |
+| Uninstall | Blocked | Permanently removed | Removed |
+
+## Check progress or recover an interrupted operation
+
+Installation and removal continue in CloudFormation when the page is closed. Reopen Modules and select **Refresh**
+to reconcile the displayed state. If an operation was interrupted, use **Retry install** or **Retry uninstall**
+after reviewing its state. A failed stack remains visible for diagnosis and cleanup.
+
+Open **Installed resource details** on the To-Do List card to see its provider and stored CloudFormation stack ID.
+Removing `src/custom/modules/todo` does not uninstall cloud resources. Restore the installed version of the source
+or use the retained installation's removal action. Uninstall optional modules before deleting the whole Amplify
+environment because their stacks have independent lifecycles.
+
+For modules with dependencies, installed dependents block uninstall, and enabled or installing dependents block
+disabling their dependency. Concurrent changes invalidate a previously reviewed action; refresh and review again.
+
+## Try the Update action
+
+While To-Do List is installed, select **Update**. An information box explains that update checks and downloads
+will be available through the CloudIgniter website and Store. The action makes no version-check request and
+changes no code, settings, or infrastructure. Close the box to return to module management.
+
+Store downloads, extraction, and automatic updates are unsupported operations. The bundled module lets you learn
+the lifecycle without a store connection. Other trusted module source belongs under `src/custom/modules/<id>`;
+source changes require generation, an application rebuild, and any corresponding backend deployment. Do not
+replace installed module code with another version as an update procedure: version mismatches block enablement
+and execution. Installing an npm package is also separate from installing a module's cloud resources.
+
+For the integration contracts, see the [Module API](/docs/api-reference/shared-apis/modules) and
+[contributor architecture](/company-developers/architecture/modules). Continue with
+[Creating your own modules](/docs/extending-application/creating-modules) to build a module with its own dashboard
+page, settings, permissions, and AWS infrastructure.

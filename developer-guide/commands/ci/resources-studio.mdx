@@ -1,0 +1,51 @@
+---
+title: "ci resources studio"
+description: "Open the local browser editor for application-owned Data Entity resources."
+sidebar_label: "ci resources studio"
+sidebar_custom_props:
+  audience: public
+---
+
+Open the local browser editor for application-owned Data Entity resources.
+
+## Syntax
+
+```text
+ci resources studio [--profile=<name>] [--identifier=<value>] [--port=<number>] [--no-open]
+```
+
+## Prerequisites
+
+Run from a supported application with `@cloudigniter/cli` and provider integrations installed. Local resource generation does not require an AWS profile; cloud operations do.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--app-root=<path>` | Application root; defaults to the current directory. |
+| `--workspace-root=<path>` | Override workspace discovery and package resolution. |
+| `--profile=<name>` | AWS profile. If omitted, uses the default credential chain; an interactive terminal may ask for a profile. |
+| `--identifier=<value>` | Explicit sandbox target for supported cloud operations. |
+| `--port=<number>` | Loopback port; defaults to an automatically assigned available port. |
+| `--no-open` | Print the secured local URL without opening the browser. |
+
+See the [ci common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Starts the local Resource Studio server and normally opens its secured URL. The editor generates application-owned files in the custom template seams. Saving files and deploying them are separate actions; deployment requires explicit target selection and confirmation. Stop the server with Ctrl+C.
+
+## Examples
+
+```bash
+pnpm exec ci resources studio --app-root=. --profile=developer1 --no-open
+```
+
+## Errors and recovery
+
+An occupied requested port or invalid application/resource configuration prevents startup. The guide explains file rollback limits: cloud state and data are not restored byte-for-byte after deployment.
+
+## Related documentation
+
+- [ci Commands A–Z](./index.mdx)
+- [Workflow guide](/docs/resource-studio/overview)

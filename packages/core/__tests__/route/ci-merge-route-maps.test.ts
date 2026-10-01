@@ -52,3 +52,11 @@ test("rejects custom routes that replace a core or generated route", () => {
     /CloudIgniter route collision/,
   );
 });
+
+ test("routes preserve explicit settings selections and reject malformed identifiers", () => {
+  const routes = ciGetRoutes({ "/support": { title: "Support", namespace: "support", protected: false, settings: ["public.branding"] } });
+  assert.deepEqual(routes["/support"]?.settings, ["public.branding"]);
+  assert.throws(() => ciGetRoutes({ "/support": { title: "Support", namespace: "support", protected: false, settings: ["not valid"] } }), /Invalid settings selection/);
+  assert.deepEqual(routes["/dashboard/settings/public"]?.access, { resource: "platform.settings", action: "read" });
+  assert.equal(routes["/account/settings"]?.protected, true);
+});

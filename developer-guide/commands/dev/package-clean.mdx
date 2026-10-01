@@ -1,0 +1,45 @@
+---
+title: "dev package clean"
+description: "Remove generated distribution files and incremental build state."
+sidebar_label: "dev package clean"
+sidebar_custom_props:
+  audience: developer
+---
+
+Remove generated distribution files and incremental build state.
+
+## Syntax
+
+```text
+dev package clean
+```
+
+## Prerequisites
+
+Run from the owning `packages/<name>` directory in the private CloudIgniter workspace after installing its dependencies. `--workspace-root` selects discovery and does not change the current package.
+
+## Parameters
+
+This command has no command-specific options.
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Deletes `dist` recursively and removes the package’s `.tsbuildinfo`. Rebuild to restore generated artifacts. This does not delete source files.
+
+## Examples
+
+```bash
+cd packages/next
+pnpm exec dev package clean
+```
+
+## Errors and recovery
+
+A missing required configuration or tool fails the command. A failed subprocess stops the workflow and returns a nonzero status. Inspect the first reported failure before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/package-workflows)

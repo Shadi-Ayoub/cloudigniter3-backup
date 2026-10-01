@@ -1,0 +1,46 @@
+---
+title: "dev github profiles"
+description: "List configured developer and approver profiles."
+sidebar_label: "dev github profiles"
+sidebar_custom_props:
+  audience: developer
+---
+
+List configured developer and approver profiles.
+
+## Syntax
+
+```text
+dev github profiles [--json]
+```
+
+## Prerequisites
+
+Run in the private workspace with the relevant company policies configured. This local command does not require GitHub CLI or authentication.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--json` | Accepted; output is structured JSON. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Reads the local named-profile configuration without logging in or switching accounts.
+
+## Examples
+
+```bash
+pnpm exec dev github profiles --json
+```
+
+## Errors and recovery
+
+Missing or invalid profile configuration fails; configure profiles before authenticating.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/publishing/github-commands)

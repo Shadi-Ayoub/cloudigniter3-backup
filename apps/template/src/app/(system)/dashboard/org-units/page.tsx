@@ -1,3 +1,4 @@
+import { forbidden } from "next/navigation";
 import { CiPage } from "@cloudigniter/next/client";
 import { CiOrgUnitManagementPage } from "@cloudigniter/ui/client";
 import { ciCanAccessDeveloperTools } from "@cloudigniter/core/lib";
@@ -25,7 +26,7 @@ export default async function OrgUnitsPage() {
     },
   });
   if (!canManage && !developerToolsAccess) {
-    throw new Error("You do not have permission to manage Org Units.");
+    forbidden();
   }
   const [orgUnits, tenants] = await Promise.all([
     appListOrgUnitRecords({ limit: 100 }),

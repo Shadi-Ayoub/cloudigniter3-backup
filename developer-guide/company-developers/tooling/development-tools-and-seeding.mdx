@@ -1,11 +1,16 @@
 ---
-title: Developer tools and seeder architecture
-description: Package ownership, authorization, persistence, and extension rules for development-only CloudIgniter capabilities.
-sidebar_position: 3
+title: In-application developer tools
+description: Package ownership, authorization and extension rules for development-only debugging and seeding.
+sidebar_position: 5
 ---
 
-CloudIgniter treats developer tooling as a server-authorized capability, not as a side effect of running a local
-Next.js process. `ciCanAccessDeveloperTools()` is the shared provider-neutral decision: mode must be exactly
+The Root Beacon, Debug Probe and seeders are application capabilities governed by
+application authorization. The application role named `developer` is separate from
+the **CloudIgniter Developer** company profile introduced in this chapter. Installing
+`ci` or `dev` does not grant that role.
+
+In-application developer tools are server-authorized capabilities. Access is
+checked independently of whether the Next.js process is running locally. `ciCanAccessDeveloperTools()` is the shared provider-neutral decision: mode must be exactly
 `development`, the actor must be authenticated, and at least one configured exact role ID must match. The default
 role is `developer`.
 

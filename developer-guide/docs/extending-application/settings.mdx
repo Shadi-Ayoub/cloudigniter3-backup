@@ -1,0 +1,77 @@
+---
+title: Extending settings
+description: Add validated application settings groups, expose their management fields, and select them for routes.
+sidebar_position: 3
+---
+
+# Extending settings
+
+Add a settings group when authorized users need to change application values without editing source code.
+CloudIgniter supplies Public, Private, and Personal categories, management pages, and request loading. Your
+extension supplies a unique group ID, defaults, validation, and form fields. See
+[Settings and runtime values](/docs/configuration/settings) for category access and tenant behavior.
+
+## Add a group
+
+Edit `src/custom/settings/ci-settings-registry.ts`. Add this entry to the existing `appSettingsExtensions` object,
+keeping its other entries and the `ciBuildSettingsRegistry()` composition. The template already imports `z` from `zod`.
+
+```ts
+"public.support": {
+  scope: "public",
+  alwaysLoad: false,
+  defaults: { supportEmail: "support@example.com" },
+  schema: z.strictObject({ supportEmail: z.email() }),
+  meta: { title: "Support", description: "Contact information for visitors." },
+  fields: [
+    { name: "supportEmail", label: "Support email", required: true, type: { kind: "email" } },
+  ],
+},
+```
+
+Group IDs use lowercase letters, digits, hyphens, and dot-separated segments. Choose a new ID rather than replacing
+a core group. Field names must match the schema's keys. `fields` uses the public Smart Form specification; the
+schema validates saved values on the server. Use `private` or `user` for a group in another category. Private
+settings can reach authenticated browser UI, so they must not contain secrets.
+
+The same registry supplies the application and backend handlers. Deploy registry changes through your normal
+backend workflow and rebuild the application so both use matching definitions. Then open **Dashboard → Settings →
+Public settings** with an authorized account. The Support group appears in that category's form. Save a valid
+support address and confirm that an invalid email is rejected.
+
+## Load the group for a feature
+
+Add the group to a route that needs it, for example the Reports route from the preceding lesson:
+
+```ts
+"/dashboard/reports": {
+  title: "Reports",
+  namespace: "dashboard",
+  protected: true,
+  tenantScopes: ["global"],
+  settings: ["public.support"],
+},
+```
+
+The request loader combines the selected IDs with groups marked `alwaysLoad: true`. An empty selection loads only
+always-loaded groups. Unknown IDs fail; anonymous requests cannot load Private or Personal groups. Public/Private
+values resolve for the request's System, GLOBAL, or Tenant context, while Personal values belong to the account.
+
+Read the group from the server-built page context:
+
+```ts
+const context = await appBootstrap();
+const support = context.settings?.public?.["public.support"];
+```
+
+`appBootstrap` comes from the template's `@/kernel/server` composition helper.
+`useCiSettings()` from `@cloudigniter/next/client` exposes the loaded snapshot inside the standard layout's
+`CiSettingsProvider`. Pass only values appropriate for the page to your browser UI; the registry itself stays on
+the server. Resource Studio's **Route settings groups** field preserves the same selection for generated pages.
+
+A newly added group starts with defaults. Changing those defaults does not overwrite already saved values; use
+the [settings management workflow](/docs/configuration/settings) to edit them. Optional module settings have a
+separate installation lifecycle, covered in [Optional modules](/docs/building-features/modules).
+
+Continue with [Extending application configuration](./configuration), or consult the
+[Settings API](/docs/api-reference/shared-apis/settings) for complete contracts.

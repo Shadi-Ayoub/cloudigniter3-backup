@@ -30,6 +30,24 @@
       ]
     },
     {
+      "label": "Extend your application",
+      "overview": "extending-application/overview",
+      "items": [
+        "extending-application/routes",
+        "extending-application/settings",
+        "extending-application/configuration",
+        "extending-application/user-profile",
+        {
+          "label": "Modules",
+          "overview": "extending-application/modules",
+          "items": [
+            "building-features/modules",
+            "extending-application/creating-modules"
+          ]
+        }
+      ]
+    },
+    {
       "label": "Identity and access",
       "overview": "identity/authentication",
       "items": [

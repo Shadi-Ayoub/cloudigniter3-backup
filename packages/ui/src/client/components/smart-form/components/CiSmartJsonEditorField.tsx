@@ -121,7 +121,7 @@ export const CiSmartJsonEditorField = ({
   };
 
   if (!isMounted) {
-    return <div className="text-sm text-gray-400">Loading editor...</div>;
+    return <div className="text-sm text-muted-foreground">Loading editor...</div>;
   }
 
   return (
@@ -132,7 +132,7 @@ export const CiSmartJsonEditorField = ({
         </label>
       )}
       {description && (
-        <p dir={direction} className="mb-2 text-xs text-gray-500">
+        <p dir={direction} className="mb-2 text-xs text-muted-foreground">
           {description}
         </p>
       )}
@@ -182,12 +182,12 @@ export const CiSmartJsonEditorField = ({
 
       {modalOpen && (
         <div className="z-modal fixed inset-0 flex items-center justify-center bg-black/50">
-          <div className="relative w-full max-w-4xl rounded-md bg-white p-4 shadow-lg dark:bg-gray-900">
+          <div className="relative w-full max-w-4xl rounded-md bg-popover text-popover-foreground p-4 shadow-lg">
             <div className="mb-2 flex items-center justify-between">
               <h2 className="text-lg font-semibold">Edit JSON</h2>
               <button
                 onClick={() => setModalOpen(false)}
-                className="text-gray-500 hover:text-red-600"
+                className="text-muted-foreground hover:text-danger"
               >
                 <X />
               </button>
@@ -197,7 +197,7 @@ export const CiSmartJsonEditorField = ({
               <button
                 type="button"
                 onClick={tryFormat}
-                className="flex items-center gap-1 text-xs text-blue-600 hover:underline"
+                className="flex items-center gap-1 text-xs text-primary hover:underline"
               >
                 <Sparkles className="h-4 w-4" /> Format JSON
               </button>
@@ -230,7 +230,7 @@ export const CiSmartJsonEditorField = ({
             </div>
 
             {modalError && (
-              <div className="mb-3 flex items-center gap-2 text-sm text-red-500">
+              <div className="mb-3 flex items-center gap-2 text-sm text-danger">
                 <AlertCircle className="h-4 w-4" /> {modalError}
               </div>
             )}

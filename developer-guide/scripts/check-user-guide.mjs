@@ -25,10 +25,12 @@ function collect(directory) {
 }
 collect(docsRoot);
 
-const current = structure.chapters.flatMap((chapter) => [
-  chapter.overview,
-  ...chapter.items,
-]);
+function currentDocuments(item) {
+  return typeof item === "string"
+    ? [item]
+    : [item.overview, ...item.items.flatMap(currentDocuments)];
+}
+const current = structure.chapters.flatMap(currentDocuments);
 const archived = structure.obsolete.flatMap((group) => group.items);
 const assigned = [...current, "obsolete/index", ...archived];
 const errors = [];

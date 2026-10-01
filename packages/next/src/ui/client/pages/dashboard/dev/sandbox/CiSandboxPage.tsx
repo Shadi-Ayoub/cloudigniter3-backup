@@ -43,7 +43,7 @@ export function CiSandboxPage({ methods }: SandboxProps) {
   return (
     <div className="mt-0 mb-16 grid flex-1 grid-cols-9 gap-4 overflow-hidden p-4">
       {loading && (
-        <div className="bg-opacity-50 dark:bg-opacity-70 absolute inset-0 flex items-center justify-center bg-gray-900">
+        <div className="absolute inset-0 flex items-center justify-center bg-background/70 text-foreground">
           <CiSpinner />
         </div>
       )}

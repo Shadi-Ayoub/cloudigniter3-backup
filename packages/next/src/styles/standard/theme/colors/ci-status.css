@@ -1,5 +1,5 @@
 @theme static {
-  --color-success: var(--color-ci-green-600);
+  --color-success: var(--color-ci-green-700);
   --color-success-foreground: var(--color-ci-white);
   --color-success-surface: var(--color-ci-green-50);
   --color-success-surface-foreground: var(--color-ci-green-800);
@@ -24,15 +24,16 @@
   --color-danger-border: var(--color-ci-red-200);
 }
 
-.dark {
+.dark,
+[data-theme="dark"] {
   --color-success: var(--color-ci-green-500);
-  --color-success-foreground: var(--color-ci-white);
+  --color-success-foreground: var(--color-ci-gray-950);
   --color-success-surface: var(--color-ci-green-950);
   --color-success-surface-foreground: var(--color-ci-green-200);
   --color-success-border: var(--color-ci-green-800);
 
   --color-info: var(--color-ci-blue-500);
-  --color-info-foreground: var(--color-ci-white);
+  --color-info-foreground: var(--color-ci-gray-950);
   --color-info-surface: var(--color-ci-blue-950);
   --color-info-surface-foreground: var(--color-ci-blue-200);
   --color-info-border: var(--color-ci-blue-800);
@@ -44,7 +45,7 @@
   --color-warning-border: var(--color-ci-amber-800);
 
   --color-danger: var(--color-ci-red-500);
-  --color-danger-foreground: var(--color-ci-white);
+  --color-danger-foreground: var(--color-ci-gray-950);
   --color-danger-surface: var(--color-ci-red-950);
   --color-danger-surface-foreground: var(--color-ci-red-200);
   --color-danger-border: var(--color-ci-red-800);

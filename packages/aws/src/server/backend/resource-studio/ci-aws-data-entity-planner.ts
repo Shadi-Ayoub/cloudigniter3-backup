@@ -113,6 +113,7 @@ export type CiAwsDataEntityDescriptor = {
   managementPage: {
     path: string;
     title: string;
+    settings?: readonly string[];
   };
   fields: CiAwsDataEntityField[];
   authorization: CiAwsDataEntityAuthorizationRule[];
@@ -126,7 +127,7 @@ export type CiAwsDataEntityFrontendPlan = {
   modelName: string;
   scope: "global" | "tenant";
   description: string;
-  managementPage: { path: string; title: string };
+  managementPage: { path: string; title: string; settings?: readonly string[] };
   listQueryField: string;
   fields: Array<
     CiAwsDataEntityField & {
@@ -812,6 +813,10 @@ export function ciNormalizeAwsDataEntityDescriptor(
     "Management page path",
   );
   assertStaticManagementPath(managementPath);
+  const settings = managementPageInput.settings;
+  if (settings !== undefined && (!Array.isArray(settings) || settings.some(id => typeof id !== "string" || !/^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)*$/.test(id)))) {
+    throw new Error("Route settings must be an array of registered settings group IDs.");
+  }
   const fieldsInput = Array.isArray(input.fields) ? input.fields : [];
   if (fieldsInput.length === 0)
     throw new Error("A Data Entity requires at least one custom field.");
@@ -862,6 +867,7 @@ export function ciNormalizeAwsDataEntityDescriptor(
     },
     managementPage: {
       path: managementPath,
+      ...(settings === undefined ? {} : { settings: [...new Set(settings as string[])] }),
       title:
         optionalString(managementPageInput.title) ?? `Manage ${pluralName}`,
     },

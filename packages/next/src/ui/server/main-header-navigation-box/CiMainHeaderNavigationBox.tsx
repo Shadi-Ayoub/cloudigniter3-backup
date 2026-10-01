@@ -1,5 +1,5 @@
 import { ciStartTraceServer } from "@cloudigniter/core/server";
-import type { CiMainMenuItem } from "@cloudigniter/core/types";
+import { CiMainMenuSettingsSchema } from "@cloudigniter/core/lib";
 import { CiNextMainMenu } from "@ci-next/ui/client";
 import type { CiNextContext } from "@ci-next/types";
 
@@ -7,8 +7,13 @@ interface MainHeaderUserBoxInterface {
   context: CiNextContext;
 }
 
-export function CiMainHeaderNavigationBox({ context }: MainHeaderUserBoxInterface) {
-  const mainMenuConfig = context.settings?.private.mainMenu as CiMainMenuItem[];
+export function CiMainHeaderNavigationBox({
+  context,
+}: MainHeaderUserBoxInterface) {
+  const menu = CiMainMenuSettingsSchema.safeParse(
+    context.settings?.private?.["private.navigation"]?.items,
+  );
+  const mainMenuConfig = menu.success ? menu.data : [];
 
   /////////////////////////////////////////////////////////////////////////////////////////Log trace
   const { logger } = ciStartTraceServer(
@@ -28,7 +33,9 @@ export function CiMainHeaderNavigationBox({ context }: MainHeaderUserBoxInterfac
       <div className="ci-main-header-navigation-box">
         <CiNextMainMenu config={mainMenuConfig} />
       </div>
-      <div className="ci-main-header-navigation-box-inner-mobile">{/* <MobileMenuToggle /> */}</div>
+      <div className="ci-main-header-navigation-box-inner-mobile">
+        {/* <MobileMenuToggle /> */}
+      </div>
     </nav>
   );
 }

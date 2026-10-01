@@ -1,3 +1,4 @@
+import { forbidden } from "next/navigation";
 import { CiPage } from "@cloudigniter/next/client";
 import { CiNextSecurityDataPage } from "@cloudigniter/next/ui/client";
 import type { CiSecurityRecordKind } from "@cloudigniter/core/types";
@@ -32,9 +33,7 @@ export async function SecurityAspectPage({
   const security = appCreateSecurityAdministration(context, definition);
   const capabilities = security.capabilities;
   if (!capabilities.canRead) {
-    throw new Error(
-      "You do not have permission to view access-control administration."
-    );
+    forbidden();
   }
 
   const [assignments, roleCounters] = await Promise.all([

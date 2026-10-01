@@ -79,3 +79,7 @@ Do not solve upgrade compatibility by copying core source into `custom`, by lett
 - Validate the package owner, thin template consumer, and an upgrade-like composition with existing custom artifacts.
 
 Existing boundary violations are migration debt. Document and reduce them in focused changes; never cite them as justification for adding another one.
+
+## Optional modules
+
+Trusted module implementation belongs under `src/custom/modules/<id>`, with generated imports confined to `src/custom/modules/.generated`. The core `/dashboard/extensions/[moduleId]` page is a generic host slot; it delegates to registered custom clients and contains no module business logic. Keep provider lifecycle, UI, and framework integration in their package owners. See [optional modules](../modules.md).

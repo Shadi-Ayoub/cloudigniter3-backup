@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
     "@cloudigniter/next",
   ],
   reactStrictMode: true,
+  experimental: {
+    authInterrupts: true,
+  },
   turbopack: {
     root: path.resolve(__dirname, "../.."),
   },

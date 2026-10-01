@@ -24,7 +24,7 @@ packages installed from npm.
 | `src/custom/locales/index.ts` and registered message files | Supply application translations that can override CloudIgniter messages. |
 | `src/custom/theme/customTheme.ts` | Exports `appThemeProviderProps`, the application's theme-provider overrides. |
 | Runtime environment variables | Supply the environment mode read during bootstrap. See [Configure CI_ENV_MODE](/docs/environment-modes/CI_ENV_MODE). |
-| `appGetSettings()` in `src/kernel/server/settings/app-get-settings.ts` | Supplies the settings placed in the application context. The supplied resolver returns static values. |
+| `appGetSettings()` in `src/kernel/server/settings/app-get-settings.ts` | Supplies the settings placed in the application context. The request-cached resolver loads route-selected and always-loaded groups from the custom/core registry and provider. |
 
 `next.config.ts` configures the framework; it is not merged into the CloudIgniter configuration object.
 Request-specific values, such as the selected language and current user, are resolved during server rendering.
@@ -116,9 +116,7 @@ settings from `context.settings`, and the environment mode from `context.env.mod
 `NEXT_PUBLIC_CI_ENV_MODE` when the server variable is absent. Bootstrap fails if no environment mode is resolved.
 Keep both values aligned as described in [Environment modes](/docs/environment-modes/intro).
 
-Settings are a separate context value; they are not merged over `cloudigniter.config.ts`. The supplied
-`appGetSettings()` does not automatically query persisted settings or load a custom settings registry. Connect
-application-owned persisted values through the workflow in [Settings and runtime values](/docs/configuration/settings).
+Settings are a separate context value. `appGetSettings()` reads registered route selections plus always-loaded groups, using cookie values before Personal and Public defaults. Language and appearance feed their corresponding providers. Extend the registry through [Settings and runtime values](/docs/configuration/settings).
 
 ### 4. Apply values in layouts and providers
 
@@ -132,16 +130,15 @@ supply the layout's provider stack. `CiPage` from `@cloudigniter/next/client` us
 its `setup.messages` explicitly supplies a page override.
 
 Theme-provider overrides are collected during server configuration resolution and applied when the layout
-installs `CiThemeProvider`. The standard client wrapper sets `attribute: "class"` and `defaultTheme: "system"`
-after applying the application's theme-provider props. Other supplied overrides, such as `forcedTheme`, reach
-the provider. Theme settings returned by `appGetSettings()` are not automatically substituted for these inputs.
+installs `CiThemeProvider`. The resolved Settings preference supplies the default theme and respects the existing
+`ci-theme` cookie. Explicit provider overrides such as `forcedTheme` remain available.
 See [Themes and styling](/docs/configuration/themes) for the customization points.
 
 The root layout also includes `AppAmplifyClientConfig`, which imports the generated outputs to configure the
 browser's Amplify client. This complements the server configuration used by bootstrap.
 
 When passing resolved values to your own Client Components, select the fields those components need and keep
-private settings and server-only data on the server.
+server-only data on the server. Private settings may reach authenticated browser UI and must never contain secrets.
 
 ## Check the source of an unexpected value
 
@@ -157,4 +154,4 @@ private settings and server-only data on the server.
   `ci-internal` endpoints bypass the page proxy and must resolve their own prerequisites instead of invoking
   page bootstrap.
 
-Continue with [Authentication and identity](/docs/identity/authentication).
+Continue with [Extend your application](/docs/extending-application/overview).

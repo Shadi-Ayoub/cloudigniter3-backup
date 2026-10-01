@@ -1,0 +1,68 @@
+---
+title: Package workflows
+description: Build, check and maintain company packages while preserving their local ownership.
+sidebar_position: 3
+slug: /tooling/package-workflows
+---
+
+DEV owns tool execution and check ordering. Each package supplies its test
+selection, compiler and bundler configuration, generation hooks and validation
+policy. Start with [workspace setup](./workspace.mdx) to select the package.
+
+## From a code change to a candidate
+
+1. Develop against source exports and use focused tests for feedback.
+2. Run the package's quick checks and complete test suite. A quick check alone
+   does not include every package's tests.
+3. Run its configured quality gate and full build. Packages opt into quality
+   enforcement through their own configuration.
+4. Validate the distribution and exact archive before requesting release review.
+
+| Development task | Command manual |
+| --- | --- |
+| Select source or distribution exports | [dev package switch](/commands/dev/package-switch) |
+| Run tests and focused feedback | [dev package test](/commands/dev/package-test) |
+| Check TypeScript scopes | [dev package typecheck](/commands/dev/package-typecheck) |
+| Run quick or complete checks | [dev package check](/commands/dev/package-check), [dev package quality](/commands/dev/package-quality) |
+| Build or watch a package | [dev package build](/commands/dev/package-build), [dev package watch](/commands/dev/package-watch) |
+| Validate distribution artifacts | [dev package check-package](/commands/dev/package-check-package), [dev package release-check](/commands/dev/package-release-check) |
+
+Build primitives, watch mode, source switching, cleanup and obfuscation support
+local development. Release review requires the full build and artifact-validation
+path. See [testing and quality gates](./testing-and-release.mdx) and
+[release artifacts](./release-artifacts.mdx) for the required evidence.
+
+## Package comparison and retained ownership
+
+| Packages | Tests | Quick `check` | Additional behavior |
+| --- | --- | --- | --- |
+| Core | Existing selected TypeScript suites | Source and tools typechecks | Smart-form generation before full/JS builds and once before watch. |
+| AWS | Backend and client TypeScript suites | Source and tools typechecks | Provider-specific tests remain in AWS. |
+| EmberGuard | Auth TypeScript suites | Source and tools typechecks | Security tests remain in EmberGuard. |
+| UI | Root and security TypeScript suites | Source and tools typechecks | Component tests remain in UI. |
+| Next | Recursive TypeScript/TSX/MJS/CJS discovery | Source and tools typechecks | Coverage, no skips/TODOs, JUnit, build-gate regression, test typecheck, assets and verified release artifacts. |
+| CLI, DEV | Existing root MJS suites | Source typecheck and tests | Direct-source packages; no tsup build/watch configuration. DEV prepublish runs its check recipe. |
+
+Each package opts into its own validation policy. Next's coverage policy does not
+automatically apply to other packages. Unconfigured `quality`, coverage, release checks or
+prepublish recipes fail with a usage error. `check` retains its previous scope:
+platform packages still need an explicit `test` when running quick checks.
+`config-ts` has no applicable scripts. Application/template commands, documentation
+commands, and root Turbo orchestration retain their respective owners.
+
+Core's `forms:generate` remains a specialized generator owned by Core. DEV calls
+that implementation through `beforeBuild`; developers no longer need to remember
+it before a full build or `build-js`. Next's coverage thresholds and archive/export
+validators remain in Next. DEV owns their invocation and ordering.
+
+The public CLI uses the workspace root's DEV binary for contributor scripts; it
+does not acquire a dependency on the private package. DEV's own scripts invoke
+`node ./bin/dev.mjs ...` to bootstrap the same command implementation without
+requiring its executable link. Runtime dependency direction remains DEV to CLI.
+
+## Configure or migrate a package
+
+Use [Package configuration](./package-configuration.mdx) for `ci-dev.config.json`,
+hooks and recipes. [Package script compatibility](./package-scripts.mdx) maps
+existing script names to their command manuals. New automation should use the
+canonical DEV commands with explicit inputs.

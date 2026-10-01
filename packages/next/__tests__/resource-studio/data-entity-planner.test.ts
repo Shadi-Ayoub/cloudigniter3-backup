@@ -84,3 +84,11 @@ test("rejects route segments that could escape the generated custom tree", () =>
     /Invalid static management route/,
   );
 });
+
+ test("retains explicitly selected settings groups in generated route declarations", () => {
+  const plan = ciPlanNextDataEntities({ entities: [{ ...book, managementPage: { ...book.managementPage, settings: ["public.branding", "private.operations"] } }] });
+  const routes = plan.files.find(file => file.path.endsWith("resource-studio.generated.ts"));
+  assert.ok(routes);
+  assert.match(routes.content, /settings: \["public.branding","private.operations"\]/);
+  assert.throws(() => ciPlanNextDataEntities({ entities: [{ ...book, managementPage: { ...book.managementPage, settings: ["bad id"] } }] }), /settings selection/);
+});

@@ -1,0 +1,60 @@
+---
+title: npm setup and access
+description: Configure the npm organization, restricted developer toolkit and trusted publishers for approved archives.
+sidebar_position: 7
+---
+
+## Package access is independent of GitHub visibility
+
+All package source/build repositories are private on GitHub. On npm, six product packages have `public` access, while `@cloudigniter/dev` has `restricted` access. The latter is an internal company tool distributed to authorized developers and CI, even though it is normally executed on local machines.
+
+An npm organization and a GitHub organization are separate services. The package scope remains **`@cloudigniter`**; the GitHub owner is **`cloudigniter-io`**. A GitHub approver account does not automatically receive npm package access.
+
+## Organization and team setup
+
+An npm administrator establishes the `cloudigniter` organization, enables account 2FA and assigns package permissions. Give the npm maintainer write access for release approval. Give company developers read access to the restricted toolkit. Application customers need access only to the public packages.
+
+Restricted organization packages require an appropriate paid npm plan; public organization packages can be free. See [npm organization setup](https://docs.npmjs.com/creating-an-organization) and [team package access](https://docs.npmjs.com/managing-team-access-to-organization-packages).
+
+Keep personal/npm CI read credentials outside the repository. A read credential permits installation and metadata queries; it must not grant publication. The toolkit’s `publishConfig.access` and release policy both record `restricted`. Setting the package’s `private` field to `true` would block all npm publication, including restricted publication.
+
+## First publication: an explicit bootstrap
+
+Native staged publishing requires an existing npm package. An authorized maintainer must therefore review and publish the first exact archive through npm’s interactive authentication process. Verify its name, initial version, dependencies, repository metadata, access and SHA-256 before this one-time operation. Record the resulting registry version and evidence in the bootstrap issue.
+
+The internal toolkit already declares source version `0.1.0`; that does not prove it exists on npm, and requesting another `initial` bump is not valid for it. `initial` is a version-planning intent only for packages currently below `0.1.0`. Check pending Changesets and dependency propagation before choosing any first-version batch.
+
+The developer toolkit never silently falls back from staging to direct publication. Once the first package exists, configure its trusted publisher and use the regular reviewed staging process for subsequent versions.
+
+## Configure a trusted publisher for each package
+
+In the package’s npm settings, add its GitHub Actions trusted publisher:
+
+| Setting | Core example | Other packages |
+| --- | --- | --- |
+| GitHub organization/owner | `cloudigniter-io` | Same organization |
+| Repository | `build-cloudigniter-core` | Its exact `build-cloudigniter-<name>` repository |
+| Workflow filename | `npm-stage.yml` | Same generated filename |
+| Environment | `npm-staging` | Same environment name in that repository |
+| Allowed publishing action | Native staged publishing only | Disable direct publishing for this trusted publisher |
+
+A **trusted publisher** authorizes a matching CI identity to submit a package. OIDC supplies a short-lived identity assertion from GitHub. It does not grant npm permission to an arbitrary user who knows the repository name.
+
+Use the exact repository and workflow values. Each package manifest’s `repository.url` names its build repository to match the publisher; its approved source repository is recorded separately in release metadata. Private GitHub sources do not support npm provenance, so the generated workflow disables it. See [npm trusted publishers](https://docs.npmjs.com/trusted-publishers/).
+
+## Configure the GitHub staging environment
+
+Create `npm-staging` in each package build repository and allow only protected `main` to deploy to it. Enable available environment protection rules and preserve reviewer-only dispatch in the generated script.
+
+For `@cloudigniter/dev`, add a narrowly scoped **read-only** npm token as the environment secret `NPM_READ_TOKEN`. The verifier needs it to query the existence of the restricted package. OIDC authorizes staging; it does not authorize private metadata reads or dependency installation. Public packages normally need no read token for their existence lookup.
+
+Once trusted publication works, select npm’s package security setting requiring 2FA and disallowing traditional write tokens. Keep the GitHub workflow and policy under independent review.
+
+## Verify the setup
+
+Generate and review the [build scaffold](./generated-files), configure npm and GitHub as above, then process a reviewed candidate using [Release packages](./release-packages). Inspect the Actions logs and retained staging result. Confirm that the candidate remains unpublished until the npm maintainer approves it.
+
+A `staging` dist-tag is not equivalent to native staging: publishing a public package with that tag already exposes its bytes. Use the native staged workflow for the approval hold. npm documents its requirements and lifecycle in [staged publishing](https://docs.npmjs.com/staged-publishing/).
+
+Do not infer completed setup from committed configuration. Track actual repository, publisher, access and first-run verification in an internal setup issue.
+

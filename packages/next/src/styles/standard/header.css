@@ -15,7 +15,7 @@
   }
 
   .ci-main-header-dashboard-button {
-    @apply rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ltr:ml-8 rtl:mr-8;
+    @apply rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ltr:ml-8 rtl:mr-8;
   }
 
   .ci-main-header-user-box {

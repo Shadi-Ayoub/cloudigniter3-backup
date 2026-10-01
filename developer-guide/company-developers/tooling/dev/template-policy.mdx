@@ -1,0 +1,75 @@
+---
+title: Template export policy
+description: Review the file inventory, dependency pins, overlays and transformations used for standalone templates.
+sidebar_position: 8
+---
+
+Template policy defines which private-workspace files may become a public
+application. `packages/dev` validates and applies that policy. Follow the
+[export workflow](./template-export.mdx) to prepare and compare a candidate.
+
+## Policy contract
+
+Export policies use `schemaVersion: 1`. The default is
+`.cloudigniter/template-policy.json`. They are reviewed company configuration,
+separate from npm release-request policy:
+
+| Field | Contract |
+| --- | --- |
+| `source` | Default workspace-relative application directory below `apps`; overridden by `--source`. |
+| `name` | Default exported application package name, optionally scoped; overridden by `--name`. |
+| `files` | Exact paths relative to `source`; no globs or implicit recursive copies. |
+| `overlays` | Exported path to workspace-relative replacement file. Overlay paths must not collide with `files`. |
+| `versions` | Explicit public CloudIgniter dependency allowlist and exact package versions. |
+| `dependencyVersions` | Optional exact third-party pins. Existing dependencies must accept the pin; missing entries become runtime dependencies. |
+| `removeDependencies` | Only `@cloudigniter/config-ts` may be removed; the export supplies standalone TypeScript configuration. |
+| `scripts` | Complete exported script map. Company-only scripts are omitted; AWS scripts accept an explicit profile instead of embedding a company profile. |
+| `replacements` | File to ordered `from`/`to` text pairs. Each source string must occur exactly once, or export fails before writing. |
+
+For templates with different files, frameworks, assets or rewrites, create a
+separate reviewed policy, for example `.cloudigniter/templates/next-aws.json`.
+Start from the existing policy, set its `source` and `name`, and adapt its inventory,
+scripts, overlays and replacements to that application. Select the same policy for [export](/commands/dev/template-export) and
+[comparison](/commands/dev/template-check).
+
+The policy's own directory does not change path resolution: `source` and overlay
+input paths are relative to the workspace root; `files` and replacement targets are
+relative to the selected application. An explicit `--source` overrides the selected
+policy's default source. Selecting another source does not discover files, rewrite
+the inventory or change layout-specific replacements automatically. Review rewrites
+when moving an app deeper under `apps`, especially its monorepo-relative paths.
+
+Default standalone assets live in `.cloudigniter/template/`; a separate policy can
+select its own workspace-relative overlay files. Update the explicit inventory
+when adding, moving or retiring template files. New source files are excluded until
+added to policy. Review overlays when their source configuration changes; they do
+not automatically inherit later monorepo changes. Missing inputs, unknown schema
+fields, duplicate paths, path escapes and symlinks fail before export starts.
+
+The default Next.js/AWS policy's transformations:
+
+- Resolve public CloudIgniter packages to exact registry versions, moving runtime
+  packages into `dependencies` and retaining the public CLI as a development tool.
+- Inline reviewed TypeScript settings with only the application `@/*` alias.
+- Set Turbopack's root to the exported application and preserve next-intl wiring.
+- Point Tailwind at installed package JavaScript under `node_modules`.
+- Replace the remaining workspace type alias with `@cloudigniter/aws/types`.
+- Keep Next.js pinned to `16.2.2`, with the existing workspace patch explicitly
+  copied and registered in the standalone pnpm configuration.
+- Supply a clean Next.js environment declaration and reserved example addresses
+  for seed users. Omit deployed Amplify outputs and local root-user/account files.
+- Include public application setup instructions and ignore local generated state.
+
+The exported manifest is `private: true` to prevent npm publication of the
+application. This setting does not control GitHub repository visibility. The
+template itself does not need a direct dependency on `@cloudigniter/emberguard`.
+
+The exporter reads all inputs before writing, checks known private paths and
+credential patterns without printing their values, and records deterministic
+content hashes. These checks do not establish that arbitrary application content
+is suitable for public release; review the file inventory, examples, images and
+configuration. The content digest identifies bytes, not approval or authenticity.
+Filesystem failures during a fresh export may leave an incomplete output.
+Replacement stages files first, but removal and the final rename are not one atomic
+operation: a failure after deletion starts may leave the output partial or missing.
+Inspect the error, then rerun the export, using `--overwrite` if the output remains.

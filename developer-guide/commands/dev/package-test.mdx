@@ -1,0 +1,49 @@
+---
+title: "dev package test"
+description: "Run the package\u2019s configured tests, optionally in watch or coverage mode."
+sidebar_label: "dev package test"
+sidebar_custom_props:
+  audience: developer
+---
+
+Run the package’s configured tests, optionally in watch or coverage mode.
+
+## Syntax
+
+```text
+dev package test [--watch | --coverage] [--filter=<text>]
+```
+
+## Prerequisites
+
+Run from the owning `packages/<name>` directory in the private CloudIgniter workspace after installing its dependencies. `--workspace-root` selects discovery and does not change the current package.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--watch` | Keep the selected test suite running in watch mode. |
+| `--coverage` | Run the full suite with c8 and enforce the configured coverage hook. |
+| `--filter=<text>` | Test-file path fragment; repeat to select the union of matches. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Discovers the package-configured tests. An empty selection fails. Coverage requires a configured gate and cannot combine with watch or filters. Packages requiring no skips produce and validate JUnit output for non-watch runs.
+
+## Examples
+
+```bash
+cd packages/next
+pnpm exec dev package test --filter=proxy
+```
+
+## Errors and recovery
+
+A missing required configuration or tool fails the command. A failed subprocess stops the workflow and returns a nonzero status. Inspect the first reported failure before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/package-workflows)

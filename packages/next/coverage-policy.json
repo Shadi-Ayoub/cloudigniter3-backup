@@ -1,0 +1,1685 @@
+{
+  "description": "Frozen rollout exceptions for existing implementation. Never rehash or lower floors to bypass new/changed-file coverage. Retire exceptions as files reach the standard. Barrels/types, retired delete folders and example-only files are excluded by .c8rc.json; all other unexecuted files are counted.",
+  "minimum": {
+    "lines": 90,
+    "statements": 90,
+    "functions": 90,
+    "branches": 80
+  },
+  "legacy": {
+    "src/client/i18n/CiNextLocaleSwitcher.tsx": {
+      "sha256": "ae2adf3ab76bf22ba3c9a98966eae226a14d94cf505d764cded0ea2b32e852a2",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/navigation/ci-next-navigate-with-loader.tsx": {
+      "sha256": "64706b3b1ffaa621fe25f4b94cf984af936ddef89699b2a533db23ed656841a8",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/page/CiBreadcrumbs.tsx": {
+      "sha256": "f3ba2db026d759b4c45a83d412438c402d509e2f5420a16f7cdca6c0c8ea8072",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/page/CiPage.tsx": {
+      "sha256": "1e2910be7f252fdcb370b906ae0ea99bae98ff86a53bba8803c00095a835777d",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/providers/aws/amplify/components/ci-amplify-client-configurer.tsx": {
+      "sha256": "6235e0ca272cde93842d0cb46aceec75146d80fdb0aa5fb7bc3305c71e02d701",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/settings/ci-settings-provider.tsx": {
+      "sha256": "1624ed0142c3e4c0bfab00e82b9e9b1a28a702cd2502802913e741204ea19d1f",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/settings/ci-use-setting-value.ts": {
+      "sha256": "fa12bac93fee47b9ebe18aa8530e07ef60eb0a931aa8c4ba5307e02f511f87f1",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/settings/ci-use-settings.ts": {
+      "sha256": "ffc4d2d01f3ffa02e5cebbd0e243f311f0da66b2f39d12bf208977737df2a485",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/settings/ui/CiSettingsPage.tsx": {
+      "sha256": "19a4c030c57b50ac03b8e7720d70249f68e18d10e9d90cba4d39039e5d34686b",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/settings/ui/settings-form/CiSettingsForm.tsx": {
+      "sha256": "9b2612b95bb848b33de64a1759f1bdd52ec685f7ee8ac82aeafd0e2f060474dc",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/settings/ui/settings-form/CiSettingsFormContent.tsx": {
+      "sha256": "7e6ba4401ac4c51c697c2d046c53a610a70d3ce8f115ea95e95d2435f189f89e",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/settings/ui/settings-form/ci-config.tsx": {
+      "sha256": "042a9c90f65c68e3172968d66698d092bd732b901c8f64d5cb6298b922d6c724",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/settings/ui/settings-form/ci-context.ts": {
+      "sha256": "209a93d893fec9cc86be3f8194879a827adf723829df2ec7e9a9db94f072db75",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/settings/ui/settings-form/ci-default-values.ts": {
+      "sha256": "f7a5f1420b09bdf18f9178c6641401c0d0070707727f3a1f3b2d2ade19a405de",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/settings/ui/settings-form/ci-resolve-path.ts": {
+      "sha256": "815e1a6dfa53c3c511ca3228c7603b80a562a4891e563a4c5bf412b683f1b372",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/settings/ui/settings-form/sections/CiEmailSettingsSection.tsx": {
+      "sha256": "dac1aac2037fd467f36aac13dc25f2d2decd0f3fd0a00946f5e4fb3f46be78af",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/settings/ui/settings-form/sections/CiGeneralSettingsSection.tsx": {
+      "sha256": "5b9641066d65c98eef58d101faf883492458d6cea95819d349c2642e902ae648",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/settings/ui/settings-form/sections/CiI18nSettingsSection.tsx": {
+      "sha256": "e12fc37d4c6207a86559bd4c59c4d8b2ce77c4ddcda4d7990fa9944c8789b4f4",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/settings/ui/settings-form/sections/CiMainMenuSettingsSection.tsx": {
+      "sha256": "fc60be9feb599b4feb38ceeab1b40cf6314de8ef375a60ff0b8cdbbd0299540c",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/settings/ui/settings-form/sections/CiSecuritySettingsSection.tsx": {
+      "sha256": "737153455ab438916ac004eccad834bbc6d9ac0d2a030260a9101a078683857a",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/settings/ui/settings-form/sections/CiSettingsFormSection.tsx": {
+      "sha256": "2a1a78613598b54f4bbc8c86931e52f9d3b68bb50d2dfbd1562cb603c146765b",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/settings/ui/settings-form/sections/CiThemeSettingsSection.tsx": {
+      "sha256": "b59d681127be1a2ac1dc761ba02fd515cd35482a0fa641933417e8b38c9cd6b9",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/theme/CiThemeSwitcher.tsx": {
+      "sha256": "fd0c50372b188193ec9866c09e7f94bff5165106449ac0c75e064131b2711dac",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/theme/ci-theme-provider.tsx": {
+      "sha256": "e96311402757c3e5f0883e797692cde47d4d8bc970bf254deab1a5c7f52b61a0",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/wrapper/CiClientWrapper.tsx": {
+      "sha256": "51d9ea1ec96f4d068d9f465829e82860deeedb6bdaad855fe476e231f6d477fe",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/client/wrapper/CiInitialLoader.tsx": {
+      "sha256": "270d6ae46b6160155068a88b456612fee3d0aae7aa5286d8eefe0ba6d3e7b950",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/layout/app-standard/CiLayout.tsx": {
+      "sha256": "ebc2c72681f76308c6d9df519aa3111a23bccff6569843805a50df2fc9ff75b1",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/layout/app-standard/container/CiContainer.tsx": {
+      "sha256": "f130bd3fb8d9239eb7bf62470b7e08a2d4f3eb92ec0de3e3549f3a566d999644",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/layout/app-standard/footer/CiCopyright.tsx": {
+      "sha256": "f766e4e0e33dcb5f1832d0d2071602c24fe9ea7a2ccc1db94f4d8c42b69bf1f2",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/layout/app-standard/footer/CiFooter.tsx": {
+      "sha256": "529eaa256f0332e60a61b9f93295571f4ff0129822cc5bf3c523e64822505f42",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/layout/app-standard/header/CiHeader.tsx": {
+      "sha256": "a71dcd6c4a67057be64f8f94bdd5f00088aa5c43f2680312ab12f870e6d9d0e3",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/layout/cp-standard/CiLayout.tsx": {
+      "sha256": "ba6ca3b37b637a162ad919c025e8654cb83ff8ef69db5eb0cb8ee2c822d799a4",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/layout/cp-standard/container/CiContainer.tsx": {
+      "sha256": "18e4cbf503bd760de5b5c7c490a6d6df7fd68d61f1ed344d979e881b43246a72",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/layout/cp-standard/footer/CiCopyright.tsx": {
+      "sha256": "ab5931b25ec113632193e2bb05f4e0c6be8b0baf8ee28c37cf59b41075f61e2f",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/layout/cp-standard/footer/CiFooter.tsx": {
+      "sha256": "06d33b841dd39df6e90f9304f581f6068c29f51aefebc9223011974959bd22ca",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/layout/cp-standard/footer/CiSystemStatusDialog.tsx": {
+      "sha256": "2014b6b6aeb9a599800cbb268841145aceecd30101e4657bef9b63b9a1a4591d",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/layout/cp-standard/header/CiHeader.tsx": {
+      "sha256": "878d6cb83f686b51d31299fd5cb10d272bbd4836651e4e3fb6e1801ab61c9816",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/layout/cp-standard/header/CiMainHeaderUserBox.tsx": {
+      "sha256": "33afa3e35070d8f4a2167eecc5b58d2d8ecf4c99565237bf655808d4935abfbf",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/layout/login-standard/CiLayout.tsx": {
+      "sha256": "6f5e34dd110e29a76fcd313b1f411ce584b2eba8fac3442d4e057ab3ebc1d7a8",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/layout/login-standard/container/CiContainer.tsx": {
+      "sha256": "1e5ba3416106767a98eb6a2ec2a88609cb267d47fd3e5d428b6dc9e01bf305ec",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/layout/login-standard/footer/CiCopyright.tsx": {
+      "sha256": "ab5931b25ec113632193e2bb05f4e0c6be8b0baf8ee28c37cf59b41075f61e2f",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/layout/login-standard/footer/CiFooter.tsx": {
+      "sha256": "ccf7db9f525bef33c5c963a1ced2ee1dbe6097b03b5760969359f841f8512433",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/layout/login-standard/footer/CiSystemStatusDialog.tsx": {
+      "sha256": "856e50f7637921e116b2bf9a1586a9a26492bbc6e87cae3b391993377d3bcc00",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/layout/login-standard/header/CiHeader.tsx": {
+      "sha256": "c1d33b53a1c13bf0f8d1bbae3abfd9e6b362a258f7029d3b0e667767e6d7fedc",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/layout/login-standard/header/CiMainHeaderUserBox.tsx": {
+      "sha256": "d1bb4d7c91f32b2170473406689b1830d3df60a1ef3fb667d99ae469c54e8f77",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/lib/resource-studio/ci-plan-next-data-entities.ts": {
+      "sha256": "1b679053ca4d16eaca9841298d66403a70956493c3ab70e166e5908156743596",
+      "minimum": {
+        "lines": 85,
+        "statements": 85,
+        "functions": 100,
+        "branches": 63
+      }
+    },
+    "src/modules/auth/client/CiLogin.tsx": {
+      "sha256": "7e0bb1cc9e44911740683d47c2e69c644e5c1362c917bd9b6f6341138a3b6908",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/auth/client/CiLogoutButton.tsx": {
+      "sha256": "bd709dea07e3aab38aa8943b5840421a8dfa073de0f37b2a574b12210cb959a2",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/auth/client/ci-auth-client-module.ts": {
+      "sha256": "6c364e30fbbb3c9eae7b6a97f9c389824162bc82cb166fdc61f47af5c7e5e822",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/auth/client/providers/aws/CiNextAwsLogin.tsx": {
+      "sha256": "43596a3c24ed22a538656c3da63715e4f27bf847b93d6fa60f85543ed896f1d1",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/auth/client/providers/aws/CiNextAwsLogoutButton.tsx": {
+      "sha256": "31fc09c9cf7084a74991572ed48dbc27bd83ee89921f6c603adc4dd92729fb50",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/auth/client/providers/aws/authenticator/ci-use-next-aws-authenticator-theme.ts": {
+      "sha256": "b4facb42d288fc056522eeba0cf0b4932163773794a3429f31b9fd30ad5022a8",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/auth/client/providers/aws/ci-use-next-aws-logout.ts": {
+      "sha256": "2b60a24357000eb262926fe5e0ce4791e8ac8fc69bc241c5fc414b92c7f0770b",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/auth/manifest.ts": {
+      "sha256": "3a1b64c3445433e6157fd5f6616f4c6e2f4a727fd5fdf6b4cf31d57103c0ba7d",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/auth/server/ci-auth-server-module.ts": {
+      "sha256": "094d26cb0e2af39e02dfb205c23a0d367bf15c76494d5e3e25daa164f4a71bda",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/client.ts": {
+      "sha256": "b39b17f7551912d795c2329f29da0fc660e7bd892cfcd79ac117664978a866b2",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/CiDevBeaconClient.tsx": {
+      "sha256": "ca3237741b8dacb52dc483c7a3d0e3a3d5d324cc40a777d49746034fb33b5a6c",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/CiDevBeaconButton.tsx": {
+      "sha256": "6e09d93e3b1a8f3f0849f9ba4c7b7ddd3e5c88e13d4037b051468be5c3d04826",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/CiDevBeaconModal.tsx": {
+      "sha256": "0e9f425c286dd48fe10df91b295bae2dfd23a11ed631ac08429ed16429ea3f19",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/CiDevBeaconSideTabsList.tsx": {
+      "sha256": "1992379eb127d918393b500a8eab5ea89cf5c277f6a1fcb441d976f4b25623fe",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/card/CiDevBeaconCard.tsx": {
+      "sha256": "876bf5484060a9ef0070bd89331d751e7311c7990ddae9f176046c4dd5f6def9",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/card/CiDevBeaconCardRow.tsx": {
+      "sha256": "d30635730eaa2ba789e7e75957a7e1f749ee4b681f56ab4d90b1c1055cc31082",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/card/CiDevBeaconCardRowGrid.tsx": {
+      "sha256": "a9d7187fb0b114939c02ce57643b7fc6611c6ddddeae86fb55bbbf00fe35781c",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/card/CiDevBeaconCardRowSeparator.tsx": {
+      "sha256": "030a78a7b9757c609ce4f9c55119228c9f22d5ceb518905ba3f83ed02c1cbd43",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/card/CiDevBeaconCardSummaryValue.tsx": {
+      "sha256": "050df85188d53d85a2ddc3f07e1e6b3eeb62b704908a650701c3f119483caef2",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/card/CiDevBeaconCardTitle.tsx": {
+      "sha256": "03c0a1e904dbfe3d28e5be0f2c32f155f47c2f5c9f6415820c358b5ecc631440",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/card/CiDevBeaconTooltipBalloon.tsx": {
+      "sha256": "a0a086a12cbdf37d89eb462b1eae657a31f5abf92333febab7e34de2e28438a2",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/sections/diagnostics/CiDevBeaconSectionDiagnostics.tsx": {
+      "sha256": "c1804baeb756ee53a981c914a771c174c7cdabd91da79fcb646561c2c4501c41",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/sections/diagnostics/cards/general/CiDevBeaconGeneralDiagnisticsCard.tsx": {
+      "sha256": "d09ecc3d5fc2ced9259f8bf0f1e81a49c74fb4c5f6b56ca6f49abced777b4cec",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/sections/diagnostics/cards/general/components/CiDevBeaconAmplifyOutputsStatusRow.tsx": {
+      "sha256": "241528bdb0f6dd7d56f001d74c7f2f59d1719a886741832760cd75a94e24fff9",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/sections/diagnostics/cards/general/components/CiDevBeaconAuthenticatedUserSegment.tsx": {
+      "sha256": "bae85c89a481c691607008c440495645754b2bb3b8189c1701647186f9f3991f",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/sections/diagnostics/cards/general/components/CiDevBeaconPlatformInformationSegment.tsx": {
+      "sha256": "d96dc6a89994cd7e8edfec9b7e65ebcedfc630866dfb84c9ec7d5238442cea9a",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/sections/diagnostics/cards/general/components/CiDevBeaconProvidersStatusRow.tsx": {
+      "sha256": "090c69501ed09f9e537ca6cd3c799c5640a4fd4ac5324164b8236c3eb42bb911",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/sections/diagnostics/cards/general/components/CiDevBeaconProvidersStatusSegment.tsx": {
+      "sha256": "566ebb54fa12b2a9d1013974b3cb0100bebfc4c2870e010a65bbf553b0d46cc8",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/sections/diagnostics/cards/general/components/CiDevBeaconResolutionCheckupModal.tsx": {
+      "sha256": "43d407ef3f6902182ae386c840539740a6a753a0163880593e16a29a0d0a77c7",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/sections/diagnostics/cards/general/components/CiDevBeaconResolutionCheckupSegment.tsx": {
+      "sha256": "a4a200b4e401640ff07b1f783d877754ad315489a159eecfcdcbdc9da4ccd178",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/sections/diagnostics/cards/general/helpers/ci-get-tenant-resolution-checkup.ts": {
+      "sha256": "70a4bc2aa9d8ffe0cc2222cbd9585e3b1f0ad77e74848e60c4809824c92ca938",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/sections/diagnostics/cards/language/CiDevBeaconLanguageCard.tsx": {
+      "sha256": "8860d156662540ead2418c952a69528461a53c3d88b0837a1cd46d15bdaf7e43",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/sections/diagnostics/cards/language/components/CiDevBeaconLanguageDetailsModal.tsx": {
+      "sha256": "1d490360c533c542eb8457cd9ef1e3fc3a37953073434fbd0e46c26082b7f352",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/sections/diagnostics/cards/request-context/CiDevBeaconRequestContextCard.tsx": {
+      "sha256": "d8dd0ef77036b394bfe08de34888f04fd02233ddae503049be9ceacf264727f6",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/sections/diagnostics/cards/tenant-route/CiDevBeaconTenantRouteCard.tsx": {
+      "sha256": "9ee59ae42a3d967a16e1e49f6d21702c09a956b3d8ebb271dbc6858280a7da42",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/sections/diagnostics/cards/tenant-route/components/CiDevBeaconOrgUnitContextSegment.tsx": {
+      "sha256": "b9f9a6fc6fdf89b4a1408d5d504f0c6246e48176bbc509037e1652c331d93ea6",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/sections/diagnostics/cards/tenant-route/components/CiDevBeaconRouteContextSegment.tsx": {
+      "sha256": "c6aac5c5c2c735c82047f7b02764b367872d62fdd9a8275b8121179a8536ab8f",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/sections/diagnostics/cards/tenant-route/components/CiDevBeaconRouteDefinitionsModal.tsx": {
+      "sha256": "9cc92296a8c89081b0598ac91924d8f3f98ccd51fcb796ee1d9ca8251a4b6717",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/sections/diagnostics/cards/tenant-route/components/CiDevBeaconTenantContextSegment.tsx": {
+      "sha256": "935392a6a1c9e35565811562914f1435c8dde9dd8776687548567bec7e8f69fa",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/sections/system-config/CiDevBeaconSectionConfig.tsx": {
+      "sha256": "70f47c883f5e5dc8d60483b33c489bf8d8d068b1f8d2334c2911187b49c13eab",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/sections/system-tools/CiDevBeaconSectionTools.tsx": {
+      "sha256": "e6832ac01a788ee605f31cf167a53aef6e184611db10b7e9394178e908b9a8e0",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/trace/CiDevBeaconTraceLogViewerText.tsx": {
+      "sha256": "fb0def07737b4dac037ca3a024c3c76da966d366bd7707f1148c6883a2be18a3",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/trace/CiDevBeaconTraceTab.tsx": {
+      "sha256": "e0e368638b8dfef12ae0d9592629d6e6aaecc57b82a0f5936461d2b562f9d902",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/client/components/trace/ci-trace-tabs.tsx": {
+      "sha256": "dfd7b560a8fe391e59abc9dbcb7db4053346169842b9f9ed6b2a3ba26d9fb0ea",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/manifest.ts": {
+      "sha256": "9647f9ffad1d45fca36406c6388050a0a7c895f3ca31560109368f1bea7da5e1",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/dev/dev-beacon/server/CiDevBeacon.tsx": {
+      "sha256": "b483d51716242ddea9614fc6ac2278f79ec43858a71e507db3b031f1bf4d0f47",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/route/manifest.ts": {
+      "sha256": "2a7b893c95e6cec0e779b0a543c018071bfc67e5d5bf1729f2e70f30f4fd61a3",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/route/server/ci-get-current-route.ts": {
+      "sha256": "b7218d9761c39b34a937ce039e90da53b695193f3210c0f8b310da428a4792f2",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/server.ts": {
+      "sha256": "0fe04166df578510cd568e634025d81d47af7144fc2b011732ac2e7f2f94c5ee",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/modules/user/manifest.ts": {
+      "sha256": "037548f40cf8c543da085cff3e9a95516512f5f14848f9c5ad2252e13ecb1a52",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/aws/ci-get-next-amplify-server-runner.ts": {
+      "sha256": "7cb01f909f531a9e5d4afee0c9d6d068b2309493da5878e6ea2f4e476c9b308f",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/aws/ci-resolve-next-aws-auth-mode.ts": {
+      "sha256": "343879c2f9384c335e07475570de287d07e016b15266da9d102a507b7dffd4b5",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/aws/ci-run-with-amplify-server-context.ts": {
+      "sha256": "179b7af43e686544dd1d8a0989ddb9882449217d7c6f5ba2b227de53a2c0af5d",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/aws/system/server-status.ts": {
+      "sha256": "727f7b5527d19920ddaa41927e3c64945bad69de23ced984e2ef88c4cb2dcfec",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/aws/user/ci-aws-get-current-user.ts": {
+      "sha256": "c108034f2dceb183020abcf90eda672e381af17c1675e44f58e1dcda358727fc",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/context/ci-get-request-context.ts": {
+      "sha256": "6e4758c3e2752949bfe5c86a95860bc8c0c01ee20d639f9de281642b0c99f6d2",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/cookie/ci-get-cookies.ts": {
+      "sha256": "825d7fa05712e06ce5a97dfb1cbdb96202e51dd339d134be3e5156bc97494e12",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/cookie/ci-get-next-server-cookie.ts": {
+      "sha256": "ea14111c191fb401c9f940ab7304b5360f1efc90419d3c1cdd49cc9768d0929e",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/cookie/ci-set-next-server-cookie.ts": {
+      "sha256": "1d3df8874daf7c65b03e3c7cb58adcf762690e97d57e91db84849acb75d654a6",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/dev/seeder/ci-read-mocks.ts": {
+      "sha256": "3c5f1450fc5e7b24f65bac3b2bd12aced60991138af77f1ad002b754b3f83e26",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/emberguard/ci-create-next-security-administration.ts": {
+      "sha256": "028fe6d4c1cbf0c9d20ff1d3ec24f64f50ef0f60a5de1081e3845e4795bb488b",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/env/ci-get-env-mode.ts": {
+      "sha256": "711108cc919e9d0bee5d6f1a28e2903fd1928cbb023ae02f80fbd4b5f4474416",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/header/ci-get-headers.ts": {
+      "sha256": "bab3c1d1ac4854c9a11abdbc1cf0c37e73b85562a8599924c02f203f6fb85e71",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/i18n/ci-get-server-locale.ts": {
+      "sha256": "05b061bf4e11c795774bab35d01ba4c2648febfa80238c972fa89ff98f08abdf",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/i18n/ci-resolve-locale.ts": {
+      "sha256": "dbfe558b97defb28e65351ad1b6a15a1d7c7404c509093ccad0363f05d0808f8",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/i18n/ci-set-server-locale.ts": {
+      "sha256": "27f21c86456de190e8511c9abd82c65f30d2972092853682bd9684f0746adaaf",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/org-unit/ci-get-org-unit-context.ts": {
+      "sha256": "20dbde68bd88d0a3d8b7d14618ae8a1a141d9548d2ed13d10fa39730c6c5243f",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/org-unit/ci-resolve-org-unit-context.ts": {
+      "sha256": "b60375f71981e0ab4b3ed8ce7a0420bd7cc8a580c3f2c36eb2cb0c71f502b795",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/org-unit/ci-resolve-org-unit.ts": {
+      "sha256": "a488cb51cd3c85f2b23f094ea1703dda0fa151e7077360043262a3baf23223cc",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/org-unit/helpers/ci-lookup-org-unit.ts": {
+      "sha256": "dfd657260b94e7b225843ffb378ef2e4543f2972157f9046941528646f13a933",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/org-unit/helpers/ci-resolve-org-unit.ts": {
+      "sha256": "f276ae1c2bfb58e67c8176750d3b9f11c7ed2c9a2cf07910fe8dfe0a057f0d5a",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/proxy/ci-next-proxy-matcher.ts": {
+      "sha256": "20679f05d7c85fc281954bdf1ebb212372a37667e768b37a1263cc823d23303c",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/proxy/ci-next-proxy-response.ts": {
+      "sha256": "69e27a962ee8c0162a589fdc14263f5c9ca02026823e62e45a593e90abfd9c90",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/proxy/helpers/ci-rewrite-to-route-info-page.ts": {
+      "sha256": "527555979196e1437af6560da91661468681e73f0325fa6377647c2a9aee86ed",
+      "minimum": {
+        "lines": 5,
+        "statements": 5,
+        "functions": 33,
+        "branches": 100
+      }
+    },
+    "src/server/settings/ci-create-next-aws-settings-manager.ts": {
+      "sha256": "212cdc451b399a3b9b0508953c9bd3e05e6628ac54f28a332ab2f88ba31c37d5",
+      "minimum": {
+        "lines": 81,
+        "statements": 81,
+        "functions": 75,
+        "branches": 69
+      }
+    },
+    "src/server/settings/ci-delete-settings.ts": {
+      "sha256": "79a999cfa2ca4c384ee654658bf3b2b50d4df751356dced112a48987bc05e54a",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/settings/ci-get-settings.ts": {
+      "sha256": "ad1c7edad092401fa70570c51ff4f47774aa0a1127b29f2d8a2242452b8a7e0e",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/settings/ci-initialize-core-user-settings-if-missing.ts": {
+      "sha256": "ac979095f4a7a33b03c49e96be26af13fb0b0751e5a248ce30ef968149a4e900",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/settings/ci-initialize-settings-if-missing.ts": {
+      "sha256": "0d7aac942230ff9112f9e11978e998f49976798ff9901546a3651ab977a1930e",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/settings/ci-seed-core-private-settings.ts": {
+      "sha256": "f594845213a7fee40a3da12a16d560434b759f8bfeb939286b507cd4f94f3afb",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/settings/ci-seed-core-public-settings.ts": {
+      "sha256": "50e8b6c5eef24fd6ac436b85ec74404f5bc47c361d337a6b21f34eb7ebd2c0a2",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/settings/ci-seed-core-settings.ts": {
+      "sha256": "e13a94cce60f7dd9e4116d633076cdc084a56dc4564705de16939453509cec71",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/settings/ci-seed-core-user-settings.ts": {
+      "sha256": "f72ae1881203327f627d53ac69ddc29cdd92c7b37840de093533f46710ac9d33",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/settings/ci-set-settings.ts": {
+      "sha256": "4c9e112cc4af1fe0d5069a628a4e55bff2c0c73a80efee8306c5536b0dc6dc5f",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/tenant/ci-get-tenant-context.ts": {
+      "sha256": "dd1926b17bbff5a92feaff8de5a1c8b46a46b1d33ba624323568851b40dae41b",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/tenant/ci-handle-tenant-logic.ts": {
+      "sha256": "7eddc7df38c7758ec9d0496b6d5f8b4b07aa1dc6b5ebb1df3cc7d27059604ae2",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/tenant/ci-resolve-tenant-context.ts": {
+      "sha256": "7b5c19d929cf0b8da960ff79dd7f5e76affa7895dca382b7e562404a2b61cd80",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/tenant/ci-rewrite-tenant-route.ts": {
+      "sha256": "2d80220ef19d5a9b7747cd73ecae7736ae83ebd9588817b96077a20c69a4972b",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/tenant/helpers/ci-get-host.ts": {
+      "sha256": "1812c7da27ddb3f90d4e3d780d4031f24607a2e5139ccd760261e93b1771e1a8",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/tenant/helpers/ci-lookup-tenant.ts": {
+      "sha256": "a5d7854f39688782fb9a65bbab33e803bddeef3f49abb7cd652c13cbdf6b41f4",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/tenant/helpers/ci-normalize-base-path.ts": {
+      "sha256": "ec7396beb111a922913fb0daaa05d7e80e9b64434812130eeb5492f77dd34727",
+      "minimum": {
+        "lines": 100,
+        "statements": 100,
+        "functions": 100,
+        "branches": 66
+      }
+    },
+    "src/server/tenant/helpers/ci-resolve-slug-tenant.ts": {
+      "sha256": "d03c54c8eb9fb008436190ac6c9625fba16ed48455446a8b3a2374af7ea6dacd",
+      "minimum": {
+        "lines": 89,
+        "statements": 89,
+        "functions": 100,
+        "branches": 85
+      }
+    },
+    "src/server/tenant/helpers/ci-resolve-tenant.ts": {
+      "sha256": "0e9a29a505ea52c34361b3ea76d4cb078f30827e78a63c3aac30e005e6156bbf",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/tenant/helpers/ci-rewrite-to-tenant-info-page.ts": {
+      "sha256": "a492ca03b391489eb79b0ec67a5ec7f9a868e3c1f51d0403b9b1f16ad998f156",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/wrapper/CiNextRootWrapper.tsx": {
+      "sha256": "f6242a65298743c475b46e3a1f6c83b6c9ce173e1f78f8505d105efe4f93c845",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/server/wrapper/CiPageWrapper.tsx": {
+      "sha256": "84fbb575adfdd1feeaed29f1b34653f850e6261c8191eda087184b9fc85291f3",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/components/dashboard/CiNextDashboardCard.tsx": {
+      "sha256": "a9361f2b5a1a64c2ef54fbdd1e59dc2e332379329144c9fb5b08182f45a1a649",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/components/dashboard/CiNextDashboardHeaderButton.tsx": {
+      "sha256": "ab1aad20cab6b0cf1b1d94711882097638efb2027fb0124c03ac34de01b10f84",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/components/main-menu/CiNextMainMenu.tsx": {
+      "sha256": "b228060d75e5ab94cc951e1de81bc1e08997facd675955e3adbaaffb42c31334",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/components/main-menu/CiNextMenuItem.tsx": {
+      "sha256": "e530b0e2c186b9ca7692b4f54592015114130af4cac18e0d23219fca015083f5",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/components/main-menu/CiNextNavigationMenu.tsx": {
+      "sha256": "63fea4174226411db9de042ffb7c994b0a47646658a4f284980abfd58c56fff9",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/components/mark/CiNextHeaderLogo.tsx": {
+      "sha256": "25b184eddba091e35b3aa81f646c93291c9c1ea4da467dc354dcf0b8ffe36bfd",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/components/profile-menu/CiNextAwsProfileMenu.tsx": {
+      "sha256": "9999fe7eba6dcaa09f91d518d68b34b88bf8b0120b588c120fdf917da454350f",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/components/profile-menu/CiNextProfileMenu.tsx": {
+      "sha256": "7c3290a0d27ea1957affb94d7c0b7adc78009ebbd4accfa92cf76eacef4b53de",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/components/profile-menu/index.tsx": {
+      "sha256": "bca103aa48ad405dce35933287be49718bf5b8a1461690c14529ae684cd94cd0",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/components/settings/CiNextSettingsManager.tsx": {
+      "sha256": "5b205d321b37673846708da177d3af4fe7bd6bade89d9924d11ab787d6b45664",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/dev/debug-probe/CiDebugProbeClient.tsx": {
+      "sha256": "7b2648b79d014aaf6c3e4ea7e0f95a9dcfed8e0ad67ebb8de42faa819a0aa17b",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/dev/debug-probe/CiDebugProbeProvider.tsx": {
+      "sha256": "d59cd171949d5965f68ed3e1d8e8a8192a2b4e6c421ea94b364804f62dc3620a",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/dev/trace/ci-start-trace-client.ts": {
+      "sha256": "ec60a8f520e0209c1efb643b2f9ffa297bb3cbf0e451e246e1d765f81cc5c9f9",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/dev/trace/ci-trace-logger-client.ts": {
+      "sha256": "8258b233925f608d4338170251183a56fe28beae59f7ab4ed98c6958ba73dfd5",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/pages/dashboard/dev/CiDevToolsPage.tsx": {
+      "sha256": "847369005c86c0ba00d3d884732fbeaecc849dfafe13457353d91f5448315562",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/pages/dashboard/dev/sandbox/CiSandboxPage.tsx": {
+      "sha256": "08683c8b7a770d732a444fe3de6a9a3c585852a6186fc0d2fd28a221a3153850",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/pages/dashboard/dev/sandbox/input-panel.tsx": {
+      "sha256": "625a274c75bfa492d64fff9f936edc53a4759b57fe5edf24d69c84daf855fd4c",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/pages/dashboard/dev/sandbox/output-panel.tsx": {
+      "sha256": "381588a5033a5d382c66f1b9241dc2d1b8b2fa98c06b47bbe842c3c3339af714",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/pages/dashboard/dev/sandbox/output.tsx": {
+      "sha256": "b72a076f0bc6a70f386036ac723f9b1b35d06b39f5af1481815ad9ec5cc60df0",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/pages/dashboard/dev/sandbox/side-panel.tsx": {
+      "sha256": "658a4181171cd57e7ff9abcda3d59b72dfaa0e3dd368c8398b2ed5937a8409d4",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/pages/dashboard/dev/seeder/CiSeederPage.tsx": {
+      "sha256": "acac05ffda27bbc8ba07de2fc35806dbd3bc53e755b27a2779acd8aabad5d856",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/pages/dashboard/dev/seeder/seed-items.ts": {
+      "sha256": "cc5eee894ecafba10be07830dedb80be00caa3dc7050e788687e3f391cee7403",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/pages/dashboard/resources/CiNextResourceCatalogPage.tsx": {
+      "sha256": "a3ac84aa3fb2e1b12496064e92d607acfe38d7bc35f5982a1e2c415c73a89dea",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/pages/dashboard/security/CiNextSecurityDataPage.tsx": {
+      "sha256": "d66ba19cadad3706ec6438612ed0786d543b82dfc0c63ec440fb8ec38f84d598",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/pages/dashboard/security/rbac/page.tsx": {
+      "sha256": "2423814c2ae0716723d9a1356b5bdef885e40e3e2a3f463a4867e75e4bf029b4",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/pages/dashboard/tenants/CiTenantsPage.tsx": {
+      "sha256": "f3d8085906c62d4b45917a99339d9b21da2b97537f8ce3760cf0fdc6dcecbe5b",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/pages/dashboard/tenants/actions-config.ts": {
+      "sha256": "3246168baf4c4d12b127a23b95176fccd8dd19895140d67ef3b9c2f8a6950f56",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/pages/dashboard/tenants/column-config.tsx": {
+      "sha256": "c1255417aac9bed9813bc6c5923178cb803b053cb69a5acf4d44e099c61ceeaa",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/pages/dashboard/tenants/types.ts": {
+      "sha256": "8c77a0c23abc86459feb8057c8654a2936e5fda94563adbc07f88a36f03f04fd",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/pages/dashboard/tenants/use-tenants-loader.ts": {
+      "sha256": "5736b28dc93138d311d7a86f9f01cef5381e84b57996b091b693b111f03adfdc",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/pages/dashboard/theme/CiThemePresentationPage.tsx": {
+      "sha256": "b1273f18bb37f0c4e0d88b411771e5f15bc458fd4d42c099463c82bbca3218a5",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/pages/dashboard/users/users-data-table.tsx": {
+      "sha256": "c5daf5f4831d34e11a89ec2cd22302ca7165e9df61a01ce6e6db648b5d194ccd",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/pages/dashboard/users/users-management-page.tsx": {
+      "sha256": "b17ac491d1b88830029a04674cb31dab06c51ff6347f7dcab8adafc47f9b91a0",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/pages/login/CiNextAwsLoginPage.tsx": {
+      "sha256": "00d2abea3faa7e1314477d7ec3ff5af7c86e357bc034391253bba0dd80360e9a",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/client/pages/login/use-show-loader-when-authenticator-disappears.ts": {
+      "sha256": "152215c861861eb55299702729492e2c5920a905965e65fc042706a015288774",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/common/icon/CiIcon.tsx": {
+      "sha256": "ff25e7588c5f07f338feef331c47b820b3ffb0b4b04de78b25ff129d6b426bce",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/common/round-button-fallback/CiRoundButtonFallback.tsx": {
+      "sha256": "0d8388a9c8582c11e38e7ca4a827612e1faba736c976b32269bf90a40eee4ba3",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/common/round-button-fallback/index.tsx": {
+      "sha256": "738b5c7f540e77484dfd636f7e930174b499112a4f4175e8003db18d0e90ade5",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/server/dashboard/CiNextDashboardOverview.tsx": {
+      "sha256": "d82a0f6673099962580d05005170a978ed75d87156d2ad5c4f02ae4c54a79cc3",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/server/dashboard/CiNextDashboardPage.tsx": {
+      "sha256": "9b8304274a5332479b75a963119b02b7bba1957c6e71484c009f0675c1527499",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/server/main-header-navigation-box/CiMainHeaderNavigationBox.tsx": {
+      "sha256": "cba2cb0e02d26cc8857232745a99d7a026d35f62699819dd87da238e59990208",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/server/main-header-user-box/CiMainHeaderUserBox.tsx": {
+      "sha256": "0249adb7a488e2075c8bd0bc6ae9d2feeef2641b7868c252cb02cb7565d4a77e",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/server/page/CiNextAccessDeniedPreview.tsx": {
+      "sha256": "e8a8d22fddcfc4f2457018b0db53e5e28176ca569be49ef32cbf451fa6139fc2",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    },
+    "src/ui/server/page/CiNextHttpErrorPage.tsx": {
+      "sha256": "178924ba4e9e260f267a0d285e5a22eb29529bfeae0cf15a28800d33d4915746",
+      "minimum": {
+        "lines": 0,
+        "statements": 0,
+        "functions": 0,
+        "branches": 0
+      }
+    }
+  }
+}

@@ -33,3 +33,7 @@ The usage guide is `developer-guide/docs/ui-components/smart-form.mdx`; keep its
 contracts and application customization seam. The canonical Dictionary term is `Smart Form` at
 `/dictionary/s#smart-form`, defined in `developer-guide/dictionary/s.mdx` and cataloged in
 `developer-guide/dictionary-sidebars.ts` for navigation, viewer search, and automatic prose links.
+
+Section selectors may hide mounted groups with CSS to retain all drafts and include them in whole-form validation.
+Use UI's `onValidationErrors(errors)` callback to reveal the first invalid section before deferred focus. Do not
+use `fieldState.hidden` or conditional visibility to implement tabs: those deliberately skip field validation.

@@ -1,0 +1,45 @@
+---
+title: "dev package check-package"
+description: "Validate packaged artifacts without publishing."
+sidebar_label: "dev package check-package"
+sidebar_custom_props:
+  audience: developer
+---
+
+Validate packaged artifacts without publishing.
+
+## Syntax
+
+```text
+dev package check-package
+```
+
+## Prerequisites
+
+Run from the owning `packages/<name>` directory in the private CloudIgniter workspace after installing its dependencies. `--workspace-root` selects discovery and does not change the current package.
+
+## Parameters
+
+This command has no command-specific options.
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Invokes the package’s `packageCheck` hook when configured; otherwise uses `npm pack --dry-run` to inspect package contents. Build the required artifacts first.
+
+## Examples
+
+```bash
+cd packages/next
+pnpm exec dev package check-package
+```
+
+## Errors and recovery
+
+A missing required configuration or tool fails the command. A failed subprocess stops the workflow and returns a nonzero status. Inspect the first reported failure before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/package-workflows)

@@ -1,0 +1,45 @@
+---
+title: "dev package build-assets"
+description: "Compile configured themes and copy package locale assets."
+sidebar_label: "dev package build-assets"
+sidebar_custom_props:
+  audience: developer
+---
+
+Compile configured themes and copy package locale assets.
+
+## Syntax
+
+```text
+dev package build-assets
+```
+
+## Prerequisites
+
+Run from the owning `packages/<name>` directory in the private CloudIgniter workspace after installing its dependencies. `--workspace-root` selects discovery and does not change the current package.
+
+## Parameters
+
+This command has no command-specific options.
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+With `assets: true` in `ci-dev.config.json`, recreates `dist/styles`, compiles theme CSS with local Tailwind, and copies locale assets into `dist/locales`. Otherwise it reports that no assets are configured.
+
+## Examples
+
+```bash
+cd packages/next
+pnpm exec dev package build-assets
+```
+
+## Errors and recovery
+
+A missing required configuration or tool fails the command. A failed subprocess stops the workflow and returns a nonzero status. Inspect the first reported failure before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/package-workflows)

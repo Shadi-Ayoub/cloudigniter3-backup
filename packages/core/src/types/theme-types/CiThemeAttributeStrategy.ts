@@ -4,6 +4,6 @@
  * Examples:
  * - "class"
  * - "data-theme"
- * - any custom attribute name
+ * Both strategies use "light" and "dark" values with the standard stylesheet.
  */
 export type CiThemeAttributeStrategy = "class" | "data-theme";

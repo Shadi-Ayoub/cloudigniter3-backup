@@ -1,0 +1,53 @@
+---
+title: "dev github pr review"
+description: "Submit a review for an inspected pull request."
+sidebar_label: "dev github pr review"
+sidebar_custom_props:
+  audience: developer
+---
+
+Submit a review for an inspected pull request.
+
+## Syntax
+
+```text
+dev github pr review --project=<id|workspace> --number=<number> --head-sha=<sha> --review=<action> --body-file=<path>
+```
+
+## Prerequisites
+
+Run in the private workspace with [GitHub CLI prepared by DEV](./github-setup.mdx) and the relevant company policies configured. Online commands use the selected named GitHub profile; credentials remain in GitHub CLI storage.
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--project=<id\|workspace>` | Required configured project ID, or workspace for the integration monorepo. |
+| `--repository-kind=source\|build` | Defaults to source. workspace has no build repository. |
+| `--profile=<name>` | Named GitHub profile; also selected through CLOUDIGNITER_PROFILE. |
+| `--number=<number>` | Required positive PR number. |
+| `--head-sha=<sha>` | Exact 40-character lowercase commit SHA from pr view. |
+| `--review=approve\|request-changes\|comment` | Required review action. |
+| `--body-file=<path>` | Required nonempty UTF-8 review body. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Posts a review pinned to the exact inspected head commit. The PR must be open, non-draft, on the configured base, and authored by someone else. The selected account must be a configured reviewer.
+
+## Examples
+
+```bash
+# Replace REVIEWED_HEAD_SHA with the inspected 40-character headRefOid.
+pnpm exec dev github pr review --project=workspace --number=123 --head-sha=REVIEWED_HEAD_SHA --profile=approver --review=approve --body-file=review.md
+```
+
+## Errors and recovery
+
+A changed head, wrong base, self-review, draft/closed PR, or unauthorized reviewer is refused. Reinspect the latest head before making a new decision.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/publishing/github-commands)

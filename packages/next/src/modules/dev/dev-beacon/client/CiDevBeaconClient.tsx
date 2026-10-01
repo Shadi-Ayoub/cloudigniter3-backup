@@ -22,21 +22,7 @@ import { CiDevBeaconTraceLogViewerText, CiDevBeaconTraceTab } from "./components
 
 function buildLogoNode(spec?: CiDevBeaconLogoSpec): React.ReactNode {
   if (!spec || spec.kind === "default") {
-    return (
-      <div className="pointer-events-none relative size-7 select-none">
-        <img
-          src="/images/cloudigniter-icon-1.png"
-          alt="CloudIgniter"
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "contain",
-          }}
-        />
-      </div>
-    );
+    return null;
   }
 
   if (spec.kind === "image") {

@@ -1,0 +1,17 @@
+---
+title: "B · Developer Dictionary"
+sidebar_label: "B"
+description: Internal CloudIgniter developer terms beginning with B.
+sidebar_position: 2
+custom_edit_url: null
+customProps:
+  audience: developer
+---
+
+## Barrel File {#barrel-file}
+
+A module that collects exports from other modules into one import surface, commonly an `index.ts`. CloudIgniter groups public types behind each owning package’s `/types` entry point. A barrel must preserve runtime boundaries: re-exporting a server module from a client surface can introduce an invalid dependency.
+
+## Build Artifact {#build-artifact}
+
+Output prepared from source for use or distribution, such as compiled JavaScript, declaration files, static documentation, or an npm archive. CloudIgniter package checks validate the artifact as well as the source. Creating an artifact does not itself publish it. See [package workflows](/company-developers/tooling/package-workflows).

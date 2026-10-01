@@ -1,0 +1,8 @@
+{
+  "captured_on": "2026-09-30",
+  "description": "Original two supplied files; preserve provenance when making intentional changes.",
+  "sha256": {
+    "index.html": "e0075625732b5fe232c3424a5afdcab48956642e17425aa7359fc82a9f247176",
+    "jodaris-desktop-hero.png": "22775f8b11aaf896c5e7063792df00af20101e6e24b60eafcb110c9b74bd1815"
+  }
+}

@@ -12,3 +12,5 @@ export { ciDeleteSettings } from "./ci-delete-settings";
 export { ciGetSettings } from "./ci-get-settings";
 export { ciInitializeSettingsIfMissing } from "./ci-initialize-settings-if-missing";
 export { ciSetSettings } from "./ci-set-settings";
+export { ciCreateNextAwsSettingsManager } from "./ci-create-next-aws-settings-manager";
+export { ciGetNextAwsSettingsAccess } from "./ci-get-next-aws-settings-access";

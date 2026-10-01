@@ -1,0 +1,81 @@
+---
+title: Release requests
+description: Connect offline version planning, source review, verified candidates and build-repository approval.
+sidebar_position: 9
+slug: /tooling/release-requests
+---
+
+DEV coordinates package releases through version proposals, source review and
+verified distribution archives. GitHub and npm permissions enforce approval.
+Complete [publication setup](/company-developers/tooling/github-npm-publishing)
+before submitting online requests.
+
+## Plan versions
+
+Use [dev npm plan](/commands/dev/npm-plan) to calculate an offline Changesets
+proposal. Planning permits a dirty checkout and requires no registry credentials;
+it neither validates a production package nor reserves a registry version.
+
+Changesets combines the requested intent with pending Changesets and propagates
+dependency releases. Review directly requested, pending and dependent packages as
+one batch. Prerelease cycles and distribution channels follow release policy;
+prerelease versions cannot use `latest`. Package access is asserted against policy,
+and cannot be changed by a release invocation. DEV remains restricted.
+
+The command manual defines release intents, package selection, prerelease controls
+and structured output. Initial-version publication and trusted publisher setup
+follow the [npm setup guide](/company-developers/publishing/npm-setup).
+
+## Submit and complete a release
+
+The company uses paired private source/build repositories. Release policy lives in
+`.cloudigniter/release-policy.json`, repository mappings in
+`.cloudigniter/repositories.json`, and named accounts in
+`.cloudigniter/github-profiles.json`. Keep release, repository and Changesets base
+branches aligned. See [publication setup](/company-developers/tooling/github-npm-publishing)
+for the inventory, profiles and required protections.
+
+| Stage | Evidence and next action | Command manual |
+| --- | --- | --- |
+| Source request | From a clean integration base, submit concrete versioned source snapshots for review in every affected source repository. | [dev npm publish](/commands/dev/npm-publish) |
+| Reviewed versions | After all source PRs are approved and merged, apply those versions locally; review and commit the integration lockfile. | [dev npm version](/commands/dev/npm-version) |
+| Candidate | In a clean disposable checkout, verify approved source bytes, run package gates and hash the resulting archives. | [dev npm candidate](/commands/dev/npm-candidate) |
+| Build review | Revalidate the candidate and request review in each matching build repository. | [dev npm deliver](/commands/dev/npm-deliver) |
+| Staging and publication | An approver merges the build PR, runs its stage workflow, inspects the staged archives and gives final npm 2FA approval. | [Package publication](/company-developers/publishing/release-packages) |
+
+Source submission runs Changesets in a temporary metadata workspace. Each source
+PR contains tracked package files, versions, changelogs and release metadata, using
+the destination repository's own history. Local versions and files remain unchanged
+at submission. The source request does not upload packages to npm.
+
+Candidates retain package-specific gates; Next retains its exact release-check
+archive. Review the [artifact evidence](./release-artifacts.mdx) and publish those
+same verified bytes. Build delivery requests review; staging and final publication
+remain subsequent steps.
+
+## Recovery and status
+
+Source and build requests have deterministic IDs and branches. Unchanged retries
+can recover reviewer assignment; edited branches are never overwritten. Complete a
+multi-repository request batch before merging it. After partial completion or a
+changed base, inspect the repositories before retrying. A batch is not atomic.
+
+[dev npm status](/commands/dev/npm-status) reads the request in its owning source
+repository. Open, closed or merged state does not establish approval, staging or
+registry publication. Inspect the corresponding evidence at each stage.
+
+The older single-monorepo intent/version sequence remains supported through
+[dev npm stage](/commands/dev/npm-stage). The configured paired workflow uses its
+build-repository stage workflows. The root `pnpm release` script submits pending
+Changesets for review; final npm approval uses the native npm website or CLI with 2FA.
+
+## Validate release integration changes
+
+`packages/dev` owns policy validation, the Changesets adapter and request transport.
+Its tests use real Changesets and temporary Git repositories with a simulated
+GitHub boundary; they create no live requests or registry publications.
+
+The DEV quality workflow runs on Node 22 and 24 and uploads the toolkit archive
+with read-only repository permissions. Configure those checks in GitHub settings;
+workflow files alone do not configure branch protection. See
+[DEV architecture](./architecture.mdx) for source ownership and extension checks.

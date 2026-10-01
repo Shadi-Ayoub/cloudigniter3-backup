@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "backupRepository": "Shadi-Ayoub/cloudigniter3-backup",
+  "requesters": [
+    "Shadi-Ayoub"
+  ],
+  "template": {
+    "repository": "cloudigniter-io/cloudigniter-next-aws-v1",
+    "baseBranch": "main",
+    "reviewers": [
+      "jodaris"
+    ],
+    "requestRepository": "cloudigniter-io/source-cloudigniter-next-aws-v1"
+  },
+  "workspaceRepository": "cloudigniter-io/cloudigniter"
+}

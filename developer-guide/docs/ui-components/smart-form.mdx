@@ -141,6 +141,9 @@ Mark required fields and add `validation` constraints or a named runtime validat
 before create/update/save actions. Hidden, disabled, and read-only fields skip validation. Input errors appear
 beside fields. The default dismissible danger alert appears at the top. `errors` controls its placement, title,
 dismissibility, validation summary, and first-invalid-field focus; collapsed groups open for invalid controls.
+For section selectors that hide groups with CSS, keep fields mounted so drafts and validation remain part of the
+form. Use `onValidationErrors(errors)` to reveal the first invalid section before deferred focus. This differs
+from `fieldState.hidden` or conditional visibility, which intentionally skips those fields.
 
 Buttons order ascending by `order` in logical LTR/RTL order. They support `icon`, `className`, `pendingLabel`, and
 an `animation` registry key. Icon keys use the existing `CiIcon` registry unless the `icons` prop supplies a node.

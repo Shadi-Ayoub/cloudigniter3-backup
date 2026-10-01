@@ -1,3 +1,4 @@
+import { ciCheckReadOnlyAccess } from "../../access-control/ci-check-read-only-access";
 import { ciCreateLambdaHandler, ciDeleteCognitoUser } from "@ci-aws/lib";
 import type { CiDeleteCognitoUserInterface } from "@ci-aws/types";
 
@@ -32,6 +33,9 @@ export const ciDeleteCognitoUserHandler = ciProtectCognitoUserMutationHandler(
       if (!decision.allowed) {
         return ciValidationError(decision.reason, decision.statusCode);
       }
+      await ciCheckReadOnlyAccess(event, [
+        { resource: "identity.users", action: "delete" },
+      ]);
     },
     run: ({ input, env, region }) =>
       ciDeleteCognitoUser({

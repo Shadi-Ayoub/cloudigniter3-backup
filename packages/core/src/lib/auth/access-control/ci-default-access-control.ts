@@ -136,7 +136,11 @@ export const CI_DEFAULT_ACCESS_CONTROL_DEFINITION =
           domainId: "developer",
           title: "Developer tools",
           actions: [
-            { id: "access", title: "Access developer tools" },
+            {
+              id: "access",
+              title: "Access developer tools",
+              accessMode: "read",
+            },
             {
               id: "execute",
               title: "Execute developer tools",

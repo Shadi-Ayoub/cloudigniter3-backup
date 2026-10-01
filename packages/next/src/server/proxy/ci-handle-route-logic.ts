@@ -35,6 +35,10 @@ interface CiHandleRouteLogicInput {
 
 type CiHandleRouteLogicResult =
   | {
+      action: "auth-unavailable";
+      route: CiRoute;
+    }
+  | {
       action: "route-info";
       route: null;
       details: {
@@ -78,9 +82,10 @@ function ciResolveSafeInternalUrl(value: string, request: NextRequest, fallbackP
 }
 
 /**
- * Determines whether the current request has an authenticated session.
+ * Resolves authentication without treating a failed session service as sign-out.
+ * null means the service could not provide an authentication decision.
  */
-async function ciIsRequestAuthenticated(request: NextRequest): Promise<boolean> {
+async function ciIsRequestAuthenticated(request: NextRequest): Promise<boolean | null> {
   const gateUrl = new URL("/ci-internal/auth/session", request.url);
 
   const sessionResponse = await fetch(gateUrl, {
@@ -93,13 +98,37 @@ async function ciIsRequestAuthenticated(request: NextRequest): Promise<boolean> 
       t: Date.now(),
     }),
     cache: "no-store",
+    redirect: "error",
   }).catch((error: unknown) => {
     console.error("[proxy] auth gate fetch failed:", error);
 
     return null;
   });
 
-  return sessionResponse?.ok === true;
+  if (!sessionResponse) return null;
+  if (sessionResponse.status === 401) return false;
+
+  if (!sessionResponse.ok) {
+    console.error(`[proxy] auth gate returned HTTP ${sessionResponse.status}.`);
+    return null;
+  }
+
+  try {
+    const result: unknown = await sessionResponse.json();
+    if (
+      typeof result === "object" &&
+      result !== null &&
+      "authenticated" in result &&
+      typeof result.authenticated === "boolean"
+    ) {
+      return result.authenticated;
+    }
+  } catch {
+    // An HTML error page or malformed response is not an authentication result.
+  }
+
+  console.error("[proxy] auth gate returned an invalid session response.");
+  return null;
 }
 
 /**
@@ -181,6 +210,10 @@ export async function ciHandleRouteLogic({
    * - the route is the login page and authenticated users must be redirected.
    */
   const authenticated = route.protected || isLoginPage ? await ciIsRequestAuthenticated(request) : false;
+
+  if (authenticated === null) {
+    return { action: "auth-unavailable", route };
+  }
 
   if (route.protected && !authenticated) {
     const loginUrl = request.nextUrl.clone();

@@ -23,7 +23,7 @@ export function buildCustomAmplifyAuthenticatorThemeOverride(): CiAuthenticatorT
           primary: "var(--color-foreground)",
           secondary: "var(--color-muted-foreground)",
           interactive: "var(--color-primary)",
-          hover: "var(--color-primary-700)",
+          hover: "var(--color-primary)",
           focus: "var(--color-primary)",
           inverse: "var(--color-primary-foreground)",
         },
@@ -50,13 +50,13 @@ export function buildCustomAmplifyAuthenticatorThemeOverride(): CiAuthenticatorT
             color: "var(--color-primary-foreground)",
 
             _hover: {
-              backgroundColor: "var(--color-primary-700)",
-              borderColor: "var(--color-primary-700)",
+              backgroundColor: "color-mix(in oklab, var(--color-primary) 90%, var(--color-background))",
+              borderColor: "var(--color-primary)",
               color: "var(--color-primary-foreground)",
             },
 
             _focus: {
-              backgroundColor: "var(--color-primary-700)",
+              backgroundColor: "color-mix(in oklab, var(--color-primary) 90%, var(--color-background))",
               borderColor: "var(--color-ring)",
               boxShadow: "0 0 0 2px var(--color-ring)",
               color: "var(--color-primary-foreground)",
@@ -67,7 +67,7 @@ export function buildCustomAmplifyAuthenticatorThemeOverride(): CiAuthenticatorT
             color: "var(--color-primary)",
 
             _hover: {
-              color: "var(--color-primary-700)",
+              color: "var(--color-primary)",
             },
           },
         },

@@ -1,0 +1,102 @@
+---
+title: DEV architecture and extension
+description: Toolkit implementation ownership, supported build exports and extension requirements.
+sidebar_position: 10
+---
+
+`packages/dev` owns company workflows and build tooling. It keeps execution and
+orchestration shared while each package retains its configuration and validation
+policy. The [dev command manuals](/commands/dev) define the supported CLI contract.
+
+## Dependency and build boundaries
+
+The build executor, test runner and workflow orchestration live in DEV; each package
+retains its configuration, tests, coverage policy and artifact-validation hooks.
+DEV uses the CLI's supported module
+validation and target-project package-loading APIs, with no private imports or
+framework/provider runtime dependency. The public CLI never depends on DEV.
+
+DEV also exposes `/tooling/tsup`, `/tooling/entries`, `/tooling/inject-use-client`
+and `/types` for package build configuration. These belong in development
+dependencies and build files, outside application runtime imports. Release
+internals remain private.
+
+Within `packages/dev`:
+
+| File | Responsibility |
+| --- | --- |
+| `bin/dev.mjs` | Executable entry and top-level error boundary. |
+| `bin/setup-github.mjs` | Best-effort GitHub CLI installation hook. |
+| `src/github-cli.mjs`, `src/github-cli-release.mjs` | System/managed executable resolution, verified installation and reviewed release hashes. |
+| `src/cli.mjs` | Strict parsing, help and dispatch. |
+| `src/maintainer-cli.mjs` | Maintainer command catalog, prompts, flag validation and dispatch. |
+| `src/maintainer-runtime.mjs` | Private-workspace guard and local process execution. |
+| `src/package-config.mjs` | Package-directory guard and validation of `ci-dev.config.json`. |
+| `src/package-workflows.mjs` | Shared test discovery, tool execution, recipes and package hook invocation. |
+| `src/template-export.mjs` | Template policy validation, standalone transformations, export and comparison. |
+| `src/template-publish.mjs` | Private template requests and approval-checked public delivery. |
+| `src/github-profiles.mjs` | Named accounts and per-command credential isolation. |
+| `src/repositories.mjs` | Repository inventory validation and safe clone/pull. |
+| `src/paired-releases.mjs` | Changesets source snapshots and exact-commit source approval checks. |
+| `src/build-repositories.mjs` | Archive review PRs and local workflow scaffolding. |
+| `src/ci/` | Standalone npm stage verifier and static AWS workflow template. |
+| `src/npm-staging.mjs` | Reviewed version application, candidate archives and native npm staging. |
+| `src/github-policy.mjs`, `src/github-api.mjs`, `src/github-request.mjs` | Account policy, shared API transport and recoverable private requests. |
+| `src/checks/package-build-gate.test.mjs` | Build-gate regressions shipped with DEV. |
+| `src/workers/` | Package, quality, Next and module workers. |
+| `src/tooling/` and `src/types/` | Build configuration exports and their types. |
+| `src/policy.mjs` | Workspace discovery and release-policy validation. |
+| `src/release-plan.mjs` | Changesets integration, version planning and output. |
+| `src/github.mjs` | GitHub request preflight, creation, recovery and status. |
+| `src/runtime.mjs` | Shell-free subprocess execution and operational errors. |
+| `src/types.d.mts` | Private types used by strict JavaScript checking. |
+| `__tests__/` | Parser, release-plan and simulated GitHub regression coverage. |
+
+GitHub commands resolve `gh` through the shared runtime. Ordinary operations use
+an existing executable; downloads occur only in the install hook or explicit
+`dev github setup`. Environment setup works outside the private workspace so it
+can prepare DEV before workspace discovery. It does not authenticate an account.
+
+Release policy lives in `.cloudigniter/release-policy.json`. Default public template
+policy and standalone overlays live in `.cloudigniter/template-policy.json` and
+`.cloudigniter/template/`. The [template policy reference](./template-policy.mdx)
+defines source selection and standalone transformations. The DEV quality
+workflow lives in `.github/workflows/dev-quality.yml`. GitHub and npm settings
+enforce permissions and approvals; the local executable is not an authorization
+boundary. See [GitHub and npm publication configuration](/company-developers/tooling/github-npm-publishing)
+before enabling any publishing workflow.
+
+## Extending DEV
+
+Use `dev <domain> <action> [subject] [options]`. The implemented domains are
+`package`, `quality`, `next`, `modules`, `template`, `github` and `npm`. Add a domain when a defined
+company workflow needs it, preserving
+the [shared CLI conventions](../cli-architecture.mdx).
+
+1. Define the developer outcome, owning package, inputs, output and side effects.
+   Specify who can run it, what it reads or writes, and how a failed run recovers.
+2. Reuse the parser, workspace and process runtime. Keep behavior in a focused
+   worker, with deterministic defaults and a complete non-interactive invocation.
+3. Define compatibility for command names, flags, JSON output, policy schemas and
+   any persisted request metadata. Existing requests must remain understandable.
+4. Cover success, invalid input, policy refusals and recovery with meaningful tests.
+   Simulate remote writes; tests must not create live requests or publish packages.
+5. Update executable help, the package README, the development skill and this
+   guide alongside the implementation. Update the command inventory when needed.
+
+Retain the current boundaries when extending release commands: offline previews
+remain read-only, access flags assert policy, Changesets owns version propagation,
+and request retries preserve edited remote branches and local files. Any publisher
+must retain the [package release gates](./testing-and-release.mdx).
+
+## Validate and document a change
+
+Run `pnpm --filter @cloudigniter/dev check` and
+`pnpm --filter @cloudigniter/dev check:package`. Validate a packed installation
+when changing the executable or distribution. Tests for remote workflows must use
+simulated boundaries and verify failure recovery as well as successful execution.
+
+Keep executable help, the affected [command manual](/commands/dev), package README
+and regression coverage aligned. Changes to ownership or policy also require the
+corresponding workflow guide and the repository's
+`cloudigniter-development/references/cli/dev-toolkit.md` skill reference.

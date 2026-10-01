@@ -1,0 +1,53 @@
+---
+title: "dev npm plan"
+description: "Calculate an offline release proposal without changing files."
+sidebar_label: "dev npm plan"
+sidebar_custom_props:
+  audience: developer
+---
+
+Calculate an offline release proposal without changing files.
+
+## Syntax
+
+```text
+dev npm plan [<intent>] [--package=<name> | --changed] [options]
+```
+
+## Prerequisites
+
+Run in the private workspace with installed dependencies and configured release policy. Online operations need GitHub CLI authentication for the selected `--profile` (or `CLOUDIGNITER_PROFILE`).
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `<intent>` | fix/patch, feature/minor, breaking, major, or initial. breaking uses minor before 1.0 and major afterward; initial proposes 0.1.0 only below that version. |
+| `--package=<name>` | Full package name; repeat for multiple packages. |
+| `--changed` | Plan pending Changesets; omit intent, package selection, and preid. |
+| `--summary=<text>` | Changelog description; required when submitting new intent. |
+| `--preid=<id>` | Enter an alpha, beta, or rc prerelease cycle. |
+| `--tag=<tag>` | Allowed npm channel; defaults to latest or the active prerelease identifier. |
+| `--access=<access>` | Assert public, private, or restricted; cannot override policy. |
+| `--json` | Print structured output. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Calculates proposed versions and dependency propagation with Changesets. A dirty checkout is allowed; the command does not contact GitHub or npm. Versions are proposals, not registry reservations.
+
+## Examples
+
+```bash
+pnpm exec dev npm plan fix --package=@cloudigniter/core --json
+```
+
+## Errors and recovery
+
+Invalid intent, package selection, prerelease/tag combinations, or policy assertions fail. --changed refers to pending Changesets, not git diff.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/release-requests)

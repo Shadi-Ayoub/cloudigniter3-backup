@@ -53,6 +53,7 @@ export type {
   CiNextPageSetup,
   CiPageProps,
   CiNextPageConfig,
+  CiNextHttpErrorPageProps,
 } from "./page-types";
 
 // ─────────────────────────────────────────────────────────────
@@ -89,3 +90,5 @@ export type {
   CiClientWrapperProps,
   CiServerErrorPayload,
 } from "./wrapper-types";
+export type { CiNextAwsSettingsManagerOptions, CiNextSettingsManagerProps } from "./settings-types";
+export type { CiNextEnabledExtension, CiNextExtensionClientOptions, CiNextExtensionClient } from "./module-types";

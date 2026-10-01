@@ -1,0 +1,49 @@
+---
+title: "dev npm version"
+description: "Apply reviewed release versions and update the local lockfile."
+sidebar_label: "dev npm version"
+sidebar_custom_props:
+  audience: developer
+---
+
+Apply reviewed release versions and update the local lockfile.
+
+## Syntax
+
+```text
+dev npm version --request=<release-id> [--dry-run]
+```
+
+## Prerequisites
+
+Run in the private workspace with installed dependencies and configured release policy. Online operations need GitHub CLI authentication for the selected `--profile` (or `CLOUDIGNITER_PROFILE`).
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--request=<release-id>` | Recorded 24-character release request ID. |
+| `--dry-run` | Validate and preview without applying local version changes. |
+| `--profile=<name>` | Profile used to verify source approval. |
+| `--json` | Print structured output. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Verifies the source request and applies reviewed Changesets locally. Review and commit the version, changelog, and lockfile changes before candidate creation.
+
+## Examples
+
+```bash
+pnpm exec dev npm version --request=RELEASE_ID --profile=developer --dry-run
+```
+
+## Errors and recovery
+
+Unapproved requests or incompatible local source/version state fail verification.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/release-requests)

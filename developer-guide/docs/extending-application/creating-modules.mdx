@@ -1,0 +1,495 @@
+---
+title: Creating your own modules
+description: Build an optional CloudIgniter module with a dashboard page, configuration, permissions, and an AWS backend.
+sidebar_position: 7
+---
+
+# Creating your own modules
+
+Create a module when a feature needs its own installation, configuration, and enablement lifecycle. A module can
+contain application code or delegate to reusable packages. You do not need to modify CloudIgniter's Core, UI, or
+Next packages for each new feature: implement their public contracts in your application's custom module folder.
+
+This lesson builds **Personal note**, a dashboard feature that saves one private note per signed-in account. It
+has a configurable character counter, two permissions, and its own DynamoDB table. The example is code you add to
+your application; the **To-Do List** module described in [Optional modules](/docs/building-features/modules) is
+already supplied by the template and starts uninstalled.
+
+## Before you start
+
+Use the Next.js/AWS application template with its Modules integration deployed. Read the
+[Amplify configuration walkthrough](/docs/building-features/modules#amplify-configuration) for the shared registry,
+resolver functions, environment settings, and deployment permissions. Module management requires an application
+account with the exact `developer` role and `development` mode in both the application and backend. AWS credentials
+used for deployment are separate from this application role.
+
+The example imports React and CloudIgniter packages already used by the template. Declare its other direct
+dependencies in your application rather than relying on another package's transitive dependencies:
+
+```bash
+pnpm add zod @aws-sdk/lib-dynamodb
+```
+
+Use CloudIgniter package versions that expose the [Module APIs](/docs/api-reference/shared-apis/modules), including
+`ciAwsExtensionWriteGuard`. All paths and commands below are relative to your application root.
+
+## 1. Create the module folder
+
+```text
+src/custom/modules/personal-note/
+  manifest.ts
+  client/
+    index.ts
+    page.tsx
+  lib/
+    index.ts
+  types/
+    index.ts
+  server/
+    index.ts
+    aws/
+      index.ts
+```
+
+| Part | Responsibility |
+| --- | --- |
+| `manifest.ts` | Serializable identity, compatibility, dashboard metadata, settings, and permission declarations |
+| `client/index.ts` | Named `CiModulePage` export consumed by the dashboard host |
+| `client/page.tsx` | Browser UI; calls the supplied `execute` function |
+| `lib/index.ts` | Runtime-neutral validation shared by client and server |
+| `types/index.ts` | Module-owned domain types |
+| `server/index.ts` | Server facet barrel required by module validation |
+| `server/aws/index.ts` | Named `ciModuleBackend` export with AWS infrastructure and command handling |
+
+Keep provider SDKs, credentials, and server imports out of `client`, `lib`, and the manifest. Discovery expects the
+literal entry filenames `client/index.ts` and `server/aws/index.ts`; put JSX in a separate `.tsx` file. A
+`server/index.ts` barrel is required by module validation and does not replace the AWS entry point.
+
+## 2. Declare the feature
+
+```ts title="src/custom/modules/personal-note/manifest.ts"
+import type { CiExtensionManifest } from "@cloudigniter/core/types";
+
+export const ciModuleManifest = {
+  schemaVersion: 1,
+  kind: "extension",
+  id: "personal-note",
+  name: "Personal note",
+  version: "1.0.0",
+  description: "Keep a private note for your account.",
+  enabledByDefault: false,
+  runtime: { client: true, server: true },
+  target: { framework: "next", clouds: ["aws"] },
+  dashboard: {
+    title: "Personal note",
+    description: "Read and edit your private note.",
+  },
+  settings: [
+    {
+      key: "showCharacterCount",
+      title: "Show the character count",
+      default: true,
+    },
+  ],
+  permissions: [
+    { id: "read-own", title: "Read your note", accessMode: "read" },
+    { id: "write-own", title: "Save your note", accessMode: "write" },
+  ],
+  authenticatedAccess: true,
+} as const satisfies CiExtensionManifest;
+```
+
+The ID must match its folder, use lowercase kebab case, and remain stable for the installation's lifetime. Core
+module IDs are reserved. The version describes the source bundled with the application; changing it does not
+update an installed module. Installation always finishes **Disabled**, regardless of `enabledByDefault`.
+
+`settings` creates controls on the module's management card. Defaults initialize the installation configuration;
+the dashboard page and backend receive its resolved values. These settings belong to the installation and are
+shared across its users. They are distinct from user preferences and the application Settings registry. Supported
+controls are booleans and enumerated strings with an `options` array. Use an appropriate backend data store for
+arbitrary text, structured records, and secrets; module configuration is passed to the client.
+
+The permissions become actions on the `module-personal-note.features` resource in the `module-personal-note`
+domain. `authenticatedAccess: true` supplies default access for authenticated users, subject to EmberGuard policy,
+denials, suspension, and forced read-only restrictions. Omit it or set it to `false` when access should require
+explicit grants through [application authorization](/docs/core-system/authorization/quick-start). The backend must
+still call `assertAccess` and enforce record ownership.
+
+## 3. Define commands and results
+
+Keep the payload independent of Next.js and AWS. The client sends a domain command; CloudIgniter handles transport
+serialization. A revision lets the backend reject overwriting a newer note from another tab.
+
+```ts title="src/custom/modules/personal-note/lib/index.ts"
+import { z } from "zod";
+
+export const noteSchema = z.object({
+  text: z.string().max(2000),
+  revision: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER),
+}).strict();
+
+export const noteCommandSchema = z.discriminatedUnion("action", [
+  z.object({ action: z.literal("read") }).strict(),
+  z.object({
+    action: z.literal("save"),
+    text: z.string().max(2000),
+    revision: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER - 1),
+  }).strict(),
+]);
+```
+
+```ts title="src/custom/modules/personal-note/types/index.ts"
+import type { z } from "zod";
+import type { noteCommandSchema, noteSchema } from "../lib";
+
+export type PersonalNote = z.infer<typeof noteSchema>;
+export type PersonalNoteCommand = z.infer<typeof noteCommandSchema>;
+```
+
+Neither command accepts an owner, table name, or module status. Those values come from the trusted execution
+context. The two commands are `read` and `save`; this example has no per-note deletion or Trash workflow.
+
+## 4. Implement the AWS backend and infrastructure
+
+The AWS definition has two responsibilities: `template` describes resources to create on **Install**, and
+`execute` implements commands when the module is enabled. Amplify bundles this code into the shared module
+executor before installation. This example fits the default provider's permissions: one named DynamoDB table,
+item reads, and conditional transactional writes.
+
+```ts title="src/custom/modules/personal-note/server/aws/index.ts"
+import { GetCommand, TransactWriteCommand } from "@aws-sdk/lib-dynamodb";
+import { ciBuildTableKeys } from "@cloudigniter/core/lib";
+import { ciAwsExtensionWriteGuard } from "@cloudigniter/aws/server/backend";
+import type { CiAwsExtensionDefinition } from "@cloudigniter/aws/types";
+import { ciModuleManifest } from "../../manifest";
+import { noteCommandSchema, noteSchema } from "../../lib";
+
+export const ciModuleBackend = {
+  manifest: ciModuleManifest,
+  template: (tableName) => ({
+    AWSTemplateFormatVersion: "2010-09-09",
+    Resources: {
+      Notes: {
+        Type: "AWS::DynamoDB::Table",
+        DeletionPolicy: "Delete",
+        UpdateReplacePolicy: "Retain",
+        Properties: {
+          TableName: tableName,
+          BillingMode: "PAY_PER_REQUEST",
+          TableClass: "STANDARD",
+          AttributeDefinitions: [
+            { AttributeName: "PK", AttributeType: "S" },
+            { AttributeName: "SK", AttributeType: "S" },
+          ],
+          KeySchema: [
+            { AttributeName: "PK", KeyType: "HASH" },
+            { AttributeName: "SK", KeyType: "RANGE" },
+          ],
+          SSESpecification: { SSEEnabled: true },
+        },
+      },
+    },
+    Outputs: { TableName: { Value: { Ref: "Notes" } } },
+  }),
+  async execute(value, context) {
+    const input = noteCommandSchema.parse(value);
+    await context.assertAccess(
+      input.action === "read" ? "read-own" : "write-own",
+    );
+    const key = ciBuildTableKeys({
+      partition: ["MODULE", context.moduleId, "USER", context.actorId],
+      sort: ["NOTE"],
+    });
+
+    if (input.action === "read") {
+      const result = await context.client.send(new GetCommand({
+        TableName: context.tableName,
+        Key: key,
+        ConsistentRead: true,
+      }));
+      return result.Item
+        ? noteSchema.parse(result.Item.note)
+        : { text: "", revision: 0 };
+    }
+
+    const note = { text: input.text, revision: input.revision + 1 };
+    await context.client.send(new TransactWriteCommand({
+      TransactItems: [
+        ciAwsExtensionWriteGuard(context),
+        {
+          Put: {
+            TableName: context.tableName,
+            Item: { ...key, note, revision: note.revision },
+            ConditionExpression: input.revision === 0
+              ? "attribute_not_exists(PK)"
+              : "revision = :revision",
+            ...(input.revision === 0 ? {} : {
+              ExpressionAttributeValues: { ":revision": input.revision },
+            }),
+          },
+        },
+      ],
+    }));
+    return note;
+  },
+} satisfies CiAwsExtensionDefinition;
+```
+
+The table name is supplied by the lifecycle provider. Preserve it and the `TableName` output: the executor resolves
+the installed resource from that output and verifies its identity. Do not hardcode an AWS account, Region, stack
+ARN, or table name, and do not let the browser choose them. CloudIgniter records the actual CloudFormation stack
+identity and outputs after provisioning so uninstall can verify ownership before deleting resources.
+
+The access pattern is one strongly consistent item read and one transaction per save, using the verified actor's
+partition. It needs no scan, index, stream, or replica. The table separates optional note data from core platform
+data because it has an independent uninstall lifecycle. On-demand capacity suits this small example; review
+traffic, retention, and backup requirements for your own module. Disabling preserves the table and its storage
+costs. This example does not configure point-in-time recovery or a backup service.
+
+The transaction checks two different revisions. The item condition rejects stale edits. The
+[`ciAwsExtensionWriteGuard`](/docs/api-reference/shared-apis/modules#aws-module-write-guard) condition rejects a
+concurrent registry change, including disablement, uninstallation, or configuration changes. Include it in the
+**same transaction** as the write, after permission checks. The helper does not authorize users, send a request,
+or retry failed writes. A registry change in another module can also invalidate the transaction; reload state
+before retrying. Keep the submitted text available when reporting a failed save.
+
+:::danger Uninstallation deletes every account's note
+`DeletionPolicy: "Delete"` removes the table when its module stack is uninstalled. The management dialog requires
+the developer to review and confirm this destructive action. Disable the module to preserve notes. A retained
+table would need a separate cleanup and reinstallation design; changing the deletion policy alone does not
+provide one.
+:::
+
+Export the provider implementation through the server facet barrel as well:
+
+```ts title="src/custom/modules/personal-note/server/index.ts"
+export { ciModuleBackend } from "./aws";
+```
+
+## 5. Add the dashboard page
+
+The host supplies `CiExtensionPageProps`: resolved configuration and an `execute` callback that returns a
+`CiResult<unknown>`. Check the result envelope and validate its body before using it. Provider errors arrive
+through the envelope; transport errors can also reject the promise.
+
+```ts title="src/custom/modules/personal-note/client/index.ts"
+"use client";
+export { CiModulePage } from "./page";
+```
+
+```tsx title="src/custom/modules/personal-note/client/page.tsx"
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { Button, Label, Textarea } from "@cloudigniter/ui/client";
+import type { CiExtensionPageProps } from "@cloudigniter/ui/types";
+import { noteSchema } from "../lib";
+import type { PersonalNote } from "../types";
+
+export function CiModulePage({ configuration, execute }: CiExtensionPageProps) {
+  const [note, setNote] = useState<PersonalNote>({ text: "", revision: 0 });
+  const [text, setText] = useState("");
+  const [ready, setReady] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string>();
+  const [message, setMessage] = useState("Loading your note…");
+  const saveLock = useRef(false);
+
+  useEffect(() => {
+    let active = true;
+    setReady(false);
+    async function load() {
+      try {
+        const result = await execute({ action: "read" });
+        if (!result.ok) throw new Error(result.body.error);
+        const loaded = noteSchema.parse(result.body);
+        if (active) {
+          setNote(loaded);
+          setText(loaded.text);
+          setError(undefined);
+          setMessage("");
+          setReady(true);
+        }
+      } catch {
+        if (active) {
+          setMessage("");
+          setError("Unable to load your note. Refresh the page to try again.");
+        }
+      }
+    }
+    void load();
+    return () => { active = false; };
+  }, [execute]);
+
+  async function save() {
+    if (!ready || saveLock.current) return;
+    saveLock.current = true;
+    setSaving(true);
+    setError(undefined);
+    setMessage("");
+    try {
+      const result = await execute({ action: "save", text, revision: note.revision });
+      if (!result.ok) throw new Error(result.body.error);
+      const saved = noteSchema.parse(result.body);
+      setNote(saved);
+      setText(saved.text);
+      setMessage("Note saved.");
+    } catch {
+      setError("Unable to save. Keep a copy of your text, then refresh to check the latest note and module state.");
+    } finally {
+      saveLock.current = false;
+      setSaving(false);
+    }
+  }
+
+  return (
+    <section className="space-y-4" aria-labelledby="personal-note-title">
+      <h1 id="personal-note-title" className="text-2xl font-semibold">Personal note</h1>
+      <form className="space-y-4" onSubmit={(event) => {
+        event.preventDefault();
+        void save();
+      }}>
+        <Label htmlFor="personal-note-text">Your private note</Label>
+        <Textarea
+          id="personal-note-text"
+          value={text}
+          maxLength={2000}
+          rows={8}
+          disabled={!ready || saving}
+          onChange={(event) => setText(event.target.value)}
+          aria-describedby={configuration.showCharacterCount === true ? "note-count" : undefined}
+        />
+        {configuration.showCharacterCount === true && (
+          <p id="note-count" className="text-sm text-muted-foreground">{text.length} / 2000</p>
+        )}
+        <Button type="submit" disabled={!ready || saving || text === note.text}>
+          {saving ? "Saving…" : "Save note"}
+        </Button>
+      </form>
+      <p role="status">{message}</p>
+      {error && <p role="alert" className="text-destructive">{error}</p>}
+    </section>
+  );
+}
+```
+
+The generic host exposes the page at `/dashboard/extensions/personal-note` and adds its dashboard entry when the
+module is installed and enabled. You do not add a Next.js route for this page. The host uses the dashboard
+namespace; this example uses literal English copy. For translated copy, register messages through the
+[application localization hooks](/docs/configuration/localization).
+
+This is a personal feature in the system dashboard. A Tenant or Org Unit context is not an ownership rule for
+these notes. Tenant-shared features need explicit tenant resolution, membership checks, authorization scopes,
+and data keys at the server boundary.
+
+## 6. Generate, deploy, and install
+
+Generate imports and validate the module before deploying:
+
+```bash
+pnpm modules:generate
+pnpm exec ci modules validate --root=src/custom/modules --no-interactive
+```
+
+The generator discovers `manifest.ts` and writes separate `manifests.ts`, `client.ts`, and `aws.ts` files under
+`src/custom/modules/.generated`. Review the generated entries for `personal-note`; do not edit those files. The
+template consumes them in its dashboard, access-control composition, and Amplify module handlers.
+
+Sign in to the AWS deployment profile configured for your application and deploy the backend:
+
+```bash
+pnpm sso
+pnpm sandbox
+```
+
+The template's sandbox workflow runs generation before deployment. Deploying updates the shared handlers with
+your module code and grants scoped access for its ID. It does **not** install the optional note table. Restart the
+application after generating new module imports:
+
+```bash
+pnpm dev
+```
+
+Then complete the lifecycle as the application developer:
+
+1. Open **Dashboard → Modules**. Find **Personal note** with status **Not installed**.
+2. Select **Install**. Wait or refresh until provisioning finishes with status **Disabled**.
+3. Review **Installed resource details** and the module's configuration. Leave the character counter enabled.
+4. Select **Enable**, open **Personal note**, enter text, and select **Save note**.
+5. Reload the page to confirm persistence. Sign in with another account to verify its note is separate.
+6. Disable and re-enable the module to confirm that its page access stops while its data survives.
+7. With disposable example data, disable it and select **Uninstall**. Type `personal-note` to confirm deletion.
+   Wait for removal to complete. The source folder remains detectable for another installation.
+
+Amplify configuration is shared by the module host; you do not add a GraphQL model, edit `amplify_outputs.json`,
+or manually enter a table name for this example. The optional table belongs to the standalone module stack,
+outside Amplify's core resource lifecycle. See the
+[Amplify integration map](/docs/building-features/modules#amplify-configuration) for the exact host files and
+environment values. Uninstall modules before deleting their whole Amplify environment.
+
+## Adapt the pattern to your feature
+
+Keep your domain types and validation provider-neutral. Swap the UI or AWS facet through their entry points while
+preserving the manifest and command contract. Reusable domain helpers can come from `@cloudigniter/core`, existing
+components from `@cloudigniter/ui`, and provider implementations from `@cloudigniter/aws`. Application-specific
+code belongs in your module; reusable CloudIgniter capabilities belong behind the corresponding package APIs.
+
+| Requirement | Supported approach |
+| --- | --- |
+| A client-only feature | Set `runtime.server` to `false`, omit the AWS facet, and export a client page that does not call `execute`. Installation has no optional stack. |
+| Server behavior without new resources | Export a backend definition with `execute` and no `template`; the lifecycle uses a `none` infrastructure reference. |
+| No dashboard page | Omit `dashboard`; a declared client facet still requires its entry file. Arrange an explicit authorized consumer for the feature. |
+| Another optional module is required | Declare a required dependency with its `id`; install and enable it first. Keep dependencies acyclic. Fixed core modules are already supplied and should not be required as optional installations. |
+| More routes or application-wide settings | Use [route extensions](./routes) or [settings extensions](./settings) and explicitly connect their availability to the module. The manifest does not automatically register arbitrary routes or Settings groups. |
+| Other AWS resources or access patterns | Extend the scoped provider policies and backend composition as well as the resource template; the default grants do not cover arbitrary services, extra tables, index queries, scans, or every DynamoDB action. |
+| Another cloud or framework | Supply the corresponding provider adapter, facet discovery, transport, and host integration. Changing `target` metadata alone does not implement that support. |
+
+For example, an optional dependency uses the existing module contract:
+
+```ts
+dependencies: [{ id: "another-feature", optional: false }]
+```
+
+Use the module ID of a real compatible extension in your application. Required dependencies must be enabled;
+installed dependents block uninstall, and enabled or installing dependents block disabling a dependency.
+
+## Share a module as a package
+
+You can put your implementation in an npm package and keep a small folder in `src/custom/modules/<id>` that
+exports the manifest, page, and provider definition through the expected names. Expose separate runtime-neutral,
+client, types, and provider/server entry points. Keep the folder's manifest as a serializable declaration that
+the module validation tools can inspect; import package implementations through the client and server facets.
+Declare dependencies and compatible CloudIgniter versions in the package metadata.
+
+The application developer reviews and installs the package, adds the local binding folder, generates imports,
+and deploys the application/backend. Dashboard **Install** then provisions the module's resources. An npm
+`postinstall` hook is not a supported deployment mechanism, and the dashboard does not download packages, unzip
+folders, or write new source files into a running application.
+
+Keep the installed version available until you have a deliberate migration strategy. The **Update** action only
+shows an informational dialog; it does not check a Store API, download code, migrate data, or update infrastructure.
+A manifest version mismatch blocks enablement and execution. Uninstalling and reinstalling deletes this example's
+data and is not a data-preserving update procedure.
+
+## Verify your module
+
+Before sharing your module, check the behavior at its boundaries:
+
+- Validate metadata and compile the client/server facets; confirm that client imports cannot reach AWS SDKs or secrets.
+- Test malformed commands, permission denial, read-only access, and isolation between two actors. Client-side hiding is not authorization.
+- Test a stale item revision and a registry change between authorization and write; both must reject the transaction.
+- Test install, explicit enablement, disablement with data retention, and confirmed destructive uninstall in a disposable environment.
+- Check loading, save errors, keyboard operation, and both themes. Preserve unsaved input after a failed operation.
+
+| Symptom | What to check |
+| --- | --- |
+| Module is not detected | Folder/manifest IDs, exact entry filenames, generation output, and an application rebuild/restart |
+| Module is incompatible | Its declared framework/cloud against the host; unsupported facets are not loaded |
+| Backend is unavailable or provisioning is denied | Deploy the regenerated AWS registry and scoped module permissions; inspect the module stack's reported failure |
+| Module is installed but its page is unavailable | Enablement, dashboard declaration, matching installed/source version, and authenticated access |
+| Save fails after another edit or management action | Preserve the draft, reload authoritative state, and submit against its new revision |
+| Removing the folder leaves cloud resources | Source removal is not uninstall; use the retained installation's cleanup action |
+
+Use the [Module API reference](/docs/api-reference/shared-apis/modules) for exact contracts and the
+[To-Do example](/docs/building-features/modules) for a larger feature with pagination and recoverable task Trash.
+Continue the application learning path with [Identity and access](/docs/identity/authentication).

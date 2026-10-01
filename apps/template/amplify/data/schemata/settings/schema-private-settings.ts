@@ -1,20 +1,21 @@
-// import { a } from '@aws-amplify/backend';
+import { a } from "@aws-amplify/backend";
 
-// const schemaPrivateSettings = {
-//   PrivateSettings: a
-//     .model({
-//       tenantId: a.string().required(),
-//       key: a.string().required(),
-//       status: a.string(),
-//       version: a.integer(),
-//       data: a.json().required(),
-//     })
-//     .identifier(['tenantId', 'key'])
-//     .secondaryIndexes((index) => [index('tenantId').name('byTenant')])
-//     .authorization((allow) => [
-//       allow.group('system-admin').to(['create', 'read', 'update', 'delete']),
-//       // optionally: allow.authenticated().to(['read'])  (if any logged-in user can read private settings)
-//     ]),
-// };
-
-// export default schemaPrivateSettings;
+/** Storage-only model. All access passes through the guarded settings operations. */
+export default {
+  PrivateSettings: a
+    .model({
+      PK: a.string().required(),
+      SK: a.string().required(),
+      settingsId: a.string().required(),
+      scope: a.string().required(),
+      targetTenantScope: a.string().required(),
+      tenantId: a.string(),
+      userId: a.string(),
+      enforcement: a.json(),
+      value: a.json().required(),
+      revision: a.integer().required(),
+    })
+    .identifier(["PK", "SK"])
+    .authorization((allow) => [allow.group("system-super-admin")])
+    .disableOperations(["queries", "mutations", "subscriptions"]),
+};

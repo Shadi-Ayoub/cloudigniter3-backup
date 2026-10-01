@@ -1,0 +1,61 @@
+---
+title: Package configuration
+description: Package-owned test selection, generation hooks and ordered DEV validation recipes.
+sidebar_position: 4
+---
+
+`ci-dev.config.json` is the package-owned contract consumed by DEV. The filename is
+retained even though the executable is now `dev`. Keep it beside the package's
+compiler, bundler, tests and artifact validators.
+
+## Configuration contract
+
+Each migrated package owns `ci-dev.config.json`. For example:
+
+```json
+{
+  "schemaVersion": 1,
+  "typecheck": ["source", "tools"],
+  "test": {
+    "files": ["__tests__/**/*.test.ts"],
+    "typescript": true
+  },
+  "check": ["typecheck", "typecheck-tools"]
+}
+```
+
+DEV validates the schema, known fields, local file paths and recipe steps. Available
+fields are:
+
+| Field | Purpose |
+| --- | --- |
+| `typecheck` | Enabled `source`, `tools`, and/or `tests` scopes. |
+| `test.files` | Positive package-relative glob patterns; preserve intentional suite selection. |
+| `test.typescript`, `test.tsconfig` | Enable DEV's tsx loader and optionally select a package-local tsconfig. |
+| `test.timeout` | Optional timeout per test in milliseconds. Next uses 60000. |
+| `test.requireNoSkipped` | Require actual test cases, reject skipped/TODO cases, and write fresh `coverage/junit.xml` on non-watch runs. |
+| `beforeBuild` | Local Node/TypeScript generation hook before full builds, JS builds and watch startup. |
+| `coverageCheck` | Local validation hook executed after a successful full c8 run; c8 configuration and installation belong to the package. |
+| `packageCheck` | Optional local artifact validator; absent means `npm pack --dry-run`. |
+| `releaseCheck` | Optional local release-validation hook. Next retains its restoration and artifact-checksum behavior. |
+| `assets` | Enable the existing theme/locale asset worker. Omitted or false reports no assets. |
+| `check`, `quality`, `prepublish` | Explicit ordered check recipes. A failing step stops the sequence and preserves its exit code. |
+
+Recipes support `typecheck`, `typecheck-tools`, `typecheck-tests`, `test`,
+`test-coverage`, `test-build-gate`, and `check-package`. Quality may also include
+`check`; prepublish may include `check` and `quality`. Recursive recipes are
+rejected. Missing configuration never creates a successful empty quality gate.
+Hooks are package-relative files, loaded with Node and DEV's tsx loader without
+a shell; they must remain within the package, including through symlinks. Keep
+hooks focused and do not call their own DEV command recursively.
+
+Keep compiler/bundler files and `scripts/ci-build-package.config.mjs` in the package.
+Next's build configuration still declares `qualityScript: "quality"`, which now
+routes to DEV's quality recipe **before artifact cleanup or export switching**.
+That recipe runs coverage, build-gate regressions, source/tools checks and test
+typechecking. Next's prepublish recipe runs quality then artifact validation.
+
+DEV is a workflow convention, not an authorization boundary. Package configuration
+and hooks require code review. GitHub protections, reviewer approval and npm
+permissions govern publication; see [Testing and quality gates](./testing-and-release.mdx)
+and [release requests](./release-requests.mdx).

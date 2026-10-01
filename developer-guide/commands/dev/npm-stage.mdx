@@ -1,0 +1,48 @@
+---
+title: "dev npm stage"
+description: "Stage a verified candidate through the legacy single-repository release workflow."
+sidebar_label: "dev npm stage"
+sidebar_custom_props:
+  audience: developer
+---
+
+Stage a verified candidate through the legacy single-repository release workflow.
+
+## Syntax
+
+```text
+dev npm stage --manifest=<file> [--dry-run]
+```
+
+## Prerequisites
+
+Run in the private workspace with installed dependencies and configured release policy. Online operations need GitHub CLI authentication for the selected `--profile` (or `CLOUDIGNITER_PROFILE`).
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `--manifest=<file>` | Verified candidate manifest.json. |
+| `--dry-run` | Preview staging without performing the write. |
+| `--json` | Print structured output. |
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Compatibility path for the configured company CI workflow, requiring npm >=11.15.0 and existing registry packages. It does not directly publish. Paired releases use npm deliver and their generated build workflows. Final npm-stage approval requires interactive 2FA.
+
+## Examples
+
+```bash
+pnpm exec dev npm stage --manifest=../npm-candidate/manifest.json --dry-run
+```
+
+## Errors and recovery
+
+The command rejects invalid manifests, unsupported npm versions, or a missing authorized CI/reviewer context. Do not use it to bypass the configured release workflow.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/release-requests)

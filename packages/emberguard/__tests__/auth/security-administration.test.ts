@@ -749,3 +749,44 @@ test("migrates missing titles from legacy persisted privileges on read", async (
   );
   assert.equal(legacyPrivilege.title, undefined);
 });
+
+test("permission editor persists, copies, and clears forced read-only without losing it on legacy edits", async () => {
+  const definition = ciCreateAppAccessControl({ roles: [{ id: "auditor", title: "Auditor", precedence: 100, privileges: [] }] });
+  const { repository, getDefinition, getRoleCounters } = createRepository(definition);
+  const service = ciCreateSecurityAdministration({
+    actor: { id: "admin", authenticated: true, roleIds: ["system-admin"], primaryRole: "system-admin" },
+    definition, repository,
+  });
+  const record = {
+    kind: "permission" as const, id: "audit-settings", title: "Audit settings",
+    origin: "application" as const, locked: false, roleId: "auditor", effect: "allow" as const,
+    resource: "platform.settings", action: "read", scopeKinds: ["system" as const], sensitive: false, readOnly: true,
+  };
+  await service.saveRecord(record);
+  let records = service.buildRecords(getDefinition(), [], getRoleCounters());
+  assert.equal(records.permission.find((item) => item.id === record.id)?.readOnly, true);
+  const auditor = records.role.find((item) => item.id === "auditor")!;
+  await service.saveRecord({ ...auditor, id: "supervisor", title: "Supervisor" });
+  assert.equal(getDefinition().roles.find((role) => role.id === "supervisor")?.privileges[0]?.readOnly, true);
+  await service.saveRecord({ ...record, readOnly: undefined, title: "Renamed audit permission" });
+  assert.equal(getDefinition().roles.find((role) => role.id === "auditor")?.privileges[0]?.readOnly, true);
+  await service.saveRecord({ ...record, readOnly: false });
+  records = service.buildRecords(getDefinition(), [], getRoleCounters());
+  assert.equal(records.permission.find((item) => item.roleId === "auditor" && item.id === record.id)?.readOnly, false);
+});
+
+test("a read-only administrator cannot remove their restriction through catalog mutations", async () => {
+  const original = ciCreateAppAccessControl({ roles: [{
+    id: "security-auditor", title: "Security auditor", precedence: 200,
+    privileges: [{ id: "audit-security", title: "Audit security", effect: "allow", resource: "platform.authorization", action: "read", scopeKinds: ["system"], readOnly: true }],
+  }] });
+  const { repository, getDefinition } = createRepository(original);
+  const service = ciCreateSecurityAdministration({
+    actor: { id: "admin", authenticated: true, roleIds: ["system-admin", "security-auditor"], primaryRole: "system-admin" },
+    definition: original, repository,
+  });
+  assert.equal(service.capabilities.canRead, true);
+  assert.equal(service.capabilities.canManageApplication, false);
+  await assert.rejects(() => service.createResourceDomain({ id: "forbidden", title: "Forbidden" }), /cannot manage/);
+  assert.equal(getDefinition(), original);
+});

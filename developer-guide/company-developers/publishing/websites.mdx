@@ -1,0 +1,82 @@
+---
+title: Publish websites
+description: Build the guide, review static website output and configure an AWS deployment from its build repository.
+sidebar_position: 10
+---
+
+## The website delivery contract
+
+The developer guide is a static Docusaurus website. Its private source destination is `cloudigniter-io/cloudigniter-developer-guide`, and its reviewed build destination is `cloudigniter-io/build-cloudigniter-developer-guide`. Build output is committed under `site/` in that build repository, then deployed to S3 and served through CloudFront.
+
+:::note Formal website applications
+The two formal websites have `sourcePath: null` until their applications exist; repository names alone do not create website source or select its runtime.
+:::
+
+The same scaffold can serve `cloudigniter-website` and `jodaris-website` only if their chosen applications produce static output containing `index.html`. Server rendering needs an explicit runtime such as Amplify Hosting or a container service. Uploading Next.js `.next` output to S3 does not supply that runtime.
+
+## Generate and install the deployment scaffold
+
+```bash
+dev github scaffold cloudigniter-developer-guide --hosting=static --output=../build-guide-setup
+```
+
+The project ID selects the guide’s configured source/build pair. `--hosting=static` confirms the static output contract. The new external output contains a README, Code Owners and `deploy-aws.yml`, explained in [Generated files and workflows](./generated-files#website-scaffold-files).
+
+The approver reviews and commits those files at the build repository root, then configures its protected `main` branch and `production` environment. The scaffold itself creates no GitHub or AWS resources.
+
+## Build and request output review
+
+```bash
+pnpm --filter developer-guide typecheck
+pnpm --filter developer-guide build
+```
+
+The guide currently retains its package-owned commands; `dev package` targets company npm packages and does not wrap Docusaurus. `typecheck` checks the guide’s TypeScript. `build` runs the guide/date checks, clears generated metadata and builds the static website. Follow the guide’s authoring lifecycle and stop its development server before these cache-clearing operations.
+
+Copy the **contents** of `developer-guide/build/` into `site/` in a separate build-repository checkout. Do not copy source secrets, dependencies or private local data. Commit the output to a feature branch and push it with Git. Record the source integration commit, build command/results and relevant content changes in the PR description.
+
+```bash
+dev github pr create --project=cloudigniter-developer-guide --repository-kind=build \
+  --head=website/guide-update --title="Update the developer guide" \
+  --body-file=/tmp/guide-build-pr.md --profile=developer
+```
+
+The head branch must already exist remotely and the description file must exist locally. This opens the output-review PR and requests the configured reviewer. Review and merge through the [standard PR commands](./github-commands), retaining `--repository-kind=build`.
+
+## Configure AWS once per website
+
+An AWS administrator provisions a private S3 bucket, CloudFront distribution, bucket access for that distribution, and the required DNS/TLS configuration. Use one deliberate hosting design per site; the generated workflow does not choose resources.
+
+Create an AWS IAM role trusted by GitHub OIDC. Scope its trust to the exact repository and `production` environment and the `sts.amazonaws.com` audience. Use the actual GitHub subject format for that repository, including immutable owner/repository IDs where the current claim format requires them. Do not copy a guessed subject from another repository.
+
+Limit role permissions to the intended bucket’s listing/read/upload operations and the specific distribution’s invalidation. See the official [AWS credentials action and OIDC setup](https://github.com/aws-actions/configure-aws-credentials) and [GitHub’s AWS OIDC guide](https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-aws).
+
+Configure these **environment variables** in the build repository’s `production` environment:
+
+| Variable | Purpose |
+| --- | --- |
+| `AWS_ROLE_ARN` | The IAM role GitHub may assume. |
+| `AWS_REGION` | Region used by AWS commands. |
+| `SITE_BUCKET` | Bucket name that receives `site/` contents. |
+| `CLOUDFRONT_DISTRIBUTION_ID` | Distribution whose cache is invalidated after upload. |
+
+These are resource identifiers, not AWS access keys. The job receives temporary credentials through OIDC. Restrict environment deployments to protected `main` and apply the [available GitHub controls](./github-setup#actions-and-production-credentials).
+
+## Deploy the reviewed commit
+
+As `jodaris`, open **Actions → Deploy reviewed static website → Run workflow** in the build repository and select `main` after the output PR is merged.
+
+The job checks the exact repository, protected branch, original/rerun approver, required settings and `site/index.html`. It rejects symlinks, assumes the AWS role, syncs the committed static files and invalidates CloudFront. It does not rebuild with production credentials.
+
+```bash
+dev github run list --project=cloudigniter-developer-guide --repository-kind=build --profile=approver
+dev github run view --project=cloudigniter-developer-guide --repository-kind=build \
+  --run-id=123456789 --profile=approver
+```
+
+The first command lists recent deployment runs; replace the example ID in the second with the actual run to inspect its jobs and result. Verify the hosted page after a successful run.
+
+## Retention and recovery
+
+The generated S3 sync does not delete old objects. Decide cache headers, retention, removal of retired files and rollback as explicit hosting operations. A failed upload can leave partial website updates; do not assume deployment is atomic. Keep the last known good reviewed build and redeploy it through the approved process when needed.
+

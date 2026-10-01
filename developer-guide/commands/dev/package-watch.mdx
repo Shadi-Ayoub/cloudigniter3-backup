@@ -1,0 +1,45 @@
+---
+title: "dev package watch"
+description: "Watch and rebuild package JavaScript during development."
+sidebar_label: "dev package watch"
+sidebar_custom_props:
+  audience: developer
+---
+
+Watch and rebuild package JavaScript during development.
+
+## Syntax
+
+```text
+dev package watch
+```
+
+## Prerequisites
+
+Run from the owning `packages/<name>` directory in the private CloudIgniter workspace after installing its dependencies. `--workspace-root` selects discovery and does not change the current package.
+
+## Parameters
+
+This command has no command-specific options.
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Runs generation once and starts `tsup --config tsup.config.ts --watch`. The process stays running until stopped. It does not execute the complete build or quality gate on every change.
+
+## Examples
+
+```bash
+cd packages/next
+pnpm exec dev package watch
+```
+
+## Errors and recovery
+
+A missing required configuration or tool fails the command. A failed subprocess stops the workflow and returns a nonzero status. Inspect the first reported failure before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/package-workflows)

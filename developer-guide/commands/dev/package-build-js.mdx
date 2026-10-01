@@ -1,0 +1,45 @@
+---
+title: "dev package build-js"
+description: "Generate package sources and compile JavaScript with tsup."
+sidebar_label: "dev package build-js"
+sidebar_custom_props:
+  audience: developer
+---
+
+Generate package sources and compile JavaScript with tsup.
+
+## Syntax
+
+```text
+dev package build-js
+```
+
+## Prerequisites
+
+Run from the owning `packages/<name>` directory in the private CloudIgniter workspace after installing its dependencies. `--workspace-root` selects discovery and does not change the current package.
+
+## Parameters
+
+This command has no command-specific options.
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Runs the configured generation hook, then builds using `tsup.config.ts`. This partial step writes compiled output; it does not replace the full build and quality gate.
+
+## Examples
+
+```bash
+cd packages/next
+pnpm exec dev package build-js
+```
+
+## Errors and recovery
+
+A missing required configuration or tool fails the command. A failed subprocess stops the workflow and returns a nonzero status. Inspect the first reported failure before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/package-workflows)

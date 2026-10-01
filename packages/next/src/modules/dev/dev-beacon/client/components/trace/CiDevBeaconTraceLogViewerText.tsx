@@ -358,7 +358,7 @@ export function CiDevBeaconTraceLogViewerText({
   };
 
   if (!isMounted) {
-    return <div className="text-sm text-gray-400">Loading editor…</div>;
+    return <div className="text-sm text-muted-foreground">Loading editor…</div>;
   }
 
   return (

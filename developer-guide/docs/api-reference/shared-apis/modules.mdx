@@ -1,0 +1,224 @@
+---
+title: Optional module APIs
+description: Extension manifests, lifecycle providers, discovery, server adapters, and dashboard components.
+sidebar_position: 8
+---
+
+# Optional module APIs
+
+## Core contracts
+
+```ts
+import {
+  CI_FIXED_MODULES, ciValidateExtensionManifest, ciIsExtensionCompatible,
+  ciResolveExtensionConfiguration, ciCreateExtensionManager,
+  ciExtensionAccessControl, ciParseTodoCommand,
+} from "@cloudigniter/core/lib";
+import type {
+  CiExtensionManifest, CiExtensionManagerOptions, CiExtensionManager,
+  CiExtensionStore, CiExtensionProvider, CiExtensionSnapshot,
+  CiExtensionInstallation, CiExtensionInfrastructure, CiExtensionInfrastructureState,
+  CiExtensionCatalog, CiExtensionCatalogEntry, CiExtensionCommand,
+  CiExtensionConfiguration, CiExtensionSetting, CiExtensionStatus,
+  CiTodoCommand, CiTodoItem, CiTodoPage,
+} from "@cloudigniter/core/types";
+```
+
+`CiExtensionManifest` extends `CiModuleManifest` with required `kind: "extension"` and `version`, and optional
+`settings`, `permissions`, `authenticatedAccess`, and `dashboard`. Use a unique lowercase kebab-case ID of up to 48
+characters and a semantic `major.minor.patch` version, optionally with a prerelease suffix. Fixed core IDs are reserved.
+`target.framework` and optional `target.clouds` declare compatibility; at least one runtime facet must be enabled.
+A dashboard declaration requires a client facet and a nonempty `title`; `description` is optional.
+
+A setting is `{ key, title, default, options? }`, with a boolean or enumerated-string default. String defaults
+must occur in `options`. Configuration values are validated against all declared settings; unknown keys fail and
+omitted keys use defaults. A permission is `{ id, title, accessMode: "read" | "write" }`.
+`authenticatedAccess: true` supplies a default module user role during authenticated execution. Provider code must
+still enforce resource ownership and call its permission guard.
+
+| API | Behavior |
+| --- | --- |
+| `ciValidateExtensionManifest(manifest): void` | Throws for malformed metadata, settings, permissions, duplicate/self dependencies, or reserved IDs. |
+| `ciIsExtensionCompatible(manifest, host): boolean` | Matches the framework and, when constrained, the cloud. |
+| `ciResolveExtensionConfiguration(manifest, input = {})` | Returns validated configuration with defaults. |
+| `ciExtensionAccessControl(manifests)` | Returns a `CiAccessControlLayer` with module domains, resources, actions, and optional authenticated-user roles. |
+| `CI_FIXED_MODULES` | Readonly `{ id, name }` descriptors for fixed platform capabilities; never installation records. |
+
+```ts
+const manager = ciCreateExtensionManager({
+  manifests, host: { framework: "next", cloud: "aws" },
+  store, provider, authorize, createOperationId,
+});
+const catalog = await manager.list();
+await manager.execute({ id: "todo", action: "install", revision: catalog.revision });
+```
+
+`CiExtensionManagerOptions` requires the supplied dependencies above. `authorize(): Promise<string>` verifies
+trusted developer access and returns the actor ID on every operation. `createOperationId(): string` supplies a unique
+provider retry token. Optional `now(): string` supplies ISO timestamps. Core has no framework/provider SDK dependency.
+
+`list(): Promise<CiExtensionCatalog>` reconciles pending infrastructure and can write the registry. `execute(command)`
+returns the same catalogue shape. Both throw on denied access, invalid transitions, provider failures, or conflicts.
+A catalogue contains `{ revision, entries }`; each entry includes `manifest`, `detected`, `compatible`, optional
+`backendAvailable`, and optional `installation`. The Next adapter adds backend availability.
+
+Commands contain `id`, current `revision`, and `action: "install" | "enable" | "disable" | "configure" | "uninstall"`.
+Configure supplies `configuration`. Uninstall additionally requires `confirmation` equal to the module ID and the
+revision reviewed when the dialog opened. There is no Update command. Installation completes disabled; enablement
+is explicit. Required dependencies currently refer to enabled optional installations. Uninstall rejects installed
+dependents; disabling rejects enabled/installing dependents. Source/version mismatch blocks enablement.
+
+An installation records `manifest`, `status`, `operation`, `operationId`, `infrastructure`, `configuration`,
+`updatedAt`, `updatedBy`, and optional `error`. Status is `installing`, `disabled`, `enabled`, `uninstalling`, or
+`failed`. Infrastructure is `{ provider, id, outputs? }`, with string output values. No installation represents a
+detected module. A snapshot is `{ revision, installations: Record<string, CiExtensionInstallation> }`.
+
+## Provider and storage interfaces
+
+`CiExtensionStore.read()` returns a snapshot. `write(snapshot, expectedRevision)` must atomically reject concurrent
+changes. A provider implements the following asynchronous lifecycle, except for synchronous `plan`:
+
+| Method | Contract |
+| --- | --- |
+| `plan(manifest)` | Deterministic `CiExtensionInfrastructure`; does not create resources. |
+| `install(installation)` | Idempotent creation using the persisted operation ID. |
+| `uninstall(installation)` | Idempotent destructive cleanup after rechecking ownership. |
+| `inspect(installation)` | Returns `{ status, infrastructure?, error? }`; status is missing, pending, ready, or failed. |
+
+Persist intent before effects. A network error must leave enough identity to reconcile/retry without duplicate
+resources. Only a confirmed missing resource completes uninstall. A failed resource remains visible for cleanup.
+
+```ts
+import {
+  ciCreateAwsExtensionStore, ciCreateAwsExtensionProvider, ciCreateAwsExtensionHandlers,
+  ciCreateAwsTodoModule, ciAwsExtensionPolicies, ciAwsExtensionWriteGuard,
+} from "@cloudigniter/aws/server/backend";
+import type {
+  CiAwsExtensionDefinition, CiAwsExtensionExecutionContext,
+  CiAwsExtensionProviderOptions, CiAwsExtensionHandlersOptions,
+  CiAwsExtensionHandler, CiAwsExtensionPoliciesOptions,
+} from "@cloudigniter/aws/types";
+```
+
+`ciCreateAwsExtensionStore(documentClient, tableName)` implements the revisioned store. The table needs string PK/SK
+attributes. `ciCreateAwsExtensionProvider(options)` requires a CloudFormation `client`, trusted `definitions`,
+environment `prefix`, `account`, `region`, `partition`, and `serviceRoleArn`. The AWS adapter verifies deterministic
+stack names, account/Region, ownership tags, and standalone-root status before cleanup. Definitions without a template
+use a `none` infrastructure reference and create no stack.
+
+A `CiAwsExtensionDefinition` contains `manifest`, optional `template(tableName): Record<string, unknown>`, and optional
+`execute(input, context): Promise<unknown>`. Context includes trusted `actorId`, `moduleId`, resource/table names,
+`snapshot`, `configuration`, DynamoDB `client`, and `assertAccess(permission): Promise<void>`. Always call the guard
+for the operation and validate unknown input before provider access.
+
+`ciCreateAwsExtensionHandlers({ framework, definitions, client?, cloudFormation? })` returns AppSync `manage(event)` and
+`execute(event)` functions. Requests use JSON in `arguments.inputString`; responses are `CiResult<unknown>`.
+`framework` declares the host framework without coupling the AWS package to Next.js. Management takes `{ action: "list" }` or a lifecycle command. Execution takes `{ action: "catalog" }` for enabled
+metadata or `{ id, input }` for a module command. Lifecycle management requires exact development mode and developer
+membership; writes also check fresh read-only policy. Verified identity, enabled state, installed version, binding,
+and resource permissions are enforced independently of the page.
+
+`ciAwsExtensionPolicies({ prefix, ids, partition, region, account })` returns `infrastructure`, `lifecycle`,
+`cleanupStacks`, `cleanupTables`, and `data` IAM fragments. Composition grants them to the provisioner, manager, and
+executor respectively; registry/access-table and PassRole grants are separate. The initial provisioner supports
+DynamoDB tables. Extend the scoped IAM contract before adding other resource kinds.
+
+### AWS module write guard
+
+`ciAwsExtensionWriteGuard(context: CiAwsExtensionExecutionContext)` is an AWS server helper that returns a
+DynamoDB transaction item with a `ConditionCheck`. It reads `context.controlTableName` and
+`context.snapshot.revision` to require that the lifecycle registry still has the revision checked for this
+execution. The registry's key representation remains internal to the provider.
+
+```ts
+import { TransactWriteCommand } from "@aws-sdk/lib-dynamodb";
+import { ciAwsExtensionWriteGuard } from "@cloudigniter/aws/server/backend";
+
+// Inside a module's execute callback, after validating input and checking ownership:
+await context.assertAccess("write-own");
+await context.client.send(new TransactWriteCommand({
+  TransactItems: [
+    ciAwsExtensionWriteGuard(context),
+    { Put: conditionalItemWrite },
+  ],
+}));
+```
+
+Here `conditionalItemWrite` is the module's own validated DynamoDB Put input, including its table, item, and
+optimistic item condition. The helper returns `{ ConditionCheck: { TableName, Key, ConditionExpression,
+ExpressionAttributeValues } }`; the condition compares `revision` with the trusted snapshot revision. It performs
+no I/O, authorization, or retry and has no optional parameters or configuration defaults. Pass the unmodified
+context from the provider handler. Include the guard in the same transaction as every affected module write,
+alongside the module's own ownership and item-revision conditions.
+
+A concurrent registry mutation, including one affecting another module, makes DynamoDB reject the transaction.
+Handle that failure without discarding unsaved client input; reload authoritative state before retrying. The
+guard does not replace `assertAccess`, validate enabled state independently, or make non-DynamoDB side effects
+atomic. See [Creating your own modules](/docs/extending-application/creating-modules) for a complete consumer.
+
+## Next.js discovery and transport
+
+```ts
+import { ciGenerateNextExtensionRegistry } from "@cloudigniter/next/tooling/modules";
+import { ciCreateNextExtensionClient } from "@cloudigniter/next/server";
+import type {
+  CiNextExtensionClientOptions, CiNextExtensionClient, CiNextEnabledExtension,
+} from "@cloudigniter/next/types";
+```
+
+`ciGenerateNextExtensionRegistry(applicationRoot): Promise<void>` is a Node build tool for trusted local source.
+It reads `src/custom/modules/<id>/manifest.ts` and emits separate metadata/client/AWS registries in `.generated`.
+Compatible client facets use `client/index.ts`; server facets use `server/aws/index.ts`. Incompatible manifests are
+listed without importing runtime code. Symlinks, missing facets, mismatched IDs, and manual output collisions fail.
+It performs no cloud operations. The template `modules:generate` script runs it through the TypeScript loader.
+
+`ciCreateNextExtensionClient(options)` takes trusted `{ context, manifests, host, operations }`. Context needs `auth`
+and `env`; operations are optional `manage(input)` and `execute(input)` transports returning `CiGraphQLResponse`.
+Serialize once at the AppSync boundary. `list()`, `command(command)`, `enabled()`, and `execute(id, input)` return
+`Promise<CiResult<...>>`; `detected()` returns local metadata synchronously. An absent management endpoint reports
+that deployment is required. An absent execution endpoint returns an empty enabled list so older dashboards work.
+Provider errors do not fall back to pretending a module is installed. Enabled entries contain manifest/configuration.
+
+## Dashboard components and To-Do contract
+
+```tsx
+import { CiModuleManagementPage, CiTodoPage } from "@cloudigniter/ui/client";
+import type { CiModuleManagementMessages, CiModuleManagementPageProps, CiExtensionPageProps } from "@cloudigniter/ui/types";
+import { CiNextModuleManagementPage } from "@cloudigniter/next/ui/client";
+```
+
+`CiModuleManagementPage` takes `initialCatalog`, optional `initialError`, `onReload()`, `onCommand(command)`, and
+optional `moduleHref(id)`. Callbacks return `CiResult<CiExtensionCatalog>`. It shows fixed core capabilities separately,
+polls pending operations for up to five minutes, edits configuration, and requires typed destructive confirmation.
+The Update dialog is informational. Callback authorization remains mandatory.
+
+Optional `messages: Partial<CiModuleManagementMessages>` customizes the framework-neutral manager's copy;
+omitted fields use English defaults. `locale` defaults to `"en"` and controls sorting of translated core module
+names. The messages contract includes text for headings, actions, notices, and dialogs; `extensionCount(count)`,
+`installedVersion(version)`, `uninstallTitle(name)`, `confirmationPrompt(id)`, and `settingsTitle(name)` format
+dynamic copy. Its `status` map covers all `CiExtensionStatus` values plus `"not-installed"`; `coreModuleNames`
+maps fixed module IDs to labels. Overrides replace top-level fields, so supply complete maps when replacing them.
+
+`CiNextModuleManagementPage` accepts the same props and supplies those messages from the active next-intl
+`modules` message group, with the resolved locale. Explicit `messages` or `locale` props override that binding.
+Render it inside the page's next-intl provider with the `dashboard.modules` namespace loaded. The template's
+Modules page uses this adapter; the generic UI component has no next-intl dependency. Module-authored manifest
+copy and provider error messages are not translated by the adapter.
+
+A generated `CiModulePage` uses `CiExtensionPageProps`: `{ configuration, execute(input): Promise<CiResult<unknown>> }`.
+`CiTodoPage` implements that contract. `ciCreateAwsTodoModule(manifest)` supplies its AWS definition, while
+`ciParseTodoCommand(input)` validates commands and throws on malformed values:
+
+- `{ action: "list", nextToken? }` returns `CiTodoPage`: `{ items, nextToken? }`.
+- `{ action: "create", item: { title, notes, priority, dueDate } }` returns `CiTodoItem`.
+- `{ action: "save", item }` uses the current item revision and returns the updated item.
+
+Items contain `id`, `title`, `notes`, `priority: "low" | "normal" | "high"`, ISO-date-or-null `dueDate`, `completed`,
+`deleted`, optional trusted `deletion` metadata, `revision`, `createdAt`, and `updatedAt`. Backend identity determines
+the owner. Server-generated IDs/timestamps and deletion provenance cannot be selected by the caller. Trash and restore
+use optimistic saves; modifying a trashed task requires restoration first. Transactions check the registry revision
+as well as the task revision. Listing queries 50 owner records at a time without scans or cross-owner cursors.
+
+See the [application walkthrough](/docs/building-features/modules),
+[module-authoring lesson](/docs/extending-application/creating-modules), and
+[provider design](/company-developers/architecture/modules) for deployment and lifecycle details.

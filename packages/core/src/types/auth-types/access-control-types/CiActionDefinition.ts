@@ -1,7 +1,2 @@
-/** Registered application action that can be assigned through privileges. */
-export type CiActionDefinition = {
-  id: string;
-  title: string;
-  description?: string;
-  sensitive?: boolean;
-};
+/** Public EmberGuard contract, implemented by the internal capability package. */
+export type { CiActionDefinition } from "@cloudigniter/emberguard/types";

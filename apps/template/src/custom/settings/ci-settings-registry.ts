@@ -1,148 +1,124 @@
 import { z } from "zod";
-
 import {
-  CI_DEFAULT_PRIVATE_CORE_SETTINGS_ID,
-  CI_DEFAULT_PUBLIC_CORE_SETTINGS_ID,
-  CI_DEFAULT_USER_CORE_SETTINGS_ID,
-  ciDefaultPrivateCoreSettings,
-  ciDefaultPublicCoreSettings,
-  ciDefaultUserCoreSettings,
-  CiPrivateCoreSettingsSchema,
-  CiPublicCoreSettingsSchema,
-  CiUserCoreSettingsSchema,
+  ciCreateCoreSettingsRegistry,
+  CiMainMenuSettingsSchema,
 } from "@cloudigniter/core/lib";
+import type { CiSettingsRegistryMap } from "@cloudigniter/core/types";
 
-import type {
-  CiSettings,
-  CiSettingsDefinition,
-  CiSettingsRegistry,
-  CiSettingsScope,
-  CiSettingsId,
-  CiSettingsRegistryEntry,
-  CiSettingsRegistryMap,
-} from "@cloudigniter/core/lib";
-
-/* -------------------------------------------------------------------------- */
-/* Local template registry extensions                                         */
-/* -------------------------------------------------------------------------- */
-
-const NotificationsSettingsSchema = z.object({
-  email: z.boolean(),
-  push: z.boolean(),
-});
-
-export type CiTemplateSettingsRegistryEntry = CiSettingsDefinition & {
-  schema?: z.ZodTypeAny;
-  mergeWithCore?: boolean;
-  source?: "public" | "private" | "user";
-  routes?: string[];
+/** Application-owned groups. Each entry becomes a section in its category's form. */
+export const appSettingsExtensions: CiSettingsRegistryMap = {
+  "private.navigation": {
+    scope: "private",
+    alwaysLoad: true,
+    defaults: {
+      items: [
+        {
+          id: "home",
+          label: "Home",
+          url: "/",
+          icon: "House",
+          hidden: false,
+          target: "_self",
+        },
+        {
+          id: "dashboard",
+          label: "Dashboard",
+          url: "/dashboard",
+          icon: "LayoutDashboard",
+          hidden: false,
+          target: "_self",
+          subMenu: {
+            Development: {
+              id: "develope",
+              label: "Develope",
+              icon: "Code",
+              hidden: false,
+              target: "_self",
+              subMenu: {
+                Sandbox: {
+                  id: "sandbox",
+                  label: "Sandbox",
+                  url: "/cp/dev/sandbox",
+                  icon: "Codesandbox",
+                  hidden: false,
+                  target: "_self",
+                },
+                Manual: {
+                  id: "manual",
+                  label: "Manual",
+                  url: "/cp/dev/manual",
+                  icon: "BookOpenText",
+                  hidden: false,
+                  target: "_self",
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
+    schema: z.strictObject({ items: CiMainMenuSettingsSchema }),
+    fields: [
+      {
+        name: "items",
+        label: "Navigation items",
+        type: { kind: "jsonEditor", objectOnly: false },
+      },
+    ],
+    meta: {
+      title: "Navigation",
+      description: "Shared navigation for signed-in users.",
+    },
+  },
+  "public.branding": {
+    scope: "public",
+    alwaysLoad: false,
+    meta: {
+      title: "Branding",
+      description: "Application-specific public copy.",
+    },
+    defaults: { tagline: "Welcome to our application" },
+    schema: z.strictObject({ tagline: z.string().max(180) }),
+    fields: [{ name: "tagline", label: "Tagline", type: { kind: "text" } }],
+  },
+  "private.operations": {
+    scope: "private",
+    alwaysLoad: false,
+    meta: {
+      title: "Operations",
+      description: "Application-specific values for authenticated routes.",
+    },
+    defaults: { contactEmail: "support@example.com" },
+    schema: z.strictObject({ contactEmail: z.email() }),
+    fields: [
+      {
+        name: "contactEmail",
+        label: "Contact email",
+        required: true,
+        type: { kind: "email" },
+      },
+    ],
+  },
+  "user.notifications": {
+    scope: "user",
+    alwaysLoad: false,
+    meta: {
+      title: "Notifications",
+      description: "Your application notification preferences.",
+    },
+    defaults: { email: true },
+    schema: z.strictObject({ email: z.boolean() }),
+    fields: [
+      {
+        name: "email",
+        label: "Email notifications",
+        type: { kind: "boolean" },
+      },
+    ],
+  },
 };
 
-export type CiTemplateSettingsRegistry = Record<
-  string,
-  CiTemplateSettingsRegistryEntry
->;
-
-/* -------------------------------------------------------------------------- */
-/* Registry builder                                                           */
-/* -------------------------------------------------------------------------- */
-
-export function ciBuildSettingsRegistry(): CiTemplateSettingsRegistry {
-  const registry: CiTemplateSettingsRegistry = {
-    [CI_DEFAULT_PUBLIC_CORE_SETTINGS_ID]: {
-      scope: "public",
-      defaults: ciDefaultPublicCoreSettings,
-      schema: CiPublicCoreSettingsSchema,
-    },
-
-    [CI_DEFAULT_PRIVATE_CORE_SETTINGS_ID]: {
-      scope: "private",
-      defaults: ciDefaultPrivateCoreSettings,
-      schema: CiPrivateCoreSettingsSchema,
-    },
-
-    [CI_DEFAULT_USER_CORE_SETTINGS_ID]: {
-      scope: "user",
-      defaults: ciDefaultUserCoreSettings,
-      schema: CiUserCoreSettingsSchema,
-    },
-
-    notifications: {
-      scope: "user",
-      defaults: {
-        email: true,
-        push: false,
-      } satisfies CiSettings,
-      schema: NotificationsSettingsSchema,
-      mergeWithCore: true,
-    },
-
-    // adminTools: {
-    //   scope: 'route',
-    //   source: 'private',
-    //   routes: ['/cp/admin/*'],
-    //   defaults: {
-    //     showAuditPanel: true,
-    //   },
-    //   schema: z.object({
-    //     showAuditPanel: z.boolean(),
-    //   }),
-    // },
-
-    // dashboardPreferences: {
-    //   scope: 'route',
-    //   source: 'user',
-    //   routes: ['/dashboard/*'],
-    //   defaults: {
-    //     widgetsCollapsed: false,
-    //   },
-    //   schema: z.object({
-    //     widgetsCollapsed: z.boolean(),
-    //   }),
-    // },
-  };
-
-  return registry;
+export function ciBuildSettingsRegistry() {
+  return ciCreateCoreSettingsRegistry(appSettingsExtensions);
 }
-
-/* -------------------------------------------------------------------------- */
-/* Optional helper when a strict service registry is needed                   */
-/* -------------------------------------------------------------------------- */
-
-export function ciBuildServiceSettingsRegistry(): CiSettingsRegistry {
-  const templateRegistry = ciBuildSettingsRegistry();
-
-  const entries: CiSettingsRegistryMap = {};
-
-  for (const [settingsId, entry] of Object.entries(templateRegistry)) {
-    entries[settingsId] = {
-      scope: entry.scope,
-      defaults: entry.defaults,
-      meta: entry.meta,
-    };
-  }
-
-  return {
-    entries,
-
-    get(settingsId: CiSettingsId): CiSettingsRegistryEntry {
-      const entry = entries[settingsId];
-
-      if (!entry) {
-        throw new Error(`Settings registry entry not found: ${settingsId}`);
-      }
-
-      return entry;
-    },
-
-    list(): CiSettingsRegistryMap {
-      return entries;
-    },
-
-    listByScope(scope: CiSettingsScope): CiSettingsRegistryMap {
-      return Object.fromEntries(
-        Object.entries(entries).filter(([, entry]) => entry.scope === scope),
-      ) as CiSettingsRegistryMap;
-    },
-  };
-}
+export const ciBuildServiceSettingsRegistry = ciBuildSettingsRegistry;

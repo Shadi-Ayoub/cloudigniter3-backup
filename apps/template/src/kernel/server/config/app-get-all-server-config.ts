@@ -1,12 +1,14 @@
 import { getMessages } from "next-intl/server";
 import { getLocale } from "next-intl/server";
-import { ciGetLangDir } from "@cloudigniter/core/lib";
+import { ciResolveSettingsPreferences, ciGetLangDir } from "@cloudigniter/core/lib";
 import type { CiNextConfig, CiNextCoreConfig } from "@cloudigniter/next/types";
 import type { CiAmplifyOutputs } from "@cloudigniter/aws/types";
 
 import { appThemeProviderProps } from "@/custom/theme";
 import outputs from "@/../amplify_outputs.json";
 import config from "@/../cloudigniter.config";
+
+import { appGetSettings } from "../settings/app-get-settings";
 
 const amplifyOutputs = outputs as CiAmplifyOutputs;
 
@@ -52,11 +54,12 @@ export const appGetAllServerConfig = async () => {
   const routerMode = config.app.routerMode;
   const version = config.app.version;
 
+  const preferences = ciResolveSettingsPreferences(await appGetSettings());
   const appNextResolvedConfig = {
     version,
     routerMode,
     messages,
-    appThemeProviderProps,
+    appThemeProviderProps: { defaultTheme: preferences.theme, ...appThemeProviderProps },
   };
 
   const extendedConfig = {

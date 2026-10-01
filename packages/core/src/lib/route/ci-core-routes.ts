@@ -1,6 +1,20 @@
 import type { CiRoutesMap } from "@ci-core/types";
 
 export const ciCoreRoutes: CiRoutesMap = {
+  "/error-preview/access-suspended": {
+    title: "Access suspended preview",
+    namespace: "common",
+    protected: false,
+    tenantScopes: ["system"],
+  },
+  "/error-preview/access-denied": {
+    title: "Access denied preview",
+    namespace: "common",
+    protected: false,
+    tenantScopes: ["system"],
+  },
+  "/dashboard/modules": { title: "Modules", namespace: "dashboard.modules", protected: true, tenantScopes: ["system"] },
+  "/dashboard/extensions/*": { title: "Module", namespace: "dashboard", protected: true, tenantScopes: ["system"] },
   "/": {
     title: "CloudIgniter Application Home Page",
     namespace: "home",
@@ -72,7 +86,12 @@ export const ciCoreRoutes: CiRoutesMap = {
     title: "Manage Settings",
     namespace: "dashboard.settings",
     protected: true,
+    tenantScopes: ["system"],
+    access: { resource: "platform.settings", action: "read" },
   },
+  "/dashboard/settings/public": { title: "Public settings", namespace: "dashboard.settings", protected: true, tenantScopes: ["system"], access: { resource: "platform.settings", action: "read" } },
+  "/dashboard/settings/private": { title: "Private settings", namespace: "dashboard.settings", protected: true, tenantScopes: ["system"], access: { resource: "platform.settings", action: "read" } },
+  "/account/settings": { title: "My Preferences", namespace: "account.settings", protected: true },
   "/dashboard/tenants": {
     title: "Manage Tenants",
     namespace: "dashboard.tenants",

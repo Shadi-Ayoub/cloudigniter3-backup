@@ -1,0 +1,45 @@
+---
+title: "dev quality scan-client-directives"
+description: "Check compiled JavaScript for missing client directives."
+sidebar_label: "dev quality scan-client-directives"
+sidebar_custom_props:
+  audience: developer
+---
+
+Check compiled JavaScript for missing client directives.
+
+## Syntax
+
+```text
+dev quality scan-client-directives
+```
+
+## Prerequisites
+
+Run from the owning `packages/<name>` directory in the private CloudIgniter workspace after installing its dependencies. `--workspace-root` selects discovery and does not change the current package.
+
+## Parameters
+
+This command has no command-specific options.
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Scans `dist` for React client APIs, browser globals, and known client-only imports; files with these signals must start with a `"use client"` directive. Offenders fail the check. An empty or missing `dist` yields no offenders, so build first.
+
+## Examples
+
+```bash
+cd packages/next
+pnpm exec dev quality scan-client-directives
+```
+
+## Errors and recovery
+
+A missing required configuration or tool fails the command. A failed subprocess stops the workflow and returns a nonzero status. Inspect the first reported failure before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/cli-architecture)

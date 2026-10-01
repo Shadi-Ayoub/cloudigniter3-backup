@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "typecheck": [
+    "source",
+    "tools",
+    "tests"
+  ],
+  "test": {
+    "files": [
+      "__tests__/**/*.test.{ts,tsx,cjs,mjs}"
+    ],
+    "typescript": true,
+    "tsconfig": "tsconfig.test.json",
+    "timeout": 60000,
+    "requireNoSkipped": true
+  },
+  "coverageCheck": "scripts/ci-check-coverage.mjs",
+  "packageCheck": "scripts/ci-check-package.mjs",
+  "releaseCheck": "scripts/ci-release-check.mjs",
+  "assets": true,
+  "quality": [
+    "test-coverage",
+    "test-build-gate",
+    "check",
+    "typecheck-tests"
+  ],
+  "prepublish": [
+    "quality",
+    "check-package"
+  ],
+  "check": [
+    "typecheck",
+    "typecheck-tools"
+  ]
+}

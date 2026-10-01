@@ -104,6 +104,12 @@ const aliasPlugin = alias({
 /** @type {import("rollup").RollupOptions[]} */
 const config = [
   {
+    input: "dist/.types/tooling/modules.d.ts",
+    output: { file: "dist/tooling/modules.d.ts", format: "es" },
+    external,
+    plugins: [aliasPlugin, dts()],
+  },
+  {
     input: "dist/.types/index.d.ts",
     output: {
       file: "dist/index.d.ts",

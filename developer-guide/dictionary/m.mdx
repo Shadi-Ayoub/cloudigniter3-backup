@@ -21,6 +21,14 @@ A persisted provenance record that proves a seeder owns a disposable resource. S
 Request-time logic that runs before page rendering. In current Next.js integration, the application’s thin `proxy.ts` entry point delegates reusable Tenant, Org Unit, route, redirect, rewrite, and context processing to `@cloudigniter/next`.
 
 
+## Module
+
+A unit of CloudIgniter functionality with declared runtime facets. Core modules are fixed platform capabilities. Optional extension modules are detected from trusted application folders, installed with their provider resources, and enabled separately. Disabling retains data; uninstalling permanently removes the extension resources. See [optional modules](/docs/building-features/modules).
+
+## Module Manifest
+
+Serializable metadata declaring a module’s identity, runtime, host compatibility, and dependencies. An optional module uses `CiExtensionManifest`, extending `CiModuleManifest` with a version, dashboard metadata, settings, and permissions. A manifest is distinct from its persisted installation and provider resource identity.
+
 ## Multi-tenancy
 
 The CloudIgniter model for serving several isolated tenant contexts from one application while supporting system/global routes and explicitly shared Org Unit trees. Tenant identity remains part of routing and authorization decisions.

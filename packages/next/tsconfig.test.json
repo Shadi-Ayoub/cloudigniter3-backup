@@ -9,6 +9,8 @@
     "src/**/*.tsx",
     "__tests__/**/*.ts",
     "__tests__/**/*.tsx",
-    "vitest.d.ts"
+    "vitest.d.ts",
+    "../ui/src/**/*.ts",
+    "../ui/src/**/*.tsx"
   ]
 }

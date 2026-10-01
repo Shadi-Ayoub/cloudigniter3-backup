@@ -270,10 +270,10 @@ export const CiTenantsPage = () => {
     return (
       <NextIntlClientProvider locale={locale} messages={messages}>
         <div className="w-full px-6">
-          {errorMsg && <div className="text-red-600">{errorMsg}</div>}
+          {errorMsg && <div className="text-danger">{errorMsg}</div>}
           <button
             onClick={() => void loadTenants()}
-            className="bg-amber-600 text-gray-800"
+            className="bg-warning text-warning-foreground"
           >
             Refresh
           </button>
@@ -305,14 +305,14 @@ export const CiTenantsPage = () => {
             type='button'
             onClick={handleSeedTenants}
             disabled={isLoading}
-            className='rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-60'
+            className='rounded bg-primary px-4 py-2 text-primary-foreground disabled:opacity-60'
           >
             {isLoading ? 'Seeding tenants…' : 'Seed Tenants'}
           </button>
 
-          {successMsg && <p className='text-green-600'>{successMsg}</p>}
+          {successMsg && <p className='text-success-surface-foreground'>{successMsg}</p>}
 
-          {errorMsg && <p className='text-red-600'>{errorMsg}</p>}
+          {errorMsg && <p className='text-danger'>{errorMsg}</p>}
         </main> */}
       </NextIntlClientProvider>
     );

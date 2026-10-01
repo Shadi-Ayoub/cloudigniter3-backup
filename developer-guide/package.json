@@ -18,7 +18,10 @@
     "dates:update": "node scripts/page-dates.mjs --update",
     "dates:check": "node scripts/page-dates.mjs --check",
     "test:dates": "node --test scripts/page-dates.test.mjs",
-    "guide:check": "node scripts/check-user-guide.mjs"
+    "guide:check": "node scripts/check-user-guide.mjs && node scripts/check-commands.mjs",
+    "test:search": "node --import tsx --test scripts/guide-search.test.ts",
+    "test:command-references": "node --import tsx --test scripts/command-references.test.ts",
+    "test:dictionary": "node --import tsx --test scripts/dictionary.test.ts"
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.2",

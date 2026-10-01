@@ -36,8 +36,25 @@
     "environment": "environment"
   },
   "themeSwitcher": {
+    "toggle": "Toggle theme",
     "dark": "Dark",
     "light": "Light",
     "system": "System"
+  },
+  "httpErrors": {
+    "errorLabel": "Error",
+    "homeLabel": "Return to home",
+    "403": {
+      "title": "Access not allowed",
+      "message": "You do not have permission to access this page. Contact your administrator if you need access."
+    },
+    "404": {
+      "title": "Page not found",
+      "message": "The route you requested does not exist, may have moved, or is no longer available."
+    },
+    "suspended": {
+      "title": "Access suspended",
+      "message": "Your access to this page has been suspended by an administrator. Contact your administrator to request restoration."
+    }
   }
 }

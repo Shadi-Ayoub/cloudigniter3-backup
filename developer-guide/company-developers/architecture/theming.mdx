@@ -1,0 +1,81 @@
+---
+title: Theme architecture
+sidebar_position: 4
+description: Ownership, configuration transport, token selection, and widget synchronization across CloudIgniter UI.
+---
+
+# Theme architecture
+
+CloudIgniter's theme contract covers the document, every standard layout, reusable UI, and portaled overlays.
+Keep configuration transport and CSS selection aligned so a single user choice produces one appearance.
+
+## Ownership and flow
+
+| Owner | Responsibility |
+| --- | --- |
+| `packages/core` | Generic `CiThemeConfig` and the `class` / `data-theme` strategy union |
+| `packages/next` | Configuration mapping/resolution, `CiThemeProvider`, switcher, layout styles, semantic token definitions, and framework/provider bridges |
+| `packages/ui` | Semantic component classes and `useCiColorMode` for widgets needing a concrete mode |
+| `packages/aws` | Building the Amplify theme from an explicit mode and provider tokens |
+| `apps/template` | Generic configuration, `appThemeProviderProps`, custom CSS, and thin layout composition |
+
+```text
+appBootstrap().config
+  -> CiLayout -> CiPageWrapper
+  -> CiClientWrapper(themeConfig)
+  -> CiThemeProvider -> document class/data-theme
+  -> semantic tokens + dark variants + useCiColorMode widget subscribers
+```
+
+`CiPageWrapper` must pass `{ theme: appCoreConfig.theme, themeProviderProps: appNextResolvedConfig.appThemeProviderProps }`.
+Spreading generic fields beside `themeProviderProps` silently drops them because the adapter reads `config.theme`.
+`CiClientWrapper` forwards this object unchanged. Do not hardcode `attribute` or `defaultTheme` in a layout wrapper.
+
+Resolution applies defaults, defined mapped generic fields, then defined raw overrides. Undefined optional values
+must not erase defaults. `useSystemPreference` takes precedence over legacy `enableSystem`; raw `enableSystem`
+takes precedence over both. Disabling System resolves a System default to the first configured theme or Light.
+The provider corrects a persisted System selection after mounting even on layouts without a switcher.
+
+## CSS and components
+
+The standard styles define both `.dark` and `[data-theme="dark"]` selectors. The shared Tailwind variant matches
+the marker element and its descendants for either strategy. Preserve the same selector contract in custom CSS.
+Root theme markers cover portals mounted under `body`; do not move theme state onto a page container.
+
+The document establishes `background` and `foreground`. Headers, footers, and page headers use semantic surface
+pairs. Components consume card, popover, muted, primary, accent, border, input, ring, and status roles. Shadcn's
+`destructive` and `sidebar` aliases map to CloudIgniter tokens. Avoid hardcoded light surfaces, unpaired foregrounds,
+or stale HSL expressions around the OKLCH/token-based colors.
+
+Dropdown and submenu primitives use opaque popover surfaces, semantic borders, and `z-menu`. Keep the utility
+layer aligned with `.ci-menu-content`: a primitive's `z-50` utility takes precedence over the component layer's
+menu index. The fixed Radix Popper wrapper owns the portal's stacking context and snapshots its child's computed
+index into an inline style. The shared dropdown stylesheet sets `--z-index-menu` directly on wrappers whose direct
+child is a dropdown or submenu content slot. Its scoped `!important` declaration overrides that inline snapshot,
+keeping menus above the header as styles change. Other Popper components retain their own layers. Validate both
+the inner surface and outer positioning wrapper when reviewing overlay visibility.
+
+Edit modular sources under `packages/next/src/styles/standard/theme` and regenerate `theme.generated.css` using
+`pnpm --filter @cloudigniter/next build:theme`. Application customizations belong in `src/custom/styles`, not package
+sources or generated CSS. Keep package Tailwind source discovery in the template.
+
+## Imperative widgets and hydration
+
+`useCiColorMode`, exported from `@cloudigniter/ui/client`, observes the document's standard theme markers and
+falls back to OS preference only when neither is present. It owns no persistence and requires no Next.js dependency.
+Monaco hooks, Smart Form JSON editors, auto-themed notifications, and the Next.js Amplify bridge reuse it. Keep
+provider-specific token construction in `packages/aws`; pass the observed mode from the Next.js bridge.
+
+The hook returns Light during SSR and first hydration, then subscribes in an effect. The switcher also delays
+selection-dependent markup until mounting and gets choices from provider state. Do not read local storage during
+render or compare a logical theme name directly to `dark` when forced or mapped themes are supported.
+
+## Validation
+
+Run theme configuration regressions in `packages/next/__tests__/theme/theme-config.test.ts`, compiled application
+CSS regressions in `apps/template/__tests__/theme-styles.test.ts`, and affected package/consumer type checks.
+Review Light/Dark/System, forced appearance, both attribute strategies, persistence, and OS-opposite manual choices.
+Include application, control-panel, and login layouts, portals, editors, loading/error states, mobile widths,
+keyboard focus, and RTL. Compilation does not replace browser verification; report any unavailable visual checks.
+
+See the [user strategies](/docs/configuration/themes), [public APIs](/docs/api-reference/components/theming) for related contracts.

@@ -11,7 +11,7 @@ export interface CiDevBeaconButtonProps
   /** Provide your own map if you already have positionClasses elsewhere */
   positionClasses?: Partial<Record<CiDevBeaconPosition, string>>;
   position?: CiDevBeaconPosition;
-  /** Optional custom logo node (e.g., <Image ... />). Defaults to a simple circle */
+  /** Optional custom logo node. Defaults to the original image in Light and the outline icon in Dark. */
   logo?: React.ReactNode;
   /** Affects the small status dot color */
   env?: CiEnvMode;

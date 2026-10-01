@@ -243,6 +243,384 @@
             ]
           }
         },
+        "PublicSettings": {
+          "name": "PublicSettings",
+          "fields": {
+            "PK": {
+              "name": "PK",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "SK": {
+              "name": "SK",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "settingsId": {
+              "name": "settingsId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "scope": {
+              "name": "scope",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "targetTenantScope": {
+              "name": "targetTenantScope",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "userId": {
+              "name": "userId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "value": {
+              "name": "value",
+              "isArray": false,
+              "type": "AWSJSON",
+              "isRequired": true,
+              "attributes": []
+            },
+            "revision": {
+              "name": "revision",
+              "isArray": false,
+              "type": "Int",
+              "isRequired": true,
+              "attributes": []
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "isArray": false,
+              "type": "AWSDateTime",
+              "isRequired": false,
+              "attributes": [],
+              "isReadOnly": true
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "isArray": false,
+              "type": "AWSDateTime",
+              "isRequired": false,
+              "attributes": [],
+              "isReadOnly": true
+            }
+          },
+          "syncable": true,
+          "pluralName": "PublicSettings",
+          "attributes": [
+            {
+              "type": "model",
+              "properties": {
+                "queries": null,
+                "mutations": null,
+                "subscriptions": null
+              }
+            },
+            {
+              "type": "key",
+              "properties": {
+                "fields": [
+                  "PK",
+                  "SK"
+                ]
+              }
+            },
+            {
+              "type": "auth",
+              "properties": {
+                "rules": [
+                  {
+                    "groupClaim": "cognito:groups",
+                    "provider": "userPools",
+                    "allow": "groups",
+                    "groups": [
+                      "system-super-admin"
+                    ],
+                    "operations": [
+                      "create",
+                      "update",
+                      "delete",
+                      "read"
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "primaryKeyInfo": {
+            "isCustomPrimaryKey": true,
+            "primaryKeyFieldName": "PK",
+            "sortKeyFieldNames": [
+              "SK"
+            ]
+          }
+        },
+        "PrivateSettings": {
+          "name": "PrivateSettings",
+          "fields": {
+            "PK": {
+              "name": "PK",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "SK": {
+              "name": "SK",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "settingsId": {
+              "name": "settingsId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "scope": {
+              "name": "scope",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "targetTenantScope": {
+              "name": "targetTenantScope",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "userId": {
+              "name": "userId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "value": {
+              "name": "value",
+              "isArray": false,
+              "type": "AWSJSON",
+              "isRequired": true,
+              "attributes": []
+            },
+            "revision": {
+              "name": "revision",
+              "isArray": false,
+              "type": "Int",
+              "isRequired": true,
+              "attributes": []
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "isArray": false,
+              "type": "AWSDateTime",
+              "isRequired": false,
+              "attributes": [],
+              "isReadOnly": true
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "isArray": false,
+              "type": "AWSDateTime",
+              "isRequired": false,
+              "attributes": [],
+              "isReadOnly": true
+            }
+          },
+          "syncable": true,
+          "pluralName": "PrivateSettings",
+          "attributes": [
+            {
+              "type": "model",
+              "properties": {
+                "queries": null,
+                "mutations": null,
+                "subscriptions": null
+              }
+            },
+            {
+              "type": "key",
+              "properties": {
+                "fields": [
+                  "PK",
+                  "SK"
+                ]
+              }
+            },
+            {
+              "type": "auth",
+              "properties": {
+                "rules": [
+                  {
+                    "groupClaim": "cognito:groups",
+                    "provider": "userPools",
+                    "allow": "groups",
+                    "groups": [
+                      "system-super-admin"
+                    ],
+                    "operations": [
+                      "create",
+                      "update",
+                      "delete",
+                      "read"
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "primaryKeyInfo": {
+            "isCustomPrimaryKey": true,
+            "primaryKeyFieldName": "PK",
+            "sortKeyFieldNames": [
+              "SK"
+            ]
+          }
+        },
+        "UserSettings": {
+          "name": "UserSettings",
+          "fields": {
+            "PK": {
+              "name": "PK",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "SK": {
+              "name": "SK",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "settingsId": {
+              "name": "settingsId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "scope": {
+              "name": "scope",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "targetTenantScope": {
+              "name": "targetTenantScope",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "userId": {
+              "name": "userId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "value": {
+              "name": "value",
+              "isArray": false,
+              "type": "AWSJSON",
+              "isRequired": true,
+              "attributes": []
+            },
+            "revision": {
+              "name": "revision",
+              "isArray": false,
+              "type": "Int",
+              "isRequired": true,
+              "attributes": []
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "isArray": false,
+              "type": "AWSDateTime",
+              "isRequired": false,
+              "attributes": [],
+              "isReadOnly": true
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "isArray": false,
+              "type": "AWSDateTime",
+              "isRequired": false,
+              "attributes": [],
+              "isReadOnly": true
+            }
+          },
+          "syncable": true,
+          "pluralName": "UserSettings",
+          "attributes": [
+            {
+              "type": "model",
+              "properties": {
+                "queries": null,
+                "mutations": null,
+                "subscriptions": null
+              }
+            },
+            {
+              "type": "key",
+              "properties": {
+                "fields": [
+                  "PK",
+                  "SK"
+                ]
+              }
+            },
+            {
+              "type": "auth",
+              "properties": {
+                "rules": [
+                  {
+                    "groupClaim": "cognito:groups",
+                    "provider": "userPools",
+                    "allow": "groups",
+                    "groups": [
+                      "system-super-admin"
+                    ],
+                    "operations": [
+                      "create",
+                      "update",
+                      "delete",
+                      "read"
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "primaryKeyInfo": {
+            "isCustomPrimaryKey": true,
+            "primaryKeyFieldName": "PK",
+            "sortKeyFieldNames": [
+              "SK"
+            ]
+          }
+        },
         "System": {
           "name": "System",
           "fields": {
@@ -881,6 +1259,20 @@
             }
           }
         },
+        "GetSettings": {
+          "name": "GetSettings",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
         "ListOrgUnits": {
           "name": "ListOrgUnits",
           "isArray": false,
@@ -1079,6 +1471,20 @@
             }
           }
         },
+        "SetSettings": {
+          "name": "SetSettings",
+          "isArray": false,
+          "type": "AWSJSON",
+          "isRequired": false,
+          "arguments": {
+            "inputString": {
+              "name": "inputString",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
         "CreateOrgUnit": {
           "name": "CreateOrgUnit",
           "isArray": false,
@@ -1197,6 +1603,9 @@
   "version": "1.4",
   "custom": {
     "cloudigniter": {
+      "publicSettingsTableName": "PublicSettings-fqsqohaocbgsbaazjeo2iw4lpm-NONE",
+      "privateSettingsTableName": "PrivateSettings-fqsqohaocbgsbaazjeo2iw4lpm-NONE",
+      "userSettingsTableName": "UserSettings-fqsqohaocbgsbaazjeo2iw4lpm-NONE",
       "userProfileTableName": "UserProfile-fqsqohaocbgsbaazjeo2iw4lpm-NONE",
       "systemTableName": "System-fqsqohaocbgsbaazjeo2iw4lpm-NONE",
       "emberguardAccessTableName": "EmberguardAccess-fqsqohaocbgsbaazjeo2iw4lpm-NONE",

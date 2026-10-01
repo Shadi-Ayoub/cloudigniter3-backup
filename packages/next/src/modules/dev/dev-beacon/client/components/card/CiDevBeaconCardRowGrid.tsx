@@ -45,7 +45,7 @@ export function CiDevBeaconCardRowGrid({
   return (
     <div className="space-y-2">
       {title && (
-        <h3 className="border-gray-500 bg-muted/70 text-foreground rounded-md border px-3 py-1.5 text-sm font-medium">
+        <h3 className="border-border bg-muted/70 text-foreground rounded-md border px-3 py-1.5 text-sm font-medium">
           {title}
         </h3>
       )}

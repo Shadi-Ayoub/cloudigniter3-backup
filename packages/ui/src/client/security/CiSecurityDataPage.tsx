@@ -34,6 +34,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  Checkbox,
   Textarea,
   ciNormalizeClientThrownError,
   ciDefineDataTable,
@@ -156,6 +157,7 @@ function createSecurityDraft(kind: CiSecurityRecordKind): CiSecurityRecord {
         action: "read",
         scopeKinds: ["tenant"],
         sensitive: false,
+        readOnly: false,
       };
     case "resource":
       return {
@@ -365,6 +367,17 @@ function buildSecurityColumns(
         id: "effect",
         accessorFn: (row) => (row.kind === "permission" ? row.effect : ""),
         header: "Effect",
+      },
+      {
+        id: "readOnly",
+        accessorFn: (row) => row.kind === "permission" && row.readOnly === true,
+        header: "Read-only",
+        cell: ({ row }) =>
+          row.original.kind === "permission" && row.original.readOnly ? (
+            <Badge variant="secondary">Forced</Badge>
+          ) : (
+            <span className="text-muted-foreground">Off</span>
+          ),
       },
     );
   }
@@ -682,6 +695,27 @@ function CiSecurityRecordEditor({
 
       {draft.kind === "permission" ? (
         <div className="grid gap-4">
+          <div className="flex items-start justify-between gap-4 rounded-md border p-3">
+            <div className="grid gap-1">
+              <Label htmlFor="security-read-only">Force read-only</Label>
+              <p
+                id="security-read-only-description"
+                className="text-xs text-muted-foreground"
+              >
+                Block all write actions on this resource in the selected scopes,
+                even when another role or user permission allows them. Reading
+                still requires an Allow permission for the requested action.
+              </p>
+            </div>
+            <Checkbox
+              id="security-read-only"
+              checked={draft.readOnly ?? false}
+              onCheckedChange={(readOnly) =>
+                set({ readOnly: readOnly === true })
+              }
+              aria-describedby="security-read-only-description"
+            />
+          </div>
           <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(10rem,0.55fr)]">
             <div className="grid min-w-0 gap-2">
               <Label>Role</Label>

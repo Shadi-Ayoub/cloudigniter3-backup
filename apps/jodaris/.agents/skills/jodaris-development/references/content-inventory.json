@@ -1,0 +1,194 @@
+{
+  "status": "Initial copy inventory, not an assertion of separately approved business claims; not loaded at runtime",
+  "source": "index.html",
+  "captured_on": "2026-09-30",
+  "company": "JODARIS",
+  "website": "https://jodaris.com/",
+  "contact_email": "shadi@jodaris.com",
+  "metadata": {
+    "title": "JODARIS — Engineering ideas into impact.",
+    "description": "JODARIS brings together Digital Applications, Research, Innovation, and Systems. Engineering ideas into purposeful technology and meaningful impact."
+  },
+  "hero": {
+    "eyebrow": "Independent thinking. Connected technology.",
+    "heading": "Engineering ideas into impact.",
+    "description": "We bring digital applications, research, innovation, and systems together to turn ambitious ideas into purposeful technology."
+  },
+  "navigation": [
+    {
+      "label": "Our expertise",
+      "href": "#expertise"
+    },
+    {
+      "label": "Who we are",
+      "href": "#about"
+    },
+    {
+      "label": "Our approach",
+      "href": "#approach"
+    }
+  ],
+  "expertise": {
+    "heading": "Four disciplines. Infinite possibility.",
+    "intro": "The best solutions happen where disciplines connect. We unite thoughtful engineering, meaningful exploration, and a systems mindset to create what comes next.",
+    "disciplines": [
+      {
+        "key": "applications",
+        "heading": "Digital Applications",
+        "eyebrow": "01 / MAKE IT REAL",
+        "summary": "Intuitive experiences. Powerful functionality. Web and mobile applications that make everyday complexity feel simple.",
+        "category": "Web & mobile / Digital platforms",
+        "dialog": {
+          "title": "Digital Applications",
+          "label": "01 / MAKE IT REAL",
+          "description": "Digital products should feel clear, capable, and easy to use. We connect experience design with thoughtful engineering to bring useful applications to life.",
+          "items": [
+            "Web and mobile application development",
+            "Purpose-built digital platforms and portals",
+            "User experience and interface design",
+            "Application modernization and enhancement"
+          ]
+        }
+      },
+      {
+        "key": "research",
+        "heading": "Research",
+        "eyebrow": "02 / ASK WHAT IF",
+        "summary": "Good questions lead to better decisions. We explore emerging technologies, test assumptions, and uncover useful possibilities.",
+        "category": "Applied exploration / Feasibility",
+        "dialog": {
+          "title": "Research",
+          "label": "02 / ASK WHAT IF",
+          "description": "Research creates the space to question assumptions before committing to a direction. We explore technologies and test possibilities with practical outcomes in mind.",
+          "items": [
+            "Applied technology research and exploration",
+            "Technical feasibility and solution evaluation",
+            "Proofs of concept and experimental validation",
+            "Insight-led exploration of emerging technologies"
+          ]
+        }
+      },
+      {
+        "key": "innovation",
+        "heading": "Innovation",
+        "eyebrow": "03 / CHALLENGE THE EXPECTED",
+        "summary": "Fresh thinking, made tangible. We shape ideas into prototypes and new products with a clear purpose and room to grow.",
+        "category": "Prototyping / Intelligent solutions",
+        "dialog": {
+          "title": "Innovation",
+          "label": "03 / CHALLENGE THE EXPECTED",
+          "description": "Innovation is more than a new idea. It is the work of turning a promising possibility into something valuable, testable, and ready to develop further.",
+          "items": [
+            "Product discovery and concept development",
+            "Rapid prototypes and minimum viable products",
+            "Exploration of AI-enabled experiences",
+            "New digital services and ways of working"
+          ]
+        }
+      },
+      {
+        "key": "systems",
+        "heading": "Systems",
+        "eyebrow": "04 / CONNECT THE WHOLE",
+        "summary": "Strong foundations for connected organizations. Integrated systems and workflows designed to work together, not in isolation.",
+        "category": "Architecture / Integration / Automation",
+        "dialog": {
+          "title": "Systems",
+          "label": "04 / CONNECT THE WHOLE",
+          "description": "A system is only as useful as the connections within it. We think across platforms, data, and workflows to create coherent foundations for digital operations.",
+          "items": [
+            "System architecture and solution design",
+            "Platform and API integration",
+            "Business process and workflow automation",
+            "Cloud-ready foundations and connected data flows"
+          ]
+        }
+      }
+    ]
+  },
+  "about": {
+    "heading": "Technology is the tool. Moving people and possibilities forward is the point.",
+    "copy": "JODARIS is built around a simple belief: progress comes from connecting curiosity with the craft of building. We look beyond individual products to consider the people, ideas, and systems around them.",
+    "values": [
+      "Think deeply",
+      "Make it useful",
+      "Build for tomorrow"
+    ]
+  },
+  "approach": {
+    "heading": "Not just built. Thought through.",
+    "intro": "A clear direction. A considered process. We move from understanding the challenge to building something that matters—and keep learning along the way.",
+    "steps": [
+      {
+        "id": "panel-discover",
+        "heading": "Start with the right questions.",
+        "description": "Understand the people, the challenge, and the opportunity. We listen closely, investigate the context, and explore what would make a meaningful difference.",
+        "outcome": "THE OUTCOME / A shared understanding"
+      },
+      {
+        "id": "panel-define",
+        "heading": "Give ambition a clear direction.",
+        "description": "Translate what we learn into a practical plan. Define the experience, the architecture, and the priorities—so every decision serves the purpose behind the work.",
+        "outcome": "THE OUTCOME / A focused blueprint"
+      },
+      {
+        "id": "panel-build",
+        "heading": "Make the idea work in the real world.",
+        "description": "Prototype, develop, and refine in purposeful steps. Bring design and engineering together, test what matters, and turn the blueprint into a usable solution.",
+        "outcome": "THE OUTCOME / A working solution"
+      },
+      {
+        "id": "panel-evolve",
+        "heading": "Launch is a beginning, not an ending.",
+        "description": "Learn from real use. Gather feedback, understand what can work better, and refine the solution as needs and opportunities change.",
+        "outcome": "THE OUTCOME / Continuous improvement"
+      }
+    ]
+  },
+  "contact": {
+    "heading": "What’s your next big idea?",
+    "dialog_heading": "Tell us what’s on your mind.",
+    "dialog_intro": "A few details are all we need to start a useful conversation.",
+    "delivery": "User-reviewed mailto draft; no backend submission"
+  },
+  "form_fields": [
+    {
+      "id": "project-name",
+      "name": "name",
+      "type": "input",
+      "required": true,
+      "maxlength": "100",
+      "options": []
+    },
+    {
+      "id": "project-email",
+      "name": "email",
+      "type": "email",
+      "required": true,
+      "maxlength": "150",
+      "options": []
+    },
+    {
+      "id": "project-focus",
+      "name": "focus",
+      "type": "select",
+      "required": false,
+      "maxlength": null,
+      "options": [
+        "An idea to explore",
+        "Research",
+        "Innovation",
+        "Systems",
+        "Partnership or collaboration"
+      ]
+    },
+    {
+      "id": "project-message",
+      "name": "message",
+      "type": "textarea",
+      "required": true,
+      "maxlength": "1200",
+      "options": []
+    }
+  ]
+}

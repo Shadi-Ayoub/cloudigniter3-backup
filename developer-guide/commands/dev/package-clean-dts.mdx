@@ -1,0 +1,45 @@
+---
+title: "dev package clean-dts"
+description: "Remove generated declarations outside dist."
+sidebar_label: "dev package clean-dts"
+sidebar_custom_props:
+  audience: developer
+---
+
+Remove generated declarations outside dist.
+
+## Syntax
+
+```text
+dev package clean-dts
+```
+
+## Prerequisites
+
+Run from the owning `packages/<name>` directory in the private CloudIgniter workspace after installing its dependencies. `--workspace-root` selects discovery and does not change the current package.
+
+## Parameters
+
+This command has no command-specific options.
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Recursively deletes `.d.ts` and `.d.ts.map` files while skipping `dist` and `node_modules`. This is destructive to authored declaration files stored alongside source; inspect the package layout before running it.
+
+## Examples
+
+```bash
+cd packages/next
+pnpm exec dev package clean-dts
+```
+
+## Errors and recovery
+
+A missing required configuration or tool fails the command. A failed subprocess stops the workflow and returns a nonzero status. Inspect the first reported failure before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/package-workflows)

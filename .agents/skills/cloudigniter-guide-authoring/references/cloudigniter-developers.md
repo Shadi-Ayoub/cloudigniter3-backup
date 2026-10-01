@@ -35,6 +35,16 @@ Organize by architectural domain rather than by the task or pull request that in
 Current contributor documentation begins under:
 
 - `company-developers/providers` for provider architecture and binding workflows.
+- `company-developers/tooling` for the developer-profile introduction and shared
+  command design; `tooling/ci` for application CLI architecture and `tooling/dev`
+  for the company toolkit, setup, focused workflows and configuration.
+
+Keep `ci` and `dev` reading paths separate. Explain the workflow or implementation
+boundary, then link to `commands/ci` or `commands/dev` for command syntax, flags,
+defaults, examples and errors. Do not rebuild their command catalogs in this chapter.
+Use the publication chapter for GitHub/npm setup and delivery. Preserve established
+page URLs with explicit slugs when moving content, update inbound links and anchors,
+and move date-registry entries so the page's creation history survives a relocation.
 
 Create focused categories as contributor coverage expands, for example package architecture, runtime lifecycle, public API governance, testing, or release workflows. Reuse an existing domain category when possible.
 

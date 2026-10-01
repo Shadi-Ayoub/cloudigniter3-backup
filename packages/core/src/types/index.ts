@@ -606,3 +606,22 @@ export type {
   CiUser,
 } from "./user-types";
 export type * from "./smart-form-types";
+export type {
+  CiRequestSettings,
+  CiSettingsGroup,
+  CiSettingsActor,
+  CiSettingsManager,
+  CiSettingsManagerOptions,
+  CiSettingsUpdate,
+} from "./settings-types";
+export type {
+  CiSettingsTarget,
+  CiSettingsTenantTarget,
+  CiSettingsEnforcementRule,
+  CiSettingsManagementAction,
+  CiSettingsOverwriteSelection,
+  CiSettingsTargetOption,
+  CiSettingsTargetPage,
+  CiSettingsStoreCondition,
+} from "./settings-types";
+export type { CiExtensionConfiguration, CiExtensionSetting, CiExtensionManifest, CiExtensionStatus, CiExtensionInfrastructure, CiExtensionInstallation, CiExtensionSnapshot, CiExtensionCatalogEntry, CiExtensionCommand, CiExtensionStore, CiExtensionInfrastructureState, CiExtensionProvider, CiExtensionManagerOptions, CiExtensionCatalog, CiExtensionManager, CiTodoItem, CiTodoPage, CiTodoCommand } from "./module-types";

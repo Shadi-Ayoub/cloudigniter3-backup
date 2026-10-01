@@ -43,3 +43,7 @@ Use a search-first chip multi-select when a form selects multiple roles, privile
 - [Assignments and enforcement](assignments.md)
 - [Data-table interaction contract](../ui/data-table.md)
 - [Validation](validation.md)
+
+- Expose **Force read-only** in every permission editor with its resource/scope-wide write-veto behavior clearly
+  described. Preserve the flag in permission projections, complete role copies, and persistence. Explicit false
+  clears the restriction; an omitted field on a legacy partial permission edit must not silently clear it.

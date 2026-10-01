@@ -1,15 +1,20 @@
 # `@cloudigniter/cli`
 
-CloudIgniter's command-line product has two executables with separate audiences:
+CloudIgniter's public `ci` executable provides application and system operations.
+Run `ci --help` for the command catalog and pass `--no-interactive` in automation.
+Interactive terminals support guided prompts for omitted choices.
 
-- `ci` contains supported application and system-operations commands.
-- `ci-dev` contains monorepo-only build, module, and quality commands and refuses to run outside the private CloudIgniter workspace.
+Maintainer commands have moved to the restricted `@cloudigniter/dev` package.
+Replace `ci-dev <group> <command>` with `dev <group> <command>` and use
+`@cloudigniter/dev/tooling/tsup`, `/tooling/entries`, and `/tooling/inject-use-client`
+for package build configuration. The old executable and build exports are removed;
+there are no aliases. Application consumers need only this public package.
 
-Run `ci --help` or `ci-dev --help` for the current command catalog. Public automation should pass `--no-interactive`; maintainer package scripts should supply every required flag so no prompt is needed. Interactive terminals may use guided Enquirer prompts for omitted choices.
-
-The former `cloudigniter` and `cloudigniter-dev` executable names were replaced by `ci` and `ci-dev`; they are not retained as aliases.
-
-The package also exposes `@cloudigniter/cli/tooling/tsup`, `@cloudigniter/cli/tooling/entries`, and `@cloudigniter/cli/tooling/inject-use-client` for package-local build configuration. These are maintainer tooling exports, not application runtime APIs.
+`@cloudigniter/cli/tooling/modules` exposes the shared read-only module validator
+used by both executables. `@cloudigniter/cli/runtime/package-entry` resolves an
+installed package export from an explicit target project. These Node tooling APIs
+keep application validation independent of the private DEV package. Their input
+contracts are exported through `@cloudigniter/cli/types`.
 
 Resource generators can use `@cloudigniter/cli/runtime/resource-file-transaction`
 to prepare, apply, inspect, and safely roll back bounded application-file

@@ -7,6 +7,8 @@ const sourceRoots = [
   "developer-guide/docs",
   "developer-guide/company-developers",
   "developer-guide/dictionary",
+  "developer-guide/developer-dictionary",
+  "developer-guide/commands",
   ".agents/skills",
   ".codex/skills",
 ];

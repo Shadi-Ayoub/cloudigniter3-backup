@@ -1,0 +1,45 @@
+---
+title: "dev package prepublish"
+description: "Run configured validation before a publication request."
+sidebar_label: "dev package prepublish"
+sidebar_custom_props:
+  audience: developer
+---
+
+Run configured validation before a publication request.
+
+## Syntax
+
+```text
+dev package prepublish
+```
+
+## Prerequisites
+
+Run from the owning `packages/<name>` directory in the private CloudIgniter workspace after installing its dependencies. `--workspace-root` selects discovery and does not change the current package.
+
+## Parameters
+
+This command has no command-specific options.
+
+See the [dev common options](./index.mdx#common-options) for workspace selection, diagnostics, help, and version output.
+
+## Remarks and effects
+
+Executes the package’s `prepublish` recipe in order and stops on failure. It never approves or publishes a release. Missing configuration is a usage error.
+
+## Examples
+
+```bash
+cd packages/next
+pnpm exec dev package prepublish
+```
+
+## Errors and recovery
+
+A missing required configuration or tool fails the command. A failed subprocess stops the workflow and returns a nonzero status. Inspect the first reported failure before retrying.
+
+## Related documentation
+
+- [dev Commands A–Z](./index.mdx)
+- [Workflow guide](/company-developers/tooling/package-workflows)

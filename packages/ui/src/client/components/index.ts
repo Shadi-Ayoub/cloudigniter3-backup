@@ -81,7 +81,7 @@ export { CiMenuItem, CiNavigationMenu } from "./main-menu";
 // ─────────────────────────────────────────────────────────────
 // mark
 // ─────────────────────────────────────────────────────────────
-export { CiHeaderLogo, type CiHeaderLogoProps } from "./mark";
+export { CiDevBeaconIcon, CiHeaderLogo, type CiHeaderLogoProps } from "./mark";
 
 // ─────────────────────────────────────────────────────────────
 // profile menu
@@ -305,3 +305,5 @@ export { CiSpinner } from "./spinners";
 //   // spinner
 //   CiPageSpinnerProps,
 // } from "./types";
+
+export { CiSettingsManager } from "./settings/CiSettingsManager";

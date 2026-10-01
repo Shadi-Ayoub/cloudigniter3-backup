@@ -85,6 +85,7 @@
     description: document.querySelector("#entity-description"),
     managementPath: document.querySelector("#management-path"),
     managementTitle: document.querySelector("#management-title"),
+    managementSettings: document.querySelector("#management-settings"),
     systemFields: document.querySelector("#system-fields"),
     fieldsList: document.querySelector("#fields-list"),
     fieldsEmpty: document.querySelector("#fields-empty"),
@@ -1207,6 +1208,7 @@
     dom.description.value = text(entity.description);
     dom.managementPath.value = text(entity.managementPage?.path);
     dom.managementTitle.value = text(entity.managementPage?.title);
+    dom.managementSettings.value = (entity.managementPage?.settings ?? []).join(", ");
     for (const field of Array.isArray(entity.fields) ? entity.fields : [])
       addField(field);
     for (const rule of Array.isArray(entity.authorization)
@@ -1367,6 +1369,7 @@
       managementPage: {
         path: dom.managementPath.value.trim(),
         title: dom.managementTitle.value.trim(),
+        settings: dom.managementSettings.value.split(",").map(id => id.trim()).filter(Boolean),
       },
       fields,
       authorization,

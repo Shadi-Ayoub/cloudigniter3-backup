@@ -1,0 +1,94 @@
+---
+title: HTTP error pages
+description: Ownership, native Next.js boundaries, and localization for denied and missing pages.
+---
+
+# HTTP error pages
+
+CloudIgniter represents confirmed page-access denial with the same illustrated presentation structure as a
+missing page. The error remains a framework navigation interrupt instead of a generic exception serialized
+through the global error screen.
+
+| Responsibility | Owner |
+| --- | --- |
+| `CiErrorPageProps`, including optional HTTP layout fields | Core canonical `/types` |
+| Shared illustrated and inline rendering | UI `CiErrorPage` |
+| Image/Link composition and default copy | Next `CiNextHttpErrorPage` via `/ui/server` |
+| Framework permission interrupt | Next.js `forbidden()` with `experimental.authInterrupts` enabled |
+| Native entry points | Template `src/app/forbidden.tsx` and `src/app/not-found.tsx` |
+| Artwork selection and common-message overrides | `src/custom/errors/AppHttpErrorPage.tsx` and custom locales |
+| Development preview gate | Next `CiNextAccessDeniedPreview`; thin template system page |
+
+Dashboard page guards keep their existing permission decisions. A denied guard calls `forbidden()` before loading
+protected management content. Confirmed Settings and module-client 403 results use the same path. Missing/disabled
+modules retain `notFound()`, signed-out requests retain proxy login redirects, and verification failures retain
+retryable error handling. Server Actions and provider mutation authorization remain independently enforced.
+
+Do not infer denial from message text, provider outages, or arbitrary thrown exceptions. Custom route `access`
+metadata describes the intended requirement; applications still enforce it in their server page and data operations.
+Do not add permission checks to the shared presentation component or trust client visibility as authorization.
+
+The template opts into the experimental native Next.js HTTP auth boundary. Do not invoke `forbidden()` in the root
+layout or swallow its interrupt in a generic catch. Once streaming sends headers, the response status cannot change;
+the denied UI must still replace the feature without exposing protected data.
+
+Error rendering resolves the configured locale cookie/default and loads the common message bundle directly.
+Message loading avoids the route-dependent next-intl request hook. The optional suspension resolver separately
+uses cached `appBootstrap()` to obtain trusted authorization context and falls back to ordinary denial on failure.
+English/Arabic `httpErrors` defaults live in `packages/next/src/locales/*/common.json`, with custom common overrides
+merged afterward. Normal page namespace resolution and request-context validation remain unchanged.
+
+The core route `/error-preview/access-denied` is public and system-scoped. Its template entry delegates to the Next
+preview component, which emits 403 only in development and 404 otherwise. It follows normal root bootstrap but
+does not fetch feature data, mutate permissions, or disable backend guards.
+
+Validate the UI and Next public exports, the consuming template boundary, early interruption before protected reads,
+the 404 distinction, login redirects, provider failure handling, English/Arabic overrides, and the production preview
+guard. Verify HTTP responses separately from SSR component tests; browser checks cover keyboard, mobile, RTL, and themes.
+
+See the [error-page API](/docs/api-reference/components/error-pages) and
+[application guide](/docs/building-features/api-and-feedback#page-access-403-and-404).
+
+
+## Ordinary denial and suspension
+
+The original cracked locked-cloud image is reserved for a retained grant blocked by an administrator's suspension.
+Ordinary denial uses the intact-cloud sibling. Next's `CiNextHttpErrorPageProps.accessSuspended` defaults to false;
+403 suspension copy uses `httpErrors.suspended` in common locales. 404 ignores the flag.
+
+`ciIsAuthorizationSuspended` lives in EmberGuard and is exposed through the Core public facade. It compares the
+actual decision against a hypothetical copy with suspended roles, resources, and domains active, preserving all
+other constraints and one clock instant. It returns no authorization grant and never persists the copy. Testing
+must include visitors who never had grants, wrong scopes, expired/future assignments, inherited suspension, explicit
+deny, and a catalog that remains unchanged afterward.
+
+The application-owned resolver `src/custom/errors/app-is-page-access-suspended.ts` supplies the actual subject/scope
+composition for Security, Users, Administrators, and user restoration in Trash. Its React cache lasts one render.
+It can load policy evidence while Next prepares the forbidden boundary; retain bounded provider reads and do not
+load feature records. Unknown guards and provider failures retain ordinary denial. Do not infer suspension from a
+plain Settings/module 403 or treat route metadata as proof; extend the resolver alongside the corresponding guard.
+
+Both diagnostic routes use the same development gate. The exact `/error-preview/access-suspended` route simulates
+suspension only in development. It is a visual preview, never an account mutation or a query-string override.
+
+## Development profiler compatibility
+
+The workspace's `patches/next@16.2.2.patch`, registered through pnpm's `patchedDependencies`, guards two
+`performance.measure()` paths in each of Next's four bundled React browser-development clients: webpack,
+webpack-experimental, Turbopack, and Turbopack-experimental. In `flushComponentPerformance`, the errored and aborted
+branches require `0 <= childrenEndTime` before recording their entries, matching the successful-render branch.
+Negative or uninitialized end times must not replace a native 403/404/redirect interrupt with a profiling exception.
+Production bundles, valid timing entries, authorization, and `CiNextAccessDeniedPreview` remain unchanged.
+
+This is a local compatibility mitigation for [Next.js issue 86060](https://github.com/vercel/next.js/issues/86060),
+consistent with the proposed [React guard](https://github.com/react/react/pull/37563); it is not an upstream
+clock-synchronization fix. Keep the patch pinned to its exact dependency version and revalidate it when upgrading.
+Avoid arbitrary rendering delays, global Performance API overrides, or changing the development bundler to hide
+the exception. A published CloudIgniter package cannot install this patch into another application's dependencies;
+standalone distributions must carry the patch and their own package-manager registration explicitly.
+
+Run `node --test packages/next/__tests__/page/rsc-performance.test.cjs` after installation. The regression executes
+the installed profiling function with aborted/errored component data and native User Timing validation. It covers
+negative, uninitialized, zero, and positive end times, verifies valid entries remain, and preserves the original
+403 error. Also run the HTTP-error boundary tests and verify both preview URLs after restarting Next.js. HTTP status
+checks alone cannot detect a browser profiling failure; retain browser reload/navigation checks when available.

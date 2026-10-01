@@ -1,0 +1,8 @@
+# Enable "Require review from Code Owners" in the private repository's ruleset.
+/.github/ @jodaris
+/.cloudigniter/ @jodaris
+/.changeset/ @jodaris
+/packages/dev/ @jodaris
+/packages/*/package.json @jodaris
+/package.json @jodaris
+/pnpm-lock.yaml @jodaris

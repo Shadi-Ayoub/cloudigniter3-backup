@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Publisher · CloudIgniter</title>
+    <link rel="stylesheet" href="/publisher.css" />
+    <script src="/publisher.js" type="module"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to workspace</a>
+    <header class="header">
+      <div class="toolbar">
+        <a class="brand" href="/" aria-label="Publisher home"
+          ><span class="brand-mark" aria-hidden="true">P</span
+          ><span><strong>Publisher</strong><small>CLOUDIGNITER</small></span
+          ><span class="badge local">LOCAL</span></a
+        >
+        <div class="tools">
+          <button id="refresh">Refresh</button
+          ><button id="flow-button">Publishing flow</button
+          ><button id="config-button">Configuration</button
+          ><label class="theme-label"
+            ><span class="sr-only">Color theme</span
+            ><select id="theme">
+              <option value="system">System</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select></label
+          >
+        </div>
+      </div>
+      <div class="identity-bar">
+        <div class="identity">
+          <span class="status-dot" id="identity-dot"></span>
+          <div>
+            <span class="eyebrow">GITHUB IDENTITY</span
+            ><strong id="identity-name">Checking session…</strong
+            ><small id="active-account">Reading local authentication</small>
+          </div>
+          <button id="profile-button">Switch profile</button>
+        </div>
+        <div class="destination">
+          <span class="eyebrow">PUBLISHING DESTINATION</span
+          ><strong id="destination-name">Select a target</strong
+          ><small id="destination-detail"
+            >Repositories come from workspace policy</small
+          >
+        </div>
+      </div>
+    </header>
+    <main id="main">
+      <div class="workspace-heading">
+        <div>
+          <span class="eyebrow">DEVELOPER WORKSPACE</span>
+          <h1>Prepare. Verify. Publish.</h1>
+          <p>One workspace for every release.</p>
+        </div>
+        <div id="git-summary" class="git-summary"></div>
+      </div>
+      <div id="notice" role="alert" hidden></div>
+      <nav
+        id="target-navigation"
+        class="target-navigation"
+        aria-label="Publisher sections"
+      ></nav>
+      <section
+        id="target"
+        role="region"
+        tabindex="0"
+        aria-label="Selected project"
+      >
+        <div class="empty">Discovering your workspace…</div>
+      </section>
+      <section class="console-card" aria-labelledby="console-title">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">ACTIVITY</span>
+            <h2 id="console-title">Command output</h2>
+          </div>
+          <div class="tools">
+            <span id="job-status" class="badge">Ready</span
+            ><button id="download-log" disabled>Download log</button
+            ><button id="cancel-job" hidden>Cancel action</button>
+          </div>
+        </div>
+        <div id="job-progress" class="progress" hidden><span></span></div>
+        <div class="console-layout">
+          <nav id="job-history" aria-label="Recent actions">
+            <p class="muted">Your recent actions will appear here.</p>
+          </nav>
+          <div class="console-main">
+            <div id="job-meta" class="console-meta">
+              Select an action to begin. Output stays in this local session.
+            </div>
+            <pre id="log" tabindex="0" aria-label="Command output">
+Publisher is ready.
+
+Build and verify locally, then request review of your release.
+Each action shows its command and destination before it runs.</pre>
+            <details id="structured" hidden>
+              <summary>Structured response</summary>
+              <pre id="json-result"></pre>
+            </details>
+            <div id="job-announcement" class="sr-only" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+      <footer>
+        <span>CloudIgniter Publisher</span
+        ><span>Local tools · Reviewed releases · Explicit destinations</span>
+      </footer>
+    </main>
+    <dialog id="dialog" aria-labelledby="dialog-title">
+      <div class="dialog-heading">
+        <div>
+          <span class="eyebrow" id="dialog-kicker">PUBLISHER</span>
+          <h2 id="dialog-title"></h2>
+        </div>
+        <button id="dialog-close" aria-label="Close dialog">Close</button>
+      </div>
+      <div id="dialog-identity" class="dialog-identity"></div>
+      <div id="dialog-content"></div>
+    </dialog>
+  </body>
+</html>

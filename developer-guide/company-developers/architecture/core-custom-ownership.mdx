@@ -115,4 +115,4 @@ Before approving template or generator work:
 6. Verify that deployment requires a fresh target-bound intent and rejects plan, profile, identifier, identity, account, ARN, Region, or expiry drift before Amplify runs.
 7. Review Amplify schema/index changes independently from the local-file guarantee; a compensating deploy is not a data rollback.
 
-Application developers should follow the [Resource Studio guide](/docs/resource-studio/overview). CLI maintainers should also read [Resource Studio's command architecture](../tooling/cli-architecture#resource-studio-flow) and AWS maintainers should apply the [DynamoDB bounded-context strategy](../persistence/dynamodb-strategy).
+Application developers should follow the [Resource Studio guide](/docs/resource-studio/overview). CLI maintainers should also read [Resource Studio's lifecycle](../tooling/ci/resource-studio.mdx#generation-and-deployment) and AWS maintainers should apply the [DynamoDB bounded-context strategy](../persistence/dynamodb-strategy).

@@ -33,9 +33,40 @@ import { getOrgUnitByPathHandler } from "../functions/system/org-unit/get-org-un
 import { listOrgUnitsHandler } from "../functions/system/org-unit/list-org-units/resource";
 import { updateOrgUnitHandler } from "../functions/system/org-unit/update-org-unit/resource";
 
+import { getSettingsHandler } from "../functions/system/settings/get-settings/resource";
+import { setSettingsHandler } from "../functions/system/settings/set-settings/resource";
+
 /** Concrete Amplify bindings for the active CloudIgniter backend contract. */
 export const CI_CORE_AMPLIFY_MANIFEST = ciDefineAmplifyBackendManifest({
   features: {
+    settings: {
+      status: "active",
+      resourceGroupName: "data",
+      functions: {
+        ciGetSettingsHandler: {
+          backendKey: "getSettingsHandler",
+          resource: getSettingsHandler,
+        },
+        ciSetSettingsHandler: {
+          backendKey: "setSettingsHandler",
+          resource: setSettingsHandler,
+        },
+      },
+      tables: {
+        publicSettingsTable: {
+          modelName: "PublicSettings",
+          outputName: "publicSettingsTableName",
+        },
+        privateSettingsTable: {
+          modelName: "PrivateSettings",
+          outputName: "privateSettingsTableName",
+        },
+        userSettingsTable: {
+          modelName: "UserSettings",
+          outputName: "userSettingsTableName",
+        },
+      },
+    },
     cognitoUsers: {
       status: "active",
       // These are AppSync resolver functions. Keeping their Cognito and

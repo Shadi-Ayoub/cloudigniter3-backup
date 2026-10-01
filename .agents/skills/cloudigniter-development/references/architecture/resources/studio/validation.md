@@ -44,7 +44,7 @@ Do not expand V1 to:
 - generate the Lambda needed by `custom` authorization;
 - generate EmberGuard resources or policies;
 - provide a production deployment workflow;
-- expose a `ci-dev` generator;
+- expose a `dev` generator;
 - claim exact cloud-resource or Data Record rollback.
 
 Treat any exclusion change as a separately designed versioned capability with ownership, migration, security, cost, and compatibility review.

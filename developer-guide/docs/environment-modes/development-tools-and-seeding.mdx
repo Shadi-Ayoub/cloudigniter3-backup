@@ -13,6 +13,16 @@ CloudIgniter activates Dev Beacon, Debug Probe, and seeder controls only when al
 The same rule runs at the root UI, server action, and provider handler. A hidden button is not the security
 boundary.
 
+## Dev Beacon appearance
+
+The Dev Beacon follows the application's appearance selection. Light mode shows the original cloud icon with
+its orange flame. Dark mode shows the dedicated outline icon with transparent interiors and pale blue strokes
+on the subdued navy surface. System mode uses the icon for its resolved Light or Dark appearance. Its blue ripple indicates that the dashboard content has
+loaded. The ripple stays behind the opaque button face and is hidden when the operating system requests reduced
+motion; the button remains available. Both the `class` and `data-theme` strategies are supported.
+
+See [Theming strategies](../configuration/themes) for shared colors and custom component guidance.
+
 ## Move the Dev Beacon
 
 The configured `position` preset sets the [Dev Beacon](/dictionary/d#dev-beacon) button's initial location. If it

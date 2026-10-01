@@ -1,3 +1,4 @@
+import { ciCheckReadOnlyAccess } from "../../access-control/ci-check-read-only-access";
 import { ciCreateLambdaHandler, ciSetCognitoUserEnabled } from "@ci-aws/lib";
 import type { CISetCognitoUserEnabledInput } from "@ci-aws/types";
 
@@ -32,6 +33,9 @@ export const ciSetCognitoUserEnabledHandler =
         if (!decision.allowed) {
           return ciValidationError(decision.reason, decision.statusCode);
         }
+        await ciCheckReadOnlyAccess(event, [
+          { resource: "identity.users", action: "update" },
+        ]);
       },
       run: ({ input, env, region }) =>
         ciSetCognitoUserEnabled({

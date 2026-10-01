@@ -1,6 +1,8 @@
 import type { CiNextDashboardCardProps } from "@cloudigniter/next/ui/client";
 
 export const setup: CiNextDashboardCardProps[] = [
+  { id: "dashboard-modules", icon: "ci:shape-outline", label: "Modules", description: "Install and configure optional modules, enable features, or remove their infrastructure.", meta: "Application extensions", route: "/dashboard/modules", namespace: "dashboard.modules" },
+  { id: "dashboard-settings", icon: "ci:cog-outline", label: "Settings", description: "Manage public defaults and private application settings.", meta: "Application preferences", route: "/dashboard/settings", namespace: "dashboard.settings" },
   {
     id: "dashboard-administrators",
     icon: "ci:badge-account-outline",

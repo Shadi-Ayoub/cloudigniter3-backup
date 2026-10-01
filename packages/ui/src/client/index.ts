@@ -55,6 +55,7 @@ export {
   CiNavigationMenu,
 
   // mark
+  CiDevBeaconIcon,
   CiHeaderLogo,
   type CiHeaderLogoProps,
 
@@ -316,3 +317,8 @@ export {
 //   CiThemePresentationPage,
 // } from "./pages";
 export { CiSmartForm } from "./components/smart-form";
+export { useCiColorMode } from "./hooks/use-ci-color-mode";
+
+export { CiSettingsManager } from "./components/settings/CiSettingsManager";
+export { CiModuleManagementPage } from "./modules/CiModuleManagementPage";
+export { CiTodoPage } from "./modules/CiTodoPage";

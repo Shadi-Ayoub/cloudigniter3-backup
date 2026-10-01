@@ -15,6 +15,7 @@ import { Dynamodb } from "@ci-aws/lib";
 import type { CiAppSyncResolverEvent } from "@ci-aws/types";
 
 import { ciCreateAccessControlEmberguard } from "../../access-control";
+import { ciCheckReadOnlyAccess } from "../../access-control/ci-check-read-only-access";
 import { CI_ENV } from "../../env/env.keys";
 
 type CiEmberguardOperation =
@@ -176,6 +177,19 @@ export function ciCreateEmberguardAccessHandler(
 
       const input = parseInput(event);
 
+      if (
+        ![
+          "getDefinition",
+          "listRoleAssignments",
+          "listResourceInventory",
+          "listCustomDomains",
+        ].includes(operation)
+      ) {
+        await ciCheckReadOnlyAccess(event, [
+          { resource: "platform.authorization", action: "manage" },
+        ]);
+      }
+
       switch (operation) {
         case "getDefinition": {
           const initialized = await emberguard.ensureAccessControlState();
@@ -193,11 +207,18 @@ export function ciCreateEmberguardAccessHandler(
             input,
             "definition",
           );
+          const current = await emberguard.loadDefinition();
+          // Any core change must also honor restrictions on the dedicated
+          // core-override resource, even for a Cognito super administrator.
+          try {
+            assertCoreCatalogUnchanged(current, definition);
+          } catch {
+            await ciCheckReadOnlyAccess(event, [
+              { resource: "platform.authorization.core", action: "override" },
+            ]);
+          }
           if (!getIdentityGroups(event).includes("system-super-admin")) {
-            assertCoreCatalogUnchanged(
-              await emberguard.loadDefinition(),
-              definition,
-            );
+            assertCoreCatalogUnchanged(current, definition);
           }
           await emberguard.saveDefinition(definition);
           return ciResponseOk({ definition });

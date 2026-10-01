@@ -5,6 +5,14 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
+    "@cloudigniter/next#build": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "outputs": ["dist/**"]
+    },
+    "test": { "dependsOn": ["^build"], "outputs": [] },
+    "quality": { "cache": false },
+    "release:check": { "cache": false },
     "dev": { "cache": false, "persistent": true },
     "typecheck": { "dependsOn": ["^typecheck"], "outputs": [] },
     "typecheck:tools": { "dependsOn": ["^typecheck:tools"], "outputs": [] },

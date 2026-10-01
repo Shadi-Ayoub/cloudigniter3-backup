@@ -1,6 +1,6 @@
 # CloudIgniter CLI Development
 
-Use this reference for `packages/cli`, package scripts that call it, and CLI-facing documentation.
+Use this reference for `packages/cli`, `packages/dev`, package scripts that call them, and CLI-facing documentation.
 
 ## Table of contents
 
@@ -13,14 +13,21 @@ Use this reference for `packages/cli`, package scripts that call it, and CLI-fac
 
 ## Product and audience boundary
 
-Keep one shared package, `@cloudigniter/cli`, with two executables:
+Keep two packages with distinct distribution boundaries:
 
-- `ci`: supported application-developer and system-operator workflows;
-- `ci-dev`: CloudIgniter monorepo build, quality, module-maintenance, and release workflows.
+- public `@cloudigniter/cli`, exposing `ci` for application/system workflows;
+- restricted `@cloudigniter/dev`, exposing `dev` for package builds, quality,
+  Next tooling, module maintenance and company release requests.
 
-Require `ci-dev` to discover and validate the private CloudIgniter workspace before dispatch. Do not show maintainer commands in `ci --help`. This is a product boundary, not a security control.
+Require `dev` to discover and validate the private CloudIgniter workspace before company workflow dispatch. Help, version and `dev github setup` are environment-bootstrap exceptions; setup provisions only the native CLI and never authenticates or reads company policy. Do not show maintainer commands in `ci --help`. This is a product boundary, not a security control.
 
-Split into separate npm packages only when the executables need independent release cadence, distribution access, dependency weight, or ownership. Do not duplicate parsing, terminal, error, or process infrastructure merely to create separate names.
+Both use Meow/Execa. Public application workers stay in CLI; all maintainer
+dispatch, workers, build exports and workspace guards belong to DEV. Share the
+module validator through `@cloudigniter/cli/tooling/modules` and target-project
+loading through `@cloudigniter/cli/runtime/package-entry`. Do not duplicate those
+implementations or import private files. CLI must never depend on private DEV.
+Read the [DEV company toolkit reference](./dev-toolkit.md) for its current
+contracts, source map, extension workflow, and ongoing documentation requirements.
 
 ## Command and flag grammar
 
@@ -28,7 +35,7 @@ Use stable noun-led groups and verb-led actions:
 
 ```text
 ci <domain> <action> [subject] [options]
-ci-dev <domain> <action> [options]
+dev <domain> <action> [subject] [options]
 ```
 
 Examples:
@@ -36,8 +43,8 @@ Examples:
 ```text
 ci modules validate --root=src/modules
 ci amplify bootstrap root-user --profile=developer1
-ci-dev package build --mode=prod
-ci-dev quality scan-client-directives
+dev package build --mode=prod
+dev quality scan-client-directives
 ```
 
 - Use lowercase kebab-case for commands and long flags.
@@ -59,7 +66,9 @@ Separate four concerns:
 
 Use Meow for version/help and strict flag parsing. Keep a discoverable command registry or similarly centralized dispatch catalog as the command count grows. Do not let workers reimplement banners, global errors, prompting, workspace detection, or subprocess policy.
 
-Keep package-specific configuration next to the package that owns it. For example, build-step ordering and entry configuration remain package-local even when the reusable executor lives in `packages/cli`.
+Keep package-specific configuration next to its owner. Build-step ordering and
+entry configuration remain package-local; the reusable executor and build exports
+live in `packages/dev`. Use DEV as a development dependency in build consumers.
 
 ## Terminal UX
 
@@ -81,7 +90,7 @@ Use Execa with argument arrays, `shell: false`, an explicit `cwd`, inherited sig
 
 Resolve application/provider packages from the target application rather than adding provider dependencies to the generic CLI. Keep the CLI package free of dependency cycles with runtime packages.
 
-For application-facing generators such as Resource Studio, keep compilation in the package that owns each artifact and use the CLI only for session UX, orchestration, safe subprocesses, and file transactions. Restrict output to the custom seams in the [template core/custom boundary](../architecture/packages/template-core-custom-boundary.md), maintain explicit generated ownership, and fail on collisions before applying a plan. Do not add a matching `ci-dev` generator for CloudIgniter-owned resources; maintainers implement those resources natively in the owning package.
+For application-facing generators such as Resource Studio, keep compilation in the package that owns each artifact and use the CLI only for session UX, orchestration, safe subprocesses, and file transactions. Restrict output to the custom seams in the [template core/custom boundary](../architecture/packages/template-core-custom-boundary.md), maintain explicit generated ownership, and fail on collisions before applying a plan. Do not add a matching `dev` generator for CloudIgniter-owned resources; maintainers implement those resources natively in the owning package.
 
 Read the [Resource Studio overview](../architecture/resources/studio/overview.md) for the complete generator contract and [development tools and seeding](development-tools-and-seeding.md) for developer-gated CLI workflows.
 

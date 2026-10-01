@@ -1,23 +1,124 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
-
-.heroBanner {
-  padding: 4rem 0;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
+.home {
+  width: min(1120px, 100%);
+  margin-inline: auto;
+  padding: 0 2rem 4rem;
 }
-
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
-  }
+.hero {
+  padding: 5.5rem 0 3.5rem;
+  max-width: 760px;
 }
-
-.buttons {
+.eyebrow {
+  margin: 0 0 1.25rem;
+  color: var(--ifm-color-primary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+.title {
+  margin: 0 0 1.5rem;
+  font-size: clamp(2.5rem, 5vw, 3.75rem);
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+}
+.title span {
+  color: var(--ifm-color-primary);
+}
+.description {
+  max-width: 620px;
+  margin: 0 0 2rem;
+  color: var(--ifm-font-color-secondary);
+  font-size: 1.125rem;
+  line-height: 1.75;
+}
+.actions {
   display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.primaryAction,
+.secondaryAction {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.75rem;
+  min-height: 44px;
+  padding: 0.625rem 1.25rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: background-color 150ms, border-color 150ms;
+}
+.primaryAction {
+  color: var(--ifm-background-color);
+  background: var(--ifm-color-primary);
+}
+.primaryAction:hover {
+  color: var(--ifm-background-color);
+  background: var(--ifm-color-primary-dark);
+  text-decoration: none;
+}
+.secondaryAction {
+  color: var(--ifm-font-color-base);
+  background: var(--ci-doc-surface);
+  border-color: var(--ifm-color-emphasis-300);
+}
+.secondaryAction:hover {
+  color: var(--ifm-color-primary);
+  border-color: var(--ifm-color-primary);
+  text-decoration: none;
+}
+.resources {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--ifm-color-emphasis-300);
+}
+.resources h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.375rem;
+}
+.resources p {
+  margin: 0;
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.875rem;
+}
+.resourceLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+.resourceLinks a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+@media (max-width: 768px) {
+  .home {
+    padding-inline: 1.5rem;
+  }
+  .hero {
+    padding-top: 3.5rem;
+  }
+  .resources {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+@media (max-width: 576px) {
+  .home {
+    padding-inline: 1.25rem;
+  }
+  .hero {
+    padding-block: 2.75rem;
+  }
+  .description {
+    font-size: 1rem;
+  }
 }

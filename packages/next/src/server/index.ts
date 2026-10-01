@@ -83,6 +83,8 @@ export {
 // settings
 // ─────────────────────────────────────────────────────────────
 export {
+  ciCreateNextAwsSettingsManager,
+  ciGetNextAwsSettingsAccess,
   ciDeleteSettings,
   ciGetSettings,
   ciInitializeSettingsIfMissing,
@@ -117,3 +119,4 @@ export {
 // wrapper
 // ─────────────────────────────────────────────────────────────
 export { CiNextRootWrapper, CiPageWrapper } from "./wrapper";
+export { ciCreateNextExtensionClient } from "./modules/ci-create-next-extension-client";

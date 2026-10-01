@@ -1,11 +1,10 @@
 {
   "name": "@cloudigniter/cli",
   "version": "0.0.1",
-  "description": "Professional command-line tooling for CloudIgniter applications and maintainers.",
+  "description": "Command-line tooling for CloudIgniter applications and operators.",
   "type": "module",
   "bin": {
-    "ci": "./bin/ci.mjs",
-    "ci-dev": "./bin/ci-dev.mjs"
+    "ci": "./bin/ci.mjs"
   },
   "exports": {
     "./runtime/resource-file-transaction": {
@@ -16,9 +15,14 @@
       "types": "./src/types/index.d.mts",
       "import": "./src/types/index.mjs"
     },
-    "./tooling/entries": "./src/tooling/ci-entries.mjs",
-    "./tooling/inject-use-client": "./src/tooling/ci-inject-use-client.mjs",
-    "./tooling/tsup": "./src/tooling/ci-tsup-config.ts"
+    "./tooling/modules": {
+      "types": "./src/tooling/ci-validate-modules.d.mts",
+      "import": "./src/tooling/ci-validate-modules.mjs"
+    },
+    "./runtime/package-entry": {
+      "types": "./src/runtime/ci-import-package-entry.d.mts",
+      "import": "./src/runtime/ci-import-package-entry.mjs"
+    }
   },
   "files": [
     "bin",
@@ -29,17 +33,15 @@
     "node": ">=20"
   },
   "scripts": {
-    "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "node --test __tests__/*.test.mjs",
-    "check": "pnpm run typecheck && pnpm run test",
-    "check:package": "npm pack --dry-run"
+    "typecheck": "dev package typecheck",
+    "test": "dev package test",
+    "check": "dev package check",
+    "check:package": "dev package check-package",
+    "test:watch": "dev package test --watch"
   },
   "dependencies": {
     "enquirer": "^2.4.1",
     "execa": "^9.6.1",
-    "fast-glob": "^3.3.3",
-    "javascript-obfuscator": "^5.4.1",
-    "jsonc-parser": "^3.3.1",
     "meow": "^14.1.0",
     "ora": "^9.4.1",
     "picocolors": "^1.1.1",
@@ -47,8 +49,10 @@
     "typescript": "^6.0.2"
   },
   "devDependencies": {
-    "@types/node": "^25.5.0",
-    "esbuild": "^0.28.0",
-    "tsup": "^8.5.1"
+    "@types/node": "^25.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cloudigniter-io/build-cloudigniter-cli.git"
   }
 }

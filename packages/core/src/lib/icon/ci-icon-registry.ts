@@ -18,6 +18,7 @@ export const ciIconRegistry = {
   "ci:palette-outline": "mdi:palette-outline",
   "ci:translate": "mdi:translate",
   "ci:cog-outline": "mdi:cog-outline",
+  "ci:earth": "mdi:earth",
   "ci:office-building-outline": "mdi:office-building-outline",
   "ci:trash-can-outline": "mdi:trash-can-outline",
   "ci:tools": "mdi:tools",
