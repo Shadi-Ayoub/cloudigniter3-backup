@@ -29,6 +29,7 @@ export class CiPublisherJobs {
   /** @type {import('./publisher-types.d.mts').PublisherJob[]} */ jobs = [];
   /** @type {import('execa').ResultPromise | undefined} */ child;
   /** @type {NodeJS.Timeout | undefined} */ killTimer;
+  /** @type {Promise<void> | undefined} */ completion;
   busy() {
     return this.jobs.some((j) => !j.finishedAt);
   }
@@ -47,8 +48,13 @@ export class CiPublisherJobs {
     });
     this.jobs.unshift(job);
     this.jobs.splice(30);
-    void this.run(job);
+    this.completion = this.run(job);
     return job;
+  }
+  async stop() {
+    const running = this.jobs.find((job) => job.status === "running");
+    if (running) this.cancel(running.id);
+    await this.completion;
   }
   /** @param {string} id */
   cancel(id) {

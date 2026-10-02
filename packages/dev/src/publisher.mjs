@@ -18,6 +18,8 @@ import {
 } from "./publisher-workspace.mjs";
 import { ciPublisherActions, ciPublisherPlan } from "./publisher-actions.mjs";
 import { CiPublisherJobs, ciPublisherRedact } from "./publisher-jobs.mjs";
+import { ciPublisherEditorAssets } from "./publisher-editor.mjs";
+import { ciPublisherFeedbackAsset } from "./publisher-feedback.mjs";
 
 const assets = fileURLToPath(new URL("./publisher/assets/", import.meta.url));
 /** @param {unknown} value */
@@ -70,17 +72,23 @@ export async function ciStartPublisher({
     new Map();
   let origin = "";
   let mutating = false;
+  let stopping = false;
+  /** @type {Promise<unknown> | undefined} */ let mutation;
+  /** @type {Promise<void> | undefined} */ let shutdown;
+  /** @type {Promise<void> | undefined} */ let closure;
   /** @param {()=>Promise<unknown>} work */
   async function exclusive(work) {
-    if (mutating || jobs.busy())
+    if (stopping || mutating || jobs.busy())
       throw new CiDevUsageError(
         "Another action is running. Wait for it to finish.",
       );
     mutating = true;
     try {
-      return await work();
+      mutation = work();
+      return await mutation;
     } finally {
       mutating = false;
+      mutation = undefined;
     }
   }
   /** @param {string} targetId @param {string} action @param {Record<string,unknown>} input */
@@ -106,7 +114,7 @@ export async function ciStartPublisher({
     response.setHeader("Cache-Control", "no-store");
     response.setHeader(
       "Content-Security-Policy",
-      "default-src 'self'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; object-src 'none'; img-src 'self' data:; style-src 'self'; script-src 'self'",
+      "default-src 'self'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; object-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; worker-src 'self'",
     );
     response.setHeader("X-Content-Type-Options", "nosniff");
     response.setHeader("Referrer-Policy", "no-referrer");
@@ -134,10 +142,31 @@ export async function ciStartPublisher({
       }
       const url = new URL(request.url ?? "/", origin);
       if (!url.pathname.startsWith("/api/")) {
+        if (url.pathname === "/feedback.js" && request.method === "GET") {
+          const asset = await ciPublisherFeedbackAsset();
+          response.writeHead(200, { "Content-Type": asset.type });
+          response.end(asset.content);
+          return;
+        }
+        if (url.pathname.startsWith("/editor/") && request.method === "GET") {
+          const editorAsset = (await ciPublisherEditorAssets()).get(
+            url.pathname,
+          );
+          if (!editorAsset) {
+            json(404, { error: "Not found." });
+            return;
+          }
+          response.writeHead(200, { "Content-Type": editorAsset.type });
+          response.end(editorAsset.content);
+          return;
+        }
         const file = /** @type {Record<string,[string,string]>} */ ({
           "/": ["index.html", "text/html"],
           "/publisher.js": ["publisher.js", "text/javascript"],
           "/navigation.mjs": ["navigation.mjs", "text/javascript"],
+          "/theme.mjs": ["theme.mjs", "text/javascript"],
+          "/editor.mjs": ["editor.mjs", "text/javascript"],
+          "/discard.mjs": ["discard.mjs", "text/javascript"],
           "/publisher.css": ["publisher.css", "text/css"],
         })[url.pathname];
         if (!file || request.method !== "GET") {
@@ -161,6 +190,10 @@ export async function ciStartPublisher({
         return;
       }
       const key = `${request.method} ${url.pathname}`;
+      if (stopping) {
+        json(503, { error: "Publisher is shutting down." });
+        return;
+      }
       if (key === "GET /api/workspace") {
         const workspace = await ciPublisherWorkspace(root);
         json(200, {
@@ -268,6 +301,18 @@ export async function ciStartPublisher({
           return jobs.start(prepared.result);
         });
         json(202, result);
+      } else if (key === "POST /api/shutdown") {
+        const value = await body(request);
+        if (value.confirmed !== true)
+          throw new CiDevUsageError(
+            "Confirm closing Publisher before shutting down.",
+          );
+        await prepareShutdown();
+        response.once("finish", () => {
+          void close();
+        });
+        response.setHeader("Connection", "close");
+        json(200, { status: "closed" });
       } else if (key === "POST /api/cancel") {
         const value = await body(request);
         jobs.cancel(string(value.id));
@@ -292,20 +337,41 @@ export async function ciStartPublisher({
   if (!address || typeof address === "string")
     throw new Error("Publisher failed to bind a local port.");
   origin = `http://127.0.0.1:${address.port}`;
+  const closed = new Promise((resolve) => server.once("close", resolve));
+  function prepareShutdown() {
+    if (!shutdown) {
+      stopping = true;
+      plans.clear();
+      shutdown = (async () => {
+        // Let an already accepted file save/profile change finish before stopping work.
+        await mutation?.catch(() => undefined);
+        await jobs.stop();
+      })();
+    }
+    return shutdown;
+  }
+  function close() {
+    if (!closure)
+      closure = (async () => {
+        await prepareShutdown();
+        await new Promise((resolve) => {
+          server.close(resolve);
+          server.closeIdleConnections();
+          const timer = setTimeout(() => server.closeAllConnections(), 1000);
+          timer.unref();
+          server.once("close", () => clearTimeout(timer));
+        });
+      })();
+    return closure;
+  }
   return {
     server,
     jobs,
     url: `${origin}/#session=${token}`,
     origin,
     token,
-    close: async () => {
-      if (jobs.busy()) {
-        const running = jobs.jobs.find((j) => j.status === "running");
-        if (running) jobs.cancel(running.id);
-      }
-      server.closeAllConnections();
-      await new Promise((resolve) => server.close(resolve));
-    },
+    close,
+    closed,
   };
 }
 
@@ -317,7 +383,7 @@ export async function ciRunPublisher(flags) {
     profile: flags.profile,
   });
   console.log(
-    `CloudIgniter Publisher\n${publisher.url}\nLocal session expires in 8 hours. Press Ctrl+C to stop.`,
+    `CloudIgniter Publisher\n${publisher.url}\nLocal session expires in 8 hours. Use Close in Publisher or press Ctrl+C to stop.`,
   );
   if (flags.open !== false) {
     const command =
@@ -334,14 +400,15 @@ export async function ciRunPublisher(flags) {
       () => undefined,
     );
   }
-  await new Promise((resolve) => {
-    const stop = async () => {
-      process.off("SIGINT", stop);
-      process.off("SIGTERM", stop);
-      await publisher.close();
-      resolve(undefined);
-    };
-    process.once("SIGINT", stop);
-    process.once("SIGTERM", stop);
-  });
+  const stop = () => {
+    void publisher.close();
+  };
+  process.once("SIGINT", stop);
+  process.once("SIGTERM", stop);
+  try {
+    await publisher.closed;
+  } finally {
+    process.off("SIGINT", stop);
+    process.off("SIGTERM", stop);
+  }
 }

@@ -10815,8 +10815,8 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/components/shadcn/alert-dialog.tsx": {
-    "mtime": 1790930171.29,
-    "ast_hash": "9d44bfa997398f264f1f1d0a60f0fc83",
+    "mtime": 1786520687.68,
+    "ast_hash": "f8816efc276b262f9c4cfc2278751c82",
     "semantic_hash": ""
   },
   "packages/ui/src/client/feedback/CiAlert.tsx": {
@@ -10825,13 +10825,13 @@
     "semantic_hash": ""
   },
   "packages/ui/src/client/feedback/CiAlertDialog.tsx": {
-    "mtime": 1790930171.26,
-    "ast_hash": "de68f8df6b1577eabd6a354b0303ae4b",
+    "mtime": 1787052976.12,
+    "ast_hash": "df574cd984d90a7f67233e40dbd84b05",
     "semantic_hash": ""
   },
   "packages/ui/src/types/feedback-types/CiAlertDialogProps.ts": {
-    "mtime": 1790930171.22,
-    "ast_hash": "9c6776c1b50e16a49f1c478c1f0307b6",
+    "mtime": 1786520395.58,
+    "ast_hash": "8a8d6dfcc6f13e32e690fd66fa1e57fd",
     "semantic_hash": ""
   },
   "packages/ui/src/types/feedback-types/CiAlertProps.ts": {
@@ -10845,13 +10845,13 @@
     "semantic_hash": ""
   },
   "developer-guide/docs/api-reference/components/ci-alert-dialog.mdx": {
-    "mtime": 1790930709.69,
-    "ast_hash": "fe75d6fe8040d56fafdf266135d1d6cb",
+    "mtime": 1786520793.35,
+    "ast_hash": "6c2bc0aaa2912f6a85c3d8476f7705e7",
     "semantic_hash": ""
   },
   "developer-guide/docs/ui-components/confirmation-dialogs.mdx": {
-    "mtime": 1790930709.72,
-    "ast_hash": "201a83ce0e86363d10efe5246451072b",
+    "mtime": 1786520793.33,
+    "ast_hash": "6310b50f71744d8c7dbc161150fc0602",
     "semantic_hash": ""
   },
   "developer-guide/company-developers/persistence/_category_.json": {
@@ -11965,8 +11965,8 @@
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-development/references/architecture/packages/ownership.md": {
-    "mtime": 1790930709.77,
-    "ast_hash": "22f48c86de5fc5d1faf93833796ca793",
+    "mtime": 1790149664.71,
+    "ast_hash": "3d209c1110455c8fd7f13a40da27254e",
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-development/references/architecture/packages/public-api-and-runtime.md": {
@@ -12705,8 +12705,8 @@
     "semantic_hash": ""
   },
   "developer-guide/page-dates.json": {
-    "mtime": 1790931018.51,
-    "ast_hash": "55c525bdb38dddd2af943b314ba7b274",
+    "mtime": 1790928388.19,
+    "ast_hash": "ce601922ccaa74181359fbbf8b8c5985",
     "semantic_hash": ""
   },
   "developer-guide/plugins/sidebar-page-dates.ts": {
@@ -13635,8 +13635,8 @@
     "semantic_hash": ""
   },
   "packages/dev/package.json": {
-    "mtime": 1790930171.3,
-    "ast_hash": "daedce44384da753428702a509faea81",
+    "mtime": 1790923866.56,
+    "ast_hash": "0f1abda175879f1d65658a4ba1d5d14a",
     "semantic_hash": ""
   },
   "packages/dev/src/cli.mjs": {
@@ -13685,8 +13685,8 @@
     "semantic_hash": ""
   },
   ".agents/skills/cloudigniter-development/references/cli/dev-toolkit.md": {
-    "mtime": 1790930709.75,
-    "ast_hash": "09ed9c23c9ad6d479412efc82a54e8d9",
+    "mtime": 1790928325.47,
+    "ast_hash": "9b46a73954bd410f6b460b0f32b6c22e",
     "semantic_hash": ""
   },
   "packages/cli/src/tooling/ci-validate-modules.d.mts": {
@@ -14895,8 +14895,8 @@
     "semantic_hash": ""
   },
   "packages/dev/__tests__/publisher.test.mjs": {
-    "mtime": 1790931017.46,
-    "ast_hash": "1f40bad0139629f90ec69e72038965b2",
+    "mtime": 1790928387.49,
+    "ast_hash": "19a6bce6945c4536e332b749a5d5b4f8",
     "semantic_hash": ""
   },
   "packages/dev/src/build-options.mjs": {
@@ -14925,13 +14925,13 @@
     "semantic_hash": ""
   },
   "packages/dev/src/publisher.mjs": {
-    "mtime": 1790930171.37,
-    "ast_hash": "e0ca2f6713bc65395dabb8d2cbf33419",
+    "mtime": 1790924124.88,
+    "ast_hash": "be017c3ce93276439a5b7faf01322ff8",
     "semantic_hash": ""
   },
   "packages/dev/src/publisher/assets/publisher.js": {
-    "mtime": 1790931086.43,
-    "ast_hash": "255d548b87b1295fc92ab66ba400c269",
+    "mtime": 1790928387.49,
+    "ast_hash": "3337ecc4d946dbdc7046e5be4fc189c6",
     "semantic_hash": ""
   },
   "developer-guide/commands/dev/publisher.mdx": {
@@ -14940,8 +14940,8 @@
     "semantic_hash": ""
   },
   "developer-guide/company-developers/tooling/dev/publisher.mdx": {
-    "mtime": 1790930709.73,
-    "ast_hash": "d3a3d1e049b3b1b59111646ace5c1e42",
+    "mtime": 1790928387.49,
+    "ast_hash": "d232de213ae834f382c390ac900e8bd6",
     "semantic_hash": ""
   },
   "packages/dev/src/publisher/assets/index.html": {
@@ -14977,21 +14977,6 @@
   "packages/dev/src/publisher/editor-entry.js": {
     "mtime": 1790928325.71,
     "ast_hash": "208442f4f280b6797425a9b1eed41157",
-    "semantic_hash": ""
-  },
-  "packages/dev/src/publisher-feedback.mjs": {
-    "mtime": 1790931017.44,
-    "ast_hash": "035f01be974fba456b6ee7c1fe1f7dd1",
-    "semantic_hash": ""
-  },
-  "packages/dev/src/publisher/assets/discard.mjs": {
-    "mtime": 1790930710.02,
-    "ast_hash": "eea157840e91a0158101cdd9cfb3bd03",
-    "semantic_hash": ""
-  },
-  "packages/dev/src/publisher/feedback-entry.jsx": {
-    "mtime": 1790930710.01,
-    "ast_hash": "aa838c41c5fc2ca410383c1a369d5221",
     "semantic_hash": ""
   }
 }

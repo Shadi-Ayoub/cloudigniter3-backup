@@ -41,4 +41,6 @@ export interface CiAlertDialogProps {
   closeOnConfirm?: boolean;
   /** Optional class name for the dialog content surface. */
   className?: string;
+  /** Portal host for embedded dialogs. Defaults to the document body. */
+  portalContainer?: HTMLElement | null;
 }

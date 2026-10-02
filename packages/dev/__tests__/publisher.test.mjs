@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
+import { once } from "node:events";
 import { fileURLToPath } from "node:url";
 import { mkdir, readFile, symlink, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -23,6 +24,201 @@ import { ciStartPublisher } from "../src/publisher.mjs";
 import { ciBuildStepsWithObfuscation } from "../src/build-options.mjs";
 import { CiPublisherJobs, ciPublisherRedact } from "../src/publisher-jobs.mjs";
 import { publisherGroups } from "../src/publisher/assets/navigation.mjs";
+import { nextTheme, resolvedTheme } from "../src/publisher/assets/theme.mjs";
+import { ciPublisherEditorAssets } from "../src/publisher-editor.mjs";
+import { ciPublisherFeedbackAsset } from "../src/publisher-feedback.mjs";
+import { createDiscardGuard } from "../src/publisher/assets/discard.mjs";
+
+test("discard confirmation preserves the draft on cancellation and serializes decisions", async () => {
+  let resolve;
+  let calls = 0;
+  const draft = {
+    file: "package.json",
+    saved: "before",
+    getValue: () => "after",
+  };
+  const pending = [];
+  const check = createDiscardGuard({
+    getDraft: () => draft,
+    getRevision: () => 1,
+    isClosing: () => false,
+    ask: async (value) => {
+      calls++;
+      assert.equal(value.file, draft.file);
+      return new Promise((done) => {
+        resolve = done;
+      });
+    },
+    onPending: (value) => pending.push(value),
+    onError: assert.fail,
+  });
+  const first = check();
+  assert.equal(check.pending(), true);
+  assert.equal(await check(), false);
+  assert.equal(calls, 1);
+  resolve(false);
+  assert.equal(await first, false);
+  assert.equal(check.pending(), false);
+  assert.equal(draft.saved, "before");
+  assert.equal(draft.getValue(), "after");
+  assert.deepEqual(pending, [true, false]);
+});
+
+test("discard consent applies only to the unchanged draft and dialog", async () => {
+  for (const change of [
+    "none",
+    "content",
+    "draft",
+    "revision",
+    "saving",
+    "closing",
+  ]) {
+    let content = "after",
+      revision = 1,
+      closing = false,
+      resolve;
+    let draft = { saved: "before", saving: false, getValue: () => content };
+    const check = createDiscardGuard({
+      getDraft: () => draft,
+      getRevision: () => revision,
+      isClosing: () => closing,
+      ask: () =>
+        new Promise((done) => {
+          resolve = done;
+        }),
+      onPending: () => {},
+      onError: assert.fail,
+    });
+    const decision = check();
+    if (change === "content") content = "newer edit";
+    if (change === "draft") draft = { ...draft };
+    if (change === "revision") revision++;
+    if (change === "saving") draft.saving = true;
+    if (change === "closing") closing = true;
+    resolve(true);
+    assert.equal(await decision, change === "none", change);
+  }
+});
+
+test("discard prompt failures retain edits and saving drafts cannot be discarded", async () => {
+  const draft = { saved: "before", saving: true, getValue: () => "after" };
+  const errors = [];
+  let asks = 0;
+  const check = createDiscardGuard({
+    getDraft: () => draft,
+    getRevision: () => 1,
+    isClosing: () => false,
+    ask: () => {
+      asks++;
+      throw new Error("Unable to load the shared dialog");
+    },
+    onPending: () => {},
+    onError: (error) => errors.push(error.message),
+  });
+  assert.equal(await check(), false);
+  assert.equal(asks, 0);
+  draft.saving = false;
+  assert.equal(await check(), false);
+  assert.deepEqual(errors, ["Unable to load the shared dialog"]);
+  assert.equal(check.pending(), false);
+  assert.equal(draft.getValue(), "after");
+});
+
+test("shared CloudIgniter alert is bundled locally without Next.js or provider code", async (t) => {
+  const { root } = await setup(t);
+  const publisher = await ciStartPublisher({ root, port: 0 });
+  t.after(() => publisher.close());
+  const asset = await ciPublisherFeedbackAsset();
+  assert.ok(
+    asset.inputs.some((file) =>
+      /\/feedback\/CiAlertDialog\.(tsx|js)$/.test(file),
+    ),
+  );
+  assert.ok(
+    !asset.inputs.some((file) =>
+      /(?:packages\/(next|aws|cli)|node_modules\/next\/)/.test(file),
+    ),
+  );
+  const response = await fetch(`${publisher.origin}/feedback.js`);
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("content-type"), asset.type);
+  assert.deepEqual(new Uint8Array(await response.arrayBuffer()), asset.content);
+  assert.equal((await fetch(`${publisher.origin}/discard.mjs`)).status, 200);
+  assert.equal(
+    (await fetch(`${publisher.origin}/feedback-entry.jsx`)).status,
+    404,
+  );
+  assert.equal(
+    (
+      await fetch(`${publisher.origin}/feedback.js`, {
+        headers: { Origin: "https://evil.invalid" },
+      })
+    ).status,
+    403,
+  );
+});
+
+test("theme cycles through the docs modes and System follows the OS preference", () => {
+  assert.equal(nextTheme("system"), "light");
+  assert.equal(nextTheme("light"), "dark");
+  assert.equal(nextTheme("dark"), "system");
+  assert.equal(resolvedTheme("system", true), "dark");
+  assert.equal(resolvedTheme("system", false), "light");
+  assert.equal(resolvedTheme("light", true), "light");
+  assert.equal(resolvedTheme("dark", false), "dark");
+});
+
+test("local editor bundles, fonts and workers are served from an exact asset inventory", async (t) => {
+  const { root } = await setup(t);
+  const publisher = await ciStartPublisher({ root, port: 0 });
+  t.after(() => publisher.close());
+  const assets = await ciPublisherEditorAssets();
+  assert.ok(assets.has("/editor/editor.js"));
+  assert.ok(assets.has("/editor/editor.css"));
+  assert.ok(assets.has("/editor/editor.worker.js"));
+  assert.ok([...assets.keys()].some((name) => name.endsWith(".ttf")));
+  for (const [name, asset] of assets) {
+    const response = await fetch(`${publisher.origin}${name}`);
+    assert.equal(response.status, 200, name);
+    assert.equal(response.headers.get("content-type"), asset.type);
+    assert.deepEqual(
+      new Uint8Array(await response.arrayBuffer()),
+      asset.content,
+    );
+    if (name.endsWith(".js")) {
+      const source = new TextDecoder().decode(asset.content);
+      for (const match of source.matchAll(
+        /(?:from|import\()\s*["'](\.\/[\w.-]+\.js)["']/g,
+      )) {
+        assert.ok(
+          assets.has(`/editor/${match[1].slice(2)}`),
+          `Missing editor chunk: ${match[1]}`,
+        );
+      }
+    }
+  }
+  for (const name of [
+    "/editor/package.json",
+    "/editor/%2e%2e%2fpackage.json",
+    "/editor/editor-entry.js",
+  ]) {
+    assert.equal((await fetch(`${publisher.origin}${name}`)).status, 404, name);
+  }
+  assert.equal(
+    (
+      await fetch(`${publisher.origin}/editor/editor.js`, {
+        headers: { Origin: "https://evil.invalid" },
+      })
+    ).status,
+    403,
+  );
+  const policy = (await fetch(publisher.origin)).headers.get(
+    "content-security-policy",
+  );
+  assert.match(policy, /script-src 'self'/);
+  assert.match(policy, /worker-src 'self'/);
+  assert.ok(!policy.includes("unsafe-eval"));
+});
 
 test("Publisher groups detected projects into ordered categories with alphabetical choices", () => {
   const targets = [
@@ -176,6 +372,132 @@ async function setup(t) {
   return f;
 }
 
+test("shutdown requires an authenticated explicit confirmation and closes the listener", async (t) => {
+  const { root } = await setup(t);
+  const publisher = await ciStartPublisher({ root, port: 0 });
+  t.after(() => publisher.close());
+  const request = (payload, headers = {}) =>
+    fetch(`${publisher.origin}/api/shutdown`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...headers },
+      body: JSON.stringify(payload),
+    });
+  const auth = { Authorization: `Bearer ${publisher.token}` };
+  assert.equal((await request({ confirmed: true })).status, 401);
+  assert.equal(
+    (
+      await request(
+        { confirmed: true },
+        { ...auth, Origin: "https://evil.invalid" },
+      )
+    ).status,
+    403,
+  );
+  assert.equal((await request({}, auth)).status, 400);
+  assert.equal((await request({ confirmed: "true" }, auth)).status, 400);
+  assert.equal(
+    (await fetch(`${publisher.origin}/api/shutdown`, { headers: auth })).status,
+    404,
+  );
+  assert.equal(
+    (await fetch(`${publisher.origin}/api/workspace`, { headers: auth }))
+      .status,
+    200,
+  );
+  const closed = once(publisher.server, "close");
+  const response = await request({ confirmed: true }, auth);
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), { status: "closed" });
+  await closed;
+  await assert.rejects(
+    fetch(`${publisher.origin}/api/workspace`, { headers: auth }),
+  );
+});
+
+test(
+  "shutdown cancels and waits for running work before acknowledging",
+  { timeout: 10000 },
+  async (t) => {
+    const { root } = await setup(t);
+    const publisher = await ciStartPublisher({ root, port: 0 });
+    t.after(() => publisher.close());
+    const job = publisher.jobs.start({
+      target: "fixture",
+      action: "check",
+      label: "Check",
+      profile: null,
+      destination: "Local workspace",
+      remote: false,
+      commands: [
+        {
+          command: process.execPath,
+          args: ["-e", "console.log('ready'); setInterval(() => {}, 1000)"],
+          cwd: root,
+        },
+      ],
+    });
+    while (!job.log.includes("ready\n"))
+      await new Promise((r) => setTimeout(r, 10));
+    const response = await fetch(`${publisher.origin}/api/shutdown`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${publisher.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ confirmed: true }),
+    });
+    assert.equal(response.status, 200);
+    assert.equal(job.status, "cancelled");
+    assert.ok(job.finishedAt);
+    assert.equal(publisher.jobs.busy(), false);
+  },
+);
+
+test(
+  "confirmed browser shutdown terminates the dev publisher CLI",
+  { timeout: 10000 },
+  async (t) => {
+    const { root } = await setup(t);
+    const bin = fileURLToPath(new URL("../bin/dev.mjs", import.meta.url));
+    const child = spawn(
+      process.execPath,
+      [bin, "publisher", "--port=0", "--no-open", `--workspace-root=${root}`],
+      { stdio: ["ignore", "pipe", "pipe"] },
+    );
+    t.after(() => {
+      if (child.exitCode === null) child.kill("SIGTERM");
+    });
+    const exited = once(child, "exit");
+    let output = "";
+    const url = await new Promise((resolve, reject) => {
+      child.on("error", reject);
+      child.stdout.on("data", (chunk) => {
+        output += chunk.toString();
+        const match = output.match(
+          /http:\/\/127\.0\.0\.1:\d+\/#session=[\w-]+/,
+        );
+        if (match) resolve(new URL(match[0]));
+      });
+      child.once("exit", () =>
+        reject(new Error(`Publisher exited before startup: ${output}`)),
+      );
+    });
+    const editor = await fetch(`${url.origin}/editor/editor.js`);
+    assert.equal(editor.status, 200);
+    await editor.arrayBuffer();
+    const response = await fetch(`${url.origin}/api/shutdown`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${new URLSearchParams(url.hash.slice(1)).get("session")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ confirmed: true }),
+    });
+    assert.equal(response.status, 200);
+    assert.deepEqual(await exited, [0, null]);
+  },
+);
+
 test("discovery includes a static metadata project and omits placeholders and absent projects", async (t) => {
   const { root, json } = await setup(t);
   await json("apps/site/publisher.config.json", {
@@ -278,6 +600,81 @@ test("obfuscation choices preserve other build steps and source recipes", () => 
   );
   assert.equal(steps.length, 4);
   assert.throws(() => ciBuildStepsWithObfuscation(steps, "invalid"));
+});
+
+test("configuration inventory is confined to CloudIgniter publishing and package builds", async (t) => {
+  const { root, json } = await setup(t);
+  const included = [
+    ".github/workflows/dev-quality.yml",
+    "packages/core/obfuscator.config.json",
+    "packages/core/tsup.config.ts",
+    "packages/core/scripts/ci-build-package.config.mjs",
+    "packages/core/tsconfig.build.json",
+  ];
+  const excluded = [
+    "turbo.json",
+    ".github/workflows/unrelated.yml",
+    ".github/ISSUE_TEMPLATE/unrelated.yml",
+    "packages/core/next.config.ts",
+    "packages/core/docusaurus.config.ts",
+    "packages/core/tsup.config copy.ts",
+    "packages/core/scripts/unrelated-config.json",
+  ];
+  for (const file of [...included, ...excluded]) await json(file, {});
+  const globalFiles = await ciPublisherConfigFiles(root);
+  const packageFiles = await ciPublisherConfigFiles(root, "packages/core");
+  for (const file of included)
+    assert.ok([...globalFiles, ...packageFiles].includes(file), file);
+  assert.ok(globalFiles.includes(".changeset/config.json"));
+  assert.ok(globalFiles.includes(".cloudigniter/release-policy.json"));
+  for (const file of excluded) {
+    assert.ok(![...globalFiles, ...packageFiles].includes(file), file);
+    await assert.rejects(ciPublisherReadConfig(root, file), /not an editable/);
+    await assert.rejects(
+      ciPublisherSaveConfig(root, file, "{}", "unused"),
+      /not an editable/,
+    );
+    assert.deepEqual(
+      JSON.parse(await readFile(path.join(root, file), "utf8")),
+      {},
+    );
+  }
+  await json("apps/site/publisher.config.json", {
+    schemaVersion: 1,
+    kind: "website",
+    label: "Website",
+  });
+  await json("apps/site/tsconfig.json", {});
+  await json("apps/site/next.config.ts", {});
+  assert.deepEqual(await ciPublisherConfigFiles(root, "apps/site"), [
+    "apps/site/publisher.config.json",
+  ]);
+  await assert.rejects(
+    ciPublisherReadConfig(root, "apps/site/tsconfig.json"),
+    /not an editable/,
+  );
+});
+
+test("configuration saves change only the specified file", async (t) => {
+  const { root, json } = await setup(t);
+  const file = "packages/core/package.json";
+  await json("packages/core/obfuscator.config.json", { enabled: true });
+  const untouched = "packages/core/obfuscator.config.json";
+  const before = await readFile(path.join(root, untouched), "utf8");
+  const loaded = await ciPublisherReadConfig(root, file);
+  const changed = JSON.stringify({
+    ...JSON.parse(loaded.content),
+    version: "0.2.0",
+  });
+  const saved = await ciPublisherSaveConfig(
+    root,
+    file,
+    changed,
+    loaded.revision,
+  );
+  assert.equal(saved.content, changed);
+  assert.equal(await readFile(path.join(root, file), "utf8"), changed);
+  assert.equal(await readFile(path.join(root, untouched), "utf8"), before);
 });
 
 test("configuration editor refuses traversal, symlinks, invalid JSON and stale drafts", async (t) => {

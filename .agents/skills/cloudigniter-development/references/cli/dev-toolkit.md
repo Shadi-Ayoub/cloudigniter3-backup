@@ -102,7 +102,8 @@ Paths below are relative to the repository root:
 
 Confirm the source before changing a contract; update this map when ownership
 moves. The package uses ESM, strict TypeScript `checkJs`, Meow, Execa and Changesets.
-It does not depend on framework/provider packages or private CLI internals.
+The CLI and HTTP runtime do not depend on Next.js/provider packages or private CLI internals.
+Publisher's browser feedback bundle consumes the public UI client entry and React.
 Shared validation uses `@cloudigniter/cli/tooling/modules`; module synchronization
 uses `@cloudigniter/cli/runtime/package-entry` when resolving installed helpers.
 The existing migrated workers retain their previous JavaScript validation scope;
@@ -123,8 +124,55 @@ Publisher is private DEV tooling. `src/publisher.mjs` owns the authenticated
 loopback HTTP lifecycle; `publisher-workspace.mjs` owns target discovery and
 confined configuration/build reads; `publisher-actions.mjs` maps available actions
 to existing commands; `publisher-jobs.mjs` owns serialized subprocesses and bounded,
-redacted output. Static assets ship in `src/publisher/assets`. Keep framework and
-provider dependencies out of this tool, as with the existing standalone CLI UI.
+redacted output. Static assets ship in `src/publisher/assets`. Keep Next.js and
+provider runtime dependencies out of this tool, as with the existing standalone CLI UI.
+
+Reuse `CiAlertDialog` through `@cloudigniter/ui/client` for draft-discard confirmation.
+`publisher-feedback.mjs` bundles the installed public component, React and React DOM
+in memory for the exact `/feedback.js` route. Keep only feedback code in the emitted
+browser bundle; never import application, Next.js or provider runtime modules.
+Use the component's optional `portalContainer` inside a native modal layer above
+the retained configuration dialog, with Publisher's semantic tokens applied to
+the shared data-slot structure. Keep editing and Escape preserve the draft;
+Discard changes resumes only the requested navigation. `assets/discard.mjs`
+serializes confirmations and binds consent to the same draft contents, loaded
+version and dialog revision. Await discard checks in every dialog/file transition;
+block them during saves and preserve drafts on load failures. Do not use `confirm()`.
+
+The authenticated, explicitly confirmed shutdown endpoint waits for an accepted
+mutation, stops and awaits running jobs, then closes HTTP and resolves the CLI
+lifecycle. Reuse that lifecycle for Ctrl+C/SIGTERM. Stop client polling and dispose
+editor models on shutdown; show a closed-session page when the browser refuses
+`window.close()`. Keep cancellation and completed-write semantics explicit.
+
+Use the System → Light → Dark icon cycle, persisted in `publisher-theme`, and
+resolve System from the OS preference. The configuration editor uses local Monaco
+ESM assets bundled in memory on first use by `publisher-editor.mjs`; Monaco and
+esbuild are runtime DEV dependencies. Serve only the generated asset inventory,
+including local workers/fonts. Keep scripts/workers same-origin; inline styles
+are allowed for Monaco's runtime layout/theme rules. Keep folding, Find and syntax
+colors with no line numbers, minimap or language-service completion popups.
+Keep the editor host and its filename/status/action rows mounted at stable heights
+during file loading. Reuse the editor instance and replace/dispose its file models;
+keep the previous file read-only and saving disabled until the new file is ready.
+Preserve draft checks, revision-bound saves, loading races, model disposal and
+theme synchronization. Scope Publisher's generic form styles away from Monaco.
+
+Configuration saves require an inline, read-only Monaco diff before Apply changes.
+Bind the review to the exact filename, loaded revision and immutable draft contents;
+disable file selection and editing during review, wait for diff computation before
+enabling Apply, and provide Back to editing without writes. Show additions/removals
+with colors and +/- indicators, include whitespace changes, and dispose review
+models on exit/close/shutdown. Save only the reviewed file; preserve drafts on failure.
+
+Confine the configuration inventory to Changesets, top-level CloudIgniter policy
+files and template overlays, the named dev-quality/next-quality/npm-stage workflows,
+review ownership/templates and npm/pnpm manifests. Target files include Publisher
+metadata and DEV recipes; only package targets expose compiler, bundler,
+obfuscation, coverage and named DEV build/switch/entry configurations. Exclude
+Turbo, Next.js/Docusaurus configuration, unrelated workflows and arbitrary script
+configs from both discovery and read/write authorization. Extend the inventory
+deliberately when a new CloudIgniter publishing/build configuration is introduced.
 
 Navigation uses Packages, Websites and Templates dropdowns, followed by a direct
 Docs control. Alphabetize detected choices by display label and omit empty groups;

@@ -50,6 +50,7 @@ export function CiAlertDialog({
   onConfirmError,
   closeOnConfirm = true,
   className,
+  portalContainer,
 }: CiAlertDialogProps) {
   const [confirming, setConfirming] = useState(false);
   const isPending = pending || confirming;
@@ -84,6 +85,7 @@ export function CiAlertDialog({
   return (
     <AlertDialog open={open} onOpenChange={requestOpenChange}>
       <AlertDialogContent
+        portalContainer={portalContainer}
         size={size}
         aria-busy={isPending}
         data-variant={variant}

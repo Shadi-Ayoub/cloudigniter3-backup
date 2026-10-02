@@ -31,9 +31,9 @@ See [common options](./index.mdx#common-options) for help and diagnostics.
 
 ## Remarks and effects
 
-Publisher binds only to `127.0.0.1`. The printed URL contains a local session token with an eight-hour lifetime. Keep the terminal running; Ctrl+C stops the server and cancels running local work. A browser refresh retains the session in that tab's session storage. Reopen the printed URL in a new tab to reconnect.
+Publisher binds only to `127.0.0.1`. The printed URL contains a local session token with an eight-hour lifetime. Keep the terminal running; Ctrl+C or the GUI's confirmed **Close** action stops the server and cancels running local work. The GUI attempts to close its tab and shows a closed-session page when the browser prevents it. A browser refresh retains the session in that tab's session storage. Reopen the printed URL in a new tab to reconnect while that server session remains active.
 
-Starting the server discovers targets and reads configuration. Actions require a command preview followed by an explicit execution. One action runs at a time. Configuration writes and profile changes are blocked during a running action. Logs and the most recent 30 actions remain in memory; download a log to retain it after shutdown.
+Starting the server discovers targets and reads configuration. Actions require a command preview followed by an explicit execution. Configuration saves require **Review changes**, then **Apply changes** for the exact selected file and reviewed contents. The editor includes CloudIgniter publishing and package-build settings; general framework/orchestration configuration such as `turbo.json` is excluded. One action runs at a time. Configuration writes and profile changes are blocked during a running action. Logs and the most recent 30 actions remain in memory; download a log to retain it after shutdown.
 
 The GUI delegates to existing build, test, switch, release, template and GitHub commands. It preserves package quality gates and reviewed delivery rules. It does not expose PR review/merge controls or perform final npm 2FA approval. Website delivery requires reviewed artifact commits and configured remote workflows; the GUI provides local builds, checks, output inspection, and workflow scaffolding.
 
@@ -57,6 +57,7 @@ Use `dev publisher` directly when the workspace executable is already on `PATH`.
 - **Missing target:** ensure it is a workspace package, has explicit repository `sourcePath`, or has `publisher.config.json` in a supported project root. Empty placeholder folders do not create tabs.
 - **Profile unavailable:** sign in using `dev github auth login --profile=<name>` in a terminal, then verify or switch in Publisher.
 - **File changed on disk:** copy the editor draft if needed, reload the file, and reconcile the external edit. Stale saves are refused.
+- **Editor failed to load:** select the file again to retry. Monaco and its worker are supplied by the installed DEV dependencies; restore workspace dependencies if local editor assets are missing.
 - **Action failed or cancelled:** inspect its exit code and log. Cancellation stops local processes; already completed filesystem changes and remote writes remain.
 - **Remote request refused:** resolve the underlying policy, authentication, clean-base, approval or artifact failure. Publisher never relaxes those gates.
 

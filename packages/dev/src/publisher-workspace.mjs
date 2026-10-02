@@ -363,34 +363,39 @@ export async function ciPublisherIdentity(root, profile, run = ciRun) {
 
 const globalPatterns = [
   ".changeset/*.{json,md}",
-  ".cloudigniter/**/*.{json,yml,yaml,md,mjs,ts}",
-  ".github/**/*.{json,yml,yaml,md}",
+  ".cloudigniter/*.{json,yml,yaml,md,mjs,ts}",
+  ".cloudigniter/template/**/*.{json,yml,yaml,md,mjs,ts}",
+  ".github/workflows/{dev-quality,next-quality,npm-stage}.{yml,yaml}",
+  ".github/pull_request_template.md",
   ".github/CODEOWNERS",
   "package.json",
   "pnpm-workspace.yaml",
-  "turbo.json",
 ];
 const localPatterns = [
   "package.json",
   "publisher.config.json",
   "ci-dev.config.json",
+];
+const packagePatterns = [
   "tsconfig*.json",
-  "tsup.config.*",
-  "rollup.config.*",
-  "next.config.*",
-  "docusaurus.config.*",
+  "tsup.config.{ts,mts,cts,js,mjs,cjs}",
+  "rollup.config.{ts,mts,cts,js,mjs,cjs}",
+  "obfuscator.config.json",
   ".c8rc.json",
   "coverage-policy.json",
-  "scripts/*config*.{mjs,cjs,js,ts,json}",
+  "scripts/{ci-build-package,ci-switch-sources,entries}.config.{mjs,cjs,js,ts,json}",
 ];
 /** @param {string} root @param {string|undefined} target */
 export async function ciPublisherConfigFiles(root, target) {
   let patterns = globalPatterns;
   if (target) {
     const workspace = await ciPublisherWorkspace(root);
-    if (!workspace.targets.some((t) => t.id === target))
-      throw new CiDevUsageError("Unknown Publisher target.");
-    patterns = localPatterns.map((p) => `${fg.escapePath(target)}/${p}`);
+    const project = workspace.targets.find((t) => t.id === target);
+    if (!project) throw new CiDevUsageError("Unknown Publisher target.");
+    patterns = [
+      ...localPatterns,
+      ...(project.kind === "package" ? packagePatterns : []),
+    ].map((p) => `${fg.escapePath(target)}/${p}`);
   }
   const files = await fg(patterns, {
     cwd: root,

@@ -104,7 +104,9 @@ Own the separately distributed private `@cloudigniter/dev` package and `dev`
 executable. It owns workspace-gated package builds, quality scans, Next tooling,
 module maintenance, build exports, public template preparation, company policy and GitHub release requests.
 It consumes shared module validation and package loading through public CLI APIs;
-CLI never depends on DEV. It has no framework/provider runtime dependency.
+CLI never depends on DEV. Its CLI and HTTP runtime have no Next.js/provider
+dependency. Publisher reuses the public UI alert component and React in an isolated
+local browser bundle; shared presentation remains owned by `packages/ui`.
 
 The npm request command versions temporary source snapshots for review; it leaves
 local versions unchanged and does not build, pack, approve or publish a release.

@@ -46,6 +46,7 @@ interface CiAlertDialogProps {
   onConfirmError?: (error: unknown) => void;
   closeOnConfirm?: boolean;
   className?: string;
+  portalContainer?: HTMLElement | null;
 }
 ```
 
@@ -69,10 +70,13 @@ interface CiAlertDialogProps {
 | `onConfirmError`  | No       | None         | Receives a rejected confirmation value. The dialog remains open; without this callback, the rejection propagates. |
 | `closeOnConfirm`  | No       | `true`       | Closes the dialog after `onConfirm` completes successfully.                                                       |
 | `className`       | No       | None         | Extends the dialog content surface.                                                                               |
+| `portalContainer` | No       | Document body | Sets a mounted host element for the dialog portal, including embedding within a native HTML dialog. |
 
 ## Accessibility and async behavior
 
 The underlying Base UI primitive provides modal semantics, focus trapping, focus restoration, and Escape handling. `CiAlertDialog` requires a title, supports a description, renders 44-pixel minimum mobile action targets, and prevents accidental dismissal during pending work.
+
+Set `portalContainer` when the confirmation must remain inside an existing modal host. Pass the mounted element; omitting the prop or passing `null` uses the document body. The title, description, backdrop and actions remain part of the same portal.
 
 `onConfirm` errors are not converted into UI automatically. Use `onConfirmError` to route them into `CiAlert`, `ciNotify`, or another application feedback channel. A rejection keeps the confirmation open so the user does not lose context.
 

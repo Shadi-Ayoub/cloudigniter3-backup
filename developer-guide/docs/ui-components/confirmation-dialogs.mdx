@@ -71,6 +71,8 @@ The dialog enters its own pending state when `onConfirm` returns a promise. Duri
 
 Set `closeOnConfirm={false}` when the parent must decide when to close. Use the controlled `pending` prop when work begins outside `onConfirm`, and `confirmDisabled` when prerequisites have not been met.
 
+For confirmations embedded in an existing modal host, such as a native HTML `<dialog>`, pass its mounted element as `portalContainer`. This keeps the confirmation content and backdrop inside that host. The default portal destination is the document body.
+
 ## Choosing the right feedback component
 
 | Need                                                             | Component                           |

@@ -1,5 +1,8 @@
 /* Publisher's browser client has no access to credentials or arbitrary commands. */
 import { publisherGroups } from "./navigation.mjs";
+import { themeModes, nextTheme, resolvedTheme } from "./theme.mjs";
+import { loadEditor, setEditorTheme } from "./editor.mjs";
+import { createDiscardGuard } from "./discard.mjs";
 ("use strict");
 const $ = (selector) => document.querySelector(selector);
 const el = (tag, attrs = {}, ...children) => {
@@ -23,7 +26,13 @@ let workspace,
   jobs = [],
   jobId,
   lastFinished,
-  editorDraft;
+  editorDraft,
+  configurationEditor,
+  configurationReview;
+let closing = false,
+  pollTimer,
+  identityTimer;
+let dialogRevision = 0;
 const groupSelections = new Map();
 let token = new URLSearchParams(location.hash.slice(1)).get("session");
 try {
@@ -34,25 +43,32 @@ try {
 }
 history.replaceState(null, "", location.pathname);
 const media = matchMedia("(prefers-color-scheme: dark)");
+let themeMode = "system";
 const applyTheme = () => {
-  document.documentElement.dataset.theme =
-    $("#theme").value === "system"
-      ? media.matches
-        ? "dark"
-        : "light"
-      : $("#theme").value;
+  if (closing) return;
+  const theme = resolvedTheme(themeMode, media.matches);
+  document.documentElement.dataset.theme = theme;
+  const title = `Theme: ${themeMode[0].toUpperCase() + themeMode.slice(1)}. Switch to ${nextTheme(themeMode)}.`;
+  $("#theme").setAttribute("aria-label", title);
+  $("#theme").title = title;
+  document.querySelectorAll("[data-theme-icon]").forEach((icon) => {
+    icon.toggleAttribute("hidden", icon.dataset.themeIcon !== themeMode);
+  });
+  setEditorTheme(theme);
 };
 try {
-  $("#theme").value = localStorage.getItem("publisher-theme") || "system";
+  const saved = localStorage.getItem("publisher-theme");
+  if (themeModes.includes(saved)) themeMode = saved;
 } catch {
   /* Optional preference. */
 }
 applyTheme();
 media.addEventListener("change", applyTheme);
-$("#theme").addEventListener("change", () => {
+$("#theme").addEventListener("click", () => {
+  themeMode = nextTheme(themeMode);
   applyTheme();
   try {
-    localStorage.setItem("publisher-theme", $("#theme").value);
+    localStorage.setItem("publisher-theme", themeMode);
   } catch {
     /* Optional preference. */
   }
@@ -71,6 +87,7 @@ async function api(route, payload) {
   return value;
 }
 function report(error) {
+  if (closing) return;
   $("#notice").textContent = error.message || String(error);
   $("#notice").hidden = false;
 }
@@ -113,19 +130,23 @@ function updateIdentity() {
   );
 }
 async function refreshIdentity() {
+  if (closing) return;
   try {
     identity = await api("identity");
+    if (closing) return;
     updateIdentity();
   } catch (e) {
     report(e);
   }
 }
 async function refresh() {
+  if (closing) return;
   const focused =
     document.activeElement
       ?.closest('[role="menu"]')
       ?.getAttribute("aria-labelledby") || document.activeElement?.id;
   workspace = await api("workspace");
+  if (closing) return;
   if (!workspace.targets.some((t) => t.id === targetId))
     targetId = publisherGroups(workspace.targets)[0]?.targets[0]?.id;
   renderNavigation();
@@ -604,16 +625,59 @@ function renderTarget() {
     ),
   );
 }
-function canDiscard() {
-  return (
-    !editorDraft ||
-    editorDraft.saved === editorDraft.area.value ||
-    confirm("Discard your unsaved configuration changes?")
-  );
+function hasDraft() {
+  return editorDraft && editorDraft.saved !== editorDraft.getValue();
 }
-function openDialog(title, kicker = "PUBLISHER") {
-  if (!canDiscard()) return false;
+function disposeEditor() {
+  configurationReview?.dispose();
+  configurationReview = null;
+  configurationEditor?.dispose();
+  configurationEditor = null;
   editorDraft = null;
+}
+let discardButtons = [],
+  discardStatus;
+const canDiscard = createDiscardGuard({
+  getDraft: () => editorDraft,
+  getRevision: () => dialogRevision,
+  isClosing: () => closing,
+  ask: async (draft) => {
+    const { confirmDiscard } = await import("/feedback.js");
+    if (closing) return false;
+    if (discardStatus)
+      discardStatus.node.textContent = "Waiting for your discard decision…";
+    return confirmDiscard({ file: draft.file });
+  },
+  onPending: (pending) => {
+    configurationEditor?.setReadOnly(pending || Boolean(configurationReview));
+    if (pending) {
+      const status = $("#dialog-content .editor-status");
+      if (status) {
+        discardStatus = { node: status, text: status.textContent };
+        status.textContent = "Preparing discard confirmation…";
+      }
+      discardButtons = [
+        ...document.querySelectorAll("#dialog-content .dialog-actions button"),
+      ].map((control) => ({ control, disabled: control.disabled }));
+      discardButtons.forEach(({ control }) => (control.disabled = true));
+    } else {
+      discardButtons.forEach(
+        ({ control, disabled }) => (control.disabled = disabled),
+      );
+      discardButtons = [];
+      if (discardStatus?.node.isConnected)
+        discardStatus.node.textContent = discardStatus.text;
+      discardStatus = null;
+    }
+  },
+  onError: (error) => inlineError($("#dialog-content"), error),
+});
+async function openDialog(title, kicker = "PUBLISHER") {
+  const revision = dialogRevision;
+  if (!(await canDiscard()) || revision !== dialogRevision || closing)
+    return false;
+  disposeEditor();
+  dialogRevision++;
   $("#dialog-title").textContent = title;
   $("#dialog-kicker").textContent = kicker;
   $("#dialog-content").replaceChildren();
@@ -621,9 +685,11 @@ function openDialog(title, kicker = "PUBLISHER") {
   if (!$("#dialog").open) $("#dialog").showModal();
   return true;
 }
-function closeDialog() {
-  if (!canDiscard()) return;
-  editorDraft = null;
+async function closeDialog() {
+  const revision = dialogRevision;
+  if (!(await canDiscard()) || revision !== dialogRevision || closing) return;
+  disposeEditor();
+  dialogRevision++;
   $("#dialog").close();
 }
 $("#dialog-close").addEventListener("click", closeDialog);
@@ -632,7 +698,7 @@ $("#dialog").addEventListener("cancel", (event) => {
   closeDialog();
 });
 window.addEventListener("beforeunload", (event) => {
-  if (editorDraft && editorDraft.saved !== editorDraft.area.value) {
+  if (!closing && hasDraft()) {
     event.preventDefault();
     event.returnValue = "";
   }
@@ -680,8 +746,8 @@ const options = {
     ["build", "Build repository"],
   ],
 };
-function openAction(action) {
-  if (!openDialog(action.label, selected().name)) return;
+async function openAction(action) {
+  if (!(await openDialog(action.label, selected().name))) return;
   const target = selected(),
     content = $("#dialog-content"),
     form = el("form"),
@@ -778,7 +844,7 @@ function openAction(action) {
             const job = await api("run", { id: plan.id });
             jobs.unshift(job);
             jobId = job.id;
-            closeDialog();
+            await closeDialog();
             renderTarget();
             renderJobs();
             $("#log").focus({ preventScroll: true });
@@ -851,18 +917,19 @@ function openAction(action) {
 }
 async function openConfig(target) {
   if (
-    !openDialog(
+    !(await openDialog(
       target ? `${selected().label} configuration` : "Workspace configuration",
       "LINKED FILES",
-    )
+    ))
   )
     return;
+  const revision = dialogRevision;
   const content = $("#dialog-content");
   content.append(
     el(
       "p",
       { class: "hint" },
-      "Edit the actual workspace files. JSON syntax and Publisher metadata are checked before saving; other formats are saved as text. Run the relevant checks after editing. External changes are detected before a save.",
+      "Edit CloudIgniter publishing and package-build configuration. Review the highlighted changes before applying them. Only the selected file is saved; external changes are detected before writing. Run the relevant checks after editing.",
     ),
   );
   const search = el("input", {
@@ -874,17 +941,176 @@ async function openConfig(target) {
       class: "file-list",
       "aria-label": "Configuration files",
     }),
-    editor = el(
+    filename = el("div", { class: "editor-file mono" }, "No file selected"),
+    area = el("div", { class: "config-editor" }),
+    reviewArea = el("div", { class: "config-review", hidden: true }),
+    diffKey = el(
+      "span",
+      { class: "diff-key", hidden: true },
+      el("span", { class: "diff-removed" }, "− Removed"),
+      el("span", { class: "diff-added" }, "+ Added"),
+    ),
+    placeholder = el(
+      "p",
+      { class: "editor-placeholder" },
+      "Select a file to view and edit.",
+    ),
+    status = el(
       "div",
-      { class: "editor-main" },
-      el("p", { class: "empty" }, "Select a file to view and edit."),
-    );
+      { class: "editor-status", role: "status" },
+      "Select a configuration file.",
+    ),
+    editor = el("div", { class: "editor-main" });
+  let data, review;
+  const showStatus = (message) => {
+    status.textContent = message;
+    status.title = message;
+  };
+  const save = button(
+    "Review changes",
+    async () => {
+      if (
+        !hasDraft() ||
+        !data ||
+        busy() ||
+        review ||
+        editorDraft.saving ||
+        canDiscard.pending()
+      )
+        return;
+      save.disabled = true;
+      const draft = editorDraft;
+      const candidate = Object.freeze({
+        file: data.file,
+        content: draft.getValue(),
+        revision: data.revision,
+      });
+      try {
+        const monaco = await loadEditor();
+        if (revision !== dialogRevision || draft !== editorDraft || closing)
+          return;
+        configurationEditor.setReadOnly(true);
+        review = candidate;
+        reviewArea.hidden = false;
+        configurationReview = monaco.createReview(reviewArea, {
+          file: review.file,
+          original: draft.saved,
+          modified: review.content,
+        });
+        area.inert = true;
+        area.style.visibility = "hidden";
+        search.disabled = true;
+        list.querySelectorAll("button").forEach((b) => (b.disabled = true));
+        save.hidden = true;
+        diffKey.hidden = false;
+        apply.hidden = false;
+        back.hidden = false;
+        apply.disabled = true;
+        apply.setAttribute("aria-label", `Apply changes to ${review.file}`);
+        showStatus(`Preparing change review for ${review.file}…`);
+        if (
+          !(await configurationReview.ready) ||
+          revision !== dialogRevision ||
+          review !== candidate ||
+          closing
+        )
+          return;
+        apply.disabled = busy();
+        showStatus(`Reviewing ${review.file}. Only this file will be saved.`);
+        apply.focus();
+      } catch (error) {
+        endReview();
+        showStatus(error.message);
+      }
+    },
+    { class: "primary", disabled: true },
+  );
+  const endReview = () => {
+    configurationReview?.dispose();
+    configurationReview = null;
+    review = null;
+    reviewArea.hidden = true;
+    configurationEditor?.setReadOnly(false);
+    area.inert = false;
+    area.style.visibility = "";
+    search.disabled = false;
+    list.querySelectorAll("button").forEach((b) => (b.disabled = false));
+    save.hidden = false;
+    diffKey.hidden = true;
+    save.disabled = busy() || editorDraft?.saving || !hasDraft();
+    apply.hidden = true;
+    back.hidden = true;
+  };
+  const back = button(
+    "Back to editing",
+    () => {
+      if (editorDraft?.saving) return;
+      endReview();
+      showStatus(hasDraft() ? "Unsaved changes" : "No unsaved changes");
+      configurationEditor?.focus();
+    },
+    { hidden: true },
+  );
+  const apply = button(
+    "Apply changes",
+    async () => {
+      if (
+        !review ||
+        !editorDraft ||
+        !data ||
+        busy() ||
+        editorDraft.saving ||
+        canDiscard.pending()
+      )
+        return;
+      const draft = editorDraft;
+      const approved = review;
+      if (
+        draft.getValue() !== approved.content ||
+        data.file !== approved.file
+      ) {
+        endReview();
+        showStatus("The draft changed. Review it again before saving.");
+        return;
+      }
+      apply.disabled = true;
+      back.disabled = true;
+      draft.saving = true;
+      showStatus(`Applying changes to ${approved.file}…`);
+      try {
+        const result = await api("config", approved);
+        data.revision = result.revision;
+        draft.saved = approved.content;
+        endReview();
+        showStatus(
+          `Saved ${approved.file}. Workspace configuration refreshed.`,
+        );
+        await refresh();
+      } catch (error) {
+        showStatus(error.message);
+      } finally {
+        draft.saving = false;
+        apply.disabled = busy();
+        back.disabled = false;
+        save.disabled = busy() || !hasDraft();
+      }
+    },
+    { class: "primary", hidden: true },
+  );
+  editor.append(
+    filename,
+    el("div", { class: "config-editor-shell" }, area, placeholder, reviewArea),
+    status,
+    el("div", { class: "dialog-actions" }, diffKey, save, back, apply),
+  );
   content.append(search, el("div", { class: "editor-layout" }, list, editor));
   try {
     const files = await api(
       `configs${target ? `?target=${encodeURIComponent(target)}` : ""}`,
     );
-    let active;
+    if (revision !== dialogRevision) return;
+    let active,
+      loadingFile = 0;
     const render = () =>
       list.replaceChildren(
         ...files
@@ -893,58 +1119,80 @@ async function openConfig(target) {
             button(
               file,
               async () => {
-                if (!canDiscard()) return;
+                if (review) return;
+                if (
+                  !(await canDiscard()) ||
+                  revision !== dialogRevision ||
+                  closing
+                )
+                  return;
+                const selection = ++loadingFile;
+                editorDraft = null;
+                data = null;
+                configurationEditor?.setReadOnly(true);
+                save.disabled = true;
+                area.setAttribute("aria-busy", "true");
+                showStatus(`Loading ${file}…`);
+                if (!configurationEditor)
+                  placeholder.textContent = "Loading editor…";
+                active = file;
+                render();
                 try {
-                  const data = await api(
-                    `config?file=${encodeURIComponent(file)}`,
-                  );
-                  active = file;
-                  render();
-                  const area = el("textarea", {
-                    "aria-label": `Edit ${file}`,
-                    spellcheck: "false",
-                  });
-                  area.value = data.content;
-                  const status = el(
-                    "div",
-                    { class: "editor-status", role: "status" },
-                    "Saved version loaded from disk.",
-                  );
-                  const save = button(
-                    "Save changes",
-                    async () => {
-                      save.disabled = true;
-                      try {
-                        const result = await api("config", {
-                          file,
-                          content: area.value,
-                          revision: data.revision,
-                        });
-                        data.revision = result.revision;
-                        editorDraft.saved = area.value;
-                        status.textContent =
-                          "Saved. Workspace configuration refreshed.";
-                        await refresh();
-                      } catch (e) {
-                        status.textContent = e.message;
-                      } finally {
-                        save.disabled = busy();
-                      }
-                    },
-                    { class: "primary", disabled: busy() },
-                  );
-                  editorDraft = { area, saved: data.content };
-                  area.addEventListener("input", () => {
-                    status.textContent = "Unsaved changes";
-                  });
-                  editor.replaceChildren(
-                    el("div", { class: "editor-file mono" }, file),
-                    area,
-                    status,
-                    el("div", { class: "dialog-actions" }, save),
-                  );
+                  const [loadedFile, monaco] = await Promise.all([
+                    api(`config?file=${encodeURIComponent(file)}`),
+                    loadEditor(),
+                  ]);
+                  if (
+                    revision !== dialogRevision ||
+                    selection !== loadingFile ||
+                    closing
+                  )
+                    return;
+                  data = { ...loadedFile, file };
+                  if (configurationEditor)
+                    configurationEditor.setDocument({
+                      file,
+                      content: data.content,
+                    });
+                  else
+                    configurationEditor = monaco.createEditor(area, {
+                      file,
+                      content: data.content,
+                      onChange: () => {
+                        save.disabled =
+                          busy() || editorDraft?.saving || !hasDraft();
+                        showStatus(
+                          hasDraft() ? "Unsaved changes" : "No unsaved changes",
+                        );
+                      },
+                    });
+                  configurationEditor.setReadOnly(false);
+                  editorDraft = {
+                    file,
+                    getValue: configurationEditor.getValue,
+                    saved: data.content,
+                  };
+                  filename.textContent = file;
+                  filename.title = file;
+                  placeholder.hidden = true;
+                  area.setAttribute("aria-busy", "false");
+                  showStatus("Saved version loaded from disk.");
+                  save.setAttribute("aria-label", `Review changes to ${file}`);
+                  save.title = `Review changes to ${file}`;
+                  save.disabled = true;
+                  configurationEditor.focus();
                 } catch (e) {
-                  inlineError(editor, e);
+                  if (
+                    revision !== dialogRevision ||
+                    selection !== loadingFile ||
+                    closing
+                  )
+                    return;
+                  area.setAttribute("aria-busy", "false");
+                  showStatus(`Unable to load ${file}: ${e.message}`);
+                  if (!configurationEditor)
+                    placeholder.textContent =
+                      "Unable to load this file. Select it again to retry.";
                 }
               },
               { class: active === file ? "selected" : "" },
@@ -956,12 +1204,14 @@ async function openConfig(target) {
     if (!files.length)
       list.append(el("p", { class: "empty" }, "No editable files detected."));
   } catch (e) {
+    if (revision !== dialogRevision || closing) return;
     inlineError(content, e);
   }
 }
+
 async function openBuild() {
   const target = selected();
-  if (!openDialog("Build viewer", target.name)) return;
+  if (!(await openDialog("Build viewer", target.name))) return;
   const content = $("#dialog-content"),
     search = el("input", {
       type: "search",
@@ -1019,8 +1269,8 @@ async function openBuild() {
     inlineError(content, e);
   }
 }
-function openProfiles() {
-  if (!openDialog("GitHub profiles", "SESSION IDENTITY")) return;
+async function openProfiles() {
+  if (!(await openDialog("GitHub profiles", "SESSION IDENTITY"))) return;
   const content = $("#dialog-content");
   content.append(
     el(
@@ -1049,7 +1299,7 @@ function openProfiles() {
         try {
           identity = await api("profile", { profile: name });
           await refresh();
-          closeDialog();
+          await closeDialog();
         } catch (e) {
           inlineError(content, e);
         } finally {
@@ -1089,8 +1339,9 @@ function openProfiles() {
     ),
   );
 }
-function openFlow() {
-  if (!openDialog("From source to publication", "PUBLISHING FLOW")) return;
+async function openFlow() {
+  if (!(await openDialog("From source to publication", "PUBLISHING FLOW")))
+    return;
   const node = (title, detail, gate = false) =>
     el(
       "div",
@@ -1301,9 +1552,11 @@ function renderJobs() {
   }
 }
 async function pollJobs() {
+  if (closing) return;
   try {
     const wasBusy = busy();
     jobs = await api("jobs");
+    if (closing) return;
     renderJobs();
     const completed = jobs.find((j) => j.finishedAt);
     if (completed && completed.id !== lastFinished) {
@@ -1316,7 +1569,7 @@ async function pollJobs() {
     report(e);
     if (/session expired/i.test(e.message)) return;
   }
-  setTimeout(pollJobs, busy() ? 800 : 3000);
+  if (!closing) pollTimer = setTimeout(pollJobs, busy() ? 800 : 3000);
 }
 $("#cancel-job").addEventListener(
   "click",
@@ -1347,12 +1600,76 @@ $("#config-button").addEventListener(
 );
 $("#profile-button").addEventListener("click", openProfiles);
 $("#flow-button").addEventListener("click", openFlow);
+$("#close-publisher").addEventListener("click", () => {
+  $("#shutdown-draft").hidden = !hasDraft();
+  $("#shutdown-status").textContent = "";
+  $("#shutdown-dialog").showModal();
+  $("#shutdown-cancel").focus();
+});
+$("#shutdown-cancel").addEventListener("click", () =>
+  $("#shutdown-dialog").close(),
+);
+$("#shutdown-dialog").addEventListener("cancel", (event) => {
+  if (closing) event.preventDefault();
+});
+$("#shutdown-confirm").addEventListener("click", async () => {
+  if (closing) return;
+  closing = true;
+  clearTimeout(pollTimer);
+  $("#shutdown-confirm").disabled = true;
+  $("#shutdown-cancel").disabled = true;
+  $("#shutdown-status").textContent =
+    "Stopping running actions and closing Publisher…";
+  try {
+    await api("shutdown", { confirmed: true });
+    clearInterval(identityTimer);
+    media.removeEventListener("change", applyTheme);
+    disposeEditor();
+    dialogRevision++;
+    try {
+      sessionStorage.removeItem("publisher-session");
+    } catch {
+      /* Storage is optional. */
+    }
+    token = null;
+    const heading = el("h1", { tabindex: "-1" }, "Publisher closed");
+    document.body.replaceChildren(
+      el(
+        "main",
+        { class: "shutdown-screen" },
+        heading,
+        el("p", {}, "The local server has stopped. You can close this tab."),
+        el(
+          "p",
+          {},
+          "To start a new session, run ",
+          el("code", {}, "dev publisher"),
+          " in your terminal.",
+        ),
+      ),
+    );
+    heading.focus();
+    try {
+      window.close();
+    } catch {
+      /* The closed-session page remains visible. */
+    }
+  } catch (error) {
+    closing = false;
+    $("#shutdown-status").textContent =
+      `Unable to close Publisher: ${error.message}`;
+    $("#shutdown-confirm").disabled = false;
+    $("#shutdown-cancel").disabled = false;
+    void pollJobs();
+  }
+});
 (async () => {
   try {
     await refresh();
+    if (closing) return;
     void refreshIdentity();
     void pollJobs();
-    setInterval(refreshIdentity, 60_000);
+    identityTimer = setInterval(refreshIdentity, 60_000);
   } catch (e) {
     report(e);
     $("#target").replaceChildren(

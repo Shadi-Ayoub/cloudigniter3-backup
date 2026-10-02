@@ -23,6 +23,10 @@ The sticky header shows the verified Publisher identity, the shell's active GitH
 
 Add named identities in `.cloudigniter/github-profiles.json`. Initial browser sign-in remains a terminal operation through `dev github auth login`. Profile selection is local to the current Publisher server and does not change GitHub CLI's shared active account.
 
+The theme icon cycles through **System → Light → Dark**, like the guide website. Its tooltip names the current mode and the next choice. The preference is remembered locally; System follows the operating system, including changes while Publisher is open. The configuration editor follows the same appearance.
+
+Use **Close** in the toolbar, then **Close Publisher** to confirm shutdown. **Keep open** or Escape cancels the confirmation. Shutdown waits for an accepted configuration save, cancels running command work, and terminates the local server and CLI. It discards unsaved editor changes after confirmation; completed local and remote changes remain. Publisher attempts to close the tab, and shows a closed-session page if the browser prevents it. Start `dev publisher` again for a new session.
+
 ## Build and verify
 
 Buttons are generated from supported scripts in each `package.json`. Build, test, typecheck, quality, artifact validation, asset/theme generation, coverage and source/distribution switching appear only where supported. Script details remain visible under **Detected package scripts**. Long-running watch/development servers are not launched as publishing jobs.
@@ -49,9 +53,15 @@ For static websites, Publisher can build/check the project and scaffold its conf
 
 ## Linked configuration editor
 
-The global **Configuration** button lists relevant JSON, YAML, Markdown and source configuration under `.changeset`, `.cloudigniter` and `.github`, plus root workspace configuration. **Package configuration** opens the same editor scoped to a target's manifest, DEV recipe, Publisher metadata, TypeScript, bundler, framework and coverage settings.
+The global **Configuration** button lists Changesets, CloudIgniter policies and template overlays, the CloudIgniter quality/staging workflows (`dev-quality`, `next-quality`, `npm-stage`), PR template, CODEOWNERS, and root npm/pnpm manifests. **Package configuration** shows the selected target's manifest, DEV recipe and Publisher metadata. CloudIgniter packages also expose their TypeScript, bundler, obfuscation, coverage and named DEV build/switch/entry configurations. Project-root framework and orchestration settings such as `turbo.json`, `next.config.*` and `docusaurus.config.*`, unrelated workflows, and arbitrary script configurations are excluded from both the file list and the read/save APIs.
 
 Select a filename to read and edit its real disk contents. The editor validates JSON syntax and the Publisher metadata schema, checks the loaded content revision before writing, and refuses stale drafts. Other text formats require their normal tool validation after editing. It refuses symlinks, traversal, files outside the discovered configuration inventory, and files over 1 MiB. Secret-named files are omitted, but configuration files must still contain no credentials. Changes remain local until the developer reviews and commits them.
+
+Configuration files open in a compact Monaco editor with syntax colors, folding, selection, undo/redo and Find. Line numbers are hidden. JSON/JSONC, TypeScript/JavaScript, YAML, Markdown/MDX, CSS, HTML, XML, shell, INI and Dockerfile syntax are recognized; other files use plain text. Long lines wrap, and the minimap and completion popups are disabled. Use Ctrl/Cmd+F to find text. Ctrl+M (Control+Shift+M on macOS) toggles whether Tab inserts indentation or moves focus. Closing the editor or selecting another file asks before discarding unsaved changes. Switching files retains the editor's height and controls while loading; the previous file stays visible and read-only until the selected file is ready. Editor assets load locally on first use and require no CDN connection.
+
+After editing, choose **Review changes** to compare the loaded disk version with the proposed contents. The read-only Monaco diff highlights removed text in red with `−` indicators and added text in green with `+` indicators, including whitespace changes. Unchanged regions collapse and can be expanded. The filename and status identify the exact file being reviewed. File selection is locked during review; **Back to editing** restores the draft without writing. **Apply changes** becomes available after the comparison loads and writes only the exact file and contents shown in that review. Other files are never included in the save. A failed save retains the draft and review; if the disk revision changed, return to editing, reload the file and review a fresh draft before applying it.
+
+Closing the configuration dialog or choosing another file with unsaved edits opens CloudIgniter's shared **CiAlertDialog**, showing the exact filename. **Keep editing** or Escape cancels the navigation and retains the draft; **Discard changes** continues the requested close or selection without writing the file. The editor stays mounted and read-only while confirmation is pending. Concurrent discard requests are ignored, and consent is rejected if the draft or dialog changes before navigation resumes. The shared component and React load as a local browser bundle; no CDN or Next.js server is needed.
 
 ## Optional project metadata
 
