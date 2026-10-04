@@ -41,7 +41,7 @@ Before changing infrastructure or persistence code:
 7. Verify current capacity, pricing, quotas, consistency, backup, and table-class claims in official AWS
    documentation. Do not embed remembered prices or stale limits in a decision.
 8. Record the boundary, access patterns, rejected alternative, cost drivers, safety controls, migration, and
-   monitoring plan in the relevant developer-guide architecture page.
+   monitoring plan in the relevant documentation architecture page.
 
 Never create or mutate an AWS resource through the console as part of a code task unless the user explicitly
 authorizes that external state change. Infrastructure definitions remain the source of truth.

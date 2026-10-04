@@ -1,0 +1,73 @@
+name: Source mirroring
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+  checks: read
+  actions: read
+
+concurrency:
+  group: cloudigniter-source-mirroring-main
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    name: Mirror approved sources
+    if: github.repository == 'cloudigniter-io/cloudigniter' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      # A queued run catches up to the latest reviewed main; no candidate code executes.
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Verify merged PR approval and all merged-commit quality checks
+        id: verify
+        run: node packages/dev/src/ci/source-mirror.mjs verify
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Require the scoped company App configuration
+        if: steps.verify.outputs.should_mirror == 'true'
+        env:
+          APP_CLIENT_ID: ${{ vars.CLOUDIGNITER_SOURCE_MIRROR_APP_CLIENT_ID }}
+          APP_PRIVATE_KEY: ${{ secrets.CLOUDIGNITER_SOURCE_MIRROR_PRIVATE_KEY }}
+        run: |
+          if [ -z "$APP_CLIENT_ID" ] || [ -z "$APP_PRIVATE_KEY" ]; then
+            echo '::error::Configure CLOUDIGNITER_SOURCE_MIRROR_APP_CLIENT_ID and CLOUDIGNITER_SOURCE_MIRROR_PRIVATE_KEY. See the Publishing strategy / Automatic source mirroring guide.'
+            exit 1
+          fi
+      - name: Create a short-lived token for private source repositories only
+        if: steps.verify.outputs.should_mirror == 'true'
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          client-id: ${{ vars.CLOUDIGNITER_SOURCE_MIRROR_APP_CLIENT_ID }}
+          private-key: ${{ secrets.CLOUDIGNITER_SOURCE_MIRROR_PRIVATE_KEY }}
+          owner: cloudigniter-io
+          repositories: ${{ steps.verify.outputs.repositories }}
+          permission-contents: write
+      - name: Synchronize reviewed inventories without rebuilding or force pushing
+        if: steps.verify.outputs.should_mirror == 'true'
+        run: node packages/dev/src/ci/source-mirror.mjs mirror
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CLOUDIGNITER_MIRROR_TOKEN: ${{ steps.app-token.outputs.token }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: source-mirror-receipts-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/cloudigniter-source-mirror-plan.json
+            ${{ runner.temp }}/cloudigniter-source-mirror-result.json
+          if-no-files-found: warn
+          retention-days: 90

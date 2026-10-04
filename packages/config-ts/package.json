@@ -4,6 +4,7 @@
   "private": false,
   "type": "module",
   "files": [
+    "ci-module.json",
     "ci-pkg-base.json",
     "base.json",
     "library.json",

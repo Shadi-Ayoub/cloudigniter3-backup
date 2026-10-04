@@ -13,7 +13,6 @@ export {
 // ─────────────────────────────────────────────────────────────
 export {
   appServerClient,
-  getLambdaParameters,
 
   //Tenants
   //   getTenant,

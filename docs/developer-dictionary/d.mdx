@@ -1,0 +1,21 @@
+---
+title: "D · Developer Dictionary"
+sidebar_label: "D"
+description: Internal CloudIgniter developer terms beginning with D.
+sidebar_position: 4
+custom_edit_url: null
+customProps:
+  audience: developer
+---
+
+## Dependency Direction {#dependency-direction}
+
+The allowed direction of imports between architectural layers. Generic CloudIgniter contracts remain independent of Next.js and AWS; framework integrations and provider implementations consume those contracts. Reusable packages must not depend on `apps/template`. See [package ownership](/company-developers/architecture/core-custom-ownership).
+
+## DEV Toolkit {#dev-toolkit}
+
+The **CloudIgniter Developer Toolkit**, the company-maintainer package `@cloudigniter/dev`, implemented in `packages/dev` and invoked with `dev`. A [CloudIgniter Developer](/developer-dictionary/c#cloudigniter-developers) uses it for package workflows, quality checks, module maintenance, template exports, and reviewed release requests. It is distinct from the public `ci` CLI and must stay outside application runtime imports. See [the developer toolkit](/company-developers/tooling/dev-toolkit).
+
+## Docusaurus {#docusaurus}
+
+The documentation framework used in `docs`. This site registers separate docs plugins for the user guide, company developer guide, commands, dictionaries, and rendered skills. Plugins supply routes and sidebars; registering a separate plugin does not authenticate its readers. See [Docs audiences and dictionaries](/company-developers/documentation/dictionaries).

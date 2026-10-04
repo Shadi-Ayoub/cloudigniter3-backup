@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -45,7 +45,8 @@ interface CiBreadcrumbMenuItemsProps {
   items: ReturnType<typeof ciResolveBreadcrumbMenuItems>;
   onNavigate: () => void;
   cancelClose: () => void;
-  scheduleClose: () => void;
+  scheduleClose: (event: MouseEvent<HTMLElement>) => void;
+  menuId: string;
 }
 
 const menuItemClassName = "min-h-11 cursor-pointer gap-2 transition-colors duration-150 focus:bg-accent focus:text-accent-foreground motion-reduce:transition-none";
@@ -128,6 +129,7 @@ function CiBreadcrumbSubmenu({
       )}
       <DropdownMenuPortal>
         <DropdownMenuSubContent
+          data-ci-breadcrumb-menu={menuProps.menuId}
           sideOffset={4}
           collisionPadding={8}
           className="min-w-48 max-w-[calc(100vw-1rem)] max-h-(--radix-dropdown-menu-content-available-height) overflow-y-auto duration-200 motion-reduce:animate-none"
@@ -151,6 +153,7 @@ function CiBreadcrumbChildrenMenu({
   const locale = useLocale();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const menuId = useId();
   const triggerRef = useRef<HTMLButtonElement>(null);
   const keyboardInteraction = useRef(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
@@ -174,8 +177,15 @@ function CiBreadcrumbChildrenMenu({
     }
   }, [cancelClose]);
 
-  const scheduleClose = () => {
+  const scheduleClose = (event: MouseEvent<HTMLElement>) => {
     cancelClose();
+    // React mouse-enter does not always fire on the parent when returning from
+    // a portal. Treat the disclosure and every portaled panel as one region.
+    const nextTarget = event.relatedTarget;
+    if (nextTarget instanceof Element &&
+      nextTarget.closest("[data-ci-breadcrumb-menu]")?.getAttribute("data-ci-breadcrumb-menu") === menuId) {
+      return;
+    }
     closeTimer.current = setTimeout(() => {
       // Moving the mouse away must not dismiss an active keyboard interaction.
       if (!keyboardInteraction.current) resetMenu();
@@ -220,6 +230,7 @@ function CiBreadcrumbChildrenMenu({
   return (
     <DropdownMenu open={open} onOpenChange={setOpen} modal={false} dir={dir}>
       <span
+        data-ci-breadcrumb-menu={menuId}
         className="inline-flex items-center"
         onKeyDownCapture={() => { keyboardInteraction.current = true; }}
         onPointerDownCapture={() => { keyboardInteraction.current = false; }}
@@ -260,6 +271,7 @@ function CiBreadcrumbChildrenMenu({
       </span>
 
       <DropdownMenuContent
+        data-ci-breadcrumb-menu={menuId}
         align="start"
         sideOffset={4}
         collisionPadding={8}
@@ -285,6 +297,7 @@ function CiBreadcrumbChildrenMenu({
           onNavigate={resetMenu}
           cancelClose={cancelClose}
           scheduleClose={scheduleClose}
+          menuId={menuId}
         />
       </DropdownMenuContent>
     </DropdownMenu>

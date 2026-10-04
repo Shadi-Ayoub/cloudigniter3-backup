@@ -1,0 +1,94 @@
+---
+title: CiPage
+description: Render a page shell from server-resolved CloudIgniter context.
+---
+
+# CiPage
+
+```tsx
+import { CiPage } from "@cloudigniter/next/client";
+import type { CiPageProps, CiNextPageSetup } from "@cloudigniter/next/types";
+```
+
+`CiPage` is a Client Component rendered inside the application's CloudIgniter layout. It owns the page scroll
+container, header, breadcrumbs, loader, tracing, and page-level next-intl provider. It receives context; it does
+not resolve server headers, cookies, identity, or provider data itself.
+
+| Prop | Type | Behavior |
+| --- | --- | --- |
+| `context` | `CiNextContext` | Required server-resolved application context. |
+| `children` | `ReactNode` | Required page content. |
+| `setup` | `CiNextPageSetup` | Optional title, actions, breadcrumbs, messages, and layout participation; defaults to an empty object. |
+| `name` | `string` | Optional diagnostic label. |
+| `login` | `boolean` | Selects login-page shell behavior; defaults to false. |
+
+The default setup displays the page header and breadcrumbs and assumes the layout has a header and footer.
+The page's messages come from `setup.messages` when provided, otherwise from
+`context.config.appNextResolvedConfig.messages`.
+
+```tsx
+import { CiPage } from "@cloudigniter/next/client";
+import { appBootstrap } from "@/kernel/server";
+
+export default async function NotesPage() {
+  const context = await appBootstrap();
+  return (
+    <CiPage context={context} name="notes" setup={{ title: "Notes" }}>
+      <p>Notes content</p>
+    </CiPage>
+  );
+}
+```
+
+The example's `appBootstrap` is the template's server integration helper. Route pages remain Server Components;
+interactive content can live in children. A parent `CiLayout` already supplies the shared wrappers and providers.
+
+## Nested breadcrumb menus
+
+Set `setup.withBreadcrumbChildrenMenu: true` to enable shortcut menus. It defaults to `false`.
+Each `CiBreadcrumbItem` from `@cloudigniter/core/types` can supply a recursive `children` array while
+retaining its own `href`:
+
+```tsx
+const setup = {
+  withBreadcrumbChildrenMenu: true,
+  breadcrumbs: [
+    {
+      label: "Dashboard",
+      href: "/dashboard",
+      children: [{
+        label: "Security",
+        href: "/dashboard/security",
+        children: [{ label: "Roles", href: "/dashboard/security/roles" }],
+      }],
+    },
+    { label: "Public settings", current: true },
+  ],
+} satisfies CiNextPageSetup;
+```
+
+Hover over Dashboard, then Security, to reveal Roles without opening the Security page. Clicking a parent
+label follows its own link; clicking a leaf follows that destination without opening another menu. On touch
+screens, tap the breadcrumb disclosure and then the arrow beside a parent to expand its children.
+
+Keyboard users can open the breadcrumb disclosure with Enter or Space, move between items with Up/Down,
+and open a nested menu with Right Arrow (Left Arrow in RTL) or Space. The opposite arrow returns to the
+parent menu; Enter follows a focused parent link, and Escape dismisses the menus.
+
+Moving between a child submenu, its parent menu, and the breadcrumb disclosure keeps the dropdown open,
+including when the panels are rendered in portals. Leaving the entire dropdown resets its open state and arrow highlight without focusing the
+breadcrumb disclosure. Focus moving outside the menu, browser-window blur, hiding the tab, or route navigation
+also dismisses the menu. Keyboard dismissal with Escape restores focus to the disclosure so keyboard users
+retain their place; moving the mouse away does not interrupt an active keyboard interaction.
+
+Sibling destinations are sorted by their translated labels using the active locale. Hidden items exclude their
+entire subtree. The current page is omitted as a destination; a current section with other visible children
+remains an expandable, non-navigating parent. Parents with no remaining visible children render as ordinary links.
+Breadcrumb shortcut data controls navigation presentation; destination pages still enforce access.
+
+Direct `CiBreadcrumbs` consumers use `withChildrenMenu` with the same `CiBreadcrumbItem[]` structure.
+Both `CiPage` and `CiBreadcrumbs` are exported from `@cloudigniter/next/client`.
+
+The previous `Page`/`config` examples are superseded by `CiPage` with `context`. Follow
+[Build your first application page](/docs/building-features/first-page) for route registration and physical placement,
+or [How a request becomes a page](/docs/architecture/request-lifecycle) for the complete rendering sequence.

@@ -6,10 +6,8 @@ import { ciReadRepositories } from "./repositories.mjs";
 
 export const ciPolicyPath = ".cloudigniter/release-policy.json";
 
-/** @param {unknown} value @returns {value is Record<string, unknown>} */
-export function ciIsRecord(value) {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
+export { ciIsRecord } from "./repository-config.mjs";
+import { ciIsRecord } from "./repository-config.mjs";
 
 /** @param {string} file @returns {Promise<unknown>} */
 export async function ciReadJson(file) {

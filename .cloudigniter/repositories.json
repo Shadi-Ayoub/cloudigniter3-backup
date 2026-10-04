@@ -65,11 +65,11 @@
       "buildVisibility": "private",
       "delivery": "npm"
     },
-    "cloudigniter-developer-guide": {
+    "cloudigniter-docs": {
       "type": "website",
-      "sourcePath": "developer-guide",
-      "sourceRepository": "cloudigniter-io/cloudigniter-developer-guide",
-      "buildRepository": "cloudigniter-io/build-cloudigniter-developer-guide",
+      "sourcePath": "docs",
+      "sourceRepository": "cloudigniter-io/cloudigniter-docs",
+      "buildRepository": "cloudigniter-io/build-cloudigniter-docs",
       "buildVisibility": "private",
       "delivery": "aws"
     },
@@ -91,7 +91,7 @@
     },
     "jodaris-website": {
       "type": "website",
-      "sourcePath": null,
+      "sourcePath": "apps/jodaris",
       "sourceRepository": "cloudigniter-io/jodaris-website",
       "buildRepository": "cloudigniter-io/build-jodaris-website",
       "buildVisibility": "private",

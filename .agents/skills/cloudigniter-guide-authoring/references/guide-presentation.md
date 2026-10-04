@@ -11,7 +11,7 @@ documentation structure. The reference is design inspiration, not a reason to mi
 Use `ui-ux-pro-max` for design work, with the current guide implementation and the user's request taking precedence
 over generic style recommendations.
 
-Inspect these sources before changing presentation; paths below are relative to `developer-guide`:
+Inspect these sources before changing presentation; paths below are relative to `docs`:
 
 | Responsibility | Source |
 | --- | --- |
@@ -40,7 +40,7 @@ honor requested changes, and update this reference and the guide README when the
 | Document headings | Averia Serif Libre; 32px/40px page title, 28px section headings, 20px subsections |
 | Small-screen document title | 28px at widths up to 576px |
 | Code | System monospace stack, 14px block text, about 1.7 line height |
-| Desktop navigation | 64px header, 272px sidebar, approximately 14px link text; search and Dictionary Viewer controls share a 36px height (44px touch target) |
+| Desktop navigation | 64px header, 272px sidebar, approximately 14px link text; compact search and one Dictionary dropdown with 44px viewer controls |
 | Navbar brand | CloudIgniter Docs; muted Docs token, one 8px logo gap, color light-mode logo and Dev Beacon outline in dark mode |
 | Desktop reading column | Maximum 688px; responsive gutters and a separate table of contents |
 | Mobile navigation | Native Docusaurus menu at widths up to 996px; menu controls at least 44px tall |
@@ -70,8 +70,11 @@ should not need Google Fonts or another third-party font service.
   the original 17:13 proportions (510 × 390 color image, 34 × 26 outline view box), with the same displayed
   dimensions, wide cloud silhouette, and horizontal cloud base. The canonical host is
   `https://docs.cloudigniter.io`; keep home navigation within the current guide/base URL.
-- Keep the navbar focused on **User guide**, **Developer guide**, **API Reference**, and **CloudIgniter Commands**, with the blue **Dictionary** and green **Developer Dictionary**, each preceded by its
-  viewer control, and **Skills** and **Blog** under **Resources**. Preserve existing routes when adjusting labels.
+- Keep the navbar focused on **User guide**, **Developer guide**, **API Reference**, and **CloudIgniter Commands**.
+  One **Dictionary** dropdown contains the blue **Dictionary** and green **Developer Dictionary** rows,
+  each pairing a viewer icon with its full-page link in desktop and mobile navigation. Keep **Skills**
+  under **Resources**. The starter blog is disabled; add blog navigation only with maintained CloudIgniter content.
+  Preserve existing guide routes when adjusting labels.
   Homepage and footer links should lead to real CloudIgniter resources; do not reintroduce starter Docusaurus destinations.
 - Keep the compact navbar search available across guides. Clicking it or pressing **⌘K / Ctrl+K** opens a native
   dialog with live ranked results, highlighted excerpts, scope filters, loading/error/empty states, and arrow-key/Enter

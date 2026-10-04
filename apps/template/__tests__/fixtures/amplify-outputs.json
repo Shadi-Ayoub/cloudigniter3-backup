@@ -1,0 +1,26 @@
+{
+  "version": "1.4",
+  "custom": {
+    "cloudigniter": {}
+  },
+  "auth": {
+    "aws_region": "us-east-1",
+    "user_pool_id": "us-east-1_CIPlaceholder",
+    "user_pool_client_id": "cloudigniter-ci-placeholder",
+    "identity_pool_id": "us-east-1:00000000-0000-0000-0000-000000000000",
+    "unauthenticated_identities_enabled": true
+  },
+  "data": {
+    "url": "https://cloudigniter-ci.invalid/graphql",
+    "aws_region": "us-east-1",
+    "default_authorization_type": "AMAZON_COGNITO_USER_POOLS",
+    "authorization_types": ["API_KEY"],
+    "api_key": "offline-ci-placeholder",
+    "model_introspection": {
+      "version": 1,
+      "models": {},
+      "enums": {},
+      "nonModels": {}
+    }
+  }
+}

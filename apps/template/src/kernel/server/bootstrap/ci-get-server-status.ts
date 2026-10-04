@@ -19,7 +19,7 @@ export const ciGetServerStatus = cache(
       cookies,
     }) as ClientUsingSSRCookies<Schema>;
 
-    const schemaOk = typeof client.queries.GetLambdaParameters === "function";
+    const schemaOk = typeof client.queries.GetCognitoUser === "function";
     const status = await _getServerStatus(settings, amplifyConfig, schemaOk);
 
     return status;

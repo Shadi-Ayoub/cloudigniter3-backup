@@ -83,7 +83,8 @@ Paths below are relative to the repository root:
 | `packages/dev/src/github-api.mjs` and `github-request.mjs` | Shared GitHub transport, clean-base checks and private request creation. |
 | `packages/dev/src/github-profiles.mjs` | Per-command GitHub credentials without global switching. |
 | `packages/dev/src/github-workflow.mjs` | Strict everyday GitHub command catalog, browser login and revision-bound PR review/merge. |
-| `packages/dev/src/repositories.mjs` | Explicit source/build inventory and safe clone/pull. |
+| `packages/dev/src/repositories.mjs` and `repository-config.mjs` | Shared validated source/build inventory and safe clone/pull. |
+| `packages/dev/src/source-mirror.mjs` and `source-mirror-git.mjs` | Exact merged-PR/check verification and inventory-based private source synchronization. |
 | `packages/dev/src/paired-releases.mjs` | Versioned source snapshots and approval/hash verification. |
 | `packages/dev/src/build-repositories.mjs` | Immutable archive PRs and workflow scaffolding. |
 | `packages/dev/src/ci/` | Standalone npm verifier and static AWS workflow template. |
@@ -96,6 +97,7 @@ Paths below are relative to the repository root:
 | `.cloudigniter/release-policy.json` | Company repository, reviewers, packages, registry, access and channels. |
 | `.cloudigniter/github-policy.json` | Backup/public template destinations, requesters and template reviewers. |
 | `.cloudigniter/template-policy.json` and `.cloudigniter/template/` | Exact public application file inventory, versions, rewrites and standalone overlays. |
+| `.cloudigniter/source-mirroring.json` and `.github/workflows/source-mirror.yml` | Post-merge quality bindings, App-backed source synchronization and recovery. |
 | `.github/workflows/dev-quality.yml` | Node 22/24 checks and reviewable package archives. |
 | `.github/workflows/npm-stage.yml` | Legacy monorepo workflow; paired mode uses generated build-repository workflows. |
 | `.cloudigniter/repositories.json` and `github-profiles.json` | Validated project pairs and named non-secret account identities. |
@@ -164,9 +166,15 @@ disable file selection and editing during review, wait for diff computation befo
 enabling Apply, and provide Back to editing without writes. Show additions/removals
 with colors and +/- indicators, include whitespace changes, and dispose review
 models on exit/close/shutdown. Save only the reviewed file; preserve drafts on failure.
+Keep the review mounted and locked behind an accessible progress notice with a
+reduced-motion-aware spinner until both the actual file write and workspace refresh
+finish. Report completion only after refresh. A failed write retains the review;
+a refresh failure after a successful write reports saved-with-refresh-warning and
+returns to the editor without offering a duplicate write. Ignore stale dialog/draft
+callbacks after shutdown, and always clear pending state on completion or failure.
 
 Confine the configuration inventory to Changesets, top-level CloudIgniter policy
-files and template overlays, the named dev-quality/next-quality/npm-stage workflows,
+files and template overlays, all four CloudIgniter quality workflows, source-mirror and npm-stage,
 review ownership/templates and npm/pnpm manifests. Target files include Publisher
 metadata and DEV recipes; only package targets expose compiler, bundler,
 obfuscation, coverage and named DEV build/switch/entry configurations. Exclude
@@ -197,6 +205,24 @@ locally and artifact delivery remains external. Final npm 2FA and PR management
 are outside this GUI version. Update the Publisher workflow and command manuals
 with changes. `package build --obfuscation=configured|on|off` changes only the
 obfuscation step; default preserves the existing recipe and quality gates.
+
+Publisher's Git summary describes only the local integration-workspace checkout;
+target source/build destinations come from the explicit repository inventory,
+independently of its backup remote. External standalone clones do not become tabs
+or acquire per-target Git status automatically. Do not describe those clones as
+replacements for the required shared workspace. An unverified username comes from
+profile configuration until its stored credential is checked against GitHub. For a
+missing native GitHub CLI, use DEV's existing managed setup/postinstall mechanism;
+do not add an unrelated npm package named `gh` or change global authentication.
+
+The selected company development model uses a full private monorepo and one
+integrated feature PR for related template/package/docs changes. Approved merges
+authorize source mirrors through the implemented post-merge service and configured
+company App; remaining release phases follow the target [delivery design](publishing.md#target-automated-monorepo-delivery-design).
+Generated release PRs, verified CI handoff and persistent Publisher release
+tracking remain proposed. Keep current actions and source/build approval records
+honest until the versioned coordinator contract is implemented; reuse DEV domain
+services across CLI, GUI and CI rather than creating GUI-only release rules.
 
 ## Native GitHub CLI dependency
 
@@ -275,7 +301,7 @@ this migration. Core's specialized `forms:generate` remains a local generator.
 The guide's `company-developers/tooling/dev/package-workflows.mdx` explains package
 workflows; adjacent `package-configuration.mdx` owns configuration and
 `package-scripts.mdx` maps compatibility aliases. Command syntax and options belong
-in `developer-guide/commands/dev`. New reusable behavior needs success, denial and failure-order tests.
+in `docs/commands/dev`. New reusable behavior needs success, denial and failure-order tests.
 Do not move package policy into hard-coded name checks in DEV.
 
 ## Public template export
@@ -416,10 +442,10 @@ Treat these as living documentation, maintained alongside DEV development:
   `SKILL.md` routing only when a new reference is needed; keep generic CLI rules
   in the shared reference.
 - **CloudIgniter Developers:** maintain
-  `developer-guide/company-developers/tooling/dev/index.mdx` for the toolkit
+  `docs/company-developers/tooling/dev/index.mdx` for the toolkit
   introduction, `workspace.mdx` for setup/migration, `architecture.mdx` for
   implementation ownership, and `release-requests.mdx` for review workflow and
-  recovery. Keep exact commands and options in `developer-guide/commands/dev`;
+  recovery. Keep exact commands and options in `docs/commands/dev`;
   keep GitHub/npm setup in the publication chapter.
 - **Package contract:** keep `packages/dev/README.md` and executable help aligned
   with actual supported behavior. Update the shared CLI inventory when commands

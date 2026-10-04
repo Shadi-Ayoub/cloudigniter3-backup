@@ -885,6 +885,50 @@ dialog[open] {
   border: 1px solid var(--border);
   border-radius: 7px;
 }
+.config-save-progress {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
+}
+.config-save-notice {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 8px 14px;
+  width: min(360px, calc(100% - 32px));
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--surface-foreground);
+  box-shadow: var(--shadow);
+}
+.config-save-spinner {
+  width: 24px;
+  height: 24px;
+  grid-row: 1 / 4;
+  border: 3px solid var(--accent);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: config-save-spin 0.8s linear infinite;
+}
+.config-save-file,
+.config-save-notice p {
+  grid-column: 2;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.config-save-notice p {
+  font-size: 12px;
+}
+@keyframes config-save-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 .diff-key {
   display: flex;
   align-items: center;
@@ -1074,6 +1118,15 @@ dialog.publisher-alert-layer {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.editor-status[data-state="success"] {
+  color: var(--success);
+}
+.editor-status[data-state="warning"] {
+  color: var(--warning);
+}
+.editor-status[data-state="error"] {
+  color: var(--danger);
 }
 .tree-list {
   margin-top: 16px;

@@ -1,0 +1,75 @@
+---
+title: Repositories and configuration
+description: The organization repository map, paired publication and the maintained .cloudigniter directory.
+sidebar_position: 2
+---
+
+## One workspace, several delivery destinations
+
+The **integration workspace** is the complete private CloudIgniter monorepo. It contains `packages/`, `apps/template/`, `docs/`, shared configuration, the lockfile and Changesets. It is the normal place to develop and validate changes.
+
+The publication layout uses a **pair of repositories per product**. A private source repository holds the package or website source selected from the workspace. Its build repository holds reviewed output ready for delivery. The release policy calls this layout `topology: "paired"`: “topology” means repository arrangement, and “paired” means a separate source and build destination. It does not mean that developers work inside nested Git repositories.
+
+All names in this table are under `cloudigniter-io/`. Every source and `build-*` repository is private. Only the exported application template is public.
+
+| Project | Private source | Build or export | Delivery |
+| --- | --- | --- | --- |
+| `@cloudigniter/aws` | `cloudigniter-aws` | `build-cloudigniter-aws` | Public npm |
+| `@cloudigniter/cli` | `cloudigniter-cli` | `build-cloudigniter-cli` | Public npm |
+| `@cloudigniter/core` | `cloudigniter-core` | `build-cloudigniter-core` | Public npm |
+| `@cloudigniter/dev` | `cloudigniter-dev` | `build-cloudigniter-dev` | Restricted npm |
+| `@cloudigniter/emberguard` | `cloudigniter-emberguard` | `build-cloudigniter-emberguard` | Public npm |
+| `@cloudigniter/next` | `cloudigniter-next` | `build-cloudigniter-next` | Public npm |
+| `@cloudigniter/ui` | `cloudigniter-ui` | `build-cloudigniter-ui` | Public npm |
+| CloudIgniter Docs | `cloudigniter-docs` | `build-cloudigniter-docs` | AWS website |
+| Next/AWS template | `source-cloudigniter-next-aws-v1` | `cloudigniter-next-aws-v1` | Public GitHub template |
+| CloudIgniter website | `cloudigniter-website` | `build-cloudigniter-website` | AWS website |
+| Jodaris website | `jodaris-website` | `build-jodaris-website` | AWS website |
+
+The canonical full-workspace repository is `cloudigniter-io/cloudigniter`, configured separately as `workspaceRepository` in `github-policy.json`. Company `main` enforces the reviewed integration workflow. This name can be changed there without renaming the local folder or altering the package pairs. See the [monorepo PR strategy](./monorepo-pull-requests).
+
+:::note Temporary migration context — remove before marketing launch
+The private and public template names are deliberately distinct. The former `cloud-igniter/cloudigniter-v1` destination has been replaced. The existing private `Shadi-Ayoub/cloudigniter3-backup` remote remains the integration-workspace backup; the developer toolkit does not infer release destinations from it or push its history to product repositories.
+:::
+
+:::warning Build from the complete workspace
+The monorepo remains the local build/integration workspace, including shared configuration, Changesets and dependency checks. Separate source clones are useful for inspection and normal Git development, but are not promised to build alone: several current package configurations require sibling packages and template files. This change does not split the developer's working tree into nested Git repositories.
+:::
+
+## How .cloudigniter is created
+
+A leading dot is a Unix convention for hiding a file or directory in ordinary listings. It says nothing about whether the contents are generated. The repository’s root `.cloudigniter/` directory is **maintained source configuration**, created and committed as part of the toolkit’s setup. Cloning the complete workspace brings it with the rest of the tracked files. There is no `dev init` command that reconstructs these policies.
+
+Administrators edit these JSON files through reviewed monorepo PRs. The toolkit reads and validates them; it does not silently regenerate them from Git remotes. Missing or invalid policy produces an error. Keep usernames, destinations and non-secret settings here; keep credentials in their respective credential stores and service settings.
+
+| File or folder | Maintained contents and reader |
+| --- | --- |
+| `github-profiles.json` | Profile names such as `developer` and `approver`, each with a real GitHub username and role. Commands use it to select a stored credential. |
+| `github-policy.json` | Authorized requesters, separate backup and full-workspace destinations, private template request repository, public template destination and template reviewers. |
+| `repositories.json` | Project IDs, local source paths, source/build destinations, visibility and delivery type. Repository, scaffold and release commands use it. |
+| `release-policy.json` | Package paths, npm access, allowed tags, registry, reviewers, base branch and repository arrangement. |
+| `template-policy.json` | Explicit exported file inventory, dependency versions, scripts, overlays and text replacements. An overlay is a maintained file copied into the export to replace a workspace-specific file. |
+| `template/` | Those standalone overlay files, including the README, TypeScript configuration, pnpm configuration and example data. These are reviewed inputs, not a build cache. |
+
+:::note Repository inventory
+`.cloudigniter/repositories.json` is the routing inventory. Packages map to their current `packages/*` directories, the guide to `docs`, and the template to `apps/template`. Template export still accepts any configured source below `apps`. The two formal websites have `sourcePath: null` until their applications exist; repository names alone do not create website source or select its runtime.
+
+Docs uses the project ID `cloudigniter-docs` in DEV commands and Publisher metadata. Its local folder and pnpm package are `docs`; the GitHub destinations are `cloudigniter-io/cloudigniter-docs` and `cloudigniter-io/build-cloudigniter-docs`.
+:::
+
+In paired mode, `release-policy.repository` is `null` because there is no single npm publication repository. Each package’s build repository is its npm publisher. This does not prevent a full-monorepo review repository: `github-policy.workspaceRepository` supplies that separate destination.
+
+## Read configuration through dev
+
+```bash
+dev github profiles
+dev github repositories
+```
+
+The first command prints the non-secret account profiles. The second prints the project inventory, including the exact organization paths that subsequent commands will use. Both are offline reads; neither logs in or creates a repository. Review their output after any organization rename or repository transfer.
+
+Generated files appear in explicitly selected output directories, such as `../build-core-setup`, and in release request/artifact records. They are described in [Generated files and workflows](./generated-files); do not confuse them with the maintained root policy directory.
+
+## Downstream source updates
+
+Approved monorepo merges synchronize [mapped private source roots](./strategy/source-mirroring#which-repositories-receive-source). JODARIS maps to `apps/jodaris`; the future CloudIgniter Website remains unmapped. Config TS remains shared monorepo source. Source mirrors preserve independent history and require their own App access; the backup remote and build/public destinations are outside this synchronization.

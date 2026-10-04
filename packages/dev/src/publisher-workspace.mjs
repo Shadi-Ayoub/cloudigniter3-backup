@@ -281,7 +281,7 @@ export async function ciPublisherWorkspace(root) {
           .catch(() => false),
         buildDirectories:
           metadata.buildDirectories ??
-          (id === "developer-guide"
+          (id === "docs"
             ? ["build"]
             : manifest?.dependencies?.next
               ? [".next"]
@@ -365,7 +365,7 @@ const globalPatterns = [
   ".changeset/*.{json,md}",
   ".cloudigniter/*.{json,yml,yaml,md,mjs,ts}",
   ".cloudigniter/template/**/*.{json,yml,yaml,md,mjs,ts}",
-  ".github/workflows/{dev-quality,next-quality,npm-stage}.{yml,yaml}",
+  ".github/workflows/{dev-quality,next-quality,packages-quality,workspace-quality,source-mirror,npm-stage}.{yml,yaml}",
   ".github/pull_request_template.md",
   ".github/CODEOWNERS",
   "package.json",

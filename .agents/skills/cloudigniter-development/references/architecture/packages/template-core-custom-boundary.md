@@ -80,6 +80,11 @@ Do not solve upgrade compatibility by copying core source into `custom`, by lett
 
 Existing boundary violations are migration debt. Document and reduce them in focused changes; never cite them as justification for adding another one.
 
+Discarded source copies belong in Git history rather than live template trees.
+Before removing a legacy path, check framework registration and the template
+export inventory as well as ordinary imports, then remove retired inventory entries
+with the files. Keep intentional future-work archives until their removal is agreed.
+
 ## Optional modules
 
 Trusted module implementation belongs under `src/custom/modules/<id>`, with generated imports confined to `src/custom/modules/.generated`. The core `/dashboard/extensions/[moduleId]` page is a generic host slot; it delegates to registered custom clients and contains no module business logic. Keep provider lifecycle, UI, and framework integration in their package owners. See [optional modules](../modules.md).

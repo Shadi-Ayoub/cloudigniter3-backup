@@ -960,11 +960,33 @@ async function openConfig(target) {
       { class: "editor-status", role: "status" },
       "Select a configuration file.",
     ),
+    savingTitle = el("strong", {}, "Applying changes…"),
+    savingFile = el("code", { class: "config-save-file" }),
+    savingDetail = el("p", {}, "Writing the reviewed configuration file."),
+    savingNotice = el(
+      "div",
+      {
+        class: "config-save-progress",
+        role: "status",
+        "aria-live": "polite",
+        "aria-atomic": "true",
+        hidden: true,
+      },
+      el(
+        "div",
+        { class: "config-save-notice" },
+        el("span", { class: "config-save-spinner", "aria-hidden": "true" }),
+        savingTitle,
+        savingFile,
+        savingDetail,
+      ),
+    ),
     editor = el("div", { class: "editor-main" });
   let data, review;
-  const showStatus = (message) => {
+  const showStatus = (message, state = "") => {
     status.textContent = message;
     status.title = message;
+    status.dataset.state = state;
   };
   const save = button(
     "Review changes",
@@ -1073,33 +1095,77 @@ async function openConfig(target) {
         showStatus("The draft changed. Review it again before saving.");
         return;
       }
+      const current = () =>
+        revision === dialogRevision && draft === editorDraft && !closing;
+      let applied = false;
       apply.disabled = true;
       back.disabled = true;
       draft.saving = true;
+      apply.textContent = "Applying changes…";
+      apply.setAttribute("aria-busy", "true");
+      reviewArea.inert = true;
+      reviewArea.setAttribute("aria-busy", "true");
+      savingTitle.textContent = "Applying changes…";
+      savingFile.textContent = approved.file;
+      savingDetail.textContent = "Writing the reviewed configuration file.";
+      savingNotice.hidden = false;
       showStatus(`Applying changes to ${approved.file}…`);
       try {
         const result = await api("config", approved);
+        if (!current()) return;
         data.revision = result.revision;
         draft.saved = approved.content;
+        applied = true;
+        savingTitle.textContent = "Refreshing workspace…";
+        savingDetail.textContent = "Your changes have been saved.";
+        showStatus(`Saved ${approved.file}. Refreshing workspace…`);
+        await refresh();
+        if (!current()) return;
         endReview();
         showStatus(
           `Saved ${approved.file}. Workspace configuration refreshed.`,
+          "success",
         );
-        await refresh();
+        configurationEditor?.focus();
       } catch (error) {
-        showStatus(error.message);
+        if (!current()) return;
+        if (applied) {
+          endReview();
+          showStatus(
+            `Saved ${approved.file}. Workspace refresh failed: ${error.message}`,
+            "warning",
+          );
+          configurationEditor?.focus();
+        } else {
+          showStatus(`Could not apply changes: ${error.message}`, "error");
+        }
       } finally {
         draft.saving = false;
-        apply.disabled = busy();
-        back.disabled = false;
-        save.disabled = busy() || !hasDraft();
+        savingNotice.hidden = true;
+        reviewArea.inert = false;
+        reviewArea.removeAttribute("aria-busy");
+        apply.textContent = "Apply changes";
+        apply.removeAttribute("aria-busy");
+        if (current()) {
+          apply.disabled = busy();
+          back.disabled = false;
+          save.disabled = busy() || !hasDraft();
+          if (review && !apply.disabled) apply.focus();
+        }
       }
     },
     { class: "primary", hidden: true },
   );
   editor.append(
     filename,
-    el("div", { class: "config-editor-shell" }, area, placeholder, reviewArea),
+    el(
+      "div",
+      { class: "config-editor-shell" },
+      area,
+      placeholder,
+      reviewArea,
+      savingNotice,
+    ),
     status,
     el("div", { class: "dialog-actions" }, diffKey, save, back, apply),
   );

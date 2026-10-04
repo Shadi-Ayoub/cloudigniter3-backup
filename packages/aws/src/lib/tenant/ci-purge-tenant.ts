@@ -65,7 +65,7 @@ export async function ciPurgeTenant(args: {
         ExpressionAttributeValues: { ":deleted": "deleted" },
       }),
     );
-    return ciResponseOk({ purged: true, tenantId: args.input.tenantId });
+    return ciResponseOk<{ purged: true; tenantId: string }>({ purged: true, tenantId: args.input.tenantId });
   } catch (error) {
     return ciResponseError(409, "Unable to permanently delete tenant.", {
       details: {

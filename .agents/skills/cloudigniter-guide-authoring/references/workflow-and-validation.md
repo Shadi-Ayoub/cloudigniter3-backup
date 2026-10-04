@@ -6,12 +6,12 @@ Use this reference for every CloudIgniter guide task.
 
 | Surface | Location | Docusaurus plugin/sidebar | Primary audience |
 | --- | --- | --- | --- |
-| CloudIgniter Users | `developer-guide/docs` excluding `api-reference` | Default docs plugin / `userGuideSidebar` | Application developers, integrators, and operators |
-| CloudIgniter Developers | `developer-guide/company-developers` | `companyDevelopers` plugin / `cloudIgniterDevelopersSidebar` | CloudIgniter contributors and provider/package maintainers |
-| Dictionary | `developer-guide/dictionary` | `dictionary` plugin / `dictionarySidebar` | Readers looking up stable CloudIgniter ecosystem terminology by letter |
-| Developer Dictionary | `developer-guide/developer-dictionary` | `developerDictionary` plugin / `developerDictionarySidebar` | Company contributors looking up internal implementation and technology terms |
-| API Reference | `developer-guide/docs/api-reference` | Default docs plugin / `apiReferenceSidebar` | Developers looking up stable public contracts |
-| CloudIgniter Commands | `developer-guide/commands` | `commands` plugin / `commandsSidebar` | Application operators in `ci`; company maintainers in `dev` |
+| CloudIgniter Users | `docs/docs` excluding `api-reference` | Default docs plugin / `userGuideSidebar` | Application developers, integrators, and operators |
+| CloudIgniter Developers | `docs/company-developers` | `companyDevelopers` plugin / `cloudIgniterDevelopersSidebar` | CloudIgniter contributors and provider/package maintainers |
+| Dictionary | `docs/dictionary` | `dictionary` plugin / `dictionarySidebar` | Readers looking up stable CloudIgniter ecosystem terminology by letter |
+| Developer Dictionary | `docs/developer-dictionary` | `developerDictionary` plugin / `developerDictionarySidebar` | Company contributors looking up internal implementation and technology terms |
+| API Reference | `docs/docs/api-reference` | Default docs plugin / `apiReferenceSidebar` | Developers looking up stable public contracts |
+| CloudIgniter Commands | `docs/commands` | `commands` plugin / `commandsSidebar` | Application operators in `ci`; company maintainers in `dev` |
 | Skills | `.agents/skills` and `.codex/skills` (rendered through generated build content) | Skills docs plugin / `skillsSidebar` | Codex and maintainers inspecting reusable authoring instructions |
 
 Respect the plugin boundary. Links into `company-developers` use that plugin's route base; API reference pages remain under the default docs plugin.
@@ -91,7 +91,7 @@ Apply this sequence whenever changing guide content, navigation, components, con
 rendered in the Skills section:
 
 1. Before the first edit, identify this checkout's Docusaurus development server and its terminal/process.
-   The guide's `start` script uses port `3010`; check `developer-guide/package.json` and any explicit launch
+   The guide's `start` script uses port `3010`; check `docs/package.json` and any explicit launch
    arguments for a different port. If no guide server is running, proceed with it stopped.
 2. Stop the confirmed guide server gracefully through its owning terminal/session, or send a termination
    signal to its verified process. Confirm it has exited and released the guide port before writing files.
@@ -100,7 +100,7 @@ rendered in the Skills section:
    generated-content/cache cleanup, typechecking, and the production build. The guide's start/build hooks
    clear generated metadata, so do not run these checks alongside an active development server.
 4. After the edits and required checks finish, start the guide from the repository root with
-   `pnpm --filter developer-guide start --no-open` (or `pnpm start --no-open` inside `developer-guide`).
+   `pnpm --filter docs start --no-open` (or `pnpm start --no-open` inside `docs`).
    Preserve an explicitly configured host/port and keep the server in a managed terminal/session that
    remains running after the task. Start it even if it was already stopped when work began, unless the user
    explicitly asks to leave it stopped.
@@ -132,7 +132,7 @@ the normal development-server restart. See [visual verification](guide-presentat
 
 ## Navigation and page retirement
 
-- Maintain `developer-guide/user-guide-structure.json` as the Users chapter and archive membership source.
+- Maintain `docs/user-guide-structure.json` as the Users chapter and archive membership source.
 - Keep each Users document in exactly one current chapter or archive group. Keep the API Reference in its own sidebar.
 - Classify obsolete guidance from the current implementation and exports, not file age alone. Correct local drift in otherwise useful pages.
 - Put superseded pages under **Obsulete** with a clear historical notice, reason, and current replacement. Preserve their URLs when practical.
@@ -140,15 +140,15 @@ the normal development-server restart. See [visual verification](guide-presentat
 - A retained archive URL is for historical access; active guidance should point to the current replacement.
 - Preserve creation dates through physical moves, and advance updated dates only for source changes.
 - Keep the current path's last lesson from paginating directly into the archive.
-- Run `pnpm --filter developer-guide guide:check`, then the usual date, typecheck, and production-build checks. Inspect generated links and sidebar membership as well as build output.
+- Run `pnpm --filter docs guide:check`, then the usual date, typecheck, and production-build checks. Inspect generated links and sidebar membership as well as build output.
 
 ## Validation sequence
 
 ### Maintain page dates
 
-Every Markdown/MDX page in `developer-guide/docs`, `developer-guide/company-developers`, and
-`developer-guide/dictionary`, `developer-guide/developer-dictionary`, and `developer-guide/commands`, plus Markdown sources rendered from `.agents/skills` and `.codex/skills`, has an
-entry in `developer-guide/page-dates.json`. Category metadata (`_category_.json`, `.yml`, or `.yaml`) is tracked
+Every Markdown/MDX page in `docs/docs`, `docs/company-developers`, and
+`docs/dictionary`, `docs/developer-dictionary`, and `docs/commands`, plus Markdown sources rendered from `.agents/skills` and `.codex/skills`, has an
+entry in `docs/page-dates.json`. Category metadata (`_category_.json`, `.yml`, or `.yaml`) is tracked
 as well, so generated category index pages have dates. Keys are repository-relative source paths, never `.generated` paths.
 The initial Created and Updated values were initialized together on 9 September 2026 as the start of date
 tracking, rather than reconstructed historical dates. Every document and category footer displays only the Updated
@@ -156,7 +156,7 @@ timestamp as `YYYY-MM-DD HH:mm:ss UTC`, using a year-first date and 24-hour time
 registry metadata without displaying it. Keep the display format independent of the viewer's locale and time zone,
 and preserve the original instants when changing their presentation.
 
-- Finish all page and rendered skill-source edits, then run `pnpm --filter developer-guide dates:update`.
+- Finish all page and rendered skill-source edits, then run `pnpm --filter docs dates:update`.
   The command reads the actual current clock once, preserves each existing `createdAt`, and updates `updatedAt`
   only when the source content hash changes. New pages receive the same current value for both fields.
 - Preserve both existing dates when a page is unchanged. Styling, builds, checkout times, and navigation alone
@@ -165,7 +165,7 @@ and preserve the original instants when changing their presentation.
   before running `dates:update`; this preserves its creation history. The command removes entries for deleted
   pages. Edits to a rendered skill or Markdown reference update its own entry without changing the source's
   frontmatter or copying source content into the guide.
-- Run `pnpm --filter developer-guide dates:check` before delivery. It checks complete coverage, content hashes,
+- Run `pnpm --filter docs dates:check` before delivery. It checks complete coverage, content hashes,
   valid UTC ISO timestamps, and `updatedAt >= createdAt`. Standard guide start/build commands run the same
   read-only check and fail on stale metadata; builds never advance timestamps automatically.
 
@@ -180,11 +180,11 @@ Keep the Docusaurus development server stopped for this sequence.
 5. Run:
 
 ```bash
-pnpm --filter developer-guide guide:check
-pnpm --filter developer-guide dates:update
-pnpm --filter developer-guide dates:check
-pnpm --filter developer-guide typecheck
-pnpm --filter developer-guide build
+pnpm --filter docs guide:check
+pnpm --filter docs dates:update
+pnpm --filter docs dates:check
+pnpm --filter docs typecheck
+pnpm --filter docs build
 ```
 
 6. Run focused code tests that substantiate documented behavior when they were not already run for the implementation.

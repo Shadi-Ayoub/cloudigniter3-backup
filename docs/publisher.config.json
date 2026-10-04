@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "label": "Docs",
+  "kind": "docs",
+  "project": "cloudigniter-docs",
+  "buildDirectories": ["build"],
+  "staticHosting": true
+}

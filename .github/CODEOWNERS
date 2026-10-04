@@ -1,4 +1,6 @@
 # Enable "Require review from Code Owners" in the private repository's ruleset.
+# All source, applications, Docs, and skill files require the company approver.
+* @jodaris
 /.github/ @jodaris
 /.cloudigniter/ @jodaris
 /.changeset/ @jodaris

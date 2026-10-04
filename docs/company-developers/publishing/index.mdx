@@ -1,0 +1,52 @@
+---
+title: Publishing overview
+description: How company developers review the full workspace and deliver packages, templates and websites through cloudigniter-io.
+sidebar_label: Overview
+sidebar_position: 1
+slug: /tooling/github-npm-publishing
+---
+
+This section is the working handbook for company developers and approvers who maintain CloudIgniter. Company repositories belong to the **`cloudigniter-io` GitHub organization**. People sign in with their own accounts: the configured developer is `Shadi-Ayoub`, and the configured approver is `jodaris`. The organization is the repository owner; it is not a login.
+
+A normal change starts in the complete private monorepo, where packages, the template, the guide and shared configuration can be tested together. A pull request (PR) lets another developer inspect that change before it enters `main`. Publishing adds separate review of the source snapshot and the actual files distributed to customers.
+
+**Start with [Understand the publishing strategy](/company-developers/publishing/strategy).** Its learning path explains GitHub Actions, integrated development and review, source/build approvals, delivery scenarios, CI coverage and branch protection before the command and Publisher instructions.
+
+The [approved monorepo delivery design](../publishing/approved-delivery) defines the next workflow: approved integrated changes authorize source mirrors, a generated release PR establishes versions, and CI delivers verified builds to native npm staging. That automation is proposed; the operational pages below describe the current source/build review commands.
+
+## Read this section by responsibility
+
+| Page | What you will learn |
+| --- | --- |
+| [Understand the publishing strategy](/company-developers/publishing/strategy) | The newcomer reference, with lifecycle flowcharts, all required checks and links to GitHub documentation. |
+| [Repositories and configuration](../publishing/repositories) | Where source and builds belong, what “paired” means, and where `.cloudigniter` comes from. |
+| [Roles and GitHub setup](../publishing/github-setup) | How the organization, accounts, permissions, branch protections and workflow permissions fit together. |
+| [Full-monorepo pull requests](../publishing/monorepo-pull-requests) | The recommended review strategy for changes spanning packages, the template, documentation and shared files. |
+| [Approved monorepo delivery](../publishing/approved-delivery) | The target automation, source mirror authority, release-PR strategy, immutable artifacts and implementation sequence. |
+| [GitHub commands with dev](../publishing/github-commands) | Login, inspection, pull requests, issues, workflow runs and safe source/build checkouts. |
+| [Generated files and workflows](../publishing/generated-files) | Every scaffolded file, the existing monorepo `.github` files, and how Actions interprets them. |
+| [npm setup and access](../publishing/npm-setup) | Organization access, restricted tooling, first publication and stage-only trusted publishers. |
+| [Release packages](../publishing/release-packages) | From a version proposal to approved source, verified archives, build review and final npm approval. |
+| [Publish the template](../publishing/template) | Export, private approval and delivery of reviewed files to the public template repository. |
+| [Publish websites](../publishing/websites) | Static builds, generated deployment files and the AWS environment required to host them. |
+
+## Use dev as the entry point
+
+Publishing commands use the [CloudIgniter Developer Toolkit](/company-developers/tooling/dev-toolkit), provided by the `@cloudigniter/dev` package through its `dev` executable.
+
+Install Git and this workspace’s dependencies with its pinned pnpm version. DEV’s installation hook prepares GitHub CLI (`gh`): it reuses a compatible installed copy or downloads a verified copy into the current user’s DEV tools cache. See [GitHub CLI setup](/commands/dev/github-setup) if the package manager skips the hook or setup cannot complete. In a shell opened inside the workspace, this convenience function lets every example start with `dev`:
+
+```bash
+dev() { pnpm exec dev "$@"; }
+dev --help
+```
+
+The function asks pnpm to resolve the workspace’s installed executable and forwards each argument unchanged. Add it to your shell configuration if you want it in future terminals. `dev --help` lists the installed command surface. Without the function, replace `dev` with `pnpm exec dev`. Do not use `pnpm dev` for these commands: that script starts workspace development tasks.
+
+Git still owns local commits and branches, and the npm maintainer completes final registry approval in npm. These pages explain those remaining tool boundaries explicitly.
+
+:::note Configuration versus completed setup
+The committed files define organization destinations and workflow configuration. Before publishing, an administrator must establish and verify the remote repositories, branch protections, npm access, trusted publishers and AWS resources required for the chosen delivery target. Follow the corresponding setup pages above.
+:::
+
+After the integrated PR is approved and merged, [automatic source mirroring](./strategy/source-mirroring) updates configured private source repositories once the company App is installed and merged-commit checks pass. Releases and delivery continue through their separate review gates.

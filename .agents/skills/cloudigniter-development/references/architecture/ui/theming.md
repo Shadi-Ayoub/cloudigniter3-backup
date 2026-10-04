@@ -67,5 +67,5 @@ observers for editors, notifications, charts, or provider widgets. Preserve expl
 - For theme wiring or shared CSS changes, run the configuration regressions under `packages/next/__tests__/theme`
   and compiled CSS regressions in `apps/template/__tests__/theme-styles.test.ts`, plus owner/consumer type checks.
   Browser validation remains necessary for visual claims; report unavailable checks accurately.
-- Keep `developer-guide/docs/configuration/themes.mdx`, the theme API reference, and contributor theming
+- Keep `docs/docs/configuration/themes.mdx`, the theme API reference, and contributor theming
   architecture aligned when the strategies, defaults, integrations, or supported customization behavior changes.

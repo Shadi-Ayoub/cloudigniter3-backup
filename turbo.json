@@ -2,26 +2,76 @@
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**"
+      ]
     },
     "@cloudigniter/next#build": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build"
+      ],
       "cache": false,
-      "outputs": ["dist/**"]
+      "outputs": [
+        "dist/**"
+      ]
     },
-    "test": { "dependsOn": ["^build"], "outputs": [] },
-    "quality": { "cache": false },
-    "release:check": { "cache": false },
-    "dev": { "cache": false, "persistent": true },
-    "typecheck": { "dependsOn": ["^typecheck"], "outputs": [] },
-    "typecheck:tools": { "dependsOn": ["^typecheck:tools"], "outputs": [] },
-    "check": { "dependsOn": ["^check"], "outputs": [] },
-    "lint": { "dependsOn": ["^lint"], "outputs": [] },
-    "clean": { "cache": false },
-    "check:package": {
-      "dependsOn": ["build"],
+    "test": {
+      "dependsOn": [
+        "^build"
+      ],
       "outputs": []
+    },
+    "quality": {
+      "cache": false
+    },
+    "release:check": {
+      "cache": false
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "typecheck": {
+      "dependsOn": [
+        "^typecheck"
+      ],
+      "outputs": []
+    },
+    "typecheck:tools": {
+      "dependsOn": [
+        "^typecheck:tools"
+      ],
+      "outputs": []
+    },
+    "check": {
+      "dependsOn": [
+        "^check"
+      ],
+      "outputs": []
+    },
+    "lint": {
+      "dependsOn": [
+        "^lint"
+      ],
+      "outputs": []
+    },
+    "clean": {
+      "cache": false
+    },
+    "check:package": {
+      "dependsOn": [
+        "build"
+      ],
+      "outputs": []
+    },
+    "@cloudigniter/dev#typecheck": {
+      "dependsOn": [],
+      "cache": false
     }
   }
 }

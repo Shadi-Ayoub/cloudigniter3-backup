@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { appGetServerCoreConfig } from "@/kernel/server";
+import { appGetCoreConfig } from "@/kernel/server/config/app-get-core-config";
 import { promises as fsp } from "node:fs";
 import { open as fsOpen } from "node:fs/promises";
 import { resolve } from "node:path";
@@ -46,7 +46,7 @@ function takeLastLines(text: string, maxLines: number): string[] {
 
 export async function GET(req: Request) {
   // const cfg = getConfig('api/trace:GET');
-  const cfg = appGetServerCoreConfig();
+  const cfg = appGetCoreConfig();
   const traceLog = cfg?.dev.traceLog;
   const enabled = (traceLog?.enabled ?? true) === true;
 
@@ -132,7 +132,7 @@ export async function GET(req: Request) {
 
 export async function DELETE() {
   // const cfg = getConfig("api/trace:DELETE");
-  const cfg = appGetServerCoreConfig();
+  const cfg = appGetCoreConfig();
   const fp = cfg?.dev.traceLog?.filePath;
   if (!fp) return new NextResponse(null, { status: 204 });
   try {

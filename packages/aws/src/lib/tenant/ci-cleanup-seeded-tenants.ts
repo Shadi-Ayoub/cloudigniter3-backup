@@ -392,7 +392,7 @@ export async function ciCleanupSeededTenants(args: {
     const failed = results.filter(
       (result) => result.status === "failed",
     ).length;
-    return ciResponseOk({
+    return ciResponseOk<CiTenantSeederExecutionResult>({
       ok: failed === 0,
       seederId: args.input.seederId,
       operation: "cleanup",

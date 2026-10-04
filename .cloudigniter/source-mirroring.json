@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "workspaceRepository": "cloudigniter-io/cloudigniter",
+  "checkAppId": 15368,
+  "qualityWorkflows": [
+    {
+      "path": ".github/workflows/dev-quality.yml",
+      "checks": ["Dev toolkit (Node 22)", "Dev toolkit (Node 24)"]
+    },
+    {
+      "path": ".github/workflows/next-quality.yml",
+      "checks": [
+        "Next tests (Node 22)",
+        "Next tests (Node 24)",
+        "Next build and publish request"
+      ]
+    },
+    {
+      "path": ".github/workflows/packages-quality.yml",
+      "checks": [
+        "Package aws (Node 22)",
+        "Package aws (Node 24)",
+        "Package cli (Node 22)",
+        "Package cli (Node 24)",
+        "Package config-ts (Node 22)",
+        "Package config-ts (Node 24)",
+        "Package core (Node 22)",
+        "Package core (Node 24)",
+        "Package emberguard (Node 22)",
+        "Package emberguard (Node 24)",
+        "Package ui (Node 22)",
+        "Package ui (Node 24)"
+      ]
+    },
+    {
+      "path": ".github/workflows/workspace-quality.yml",
+      "checks": [
+        "Template integration (Node 22)",
+        "Template integration (Node 24)",
+        "Developer guide",
+        "JODARIS website"
+      ]
+    }
+  ]
+}

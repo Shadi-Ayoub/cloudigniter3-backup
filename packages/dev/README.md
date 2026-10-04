@@ -38,8 +38,8 @@ script commands. JODARIS uses it without requiring a package manifest. Ordinary
 packages use inferred scripts. Package builds also support
 `--obfuscation=configured|on|off`, preserving their existing quality gate and order.
 
-See the [Publisher guide](../../developer-guide/company-developers/tooling/dev/publisher.mdx)
-and [command manual](../../developer-guide/commands/dev/publisher.mdx).
+See the [Publisher guide](../../docs/company-developers/tooling/dev/publisher.mdx)
+and [command manual](../../docs/commands/dev/publisher.mdx).
 
 ## GitHub CLI installation
 
@@ -61,7 +61,7 @@ select an absolute cache directory; otherwise DEV uses the platform's user cache
 DEV invokes its managed copy directly, without changing the shell's PATH or an
 existing installation. Normal GitHub operations never install software.
 Sign in separately with `dev github auth login --profile=developer` from the
-configured workspace. See the [setup manual](../../developer-guide/commands/dev/github-setup.mdx)
+configured workspace. See the [setup manual](../../docs/commands/dev/github-setup.mdx)
 for cache paths, package-manager configuration and recovery.
 
 ## Migration from ci-dev
@@ -152,7 +152,7 @@ resolve the root workspace binary without depending on private DEV. Existing
 positional test selectors are replaced by `--filter=<text>`. Partial build/watch
 commands never replace full quality and release validation.
 
-See the [CloudIgniter Developers package workflow guide](../../developer-guide/company-developers/tooling/dev/package-workflows.mdx)
+See the [CloudIgniter Developers package workflow guide](../../docs/company-developers/tooling/dev/package-workflows.mdx)
 for the full script migration table, configuration schema and package comparison.
 
 ## Public template export
@@ -231,7 +231,7 @@ A reviewed export can later update a public GitHub template repository. These
 export/check commands never create repositories, push, deploy AWS resources or approve publication.
 Use the separately gated template request and delivery commands below for publication.
 
-See [Export the public application template](../../developer-guide/company-developers/tooling/template-export.mdx)
+See [Export the public application template](../../docs/company-developers/tooling/dev/template-export.mdx)
 for policy maintenance, CI artifacts and the publication handoff.
 
 ## Local release use
@@ -400,16 +400,16 @@ history. Using two accounts owned by one person separates credentials but does
 not create independent human review.
 
 ```bash
-pnpm exec dev github scaffold cloudigniter-developer-guide \
+pnpm exec dev github scaffold cloudigniter-docs \
   --hosting=static --output=../guide-build-setup
 ```
 
 Static website scaffolds deploy reviewed files committed under `site/` to S3 and
 invalidate CloudFront through AWS OIDC. They need explicit AWS environment values
 and role trust. They do not create resources or deploy server-rendered Next.js
-output. Source folders for the two formal websites remain unset until selected.
+output. JODARIS source maps to `apps/jodaris`; the future CloudIgniter Website remains unmapped.
 
-Follow the complete [GitHub, npm and AWS setup guide](../../developer-guide/company-developers/publishing/index.mdx)
+Follow the complete [GitHub, npm and AWS setup guide](../../docs/company-developers/publishing/index.mdx)
 for repository protections, account permissions, npm organization setup, bootstrap,
 trusted publishers, AWS variables, recovery and the exact repository inventory.
 
@@ -437,7 +437,7 @@ credentials per invocation without switching other terminals.
 `issue list/view`, `run list/view`, and `workflow list` require an explicit
 `--project=<configured-id|workspace>`. Use `--repository-kind=build` for a product's
 build repository. `workspace` uses `github-policy.workspaceRepository`, with the
-proposed destination `cloudigniter-io/cloudigniter`; its remote setup is not implied.
+canonical destination `cloudigniter-io/cloudigniter`; GitHub enforces its branch rules separately from local configuration.
 
 PR creation requires `--head` (already pushed), `--title` and `--body-file`;
 `--draft` is optional. View/diff/checks/review/merge use `--number`; run view uses
@@ -446,3 +446,25 @@ file. Review and squash merge require the exact `--head-sha` from pr view and a
 configured independent approver. No admin bypass, automatic push or arbitrary gh
 argument forwarding is provided. GitHub branch rules must enforce approvals and
 checks. See the Publishing section for complete command explanations.
+
+## Automatic private source mirroring
+
+Approved company monorepo merges trigger `.github/workflows/source-mirror.yml`.
+The standalone DEV verifier requires exact-head independent approval and all
+configured push checks on the merged commit. It then creates a scoped company App
+token and mirrors committed roots into their private source repositories. It uses
+no dependency install, build or lifecycle hook with that token.
+
+Normal destination commits preserve separate history, binary files and executable
+modes. `.cloudigniter-mirror.json` binds managed ownership to the canonical snapshot
+and review/check evidence. Conflicting destination edits fail; retries reconcile
+successful receipts, and full snapshots catch up intervening merges. Nothing is
+force-pushed, staged to npm, deployed or copied into public/build repositories.
+
+Configure the App's selected-repository Contents write permission,
+`CLOUDIGNITER_SOURCE_MIRROR_APP_CLIENT_ID` Actions variable and
+`CLOUDIGNITER_SOURCE_MIRROR_PRIVATE_KEY` Actions secret before activation.
+[Automatic source mirroring](../../docs/company-developers/publishing/strategy/source-mirroring.mdx)
+explains setup, source branch rules, status artifacts, recovery and compatibility
+with existing paired releases. Generated release PRs and automatic staging remain
+later phases.

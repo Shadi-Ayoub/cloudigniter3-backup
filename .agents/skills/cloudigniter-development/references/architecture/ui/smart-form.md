@@ -25,14 +25,14 @@ Assignment editing remains a domain control inside the shared form. Keep trusted
 and authorization enforcement independent from UI customization and runtime field-state hints.
 
 Validate Core/UI tests and typechecks, generation consistency, public exports/builds, a template consumer, and
-developer-guide typecheck/build. Cover scalar option values, invalid drafts, named callback failures, asynchronous
+documentation typecheck/build. Cover scalar option values, invalid drafts, named callback failures, asynchronous
 validation, pending duplicate prevention, reserved/fixed behavior, cache/data isolation, SSR determinism, and
 legacy Formik compatibility. Use browser checks for keyboard, collapsed errors, mobile, dark theme, and RTL.
 
-The usage guide is `developer-guide/docs/ui-components/smart-form.mdx`; keep its examples aligned with the public
+The usage guide is `docs/docs/ui-components/smart-form.mdx`; keep its examples aligned with the public
 contracts and application customization seam. The canonical Dictionary term is `Smart Form` at
-`/dictionary/s#smart-form`, defined in `developer-guide/dictionary/s.mdx` and cataloged in
-`developer-guide/dictionary-sidebars.ts` for navigation, viewer search, and automatic prose links.
+`/dictionary/s#smart-form`, defined in `docs/dictionary/s.mdx` and cataloged in
+`docs/dictionary-sidebars.ts` for navigation, viewer search, and automatic prose links.
 
 Section selectors may hide mounted groups with CSS to retain all drafts and include them in whole-form validation.
 Use UI's `onValidationErrors(errors)` callback to reveal the first invalid section before deferred focus. Do not

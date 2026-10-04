@@ -12,7 +12,6 @@ import {
   useCiPageLoaderStore,
 } from "@cloudigniter/ui/client";
 import { Inter } from "next/font/google";
-import type { CiNextAwsCoreConfig } from "@/kernel/types";
 import "@cloudigniter/next/styles/standard/style.css";
 
 import ciConfig from "@/../cloudigniter.config";
@@ -22,7 +21,7 @@ import "./globals.css"; // Always after importing Kernel
 
 // const config = ciConfig as CiNextAwsCoreConfig;
 
-const config = ciConfig as CiNextAwsCoreConfig;
+const config = ciConfig;
 
 const inter = Inter({ subsets: ["latin"] });
 

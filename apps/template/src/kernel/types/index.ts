@@ -6,5 +6,4 @@ export type { AppNextAwsResolvedConfig } from "./AppNextAwsResolvedConfig";
 // export type { AppRootLayoutContext } from "./AppRootLayoutContext";
 export type { AppSystemStatus } from "./AppSystemStatus";
 export type { AppSystemStatusItem } from "./AppSystemStatusItem";
-export type { AppTemplatePageConfig } from "./AppTemplatePageConfig";
 export type { AppTemplateSystemStatusCheckList } from "./AppTemplateSystemStatusCheckList";

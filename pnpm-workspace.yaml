@@ -1,6 +1,10 @@
 packages:
-  - "developer-guide"
+  - "docs"
   - "apps/*"
   - "packages/*"
 patchedDependencies:
   next@16.2.2: patches/next@16.2.2.patch
+
+# One React type identity keeps generated declarations portable across install layouts.
+overrides:
+  "@types/react": "19.2.18"

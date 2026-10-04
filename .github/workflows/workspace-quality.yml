@@ -1,0 +1,76 @@
+name: Integration workspace quality
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: workspace-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  template:
+    name: Template integration (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: node scripts/ci/prepare-template.mjs
+      - name: Typecheck the full integration workspace
+        run: pnpm typecheck
+      - run: pnpm --filter @cloudigniter/template test
+      - name: Build the reference application
+        if: matrix.node == 24
+        run: pnpm --filter @cloudigniter/template build
+
+  guide:
+    name: Developer guide
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: pnpm --filter docs test:dates
+      - run: pnpm --filter docs test:dictionary
+      - run: pnpm --filter docs test:command-references
+      - run: pnpm --filter docs test:search
+      - run: pnpm --filter docs typecheck
+      - run: pnpm --filter docs build
+
+  jodaris:
+    name: JODARIS website
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: node apps/jodaris/scripts/check.mjs
+      - run: bash apps/jodaris/scripts/prepare-static-deploy.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jodaris-website-${{ github.sha }}
+          path: apps/jodaris/dist/
+          if-no-files-found: error
+          retention-days: 14

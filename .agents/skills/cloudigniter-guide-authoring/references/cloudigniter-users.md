@@ -1,6 +1,6 @@
 # CloudIgniter Users Section
 
-Use this reference for application-developer, integrator, and operator guidance in `developer-guide/docs`, excluding `developer-guide/docs/api-reference`.
+Use this reference for application-developer, integrator, and operator guidance in `docs/docs`, excluding `docs/docs/api-reference`.
 
 ## Audience and purpose
 
@@ -84,7 +84,7 @@ Search the existing concept and workflow hierarchy before adding a page. Prefer 
 
 The sidebar follows nine stages: Start here; Architecture and concepts; Configure your application; Extend your
 application; Identity and access; Tenants and Org Units; Build features; Data and providers; Testing and operations. The canonical ordering
-and page membership live in `developer-guide/user-guide-structure.json`, consumed by `sidebars.ts`.
+and page membership live in `docs/user-guide-structure.json`, consumed by `sidebars.ts`.
 
 - Start new readers at `docs/intro.md` and `docs/getting-started`.
 - Use `docs/architecture` for application-facing package, ownership, and request concepts.

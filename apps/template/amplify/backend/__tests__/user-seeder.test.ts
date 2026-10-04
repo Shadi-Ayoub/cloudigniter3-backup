@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { a } from "@aws-amplify/backend";
+import schemaUser from "../../data/schemata/schema-user";
 
 import { ciSerializeUserProfileAwsJsonFields } from "@cloudigniter/aws/lib";
 import type { CIUserSeederDataItem } from "@cloudigniter/core/types";
@@ -15,22 +17,8 @@ const fixtures = JSON.parse(
   ),
 ) as CIUserSeederDataItem[];
 
-const outputs = JSON.parse(
-  readFileSync(
-    new URL("../../../amplify_outputs.json", import.meta.url),
-    "utf8",
-  ),
-) as {
-  data: {
-    model_introspection: {
-      models: {
-        UserProfile: {
-          fields: Record<string, { type: string }>;
-        };
-      };
-    };
-  };
-};
+// Transform the maintained schema offline; deployment outputs may be absent or stale.
+const userSchema = a.schema(schemaUser).transform().schema;
 
 test("keeps the three disposable user fixtures object-shaped", () => {
   assert.deepEqual(
@@ -65,9 +53,7 @@ test("keeps the three disposable user fixtures object-shaped", () => {
 });
 
 test("declares every structured UserProfile transport field as AWSJSON", () => {
-  const fields = outputs.data.model_introspection.models.UserProfile.fields;
-
   for (const field of ["address", "extensions", "statusChange", "deletion"]) {
-    assert.equal(fields[field]?.type, "AWSJSON", `${field} must stay AWSJSON`);
+    assert.match(userSchema, new RegExp(`^  ${field}: AWSJSON(?:[!\\s]|$)`, "m"), `${field} must stay AWSJSON`);
   }
 });

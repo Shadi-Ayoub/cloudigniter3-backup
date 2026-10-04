@@ -1,17 +1,48 @@
-node_modules
-.pnpm-store
-.turbo
-.next
-dist
-coverage
+# Dependencies and disposable build output
+node_modules/
+.pnpm-store/
+.turbo/
+.next/
+dist/
+coverage/
 *.tsbuildinfo
+*.tgz
+/docs/build/
+.docusaurus/
+/docs/.generated/
+.cache-loader/
+
+# Environment values; keep safe example/template files available for Git
 .env
 .env.*
-.amplify
-**/.cloudigniter/local/
-graphify-out/cost.json        # local only
-# graphify-out/cache/         # optional: commit for speed, skip to keep repo small
+!.env.example
+!.env.*.example
+!.env.sample
+!.env.template
 
-# Local AI/tooling state
-# .codex/
-# .agents/
+# Local provider deployments and operator input
+.amplify/
+amplify_outputs*.json
+**/amplify/.logs/
+**/amplify/custom/config.json
+**/amplify/custom/root-user.json
+**/.cloudigniter/local/
+
+# Generated analysis and scratch artifacts remain available locally
+graphify-out/
+/output/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Logs, editor backups, and macOS filesystem metadata
+*.log
+*.swp
+*.swo
+*~
+.DS_Store
+._*
+
+# .agents/, .codex/, and shared .cloudigniter/ policy are maintained source.
+# Application-generated registries and descriptors are maintained source too;
+# only the disposable Docs .generated/ view is excluded above.

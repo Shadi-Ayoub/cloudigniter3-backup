@@ -105,6 +105,21 @@ feature costs, migration, and observability are documented. Reject request-path 
 used as authorization proof, and table splits or combinations justified only by table count. Read
 [DynamoDB design reference](../architecture/persistence/dynamodb.md) for the complete review.
 
+## Repository hygiene
+
+Before removing legacy copies, check imports/exports, framework-registered entries,
+tests, generators, and template export inventory. Update any inventory that lists
+retired files in the same change. Preserve deliberate future-work archives unless
+their removal is explicitly in scope.
+
+Keep build output, Graphify reports/caches, deployment outputs/operator input,
+logs, and machine-local state excluded through the root `.gitignore`. Verify
+patterns with `git check-ignore --no-index`; untrack existing local artifacts with
+`git rm --cached -- <path>` while preserving their working copies. Repository
+skills, shared policy, safe environment examples, and generated application
+registries/descriptors are maintained source. Never ignore all `.generated`
+directories or `*.generated.ts` files; Docs skill staging is a disposable exception.
+
 ## Baseline failures
 
 If a broad repository check fails:

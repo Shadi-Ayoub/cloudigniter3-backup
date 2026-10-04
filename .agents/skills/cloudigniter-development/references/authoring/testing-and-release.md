@@ -35,6 +35,10 @@ State the working directory when giving package commands. At the repository root
 
 The gate is staged: a green run does not mean the entire existing Next package has 90% coverage. Use the full HTML/LCOV/JSON reports under `packages/next/coverage` to prioritize the remaining legacy files. Provider-boundary, authorization, routing, context and settings cases take priority. Increase coverage floors deliberately as legacy areas are adopted.
 
+## Shared React declaration identity
+
+The workspace override pins `@types/react` to one version for packages and Docs, and the root dev dependency makes that identity available to shared library declarations. Keep it and the frozen lockfile aligned: duplicate React type versions caused install-layout-dependent TS2883 failures in inferred Amplify and icon declarations. Review type upgrades through full workspace typing and production archive checks; do not disable portability diagnostics or rehash coverage exceptions to bypass a build. Runtime source annotations still follow the existing coverage policy.
+
 ## Distribution invariants
 
 Next emits every advertised runtime and declaration entry, including the root and `/tooling/modules`. Server and library output retain source-relative paths needed by unbundled RSC imports. Its unbundled RSC output rewrites workspace aliases to declared public imports without changing component directives. Runtime workspace packages belong in `dependencies`; pnpm pack resolves their workspace ranges. Archive validation checks static relative/self imports and runtime dependency declarations as well as export targets, client directives and file hygiene. Do not treat source-mode imports as evidence that the packed artifact works.
@@ -49,11 +53,13 @@ PRs for verified archives before the generated stage-only workflow runs. DEV ver
 workflows preserve package-owned gates and exact
 archives before native npm approval. Retain all package-owned gates below. See [CLI development](../cli/development.md).
 
-`.github/workflows/next-quality.yml` runs Node 22 and 24 validation, then a fresh production build/pack job and records a publish request with the exact artifact checksum. It also validates the developer guide. No job publishes or needs registry credentials. Configure the named checks as required in repository branch protection; committing YAML alone does not configure GitHub settings.
+`.github/workflows/next-quality.yml` runs Node 22 and 24 validation, then a fresh production build/pack job and records a publish request with the exact artifact checksum. `dev-quality.yml` checks the toolkit and template export. `packages-quality.yml` runs the existing Core, AWS, UI, EmberGuard and CLI checks/tests and validates exported Config TS presets on Node 22/24, with production builds, packed review artifacts and advertised-entry validation on Node 24. `workspace-quality.yml` runs the root full-workspace typecheck and template tests on both Node versions, builds it on Node 24 and checks/builds Docs and JODARIS. No quality job publishes or needs registry credentials. Require actual successful GitHub job names in branch protection; committing YAML alone does not configure settings or prove a remote run.
+
+Template CI prepares ignored, non-deployable Amplify outputs only when absent and preserves local outputs. Keep the source environment declaration aligned with the provider-generated module; do not require a sandbox for typechecking. Schema tests transform maintained schema definitions offline rather than depend on a developer's deployment snapshot. The template build also runs its existing optional-module/form generators. Legacy workspace-wide module migration checks are separate from this CI gate. Turbo schedules DEV typechecking independently and without caching because DEV is both package build tooling and a UI consumer; this breaks recursive task prerequisites without skipping a check.
 
 A maintainer reviews the CI run, committed SHA, Changeset/version, dependency versions, compatibility notes, full coverage report and artifact hash before approving a publish request. A local dirty working tree is diagnostic evidence only; CI must validate the committed candidate. Publish the exact approved tarball. Any new source change needs a new check and approval. The workspace-wide `release` alias now submits `dev npm publish --changed`; it does not publish directly.
 
-For later packages, repeat the inventory, behavioral tests, package-local gate and artifact validation explicitly. Do not represent other packages as covered by this Next rollout.
+Other packages now have baseline CI coverage through their existing scripts. Next's strict per-file coverage and packed-runtime validation remain its own rollout. Adopt those stronger contracts explicitly per package; baseline green jobs do not prove identical coverage or artifact validation.
 
 ## Shared package execution
 

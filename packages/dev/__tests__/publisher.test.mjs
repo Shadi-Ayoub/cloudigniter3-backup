@@ -225,7 +225,7 @@ test("Publisher groups detected projects into ordered categories with alphabetic
     { id: "packages/ui", label: "ui", kind: "package" },
     { id: "apps/template", label: "template-next-aws", kind: "template" },
     { id: "apps/jodaris", label: "JODARIS Website", kind: "website" },
-    { id: "developer-guide", label: "Docs", kind: "docs" },
+    { id: "docs", label: "Docs", kind: "docs" },
     { id: "packages/aws", label: "AWS", kind: "package" },
     { id: "packages/core", label: "core", kind: "package" },
   ];
@@ -247,7 +247,7 @@ test("Publisher groups detected projects into ordered categories with alphabetic
     groups[2].targets.map((t) => t.label),
     ["template-next-aws"],
   );
-  assert.equal(groups[3].targets[0].id, "developer-guide");
+  assert.equal(groups[3].targets[0].id, "docs");
   assert.deepEqual(targets, original);
   assert.deepEqual(publisherGroups([]), []);
   assert.deepEqual(
@@ -606,6 +606,10 @@ test("configuration inventory is confined to CloudIgniter publishing and package
   const { root, json } = await setup(t);
   const included = [
     ".github/workflows/dev-quality.yml",
+    ".github/workflows/source-mirror.yml",
+    ".github/workflows/packages-quality.yml",
+    ".github/workflows/workspace-quality.yml",
+    ".cloudigniter/source-mirroring.json",
     "packages/core/obfuscator.config.json",
     "packages/core/tsup.config.ts",
     "packages/core/scripts/ci-build-package.config.mjs",

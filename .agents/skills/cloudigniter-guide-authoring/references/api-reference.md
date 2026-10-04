@@ -1,6 +1,6 @@
 # API Reference Section
 
-Use this reference for stable public programmatic contracts in `developer-guide/docs/api-reference`.
+Use this reference for stable public programmatic contracts in `docs/docs/api-reference`.
 
 ## Scope
 

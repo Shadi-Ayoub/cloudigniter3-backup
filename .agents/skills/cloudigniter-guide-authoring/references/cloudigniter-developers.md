@@ -1,6 +1,6 @@
 # CloudIgniter Developers Section
 
-Use this reference for contributor-facing documentation in `developer-guide/company-developers`.
+Use this reference for contributor-facing documentation in `docs/company-developers`.
 
 ## Audience and purpose
 
@@ -26,7 +26,7 @@ When architecture changes, update all three sources in the same change:
 2. the focused `.agents/skills/cloudigniter-development/references/*.md` architecture reference;
 3. the relevant CloudIgniter Developers page.
 
-Use the repository skill reference as concise agent guidance and the developer-guide page as the fuller human explanation. Keep terminology and lifecycle diagrams consistent without copying entire files verbatim.
+Use the repository skill reference as concise agent guidance and the documentation page as the fuller human explanation. Keep terminology and lifecycle diagrams consistent without copying entire files verbatim.
 
 ## Choose or create the page
 
@@ -45,6 +45,14 @@ defaults, examples and errors. Do not rebuild their command catalogs in this cha
 Use the publication chapter for GitHub/npm setup and delivery. Preserve established
 page URLs with explicit slugs when moving content, update inbound links and anchors,
 and move date-registry entries so the page's creation history survives a relocation.
+
+Begin Publishing with `publishing/strategy`: a newcomer learning path that explains
+GitHub Actions, integrated PR review, current source/build release approvals and CI
+enforcement before DEV command or Publisher operations. Use focused pages and
+Mermaid scenarios. Cross-link contextual official GitHub references and operational
+manuals. Document implemented automatic source mirroring and its required App setup
+separately from paired release approvals and proposed release/staging coordination. Report local validation, actual remote job results and
+enabled branch settings as separate evidence; never infer enforcement from YAML.
 
 Create focused categories as contributor coverage expands, for example package architecture, runtime lifecycle, public API governance, testing, or release workflows. Reuse an existing domain category when possible.
 

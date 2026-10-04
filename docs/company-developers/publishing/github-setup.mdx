@@ -1,0 +1,79 @@
+---
+title: Roles and GitHub setup
+description: The organization configuration, developer and approver responsibilities, and enforcement required on GitHub.
+sidebar_position: 3
+---
+
+## Organization ownership and personal identities
+
+The organization is `cloudigniter-io`. It owns the repositories and grants people or teams access. `jodaris` is the configured **personal approver account**, not the repository owner prefix. A repository address is therefore `cloudigniter-io/cloudigniter-core`; an approval is submitted by the individual `jodaris`.
+
+The following is the configuration recorded in this workspace. The setup sequence below explains how an administrator establishes the matching remote system. Record actual completion, the responsible administrator and verification evidence in an internal setup issue; the presence of local JSON or YAML does not establish that a GitHub setting has been enabled.
+
+| Responsibility | Configured profile | Account | Normal work |
+| --- | --- | --- | --- |
+| Developer | `developer` | `Shadi-Ayoub` | Develop, test, prepare descriptions, open PRs, request source/build review and inspect results. |
+| Approver | `approver` | `jodaris` | Review code and artifacts, approve the exact revision, merge eligible PRs, dispatch protected staging/deployment workflows and deliver the template. |
+| Organization administrator | An authorized organization owner | A personal member account | Manage repositories, teams, rules, Actions policy and access. This administrative role is separate from a toolkit profile. |
+| npm maintainer | Selected separately in npm | An authorized npm account | Inspect and approve staged archives using interactive npm authentication and 2FA. |
+
+The contact addresses `shadi_ayoub@yahoo.com` and `shadi@jodaris.com` are contact information, not login credentials. GitHub login does not select an npm user or an AWS identity. One person using two accounts separates credentials but does not provide independent judgment; company review should involve another human when that is required.
+
+## Developer responsibilities
+
+Work in a feature branch of the full workspace. Keep source, tests, the guide, Changesets and shared configuration together when they form one logical change. Commit intended files before requesting a release snapshot; untracked and ignored files are not included. Inspect a dry run before requesting publication and keep request IDs, CI links and archive hashes with the PR.
+
+Use the developer profile for requests. Developers need enough repository access to push feature branches and open PRs, and read access to the internal npm toolkit. They do not need direct npm publication credentials or AWS production credentials.
+
+## Approver responsibilities
+
+Review the complete behavior change and relevant validation, then approve its current commit. A new commit invalidates earlier release approval evidence. For package releases, review every source PR in the batch, then every build PR and its archive hash. A merged source PR is not final npm publication.
+
+Use the approver profile for review and merge. GitHub rejects self-approval; toolkit release checks also require a different configured account. At npm, separately check the staged package’s name, version, access, dependencies and bytes before final approval.
+
+## Establish repositories and access
+
+1. In organization settings, invite the personal accounts and organize access through developer and approver teams as the company grows. Keep organization ownership and repository administration narrowly assigned.
+2. Create the private workspace repository and the [source/build pairs](./repositories) with their stated visibility. Initialize each `main` branch so PRs have a base. Enable the template setting only on the public exported template repository.
+3. Grant developers write access where they submit branches. Grant approvers the access needed to review and merge. Grant `jodaris` explicit write access for Code Owner eligibility, directly or through organization membership.
+4. Commit the appropriate `.github` files. The full workspace uses the existing quality workflows. Each package build repository receives its own [generated scaffold](./generated-files).
+5. Configure branch rules and environments in GitHub settings, as described below. Verify them using an ordinary developer account rather than an administrator’s bypass privileges.
+
+See GitHub’s [organization roles](https://docs.github.com/en/organizations/managing-peoples-access-to-your-organization-with-roles/roles-in-an-organization) and [repository roles](https://docs.github.com/en/organizations/managing-user-access-to-your-organizations-repositories/repository-roles-for-an-organization) for the permission model.
+
+## Enforce review on main
+
+Create a ruleset or branch protection rule targeting `main`. Require a PR, at least one approval, Code Owner review where ownership rules match, dismissal of stale approvals, and resolution of review conversations. Require the applicable CI checks. Block force pushes and branch deletion. Do not give ordinary developers a bypass role; include administrators where the chosen rule supports enforcement.
+
+For the full workspace, first run all four quality workflows and verify the actual successful job names. The [CI coverage and protection reference](./strategy/ci-and-protection) lists all 21 expected checks for DEV, Next, Core, AWS, UI, EmberGuard, CLI, Config TS, the template, Docs and JODARIS, with the setup steps. These workflows run for every PR. Preserve that behavior when their checks are required, or implement an always-running gate before introducing path filters.
+
+Source snapshots and build archives do not contain the complete workspace. Do not copy the workspace workflows into them and expect monorepo paths to resolve. Build PRs require Code Owner review of artifacts; the staging verifier runs later in the build repository.
+
+A `CODEOWNERS` file selects reviewers; it enforces approval only when the repository rule requires Code Owner review. GitHub’s [protected-branch documentation](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches) and [Code Owners documentation](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners) explain the available controls. Private repositories require a supporting GitHub plan.
+
+## Actions and production credentials
+
+Enable Actions with read-only default workflow permissions. The generated publication jobs request `id-token: write` only where needed for **OpenID Connect (OIDC)**: GitHub issues a short-lived identity assertion, and npm or AWS decides whether that exact repository/workflow/environment is trusted. No long-lived npm write token is needed for stage-only trusted publishing.
+
+Create `npm-staging` in each package build repository and `production` in each website build repository. Restrict their deployment branches to protected `main`. Configure required environment reviewers where the subscription and repository visibility support them. Private-repository environment reviewers are not available on Free, Pro or Team; an environment name alone does not create an approval gate. The generated workflows also restrict dispatch to configured approver accounts. See [GitHub environments](https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments).
+
+Keep workflow and policy changes under Code Owner review: someone able to change trusted workflow code can change what it executes. Local `dev` checks help prevent mistakes; GitHub rules, npm permissions and AWS trust policies enforce access independently.
+
+## Verify the account setup
+
+```bash
+dev github auth login --profile=developer
+dev github auth login --profile=approver
+dev github check --profile=developer
+dev github check --profile=approver
+```
+
+Each login opens the browser’s GitHub authorization flow. Choose the account named by the command. The command verifies the account after login; if it reports a mismatch, repeat with the intended browser account. Login may update GitHub CLI’s active account. Later commands using an explicit profile select that account’s stored credential without switching other terminals.
+
+Each `check` verifies the authenticated username against company policy and prints the configured destinations. It does not create repositories or audit their rules. Complete setup by viewing the organization’s repository settings and exercising a normal PR that cannot merge before its required checks and approval.
+
+Continue with the detailed [GitHub command reference](./github-commands) and [npm setup](./npm-setup).
+
+## Enable automatic source mirroring
+
+Follow [the company App setup](./strategy/source-mirroring#configure-the-company-app) to register and install the source writer, set `CLOUDIGNITER_SOURCE_MIRROR_APP_CLIENT_ID` and `CLOUDIGNITER_SOURCE_MIRROR_PRIVATE_KEY`, and permit normal updates to private source `main` branches. The App has no monorepo approval bypass and no build or public-template access. Once configured, approved monorepo merges synchronize their private sources after merged-commit quality passes.
