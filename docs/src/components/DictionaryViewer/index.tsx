@@ -182,16 +182,26 @@ export default function DictionaryViewer(): React.JSX.Element | null {
   useEffect(() => {
     const dialog = dialogRef.current;
 
-    if (!dialog) {
+    if (!isOpen || !dialog) {
       return;
     }
 
-    if (isOpen && !dialog.open) {
-      dialog.showModal();
-      window.requestAnimationFrame(() => searchRef.current?.focus());
-    } else if (!isOpen && dialog.open) {
-      dialog.close();
-    }
+    const root = document.documentElement;
+    const previousRootOverflow = root.style.overflow;
+    const previousScrollbarGutter = root.style.scrollbarGutter;
+    root.style.scrollbarGutter = "stable";
+    root.style.overflow = "hidden";
+    if (!dialog.open) dialog.showModal();
+    const focusFrame = window.requestAnimationFrame(() =>
+      searchRef.current?.focus({ preventScroll: true })
+    );
+
+    return () => {
+      window.cancelAnimationFrame(focusFrame);
+      if (dialog.open) dialog.close();
+      root.style.overflow = previousRootOverflow;
+      root.style.scrollbarGutter = previousScrollbarGutter;
+    };
   }, [isOpen]);
 
   function closeViewer() {
@@ -227,7 +237,9 @@ export default function DictionaryViewer(): React.JSX.Element | null {
       id="dictionary-viewer-dialog"
       onCancel={closeViewer}
       onClick={handleBackdropClick}
-      onClose={() => setIsOpen(false)}
+      onClose={(event) => {
+        if (!event.currentTarget.open) setIsOpen(false);
+      }}
       ref={dialogRef}
     >
       <div className={styles.shell}>

@@ -83,7 +83,7 @@
     },
     "cloudigniter-website": {
       "type": "website",
-      "sourcePath": null,
+      "sourcePath": "apps/cloudigniter.io",
       "sourceRepository": "cloudigniter-io/cloudigniter-website",
       "buildRepository": "cloudigniter-io/build-cloudigniter-website",
       "buildVisibility": "private",

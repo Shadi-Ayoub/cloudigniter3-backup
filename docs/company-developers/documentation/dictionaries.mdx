@@ -16,6 +16,9 @@ Both tools provide alphabet browsing, term search, linked definitions, and full-
 The navbar's **Dictionary** dropdown contains two rows: **Dictionary** and **Developer Dictionary**.
 Each row has a book icon that opens that audience's viewer and a label linking to its full dictionary page.
 The same dropdown is available in the mobile navigation menu, with separate viewer and page controls.
+While either viewer is open, the page behind it is frozen. Its term list and
+definition remain independently scrollable. Dismissing the viewer restores page
+scrolling at the same position.
 
 The profile definitions [CloudIgniter User](/developer-dictionary/c#cloudigniter-users)
 and [CloudIgniter Developer](/developer-dictionary/c#cloudigniter-developers) belong
@@ -43,6 +46,32 @@ across whitespace and source line breaks. Both singular and plural profile names
 link as complete phrases to their shared definition. Viewer search accepts aliases
 while displaying the canonical name. Preserve stable definition anchors when
 changing a display name so existing links continue to open the same definition.
+
+### Match the meaning in context
+
+A word should open a definition only when the sentence uses its defined technical
+meaning. In source-mirroring guidance, an **approval claim** is an assertion about
+approval. The Dictionary's **Claim** entry describes a statement carried in an
+authentication token. Those uses have different meanings, so the approval wording
+remains plain text.
+
+For an ambiguous label, the catalog's optional fourth tuple item disables automatic
+linking of that bare label while retaining qualified aliases:
+
+```ts
+["Claim", "claim", ["Token Claim", "Token Claims"], { autoLinkLabel: false }]
+```
+
+The viewer still lists and searches **Claim**. Phrases such as **token claim** and
+**identity claim** link automatically. Where the authentication context is already
+clear, an author can explicitly link the bare word with
+`[claim](/dictionary/c#claim)`. An entry without aliases and with
+`autoLinkLabel: false` requires explicit links for every occurrence.
+
+Choose aliases by meaning, not spelling alone. When a word has several technical
+senses, use qualified definition names and separate anchors. Check related pages
+for both legitimate links and false matches, including ordinary verbs, and run
+the dictionary regression tests before publishing the guide.
 
 ## Publishing boundary
 

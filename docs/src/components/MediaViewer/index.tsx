@@ -7,6 +7,7 @@ type Media = {
   label: string;
   width: number;
   height: number;
+  restoreFocus: boolean;
 };
 const selector = ".markdown img, .markdown .docusaurus-mermaid-container > svg";
 
@@ -93,9 +94,12 @@ export default function MediaViewer(): React.JSX.Element | null {
       if (!width || !height) return;
       event.preventDefault();
       event.stopPropagation();
+      // Transfer focus to the viewer without retaining a pointer-selected image.
+      element.blur();
       setZoom(1);
       setMedia({
         element,
+        restoreFocus: event instanceof KeyboardEvent || event.detail === 0,
         width,
         height,
         label:
@@ -165,7 +169,9 @@ export default function MediaViewer(): React.JSX.Element | null {
       resize.disconnect();
       modal.close();
       document.body.style.overflow = previousOverflow;
-      media.element.focus({ preventScroll: true });
+      if (media.restoreFocus && media.element.isConnected)
+        media.element.focus({ preventScroll: true });
+      else media.element.blur();
     };
   }, [media]);
 

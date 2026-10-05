@@ -33,6 +33,8 @@ The implementation provides:
 
 | Command | Contract |
 | --- | --- |
+| `dev start docs/template/website jodaris/website cloudigniter` | Foreground workspace website startup, readiness-bound browser opening and existing-build previews. |
+| `dev open terminal [target]`                                   | New VS Code integrated terminal at a registered package/app/Docs root or invoking directory; `--external` opens a system terminal window.                                  |
 | `dev publisher` | Local loopback GUI for discovered targets, build/check actions, reviewed release requests, profile selection, linked configuration editing and build inspection. |
 | `dev package ...` | Build, test, typecheck, check, quality, artifact/release validation, watch, cleanup, switching and assets from the invoking package. |
 | `dev quality ...` | Scan distribution client directives or list source client files. |
@@ -69,6 +71,8 @@ Paths below are relative to the repository root:
 | `packages/dev/src/github-cli.mjs` and `github-cli-release.mjs` | Native GitHub CLI resolution, verified managed installation and reviewed release hashes. |
 | `packages/dev/src/cli.mjs` | Strict Meow parsing, help and command dispatch. |
 | `packages/dev/src/maintainer-cli.mjs` | Maintainer catalog, per-command flags, prompts and dispatch. |
+| `packages/dev/src/workspace-commands.mjs` | Convenience catalog, workspace-only target resolution and launch plans. |
+| `packages/dev/src/workspace-runtime.mjs` and `workspace-static.mjs` | Website lifecycle, browser/terminal adapters and confined static previews. |
 | `packages/dev/src/maintainer-runtime.mjs` | Private-workspace guard and local worker/process execution. |
 | `packages/dev/src/package-config.mjs` | Validate company package cwd and `ci-dev.config.json`. |
 | `packages/dev/src/package-workflows.mjs` | Common test runner, command descriptions, tools and ordered recipes. |
@@ -119,6 +123,72 @@ Keep workers scoped to their original cwd. Preserve TTY build/switch prompts,
 codes. Reject unrelated flags and extra operands before mutation. Keep the build
 quality gate before artifact cleanup; Next's gate also runs DEV's migrated
 build-gate regression test file.
+
+## Workspace convenience
+
+`dev start docs`, `dev start template`, `dev start website jodaris` and
+`dev start website cloudigniter` belong to private DEV. Default ports are 3010,
+3000, 3001 and 3002 respectively; default mode is dev and host is 127.0.0.1.
+Resolve from the invoking directory using the existing private-workspace guard.
+Every nested directory works. Refuse outside/consumer invocations and
+`--workspace-root`, including previews; do not resolve from DEV's installed path
+or the developer's home. Help/version remain bootstrap exceptions.
+
+Use explicit repository sourcePath mappings, with conventional docs/apps roots as
+fallback. Require target manifests and package scripts; preserve Next preparation
+hooks and Docs prestart checks/clear. `--mode=prod` selects existing-build
+serve/start, without building. JODARIS's current staticHosting metadata permits a
+confined public-file preview; Next dependencies take precedence after conversion.
+CloudIgniter Website is the manifest-less static page at apps/cloudigniter.io,
+registered to cloudigniter-website with workspaceName cloudigniter. Both sites
+provide source checks and static-release builds; Next dependencies take precedence
+after conversion. Preserve mappings and aliases while revising their build contracts.
+Use existing Publisher path/metadata validation instead of a second permissive schema.
+
+Validate port/host and command-specific options before processes. Explicit ports
+never fall back silently. Keep server output streamed in the foreground, open the
+browser once connections are accepted, and terminate only the launched process
+tree on Ctrl+C/SIGTERM. Preserve child failures; cancellation uses 130. `--no-open`
+keeps browser navigation manual. `--dry-run --json` previews without any launch;
+JSON requires dry-run. Static previews exclude hidden/config/script paths and
+symlinks rather than serving the entire source tree.
+
+`dev open terminal [target]` discovers packages, apps, Docs and explicitly mapped
+project roots. Packages require a CloudIgniter manifest; apps/Docs require a named
+manifest or labelled Publisher metadata. Infer folder and manifest aliases, use
+known project mappings for site names, and accept workspaceName as an explicit
+short alias independent of the folder. Recognize qualified registered paths and
+project IDs; reject empty/unregistered folders, ambiguous matches, traversal and
+symlinks. Never select the first of several matches. Omitted selection preserves
+the invoking directory. Default mode opens a new VS Code integrated terminal with
+window.createTerminal({cwd,name}), uses the configured VS Code terminal profile,
+confirms a shell PID and returns; never occupy or change the caller's terminal.
+`--external` selects macOS Terminal, Windows Terminal or Linux x-terminal-emulator.
+Keep shell navigation strictly quoted and user paths out of executable script
+source. The previous --in-place option is removed; no TTY is required for the
+integrated transport. Require a trusted local desktop VS Code workspace; otherwise
+report --external rather than silently falling back.
+
+workspace-vscode.mjs packages the exact bundled src/vscode-terminal extension as
+an offline VSIX and installs it through the code CLI on first use. The extension
+activates on startup and owns a bearer-authenticated loopback bridge. Store its
+0600 endpoint receipt only under ignored .cloudigniter/local; retain stale receipts,
+never include credentials in logs, and refuse symlinks and out-of-workspace paths.
+Create only terminals, never send arbitrary commands/text or invoke a shell from
+a request. Confirm shell startup before success and dispose a failed new terminal.
+Do not claim success after an inactive-helper timeout; guide the developer to Trust,
+Enable and Reload Window. New terminals inherit the invoking-window endpoint;
+refuse ambiguous old-window discovery rather than choosing a random window.
+
+Parent-folder VS Code tasks set cwd to the child monorepo and use these commands.
+Package launcher panels close after successful completion; the helper creates the
+persistent terminals. Set CLOUDIGNITER_TERMINAL_PRESERVE_FOCUS=1 for these background
+launchers. Keep automatic tasks restricted by Workspace Trust. The parent's .vscode
+files are outside monorepo Git and must be shared separately when needed.
+Update `company-developers/tooling/dev/workspace-tools.mdx`, the five workspace
+command manuals, the command catalog checker and README with contract changes.
+Cover nested cwd, outside guards, invalid input, build selection, script retention,
+readiness, failed startup, public-file confinement and owned-process shutdown.
 
 ## Publisher implementation
 
@@ -192,7 +262,7 @@ keyboard menu navigation, focus restoration and selection across workspace refre
 The browser grouping helper lives in `src/publisher/assets/navigation.mjs`.
 
 Infer package scripts; use optional root `publisher.config.json` for non-inferable
-project facts and reviewed local scripts. Detect manifest-less static sites only
+project facts, optional workspaceName terminal aliases and reviewed local scripts. Detect manifest-less static sites only
 with explicit metadata. Do not invent a publishing route for an unmapped project.
 The server must retain loopback-only binding, finite bearer sessions, same-origin
 host checks, per-action allowlists, preview revalidation, no arbitrary shell/file

@@ -43,6 +43,66 @@ function links(node: Node): string[] {
   ];
 }
 
+test("ordinary claim wording and publishing assertions do not link to authentication", () => {
+  const mirrorPage = readFileSync(
+    path.join(siteDir, "company-developers/publishing/strategy/source-mirroring.mdx"),
+    "utf8"
+  );
+  const verification = mirrorPage.split("\n").find((line) => line.startsWith("Verification uses"));
+  assert.ok(verification);
+  for (const audience of ["user", "developer", "commands"] as const) {
+    for (const value of [
+      verification,
+      "An editable JSON claim alone does not authorize delivery.",
+      "These tests do not claim browser coverage.",
+      "The JWT is unrelated to an approval claim in release metadata.",
+    ]) {
+      const tree = paragraph(value);
+      remarkDictionaryTerms({ audience })(tree, {
+        path: "/guide/commands/dev/package-build.mdx",
+      });
+      assert.ok(!links(tree).includes("/dictionary/c#claim"), value);
+    }
+  }
+});
+
+test("qualified authentication claims link as complete phrases across audiences", () => {
+  for (const audience of ["user", "developer", "commands"] as const) {
+    const tree = paragraph(
+      "token claim; token claims; identity claim; group claims; JWT\nclaim; authentication claims; approval claim"
+    );
+    remarkDictionaryTerms({ audience })(tree, {
+      path: "/guide/commands/dev/package-build.mdx",
+    });
+    assert.deepEqual(links(tree), Array(6).fill("/dictionary/c#claim"));
+    const linkedText = tree.children?.[0].children
+      ?.filter((node) => node.type === "link")
+      .map((node) => node.children?.[0].value);
+    assert.deepEqual(linkedText, [
+      "token claim", "token claims", "identity claim", "group claims", "JWT\nclaim", "authentication claims",
+    ]);
+  }
+});
+
+test("ambiguous labels remain searchable and explicit contextual links still open their definition", () => {
+  const term = dictionaries[0].terms.find(({ label }) => label === "Claim");
+  assert.ok(term);
+  assert.ok(term.aliases.includes("Token Claim"));
+  assert.equal(
+    findDictionaryTerm(term.href, "https://docs.example/docs/intro", "/", dictionaries)?.term,
+    term
+  );
+  const tree: Node = {
+    type: "root",
+    children: [{ type: "paragraph", children: [{
+      type: "link", url: term.href, children: [{ type: "text", value: "claim" }],
+    }] }],
+  };
+  const original = structuredClone(tree);
+  remarkDictionaryTerms()(tree);
+  assert.deepEqual(tree, original);
+});
+
 test("profile names link as complete terms in prose, emphasis and table cells", () => {
   const samples = [
     ["CloudIgniter User", "/developer-dictionary/c#cloudigniter-users"],

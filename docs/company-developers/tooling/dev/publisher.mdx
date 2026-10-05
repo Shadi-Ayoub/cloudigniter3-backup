@@ -106,13 +106,14 @@ Place `publisher.config.json` at a project root when a capability cannot be infe
 | `schemaVersion` | Required, currently `1`. Unknown fields fail validation. |
 | `label` | Optional project display label used for alphabetical dropdown sorting; required to discover a project without a package manifest. |
 | `kind` | Optional `package`, `app`, `template`, `website` or `docs`; selects the navigation group. `app` and `template` belong to Templates. |
+| `workspaceName` | Optional lowercase short name (up to 80 characters, letters/digits/dots/underscores/hyphens) used by `dev open terminal`; decouples a target name from its folder. Ambiguous aliases are refused. |
 | `project` | Explicit key in `.cloudigniter/repositories.json`; cannot contradict its non-null source path. |
 | `buildDirectories` | Up to ten project-relative output folders. Defaults to `dist`, `.next` for a Next application, or `build` for the guide. |
 | `assets` | Optional informational declaration. The package-owned build recipe still controls asset generation. |
 | `staticHosting` | Explicit eligibility for static delivery workflow scaffolding. |
 | `commands` | Named reviewed commands: `node` or `bash` with a confined local script as the first argument, or `pnpm` with exactly `run` and a package script name. |
 
-Metadata is trusted developer configuration, like `package.json` scripts. Commands use argument arrays rather than a browser-provided shell string. Do not put credentials into metadata, script arguments, or logs. The static JODARIS metadata delegates to its existing release-staging script; it does not modify the website runtime.
+Metadata is trusted developer configuration, like `package.json` scripts. Commands use argument arrays rather than a browser-provided shell string. Do not put credentials into metadata, script arguments, or logs. The static JODARIS and CloudIgniter Website metadata delegate to their own check and release-staging scripts; they do not modify the website runtime. The CloudIgniter page is at `apps/cloudigniter.io`, registers `workspaceName: "cloudigniter"`, and appears in the Websites dropdown alongside JODARIS.
 
 ## Implementation ownership
 

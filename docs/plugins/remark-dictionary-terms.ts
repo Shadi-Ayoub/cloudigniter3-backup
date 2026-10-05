@@ -36,7 +36,9 @@ function createTransform(includeDeveloperTerms: boolean) {
   // Match complete names and aliases before shorter terms such as CloudIgniter.
   const termNames = dictionaryTerms
     .flatMap((term) =>
-      [term.label, ...term.aliases].map((name) => ({ name, term }))
+      // Ambiguous labels require an authored link; qualified aliases can still link.
+      [...(term.autoLinkLabel ? [term.label] : []), ...term.aliases]
+        .map((name) => ({ name, term }))
     )
     .sort((left, right) => right.name.length - left.name.length);
 

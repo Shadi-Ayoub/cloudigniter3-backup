@@ -31,6 +31,9 @@ Within `packages/dev`:
 | `src/cli.mjs` | Strict parsing, help and dispatch. |
 | `src/maintainer-cli.mjs` | Maintainer command catalog, prompts, flag validation and dispatch. |
 | `src/maintainer-runtime.mjs` | Private-workspace guard and local process execution. |
+| `src/workspace-commands.mjs` | Workspace convenience catalog, confined target resolution and launch plans. |
+| `src/workspace-runtime.mjs`, `src/workspace-static.mjs` | Foreground website lifecycle, browser/terminal adapters and public-file-only static preview. |
+| `src/workspace-vscode.mjs`, `src/vscode-terminal/`                      | Bundled VS Code helper installation and authenticated creation of new integrated terminals; no caller-shell reuse. |
 | `src/package-config.mjs` | Package-directory guard and validation of `ci-dev.config.json`. |
 | `src/package-workflows.mjs` | Shared test discovery, tool execution, recipes and package hook invocation. |
 | `src/template-export.mjs` | Template policy validation, standalone transformations, export and comparison. |
@@ -69,7 +72,10 @@ before enabling any publishing workflow.
 ## Extending DEV
 
 Use `dev <domain> <action> [subject] [options]`. The implemented domains are
-`package`, `quality`, `next`, `modules`, `template`, `github` and `npm`. Add a domain when a defined
+`package`, `quality`, `next`, `modules`, `template`, `github`, `npm`, `publisher`,
+`start` and `open`. Workspace convenience uses `dev start <site>` and
+`dev open terminal [target]`; these commands must be invoked inside the monorepo,
+including for previews. Add a domain when a defined
 company workflow needs it, preserving
 the [shared CLI conventions](../cli-architecture.mdx).
 

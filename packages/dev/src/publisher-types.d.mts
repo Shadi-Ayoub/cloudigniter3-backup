@@ -4,6 +4,7 @@ export interface PublisherMetadata {
   label?: string;
   kind?: "package" | "app" | "template" | "website" | "docs";
   project?: string;
+  workspaceName?: string;
   buildDirectories?: string[];
   assets?: boolean;
   staticHosting?: boolean;

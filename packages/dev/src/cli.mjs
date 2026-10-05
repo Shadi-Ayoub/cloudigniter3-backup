@@ -1,4 +1,5 @@
 import meow from "meow";
+import { ciWorkspaceHelp, ciRunWorkspaceCommand } from "./workspace-commands.mjs";
 import { ciSetupGithubCli } from "./github-cli.mjs";
 import { ciGithubWorkflow } from "./github-workflow.mjs";
 import { ciFindWorkspace, ciReadPolicy } from "./policy.mjs";
@@ -104,6 +105,7 @@ export const ciDevHelp = `
     --review           approve|request-changes|comment for pr review.
     --repository-kind  source (default) or build; also supported by everyday commands.
 
+${ciWorkspaceHelp}
 ${ciMaintainerHelp}
 ${ciTemplateHelp}
   Release options
@@ -163,6 +165,8 @@ export async function ciRunDevCli(argv = process.argv.slice(2)) {
           },
           workspaceRoot: { type: "string" },
           port: { type: "number" },
+          host: { type: "string" },
+          external: { type: "boolean" },
           open: { type: "boolean", default: true },
           obfuscation: { type: "string", choices: ["configured", "on", "off"] },
           output: { type: "string" },
@@ -222,6 +226,10 @@ export async function ciRunDevCli(argv = process.argv.slice(2)) {
     return;
   }
   const [domain, command, subject, ...extra] = cli.input;
+  if (domain === "start" || domain === "open") {
+    await ciRunWorkspaceCommand(cli.input, cli.flags, argv);
+    return;
+  }
   if (domain === "publisher") {
     if (command || subject || extra.length) throw new CiDevUsageError("Use dev publisher with named options only.");
     ciAssertCommandFlags(argv, ["port", "open", "profile"]);

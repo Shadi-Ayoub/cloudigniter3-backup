@@ -46,7 +46,7 @@ and guide updates together. Workspace review precedes paired release approval;
 the current release verifier does not automatically attest a monorepo PR's approval.
 
 Four committed quality workflows cover the active workspace: DEV, Next, baseline
-platform packages/Config TS and template/Docs/JODARIS. Keep their checks running for
+platform packages/Config TS and template/Docs/JODARIS/CloudIgniter Website. Keep their checks running for
 every PR when required; select observed successful job names, not workflow titles,
 in company `main` protection. A minimal ownership bootstrap can establish the base
 of an empty company repo before an initial import PR; do not rewrite the developer's
@@ -68,7 +68,7 @@ with destination credentials. Pure repository validation is shared through
   Require the configured reviewer on the exact merged PR head, distinct from the
   author, complete bounded listings and successful exact-merge checks/run evidence.
 - Use only the reviewed inventory's company-owned private source repositories.
-  JODARIS now maps `apps/jodaris`; CloudIgniter Website remains null. Config TS
+  JODARIS maps `apps/jodaris`; CloudIgniter Website maps `apps/cloudigniter.io`. Config TS
   remains shared workspace source until explicitly mapped. Never target builds,
   the public template or backup. A configured missing root fails preparation.
 - Configure an organization-owned App with Contents write on the selected sources,
@@ -234,7 +234,7 @@ symlinks, protected base and configured approver; upload reviewed bytes without
 rebuilding with AWS credentials. Configure OIDC and environment variables
 `AWS_ROLE_ARN`, `AWS_REGION`, `SITE_BUCKET`, `CLOUDFRONT_DISTRIBUTION_ID` remotely.
 The scaffold creates no resources. Do not deploy server-rendered `.next` output as
-static files. JODARIS source maps to apps/jodaris. The future CloudIgniter Website remains null.
+static files. JODARIS source maps to apps/jodaris. CloudIgniter Website maps to apps/cloudigniter.io.
 Verify AWS's current GitHub OIDC subject format, including immutable IDs for newer
 repositories; do not blindly copy an old trust-policy example.
 

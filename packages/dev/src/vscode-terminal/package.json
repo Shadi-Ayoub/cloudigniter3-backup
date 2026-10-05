@@ -1,0 +1,23 @@
+{
+  "name": "workspace-terminals",
+  "displayName": "CloudIgniter Workspace Terminals",
+  "description": "Opens a new integrated terminal for the private CloudIgniter Developer Toolkit.",
+  "publisher": "cloudigniter",
+  "version": "0.1.0",
+  "license": "UNLICENSED",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "main": "./extension.cjs",
+  "extensionKind": [
+    "workspace"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    }
+  }
+}

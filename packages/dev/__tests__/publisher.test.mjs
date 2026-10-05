@@ -542,6 +542,27 @@ test("metadata validates capability and path boundaries", () => {
     assert.throws(() => ciValidatePublisherMetadata(metadata));
 });
 
+test("metadata preserves an explicit workspace name and rejects invalid aliases", () => {
+  assert.equal(
+    ciValidatePublisherMetadata({
+      schemaVersion: 1,
+      workspaceName: "cloudigniter",
+    }).workspaceName,
+    "cloudigniter",
+  );
+  for (const workspaceName of [
+    "",
+    "../docs",
+    "apps/site",
+    "Uppercase",
+    "with space",
+    7,
+  ])
+    assert.throws(() =>
+      ciValidatePublisherMetadata({ schemaVersion: 1, workspaceName }),
+    );
+});
+
 test("plans map to existing commands, preserve cwd and pass input as arguments", async (t) => {
   const { root } = await setup(t);
   const core = (await ciPublisherWorkspace(root)).targets.find(

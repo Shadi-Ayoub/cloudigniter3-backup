@@ -9,6 +9,52 @@ review. The generated build-repository workflow submits native npm stages. Final
 Build configuration uses the explicit `@cloudigniter/dev/tooling/*` exports;
 release internals remain private.
 
+## Workspace convenience
+
+From any directory inside the private CloudIgniter monorepo:
+
+```bash
+pnpm exec dev start docs
+pnpm exec dev start template
+pnpm exec dev start website jodaris
+pnpm exec dev start website cloudigniter
+pnpm exec dev start template --mode=prod --port=4000
+pnpm exec dev open terminal core
+pnpm exec dev open terminal @cloudigniter/ui
+pnpm exec dev open terminal
+```
+
+Default ports are Docs 3010, template 3000, JODARIS 3001 and CloudIgniter Website
+3002. Startup defaults to development, preserves package-script hooks, opens the
+browser when the server accepts connections and remains in the foreground until
+Ctrl+C. Use `--mode=prod` for an existing build, `--no-open` to suppress the browser,
+`--host=<IP|localhost>` to change the loopback default and `--port=<1..65535>` to
+choose a port. `--dry-run --json` previews the resolved directory and launch.
+
+The current JODARIS static site is supported through its explicit Publisher
+metadata; a Next.js manifest switches it to its `dev`/`start` scripts. CloudIgniter
+Website is the temporary static page at `apps/cloudigniter.io`, with the same
+source/build preview modes and a future Next.js adapter. Source paths come from
+repository mappings with conventional Docs/application paths as fallback.
+
+Terminal selection searches registered packages, apps and Docs. Accept a short
+name (`core`, `docs`, `jodaris`, `cloudigniter`, `template`), a CloudIgniter manifest
+identity, or a qualified registered `packages/<directory>` / `apps/<directory>`
+path. Apps require a named manifest or labelled Publisher metadata; `workspaceName`
+provides a stable alias independent of the folder. Ambiguous names are refused.
+No operand selects the invoking directory. The default creates a **new** VS Code
+integrated terminal at the selected directory using the configured terminal profile,
+then returns immediately. The invoking terminal stays available and its cwd does
+not change. DEV installs its bundled local helper extension on first use; open a
+trusted local workspace in desktop VS Code and make its `code` CLI available.
+If the helper is disabled or not activated yet, enable it and reload the VS Code
+window before retrying. Use `--external` for macOS Terminal, Windows Terminal or
+Linux `x-terminal-emulator`. The previous `--in-place` option is removed. An outside
+invocation fails, even with `--workspace-root`.
+
+See [Workspace convenience](../../docs/company-developers/tooling/dev/workspace-tools.mdx)
+and the [command manuals](../../docs/commands/dev/index.mdx).
+
 ## Publisher
 
 Run `pnpm exec dev publisher` from the workspace to open the local publishing GUI
@@ -407,7 +453,7 @@ pnpm exec dev github scaffold cloudigniter-docs \
 Static website scaffolds deploy reviewed files committed under `site/` to S3 and
 invalidate CloudFront through AWS OIDC. They need explicit AWS environment values
 and role trust. They do not create resources or deploy server-rendered Next.js
-output. JODARIS source maps to `apps/jodaris`; the future CloudIgniter Website remains unmapped.
+output. JODARIS source maps to `apps/jodaris`; CloudIgniter Website maps to `apps/cloudigniter.io`.
 
 Follow the complete [GitHub, npm and AWS setup guide](../../docs/company-developers/publishing/index.mdx)
 for repository protections, account permissions, npm organization setup, bootstrap,

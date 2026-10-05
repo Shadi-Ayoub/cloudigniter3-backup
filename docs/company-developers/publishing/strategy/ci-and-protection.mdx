@@ -4,7 +4,7 @@ description: What CloudIgniter's required jobs validate and how an administrator
 sidebar_position: 5
 ---
 
-CloudIgniter validates the integrated workspace on every PR and every push to `main`. Its four quality workflows cover all active platform packages, the company toolkit, shared TypeScript presets, the reference template, Docs and JODARIS. Archived future-package folders are outside the active pnpm workspace. A CloudIgniter Website receives its own check when that website and its build contract exist.
+CloudIgniter validates the integrated workspace on every PR and every push to `main`. Its four quality workflows cover all active platform packages, the company toolkit, shared TypeScript presets, the reference template, Docs, JODARIS and CloudIgniter Website. Archived future-package folders are outside the active pnpm workspace. Both temporary static websites have their own source checks and public artifact builds.
 
 ## Understand the coverage
 
@@ -13,7 +13,7 @@ CloudIgniter validates the integrated workspace on every PR and every push to `m
 | `dev-quality.yml` | DEV on Node 22 and 24 | Toolkit checks, behavior tests and package inventory; Node 24 additionally exports/checks the public template and retains the toolkit archive. |
 | `next-quality.yml` | Next tests on Node 22 and 24; one build job | Full Next quality gate, test typing, per-file coverage policy, production build, archive validation and a publish-request report with a checksum. |
 | `packages-quality.yml` | Six targets on Node 22 and 24 | Existing Core, AWS, UI, EmberGuard and CLI checks/tests and inventory checks; Config TS validates every exported preset and its inclusion in npm files. Node 24 builds runtime packages, packs all six targets and verifies their advertised archive entries. |
-| `workspace-quality.yml` | Template on Node 22 and 24; Docs; JODARIS | Full workspace typecheck, template tests; Node 24 builds the template including optional-module and form generation. Docs validates metadata, linking/search behavior, types and production output. JODARIS validates/stages static output. |
+| `workspace-quality.yml` | Template on Node 22 and 24; Docs; JODARIS; CloudIgniter Website | Full workspace typecheck, template tests; Node 24 builds the template including optional-module and form generation. Docs validates metadata, linking/search behavior, types and production output. Both websites validate their single-page sources and stage only their public static output. |
 
 Next's strict coverage rollout remains package-specific. Running other packages' existing tests does not give them Next's coverage thresholds or identical archive checks. Raise those gates deliberately as each package's release contract evolves.
 
@@ -23,11 +23,11 @@ The template integration job runs the root `pnpm typecheck` command on both Node
 
 The workspace pins one `@types/react` version through `pnpm-workspace.yaml` and declares it at the root so shared library declarations can resolve it consistently. Shared React declarations must use one type identity across package and guide dependencies; mixed versions can produce non-portable inferred declaration errors that depend on the installation layout. Review the override and lockfile together when updating React types.
 
-The frozen lockfile prevents unreviewed dependency resolution during CI. All checks use explicit build/test steps after installation with lifecycle scripts disabled. Quality jobs have read-only repository permissions and perform no npm publication or AWS deployment. Node 24 package archives, Next review evidence, the DEV template export and JODARIS output are retained for 14 days. Docs and template builds are validation outputs, with no production deployment in these jobs.
+The frozen lockfile prevents unreviewed dependency resolution during CI. All checks use explicit build/test steps after installation with lifecycle scripts disabled. Quality jobs have read-only repository permissions and perform no npm publication or AWS deployment. Node 24 package archives, Next review evidence, the DEV template export and both website outputs are retained for 14 days. Docs and template builds are validation outputs, with no production deployment in these jobs.
 
 ## Select actual required job names
 
-Run the quality workflows in the company repository first, confirm each job succeeds, and select the names GitHub actually reports. The expected **21 required checks** are:
+Run the quality workflows in the company repository first, confirm each job succeeds, and select the names GitHub actually reports. The expected **22 required checks** are:
 
 | Area | Exact display names |
 | --- | --- |
@@ -42,6 +42,7 @@ Run the quality workflows in the company repository first, confirm each job succ
 | Template | `Template integration (Node 22)`; `Template integration (Node 24)` |
 | Docs | `Developer guide` |
 | JODARIS | `JODARIS website` |
+| CloudIgniter Website | `CloudIgniter website` |
 
 Do not require a workflow title such as `Platform packages quality`; require its job checks. When GitHub offers a source selector, bind the check to GitHub Actions. Keep names unique across workflows. Renaming a job requires updating the protection setting too.
 

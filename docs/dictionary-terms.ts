@@ -27,7 +27,18 @@ export const dictionaryTermsByLetter = {
   C: [
     ["Canonical Org Unit", "canonical-org-unit"],
     ["CiDataTable", "cidatatable"],
-    ["Claim", "claim"],
+    [
+      "Claim",
+      "claim",
+      [
+        "Token Claim", "Token Claims",
+        "Identity Claim", "Identity Claims",
+        "Group Claim", "Group Claims",
+        "JWT Claim", "JWT Claims",
+        "Authentication Claim", "Authentication Claims",
+      ],
+      { autoLinkLabel: false },
+    ],
     ["Client Component", "client-component"],
     ["CloudIgniter", "cloudigniter"],
     ["CloudIgniter CLI", "cloudigniter-cli"],

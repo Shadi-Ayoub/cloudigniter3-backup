@@ -1,0 +1,168 @@
+---
+title: Workspace convenience
+description: Start local CloudIgniter sites and open registered target terminals from anywhere inside the monorepo.
+sidebar_position: 3
+---
+
+The CloudIgniter Workspace is the private `cloudigniter` pnpm monorepo containing
+`packages/dev`. The Developer Toolkit's `dev start` and `dev open terminal`
+commands provide convenient access to its local sites and registered target directories.
+Run them from the root or any nested folder: target resolution always begins with
+the invoking directory and walks up to the validated workspace.
+
+Install the workspace dependencies first. Use `pnpm exec dev` when the executable
+is not already on `PATH`. Package operations still use the exact package root;
+these convenience commands resolve their own target independently.
+
+## Start a Workspace website
+
+| Target               | Default port | Development                                                               | Existing-build preview                                                |
+| -------------------- | ------------ | ------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Docs                 | `3010`       | Docusaurus `start` script, including its guide/date checks and clear hook | Docusaurus `serve` script; requires `docs/build/index.html`           |
+| Template             | `3000`       | Application `dev` script, including module/form generation                | Application `start` script; requires a completed Next.js build        |
+| JODARIS Website      | `3001`       | Current static source preview; Next.js `dev` script after conversion      | Current static build preview; Next.js `start` script after conversion |
+| CloudIgniter Website | `3002`       | Current static source preview; Next.js `dev` script after conversion      | Current static build preview; Next.js `start` script after conversion |
+
+Development is the default. The server runs in the current terminal, prints its
+URL and directory, and opens the default browser once it accepts connections.
+Keep that terminal open; Ctrl+C stops the launched process tree. Closing the
+browser tab leaves the server running. An occupied port fails with an actionable
+error; choose a different port instead of expecting an automatic fallback. Next.js also
+refuses a second development server for the same application when its build-cache
+lock is held, even on another port. Use its existing URL or stop its known owner
+before launching another development instance.
+
+Production preview serves the existing output and never builds implicitly.
+Build the application using its owning package scripts or Publisher first. A
+Next.js application must provide `dev` and `start` scripts accepting the standard
+Next CLI port/hostname flags. DEV preserves those scripts and their lifecycle
+hooks instead of bypassing application preparation.
+[Next CLI documentation](https://nextjs.org/docs/app/api-reference/cli/next)
+explains the development and production servers; the
+[Docusaurus CLI reference](https://docusaurus.io/docs/cli) describes `start` and `serve`.
+
+Use `--port` for a different port, `--no-open` to leave browser navigation manual,
+and `--dry-run --json` to inspect the resolved directory and exact launch without
+starting a process. The default host is `127.0.0.1`; `--host` accepts an IP address
+or `localhost`. Binding to `0.0.0.0` or `::` allows network access and still opens a
+local loopback URL in the browser.
+
+For example, from a nested package source folder:
+
+```bash
+pnpm exec dev start docs
+pnpm exec dev start template --port=4000
+pnpm exec dev start website jodaris --no-open
+pnpm exec dev start template --mode=prod --port=4000
+```
+
+Read the exact parameters and recovery instructions in the
+[Docs command](/commands/dev/start-docs),
+[template command](/commands/dev/start-template),
+[JODARIS command](/commands/dev/start-website-jodaris), and
+[CloudIgniter Website command](/commands/dev/start-website-cloudigniter) manuals.
+
+## How Workspace targets are detected
+
+Website targets use the matching `sourcePath` in
+`.cloudigniter/repositories.json`. Without a mapped source, the conventional roots
+are `docs`, `apps/template`, `apps/jodaris` and `apps/cloudigniter.io`. The mapped
+project IDs are `cloudigniter-docs`, `cloudigniter-next-aws-v1`, `jodaris-website`
+and `cloudigniter-website` respectively. A malformed inventory is an error;
+missing mappings do not create applications or change publication destinations.
+
+Docs requires Docusaurus in its manifest. Application targets use Next.js when
+`next` is declared in dependencies or development dependencies. An explicitly
+static project uses `publisher.config.json` with `staticHosting: true`, preserving
+that metadata as the source of non-inferable project facts. Its development
+preview serves `index.html` and public assets; production uses the first declared
+`buildDirectories` entry, or `dist` by default. Configuration, scripts, hidden
+files and symlinks are excluded from the static server.
+
+JODARIS currently has the static site under `apps/jodaris`. Its existing Publisher
+build action prepares `dist/index.html`. When it becomes a Next.js application,
+adding its manifest and `dev`/`start` scripts activates the Next adapter under the
+same command. CloudIgniter Website has its temporary single HTML page under
+`apps/cloudigniter.io`. Its Publisher check/build actions validate the page and
+stage only `dist/index.html`. Both sites use the same static preview adapter and
+can later migrate to Next.js without renaming their DEV commands.
+
+Target directories, configuration and build files must stay inside the workspace
+without symbolic links. These checks prevent accidentally launching another
+checkout through a mapped path. GitHub login and release policy are unnecessary
+for these local operations.
+
+## Open Workspace terminals
+
+`dev open terminal core` opens a **new** VS Code integrated terminal at
+`packages/core`. The terminal where the command was typed remains available.
+The target can be a package, an application under `apps`, or Docs. Packages
+register through their CloudIgniter manifests; apps require a named manifest or
+labelled Publisher metadata. Empty folders are excluded. Use short names such as
+`docs`, `jodaris`, `cloudigniter` and `template`, a manifest identity such as
+`@cloudigniter/core`, or an explicit registered `packages/<directory>` or
+`apps/<directory>` path.
+
+`workspaceName` in `publisher.config.json` supplies a stable alias independent of
+the directory name: `apps/cloudigniter.io` registers `cloudigniter`. Folder names
+and manifest identities are otherwise inferred. Known site names follow their
+repository source mappings. If multiple roots match a name, use an explicit
+registered path; DEV refuses ambiguous selections instead of guessing.
+
+Without an operand, `dev open terminal` selects the directory where it was
+invoked, including a nested source folder. Every invocation creates a separate
+terminal using VS Code's configured terminal profile and returns after the shell
+starts. It leaves the invoking shell's working directory unchanged.
+
+Open the checkout or its parent in trusted desktop VS Code and make the `code`
+CLI available. DEV installs its bundled **CloudIgniter Workspace Terminals** helper
+extension on first use. The extension creates the terminal through the supported
+[VS Code terminal API](https://code.visualstudio.com/api/references/vscode-api#window.createTerminal),
+using an authenticated local bridge; a shell subprocess cannot create another
+integrated panel on its own. If the helper is disabled or has not activated, enable
+it and run **Developer: Reload Window** before retrying. An integrated request does
+not require a TTY. The previous `--in-place` option is removed.
+
+Use `--external` for a separate macOS Terminal, Windows Terminal or Linux system
+terminal window. See the [command manual](/commands/dev/open-terminal) for defaults,
+previews and troubleshooting.
+
+```bash
+pnpm exec dev open terminal @cloudigniter/core
+pnpm exec dev open terminal docs
+pnpm exec dev open terminal jodaris
+pnpm exec dev open terminal cloudigniter
+pnpm exec dev open terminal ui --external
+pnpm exec dev open terminal
+```
+
+## VS Code Workspace startup
+
+The parent folder's `.vscode/tasks.json` invokes DEV from the child monorepo using
+`pnpm exec dev`. Its folder-open task starts Docs, the template and the detected
+JODARIS and CloudIgniter sites, and opens new integrated package terminals with
+`dev open terminal <target>`. The temporary task launcher panels close after the
+helper confirms terminal creation; the new package terminals remain open. CloudIgniter Website now participates in automatic
+startup because its registered application exists.
+
+For this layout, task `options.cwd` is `${workspaceFolder}/cloudigniter3`, where
+`${workspaceFolder}` is the opened parent. Opening the parent keeps the task
+invocation inside the validated monorepo. Customize that relative directory when
+using another checkout layout. The parent `.vscode` configuration lives outside
+the monorepo; commit or share it separately when providing the same editor setup
+to another developer.
+
+The parent settings enable `task.allowAutomaticTasks: "on"`. Automatic startup
+applies to a trusted VS Code workspace. Consult
+[VS Code Tasks](https://code.visualstudio.com/docs/debugtest/tasks#_run-behavior)
+for automatic-task controls and Workspace Trust. Available tasks can also be
+launched through **Terminal → Run Task**. Package panels keep their interactive
+shells; site panels retain foreground output and Ctrl+C shutdown.
+
+## Outside-Workspace invocations
+
+All these operations, including previews, fail with exit status `2` outside the
+CloudIgniter Workspace. Their discovery cannot be redirected with
+`--workspace-root`; that option is rejected for these commands. Open the monorepo
+or one of its nested directories first. Help and version remain available
+outside the workspace, as does the separate GitHub CLI bootstrap command.

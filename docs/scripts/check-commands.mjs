@@ -3,6 +3,7 @@ import { readdir, readFile } from "node:fs/promises";
 import { ciPublicHelp } from "../../packages/cli/src/cli/help.mjs";
 import { ciPackageCommands } from "../../packages/dev/src/package-workflows.mjs";
 import { ciGithubCommands } from "../../packages/dev/src/github-workflow.mjs";
+import { ciWorkspaceCommands } from "../../packages/dev/src/workspace-commands.mjs";
 
 const root = new URL("../commands/", import.meta.url);
 const maintainer = await readFile(
@@ -20,6 +21,7 @@ const maintenance = [
 ].map((match) => `dev ${match[1]}`);
 const expected = new Set([
   "dev publisher",
+  ...Object.keys(ciWorkspaceCommands).map((command) => `dev ${command}`),
   ...publicCommands,
   ...maintenance,
   ...Object.keys(ciPackageCommands).map((action) => `dev package ${action}`),

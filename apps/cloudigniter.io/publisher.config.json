@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "label": "CloudIgniter Website",
+  "kind": "website",
+  "project": "cloudigniter-website",
+  "workspaceName": "cloudigniter",
+  "buildDirectories": ["dist"],
+  "assets": false,
+  "staticHosting": true,
+  "commands": {
+    "build-static": {
+      "label": "Build static release",
+      "command": "node",
+      "args": ["scripts/prepare-static-deploy.mjs"]
+    },
+    "check-static": {
+      "label": "Check static site",
+      "command": "node",
+      "args": ["scripts/check.mjs"]
+    }
+  }
+}

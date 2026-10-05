@@ -47,7 +47,7 @@ The head branch must already exist remotely and the description file must exist 
 
 An AWS administrator provisions a private S3 bucket, CloudFront distribution, bucket access for that distribution, and the required DNS/TLS configuration. Use one deliberate hosting design per site; the generated workflow does not choose resources.
 
-Create an AWS IAM role trusted by GitHub OIDC. Scope its trust to the exact repository and `production` environment and the `sts.amazonaws.com` audience. Use the actual GitHub subject format for that repository, including immutable owner/repository IDs where the current claim format requires them. Do not copy a guessed subject from another repository.
+Create an AWS IAM role trusted by GitHub OIDC. Scope its trust to the exact repository and `production` environment and the `sts.amazonaws.com` audience. Use the actual GitHub subject format for that repository, including immutable owner/repository IDs where the current [claim](/dictionary/c#claim) format requires them. Do not copy a guessed subject from another repository.
 
 Limit role permissions to the intended bucket’s listing/read/upload operations and the specific distribution’s invalidation. See the official [AWS credentials action and OIDC setup](https://github.com/aws-actions/configure-aws-credentials) and [GitHub’s AWS OIDC guide](https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-aws).
 
@@ -79,3 +79,28 @@ The first command lists recent deployment runs; replace the example ID in the se
 ## Retention and recovery
 
 The generated S3 sync does not delete old objects. Decide cache headers, retention, removal of retired files and rollback as explicit hosting operations. A failed upload can leave partial website updates; do not assume deployment is atomic. Keep the last known good reviewed build and redeploy it through the approved process when needed.
+
+## Temporary website editions
+
+JODARIS (`apps/jodaris`) and CloudIgniter Website (`apps/cloudigniter.io`) currently
+serve self-contained HTML pages. Publisher discovers both through their root
+metadata and offers **Check static site** and **Build static release**. Their
+source/build repository pairs remain the configured company destinations.
+
+The CloudIgniter build runs `node apps/cloudigniter.io/scripts/prepare-static-deploy.mjs`
+from the workspace root. It validates source references and inline JavaScript,
+then stages only `dist/index.html`; unexpected files and symlinked outputs fail
+without deleting them. The `CloudIgniter website` CI job performs the same check
+and build, retaining the public output for review without deploying it. Approved
+monorepo merges mirror its source through the normal App-backed synchronization.
+
+Use `dev start website cloudigniter` for source preview, or `--mode=prod` after
+building to inspect the staged output. `dev open terminal cloudigniter` opens at
+its root. See [Workspace convenience](/company-developers/tooling/dev/workspace-tools).
+
+When migrating either site to the template, preserve its project mapping and
+Workspace alias, add the application manifest and `dev`/`start` scripts, and
+revise Publisher metadata and the website CI build for its hosting contract.
+A Next.js dependency activates DEV's framework adapter. Only a static export
+containing `index.html` can use the S3/CloudFront scaffold; a server application
+needs a runtime hosting strategy.

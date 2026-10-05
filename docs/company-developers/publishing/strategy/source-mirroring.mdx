@@ -36,7 +36,7 @@ The reviewed head and merged commit are recorded separately, so squash merges wo
 
 ## Which repositories receive source
 
-`.cloudigniter/repositories.json` supplies each project root and its `sourceRepository`. Seven npm package roots, Docs, the private template source and JODARIS are currently mapped. The mapping for the future CloudIgniter Website has a null source path, so it receives no synchronization. Shared Config TS remains in the monorepo until a separate source destination is explicitly mapped.
+`.cloudigniter/repositories.json` supplies each project root and its `sourceRepository`. Seven npm package roots, Docs, the private template source, JODARIS and CloudIgniter Website are currently mapped. Website source roots are `apps/jodaris` and `apps/cloudigniter.io`; approved merges include both in source synchronization. Shared Config TS remains in the monorepo until a separate source destination is explicitly mapped.
 
 | Monorepo source       | Private mirror                                    |
 | --------------------- | ------------------------------------------------- |

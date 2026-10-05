@@ -63,6 +63,7 @@ export function ciValidatePublisherMetadata(value) {
     "label",
     "kind",
     "project",
+    "workspaceName",
     "buildDirectories",
     "assets",
     "staticHosting",
@@ -82,6 +83,14 @@ export function ciValidatePublisherMetadata(value) {
       (typeof value[k] !== "string" || !value[k].trim())
     )
       throw new CiDevUsageError(`Invalid Publisher ${k}.`);
+  if (
+    value.workspaceName !== undefined &&
+    (typeof value.workspaceName !== "string" ||
+      !/^[a-z0-9][a-z0-9._-]{0,79}$/.test(value.workspaceName))
+  )
+    throw new CiDevUsageError(
+      "Publisher workspaceName must be a lowercase name without spaces, slashes or traversal.",
+    );
   if (
     value.kind !== undefined &&
     !["package", "app", "template", "website", "docs"].includes(
@@ -159,6 +168,9 @@ export function ciValidatePublisherMetadata(value) {
     schemaVersion: 1,
     ...(typeof value.label === "string" ? { label: value.label } : {}),
     ...(typeof value.project === "string" ? { project: value.project } : {}),
+    ...(typeof value.workspaceName === "string"
+      ? { workspaceName: value.workspaceName }
+      : {}),
     ...(value.kind
       ? {
           kind: /** @type {import('./publisher-types.d.mts').PublisherMetadata['kind']} */ (

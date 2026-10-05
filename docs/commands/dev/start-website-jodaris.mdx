@@ -1,0 +1,81 @@
+---
+title: "dev start website jodaris"
+description: "Start JODARIS as a static preview now, or a Next.js application after conversion."
+sidebar_label: "dev start website jodaris"
+sidebar_custom_props:
+  audience: developer
+---
+
+Start JODARIS as a static preview now, or a Next.js application after conversion.
+
+## Syntax
+
+```text
+dev start website jodaris [--mode=dev|prod] [--port=3001] [--host=127.0.0.1] [--no-open] [--dry-run] [--json]
+```
+
+## Prerequisites
+
+Install the workspace dependencies and invoke inside the private CloudIgniter
+pnpm monorepo containing `packages/dev`. Any nested directory is valid. The target
+must exist and have the required framework scripts or explicit static metadata.
+GitHub login is unnecessary. Production requires an existing build.
+
+## Parameters
+
+| Parameter                | Meaning                                                                  |
+| ------------------------ | ------------------------------------------------------------------------ |
+| `--mode=dev\|prod`       | Development by default; production serves an existing build.             |
+| `--port=<number>`        | Integer from `1` through `65535`; an occupied port fails.                |
+| `--host=<IP\|localhost>` | Bind address, default `127.0.0.1`. Wildcards use a loopback browser URL. |
+| `--no-open`              | Keep browser navigation manual; the URL is still printed.                |
+| `--dry-run`              | Validate and preview without launching a server or browser.              |
+| `--json`                 | Structured preview output; requires `--dry-run`.                         |
+
+The default port is `3001`. Help and diagnostics follow the
+[common options](./index.mdx#common-options). `--workspace-root` is rejected for
+Workspace convenience commands: the invoking directory must be inside the monorepo.
+
+## Remarks and effects
+
+JODARIS currently uses explicit static Publisher metadata: development previews its source `index.html`, and production previews `dist/index.html`. Use its Publisher static build action first. Once `next` is declared in its application manifest, DEV uses its `dev` and `start` scripts instead.
+
+Resolve the target through its repository inventory `sourcePath`, falling back
+to the conventional location described in
+[Workspace convenience](/company-developers/tooling/dev/workspace-tools).
+Start the package-owned script with the selected port/host. Output streams in the
+foreground; keep the terminal running. The browser opens once the server accepts
+connections. Ctrl+C stops the launched process tree; closing the browser leaves it
+running. A failed launch never silently switches ports or terminates another server.
+
+Static previews expose only public file types and refuse private paths and
+symlinks. A wildcard `--host=0.0.0.0` or `--host=::` allows network connections;
+the printed/opened URL still uses a local address. `--no-open` suppresses automatic
+navigation. `--dry-run` reads configuration without processes or writes.
+
+## Examples
+
+From any monorepo directory:
+
+```bash
+pnpm exec dev start website jodaris
+pnpm exec dev start website jodaris --mode=prod --port=4001
+pnpm exec dev start website jodaris --no-open --dry-run --json
+```
+
+Use `dev start website jodaris` directly when DEV is already on `PATH`.
+
+## Errors and recovery
+
+- **Outside Workspace or consumer project:** open the private monorepo or a nested directory; omit `--workspace-root`.
+- **Missing target:** restore the application or configure its inventory `sourcePath`. Preview also requires a real target.
+- **Missing production build:** build the target first with its existing workflow, then retry `--mode=prod`.
+- **Port unavailable:** stop its known owner yourself or select a different `--port`. DEV never kills it.
+- **Invalid flags, host or port:** use the parameters above; ports must be positive integers and host must be an IP or `localhost`.
+- **Invalid mapping or symlink:** fix the configuration or use a real directory inside the monorepo.
+- **Browser unavailable:** open the printed URL manually; the server remains running.
+- **Next.js development instance already running:** use its existing URL or stop its known owner first. A different port does not bypass its application lock.
+- **Preparation/server failed:** read the streamed error, restore dependencies or application prerequisites, and retry. The subprocess status is preserved.
+
+Usage and workspace errors use exit status `2`; operational failures preserve the
+child status or use `1`. Ctrl+C uses `130`.

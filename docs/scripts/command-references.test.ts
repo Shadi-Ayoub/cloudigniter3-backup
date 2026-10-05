@@ -19,6 +19,20 @@ function prose(value: string): CommandNode {
   };
 }
 
+test("workspace convenience commands link the complete website selector", () => {
+  const tree = prose(
+    "Use dev start docs, dev start template, dev start website jodaris, dev start website cloudigniter, and dev open terminal core.",
+  );
+  remarkCommandReferences()(tree);
+  assert.deepEqual(links(tree), [
+    "/commands/dev/start-docs",
+    "/commands/dev/start-template",
+    "/commands/dev/start-website-jodaris",
+    "/commands/dev/start-website-cloudigniter",
+    "/commands/dev/open-terminal",
+  ]);
+});
+
 test("links prose commands across wrapped lines using the longest exact command", () => {
   const tree = prose(
     "Run ci modules\nvalidate, dev package build-types-raw, and dev package build.",

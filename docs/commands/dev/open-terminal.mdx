@@ -1,0 +1,106 @@
+---
+title: "dev open terminal"
+description: "Open a terminal at a registered CloudIgniter package, app or Docs root, or the invoking Workspace directory."
+sidebar_label: "dev open terminal"
+sidebar_custom_props:
+  audience: developer
+---
+
+Open a terminal without manually navigating to a registered Workspace target.
+An omitted target selects the directory where the command was invoked.
+
+## Syntax
+
+```text
+dev open terminal [<target>] [--external] [--dry-run] [--json]
+```
+
+## Prerequisites
+
+Install workspace dependencies and invoke inside the private CloudIgniter monorepo
+containing `packages/dev`. Every nested directory is supported. Packages register
+through their CloudIgniter manifests; applications register through a named
+`package.json` or labelled `publisher.config.json`. Docs is a supported root.
+
+For the default mode, use desktop VS Code with a trusted local CloudIgniter
+Workspace open (the checkout or its parent folder), and make the `code` command
+available. DEV automatically installs **CloudIgniter Workspace Terminals** from
+its bundled local extension on first use; no Marketplace download is needed.
+If VS Code has not activated it yet, enable the extension, run **Developer: Reload
+Window**, then retry. No interactive TTY is required for the request transport.
+
+`--external` uses the installed system terminal application instead.
+
+## Parameters
+
+| Parameter    | Meaning                                                                                                                                                                               |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `<target>`   | Registered name such as `core`, `docs`, `template`, `jodaris` or `cloudigniter`; full CloudIgniter manifest name or explicit `packages/core` / `apps/cloudigniter.io` path. Optional. |
+| `--external` | Open a separate system terminal window instead of creating a new VS Code integrated terminal.                                                                                         |
+| `--dry-run`  | Preview the resolved directory without opening a terminal or starting a shell.                                                                                                        |
+| `--json`     | Structured preview output; requires `--dry-run`.                                                                                                                                      |
+
+See [common options](./index.mdx#common-options) for diagnostics. `--workspace-root`
+is rejected; it cannot permit an outside invocation.
+
+## Remarks and effects
+
+The default creates a **new integrated terminal** at the selected root, using
+VS Code's configured terminal profile, then returns as soon as its shell starts.
+Each invocation creates a separate terminal, even when the same target already
+has an open terminal. The terminal that ran the command stays available and its
+working directory remains unchanged. Closing the new terminal does not affect
+its invoking terminal.
+
+The helper runs only for trusted CloudIgniter workspaces. It receives a confined
+directory request over an authenticated local connection; it never types or
+executes commands inside existing terminals. `--dry-run` resolves the plan without
+installing the helper or opening a terminal. The old `--in-place` option is removed.
+
+Use `--external` to open a separate system terminal window. Paths are passed as
+arguments; the macOS adapter quotes paths before its controlled shell navigation.
+Missing targets and traversal are refused before a terminal opens. Preview
+requires a valid workspace and registered target too.
+
+See [Workspace convenience](/company-developers/tooling/dev/workspace-tools)
+for detection rules and editor integration.
+
+A project can set `workspaceName` in `publisher.config.json` for a stable short
+name independent of its folder. `apps/cloudigniter.io` registers `cloudigniter`.
+Otherwise folder and manifest names are inferred. Matching repository source
+paths and project IDs are also recognized, so known website names follow reviewed
+relocations. A name matching multiple roots is refused; use a qualified target.
+Arbitrary paths and unregistered directories are never opened.
+
+## Examples
+
+```bash
+pnpm exec dev open terminal core
+pnpm exec dev open terminal @cloudigniter/ui
+pnpm exec dev open terminal docs
+pnpm exec dev open terminal jodaris
+pnpm exec dev open terminal cloudigniter
+pnpm exec dev open terminal packages/next --external
+pnpm exec dev open terminal
+pnpm exec dev open terminal core --dry-run --json
+```
+
+Use `dev open terminal` directly when DEV is already on `PATH`.
+
+## Errors and recovery
+
+- **Outside Workspace:** change into the monorepo or a nested directory first; an override cannot bypass this check.
+- **Missing or unregistered target:** check the target name, manifest or Publisher metadata, and its repository source mapping. Empty app folders are not registered.
+- **Ambiguous name:** use the explicit registered path, such as `packages/core` or `apps/core`, rather than choosing a target by search order.
+- **Invalid path or symlink:** select a registered target name and use real directories inside the workspace.
+- **System terminal unavailable:** install/configure the appropriate terminal application or omit `--external` to create a new VS Code integrated terminal.
+- **macOS automation denied:** allow the launching application to control Terminal in system settings, then retry.
+- **VS Code unavailable:** run inside a local VS Code workspace, or use `--external`.
+- **Helper inactive:** trust the workspace, enable CloudIgniter Workspace Terminals in the active profile, then use Developer: Reload Window and retry.
+- **Multiple workspace windows:** a new terminal carries its window selection; older terminals without it must be reopened, or close the duplicate workspace window.
+- **Terminal request failed:** check the terminal panel before retrying; DEV does not repeat a request that might already have opened a terminal.
+- **Invalid options:** use the parameters above; `--json` requires `--dry-run`, and `--in-place` is no longer supported.
+
+Usage and workspace errors use exit status `2`. Terminal launch failures use a
+nonzero operational status. Success is reported once the new terminal starts;
+its later shell exit status belongs to that separate terminal.

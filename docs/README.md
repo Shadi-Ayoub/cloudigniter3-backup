@@ -77,7 +77,9 @@ contains the maintained Skills documentation.
 The root-mounted `src/components/MediaViewer` adds click/Enter enlargement to
 Markdown images, `ImageWrapper` images and Mermaid SVG diagrams across guide
 surfaces. Its native dialog offers zoom, fit, pointer dragging, arrow-key panning,
-Escape dismissal and focus return, with shared light/dark tokens. No page imports
+Escape dismissal and keyboard focus return, with shared light/dark tokens. Opening
+the viewer blurs its source image; pointer-opened images remain unfocused after
+closing, while keyboard activation restores focus to the source. No page imports
 are needed. Place `data-media-zoom="off"` on a container only to opt out decorative
 media. Keep diagrams as SVG for sharp enlargement.
 
@@ -146,6 +148,9 @@ technologies used to maintain CloudIgniter. Both have viewer controls and full-p
 in the navbar's **Dictionary** dropdown, plus alphabet browsing and search. The mobile
 menu uses the same two rows. One shared dialog implementation
 renders the same MDX used by the full pages, with a separate catalog per audience.
+While either viewer is open, the background page stays at its scroll position.
+The term list and definition scroll independently; closing or navigating restores
+the page's previous scrolling styles and scrollbar gutter.
 
 `dictionary-terms.ts` and `developer-dictionary-terms.ts` own the term
 catalogs. Letter content lives in `dictionary/` and `developer-dictionary/`;
@@ -154,6 +159,12 @@ register new letter imports in `src/components/DictionaryViewer/dictionaries.ts`
 and dev command manuals auto-link internal terms; public pages use only the user
 catalog. Both dictionaries are excluded from general search and feedback and
 included in page dates. Run `pnpm test:dictionary` when changing this behavior.
+
+Dictionary links must match the term's meaning in context. Catalog entries can
+use a fourth tuple item, `{ autoLinkLabel: false }`, to keep ambiguous bare labels
+searchable without automatically linking them. Qualified aliases still link;
+authors can explicitly link a bare term when its technical meaning is clear.
+Claim uses this policy so publishing assertions do not open token definitions.
 
 The planned Users edition is the default; the Developers edition extends it.
 This phase keeps both tools in the existing maintainer preview. The preview

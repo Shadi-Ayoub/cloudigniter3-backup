@@ -74,3 +74,21 @@ jobs:
           path: apps/jodaris/dist/
           if-no-files-found: error
           retention-days: 14
+
+  cloudigniter:
+    name: CloudIgniter website
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: node apps/cloudigniter.io/scripts/check.mjs
+      - run: node apps/cloudigniter.io/scripts/prepare-static-deploy.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cloudigniter-website-${{ github.sha }}
+          path: apps/cloudigniter.io/dist/
+          if-no-files-found: error
+          retention-days: 14

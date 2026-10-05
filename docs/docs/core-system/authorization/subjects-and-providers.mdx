@@ -99,7 +99,7 @@ should fail visibly. Matching is exact and case-sensitive.
 
 ## Amazon Cognito groups
 
-Amazon Cognito puts the user's group memberships in the `cognito:groups` claim of both ID and access tokens.
+Amazon Cognito puts the user's group memberships in the `cognito:groups` [claim](/dictionary/c#claim) of both ID and access tokens.
 A user can belong to multiple groups. Group precedence uses a lower-number-is-stronger convention, with `0` as
 the strongest configured precedence. Cognito groups are flat and cannot contain other groups. See AWS's
 [user pool group documentation](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-user-groups.html).
@@ -131,7 +131,7 @@ const assignments = ciCreateRoleAssignmentsFromIdentityGroups(
 
 If Cognito groups mirror CloudIgniter roles, keep their configured precedence synchronized with the role's
 `precedence` for operational clarity. The core evaluator does not read Cognito precedence; it uses the catalog.
-Also do not interpret `cognito:preferred_role` as an application authorization result. That claim selects an IAM
+Also do not interpret `cognito:preferred_role` as an application authorization result. That [claim](/dictionary/c#claim) selects an IAM
 role for identity-pool credentials and does not replace resource/action/scope evaluation.
 
 AWS describes group-based multi-tenancy as an application design in which your code processes group claims for

@@ -7,13 +7,13 @@ sidebar_custom_props:
   audience: developer
 ---
 
-Use `dev` from the private `@cloudigniter/dev` toolkit for company package maintenance, GitHub operations, template delivery, and release requests. These commands are for CloudIgniter maintainers. Run `pnpm exec dev` with installed workspace dependencies; it prints help without a command. `pnpm dev` runs a package script and does not invoke this parser.
+Use `dev` from the private `@cloudigniter/dev` toolkit for company package maintenance, GitHub operations, template delivery, Workspace convenience, and release requests. These commands are for CloudIgniter maintainers. Run `pnpm exec dev` with installed workspace dependencies; it prints help without a command. `pnpm dev` runs a package script and does not invoke this parser.
 
 ## Command reference A–Z
 
 Select a letter, then a command to read its syntax, parameters, prerequisites, effects, examples, and errors. Commands are alphabetized after the `dev` executable.
 
-[G](#g) · [M](#m) · [N](#n) · [P](#p) · [Q](#q) · [T](#t)
+[G](#g) · [M](#m) · [N](#n) · [O](#o) · [P](#p) · [Q](#q) · [S](#s) · [T](#t)
 
 ### G
 
@@ -63,6 +63,12 @@ Select a letter, then a command to read its syntax, parameters, prerequisites, e
 | [`dev npm status`](./npm-status.mdx) | Read the GitHub status of a release request. |
 | [`dev npm version`](./npm-version.mdx) | Apply reviewed release versions and update the local lockfile. |
 
+### O
+
+| Command | Description |
+| --- | --- |
+| [`dev open terminal`](./open-terminal.mdx) | Open a registered package, app or Docs terminal, or preserve the invoking Workspace directory. |
+
 ### P
 
 | Command | Description |
@@ -96,6 +102,15 @@ Select a letter, then a command to read its syntax, parameters, prerequisites, e
 | [`dev quality list-client-files`](./quality-list-client-files.mdx) | List source files with client-component or browser-only signals. |
 | [`dev quality scan-client-directives`](./quality-scan-client-directives.mdx) | Check compiled JavaScript for missing client directives. |
 
+### S
+
+| Command | Description |
+| --- | --- |
+| [`dev start docs`](./start-docs.mdx) | Start the Docs website. |
+| [`dev start template`](./start-template.mdx) | Start the template in development or from its existing build. |
+| [`dev start website cloudigniter`](./start-website-cloudigniter.mdx) | Start the CloudIgniter website when present. |
+| [`dev start website jodaris`](./start-website-jodaris.mdx) | Start the JODARIS website. |
+
 ### T
 
 | Command | Description |
@@ -117,6 +132,8 @@ Select a letter, then a command to read its syntax, parameters, prerequisites, e
 | `--version` | Print the toolkit version. |
 
 `--clear` applies to package, quality, Next, and module maintenance commands. `--json`, `--profile`, and `--dry-run` are accepted only where listed on the command page; maintenance workers do not require GitHub login. A GitHub profile can also come from `CLOUDIGNITER_PROFILE` for online operations. Use only the options supported by the selected command.
+
+`dev start` and `dev open terminal` require the invoking directory to be inside the monorepo and reject `--workspace-root`. See [Workspace convenience](/company-developers/tooling/dev/workspace-tools).
 
 `dev github setup` prepares the GitHub CLI executable and also works outside a workspace. It does not select or authenticate a company profile.
 

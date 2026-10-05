@@ -91,7 +91,9 @@ should not need Google Fonts or another third-party font service.
 
 Guide Markdown images, ImageWrapper images and Mermaid SVGs use the shared media
 viewer automatically. Keep its implementation in the guide, not application packages.
-Preserve native-dialog focus containment, Escape/close and focus return, labelled
+Blur the source media when opening the viewer. Pointer activation leaves it unfocused
+after closing; keyboard and assistive click activation restore source focus for navigation.
+Preserve native-dialog focus containment, Escape/close and keyboard focus return, labelled
 zoom/fit controls, vector SVG rendering, pointer dragging and arrow-key panning.
 Use `data-media-zoom="off"` on a container to deliberately exclude decorative media.
 Check a raster image and a Mermaid diagram at fit and enlarged sizes in both themes.
@@ -107,6 +109,12 @@ affected pages in a browser. Reuse the current tooling; do not add runtime depen
   Confirm font loading, readable widths, no horizontal page overflow, and usable mobile navigation.
 - For changed controls, verify keyboard focus, sidebar and Resources navigation, code copying, and Dictionary
   opening, search, empty results, and closing as applicable. Check reduced motion and RTL when the changed layout is directional.
+  Both Dictionary Viewers lock the document's scrolling element while open, retain scrollbar space,
+  and keep the term and definition panels scrollable without passing scroll gestures to the page.
+  Preserve the previous scrolling styles on dismissal, route changes and unmount; verify that the
+  background stays at its original position and scrolls again after closing by button, Escape or backdrop.
+  Keep the full-height body in its existing layout; making it a separate scrolling container can reset
+  the document's scroll position. Focus viewer controls with `preventScroll` to avoid moving the page.
 - Wait for hydration and relevant transitions before taking screenshots or asserting interaction results. A screenshot
   of a partially opened menu is not evidence of the finished layout. Native search inputs may consume Escape to clear
   their query; use the explicit close control when testing dismissal after search.

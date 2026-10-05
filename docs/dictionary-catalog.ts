@@ -2,7 +2,12 @@ export type DictionaryTermsByLetter = Readonly<
   Record<
     string,
     ReadonlyArray<
-      readonly [label: string, anchor: string, aliases?: readonly string[]]
+      readonly [
+        label: string,
+        anchor: string,
+        aliases?: readonly string[],
+        options?: { readonly autoLinkLabel?: boolean },
+      ]
     >
   >
 >;
@@ -13,6 +18,7 @@ export type DictionaryTerm = {
   letter: string;
   href: string;
   aliases: readonly string[];
+  autoLinkLabel: boolean;
 };
 
 export function getDictionaryTerms(
@@ -29,10 +35,11 @@ export function getDictionaryTerms(
             ignorePunctuation: true,
           })
         )
-        .map(([label, anchor, aliases = []]) => ({
+        .map(([label, anchor, aliases = [], options]) => ({
           label,
           anchor,
           aliases,
+          autoLinkLabel: options?.autoLinkLabel ?? true,
           letter,
           href: `${basePath}/${letter.toLowerCase()}#${anchor}`,
         }))
