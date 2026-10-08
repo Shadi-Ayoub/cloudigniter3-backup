@@ -2,6 +2,18 @@
 title: DynamoDB Table Structure
 description: Store tenant and Org Unit control-plane records in CloudIgniter's bounded-context System table.
 sidebar_position: 5
+sidebar_label: "Tenant table structure"
+learning:
+  prerequisites:
+    - topic: "Tenant identity and Org Unit trees"
+      href: "/docs/core-system/multi-Tenancy/core-concepts"
+    - topic: "DynamoDB keys and access patterns"
+      href: "/docs/library/dynamodb/table-key-convention"
+  questions:
+    - question: "Which base keys and indexes support identity, active-slug, and Trash lookups?"
+      answer: "Read a Tenant by CI#SYSTEM#TENANT#<id> and CI#META. GSI1's CI#SYSTEM#TENANTS collection uses ACTIVE or DELETED prefixes for active-list and Trash queries; GSI2's TENANT_SLUG partition resolves active slugs. Use conditional base-record mutations for status changes."
+    - question: "How do canonical Org Unit records and Tenant attachment records differ in storage?"
+      answer: "The canonical CI#SYSTEM#ORG_UNIT#<id> record holds the shared node's identity, hierarchy, status, and Tenant set. Each Tenant gets a CI#SYSTEM#TENANT#<tenantId>#ORG_UNITS attachment keyed by canonical path, enabling a strongly consistent direct routing lookup without duplicating the whole node."
 ---
 
 # DynamoDB Table Structure

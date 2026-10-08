@@ -2,6 +2,20 @@
 title: Extending routes and pages
 description: Add an application route and connect it to the appropriate scoped Next.js page.
 sidebar_position: 2
+sidebar_label: "Extend routes"
+learning:
+  prerequisites:
+    - topic: "Logical routes and configuration"
+      href: "/docs/configuration/routes"
+    - topic: "Request resolution and page bootstrap"
+      href: "/docs/architecture/request-lifecycle"
+    - topic: "Authorization concepts and default deny"
+      href: "/docs/core-system/authorization/overview"
+  questions:
+    - question: "Which registration and scoped page changes are both required to expose a custom route?"
+      answer: "Add the logical route to manualCustomRoutes, retaining the generated/core composition, and create its page under the matching ci-global or ci-tenant custom tree. Set tenantScopes only for implemented trees and register any new message namespace before exposing the route."
+    - question: "Where must data operations enforce permissions independently of menu visibility?"
+      answer: "Enforce the registered resource and action in the server page guard and again in every data operation or provider handler. A protected route supplies a sign-in gate, while hidden menu items provide presentation; neither authorizes a sensitive read or mutation by itself."
 ---
 
 # Extending routes and pages

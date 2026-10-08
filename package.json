@@ -22,7 +22,7 @@
     "clean:macos": "find . -type f -name '._*' -print -delete",
     "modules:validate": "pnpm modules:validate:core && pnpm modules:validate:user",
     "modules:validate:core": "dev modules validate --kind=core --workspace-root=.",
-    "modules:validate:user": "ci modules validate --app-root=apps/template --workspace-root=. --root=apps/template/src/custom/modules --no-interactive",
+    "modules:validate:user": "ci modules validate --app-root=apps/templates/cloudigniter-next-aws-v1 --workspace-root=. --root=apps/templates/cloudigniter-next-aws-v1/src/custom/modules --no-interactive",
     "modules:install": "dev modules sync --workspace-root=.",
     "modules:check": "dev modules sync --check --workspace-root=.",
     "test:next": "pnpm --filter @cloudigniter/next test",

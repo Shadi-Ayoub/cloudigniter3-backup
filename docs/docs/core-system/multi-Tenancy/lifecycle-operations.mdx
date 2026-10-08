@@ -1,6 +1,20 @@
 ---
 title: Tenant Lifecycle Operations
 sidebar_position: 6
+sidebar_label: "Tenant lifecycle"
+learning:
+  prerequisites:
+    - topic: "Tenant identity and Org Unit trees"
+      href: "/docs/core-system/multi-Tenancy/core-concepts"
+    - topic: "Authorization concepts and default deny"
+      href: "/docs/core-system/authorization/overview"
+    - topic: "DynamoDB keys and access patterns"
+      href: "/docs/library/dynamodb/table-key-convention"
+  questions:
+    - question: "How do suspension, soft deletion, restoration, and permanent deletion affect a Tenant differently?"
+      answer: "Suspension changes operational status without deleting the Tenant. Soft deletion removes active routing and moves the retained record to Trash while preserving its previous status. Restore reinstates that record and status; permanent deletion separately removes an already-deleted control-plane record after irreversible-action confirmation."
+    - question: "Why must a failed multi-participant deletion retain progress for recovery?"
+      answer: "A multi-resource extension must retain the target, operation ID, and each participant's result so retries reconcile completed steps and safely continue failed ones. The documented Tenant operation owns control-plane records; additional provider resources need an explicit participant and retention policy rather than an assumption that deleting the Tenant purges everything."
 ---
 
 # Tenant Lifecycle Operations

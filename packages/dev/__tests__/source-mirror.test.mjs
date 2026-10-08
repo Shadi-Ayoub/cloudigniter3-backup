@@ -470,6 +470,25 @@ test("first mirror bootstraps an empty repository and retries without creating a
   );
 });
 
+test("reviewed source-root relocation preserves prior mirror ownership and refreshes its receipt", async (t) => {
+  const f = await workspace(t);
+  await f.mirror();
+  const previous = f.git(f.remote, "rev-parse", "main");
+  await mkdir(path.join(f.root, "packages/platform"));
+  f.git(f.root, "mv", "packages/core", "packages/platform/core");
+  f.inventory.projects.core.sourcePath = "packages/platform/core";
+  await f.put(".cloudigniter/repositories.json", f.inventory);
+  f.git(f.root, "add", ".cloudigniter/repositories.json");
+  f.git(f.root, "commit", "-m", "Reviewed source-root move");
+  const result = await f.mirror();
+  assert.equal(result.status, "synchronized");
+  assert.equal(result.targets[0].status, "updated");
+  assert.equal(f.git(f.remote, "rev-parse", "main^"), previous);
+  assert.equal(JSON.parse(f.git(f.remote, "show", "main:.cloudigniter-mirror.json")).sourcePath, "packages/platform/core");
+  assert.equal(f.git(f.remote, "show", "main:src/old.ts"), "export const old = 1;");
+  assert.equal((await f.mirror()).targets[0].status, "unchanged");
+});
+
 test("later mirrors preserve destination history and governance while removing stale managed source", async (t) => {
   const f = await workspace(t);
   await f.mirror();
@@ -553,6 +572,27 @@ test("a concurrent destination update fails a normal push without overwriting it
   f.options.git = normal;
   assert.equal((await f.mirror()).status, "synchronized");
   assert.equal(f.git(f.remote, "show", "main:operator-note.txt"), "keep");
+});
+
+test("independent websites are excluded from source mirroring across repository owners", async (t) => {
+  const f = await workspace(t);
+  for (const [id, owner] of [["cloudigniter-website", "company"], ["jodaris-website", "jodaris"]]) {
+    f.inventory.projects[id] = {
+      type: "website",
+      sourcePath: null,
+      sourceRepository: `${owner}/${id}`,
+      buildRepository: `${owner}/build-${id}`,
+      buildVisibility: "private",
+      delivery: "aws",
+    };
+  }
+  await f.put(".cloudigniter/repositories.json", f.inventory);
+  f.git(f.root, "add", ".cloudigniter/repositories.json");
+  f.git(f.root, "commit", "-m", "Independent website routing");
+  const result = await f.mirror();
+  assert.equal(result.status, "synchronized");
+  assert.deepEqual(result.targets.filter((item) => item.project.endsWith("-website")).map((item) => item.status), ["unmapped", "unmapped"]);
+  assert.ok(!f.calls.some((call) => JSON.stringify(call).includes("jodaris/jodaris-website")));
 });
 
 test("source symlinks and inconsistent repository mappings fail safely", async (t) => {

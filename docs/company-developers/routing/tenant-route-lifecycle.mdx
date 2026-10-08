@@ -2,6 +2,20 @@
 title: Tenant Route Lifecycle
 description: Maintain logical route registration, Tenant-scope enforcement, and scoped Next.js rewrite trees.
 sidebar_position: 1
+sidebar_label: "Tenant routing lifecycle"
+learning:
+  prerequisites:
+    - topic: "Request resolution and page bootstrap"
+      href: "/docs/architecture/request-lifecycle"
+    - topic: "Tenant identity and Org Unit trees"
+      href: "/docs/core-system/multi-Tenancy/core-concepts"
+    - topic: "Logical routes and configuration"
+      href: "/docs/configuration/routes"
+  questions:
+    - question: "How do public pathname normalization and physical routing preserve the resolved Tenant scope?"
+      answer: "Normalize the public path, resolve canonical Tenant and Org Unit context, then match the remaining featurePathname. Validate tenantScopes before authentication and rewrite only to the matching physical tree; a scope mismatch returns route information rather than constructing a resolved context for the wrong page."
+    - question: "Why must an authentication-service failure be handled separately from an anonymous request?"
+      answer: "An unavailable session-verification service does not prove sign-out. Converting it to anonymous state can redirect an authenticated browser to a login view whose Authenticator is already hidden. Preserve the service failure and its recovery path, while reserving ordinary sign-in redirects for genuinely anonymous requests."
 ---
 
 # Tenant route lifecycle
@@ -12,7 +26,7 @@ and template filesystem routes:
 ```text
 packages/core CiRouteDefinition
   → packages/next proxy Tenant resolution and scope enforcement
-  → apps/template/src/kernel/server/routes.ts composes logical registrations
+  → apps/templates/cloudigniter-next-aws-v1/src/kernel/server/routes.ts composes logical registrations
   → (ci-global)/ci-global or (ci-tenant)/ci-tenant physical page
 ```
 
@@ -22,7 +36,7 @@ packages/core CiRouteDefinition
 | ----------------------------------------------- | --------------- |
 | `tenantScopes` contract and public-path builder | `packages/core` |
 | [Proxy](/dictionary/p#proxy) enforcement and internal rewrite | `packages/next` |
-| Logical route registry and physical page entry  | `apps/template` |
+| Logical route registry and physical page entry  | `apps/templates/cloudigniter-next-aws-v1` |
 
 The [proxy](/dictionary/p#proxy) resolves Tenant and Org Unit context before matching the logical
 `featurePathname`. After a route match, it checks the optional

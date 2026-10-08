@@ -2,6 +2,20 @@
 title: Generated files and workflows
 description: Understand every package and website scaffold file, release record and monorepo GitHub workflow.
 sidebar_position: 6
+sidebar_label: "Generated workflows"
+learning:
+  prerequisites:
+    - topic: "GitHub identities and protected branches"
+      href: "/company-developers/publishing/github-setup"
+    - topic: "npm access and trusted staging publishers"
+      href: "/company-developers/publishing/npm-setup"
+    - topic: "Release archives, manifests, and checksums"
+      href: "/company-developers/tooling/dev/release-artifacts"
+  questions:
+    - question: "How do release-policy.json, CODEOWNERS, and the staging verifier cooperate?"
+      answer: "release-policy.json records the permitted package, destinations, registry, access, channel, and approvers; CODEOWNERS routes review of that governance. The staging verifier checks the exact repository, branch, actors, manifest, archive contents, and checksum before staging the unchanged candidate, leaving final npm approval separate."
+    - question: "Which generated files are governance configuration and which arrive with a delivered release?"
+      answer: "Setup generates governance such as README, release-policy.json, CODEOWNERS, npm-stage.mjs, and its workflow. A delivered candidate supplies versioned archive bytes, manifest, and checksum evidence under releases/<version>; setup scaffolding itself is not a delivered or approved release."
 ---
 
 ## What scaffolding does

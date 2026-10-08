@@ -2,6 +2,16 @@
 title: Environment modes
 description: Understand CloudIgniter runtime modes and the strict boundary around developer-only capabilities.
 sidebar_position: 1
+sidebar_label: "Environment modes"
+learning:
+  prerequisites:
+    - topic: "Authentication and identity"
+      href: "/docs/identity/authentication"
+  questions:
+    - question: "Why is environment mode insufficient on its own to grant developer capabilities?"
+      answer: "Mode is a deployment signal, not a grant. A development capability also requires authentication and exact developer membership, enforced independently by trusted operation handlers; changing a public mode label cannot supply either requirement."
+    - question: "How does an explicitly resolved mode help separate live operations from development work?"
+      answer: "An explicit mode makes environment branching predictable and keeps development-only capabilities disabled in test, staging, and production. Pair it with separate deployments, normal Tenant isolation, and authorization; the mode name itself neither partitions records nor makes data disposable."
 ---
 
 CloudIgniter exposes one runtime mode through `CI_ENV_MODE` and, when browser-safe presentation needs it,

@@ -65,7 +65,7 @@ observers for editors, notifications, charts, or provider widgets. Preserve expl
 - Check Light, Dark, System, both DOM strategies, forced mode, and reload persistence. Check manual Light on a
   dark OS and manual Dark on a light OS. Verify foreground/background contrast, mobile, keyboard focus, and RTL.
 - For theme wiring or shared CSS changes, run the configuration regressions under `packages/next/__tests__/theme`
-  and compiled CSS regressions in `apps/template/__tests__/theme-styles.test.ts`, plus owner/consumer type checks.
+  and compiled CSS regressions in `apps/templates/cloudigniter-next-aws-v1/__tests__/theme-styles.test.ts`, plus owner/consumer type checks.
   Browser validation remains necessary for visual claims; report unavailable checks accurately.
 - Keep `docs/docs/configuration/themes.mdx`, the theme API reference, and contributor theming
   architecture aligned when the strategies, defaults, integrations, or supported customization behavior changes.

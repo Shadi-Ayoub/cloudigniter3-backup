@@ -2,6 +2,20 @@
 title: 8. Routes, Handlers, and UI
 description: Associate routes with capabilities and enforce them across server and client boundaries.
 sidebar_position: 8
+sidebar_label: "Routes and UI access"
+learning:
+  prerequisites:
+    - topic: "Server-side authorization enforcement"
+      href: "/docs/core-system/authorization/enforcing-access"
+    - topic: "Logical routes and configuration"
+      href: "/docs/configuration/routes"
+    - topic: "Request resolution and page bootstrap"
+      href: "/docs/architecture/request-lifecycle"
+  questions:
+    - question: "Why do client capability flags complement rather than replace server enforcement?"
+      answer: "Capability flags help the UI hide or disable unavailable actions, but browser state can be altered and requests can bypass the UI. Derive flags from trusted server decisions and repeat the specific permission check at every protected data read or mutation."
+    - question: "How does a route-level requirement differ from a permission check inside its handler?"
+      answer: "A route requirement declares the resource and action needed to enter a page and must be enforced by its server guard. A handler checks the particular operation being performed, such as update or delete, including alternate entry points; permission to view a page does not imply permission to mutate its data."
 ---
 
 # Routes, Handlers, and UI

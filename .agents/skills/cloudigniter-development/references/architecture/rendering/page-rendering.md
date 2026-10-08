@@ -43,11 +43,11 @@ route page
 
 Bootstrapping resolves data; wrappers consume that data and install behavior. Keep these responsibilities separate.
 
-The root page at `apps/template/src/app/page.tsx` composes both `CiLayout` and `CiPage` because it has no route-group layout supplying the internal skeleton. Pages beneath a route-group layout normally render only `CiPage` and their content.
+The root page at `apps/templates/cloudigniter-next-aws-v1/src/app/page.tsx` composes both `CiLayout` and `CiPage` because it has no route-group layout supplying the internal skeleton. Pages beneath a route-group layout normally render only `CiPage` and their content.
 
 ## 2. Bootstrapping contract
 
-`apps/template/src/kernel/server/bootstrap/app-bootstrap.ts` exports the cached server function `appBootstrap()`. It resolves `CiNextContext`, including:
+`apps/templates/cloudigniter-next-aws-v1/src/kernel/server/bootstrap/app-bootstrap.ts` exports the cached server function `appBootstrap()`. It resolves `CiNextContext`, including:
 
 - resolved application and Next.js configuration;
 - proxy-produced request context: tenant, org unit, logical feature pathname, and route;
@@ -65,9 +65,9 @@ Bootstrap depends on the upstream proxy, request-context, and next-intl lifecycl
 
 ## 3. Root layout layer
 
-`apps/template/src/app/layout.tsx` calls `appResolveRootLayoutContext()` before emitting the document shell.
+`apps/templates/cloudigniter-next-aws-v1/src/app/layout.tsx` calls `appResolveRootLayoutContext()` before emitting the document shell.
 
-`apps/template/src/kernel/server/root/appResolveRootLayoutContext.ts`:
+`apps/templates/cloudigniter-next-aws-v1/src/kernel/server/root/appResolveRootLayoutContext.ts`:
 
 1. Calls `appBootstrap()`.
 2. Derives `htmlProps`, including locale, direction, and hydration behavior.
@@ -90,13 +90,13 @@ Keep application-specific root composition in `AppRootWrapper`; keep reusable Ne
 
 ## 4. Route layout layer
 
-Route-group layouts such as `apps/template/src/app/(system)/dashboard/layout.tsx` call `appBootstrap()` and pass the resulting `CiNextContext` to the appropriate `CiLayout` variant.
+Route-group layouts such as `apps/templates/cloudigniter-next-aws-v1/src/app/(system)/dashboard/layout.tsx` call `appBootstrap()` and pass the resulting `CiNextContext` to the appropriate `CiLayout` variant.
 
 Tenant-aware application pages have two internal route roots:
 
 ```text
-apps/template/src/app/(ci-global)/ci-global/
-apps/template/src/app/(ci-tenant)/ci-tenant/
+apps/templates/cloudigniter-next-aws-v1/src/app/(ci-global)/ci-global/
+apps/templates/cloudigniter-next-aws-v1/src/app/(ci-tenant)/ci-tenant/
 ```
 
 Their layouts follow the same contract: call `appBootstrap()` and pass the
@@ -270,7 +270,7 @@ prevents host-default formatting across a reusable UI surface.
 - Bootstrap before rendering a CloudIgniter wrapper that requires context.
 - Pass the same `CiNextContext` through the layout and page layers for one render.
 - Keep `<html>` and `<body>` concerns in root-context resolution and the root layout.
-- Keep application root composition in `apps/template`; keep reusable wrapper behavior in `packages/next` or reusable presentation in `packages/ui`.
+- Keep application root composition in `apps/templates/cloudigniter-next-aws-v1`; keep reusable wrapper behavior in `packages/next` or reusable presentation in `packages/ui`.
 - Resolve developer-tools access on the server and propagate only the boolean capability to client providers. Never let client configuration re-enable Debug Probe after the server denies access.
 - Preserve the `CiLayout -> CiPageWrapper -> CiClientWrapper` chain when changing internal layouts.
 - Preserve both next-intl boundaries unless intentionally redesigning message scope; verify root messages and page overrides separately, including page-owned shell slots.
@@ -303,10 +303,10 @@ When a rendered page lacks context, providers, translations, or expected structu
 
 | Responsibility               | Primary source                                                        |
 | ---------------------------- | --------------------------------------------------------------------- |
-| Document shell               | `apps/template/src/app/layout.tsx`                                    |
-| Root context                 | `apps/template/src/kernel/server/root/appResolveRootLayoutContext.ts` |
-| Application root composition | `apps/template/src/kernel/server/root/AppRootWrapper.tsx`             |
-| System bootstrap             | `apps/template/src/kernel/server/bootstrap/app-bootstrap.ts`          |
+| Document shell               | `apps/templates/cloudigniter-next-aws-v1/src/app/layout.tsx`                                    |
+| Root context                 | `apps/templates/cloudigniter-next-aws-v1/src/kernel/server/root/appResolveRootLayoutContext.ts` |
+| Application root composition | `apps/templates/cloudigniter-next-aws-v1/src/kernel/server/root/AppRootWrapper.tsx`             |
+| System bootstrap             | `apps/templates/cloudigniter-next-aws-v1/src/kernel/server/bootstrap/app-bootstrap.ts`          |
 | Reusable root providers      | `packages/next/src/server/wrapper/CiNextRootWrapper.tsx`              |
 | Layout variants              | `packages/next/src/layout/*/CiLayout.tsx`                             |
 | Server layout wrapper        | `packages/next/src/server/wrapper/CiPageWrapper.tsx`                  |

@@ -2,6 +2,20 @@
 sidebar_position: 3
 title: Data entity manager
 description: Add provider-neutral create, edit, and delete workflows around a CloudIgniter data table.
+sidebar_label: "Data entity manager"
+learning:
+  prerequisites:
+    - topic: "Smart Form definitions and actions"
+      href: "/docs/ui-components/smart-form"
+    - topic: "Data tables, columns, and provider sources"
+      href: "/docs/ui-components/data-table"
+    - topic: "API operations, errors, and feedback"
+      href: "/docs/building-features/api-and-feedback"
+  questions:
+    - question: "How does a manager connect a form, table, and mutation callbacks?"
+      answer: "CiDataEntityManager combines field metadata, create/edit dialogs, actions, pending state, feedback, and destructive confirmation with trusted create/update/delete callbacks. The application owns persistence and supplies renderTable to connect those controls to CiDataTable and its data source."
+    - question: "What must happen to table state and feedback after a successful mutation?"
+      answer: "A successful create or update closes its editor, shows semantic success feedback, and triggers the table's provider refresh. Keep existing data during pending work and refresh after confirmed success; a returned ok: false or thrown failure must retain the appropriate error and editor state."
 ---
 
 # Data entity manager

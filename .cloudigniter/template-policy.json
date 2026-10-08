@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "source": "apps/template",
+  "source": "apps/templates/cloudigniter-next-aws-v1",
   "name": "cloudigniter-app",
   "files": [
     "amplify/auth/backend-auth.ts",
@@ -383,25 +383,25 @@
   "replacements": {
     "next.config.ts": [
       {
-        "from": "path.resolve(__dirname, \"../..\")",
+        "from": "path.resolve(__dirname, \"../../..\")",
         "to": "path.resolve(__dirname)"
       }
     ],
     "src/app/globals.css": [
       {
-        "from": "@source \"../../../../packages/aws/src/**/*.{ts,tsx}\";",
+        "from": "@source \"../../../../../packages/aws/src/**/*.{ts,tsx}\";",
         "to": "@source \"../../node_modules/@cloudigniter/aws/dist/**/*.{js,mjs,cjs}\";"
       },
       {
-        "from": "@source \"../../../../packages/core/src/**/*.{ts,tsx}\";",
+        "from": "@source \"../../../../../packages/core/src/**/*.{ts,tsx}\";",
         "to": "@source \"../../node_modules/@cloudigniter/core/dist/**/*.{js,mjs,cjs}\";"
       },
       {
-        "from": "@source \"../../../../packages/next/src/**/*.{ts,tsx}\";",
+        "from": "@source \"../../../../../packages/next/src/**/*.{ts,tsx}\";",
         "to": "@source \"../../node_modules/@cloudigniter/next/dist/**/*.{js,mjs,cjs}\";"
       },
       {
-        "from": "@source \"../../../../packages/ui/src/**/*.{ts,tsx}\";",
+        "from": "@source \"../../../../../packages/ui/src/**/*.{ts,tsx}\";",
         "to": "@source \"../../node_modules/@cloudigniter/ui/dist/**/*.{js,mjs,cjs}\";"
       }
     ],

@@ -2,6 +2,20 @@
 title: Amplify Backend Build Strategy
 sidebar_position: 1
 description: Architectural reference for CloudIgniter's manifest-driven AWS Amplify backend compiler and post-build system.
+sidebar_label: "Amplify build strategy"
+learning:
+  prerequisites:
+    - topic: "Amplify backend folders and custom resources"
+      href: "/docs/aws-amplify-setup/folder-structure"
+    - topic: "Package ownership and core/custom boundaries"
+      href: "/company-developers/architecture/core-custom-ownership"
+    - topic: "DynamoDB keys and access patterns"
+      href: "/docs/library/dynamodb/table-key-convention"
+  questions:
+    - question: "How do package resource declarations and manifests produce concrete Amplify resources?"
+      answer: "AWS resource modules declare logical handlers, tables, dependencies, environment values, and grants. Backend and Amplify manifests bind those declarations to package-owned factories and schema fragments; contract validation builds the backend shape, then strict post-build planning applies permissions, connections, and outputs to actual constructs."
+    - question: "Which planning and registration steps are needed to add a core handler without duplicating generated output?"
+      answer: "Declare one handler owner and its dependencies in the resource module, register the active manifest binding and factory export, and validate unique backend keys and output names. Planned handlers stay outside the active manifest, and a manifest-bound function must not also be manually added to coreResources."
 ---
 
 # Amplify backend build strategy
@@ -18,7 +32,7 @@ CloudIgniter separates a backend feature into two descriptions:
    dependencies, and permissions.
 2. The **package-owned Amplify implementation** supplies concrete function
    factories and Data schema fragments, while a thin binding in
-   `apps/template/amplify` connects those exports to the target application.
+   `apps/templates/cloudigniter-next-aws-v1/amplify` connects those exports to the target application.
 
 The separation keeps `@cloudigniter/aws` independent of an application template
 and prevents application configuration from leaking into reusable backend logic.
@@ -134,7 +148,7 @@ packages/aws/src/server/backend/
 │           └── index.ts
 └── post-build.ts                 # Plan creation and CDK application
 
-apps/template/amplify/
+apps/templates/cloudigniter-next-aws-v1/amplify/
 ├── backend.ts                    # defineBackend + post-build entry point
 ├── auth/
 │   └── <feature>/<handler>/
@@ -370,7 +384,7 @@ For a CloudIgniter-owned Amplify-managed DynamoDB table, define and export its
 `a.model(...)` fragment from `packages/aws`. The template's core schema
 composition imports the package fragment, and the manifest later resolves that
 model's synthesized table construct. Application-owned models instead belong in
-`apps/template/amplify/custom/data/schemata`; Resource Studio owns only its
+`apps/templates/cloudigniter-next-aws-v1/amplify/custom/data/schemata`; Resource Studio owns only its
 registered folders and generated registry within that custom seam.
 
 Choose the model/table boundary through the
@@ -643,7 +657,7 @@ security convenience.
 ```sh title="Verify backend manifests" showLineNumbers
 pnpm --dir packages/aws test
 pnpm --dir packages/aws typecheck
-pnpm --dir apps/template test
+pnpm --dir apps/templates/cloudigniter-next-aws-v1 test
 ```
 
 The package tests should cover module/manifest validation, environment projection,

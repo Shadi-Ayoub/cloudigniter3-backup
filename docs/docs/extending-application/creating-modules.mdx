@@ -2,6 +2,22 @@
 title: Creating your own modules
 description: Build an optional CloudIgniter module with a dashboard page, configuration, permissions, and an AWS backend.
 sidebar_position: 7
+sidebar_label: "Create a module"
+learning:
+  prerequisites:
+    - topic: "Module installation and lifecycle"
+      href: "/docs/building-features/modules"
+    - topic: "Amplify backend folders and custom resources"
+      href: "/docs/aws-amplify-setup/folder-structure"
+    - topic: "Catalogs, resources, and permissions"
+      href: "/docs/core-system/authorization/catalog-and-permissions"
+    - topic: "Settings categories and runtime values"
+      href: "/docs/configuration/settings"
+  questions:
+    - question: "How do the manifest, command contracts, provider resources, and dashboard page cooperate in the example module?"
+      answer: "The manifest declares identity, compatibility, dashboard metadata, settings, and permissions. Shared command contracts and validation connect the client page's execute calls to the AWS backend facet, whose template provisions resources and whose handler performs operations. The Dashboard hosts the named CiModulePage export."
+    - question: "Which ownership and lifecycle checks prevent a custom module from mutating resources after uninstall begins?"
+      answer: "Resolve the installed module and its recorded resource bindings, authorize the caller, and validate lifecycle state before execution. For writes, combine the item's revision condition with ciAwsExtensionWriteGuard in the transaction so concurrent disablement, uninstallation, or configuration changes reject the mutation."
 ---
 
 # Creating your own modules

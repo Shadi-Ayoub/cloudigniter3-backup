@@ -2,6 +2,20 @@
 title: API calls, errors, and feedback
 description: Use request contracts and report the authoritative outcome of feature operations.
 sidebar_position: 2
+sidebar_label: "API calls and feedback"
+learning:
+  prerequisites:
+    - topic: "Request resolution and page bootstrap"
+      href: "/docs/architecture/request-lifecycle"
+    - topic: "Authentication and identity"
+      href: "/docs/identity/authentication"
+    - topic: "Authorization concepts and default deny"
+      href: "/docs/core-system/authorization/overview"
+  questions:
+    - question: "How do operation failures differ from authentication-service or transport failures?"
+      answer: "An ordinary operation failure can return structured result feedback to its caller. An authentication-service or transport failure means verification could not complete; preserve that distinction, stop protected work, and offer appropriate retry or sign-in recovery instead of treating it as a confirmed denial or anonymous identity."
+    - question: "When should page access produce a 403 or 404 instead of an ordinary operation notification?"
+      answer: "Use a 403 when a trusted server guard confirms denied or suspended access, and a 404 for a missing or disabled page or module. Keep action-level result notifications for operations within an accessible page; a retryable verification failure needs its service-error recovery view."
 ---
 
 # API calls, errors, and feedback

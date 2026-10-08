@@ -1,6 +1,20 @@
 ---
 title: HTTP error pages
 description: Ownership, native Next.js boundaries, and localization for denied and missing pages.
+sidebar_label: "HTTP error pages"
+learning:
+  prerequisites:
+    - topic: "Request resolution and page bootstrap"
+      href: "/docs/architecture/request-lifecycle"
+    - topic: "API operations, errors, and feedback"
+      href: "/docs/building-features/api-and-feedback"
+    - topic: "Package ownership and core/custom boundaries"
+      href: "/company-developers/architecture/core-custom-ownership"
+  questions:
+    - question: "How should ordinary denial or suspension reach the appropriate HTTP error page?"
+      answer: "A confirmed page denial should use the framework forbidden interrupt and shared 403 presentation. Select suspension copy only when trusted evidence shows a retained grant blocked by administrative suspension; otherwise use ordinary denial. Missing pages use 404, while verification failures retain their separate recovery behavior."
+    - question: "Why must development profiling remain compatible with error-page rendering?"
+      answer: "An error-page interrupt can leave component timing data aborted or uninitialized. Profiling must handle that state without generating invalid timing entries or replacing the original 403 with another exception; retain the focused timing regression and browser navigation checks."
 ---
 
 # HTTP error pages

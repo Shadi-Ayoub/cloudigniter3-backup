@@ -2,6 +2,18 @@
 title: ci architecture
 description: Public CLI ownership, target-application resolution and supported integration boundaries.
 sidebar_position: 2
+sidebar_label: "Application CLI internals"
+learning:
+  prerequisites:
+    - topic: "Resource Studio and generated ownership"
+      href: "/docs/resource-studio/overview"
+    - topic: "Package ownership and core/custom boundaries"
+      href: "/company-developers/architecture/core-custom-ownership"
+  questions:
+    - question: "Which package owns an application operation while the public ci executable dispatches it?"
+      answer: "packages/cli owns the public executable, parser, and focused application workers. A worker orchestrates the operation and loads provider implementations through the target application's supported package exports; provider-specific behavior remains in its provider package."
+    - question: "How would you extend a CLI operation without moving provider logic into generic contracts?"
+      answer: "Add command parsing and process policy in the CLI, generic contracts in their owning layer, and provider behavior in the provider's public implementation. Resolve packages and configuration from the selected application root, then validate the worker/provider integration rather than importing the contributor workspace's installation."
 ---
 
 `packages/cli` owns the public `ci` executable. Its parser dispatches application

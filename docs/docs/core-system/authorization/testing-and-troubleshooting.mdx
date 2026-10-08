@@ -2,6 +2,20 @@
 title: 11. Testing and Troubleshooting
 description: Test policy matrices, scope isolation, precedence, time windows, routes, and denial reasons.
 sidebar_position: 11
+sidebar_label: "Authorization tests"
+learning:
+  prerequisites:
+    - topic: "Server-side authorization enforcement"
+      href: "/docs/core-system/authorization/enforcing-access"
+    - topic: "Access scopes and assignments"
+      href: "/docs/core-system/authorization/scopes-and-assignments"
+    - topic: "Continuous Integration and delivery gates"
+      href: "/dictionary/c#continuous-integration"
+  questions:
+    - question: "Which negative cases would expose a cross-Tenant or expired-assignment authorization bug?"
+      answer: "Test a Tenant A grant against Tenant B, an Org Unit outside the trusted ancestry, and an assignment whose window has expired or not started. Also test an expired record that still exists in storage and a system-only grant used for Tenant data; each must deny."
+    - question: "How can deterministic time inputs and decision reasons make a failing policy test reproducible?"
+      answer: "Supply a fixed evaluation time instead of relying on the wall clock, then assert both allowed and the structured decision reason. The same catalog, subject, scope, and time should produce the same evidence, making boundary failures reproducible without timing races."
 ---
 
 # Testing and Troubleshooting

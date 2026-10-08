@@ -2,6 +2,20 @@
 title: Publish the template
 description: Prepare a public application export, request private review and deliver approved bytes without private history.
 sidebar_position: 9
+sidebar_label: "Publish the template"
+learning:
+  prerequisites:
+    - topic: "Standalone template export workflow"
+      href: "/company-developers/tooling/template-export"
+    - topic: "Paired source and build release approvals"
+      href: "/company-developers/publishing/strategy/release-and-delivery"
+    - topic: "GitHub identities and protected branches"
+      href: "/company-developers/publishing/github-setup"
+  questions:
+    - question: "Why is the public template a standalone source export rather than a package archive?"
+      answer: "Customers need an application checkout that installs published npm dependencies and runs outside the monorepo. The template export selects standalone source, overlays, version pins, and scripts; a package tarball is a different distribution format and does not supply the complete application repository workflow."
+    - question: "Which private review and public-history checks precede template delivery?"
+      answer: "Review the recorded integration commit, export policy, selected files, dependency availability, and export digest in the private request. Before public delivery, verify exact independent approval and current public state; preserve public governance and unmanaged files, use only public parents, and update without force-pushing private history."
 ---
 
 ## Source, request and public destinations
@@ -13,8 +27,8 @@ The developer requests approval; the approver delivers reviewed bytes. Both repo
 ## Prepare the export
 
 ```bash
-dev template export --source=apps/template --output=../public-template
-dev template check --source=apps/template --output=../public-template
+dev template export --source=apps/templates/cloudigniter-next-aws-v1 --output=../public-template
+dev template check --source=apps/templates/cloudigniter-next-aws-v1 --output=../public-template
 ```
 
 `export` reads the explicit template policy and writes a new external directory containing the standalone public application. `--source` is workspace-relative and may select another configured application below `apps`; output is a separate directory whose parent exists. Export excludes private toolkit dependencies and workspace-specific material according to the reviewed policy.
@@ -26,7 +40,7 @@ For file selection, overlays, version pins and explicit replacement of old outpu
 ## Request private review
 
 ```bash
-dev template publish --source=apps/template --output=../public-template \
+dev template publish --source=apps/templates/cloudigniter-next-aws-v1 --output=../public-template \
   --summary="Update the application starter" --profile=developer
 ```
 

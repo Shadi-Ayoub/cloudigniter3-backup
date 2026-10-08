@@ -2,6 +2,18 @@
 title: Extending application configuration
 description: Configure supported CloudIgniter capabilities and define typed options for your application features.
 sidebar_position: 4
+sidebar_label: "Extend configuration"
+learning:
+  prerequisites:
+    - topic: "CloudIgniter application configuration"
+      href: "/docs/core-system/configurations/cloudigniter.config.ts"
+    - topic: "Application folders and ownership"
+      href: "/docs/architecture/application-structure"
+  questions:
+    - question: "How can a feature consume custom options through supported configuration seams?"
+      answer: "Use the declared CiNextCoreConfig fields in cloudigniter.config.ts and read configured values through context.config.appCoreConfig. Keep new feature-only options in custom feature code; request-resolved values belong to their documented context sections rather than arbitrary configuration properties."
+    - question: "Why does adding a configuration field require checking the behavior that reads it?"
+      answer: "A property has no effect unless a supported resolver or feature actually consumes it. Check its public type, defaults, runtime boundary, validation, and consuming behavior; adding an arbitrary field does not automatically expose it in request context or implement a capability."
 ---
 
 # Extending application configuration

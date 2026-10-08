@@ -1,0 +1,10 @@
+.disclosure { margin-block: 1.5rem; padding: 0; border: 1px solid var(--ifm-color-emphasis-300); border-radius: 8px; background: var(--ci-doc-surface); font-size: 0.9375rem; line-height: 1.7; }
+.disclosure > summary { min-height: 44px; padding: 0.75rem 1rem; cursor: pointer; color: var(--ifm-heading-color); font-weight: 600; }
+.disclosure > summary:hover, .answer > summary:hover { background: var(--ci-doc-brand-soft); }
+.disclosure[open] > summary { border-bottom: 1px solid var(--ifm-color-emphasis-300); }
+.disclosure > ul, .disclosure > ol { margin: 1rem; padding-inline-start: 1.5rem; }
+.disclosure > ul > li + li, .disclosure > ol > li + li { margin-top: 1rem; }
+.question { margin-bottom: 0; }
+.answer { margin-top: 0.25rem; border-inline-start: 2px solid var(--ifm-color-emphasis-300); padding-inline-start: 0.5rem; }
+.answer > summary { min-height: 44px; padding: 0.5rem; cursor: pointer; color: var(--ifm-color-primary); font-weight: 500; }
+.answer > p { margin: 0.5rem; }

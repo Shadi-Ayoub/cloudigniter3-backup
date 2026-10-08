@@ -1,6 +1,16 @@
 ---
 title: The folder structure
 sidebar_position: 2
+sidebar_label: "Amplify folders"
+learning:
+  prerequisites:
+    - topic: "Application folders and ownership"
+      href: "/docs/architecture/application-structure"
+  questions:
+    - question: "What belongs under amplify/custom rather than in generated core output?"
+      answer: "Application-specific backend resources, Auth additions, Lambda handlers, and Data schema fragments belong under amplify/custom. Register manual resources in amplify/custom/backend.ts and manual schema fragments in amplify/custom/data/schemata/index.ts, keeping generated registries separate."
+    - question: "Why should a generated folder be rebuilt instead of hand-edited?"
+      answer: "The generator owns registered generated folders and can replace them on the next run. Change their source definitions and regenerate; put manual extensions in their supported custom registration seam so regeneration and upgrades preserve them."
 ---
 
 AWS Amplify Gen 2 requires an `amplify` folder at the application root. CloudIgniter's platform definitions and thin composition entry points live in its core subfolders; application additions live only under `amplify/custom`.

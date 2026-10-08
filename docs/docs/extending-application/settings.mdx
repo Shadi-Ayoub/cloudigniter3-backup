@@ -2,6 +2,18 @@
 title: Extending settings
 description: Add validated application settings groups, expose their management fields, and select them for routes.
 sidebar_position: 3
+sidebar_label: "Extend settings"
+learning:
+  prerequisites:
+    - topic: "Settings categories and runtime values"
+      href: "/docs/configuration/settings"
+    - topic: "Application folders and ownership"
+      href: "/docs/architecture/application-structure"
+  questions:
+    - question: "How do you add an application-owned settings group without altering core definitions?"
+      answer: "Register a unique custom group ID with its category, defaults, server validation schema, and Smart Form fields. Preserve core definitions, match field names to schema keys, and deploy/rebuild the shared application and backend registry so both use the same definition."
+    - question: "How does a feature make its custom group available in the resolved settings context?"
+      answer: "Add the group ID to the feature route's settings array, or deliberately mark it alwaysLoad for shared use. Bootstrap loads the selected snapshot into context.settings; use the server snapshot or useCiSettings inside the standard provider, exposing only values appropriate for that page."
 ---
 
 # Extending settings

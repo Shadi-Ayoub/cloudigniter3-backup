@@ -1,6 +1,20 @@
 ---
 title: cloudigniter.config.ts
 description: Configure CloudIgniter authentication, EmberGuard authorization, routing, tenancy, localization, and application behavior.
+sidebar_label: "Application config"
+learning:
+  prerequisites:
+    - topic: "Application folders and ownership"
+      href: "/docs/architecture/application-structure"
+    - topic: "Authentication and identity"
+      href: "/docs/identity/authentication"
+    - topic: "Authorization concepts and default deny"
+      href: "/docs/core-system/authorization/overview"
+  questions:
+    - question: "How does the application configuration select authentication and authorization behavior?"
+      answer: "The application's auth block configures authentication and provider-neutral EmberGuard behavior, including its access-control definition and combining policy. Keep provider identity integration under providers; the application authorizer receives the resolved auth.emberguard.accessControl catalog when compiled."
+    - question: "Why should a consumer import public configuration types instead of package internals?"
+      answer: "Public types from @cloudigniter/core/types describe the supported configuration contract and preserve package boundaries. Depending on internal source paths couples the application to implementation details that can change without being a supported public API."
 ---
 
 # cloudigniter.config.ts

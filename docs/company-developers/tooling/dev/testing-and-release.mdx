@@ -3,6 +3,20 @@ title: Testing and quality gates
 description: Test-first development, package-owned coverage policy and quality enforcement before builds.
 sidebar_position: 5
 slug: /tooling/testing-and-release
+sidebar_label: "Testing and quality"
+learning:
+  prerequisites:
+    - topic: "DEV workspace setup and project selection"
+      href: "/company-developers/tooling/dev/workspace"
+    - topic: "Continuous Integration and delivery gates"
+      href: "/dictionary/c#continuous-integration"
+    - topic: "Package ownership and core/custom boundaries"
+      href: "/company-developers/architecture/core-custom-ownership"
+  questions:
+    - question: "Why must quality gates run before build and packed-artifact release verification?"
+      answer: "Quality establishes the source and test guarantees before distribution artifacts are trusted. Next's gated build runs quality before deleting old output or switching exports, preserving the previous build on failure; packed-artifact release checks then validate the exact bytes intended for review and publication."
+    - question: "How should a later package adopt enforcement without expanding frozen legacy coverage exceptions?"
+      answer: "Opt the package into an explicit policy and prioritize important runtime boundaries. New or changed files must meet the strict standard, while unchanged legacy entries retain their recorded floors. Improve coverage and retire exceptions instead of rehashing them, lowering thresholds, expanding exclusions, or skipping tests to pass."
 ---
 
 CloudIgniter contributors use **red–green–refactor** to develop package behavior. Tests must pass before a package build can succeed, and a verified production package must exist before a maintainer reviews its publish request. `@cloudigniter/next` is the first enforced rollout. Other packages keep their existing workflows until explicitly migrated.

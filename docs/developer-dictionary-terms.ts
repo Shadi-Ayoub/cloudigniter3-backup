@@ -25,6 +25,7 @@ export const developerDictionaryTermsByLetter = {
   ],
   P: [
     ["Package Entry Point", "package-entry-point"],
+    ["Package Layout", "package-layout", ["Package Layouts"]],
     ["Package Ownership", "package-ownership"],
     ["pnpm Workspace", "pnpm-workspace"],
     ["Provider Binding", "provider-binding"],

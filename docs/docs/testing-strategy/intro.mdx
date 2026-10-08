@@ -2,6 +2,18 @@
 title: Testing foundations
 description: Establish explicit deployment isolation and verify real feature boundaries.
 sidebar_position: 1
+sidebar_label: "Testing foundations"
+learning:
+  prerequisites:
+    - topic: "Environment modes and tool access"
+      href: "/docs/environment-modes/intro"
+    - topic: "Application folders and ownership"
+      href: "/docs/architecture/application-structure"
+  questions:
+    - question: "How do isolated fixtures and explicit runtime boundaries make CloudIgniter tests reliable?"
+      answer: "Use separate deployments and provenance-owned fixtures, then exercise the real validation, authorization, provider, and key-construction boundaries. Explicit inputs make results repeatable while preventing test data or cleanup from crossing into unrelated resources or production."
+    - question: "Why should a test verify observable behavior rather than reproduce the implementation?"
+      answer: "Assert outcomes such as allowed or denied operations, persisted state, feedback, and preserved ownership. A test that copies internal branches can agree with the same mistake in the implementation and still miss a broken caller contract or integration boundary."
 ---
 
 # Testing foundations

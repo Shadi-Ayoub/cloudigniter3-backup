@@ -2,16 +2,28 @@
 title: Configure CI_ENV_MODE
 description: Configure the same canonical environment mode for Next.js and Amplify handlers.
 sidebar_position: 3
+sidebar_label: "Set environment mode"
+learning:
+  prerequisites:
+    - topic: "Environment modes and tool access"
+      href: "/docs/environment-modes/intro"
+    - topic: "CloudIgniter application configuration"
+      href: "/docs/core-system/configurations/cloudigniter.config.ts"
+  questions:
+    - question: "Where should CI_ENV_MODE be configured for the runtime that consumes it?"
+      answer: "Set CI_ENV_MODE in the Next.js server environment, such as .env.local, and in the Amplify handler environment, such as amplify/.env. Keep both aligned. NEXT_PUBLIC_CI_ENV_MODE may supply browser presentation hints; custom handlers outside the manifest must declare and validate their environment explicitly."
+    - question: "Why should browser code avoid resolving privileged server environment values?"
+      answer: "Browser values are public and caller-controlled, so they cannot authorize development tools or protected mutations. Resolve privileged environment inputs on the server and again in provider handlers, then expose only safe presentation information to client components."
 ---
 
 For local development, keep the Next.js server, browser presentation, and Amplify handler environment aligned:
 
-```env title="apps/template/.env.local"
+```env title="apps/templates/cloudigniter-next-aws-v1/.env.local"
 CI_ENV_MODE=development
 NEXT_PUBLIC_CI_ENV_MODE=development
 ```
 
-```env title="apps/template/amplify/.env"
+```env title="apps/templates/cloudigniter-next-aws-v1/amplify/.env"
 CI_ENV_MODE=development
 ```
 

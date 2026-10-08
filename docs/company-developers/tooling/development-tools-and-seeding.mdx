@@ -2,6 +2,20 @@
 title: In-application developer tools
 description: Package ownership, authorization and extension rules for development-only debugging and seeding.
 sidebar_position: 5
+sidebar_label: "Developer tools internals"
+learning:
+  prerequisites:
+    - topic: "Development tool gates and seeders"
+      href: "/docs/environment-modes/development-tools-and-seeding"
+    - topic: "Package ownership and core/custom boundaries"
+      href: "/company-developers/architecture/core-custom-ownership"
+    - topic: "DynamoDB keys and access patterns"
+      href: "/docs/library/dynamodb/table-key-convention"
+  questions:
+    - question: "Which layer owns the developer-capability gate and which implements provider seeding?"
+      answer: "Core owns the provider-neutral ciCanAccessDeveloperTools gate. Next.js resolves trusted mode and identity and composes UI/action inputs, while AWS handlers implement seeding and independently require development mode and exact developer membership before provider mutations."
+    - question: "How do provenance markers and idempotent participants constrain seeder extensions?"
+      answer: "Create matching provenance and garbage-collection markers atomically when a single store permits it. Across services, persist participant progress and use idempotent compensation or retry. Adopt or clean up only matching owned resources, repeat trusted gates, and fail safely on collisions, drift, partial failures, or malformed markers."
 ---
 
 The Root Beacon, Debug Probe and seeders are application capabilities governed by
@@ -33,7 +47,7 @@ flowchart LR
 | `packages/next`                       | Server-resolved capability propagation into root and client wrappers                                              |
 | `packages/aws`                        | AppSync handler validation, DynamoDB transactions, marker queries, least-privilege IAM                            |
 | `packages/ui`                         | Toolbar-triggered Seeder dialog, pending buttons, outcome alerts, cleanup confirmation, tenant-row reconciliation |
-| `apps/template/src/custom/dev/seeder` | Application manifest and fixture JSON                                                                             |
+| `apps/templates/cloudigniter-next-aws-v1/src/custom/dev/seeder` | Application manifest and fixture JSON                                                                             |
 | Template core                         | Thin operation allowlist, server actions, Amplify bindings, route composition                                     |
 
 Role IDs are authorization identifiers and remain case-sensitive. Do not map `DEVELOPER` to `developer` inside

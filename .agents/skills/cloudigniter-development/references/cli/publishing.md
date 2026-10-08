@@ -46,7 +46,7 @@ and guide updates together. Workspace review precedes paired release approval;
 the current release verifier does not automatically attest a monorepo PR's approval.
 
 Four committed quality workflows cover the active workspace: DEV, Next, baseline
-platform packages/Config TS and template/Docs/JODARIS/CloudIgniter Website. Keep their checks running for
+platform packages/Config TS and templates/Docs. Independent websites run their own CI. Keep their checks running for
 every PR when required; select observed successful job names, not workflow titles,
 in company `main` protection. A minimal ownership bootstrap can establish the base
 of an empty company repo before an initial import PR; do not rewrite the developer's
@@ -68,7 +68,7 @@ with destination credentials. Pure repository validation is shared through
   Require the configured reviewer on the exact merged PR head, distinct from the
   author, complete bounded listings and successful exact-merge checks/run evidence.
 - Use only the reviewed inventory's company-owned private source repositories.
-  JODARIS maps `apps/jodaris`; CloudIgniter Website maps `apps/cloudigniter.io`. Config TS
+  Independent websites have null source paths and never receive source mirrors or App-token access. Config TS
   remains shared workspace source until explicitly mapped. Never target builds,
   the public template or backup. A configured missing root fails preparation.
 - Configure an organization-owned App with Contents write on the selected sources,
@@ -234,7 +234,7 @@ symlinks, protected base and configured approver; upload reviewed bytes without
 rebuilding with AWS credentials. Configure OIDC and environment variables
 `AWS_ROLE_ARN`, `AWS_REGION`, `SITE_BUCKET`, `CLOUDFRONT_DISTRIBUTION_ID` remotely.
 The scaffold creates no resources. Do not deploy server-rendered `.next` output as
-static files. JODARIS source maps to apps/jodaris. CloudIgniter Website maps to apps/cloudigniter.io.
+static files. The website source/build pairs are independent of the workspace: `cloudigniter-io/cloudigniter-website` / `cloudigniter-io/build-cloudigniter-website`, and `jodaris/jodaris-website` / `jodaris/build-jodaris-website`.
 Verify AWS's current GitHub OIDC subject format, including immutable IDs for newer
 repositories; do not blindly copy an old trust-policy example.
 
@@ -249,3 +249,31 @@ validation, generated-workflow syntax checks and the guide lifecycle.
 Synchronize help, README, Developers publication/setup/release/template guides,
 command inventory and capability status. Remote setup and live staging remain
 unverified until the owner configures accounts and runs the reviewed workflow.
+
+## Workspace templates and independent website checkouts
+
+Maintain versioned templates under `apps/templates/<template-id>`. The default is
+`apps/templates/cloudigniter-next-aws-v1` with package identity
+`@cloudigniter/cloudigniter-next-aws-v1`. Future templates such as
+`cloudigniter-next-azure-v1` need their own manifest, repository mapping and export
+policy; do not reuse AWS export inputs for another provider.
+
+The company developer downloads the full monorepo for connected packages,
+templates and Docs. Each formal website has null `sourcePath` and independent
+GitHub permissions. Clone/pull only an explicitly selected project to an external
+checkout. Never restore website roots to the monorepo or mirror inventory.
+Local preview/terminal commands require `--site-root=<external-checkout>` and
+matching `publisher.config.json` project identity; workspace Publisher does not
+manage these checkouts. Source CI checks/builds the website without AWS credentials.
+Review the exact public output through a build-repository PR; the scaffolded
+`deploy-aws.yml` uses the reviewed `site/` commit and separately configured AWS OIDC.
+The scaffold does not provision resources or deploy. The actual AWS hosting remains
+a future setup step.
+
+For a reviewed template source-root relocation, validate prior ownership against
+its receipt's ancestor canonical inventory and old source root. Preserve drift
+checks, destination history and project/repository identity; refresh the receipt
+at the new root even if source bytes are identical. Null website roots remove
+those destinations from all future mirror plans; existing remote copies and
+historical monorepo source require a separate owner-reviewed access/migration
+operation. Never equate deleting working-tree folders with erasing Git history.

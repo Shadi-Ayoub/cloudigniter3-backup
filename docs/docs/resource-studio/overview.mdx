@@ -2,6 +2,20 @@
 title: Resource Studio overview
 description: Understand the Data Entity terminology, generated backend and frontend artifacts, Tenant scopes, and supported capabilities.
 sidebar_position: 1
+sidebar_label: "Resource Studio"
+learning:
+  prerequisites:
+    - topic: "Application folders and ownership"
+      href: "/docs/architecture/application-structure"
+    - topic: "Tenant identity and Org Unit trees"
+      href: "/docs/core-system/multi-Tenancy/core-concepts"
+    - topic: "Amplify backend folders and custom resources"
+      href: "/docs/aws-amplify-setup/folder-structure"
+  questions:
+    - question: "How do Data Entities, generated resources, and manual customizations differ in Studio?"
+      answer: "A Data Entity is a descriptor-managed Studio resource whose owned schema, route, manager, actions, and generated registries can be regenerated together. Manual customizations remain outside that managed inventory; existing tables and hand-written or core models are not automatically Studio-managed Data Entities."
+    - question: "Why are persisted keys and Tenant identifiers constructed by trusted server code?"
+      answer: "Trusted server actions re-resolve the request's canonical Tenant and build persisted keys with Core helpers. Letting browser input choose Tenant IDs or key fields would allow partition spoofing and cross-Tenant data access, even if the management page appears to be in the correct workspace."
 ---
 
 Resource Studio turns an application-level data definition into both an AWS Amplify Data model and an administration page. For example, a `Book` definition produces a managed data store, typed create/read/update/delete/list operations, and a `CiDataTable`-based Books manager.

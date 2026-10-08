@@ -26,7 +26,7 @@ GitHub login is unnecessary. Production requires an existing build.
 | Parameter                | Meaning                                                                  |
 | ------------------------ | ------------------------------------------------------------------------ |
 | `--mode=dev\|prod`       | Development by default; production serves an existing build.             |
-| `--port=<number>`        | Integer from `1` through `65535`; an occupied port fails.                |
+| `--port=<number>`        | Integer from `1` through `65535`; default `3000` restarts a matching workspace server when busy. Other occupied ports fail. |
 | `--host=<IP\|localhost>` | Bind address, default `127.0.0.1`. Wildcards use a loopback browser URL. |
 | `--no-open`              | Keep browser navigation manual; the URL is still printed.                |
 | `--dry-run`              | Validate and preview without launching a server or browser.              |
@@ -38,7 +38,7 @@ Workspace convenience commands: the invoking directory must be inside the monore
 
 ## Remarks and effects
 
-The application `dev` script retains module/form generation. Production uses its `start` script and requires a completed Next.js build. Run `pnpm --filter @cloudigniter/template build` before production preview. This command never invokes a build implicitly.
+The application `dev` script retains module/form generation. Production uses its `start` script and requires a completed Next.js build. Run `pnpm --filter @cloudigniter/cloudigniter-next-aws-v1 build` before production preview. This command never invokes a build implicitly.
 
 Resolve the target through its repository inventory `sourcePath`, falling back
 to the conventional location described in
@@ -46,12 +46,29 @@ to the conventional location described in
 Start the package-owned script with the selected port/host. Output streams in the
 foreground; keep the terminal running. The browser opens once the server accepts
 connections. Ctrl+C stops the launched process tree; closing the browser leaves it
-running. A failed launch never silently switches ports or terminates another server.
+running.
+
+If port `3000` is occupied by this workspace's template server, DEV stops the
+matching Next.js CLI and its child processes, waits for shutdown and release of
+the development lock, then starts the template again on `3000` with the requested
+mode and host. This also applies to an explicit `--port=3000`. It recognizes
+matching Next.js `dev` and `start` processes, including ones started directly
+with pnpm. A server that does not stop after three seconds is forcefully
+terminated only after its process identity is rechecked. DEV never changes the
+port automatically. After shutdown, it retries binding the port for up to five
+seconds, displaying a waiting message if release is delayed. If the port stays
+occupied, it reports an error without starting the replacement or sending further
+termination signals. An unrelated service or template from another checkout is
+left running and produces an error. Other occupied ports fail.
+
+Detection covers IPv4 and IPv6 listeners, so changing between `localhost` and
+`127.0.0.1` still restarts the old server on the default port.
 
 Static previews expose only public file types and refuse private paths and
 symlinks. A wildcard `--host=0.0.0.0` or `--host=::` allows network connections;
 the printed/opened URL still uses a local address. `--no-open` suppresses automatic
-navigation. `--dry-run` reads configuration without processes or writes.
+navigation. `--dry-run` reads configuration without launching or stopping any
+server, opening the browser, or writing files.
 
 ## Examples
 
@@ -70,11 +87,14 @@ Use `dev start template` directly when DEV is already on `PATH`.
 - **Outside Workspace or consumer project:** open the private monorepo or a nested directory; omit `--workspace-root`.
 - **Missing target:** restore the application or configure its inventory `sourcePath`. Preview also requires a real target.
 - **Missing production build:** build the target first with its existing workflow, then retry `--mode=prod`.
-- **Port unavailable:** stop its known owner yourself or select a different `--port`. DEV never kills it.
+- **Default port occupied:** a verified template server from this workspace is restarted automatically. For an unrelated or unverified listener, stop its known owner yourself or select a different `--port`.
+- **Port still unavailable after shutdown:** DEV waits up to five seconds for release. Check whether another server has taken port `3000`, stop its known owner or choose a different `--port`, then retry.
+- **Custom port occupied:** stop its known owner yourself or select a different `--port`; only `3000` enables automatic restart.
+- **Restart inspection unavailable:** make `ps` and `lsof` available on macOS/Linux, or PowerShell process inspection on Windows. Otherwise stop the known server manually and retry.
 - **Invalid flags, host or port:** use the parameters above; ports must be positive integers and host must be an IP or `localhost`.
 - **Invalid mapping or symlink:** fix the configuration or use a real directory inside the monorepo.
 - **Browser unavailable:** open the printed URL manually; the server remains running.
-- **Next.js development instance already running:** use its existing URL or stop its known owner first. A different port does not bypass its application lock.
+- **Next.js development instance already running on another port:** use its existing URL or stop its known owner first. Restart detects the selected default port; changing ports does not bypass the application's development lock.
 - **Preparation/server failed:** read the streamed error, restore dependencies or application prerequisites, and retry. The subprocess status is preserved.
 
 Usage and workspace errors use exit status `2`; operational failures preserve the

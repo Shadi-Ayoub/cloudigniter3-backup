@@ -2,6 +2,18 @@
 title: Users guide structure and page retirement
 description: Maintain the application learning journey, historical archive, and cross-guide references.
 sidebar_position: 2
+sidebar_label: "Guide structure and retirement"
+learning:
+  prerequisites:
+    - topic: "Dictionary audiences and contextual links"
+      href: "/company-developers/documentation/dictionaries"
+    - topic: "GitHub branches, commits, and pull requests"
+      href: "https://docs.github.com/en/get-started/using-github/github-flow"
+  questions:
+    - question: "How does the learning-path manifest keep current pages separate from historical guidance?"
+      answer: "docs/user-guide-structure.json explicitly assigns current documents to chapters and nested groups, with each page in exactly one current path. Historical pages belong to the separate Obsulete section, and API Reference uses its own sidebar, keeping active learning sequences from silently ending in retired material."
+    - question: "Which links and date metadata must survive retiring or moving a guide page?"
+      answer: "Preserve original URLs where practical, add the historical warning and replacement, and update active inbound links, labels, and anchors. For physical moves, transfer the page-date registry entry before refreshing dates so createdAt survives; use an explicit redirect or retained migration page if a URL must change."
 ---
 
 # Users guide structure and page retirement

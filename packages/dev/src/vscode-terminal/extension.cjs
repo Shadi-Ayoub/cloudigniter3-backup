@@ -3,6 +3,7 @@ const fs = require("node:fs/promises");
 const path = require("node:path");
 const http = require("node:http");
 const { randomBytes } = require("node:crypto");
+const { version: extensionVersion } = require("./package.json");
 
 async function realDirectory(directory) {
   const actual = await fs.realpath(directory);
@@ -11,7 +12,7 @@ async function realDirectory(directory) {
     !(await fs.lstat(actual)).isDirectory()
   )
     throw new Error(
-      "Terminal directories must be real directories without symbolic links.",
+      "Terminal directories must be real directories without symbolic links."
     );
   return actual;
 }
@@ -28,10 +29,10 @@ async function isWorkspace(root) {
   try {
     await realDirectory(root);
     const manifest = JSON.parse(
-      await fs.readFile(path.join(root, "package.json"), "utf8"),
+      await fs.readFile(path.join(root, "package.json"), "utf8")
     );
     const dev = JSON.parse(
-      await fs.readFile(path.join(root, "packages/dev/package.json"), "utf8"),
+      await fs.readFile(path.join(root, "packages/dev/package.json"), "utf8")
     );
     await fs.access(path.join(root, "pnpm-workspace.yaml"));
     return (
@@ -70,7 +71,51 @@ async function discoverRoots(folders) {
   return [...roots];
 }
 
-async function createBridge(api, roots, version = "0.1.0") {
+async function closeWorkspaceTerminals(api) {
+  if (
+    !api.workspace.isTrusted ||
+    api.env.remoteName ||
+    !(await discoverRoots(api.workspace.workspaceFolders || [])).length
+  )
+    throw new Error(
+      "Terminal cleanup requires a trusted local CloudIgniter Workspace."
+    );
+
+  const terminals = [...api.window.terminals];
+  if (terminals.length) {
+    await new Promise((resolve, reject) => {
+      const remaining = new Set(terminals);
+      const subscription = api.window.onDidCloseTerminal((terminal) => {
+        remaining.delete(terminal);
+        if (!remaining.size) finish();
+      });
+      const timer = setTimeout(
+        () =>
+          finish(
+            new Error(
+              "Some terminals did not close; workspace startup was stopped."
+            )
+          ),
+        8000
+      );
+      function finish(error) {
+        clearTimeout(timer);
+        subscription.dispose();
+        if (error) reject(error);
+        else resolve();
+      }
+      try {
+        for (const terminal of terminals) terminal.dispose();
+      } catch (error) {
+        finish(error);
+      }
+    });
+  }
+  // Command variables must resolve to text before VS Code launches the task.
+  return `Closed ${terminals.length} local VS Code terminals.`;
+}
+
+async function createBridge(api, roots, version = extensionVersion) {
   const token = randomBytes(32).toString("hex");
   const files = [];
   const server = http.createServer(async (request, response) => {
@@ -99,7 +144,7 @@ async function createBridge(api, roots, version = "0.1.0") {
     try {
       if (!api.workspace.isTrusted)
         throw new Error(
-          "Trust the CloudIgniter Workspace before opening terminals.",
+          "Trust the CloudIgniter Workspace before opening terminals."
         );
       let body = "";
       for await (const chunk of request) {
@@ -110,7 +155,7 @@ async function createBridge(api, roots, version = "0.1.0") {
       const input = JSON.parse(body);
       if (
         Object.keys(input).some(
-          (k) => !["workspaceRoot", "cwd", "name", "preserveFocus"].includes(k),
+          (k) => !["workspaceRoot", "cwd", "name", "preserveFocus"].includes(k)
         ) ||
         typeof input.workspaceRoot !== "string" ||
         typeof input.cwd !== "string" ||
@@ -126,7 +171,7 @@ async function createBridge(api, roots, version = "0.1.0") {
         !(await isWorkspace(input.workspaceRoot))
       )
         throw new Error(
-          "Terminal target is outside this VS Code CloudIgniter Workspace.",
+          "Terminal target is outside this VS Code CloudIgniter Workspace."
         );
       const cwd = await realDirectory(input.cwd);
       const terminal = api.window.createTerminal({ name: input.name, cwd });
@@ -137,7 +182,7 @@ async function createBridge(api, roots, version = "0.1.0") {
           new Promise((_, reject) => {
             timer = setTimeout(
               () => reject(new Error("The terminal shell did not start.")),
-              8000,
+              8000
             );
           }),
         ]);
@@ -184,7 +229,7 @@ async function createBridge(api, roots, version = "0.1.0") {
           token,
           workspaceRoot: root,
         }),
-        { flag: "wx", mode: 0o600 },
+        { flag: "wx", mode: 0o600 }
       );
       files.push(file);
     }
@@ -224,17 +269,21 @@ async function activate(context) {
         if (active && active.files.length === 1)
           context.environmentVariableCollection.replace(
             "CLOUDIGNITER_VSCODE_TERMINAL_ENDPOINT",
-            active.files[0],
+            active.files[0]
           );
       })
       .catch((error) =>
-        api.window.showErrorMessage(`CloudIgniter terminals: ${error.message}`),
+        api.window.showErrorMessage(`CloudIgniter terminals: ${error.message}`)
       );
     return refresh;
   };
   context.subscriptions.push(
+    api.commands.registerCommand(
+      "cloudigniter.workspaceTerminals.closeAll",
+      () => closeWorkspaceTerminals(api)
+    ),
     api.workspace.onDidChangeWorkspaceFolders(update),
-    api.workspace.onDidGrantWorkspaceTrust(update),
+    api.workspace.onDidGrantWorkspaceTrust(update)
   );
   await update();
 }

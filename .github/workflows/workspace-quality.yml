@@ -33,10 +33,10 @@ jobs:
       - run: node scripts/ci/prepare-template.mjs
       - name: Typecheck the full integration workspace
         run: pnpm typecheck
-      - run: pnpm --filter @cloudigniter/template test
+      - run: pnpm --filter @cloudigniter/cloudigniter-next-aws-v1 test
       - name: Build the reference application
         if: matrix.node == 24
-        run: pnpm --filter @cloudigniter/template build
+        run: pnpm --filter @cloudigniter/cloudigniter-next-aws-v1 build
 
   guide:
     name: Developer guide
@@ -56,39 +56,3 @@ jobs:
       - run: pnpm --filter docs test:search
       - run: pnpm --filter docs typecheck
       - run: pnpm --filter docs build
-
-  jodaris:
-    name: JODARIS website
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-      - run: node apps/jodaris/scripts/check.mjs
-      - run: bash apps/jodaris/scripts/prepare-static-deploy.sh
-      - uses: actions/upload-artifact@v4
-        with:
-          name: jodaris-website-${{ github.sha }}
-          path: apps/jodaris/dist/
-          if-no-files-found: error
-          retention-days: 14
-
-  cloudigniter:
-    name: CloudIgniter website
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-      - run: node apps/cloudigniter.io/scripts/check.mjs
-      - run: node apps/cloudigniter.io/scripts/prepare-static-deploy.mjs
-      - uses: actions/upload-artifact@v4
-        with:
-          name: cloudigniter-website-${{ github.sha }}
-          path: apps/cloudigniter.io/dist/
-          if-no-files-found: error
-          retention-days: 14

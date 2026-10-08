@@ -220,7 +220,6 @@ async function prepare(root, temporary, target, policy, proof, api, git, auth) {
         receipt.project !== target.id ||
         receipt.workspaceRepository !== policy.workspaceRepository ||
         receipt.sourceRepository !== target.sourceRepository ||
-        receipt.sourcePath !== target.sourcePath ||
         !ciMirrorSha(receipt.workspaceCommit) ||
         !ciIsRecord(receipt.files)
       )
@@ -240,10 +239,24 @@ async function prepare(root, temporary, target, policy, proof, api, git, auth) {
           "Mirror receipt is outside current canonical history; refusing replay or rollback.",
         );
       }
+      const historical = await ciMirrorConfiguration(
+        root,
+        receipt.workspaceCommit,
+        git,
+      );
+      const priorProject = historical.inventory.projects[target.id];
+      if (
+        !priorProject?.sourcePath ||
+        priorProject.sourcePath !== receipt.sourcePath ||
+        priorProject.sourceRepository !== target.sourceRepository
+      )
+        throw new Error(
+          "Mirror receipt identity differs from its recorded canonical repository mapping.",
+        );
       prior = await ciMirrorSnapshot(
         root,
         receipt.workspaceCommit,
-        target.sourcePath,
+        priorProject.sourcePath,
         git,
       );
       if (
@@ -260,6 +273,7 @@ async function prepare(root, temporary, target, policy, proof, api, git, auth) {
   const changes = ciMirrorDiff(prior, incoming, current);
   if (
     ciIsRecord(receipt) &&
+    receipt.sourcePath === target.sourcePath &&
     !changes.length &&
     ciMirrorDigest(prior) === ciMirrorDigest(incoming)
   )

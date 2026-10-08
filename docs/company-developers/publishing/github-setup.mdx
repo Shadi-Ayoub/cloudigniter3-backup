@@ -2,11 +2,25 @@
 title: Roles and GitHub setup
 description: The organization configuration, developer and approver responsibilities, and enforcement required on GitHub.
 sidebar_position: 3
+sidebar_label: "GitHub roles and setup"
+learning:
+  prerequisites:
+    - topic: "GitHub branches, commits, and pull requests"
+      href: "https://docs.github.com/en/get-started/using-github/github-flow"
+    - topic: "GitHub Actions workflows, jobs, and runners"
+      href: "https://docs.github.com/en/actions/get-started/understand-github-actions"
+    - topic: "Continuous Integration and delivery gates"
+      href: "/dictionary/c#continuous-integration"
+  questions:
+    - question: "How do organization ownership, personal identity, and independent approval differ?"
+      answer: "The organization owns the company repositories. People authenticate with their own configured accounts, and an independent reviewer approves the author's exact change. A second account belonging to the same person separates credentials but does not create independent human review; npm approval is a separate service permission."
+    - question: "Which branch rules and actual successful checks must be verified before relying on protected main?"
+      answer: "Inspect the effective main rule for PR approval, applicable Code Owner review, stale-review dismissal, conversation resolution, required successful checks, and restrictions on force pushes, deletion, and bypass. Verify actual job names and runs, then test a normal PR to confirm the remote rule requires independent approval."
 ---
 
 ## Organization ownership and personal identities
 
-The organization is `cloudigniter-io`. It owns the repositories and grants people or teams access. `jodaris` is the configured **personal approver account**, not the repository owner prefix. A repository address is therefore `cloudigniter-io/cloudigniter-core`; an approval is submitted by the individual `jodaris`.
+The organization is `cloudigniter-io`. It owns the repositories and grants people or teams access. `jodaris` is the configured **personal approver account**, also the owner prefix for the independent JODARIS source/build website repositories. CloudIgniter product repositories remain under `cloudigniter-io`. A repository address is therefore `cloudigniter-io/cloudigniter-core`; an approval is submitted by the individual `jodaris`.
 
 The following is the configuration recorded in this workspace. The setup sequence below explains how an administrator establishes the matching remote system. Record actual completion, the responsible administrator and verification evidence in an internal setup issue; the presence of local JSON or YAML does not establish that a GitHub setting has been enabled.
 

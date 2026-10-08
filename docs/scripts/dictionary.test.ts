@@ -43,6 +43,25 @@ function links(node: Node): string[] {
   ];
 }
 
+test("package folder layout never opens the UI Layout definition", () => {
+  const tree = paragraph("Keep the immutable package layout; inspect the folder layout and publication layout.");
+  remarkDictionaryTerms({ audience: "developer" })(tree);
+  assert.ok(!links(tree).includes("/dictionary/l#layout"));
+  assert.deepEqual(links(tree), ["/developer-dictionary/p#package-layout"]);
+  const ui = paragraph("The route layout supplies providers; UI Layout sets the shared structure.");
+  remarkDictionaryTerms()(ui);
+  assert.deepEqual(links(ui), ["/dictionary/l#layout", "/dictionary/l#layout"]);
+});
+
+test("CI means Continuous Integration while the lowercase executable stays distinct", () => {
+  const tree = paragraph("CI validates changes; CI/CD prepares delivery. Run ci from CloudIgniter CLI. ci-build and CI_ENV_MODE are identifiers.");
+  remarkDictionaryTerms()(tree);
+  assert.deepEqual(links(tree), [
+    "/dictionary/c#continuous-integration", "/dictionary/c#continuous-delivery", "/dictionary/c#cloudigniter-cli",
+  ]);
+  assert.ok(tree.children?.[0].children?.some((node) => node.type === "text" && node.value?.includes("Run ci")));
+});
+
 test("ordinary claim wording and publishing assertions do not link to authentication", () => {
   const mirrorPage = readFileSync(
     path.join(siteDir, "company-developers/publishing/strategy/source-mirroring.mdx"),

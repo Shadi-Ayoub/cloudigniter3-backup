@@ -3,6 +3,20 @@ title: Template export workflow
 description: Prepare, compare and hand off a standalone public application template from the private workspace.
 sidebar_position: 7
 slug: /tooling/template-export
+sidebar_label: "Template export"
+learning:
+  prerequisites:
+    - topic: "DEV workspace setup and project selection"
+      href: "/company-developers/tooling/dev/workspace"
+    - topic: "Application folders and ownership"
+      href: "/docs/architecture/application-structure"
+    - topic: "npm packages and the registry"
+      href: "https://docs.npmjs.com/about-npm/"
+  questions:
+    - question: "Which inputs ensure a template export can install packages outside the monorepo?"
+      answer: "Use the selected source and explicit export policy: public dependency allowlists and exact versions, standalone configuration overlays, exported scripts, and reviewed text replacements. Remove workspace-only/private tooling dependencies, then compare the pristine export before installing and testing it in a separate copy."
+    - question: "Why should replacement and recovery be based on a known managed export inventory?"
+      answer: "A known inventory identifies the candidate's intended files, transformations, and digest for comparison and review. Local explicit replacement replaces the entire export directory, so preserve custom work first; public delivery separately preserves unmanaged files. If replacement fails after removal begins, inspect partial state and recreate from the reviewed inputs."
 ---
 
 DEV prepares a standalone application from an approved source below `apps`. The
@@ -12,7 +26,7 @@ it has no dependency on private DEV tooling or company repository history.
 ## Prepare the inputs
 
 Choose the application and its reviewed [template policy](./template-policy.mdx).
-The checked-in policy selects `apps/template`; applications may have other names
+The checked-in policy selects `apps/templates/cloudigniter-next-aws-v1`; applications may have other names
 and nested locations under `apps`. Source folder, exported package name and output
 folder are independent choices.
 

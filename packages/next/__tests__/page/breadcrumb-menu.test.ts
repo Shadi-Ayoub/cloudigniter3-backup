@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import type { CiBreadcrumbItem } from "@cloudigniter/core/types";
 import { ciResolveBreadcrumbMenuItems } from "../../src/client/page/ci-resolve-breadcrumb-menu-items";
-import { dashboardBreadcrumbChildren } from "../../../../apps/template/src/app/(system)/dashboard/breadcrumb-menu";
+import { dashboardBreadcrumbChildren } from "../../../../apps/templates/cloudigniter-next-aws-v1/src/app/(system)/dashboard/breadcrumb-menu";
 
 const translate = (key: string) => key;
 

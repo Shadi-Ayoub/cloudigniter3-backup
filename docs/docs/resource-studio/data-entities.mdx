@@ -2,6 +2,20 @@
 title: Create and manage a Data Entity
 description: Define fields, authorization, indexes, scope, and a generated management route in Resource Studio.
 sidebar_position: 2
+sidebar_label: "Create a Data Entity"
+learning:
+  prerequisites:
+    - topic: "Resource Studio and generated ownership"
+      href: "/docs/resource-studio/overview"
+    - topic: "Catalogs, resources, and permissions"
+      href: "/docs/core-system/authorization/catalog-and-permissions"
+    - topic: "DynamoDB keys and access patterns"
+      href: "/docs/library/dynamodb/table-key-convention"
+  questions:
+    - question: "How do resource identity, route, custom fields, and authorization shape generated output?"
+      answer: "The Data Entity descriptor supplies stable identity, model name, scope, logical route, custom fields, and native Amplify access choices. Studio generates its schema, manager, server actions, and registries from that definition and rejects reserved fields or ownership collisions; it does not automatically generate EmberGuard policies."
+    - question: "Why should each secondary index correspond to a specific query access pattern?"
+      answer: "Design each GSI for a concrete query with known partition, sort, and return requirements. Unneeded indexes add storage and write cost; unsupported query patterns can require scans or overly broad permissions. Studio permits up to 19 custom GSIs, so use that capacity deliberately."
 ---
 
 Run Resource Studio from the application root, define a Data Entity in the browser, and apply the generated file transaction. Generation is local and offline: saving a Data Entity does not sign in to AWS and does not run an Amplify sandbox.

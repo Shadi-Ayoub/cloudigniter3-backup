@@ -2,6 +2,20 @@
 title: GitHub commands with dev
 description: Company login, repository inspection, pull requests, issues, workflow runs and safe checkouts.
 sidebar_position: 5
+sidebar_label: "GitHub commands"
+learning:
+  prerequisites:
+    - topic: "GitHub branches, commits, and pull requests"
+      href: "https://docs.github.com/en/get-started/using-github/github-flow"
+    - topic: "DEV workspace setup and project selection"
+      href: "/company-developers/tooling/dev/workspace"
+    - topic: "GitHub identities and protected branches"
+      href: "/company-developers/publishing/github-setup"
+  questions:
+    - question: "Why should a dev GitHub operation explicitly select its account and repository?"
+      answer: "An explicit profile selects the configured human identity and its stored credential, while an explicit project selects the authorized repository mapping. The toolkit verifies account and remote policy rather than guessing from inherited tokens or the current Git remote; GitHub selection does not authenticate npm or AWS."
+    - question: "Which local scaffold operations can be inspected before making a remote change?"
+      answer: "dev github scaffold reads project and release policy and writes a new external setup directory without login, remote creation, or pushes. Inspect its policy, ownership, verifier, and workflow files before committing them. Clone and pull also offer --dry-run previews without authentication, fetching, or writing."
 ---
 
 Run these commands from the complete workspace. [Set up the dev entry point](./index.mdx#use-dev-as-the-entry-point) first. DEV prepares GitHub CLI during installation. If setup was skipped or failed, follow [dev github setup](/commands/dev/github-setup) before signing in. Company developers use `dev` for the GitHub operations listed here.

@@ -75,7 +75,7 @@
     },
     "cloudigniter-next-aws-v1": {
       "type": "template",
-      "sourcePath": "apps/template",
+      "sourcePath": "apps/templates/cloudigniter-next-aws-v1",
       "sourceRepository": "cloudigniter-io/source-cloudigniter-next-aws-v1",
       "buildRepository": "cloudigniter-io/cloudigniter-next-aws-v1",
       "buildVisibility": "public",
@@ -83,7 +83,7 @@
     },
     "cloudigniter-website": {
       "type": "website",
-      "sourcePath": "apps/cloudigniter.io",
+      "sourcePath": null,
       "sourceRepository": "cloudigniter-io/cloudigniter-website",
       "buildRepository": "cloudigniter-io/build-cloudigniter-website",
       "buildVisibility": "private",
@@ -91,9 +91,9 @@
     },
     "jodaris-website": {
       "type": "website",
-      "sourcePath": "apps/jodaris",
-      "sourceRepository": "cloudigniter-io/jodaris-website",
-      "buildRepository": "cloudigniter-io/build-jodaris-website",
+      "sourcePath": null,
+      "sourceRepository": "jodaris/jodaris-website",
+      "buildRepository": "jodaris/build-jodaris-website",
       "buildVisibility": "private",
       "delivery": "aws"
     }

@@ -1,6 +1,20 @@
 ---
 title: Settings architecture
 description: Independent tenant copies, System enforcement, owner-bound preferences, selective loading, and DynamoDB persistence.
+sidebar_label: "Settings architecture"
+learning:
+  prerequisites:
+    - topic: "Settings categories and runtime values"
+      href: "/docs/configuration/settings"
+    - topic: "Package ownership and core/custom boundaries"
+      href: "/company-developers/architecture/core-custom-ownership"
+    - topic: "DynamoDB keys and access patterns"
+      href: "/docs/library/dynamodb/table-key-convention"
+  questions:
+    - question: "Which layers own settings resolution, persistence, and mutation enforcement?"
+      answer: "Core owns registry validation and selection contracts; AWS owns persistence and resolver authorization; Next.js binds the generated client; UI owns management presentation. The template composes trusted actions and the shared custom settings registry, while server/provider boundaries enforce scope and mutation permissions."
+    - question: "How does whole-form saving interact with System enforcement and tenant overwrite behavior?"
+      answer: "Whole-form Save commits the category's validated groups transactionally and persists authorized System rule drafts with values. Tenant saves reject changed locked fields and preserve their local values. Enforcement overlays System values; overwrite separately copies selected saved System fields into local records, using source revisions and one transaction per target."
 ---
 
 # Settings architecture

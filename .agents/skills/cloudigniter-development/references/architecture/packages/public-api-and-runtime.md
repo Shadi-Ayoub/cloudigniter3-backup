@@ -68,8 +68,8 @@ core       → next
 core       → provider implementation
 emberguard → next
 emberguard → provider implementation
-package    → apps/template
-ui         → apps/template
+package    → apps/templates/cloudigniter-next-aws-v1
+ui         → apps/templates/cloudigniter-next-aws-v1
 ```
 
 Inspect the existing package graph before adding a dependency. Use contracts, adapters, callbacks, or dependency injection when direct imports would invert ownership or create cycles.

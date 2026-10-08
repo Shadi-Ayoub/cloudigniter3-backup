@@ -2,6 +2,20 @@
 title: 9. Implementation Scenarios
 description: Apply CloudIgniter ARBAC to common system, global, tenant, Org Unit, support, and workflow cases.
 sidebar_position: 9
+sidebar_label: "Authorization scenarios"
+learning:
+  prerequisites:
+    - topic: "Roles, inheritance, and precedence"
+      href: "/docs/core-system/authorization/roles-and-precedence"
+    - topic: "Access scopes and assignments"
+      href: "/docs/core-system/authorization/scopes-and-assignments"
+    - topic: "Server-side authorization enforcement"
+      href: "/docs/core-system/authorization/enforcing-access"
+  questions:
+    - question: "How would you combine a broad role with a destructive-action deny in the scenarios?"
+      answer: "Grant the registered resource's supported actions and add a deny for the destructive action, such as identity.users.delete, in the same applicable scope. With deny-overrides, reads and updates can remain allowed while the explicit deletion deny wins."
+    - question: "Why does a system-level responsibility not automatically authorize access to every Tenant?"
+      answer: "System scope represents system-only responsibilities and does not implicitly contain Tenant scopes. Cross-Tenant access needs a deliberately applicable assignment, such as an authorized global descendant grant, and still requires a matching resource, action, and supported scope."
 ---
 
 # Implementation Scenarios

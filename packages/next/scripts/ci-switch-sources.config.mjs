@@ -4,13 +4,13 @@ export default {
   // for template
   sourceAlias: {
     alias: "@ci-next/*",
-    appPath: "../../packages/next/src/*",
+    appPath: "../../../packages/next/src/*",
   },
 
   appTemplate: {
-    folderName: "template",
-    tsconfigPath: "../../apps/template/tsconfig.json",
-    globalsCssPath: "../../apps/template/src/app/globals.css",
+    folderName: "cloudigniter-next-aws-v1",
+    tsconfigPath: "../../apps/templates/cloudigniter-next-aws-v1/tsconfig.json",
+    globalsCssPath: "../../apps/templates/cloudigniter-next-aws-v1/src/app/globals.css",
   },
 
   // for the package tsconfig.json path when source of these packages -is src

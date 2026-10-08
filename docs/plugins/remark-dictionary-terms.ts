@@ -76,6 +76,7 @@ function createTransform(includeDeveloperTerms: boolean) {
       if (!term) {
         continue;
       }
+      if (term.caseSensitive && ![term.label, ...term.aliases].includes(matchedText)) continue;
 
       if (matchStart > cursor) {
         replacements.push({

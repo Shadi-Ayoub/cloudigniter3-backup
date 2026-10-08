@@ -1,6 +1,18 @@
 ---
 title: Tenant Scope
 sidebar_position: 4
+sidebar_label: "Tenant scope"
+learning:
+  prerequisites:
+    - topic: "Tenant identity and Org Unit trees"
+      href: "/docs/core-system/multi-Tenancy/core-concepts"
+    - topic: "Authorization concepts and default deny"
+      href: "/docs/core-system/authorization/overview"
+  questions:
+    - question: "How does Tenant scope constrain the data and permissions of a request?"
+      answer: "Canonical Tenant scope identifies the request's data boundary and the scope in which privileges are evaluated. tenantScopes limits where a route is available, while server operations independently authorize the resource and action and construct keys from the trusted request context."
+    - question: "Why must scope come from trusted resolution instead of an arbitrary browser value?"
+      answer: "A browser-supplied Tenant ID, PK, or SK can name another owner's data. Resolve scope through the trusted request and provider path, then derive storage keys on the server; never treat arbitrary browser values as authority for a partition or grant."
 ---
 
 # Tenant scope

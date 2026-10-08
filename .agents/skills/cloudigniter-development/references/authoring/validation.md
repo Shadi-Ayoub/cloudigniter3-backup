@@ -24,7 +24,7 @@ Consider:
 When a public package API changes, validate the owner and at least one consumer. For EmberGuard work, validate the affected portion of:
 
 ```text
-emberguard → core → next → provider → apps/template
+emberguard → core → next → provider → apps/templates/cloudigniter-next-aws-v1
 ```
 
 For request-lifecycle or i18n work, validate the affected portion of:
@@ -74,7 +74,7 @@ Check:
 - public helpers use the correct `/client`, `/server`, or `/lib` entry point;
 - generic EmberGuard APIs remain behind `core`;
 - provider-specific behavior did not leak into generic packages;
-- no package imports from `apps/template`;
+- no package imports from `apps/templates/cloudigniter-next-aws-v1`;
 - no accidental deep imports or duplicate abstractions;
 - no client/server boundary was crossed;
 - request context remains request-specific and minimal;

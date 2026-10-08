@@ -2,6 +2,18 @@
 title: Command design and extension
 description: Shared parsing, terminal, process and compatibility conventions for ci and dev contributors.
 sidebar_position: 4
+sidebar_label: "Command design"
+learning:
+  prerequisites:
+    - topic: "DEV workspace setup and project selection"
+      href: "/company-developers/tooling/dev/workspace"
+    - topic: "GitHub branches, commits, and pull requests"
+      href: "https://docs.github.com/en/get-started/using-github/github-flow"
+  questions:
+    - question: "How does the command grammar separate argument parsing from domain behavior?"
+      answer: "Keep executable grammar, strict flag validation, help, and dispatch in the CLI layer. Send parsed inputs to a focused worker or existing operation, retaining configuration and domain behavior with their owner rather than implementing them inside argument parsing."
+    - question: "Which terminal and process standards keep a command usable in both interactive and automated execution?"
+      answer: "Provide a complete --no-interactive path, explicit worker cwd, and shell-free argument arrays. Stop spinners before streamed output, keep stacks behind --verbose, clear only with --clear, and preserve exit codes: 2 for usage, 1 for operational failure, and 130 for cancellation."
 ---
 
 Both CloudIgniter executables follow shared command and process conventions.

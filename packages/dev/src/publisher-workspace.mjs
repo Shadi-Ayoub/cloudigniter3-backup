@@ -216,6 +216,7 @@ export async function ciPublisherWorkspace(root) {
   for (const file of await fg(
     [
       "apps/*/publisher.config.json",
+      "apps/templates/*/publisher.config.json",
       "packages/*/publisher.config.json",
       "*/publisher.config.json",
     ],
@@ -248,6 +249,7 @@ export async function ciPublisherWorkspace(root) {
         ([key, p]) =>
           metadata.project ? key === metadata.project : p.sourcePath === id,
       );
+      if (entry && entry[1].sourcePath === null) continue;
       if (entry?.[1].sourcePath && entry[1].sourcePath !== id)
         throw new CiDevUsageError(
           `Publisher mapping conflicts with sourcePath for ${id}.`,

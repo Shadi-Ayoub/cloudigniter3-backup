@@ -2,6 +2,20 @@
 title: Environment isolation and data
 description: Separate deployments safely without inventing environment suffixes in CloudIgniter table keys.
 sidebar_position: 4
+sidebar_label: "Environment isolation"
+learning:
+  prerequisites:
+    - topic: "Environment modes and tool access"
+      href: "/docs/environment-modes/intro"
+    - topic: "Tenant identity and Org Unit trees"
+      href: "/docs/core-system/multi-Tenancy/core-concepts"
+    - topic: "DynamoDB keys and access patterns"
+      href: "/docs/library/dynamodb/table-key-convention"
+  questions:
+    - question: "Why must environment isolation be designed into persistence rather than assumed from a mode label?"
+      answer: "CI_ENV_MODE does not add an envMode field or a suffix to canonical table keys. Isolate environments through separate Amplify deployments and physical resources, then apply normal Tenant keys and authorization inside each deployment."
+    - question: "How do Tenant identity and environment boundaries affect the keys used for records?"
+      answer: "Use canonical Core helpers to build capability and Tenant key segments within the selected deployment's table. Environment isolation comes from resource selection, not an invented PK or SK mode suffix; seeder cleanup relies on explicit provenance markers rather than environment-name matching."
 ---
 
 `CI_ENV_MODE` is runtime context. Core tenant records do not store an `envMode` field and CloudIgniter does not

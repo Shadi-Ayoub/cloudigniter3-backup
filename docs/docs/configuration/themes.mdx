@@ -2,6 +2,18 @@
 title: Theming strategies
 description: Understand CloudIgniter appearance modes, DOM strategies, semantic colors, and component theming.
 sidebar_position: 3
+sidebar_label: "Themes"
+learning:
+  prerequisites:
+    - topic: "Application folders and ownership"
+      href: "/docs/architecture/application-structure"
+    - topic: "Settings categories and runtime values"
+      href: "/docs/configuration/settings"
+  questions:
+    - question: "How do CSS tokens, appearance persistence, and DOM strategy serve different responsibilities?"
+      answer: "Appearance selection stores the user's Light, Dark, or System preference. The DOM strategy publishes the effective theme through a class or attribute on html. Semantic CSS tokens define presentation roles such as background and foreground, letting components follow that appearance consistently."
+    - question: "What should you verify when an imperative widget disagrees with the rendered theme?"
+      answer: "Check the effective theme, supported names, configured DOM strategy, and widget synchronization after mounting. The theme hook deliberately starts with light on both the server and initial client render; initialize or update imperative widgets after synchronization while preserving hydration consistency."
 ---
 
 # Theming strategies

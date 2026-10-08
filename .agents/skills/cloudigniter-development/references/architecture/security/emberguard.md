@@ -19,7 +19,7 @@ packages/next
 packages/aws or another provider
     provider-specific implementation
             ↓ consumed by
-apps/template
+apps/templates/cloudigniter-next-aws-v1
     provider selection, configuration, and application composition
 ```
 
@@ -48,7 +48,7 @@ Do not require consumers to import generic public contracts from `@cloudigniter/
 - put Next.js request handling in `packages/emberguard`;
 - bind AWS in `packages/core`;
 - leak Cognito-specific claims into generic role or permission contracts;
-- implement complete reusable security administration in `apps/template`;
+- implement complete reusable security administration in `apps/templates/cloudigniter-next-aws-v1`;
 - expose internal EmberGuard helpers simply for convenience;
 - trust client-controlled request-context cookies as authorization evidence without authoritative validation.
 

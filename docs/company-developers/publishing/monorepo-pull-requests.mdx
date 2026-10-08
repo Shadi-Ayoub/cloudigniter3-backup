@@ -2,6 +2,20 @@
 title: Full-monorepo pull requests
 description: Review a complete CloudIgniter change before selecting its packages or template for publication.
 sidebar_position: 4
+sidebar_label: "Monorepo pull requests"
+learning:
+  prerequisites:
+    - topic: "GitHub branches, commits, and pull requests"
+      href: "https://docs.github.com/en/get-started/using-github/github-flow"
+    - topic: "Integrated development and independent review"
+      href: "/company-developers/publishing/strategy/development-and-review"
+    - topic: "DEV workspace setup and project selection"
+      href: "/company-developers/tooling/dev/workspace"
+  questions:
+    - question: "What should an integrated monorepo PR contain when a template feature changes a package and its guide?"
+      answer: "Include the feature's public contracts, owning-package implementation, provider or framework bindings, template consumer, meaningful tests, guide updates, and release Changesets where needed. Review the complete behavior and dependency direction together, with evidence for compatibility and the delivery sequence."
+    - question: "How does the integrated review relate to the currently separate source and build release requests?"
+      answer: "The monorepo PR reviews the integrated implementation. Source PRs review exact versioned package snapshots, and build PRs review the actual tarballs. Link their request IDs, commits, and CI evidence; the current paired-release verifier does not itself automatically prove prior monorepo approval, so canonical branch governance remains necessary."
 ---
 
 ## Current review workflow

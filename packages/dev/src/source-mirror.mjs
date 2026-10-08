@@ -116,6 +116,7 @@ export async function ciMirrorConfiguration(root, sha, git = ciMirrorGit) {
   const owner = raw.workspaceRepository.split("/")[0];
   for (const project of Object.values(inventory.projects)) {
     if (
+      project.sourcePath &&
       project.sourceRepository &&
       (project.sourceRepository === raw.workspaceRepository ||
         project.sourceRepository.split("/")[0] !== owner)

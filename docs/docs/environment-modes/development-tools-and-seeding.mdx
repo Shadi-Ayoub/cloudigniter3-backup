@@ -2,6 +2,20 @@
 title: Development tools and application seeding
 description: Configure developer-only CloudIgniter features and safely seed or clean up application test data.
 sidebar_position: 5
+sidebar_label: "Tools and seeding"
+learning:
+  prerequisites:
+    - topic: "Environment modes and tool access"
+      href: "/docs/environment-modes/intro"
+    - topic: "Tenant identity and Org Unit trees"
+      href: "/docs/core-system/multi-Tenancy/core-concepts"
+    - topic: "DynamoDB keys and access patterns"
+      href: "/docs/library/dynamodb/table-key-convention"
+  questions:
+    - question: "Which identity and role checks make a development capability eligible?"
+      answer: "Eligibility requires mode development, an authenticated user, and the exact canonical role ID developer. Server actions and provider handlers repeat the gate using trusted identity; differently cased role names and every other environment remain ineligible."
+    - question: "How do seeder markers and participant progress support safe cleanup and retry?"
+      answer: "Atomic provenance markers identify records actually owned by a seeder, so cleanup uses bounded queries and conditional ownership checks instead of deleting lookalikes. Participant progress and idempotent retries reconcile completed work, preserve unrelated or protected resources, and resume only the remaining authorized steps."
 ---
 
 CloudIgniter activates Dev Beacon, Debug Probe, and seeder controls only when all of these are true:
@@ -58,7 +72,7 @@ these diagnostic fixtures do not verify database contents.
 Application seeder definitions and data live in the custom seam:
 
 ```text
-apps/template/src/custom/dev/seeder/
+apps/templates/cloudigniter-next-aws-v1/src/custom/dev/seeder/
 ├── seeder.config.ts
 └── data/
     └── tenants/

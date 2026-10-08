@@ -47,7 +47,7 @@ export async function ciValidateModules({
   const ciDefaultModulesDirectory =
     ciModuleKind === "core"
       ? ciCoreModulesDirectory
-      : resolve(ciWorkspaceRoot, "apps/template/src/modules");
+      : resolve(ciWorkspaceRoot, "apps/templates/cloudigniter-next-aws-v1/src/modules");
 
   const ciModulesDirectory = resolve(
     ciWorkspaceRoot,

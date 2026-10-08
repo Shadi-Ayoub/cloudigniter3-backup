@@ -2,6 +2,18 @@
 title: DynamoDB bounded-context strategy
 description: Decide CloudIgniter table boundaries, access patterns, capacity, indexes, and operational controls safely and cost-effectively.
 sidebar_position: 1
+sidebar_label: "DynamoDB boundaries"
+learning:
+  prerequisites:
+    - topic: "DynamoDB keys and access patterns"
+      href: "/docs/library/dynamodb/table-key-convention"
+    - topic: "Package ownership and core/custom boundaries"
+      href: "/company-developers/architecture/core-custom-ownership"
+  questions:
+    - question: "When should a capability use a separate bounded context rather than extend an existing table?"
+      answer: "Create a separate bounded-context table when capability ownership, IAM, privacy, retention, backup/restore, deployment, workload, or operational isolation materially differs. Related item types can share a table within a compatible boundary; entity type or table-count reduction alone does not determine the design."
+    - question: "Which consistency, cost, and ownership decisions belong in the persistence decision record?"
+      answer: "Record named access patterns, item keys, required consistency, conditions or transactions, pagination, and handler IAM. Include item sizes, query/write frequency, index amplification, capacity and backup choices, ownership and retention boundaries, migration needs, and the alternatives rejected with their measured tradeoffs."
 ---
 
 # DynamoDB bounded-context strategy

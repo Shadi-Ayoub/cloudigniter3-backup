@@ -46,7 +46,7 @@ packages/aws   → descriptor normalization, Amplify capabilities and schema pla
 packages/next  → scoped page, server-action and route planning
 packages/ui    → reusable CiDataEntityManager and CiDataTable presentation
 packages/core  → canonical keys, route contracts and strict merge helpers
-apps/template  → thin composition plus application-owned generated output
+apps/templates/cloudigniter-next-aws-v1  → thin composition plus application-owned generated output
 ```
 
 Do not import template source from a package or move provider/framework compilers into the provider-neutral CLI. Keep application output under `amplify/custom`, `src/custom`, or a scoped `(ci-custom)` route tree. Treat existing template-local platform behavior as migration debt, never as permission for another exception.

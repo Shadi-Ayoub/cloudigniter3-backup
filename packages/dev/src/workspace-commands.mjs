@@ -16,8 +16,8 @@ import {
   ciOpenWorkspaceTerminal,
 } from "./workspace-runtime.mjs";
 
-/** @typedef {{mode?:string,port?:number,host?:string,open?:boolean,dryRun?:boolean,json?:boolean,external?:boolean,workspaceRoot?:string}} WorkspaceFlags */
-/** @typedef {{kind:'server',workspaceRoot:string,target:string,framework:'next'|'docusaurus'|'static',mode:'dev'|'prod',cwd:string,port:number,host:string,url:string,command:string,args:string[],open:boolean}} WorkspaceStartPlan */
+/** @typedef {{mode?:string,port?:number,host?:string,open?:boolean,dryRun?:boolean,json?:boolean,external?:boolean,workspaceRoot?:string,siteRoot?:string}} WorkspaceFlags */
+/** @typedef {{kind:'server',workspaceRoot:string,target:string,framework:'next'|'docusaurus'|'static',mode:'dev'|'prod',cwd:string,port:number,host:string,url:string,command:string,args:string[],open:boolean,restartOnBusy:boolean}} WorkspaceStartPlan */
 /** @typedef {{kind:'terminal',workspaceRoot:string,cwd:string,terminal:'integrated'|'external',package?:string,target?:string}} WorkspaceTerminalPlan */
 
 /** @type {Record<string,{id:string,fallback:string,port:number}>} */
@@ -25,16 +25,48 @@ const workspaceProjects = {
   docs: { id: "cloudigniter-docs", fallback: "docs", port: 3010 },
   template: {
     id: "cloudigniter-next-aws-v1",
-    fallback: "apps/template",
+    fallback: "apps/templates/cloudigniter-next-aws-v1",
     port: 3000,
   },
-  jodaris: { id: "jodaris-website", fallback: "apps/jodaris", port: 3001 },
-  cloudigniter: {
-    id: "cloudigniter-website",
-    fallback: "apps/cloudigniter.io",
-    port: 3002,
-  },
 };
+
+const websiteProjects = {
+  jodaris: { id: "jodaris-website", port: 3001 },
+  cloudigniter: { id: "cloudigniter-website", port: 3002 },
+};
+
+/** Explicit independent checkout; never discover or download website code implicitly.
+ * @param {string} workspace @param {string} target @param {string|undefined} siteRoot
+ */
+async function websiteDirectory(workspace, target, siteRoot) {
+  const project = websiteProjects[/** @type {keyof typeof websiteProjects} */ (target)];
+  if (!project || !siteRoot?.trim())
+    throw new CiDevUsageError(
+      "Independent websites require --site-root=<external-checkout>. Clone the selected website explicitly with dev github clone first.",
+    );
+  const absolute = path.resolve(siteRoot);
+  const filesystemRoot = path.parse(absolute).root;
+  await ciPublisherPath(filesystemRoot, absolute.slice(filesystemRoot.length));
+  const directory = await realpath(absolute);
+  if (
+    !(await lstat(directory)).isDirectory() ||
+    directory === workspace ||
+    directory.startsWith(workspace + path.sep) ||
+    workspace.startsWith(directory + path.sep)
+  )
+    throw new CiDevUsageError(
+      "Website checkout must be a separate directory outside the integration workspace.",
+    );
+  const metadata = ciValidatePublisherMetadata(await optionalJson(directory, "publisher.config.json"));
+  if (metadata.kind !== "website" || metadata.project !== project.id)
+    throw new CiDevUsageError(`Website metadata must select ${project.id}.`);
+  return {
+    directory,
+    contentRoot: path.dirname(directory),
+    relative: path.basename(directory),
+    port: project.port,
+  };
+}
 
 export const ciWorkspaceCommands = {
   "open terminal":
@@ -50,11 +82,12 @@ export const ciWorkspaceHelp = `
   Workspace convenience
     dev start docs [--port=3010] [--mode=dev|prod] [--no-open]
     dev start template [--port=3000] [--mode=dev|prod] [--no-open]
-    dev start website jodaris [--port=3001] [--mode=dev|prod] [--no-open]
-    dev start website cloudigniter [--port=3002] [--mode=dev|prod] [--no-open]
+    dev start website jodaris --site-root=<external-checkout> [--port=3001] [--mode=dev|prod] [--no-open]
+    dev start website cloudigniter --site-root=<external-checkout> [--port=3002] [--mode=dev|prod] [--no-open]
     dev open terminal [<target>] [--external]
     Targets include packages, docs, template, jodaris and cloudigniter.
     --host=<IP|localhost>  Bind a website (default: 127.0.0.1).
+    --site-root=<path>     Explicit independent website checkout for start or open terminal.
     --mode=prod            Serve an existing build; never builds implicitly.
     --no-open              Print the website URL without opening the browser.
     --external             Open a new system terminal window instead of a VS Code terminal.
@@ -63,6 +96,8 @@ export const ciWorkspaceHelp = `
     --dry-run [--json]      Preview the resolved target without starting/opening anything.
     These commands require the invoking directory to be inside the monorepo.
     --workspace-root cannot bypass this requirement. Ctrl+C stops a started website.
+    Docs/template restart their matching Workspace server on a busy default port.
+    Other occupied ports fail; no automatic port changes. Dry-run never stops servers.
 `;
 
 /** @param {string} root @param {string} relative */
@@ -97,7 +132,7 @@ async function projectPath(root, target) {
 /** @param {string} root @param {string} subject */
 async function targetDirectory(root, subject) {
   if (
-    !/^(?:@cloudigniter\/|(?:packages|apps)\/)?[a-z0-9][a-z0-9._-]*$/.test(
+    !/^(?:@cloudigniter\/|packages\/|apps\/(?:templates\/)?)?[a-z0-9][a-z0-9._-]*$/.test(
       subject,
     )
   )
@@ -126,7 +161,7 @@ async function targetDirectory(root, subject) {
     );
   for (const [id, project] of Object.entries(repositories?.projects ?? {}))
     if (project.sourcePath) register(project.sourcePath, id);
-  for (const parent of ["packages", "apps"]) {
+  for (const parent of ["packages", "apps", "apps/templates"]) {
     try {
       for (const entry of await readdir(await ciPublisherPath(root, parent), {
         withFileTypes: true,
@@ -199,8 +234,8 @@ export async function ciCreateWorkspacePlan(
   ciAssertCommandFlags(
     argv,
     terminal
-      ? ["external", "dry-run", "json"]
-      : ["mode", "host", "port", "open", "dry-run", "json"],
+      ? ["external", "dry-run", "json", "site-root"]
+      : ["mode", "host", "port", "open", "dry-run", "json", "site-root"],
   );
   if (flags.workspaceRoot !== undefined)
     throw new CiDevUsageError(
@@ -218,19 +253,38 @@ export async function ciCreateWorkspacePlan(
       );
     throw error;
   }
+  const websiteTarget = terminal
+    ? input[2]
+    : input[1] === "website" ? target : undefined;
+  const independentWebsite =
+    websiteTarget !== undefined && Object.hasOwn(websiteProjects, websiteTarget);
+  if (flags.siteRoot !== undefined && !independentWebsite)
+    throw new CiDevUsageError(
+      "--site-root is supported only for the cloudigniter and jodaris website targets.",
+    );
+  const website = independentWebsite
+    ? await websiteDirectory(root, websiteTarget ?? "", flags.siteRoot)
+    : undefined;
+  if (terminal && website && !flags.external)
+    throw new CiDevUsageError(
+      "Independent website terminals require --external; the VS Code helper is confined to the integration workspace.",
+    );
   if (terminal)
     return {
       kind: "terminal",
       workspaceRoot: root,
       terminal: flags.external ? "external" : "integrated",
-      ...(input[2]
-        ? await targetDirectory(root, input[2])
-        : { cwd: await realpath(cwd) }),
+      ...(website
+        ? { cwd: website.directory, target: input[2] }
+        : input[2]
+          ? await targetDirectory(root, input[2])
+          : { cwd: await realpath(cwd) }),
     };
-  const selected = await projectPath(root, target ?? "");
+  const selected = website ?? (await projectPath(root, target ?? ""));
+  const contentRoot = website?.contentRoot ?? root;
   let directory;
   try {
-    directory = await ciPublisherPath(root, selected.relative);
+    directory = await ciPublisherPath(contentRoot, selected.relative);
     if (!(await lstat(directory)).isDirectory())
       throw new Error("Not a directory");
   } catch (error) {
@@ -250,11 +304,11 @@ export async function ciCreateWorkspacePlan(
   if (mode !== "dev" && mode !== "prod")
     throw new CiDevUsageError("--mode must be dev or prod.");
   const manifest = await optionalJson(
-    root,
+    contentRoot,
     `${selected.relative}/package.json`,
   );
   const metadataValue = await optionalJson(
-    root,
+    contentRoot,
     `${selected.relative}/publisher.config.json`,
   );
   const metadata = metadataValue
@@ -284,7 +338,7 @@ export async function ciCreateWorkspacePlan(
         ? selected.relative
         : `${selected.relative}/${metadata?.buildDirectories?.[0] ?? "dist"}`;
     try {
-      await ciPublisherPath(root, `${publicDirectory}/index.html`);
+      await ciPublisherPath(contentRoot, `${publicDirectory}/index.html`);
     } catch (error) {
       if (ciIsRecord(error) && error.code === "ENOENT")
         throw new CiDevUsageError(
@@ -295,7 +349,7 @@ export async function ciCreateWorkspacePlan(
     command = process.execPath;
     args = [
       fileURLToPath(new URL("./workspace-static.mjs", import.meta.url)),
-      path.join(root, publicDirectory),
+      path.join(contentRoot, publicDirectory),
       host,
       String(port),
     ];
@@ -318,7 +372,7 @@ export async function ciCreateWorkspacePlan(
       );
     if (framework === "docusaurus" && mode === "prod") {
       try {
-        await ciPublisherPath(root, `${selected.relative}/build/index.html`);
+        await ciPublisherPath(contentRoot, `${selected.relative}/build/index.html`);
       } catch (error) {
         if (ciIsRecord(error) && error.code === "ENOENT")
           throw new CiDevUsageError(
@@ -352,6 +406,7 @@ export async function ciCreateWorkspacePlan(
     command,
     args,
     open: flags.open !== false,
+    restartOnBusy: (target === "docs" || target === "template") && port === selected.port,
   };
 }
 

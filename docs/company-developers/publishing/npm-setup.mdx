@@ -2,6 +2,20 @@
 title: npm setup and access
 description: Configure the npm organization, restricted developer toolkit and trusted publishers for approved archives.
 sidebar_position: 7
+sidebar_label: "npm access and staging"
+learning:
+  prerequisites:
+    - topic: "npm packages and the registry"
+      href: "https://docs.npmjs.com/about-npm/"
+    - topic: "GitHub Actions workflows, jobs, and runners"
+      href: "https://docs.github.com/en/actions/get-started/understand-github-actions"
+    - topic: "GitHub identities and protected branches"
+      href: "/company-developers/publishing/github-setup"
+  questions:
+    - question: "Why are npm package visibility and GitHub repository visibility independent?"
+      answer: "GitHub source/build visibility and npm package access are configured in separate services. Private GitHub repositories can supply public npm packages, while the internal DEV package remains restricted. GitHub membership or approval does not automatically grant npm installation or publication permissions."
+    - question: "How do trusted-publisher staging permissions differ from maintainer publication approval?"
+      answer: "A configured trusted publisher permits the matching GitHub workflow identity to submit the exact candidate to native npm staging. The candidate remains unpublished until an authorized npm maintainer reviews and approves it with the required authentication; a staging dist-tag would already publish bytes and is not the same approval hold."
 ---
 
 ## Package access is independent of GitHub visibility

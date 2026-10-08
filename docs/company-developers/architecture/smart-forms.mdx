@@ -2,6 +2,18 @@
 title: Smart Form architecture
 description: Core contract ownership, UI rendering, static generation, and application extension boundaries.
 sidebar_position: 2
+sidebar_label: "Smart Form architecture"
+learning:
+  prerequisites:
+    - topic: "Smart Form definitions and actions"
+      href: "/docs/ui-components/smart-form"
+    - topic: "Package ownership and core/custom boundaries"
+      href: "/company-developers/architecture/core-custom-ownership"
+  questions:
+    - question: "Which cache and generation invariants prevent a stale Smart Form definition?"
+      answer: "Cache immutable compiled definitions by specification/template identity and replace inputs when structure changes. Regenerate published plans after definition edits, preserving the exact generated inventory. Artifacts contain structure only; record values, callbacks, permissions, and dynamic option results remain runtime inputs."
+    - question: "Where should validation live when form definitions are shared across runtime boundaries?"
+      answer: "Keep serializable contracts, merge rules, and layout validation in Core, with input validation and named runtime bindings in UI. The trusted mutation must independently validate submitted domain values and authorize the action; a shared form definition or fixed-form restriction is never the server security boundary."
 ---
 
 # Smart Form architecture

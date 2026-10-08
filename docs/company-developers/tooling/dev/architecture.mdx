@@ -2,6 +2,18 @@
 title: DEV architecture and extension
 description: Toolkit implementation ownership, supported build exports and extension requirements.
 sidebar_position: 10
+sidebar_label: "DEV architecture"
+learning:
+  prerequisites:
+    - topic: "DEV workspace setup and project selection"
+      href: "/company-developers/tooling/dev/workspace"
+    - topic: "Package ownership and core/custom boundaries"
+      href: "/company-developers/architecture/core-custom-ownership"
+  questions:
+    - question: "Why must application packages avoid depending on the private DEV implementation?"
+      answer: "DEV is private company maintenance and build tooling, not an application runtime API. Application packages must keep runtime dependency direction intact; supported DEV tooling exports belong only in development dependencies and build configuration, and the public ci executable never depends on DEV."
+    - question: "Which registration, contract, and validation changes accompany a new DEV operation?"
+      answer: "Add strict grammar, help, catalog registration, and dispatch to a focused owner, with any required private contract and policy validation. Cover invalid input, audience/workspace boundaries, non-interactive behavior, cwd, and exit results, then validate DEV and relevant consuming build scripts or shared CLI tooling."
 ---
 
 `packages/dev` owns company workflows and build tooling. It keeps execution and

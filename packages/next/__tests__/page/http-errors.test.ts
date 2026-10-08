@@ -14,13 +14,13 @@ import * as coreLibrary from "@cloudigniter/core/lib";
 import { CiErrorPage } from "../../../ui/src/client/page/components/CiErrorPage";
 import type { CiNextHttpErrorPageProps } from "../../src/types";
 import { locales } from "../../src/locales";
-import { locales as customLocales } from "../../../../apps/template/src/custom/locales";
+import { locales as customLocales } from "../../../../apps/templates/cloudigniter-next-aws-v1/src/custom/locales";
 
 const require = createRequire(import.meta.url);
 const { renderToStaticMarkup } = require("react-dom/server") as {
   renderToStaticMarkup(node: ReactNode): string;
 };
-const template = new URL("../../../../apps/template/", import.meta.url);
+const template = new URL("../../../../apps/templates/cloudigniter-next-aws-v1/", import.meta.url);
 function load<T>(path: string, mocks: Record<string, unknown>): T {
   const dependencies = { "@cloudigniter/core/lib": coreLibrary, ...mocks };
   const compiled = ts.transpileModule(
@@ -50,7 +50,7 @@ function load<T>(path: string, mocks: Record<string, unknown>): T {
 // Use the framework's CJS interop in this Node test, as Next's bundler does.
 const { CiNextHttpErrorPage } = load<{
   CiNextHttpErrorPage(props: CiNextHttpErrorPageProps): ReactElement;
-}>("../../packages/next/src/ui/server/page/CiNextHttpErrorPage.tsx", {
+}>("../../../packages/next/src/ui/server/page/CiNextHttpErrorPage.tsx", {
   "next/image": require("next/image").default,
   "next/link": require("next/link").default,
   "@cloudigniter/ui/client": { CiErrorPage },
@@ -236,7 +236,7 @@ test("the example invokes the real boundary in development and is absent in othe
   for (const mode of ["development", "production", "test", undefined]) {
     const { CiNextAccessDeniedPreview: Page } = load<{
       CiNextAccessDeniedPreview(): never;
-    }>("../../packages/next/src/ui/server/page/CiNextAccessDeniedPreview.tsx", {
+    }>("../../../packages/next/src/ui/server/page/CiNextAccessDeniedPreview.tsx", {
       "next/navigation": navigation,
       "../../../server/env/ci-get-env-mode": { ciGetEnvMode: () => mode },
     });

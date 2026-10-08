@@ -21,15 +21,15 @@ import type {
 } from "@cloudigniter/core/types";
 import { CiNextModuleManagementPage } from "../../src/ui/client/components/modules/CiNextModuleManagementPage";
 import { locales } from "../../src/locales";
-import { locales as customLocales } from "../../../../apps/template/src/custom/locales";
-import { dashboardBreadcrumbChildren } from "../../../../apps/template/src/app/(system)/dashboard/breadcrumb-menu";
+import { locales as customLocales } from "../../../../apps/templates/cloudigniter-next-aws-v1/src/custom/locales";
+import { dashboardBreadcrumbChildren } from "../../../../apps/templates/cloudigniter-next-aws-v1/src/app/(system)/dashboard/breadcrumb-menu";
 import { ciResolveBreadcrumbMenuItems } from "../../src/client/page/ci-resolve-breadcrumb-menu-items";
 
 const require = createRequire(import.meta.url);
 const { renderToStaticMarkup } = require("react-dom/server") as {
   renderToStaticMarkup(node: ReactNode): string;
 };
-const template = new URL("../../../../apps/template/", import.meta.url);
+const template = new URL("../../../../apps/templates/cloudigniter-next-aws-v1/", import.meta.url);
 
 // Execute the actual template composition, replacing only request/provider boundaries.
 function loadSource<T>(url: URL, mocks: Record<string, unknown>): T {

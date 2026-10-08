@@ -72,7 +72,7 @@ packages/core/tsconfig.tools.json
 }
 ```
 
-apps/template/tsconfig.json
+apps/templates/cloudigniter-next-aws-v1/tsconfig.json
 
 ```json
 {
@@ -153,7 +153,7 @@ I also recommend adding a root coordination config:
     { "path": "./packages/core" },
     { "path": "./packages/aws" },
     { "path": "./packages/next" },
-    { "path": "./apps/template" }
+    { "path": "./apps/templates/cloudigniter-next-aws-v1" }
   ]
 }
 ```

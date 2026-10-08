@@ -2,6 +2,18 @@
 title: Package script compatibility
 description: Map retained package scripts to the canonical DEV command manuals.
 sidebar_position: 11
+sidebar_label: "Package scripts"
+learning:
+  prerequisites:
+    - topic: "DEV workspace setup and project selection"
+      href: "/company-developers/tooling/dev/workspace"
+    - topic: "Continuous Integration and delivery gates"
+      href: "/dictionary/c#continuous-integration"
+  questions:
+    - question: "How do retained package scripts act as compatibility aliases for shared DEV operations?"
+      answer: "Existing package scripts remain complete aliases to the corresponding shared DEV operations, preserving callers in CI, Turbo, and local shortcuts. DEV executes tools directly rather than recursively calling the alias script; package-specific policy and hooks remain configured by the package."
+    - question: "Why must script migration preserve automation and developer shortcut behavior?"
+      answer: "Automation and developer tooling depend on command names, argument handling, working directories, exit codes, and lifecycle hooks. Preserve those observable contracts or migrate their consumers together; changing a script's implementation must not silently omit validation, generation, or release checks."
 ---
 
 Existing package scripts remain aliases for CI, Turbo and developer shortcuts.

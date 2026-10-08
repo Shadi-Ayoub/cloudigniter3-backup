@@ -2,11 +2,25 @@
 title: Run the Application Template
 description: Download the Next.js and AWS template, install its npm packages, create your sandbox, and start CloudIgniter.
 sidebar_position: 2
+sidebar_label: "Run the template"
+learning:
+  prerequisites:
+    - topic: "AWS accounts, SSO profiles, and deployment permissions"
+      href: "/docs/getting-started/before-you-start"
+    - topic: "npm packages and the registry"
+      href: "https://docs.npmjs.com/about-npm/"
+    - topic: "Environment modes and tool access"
+      href: "/docs/environment-modes/intro"
+  questions:
+    - question: "Which files and AWS outputs must be configured before starting the downloaded template?"
+      answer: "Install the downloaded template's npm dependencies, configure .env.local and amplify/.env with aligned modes, sign in to the intended AWS profile, and deploy the sandbox. Keep its generated amplify_outputs.json in the application root, then configure amplify/custom/root-user.json and complete the bootstrap operations before application sign-in."
+    - question: "Why does application administrator initialization follow sandbox creation?"
+      answer: "Bootstrap needs the actual user pool, profile table, and access-control handler created by deployment. The generated outputs identify those resources so initialization permissions can be scoped correctly; the application Root User is distinct from the AWS SSO identity used to deploy them."
 ---
 
 # Run the Application Template
 
-Start your application from **[cloudigniter/template-next-aws](https://github.com/cloudigniter/template-next-aws)**.
+Start your application from **[cloudigniter/cloudigniter-next-aws-v1](https://github.com/cloudigniter/cloudigniter-next-aws-v1)**.
 The template includes the application files and configuration; CloudIgniter packages are installed from npm.
 
 Complete [Before you start: AWS preparation](./before-you-start) first. You need the `developer1` AWS SSO profile,
@@ -18,7 +32,7 @@ downloaded template’s `package.json`.
 Clone the template into a directory for your application:
 
 ```bash
-git clone https://github.com/cloudigniter/template-next-aws.git my-cloudigniter-app
+git clone https://github.com/cloudigniter/cloudigniter-next-aws-v1.git my-cloudigniter-app
 cd my-cloudigniter-app
 ```
 

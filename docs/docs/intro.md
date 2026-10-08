@@ -3,6 +3,7 @@ title: Welcome to CloudIgniter
 description: Follow the application developer learning path from a running template to secure, scoped features.
 sidebar_position: 1
 slug: /intro
+learning: false
 ---
 
 # Welcome to CloudIgniter

@@ -2,6 +2,18 @@
 title: Routes configuration
 description: Register application routes, understand their settings, and connect logical paths to Next.js pages.
 sidebar_position: 2
+sidebar_label: "Route configuration"
+learning:
+  prerequisites:
+    - topic: "Application folders and ownership"
+      href: "/docs/architecture/application-structure"
+    - topic: "Tenant identity and Org Unit trees"
+      href: "/docs/core-system/multi-Tenancy/core-concepts"
+  questions:
+    - question: "How do a logical feature pathname and a Tenant-aware public URL differ?"
+      answer: "The logical feature pathname names the feature, such as /dashboard/books. A public URL additionally carries the Tenant and possibly Org Unit transport, such as /t/acme/dashboard/books. The proxy removes those transport segments before matching the route and rewriting to a scoped page tree."
+    - question: "Which route fields must agree with the scoped physical page tree?"
+      answer: "The logical route key must match the implemented page, tenantScopes must match its global or Tenant page trees, and namespace must select registered messages. protected controls sign-in; any declared access requirement still needs a server guard. Metadata registration alone does not create the page."
 ---
 
 # Routes configuration

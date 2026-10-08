@@ -2,6 +2,20 @@
 title: Org Unit Management
 description: Build tenant Org Unit trees, share departments across companies, and apply predecessor-aware access.
 sidebar_position: 5
+sidebar_label: "Manage Org Units"
+learning:
+  prerequisites:
+    - topic: "Tenant identity and Org Unit trees"
+      href: "/docs/core-system/multi-Tenancy/core-concepts"
+    - topic: "Access scopes and assignments"
+      href: "/docs/core-system/authorization/scopes-and-assignments"
+    - topic: "DynamoDB keys and access patterns"
+      href: "/docs/library/dynamodb/table-key-convention"
+  questions:
+    - question: "How do Tenant attachments relate to the shared canonical Org Unit tree?"
+      answer: "Tenant attachments project access to a single canonical Org Unit rather than creating independent copies. The canonical node stores its Tenant set and hierarchy, while direct Tenant/path attachments support routing. Every child's Tenant set must remain a subset of its parent's."
+    - question: "What hierarchy and lifecycle checks are needed before deleting or suspending a node?"
+      answer: "Verify administrator authority, authoritative node state and version, parent/child Tenant containment, and any affected descendants before changing status or structure. Ordinary Org Unit management retains suspended and archived nodes and exposes no irreversible deletion; disposable fixtures are removed only by matching-provenance seeder cleanup."
 ---
 
 # Org Unit Management

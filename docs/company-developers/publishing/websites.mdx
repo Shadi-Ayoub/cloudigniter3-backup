@@ -2,22 +2,68 @@
 title: Publish websites
 description: Build the guide, review static website output and configure an AWS deployment from its build repository.
 sidebar_position: 10
+sidebar_label: "Publish websites"
+learning:
+  prerequisites:
+    - topic: "GitHub Actions workflows, jobs, and runners"
+      href: "https://docs.github.com/en/actions/get-started/understand-github-actions"
+    - topic: "Paired source and build release approvals"
+      href: "/company-developers/publishing/strategy/release-and-delivery"
+    - topic: "AWS accounts, SSO profiles, and deployment permissions"
+      href: "/docs/getting-started/before-you-start"
+  questions:
+    - question: "How do static and server-rendered website outputs require different hosting contracts?"
+      answer: "A static site exports files including index.html that S3 and CloudFront can serve. A server-rendered application needs a supported runtime hosting contract; uploading Next.js .next output to S3 does not provide a server. Its build, project metadata, and deployment workflow must match the chosen host."
+    - question: "Why must deployment use the reviewed output commit rather than a fresh unverified build?"
+      answer: "The reviewed build commit identifies the output that passed checks and approval. A fresh build can produce different bytes or use changed inputs, breaking that evidence chain. Deploy the exact reviewed output and record its source/build relationship rather than assuming another build is equivalent."
 ---
 
 ## The website delivery contract
 
 The developer guide is a static Docusaurus website. Its private source destination is `cloudigniter-io/cloudigniter-docs`, and its reviewed build destination is `cloudigniter-io/build-cloudigniter-docs`. Build output is committed under `site/` in that build repository, then deployed to S3 and served through CloudFront.
 
-:::note Formal website applications
-The two formal websites have `sourcePath: null` until their applications exist; repository names alone do not create website source or select its runtime.
-:::
+The formal websites are independent private source/build pairs:
 
-The same scaffold can serve `cloudigniter-website` and `jodaris-website` only if their chosen applications produce static output containing `index.html`. Server rendering needs an explicit runtime such as Amplify Hosting or a container service. Uploading Next.js `.next` output to S3 does not supply that runtime.
+| Website | Source repository | Reviewed AWS output repository |
+| --- | --- | --- |
+| CloudIgniter (`cloudigniter.io`) | `cloudigniter-io/cloudigniter-website` | `cloudigniter-io/build-cloudigniter-website` |
+| JODARIS | `jodaris/jodaris-website` | `jodaris/build-jodaris-website` |
+
+Both have `sourcePath: null` in the workspace inventory. This marks source maintained
+outside the monorepo, rather than absent source. The current websites are static
+HTML applications. Repository permissions and an explicit clone control developer
+access; a workspace clone/pull includes packages, templates, Docs and shared files,
+but neither website. These sites have no source-mirroring step.
+
+## Select a website checkout
+
+From the monorepo root, clone only the site you are authorized to maintain:
+
+```bash
+dev github clone cloudigniter-website --output=../websites/cloudigniter-website --profile=developer
+dev github clone jodaris-website --output=../websites/jodaris-website --profile=developer
+```
+
+Each command is an independent action. The external output must not exist before
+clone. For an existing clean `main` checkout, use `dev github pull` with the same
+project and output; it verifies the exact HTTPS origin and updates by fast-forward.
+Select the corresponding output repository separately with `--repository-kind=build`.
+
+Develop source directly in that site's checkout. Push a source feature branch and
+open `dev github pr create --project=<website-id> --repository-kind=source` from the
+monorepo to request source review. The website's own `website-quality.yml` validates
+and stages public output, without AWS credentials or a monorepo checkout. Protect
+its source branch with that check and independent review. Grant developer access
+per source repository and grant output/deployment access separately.
+
+The static scaffold supports both formal websites because they currently stage `dist/index.html`. Server rendering needs an explicit runtime such as Amplify Hosting or a container service. Uploading Next.js `.next` output to S3 does not supply that runtime.
 
 ## Generate and install the deployment scaffold
 
 ```bash
 dev github scaffold cloudigniter-docs --hosting=static --output=../build-guide-setup
+dev github scaffold cloudigniter-website --hosting=static --output=../build-cloudigniter-setup
+dev github scaffold jodaris-website --hosting=static --output=../build-jodaris-setup
 ```
 
 The project ID selects the guide’s configured source/build pair. `--hosting=static` confirms the static output contract. The new external output contains a README, Code Owners and `deploy-aws.yml`, explained in [Generated files and workflows](./generated-files#website-scaffold-files).
@@ -80,27 +126,42 @@ The first command lists recent deployment runs; replace the example ID in the se
 
 The generated S3 sync does not delete old objects. Decide cache headers, retention, removal of retired files and rollback as explicit hosting operations. A failed upload can leave partial website updates; do not assume deployment is atomic. Keep the last known good reviewed build and redeploy it through the approved process when needed.
 
-## Temporary website editions
+## Build and preview the formal websites
 
-JODARIS (`apps/jodaris`) and CloudIgniter Website (`apps/cloudigniter.io`) currently
-serve self-contained HTML pages. Publisher discovers both through their root
-metadata and offers **Check static site** and **Build static release**. Their
-source/build repository pairs remain the configured company destinations.
+Run the website's check and build inside its standalone source checkout:
 
-The CloudIgniter build runs `node apps/cloudigniter.io/scripts/prepare-static-deploy.mjs`
-from the workspace root. It validates source references and inline JavaScript,
-then stages only `dist/index.html`; unexpected files and symlinked outputs fail
-without deleting them. The `CloudIgniter website` CI job performs the same check
-and build, retaining the public output for review without deploying it. Approved
-monorepo merges mirror its source through the normal App-backed synchronization.
+```bash
+# CloudIgniter website checkout
+node scripts/check.mjs
+node scripts/prepare-static-deploy.mjs
 
-Use `dev start website cloudigniter` for source preview, or `--mode=prod` after
-building to inspect the staged output. `dev open terminal cloudigniter` opens at
-its root. See [Workspace convenience](/company-developers/tooling/dev/workspace-tools).
+# JODARIS website checkout
+node scripts/check.mjs
+bash scripts/prepare-static-deploy.sh
+```
 
-When migrating either site to the template, preserve its project mapping and
-Workspace alias, add the application manifest and `dev`/`start` scripts, and
-revise Publisher metadata and the website CI build for its hosting contract.
-A Next.js dependency activates DEV's framework adapter. Only a static export
-containing `index.html` can use the S3/CloudFront scaffold; a server application
-needs a runtime hosting strategy.
+Both builds stage only public output in `dist/`. Copy the contents into `site/` of
+the selected build checkout and open an output-review PR with that website project
+ID and `--repository-kind=build`. Record the exact source commit, CI result and
+artifact hash in the PR. Merge and dispatch the build repository's `deploy-aws.yml`
+only after AWS resources, OIDC and the production variables are configured. AWS
+hosting is a future setup step; local build/scaffold generation does not deploy.
+
+From the monorepo root, explicitly select a downloaded website for local preview:
+
+```bash
+dev start website cloudigniter --site-root=../websites/cloudigniter-website
+dev start website jodaris --site-root=../websites/jodaris-website
+dev open terminal cloudigniter --site-root=../websites/cloudigniter-website --external
+```
+
+Use an absolute checkout path when invoking from a nested monorepo directory.
+Production preview adds `--mode=prod` and requires a prepared `dist/`. Metadata
+must identify the selected website. Workspace Publisher does not discover or edit
+these external repositories.
+
+A future Next.js migration consumes the exported template and released packages
+in the website's own repository. Preserve separate access and review; do not add
+it to monorepo source mirrors or use `workspace:*` dependencies there. Provide
+`dev`/`start` scripts and update the site's CI and deployment contract. A Next.js
+static export can use S3/CloudFront; server rendering requires a supported runtime.

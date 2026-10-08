@@ -2,9 +2,19 @@
 title: Core and custom ownership boundary
 description: Keep CloudIgniter package and template core code upgradeable while application developers and generators work only through explicit custom seams.
 sidebar_position: 1
+sidebar_label: "Core and custom ownership"
+learning:
+  prerequisites:
+    - topic: "Application folders and ownership"
+      href: "/docs/architecture/application-structure"
+  questions:
+    - question: "When is a thin bridge between core and custom lanes justified?"
+      answer: "Use a thin managed bridge when a framework entry point must compose package-owned behavior with explicitly application-owned inputs. The bridge imports or registers those inputs without owning their business logic, and strict merge helpers reject collisions instead of allowing custom code to shadow core definitions."
+    - question: "How does the upgrade rule protect application-owned resources while replacing managed code?"
+      answer: "Upgrades may replace package core and template-managed composition, while preserving explicit custom lanes and their manual registries. Resource Studio may replace only its registered generated inventory within those lanes. Clear ownership prevents an upgrade from guessing whether managed files contain customer changes."
 ---
 
-CloudIgniter applications need a hard ownership boundary so a template upgrade can replace company-maintained code without guessing whether a file contains customer work. A path being inside `apps/template` does not make it application-owned: the template contains both CloudIgniter-managed composition and explicit custom seams.
+CloudIgniter applications need a hard ownership boundary so a template upgrade can replace company-maintained code without guessing whether a file contains customer work. A path being inside `apps/templates/cloudigniter-next-aws-v1` does not make it application-owned: the template contains both CloudIgniter-managed composition and explicit custom seams.
 
 This boundary is mandatory for new work. Existing exceptions are migration debt, not precedents to copy.
 
@@ -13,7 +23,7 @@ This boundary is mandatory for new work. Existing exceptions are migration debt,
 | Lane | Owners | Supported locations and responsibility |
 | --- | --- | --- |
 | Package core | CloudIgniter maintainers | Reusable contracts and algorithms in `packages/core`, Next.js integration in `packages/next`, AWS implementation in `packages/aws`, reusable presentation in `packages/ui`, and CLI orchestration in `packages/cli`. |
-| Template core | CloudIgniter maintainers | Thin framework entry points, provider selection, default pages/configuration, and composition bridges in `apps/template`. An application upgrade may replace these files. |
+| Template core | CloudIgniter maintainers | Thin framework entry points, provider selection, default pages/configuration, and composition bridges in `apps/templates/cloudigniter-next-aws-v1`. An application upgrade may replace these files. |
 | Application custom | Application developers | Provider/application additions under `amplify/custom/**`, configuration and hand-written application extensions under `src/custom/**`, and custom pages under a scoped `(ci-custom)` route tree. |
 | Generated application custom | Resource Studio | Only registered generated entity folders, scoped generated page folders, and generated-owned registries within the application custom lane. |
 | Machine-local state | Local operator/tool | Resource Studio transaction journals under `.cloudigniter/local/**`; never commit them. |
@@ -33,9 +43,9 @@ A template-core entry point may import a custom registry or hook when the framew
 
 Current examples are:
 
-- `apps/template/src/kernel/server/routes.ts`, which composes package-owned core routes with `src/custom/routes` and is imported directly by `cloudigniter.config.ts`;
-- `apps/template/amplify/data/resource.ts`, which composes core and custom schema fragments;
-- `apps/template/amplify/backend.ts` and its backend shape, which compose the core backend with `amplify/custom/backend.ts` and call the custom post-construction hook.
+- `apps/templates/cloudigniter-next-aws-v1/src/kernel/server/routes.ts`, which composes package-owned core routes with `src/custom/routes` and is imported directly by `cloudigniter.config.ts`;
+- `apps/templates/cloudigniter-next-aws-v1/amplify/data/resource.ts`, which composes core and custom schema fragments;
+- `apps/templates/cloudigniter-next-aws-v1/amplify/backend.ts` and its backend shape, which compose the core backend with `amplify/custom/backend.ts` and call the custom post-construction hook.
 
 The bridge remains CloudIgniter-managed. Application developers edit the custom input, not the bridge. Merge helpers reject duplicate route, schema, or backend resource keys so custom code cannot silently shadow core behavior.
 
@@ -72,7 +82,7 @@ The Resource Studio work establishes these upgrade-safe seams:
 
 | Area | V1 result |
 | --- | --- |
-| Routes | `apps/template/src/kernel/server/routes.ts` is a thin composition file; manual and generated custom routes live under `src/custom/routes`; strict merging rejects shadowing. |
+| Routes | `apps/templates/cloudigniter-next-aws-v1/src/kernel/server/routes.ts` is a thin composition file; manual and generated custom routes live under `src/custom/routes`; strict merging rejects shadowing. |
 | Scoped pages | Generated management pages live under Tenant/Global `(ci-custom)` trees and route metadata restricts the allowed Tenant scope. |
 | Data schema | `amplify/custom/data/schemata/index.ts` keeps a manual fragment separate from `registry.generated.ts`; strict schema merging rejects duplicate model/type keys. |
 | Backend resources | The backend shape merges core and custom resource maps with duplicate-key protection; `amplify/custom/backend.ts` is the application hook. |
@@ -85,12 +95,12 @@ The following paths still contain reusable or platform-owned implementation in t
 
 | Status | Current path | Boundary issue and target direction |
 | --- | --- | --- |
-| Active migration debt | `apps/template/amplify/data/schemata/schema-cognito-user.ts`, `schema-emberguard.ts`, and `schema-user.ts` | Active CloudIgniter platform models remain template-local. Move reusable AWS model definitions/bindings to `packages/aws`; retain only application selection and custom schema composition in the template. |
-| Inactive/legacy migration debt | Other files below `apps/template/amplify/data/schemata/**`, including Org Unit, Tenant, system, seeder, and settings schemas | Commented or inactive platform definitions share the core template tree and obscure the supported backend. Either migrate an owned capability with tests or remove the stale definition; do not revive it as new template-local platform code. |
-| Active migration debt | `apps/template/amplify/auth/cognito-user/**`, `apps/template/amplify/functions/system/emberguard/**`, and their concrete imports in `amplify/backend/ci-core-amplify-manifest.ts` | Active provider handlers/resources are CloudIgniter implementation despite being bound from the template. Move the reusable resource factories/handlers into `packages/aws`; keep the target application's manifest binding thin. |
-| Mixed active/legacy debt | The remaining `apps/template/amplify/functions/system/**`, `apps/template/amplify/functions/user/**`, and `apps/template/amplify/auth/post-confirmation/**` | Some directories are inactive or capability-specific, but ownership is not clear from location. Classify each capability, extract reusable provider logic, and delete unsupported remnants instead of adding another flat template function. |
-| Migration debt | `apps/template/src/kernel/**` | The kernel includes reusable bootstrap, API, settings, i18n, and Amplify integration code beyond application configuration/adapters. Extract framework-neutral contracts to `core`, reusable Next.js orchestration to `next`, and AWS behavior to `aws`; leave app-specific binding and configuration only. |
-| Migration debt | `apps/template/src/app/(system)/ci-internal/**/route.ts` | Route entry files may remain framework composition, but several contain complete reusable diagnostics, trace handling, session setup, and Tenant/Org Unit lookup logic. Move the algorithms behind intentional `packages/next` or provider APIs and leave thin handlers. |
+| Active migration debt | `apps/templates/cloudigniter-next-aws-v1/amplify/data/schemata/schema-cognito-user.ts`, `schema-emberguard.ts`, and `schema-user.ts` | Active CloudIgniter platform models remain template-local. Move reusable AWS model definitions/bindings to `packages/aws`; retain only application selection and custom schema composition in the template. |
+| Inactive/legacy migration debt | Other files below `apps/templates/cloudigniter-next-aws-v1/amplify/data/schemata/**`, including Org Unit, Tenant, system, seeder, and settings schemas | Commented or inactive platform definitions share the core template tree and obscure the supported backend. Either migrate an owned capability with tests or remove the stale definition; do not revive it as new template-local platform code. |
+| Active migration debt | `apps/templates/cloudigniter-next-aws-v1/amplify/auth/cognito-user/**`, `apps/templates/cloudigniter-next-aws-v1/amplify/functions/system/emberguard/**`, and their concrete imports in `amplify/backend/ci-core-amplify-manifest.ts` | Active provider handlers/resources are CloudIgniter implementation despite being bound from the template. Move the reusable resource factories/handlers into `packages/aws`; keep the target application's manifest binding thin. |
+| Mixed active/legacy debt | The remaining `apps/templates/cloudigniter-next-aws-v1/amplify/functions/system/**`, `apps/templates/cloudigniter-next-aws-v1/amplify/functions/user/**`, and `apps/templates/cloudigniter-next-aws-v1/amplify/auth/post-confirmation/**` | Some directories are inactive or capability-specific, but ownership is not clear from location. Classify each capability, extract reusable provider logic, and delete unsupported remnants instead of adding another flat template function. |
+| Migration debt | `apps/templates/cloudigniter-next-aws-v1/src/kernel/**` | The kernel includes reusable bootstrap, API, settings, i18n, and Amplify integration code beyond application configuration/adapters. Extract framework-neutral contracts to `core`, reusable Next.js orchestration to `next`, and AWS behavior to `aws`; leave app-specific binding and configuration only. |
+| Migration debt | `apps/templates/cloudigniter-next-aws-v1/src/app/(system)/ci-internal/**/route.ts` | Route entry files may remain framework composition, but several contain complete reusable diagnostics, trace handling, session setup, and Tenant/Org Unit lookup logic. Move the algorithms behind intentional `packages/next` or provider APIs and leave thin handlers. |
 | Duplicate abstraction | `src/kernel/server/amplify/app-amplify-server-client.ts` and `src/kernel/server/api/app-server-client.ts` | Two template-local Amplify server-client constructions can diverge (`api` versus `data` imports). Establish one supported adapter/entry point and migrate consumers before removing either name. |
 | Demo/application mixing | `src/app/(system)/dashboard/tenants/page.tsx` | Static example records and browser-native `window.alert` actions sit in a system page. Move an application example to `(ci-custom)` or replace it with a package-owned, provider-backed core management surface using shared feedback/confirmation patterns. |
 

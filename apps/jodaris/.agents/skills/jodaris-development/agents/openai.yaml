@@ -1,6 +1,0 @@
-interface:
-  display_name: "JODARIS Website"
-  short_description: "JODARIS design, content, development, and migration"
-  default_prompt: "Use $jodaris-development to work on the JODARIS website while preserving its design, content, and CloudIgniter architecture boundaries."
-policy:
-  allow_implicit_invocation: true

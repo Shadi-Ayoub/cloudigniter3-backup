@@ -47,7 +47,7 @@ importers:
         specifier: ^6.0.2
         version: 6.0.2
 
-  apps/template:
+  apps/templates/cloudigniter-next-aws-v1:
     dependencies:
       '@aws-amplify/adapter-nextjs':
         specifier: ^1.7.2
@@ -121,22 +121,22 @@ importers:
         version: 1.12.1(@aws-cdk/cli-plugin-contract@2.182.2)(@aws-sdk/types@3.973.15)(aws-cdk-lib@2.261.0(constructs@10.6.0))(constructs@10.6.0)
       '@cloudigniter/aws':
         specifier: workspace:*
-        version: link:../../packages/aws
+        version: link:../../../packages/aws
       '@cloudigniter/cli':
         specifier: workspace:*
-        version: link:../../packages/cli
+        version: link:../../../packages/cli
       '@cloudigniter/config-ts':
         specifier: workspace:*
-        version: link:../../packages/config-ts
+        version: link:../../../packages/config-ts
       '@cloudigniter/core':
         specifier: workspace:*
-        version: link:../../packages/core
+        version: link:../../../packages/core
       '@cloudigniter/next':
         specifier: workspace:*
-        version: link:../../packages/next
+        version: link:../../../packages/next
       '@cloudigniter/ui':
         specifier: workspace:*
-        version: link:../../packages/ui
+        version: link:../../../packages/ui
       '@types/aws-lambda':
         specifier: ^8.10.161
         version: 8.10.161

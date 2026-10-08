@@ -86,7 +86,7 @@ test("plans a typechecked managed Book schema with CloudIgniter keys and a Query
     schema.content,
     await readFile(
       new URL(
-        "../../../../apps/template/amplify/custom/data/schemata/__fixtures__/resource-studio-book-schema.fixture.ts",
+        "../../../../apps/templates/cloudigniter-next-aws-v1/amplify/custom/data/schemata/__fixtures__/resource-studio-book-schema.fixture.ts",
         import.meta.url,
       ),
       "utf8",

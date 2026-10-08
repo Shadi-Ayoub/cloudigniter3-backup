@@ -2,6 +2,20 @@
 title: Extend the Amplify Backend
 sidebar_position: 1
 description: Add application-owned handlers, data models, permissions, and event integrations without modifying CloudIgniter core resources.
+sidebar_label: "Extend Amplify"
+learning:
+  prerequisites:
+    - topic: "Amplify backend folders and custom resources"
+      href: "/docs/aws-amplify-setup/folder-structure"
+    - topic: "Authorization concepts and default deny"
+      href: "/docs/core-system/authorization/overview"
+    - topic: "DynamoDB keys and access patterns"
+      href: "/docs/library/dynamodb/table-key-convention"
+  questions:
+    - question: "Which custom resource and registration changes are required for an additional Lambda handler or model?"
+      answer: "Define application handlers and schema fragments under amplify/custom, register custom resource factories in customBackendResources, and connect resources in the post-build configuration hook. Register custom schema fragments separately from generated ones and preserve strict collision checks against core resources."
+    - question: "Why must permission and event integrations be verified before deploying the backend extension?"
+      answer: "A resource definition does not automatically grant the handler access to every service or wire its events. Verify environment values, narrowly scoped IAM, table or function bindings, and trigger integrations in the composed backend so deployment produces an operable extension with the intended access."
 ---
 
 # Extend the Amplify backend
@@ -87,8 +101,8 @@ custom stack.
 ## Verify and deploy
 
 ```sh title="Verify the template" showLineNumbers
-pnpm --dir apps/template test
-pnpm --dir apps/template typecheck
+pnpm --dir apps/templates/cloudigniter-next-aws-v1 test
+pnpm --dir apps/templates/cloudigniter-next-aws-v1 typecheck
 npx ampx sandbox --profile your-profile
 ```
 

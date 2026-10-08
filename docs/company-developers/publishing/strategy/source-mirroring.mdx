@@ -2,6 +2,20 @@
 title: Automatic source mirroring
 description: Configure and operate the post-merge synchronization of reviewed CloudIgniter source into its private downstream repositories.
 sidebar_position: 3
+sidebar_label: "Source mirroring"
+learning:
+  prerequisites:
+    - topic: "Integrated development and independent review"
+      href: "/company-developers/publishing/strategy/development-and-review"
+    - topic: "GitHub Actions workflows, jobs, and runners"
+      href: "https://docs.github.com/en/actions/get-started/understand-github-actions"
+    - topic: "GitHub identities and protected branches"
+      href: "/company-developers/publishing/github-setup"
+  questions:
+    - question: "How do managed inventories and independent destination history constrain automatic source synchronization?"
+      answer: "Synchronize only the reviewed managed inventory, preserving independent destination history and files outside that inventory. Differing unmanaged files block adoption, and updates use normal non-force pushes based on the observed destination head; receipt and inventory checks prevent silent ownership takeover."
+    - question: "Why does a retry reconcile successful receipts before repeating a destination write?"
+      answer: "A destination push may have succeeded before a later failure or lost response. Read its receipt and managed inventory first: an identical completed update can be recognized without another commit. Retry only unfinished work against current destination state, keeping partial results visible."
 ---
 
 After an independently approved PR merges into `cloudigniter-io/cloudigniter/main`, **Source mirroring** waits for the merged commit's quality workflows and synchronizes the configured private source repositories. Developers continue working in the complete monorepo. A normal feature merge can update source mirrors without creating an npm version.
@@ -36,7 +50,7 @@ The reviewed head and merged commit are recorded separately, so squash merges wo
 
 ## Which repositories receive source
 
-`.cloudigniter/repositories.json` supplies each project root and its `sourceRepository`. Seven npm package roots, Docs, the private template source, JODARIS and CloudIgniter Website are currently mapped. Website source roots are `apps/jodaris` and `apps/cloudigniter.io`; approved merges include both in source synchronization. Shared Config TS remains in the monorepo until a separate source destination is explicitly mapped.
+`.cloudigniter/repositories.json` supplies each project root and its `sourceRepository`. Seven npm package roots, Docs and the private template source are mapped. The independent CloudIgniter and JODARIS websites have `sourcePath: null` and are excluded, including from the App token repository selection. Website source PRs and CI run in their own repositories. Shared Config TS remains in the monorepo until a separate source destination is explicitly mapped.
 
 | Monorepo source       | Private mirror                                    |
 | --------------------- | ------------------------------------------------- |
@@ -48,8 +62,7 @@ The reviewed head and merged commit are recorded separately, so squash merges wo
 | `packages/next`       | `cloudigniter-io/cloudigniter-next`               |
 | `packages/ui`         | `cloudigniter-io/cloudigniter-ui`                 |
 | `docs`                | `cloudigniter-io/cloudigniter-docs`               |
-| `apps/template`       | `cloudigniter-io/source-cloudigniter-next-aws-v1` |
-| `apps/jodaris`        | `cloudigniter-io/jodaris-website`                 |
+| `apps/templates/cloudigniter-next-aws-v1`       | `cloudigniter-io/source-cloudigniter-next-aws-v1` |
 
 Files appear at the mirror root: `packages/core/src/...` becomes `src/...` in `cloudigniter-core`. Only committed Git objects from the verified canonical SHA are eligible. Dirty local files and newly generated outputs cannot enter the synchronization. Regular files retain their binary content and executable mode; symlinks and submodules are rejected.
 

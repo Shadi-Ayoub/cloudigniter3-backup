@@ -2,6 +2,20 @@
 title: Release artifacts
 description: Validate the exact distribution archive and preserve the evidence required for release approval.
 sidebar_position: 6
+sidebar_label: "Release artifacts"
+learning:
+  prerequisites:
+    - topic: "DEV workspace setup and project selection"
+      href: "/company-developers/tooling/dev/workspace"
+    - topic: "npm packages and the registry"
+      href: "https://docs.npmjs.com/about-npm/"
+    - topic: "Quality gates and release verification"
+      href: "/company-developers/tooling/testing-and-release"
+  questions:
+    - question: "What do an archive, manifest, and checksum prove about a release candidate?"
+      answer: "The archive contains the distribution bytes, the manifest records their package/version and source/build context, and the checksum fingerprints those exact bytes. Together with successful validation and review evidence they identify the candidate; a hash alone does not prove correctness, authenticity, or approval."
+    - question: "Why is a local dirty-tree check insufficient as committed-candidate review evidence?"
+      answer: "An uncommitted checkout can differ from the revision CI and reviewers evaluated. Preserve the committed candidate SHA, successful checks, version plan, and exact verified tarball checksum; a local dirty-tree run is useful diagnosis but does not identify the authorized release snapshot."
 ---
 
 A release candidate binds tested package source to an exact distribution archive.

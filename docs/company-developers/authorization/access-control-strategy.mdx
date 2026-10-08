@@ -2,6 +2,20 @@
 title: Access-Control Strategy
 description: Maintain CloudIgniter's scoped authorization engine, protected catalog, and separate business and technical administrator roles.
 sidebar_position: 1
+sidebar_label: "Access-control architecture"
+learning:
+  prerequisites:
+    - topic: "Catalogs, resources, and permissions"
+      href: "/docs/core-system/authorization/catalog-and-permissions"
+    - topic: "Server-side authorization enforcement"
+      href: "/docs/core-system/authorization/enforcing-access"
+    - topic: "Package ownership and core/custom boundaries"
+      href: "/company-developers/architecture/core-custom-ownership"
+  questions:
+    - question: "Which layers expose public authorization contracts and bind provider implementation?"
+      answer: "EmberGuard owns the provider-neutral evaluation engine; Core exposes its public helpers and types. Next.js resolves trusted framework context and binds the selected provider, while AWS adapts identity and persistence. Consumers use the Core facade rather than importing internal EmberGuard implementation paths."
+    - question: "How do forced read-only enforcement and persisted privilege compatibility affect evaluation?"
+      answer: "Applicable read-only restrictions veto writes before either combining algorithm and produce read-only decisions without granting additional reads. Legacy privilege migration fills only missing titles, preferring configured catalog titles; explicit blank titles remain invalid, and all definitions still pass the normal validator."
 ---
 
 # Access-Control Strategy
@@ -28,7 +42,7 @@ flowchart LR
 | Public helpers and generic authorization types                       | `packages/core`                              |
 | Request/session and authoritative runtime-context integration        | `packages/next`                              |
 | Provider groups, claims, persistence, and infrastructure enforcement | `packages/aws` or another provider           |
-| Application resources, actions, roles, and provider mappings         | `apps/template` or the consuming application |
+| Application resources, actions, roles, and provider mappings         | `apps/templates/cloudigniter-next-aws-v1` or the consuming application |
 
 Consumers import generic helpers from `@cloudigniter/core/lib` and types from `@cloudigniter/core/types`. Do not
 make `@cloudigniter/emberguard` a second application-facing API.

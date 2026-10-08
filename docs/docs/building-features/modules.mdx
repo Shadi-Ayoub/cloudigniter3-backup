@@ -2,6 +2,20 @@
 title: Optional modules
 description: Manage optional application features using the template's uninstalled To-Do List module as a worked example.
 sidebar_position: 6
+sidebar_label: "Optional modules"
+learning:
+  prerequisites:
+    - topic: "Application folders and ownership"
+      href: "/docs/architecture/application-structure"
+    - topic: "Amplify backend folders and custom resources"
+      href: "/docs/aws-amplify-setup/folder-structure"
+    - topic: "Authorization concepts and default deny"
+      href: "/docs/core-system/authorization/overview"
+  questions:
+    - question: "How do installing, enabling, disabling, and uninstalling the To-Do List module differ?"
+      answer: "Install provisions the module's AWS stack and records its runtime bindings. Enable permits its operations; disable blocks use while retaining its resources and tasks. Uninstall removes the module's provisioned resources, so review its data-loss consequences before confirming."
+    - question: "What must be verified before resuming an interrupted module operation?"
+      answer: "Refresh and inspect the recorded operation and CloudFormation state before selecting Retry install or Retry uninstall. Confirm the target module, ownership, current revision, and any partial resources; retry through the lifecycle workflow rather than starting a competing mutation or hiding a failed stack."
 ---
 
 # Optional modules

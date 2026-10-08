@@ -2,6 +2,18 @@
 title: Environment modes and testing
 description: Separate automated testing from authenticated development-only tooling.
 sidebar_position: 3
+sidebar_label: "Modes and testing"
+learning:
+  prerequisites:
+    - topic: "Environment modes and tool access"
+      href: "/docs/environment-modes/intro"
+    - topic: "Focused, integration, and cleanup tests"
+      href: "/docs/testing-strategy/"
+  questions:
+    - question: "How should tests supply an explicit environment mode without exposing deployed developer tools?"
+      answer: "Pass an explicit test mode and controlled fixtures to the tested functions or use a separately configured integration deployment. Keep deployed developer-tool gates unchanged: only development mode plus authentication and exact developer membership permits those capabilities."
+    - question: "Which differences between test and production mode should an integration test exercise?"
+      answer: "Verify the intended mode-dependent application behavior using isolated fixtures, and confirm protected operations preserve validation, authorization, and canonical key rules in both modes. Neither test nor production enables deployed developer tools; differences must not create a permission bypass or shared-data cleanup path."
 ---
 
 CloudIgniter supports `development`, `test`, `staging`, and `production` modes. Automated tests may use `test`

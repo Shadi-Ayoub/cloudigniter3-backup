@@ -6,7 +6,7 @@ export type DictionaryTermsByLetter = Readonly<
         label: string,
         anchor: string,
         aliases?: readonly string[],
-        options?: { readonly autoLinkLabel?: boolean },
+        options?: { readonly autoLinkLabel?: boolean; readonly caseSensitive?: boolean },
       ]
     >
   >
@@ -19,6 +19,7 @@ export type DictionaryTerm = {
   href: string;
   aliases: readonly string[];
   autoLinkLabel: boolean;
+  caseSensitive: boolean;
 };
 
 export function getDictionaryTerms(
@@ -40,6 +41,7 @@ export function getDictionaryTerms(
           anchor,
           aliases,
           autoLinkLabel: options?.autoLinkLabel ?? true,
+          caseSensitive: options?.caseSensitive ?? false,
           letter,
           href: `${basePath}/${letter.toLowerCase()}#${anchor}`,
         }))

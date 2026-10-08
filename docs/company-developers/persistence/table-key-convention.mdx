@@ -2,6 +2,18 @@
 title: Table-key governance
 description: Ownership, dependency, migration, and validation rules for CloudIgniter PK, SK, and index keys.
 sidebar_position: 2
+sidebar_label: "Table-key governance"
+learning:
+  prerequisites:
+    - topic: "DynamoDB keys and access patterns"
+      href: "/docs/library/dynamodb/table-key-convention"
+    - topic: "Package ownership and core/custom boundaries"
+      href: "/company-developers/architecture/core-custom-ownership"
+  questions:
+    - question: "Why does the generic key grammar belong in Core rather than an AWS provider?"
+      answer: "The namespace, delimiter, and segment validation are provider-neutral platform contracts used by capabilities and consumers. Core exposes one canonical grammar through public helpers and types; AWS consumes it for storage without creating a conflicting provider-specific convention."
+    - question: "How would you coordinate a key cutover with deployed data and dependent readers?"
+      answer: "Inventory every dependent writer, reader, index, and policy, test exact new keys, and coordinate their deployment with the retained-data migration. Use backfills, compatibility reads, or dual writes only for the defined migration window, then remove the legacy path after the cutover is verified."
 ---
 
 # Table-key governance

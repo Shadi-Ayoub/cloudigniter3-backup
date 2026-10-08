@@ -36,7 +36,7 @@ async function workspace(t) {
     "packages/dev",
     "packages/core/src",
     "docs",
-    "apps/template",
+    "apps/templates/cloudigniter-next-aws-v1",
   ])
     await mkdir(path.join(root, directory), { recursive: true });
   for (const [directory, manifest] of Object.entries({
@@ -48,8 +48,8 @@ async function workspace(t) {
       dependencies: { "@docusaurus/core": "3.10.2" },
       scripts: { start: "docusaurus start -p 3010", serve: "docusaurus serve" },
     },
-    "apps/template": {
-      name: "@cloudigniter/template",
+    "apps/templates/cloudigniter-next-aws-v1": {
+      name: "@cloudigniter/cloudigniter-next-aws-v1",
       dependencies: { next: "16.2.2" },
       scripts: { dev: "pnpm generate && next dev", start: "next start" },
     },
@@ -63,6 +63,16 @@ async function workspace(t) {
     "packages:\n  - packages/*\n  - apps/*\n  - docs\n",
   );
   return realpath(root);
+}
+
+async function website(t, target = "jodaris") {
+  const directory = await realpath(await mkdtemp(path.join(tmpdir(), `dev-${target}-website-`)));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  await writeFile(path.join(directory, "index.html"), target);
+  await writeFile(path.join(directory, "publisher.config.json"), JSON.stringify({
+    schemaVersion: 1, kind: "website", project: `${target}-website`, staticHosting: true, buildDirectories: ["dist"],
+  }));
+  return directory;
 }
 
 test("workspace commands resolve Docs from a nested package directory", async (t) => {
@@ -82,7 +92,7 @@ test("terminal package selection resolves the package root from another project"
   const root = await workspace(t);
   const result = invoke(
     ["open", "terminal", "@cloudigniter/core", "--dry-run", "--json"],
-    path.join(root, "apps/template"),
+    path.join(root, "apps/templates/cloudigniter-next-aws-v1"),
   );
   assert.equal(result.status, 0, result.stderr);
   assert.equal(JSON.parse(result.stdout).cwd, path.join(root, "packages/core"));
@@ -178,38 +188,19 @@ test("terminal plans open a new integrated terminal and external requires an opt
   assert.equal(JSON.parse(external.stdout).terminal, "external");
 });
 
-test("terminal targets include Docs and manifest-less registered websites", async (t) => {
+test("terminal targets require explicit independent website selection", async (t) => {
   const root = await workspace(t);
-  for (const [directory, workspaceName] of [
-    ["jodaris", "jodaris"],
-    ["cloudigniter.io", "cloudigniter"],
-  ]) {
-    await mkdir(path.join(root, "apps", directory));
-    await writeFile(
-      path.join(root, "apps", directory, "publisher.config.json"),
-      JSON.stringify({
-        schemaVersion: 1,
-        label: `${workspaceName} Website`,
-        kind: "website",
-        workspaceName,
-        staticHosting: true,
-      }),
-    );
-  }
-  for (const [name, relative] of [
-    ["docs", "docs"],
-    ["jodaris", "apps/jodaris"],
-    ["cloudigniter", "apps/cloudigniter.io"],
-    ["cloudigniter.io", "apps/cloudigniter.io"],
-    ["template", "apps/template"],
-  ]) {
-    const result = invoke(
-      ["open", "terminal", name, "--dry-run", "--json"],
-      path.join(root, "packages/core/src"),
-    );
+  for (const name of ["jodaris", "cloudigniter"]) {
+    const siteRoot = await website(t, name);
+    await assert.rejects(ciCreateWorkspacePlan(["open", "terminal", name], {}, root), /--site-root/);
+    await assert.rejects(ciCreateWorkspacePlan(["open", "terminal", name], { siteRoot }, root), /require --external/);
+    const result = invoke(["open", "terminal", name, `--site-root=${siteRoot}`, "--external", "--dry-run", "--json"], root);
     assert.equal(result.status, 0, result.stderr);
-    assert.equal(JSON.parse(result.stdout).cwd, path.join(root, relative));
-    assert.equal(JSON.parse(result.stdout).terminal, "integrated");
+    assert.equal(JSON.parse(result.stdout).cwd, siteRoot);
+  }
+  for (const [name, relative] of [["docs", "docs"], ["template", "apps/templates/cloudigniter-next-aws-v1"]]) {
+    const plan = await ciCreateWorkspacePlan(["open", "terminal", name], {}, root);
+    assert.equal(plan.cwd, path.join(root, relative));
   }
 });
 
@@ -265,6 +256,15 @@ test("ambiguous terminal names require an explicit registered target path", asyn
       .cwd,
     path.join(root, "apps/core"),
   );
+});
+
+test("terminal discovery supports additional provider templates without repository mappings", async (t) => {
+  const root = await workspace(t);
+  const relative = "apps/templates/cloudigniter-next-azure-v1";
+  await mkdir(path.join(root, relative), { recursive: true });
+  await writeFile(path.join(root, relative, "package.json"), JSON.stringify({ name: "@cloudigniter/cloudigniter-next-azure-v1" }));
+  for (const target of [relative, "cloudigniter-next-azure-v1", "@cloudigniter/cloudigniter-next-azure-v1"])
+    assert.equal((await ciCreateWorkspacePlan(["open", "terminal", target], {}, root)).cwd, path.join(root, relative));
 });
 
 test("terminal app registration rejects linked metadata and traversal", async (t) => {
@@ -336,9 +336,24 @@ test("Next plans retain package scripts and forward port/host with an existing-b
   assert.equal(prod.open, false);
   assert.equal(prod.mode, "prod");
   const manifest = JSON.parse(
-    await readFile(path.join(root, "apps/template/package.json"), "utf8"),
+    await readFile(path.join(root, "apps/templates/cloudigniter-next-aws-v1/package.json"), "utf8"),
   );
   assert.equal(manifest.scripts.dev, "pnpm generate && next dev");
+});
+
+test("Docs and template restart only on their default ports, including explicit defaults", async (t) => {
+  const root = await workspace(t);
+  for (const [target, port] of [["docs", 3010], ["template", 3000]]) {
+    for (const flags of [{}, { port }]) {
+      const plan = await ciCreateWorkspacePlan(["start", target], flags, root);
+      assert.equal(plan.restartOnBusy, true, target);
+    }
+    const custom = await ciCreateWorkspacePlan(["start", target], { port: 4500 }, root);
+    assert.equal(custom.restartOnBusy, false, target);
+  }
+  const siteRoot = await website(t);
+  const plan = await ciCreateWorkspacePlan(["start", "website", "jodaris"], { siteRoot }, root);
+  assert.equal(plan.restartOnBusy, false);
 });
 
 test("Docs production requires an existing build and uses serve", async (t) => {
@@ -366,110 +381,36 @@ test("Docs production requires an existing build and uses serve", async (t) => {
   assert.equal(plan.url, "http://[::1]:3020/");
 });
 
-test("websites support current static sources and later Next applications", async (t) => {
+test("independent websites support static preview and later Next applications", async (t) => {
   const root = await workspace(t);
-  await mkdir(path.join(root, "apps/jodaris"));
-  await writeFile(path.join(root, "apps/jodaris/index.html"), "JODARIS");
-  await writeFile(
-    path.join(root, "apps/jodaris/publisher.config.json"),
-    JSON.stringify({
-      schemaVersion: 1,
-      staticHosting: true,
-      buildDirectories: ["dist"],
-    }),
-  );
-  const staticSite = await ciCreateWorkspacePlan(
-    ["start", "website", "jodaris"],
-    {},
-    root,
-  );
-  assert.equal(staticSite.framework, "static");
-  assert.equal(staticSite.port, 3001);
-  await assert.rejects(
-    ciCreateWorkspacePlan(
-      ["start", "website", "jodaris"],
-      { mode: "prod" },
-      root,
-    ),
-    /Build the static site/,
-  );
-  await mkdir(path.join(root, "apps/jodaris/dist"));
-  await writeFile(path.join(root, "apps/jodaris/dist/index.html"), "built");
-  const staticProd = await ciCreateWorkspacePlan(
-    ["start", "website", "jodaris"],
-    { mode: "prod" },
-    root,
-  );
-  assert.equal(staticProd.args[1], path.join(root, "apps/jodaris/dist"));
-  await writeFile(
-    path.join(root, "apps/jodaris/package.json"),
-    JSON.stringify({
-      dependencies: { next: "16.2.2" },
-      scripts: { dev: "next dev", start: "next start" },
-    }),
-  );
-  const next = await ciCreateWorkspacePlan(
-    ["start", "website", "jodaris"],
-    { mode: "prod" },
-    root,
-  );
-  assert.equal(next.framework, "next");
-  assert.equal(next.args[1], "start");
-  await assert.rejects(
-    ciCreateWorkspacePlan(["start", "website", "cloudigniter"], {}, root),
-    /not present/,
-  );
-  await mkdir(path.join(root, "apps/cloudigniter.io"));
-  await writeFile(
-    path.join(root, "apps/cloudigniter.io/package.json"),
-    JSON.stringify({
-      dependencies: { next: "16.2.2" },
-      scripts: { dev: "next dev", start: "next start" },
-    }),
-  );
-  const company = await ciCreateWorkspacePlan(
-    ["start", "website", "cloudigniter"],
-    {},
-    root,
-  );
-  assert.equal(company.port, 3002);
-  assert.equal(company.framework, "next");
+  for (const target of ["jodaris", "cloudigniter"]) {
+    const siteRoot = await website(t, target);
+    await assert.rejects(ciCreateWorkspacePlan(["start", "website", target], {}, root), /--site-root/);
+    const staticSite = await ciCreateWorkspacePlan(["start", "website", target], { siteRoot }, root);
+    assert.equal(staticSite.framework, "static");
+    assert.equal(staticSite.cwd, siteRoot);
+    assert.equal(staticSite.port, target === "jodaris" ? 3001 : 3002);
+    await assert.rejects(ciCreateWorkspacePlan(["start", "website", target], { siteRoot, mode: "prod" }, root), /Build the static site/);
+    await mkdir(path.join(siteRoot, "dist"));
+    await writeFile(path.join(siteRoot, "dist/index.html"), "built");
+    const prod = await ciCreateWorkspacePlan(["start", "website", target], { siteRoot, mode: "prod" }, root);
+    assert.equal(prod.args[1], path.join(siteRoot, "dist"));
+    await writeFile(path.join(siteRoot, "package.json"), JSON.stringify({dependencies: {next: "16.2.2"}, scripts: {dev: "next dev", start: "next start"}}));
+    const next = await ciCreateWorkspacePlan(["start", "website", target], { siteRoot, mode: "prod" }, root);
+    assert.equal(next.framework, "next");
+    assert.equal(next.args[1], "start");
+  }
 });
 
-test("explicit repository mappings can relocate the website root", async (t) => {
+test("website selection rejects workspace paths, links and mismatched identities", async (t) => {
   const root = await workspace(t);
-  await mkdir(path.join(root, ".cloudigniter"));
-  await mkdir(path.join(root, "apps/company site"));
-  await writeFile(
-    path.join(root, "apps/company site/package.json"),
-    JSON.stringify({
-      dependencies: { next: "16.2.2" },
-      scripts: { dev: "next dev" },
-    }),
-  );
-  await writeFile(
-    path.join(root, ".cloudigniter/repositories.json"),
-    JSON.stringify({
-      schemaVersion: 1,
-      baseBranch: "main",
-      projects: {
-        "cloudigniter-website": {
-          type: "website",
-          sourcePath: "apps/company site",
-          sourceRepository: "cloudigniter-io/cloudigniter-website",
-          buildRepository: "cloudigniter-io/build-cloudigniter-website",
-          buildVisibility: "private",
-          delivery: "aws",
-        },
-      },
-    }),
-  );
-  const plan = await ciCreateWorkspacePlan(
-    ["start", "website", "cloudigniter"],
-    {},
-    path.join(root, "packages/core/src"),
-  );
-  assert.equal(plan.cwd, path.join(root, "apps/company site"));
+  const siteRoot = await website(t);
+  await assert.rejects(ciCreateWorkspacePlan(["start", "website", "jodaris"], { siteRoot: root }, root), /outside the integration workspace/);
+  await assert.rejects(ciCreateWorkspacePlan(["start", "website", "cloudigniter"], { siteRoot }, root), /metadata must select/);
+  await assert.rejects(ciCreateWorkspacePlan(["start", "docs"], { siteRoot }, root), /only for/);
+  const linked = path.join(root, "linked-site");
+  await symlink(siteRoot, linked);
+  await assert.rejects(ciCreateWorkspacePlan(["start", "website", "jodaris"], { siteRoot: linked }, root), /symbolic links/);
 });
 
 test("bad arguments, flags, paths and server options fail before launches", async (t) => {
@@ -512,7 +453,7 @@ test("bad arguments, flags, paths and server options fail before launches", asyn
 test("workspace selection refuses symlinked sources and manifests", async (t) => {
   const root = await workspace(t);
   await rm(path.join(root, "docs"), { recursive: true });
-  await symlink(path.join(root, "apps/template"), path.join(root, "docs"));
+  await symlink(path.join(root, "apps/templates/cloudigniter-next-aws-v1"), path.join(root, "docs"));
   await assert.rejects(
     ciCreateWorkspacePlan(["start", "docs"], {}, root),
     /symbolic links/,
@@ -643,6 +584,70 @@ test("server runtime opens the browser after readiness and preserves failure sta
   assert.equal(opened, 1);
 });
 
+for (const target of ["docs", "template"]) {
+  test(`${target} restart waits for delayed port release before launching the replacement`, async (t) => {
+    const root = await workspace(t);
+    const plan = await ciCreateWorkspacePlan(["start", target], {}, root);
+    const marker = path.join(root, "replacement-started");
+    let probes = 0;
+    let released = false;
+    let observedBusy;
+    const messages = [];
+    await ciRunWorkspaceServer(
+      {
+        ...plan,
+        port: await freePort(),
+        command: process.execPath,
+        args: ["-e", `require('node:fs').writeFileSync(${JSON.stringify(marker)}, 'started')`],
+        open: false,
+      },
+      {
+        log: (text) => messages.push(text),
+        portAvailable: async () => {
+          probes++;
+          if (probes === 1) return true;
+          if (probes < 4) return false;
+          released = true;
+          return true;
+        },
+        ready: async () => {
+          observedBusy = !released;
+          return true;
+        },
+      },
+    );
+    assert.equal(released, true, "The replacement must wait until the port can be bound.");
+    assert.equal(observedBusy, false);
+    assert.equal(await readFile(marker, "utf8"), "started");
+    assert.match(messages.join("\n"), /Waiting.*port.*released/);
+  });
+}
+
+test("a port that remains busy after restart fails before starting a child or browser", async (t) => {
+  const root = await workspace(t);
+  const plan = await ciCreateWorkspacePlan(["start", "docs"], {}, root);
+  const marker = path.join(root, "replacement-started");
+  let probes = 0;
+  await assert.rejects(
+    ciRunWorkspaceServer(
+      {
+        ...plan,
+        port: await freePort(),
+        command: process.execPath,
+        args: ["-e", `require('node:fs').writeFileSync(${JSON.stringify(marker)}, 'started')`],
+      },
+      {
+        log: () => {},
+        portAvailable: async () => ++probes === 1,
+        portReleaseTimeoutMs: 0,
+        open: async () => assert.fail("Opened browser while port was unavailable"),
+      },
+    ),
+    /port did not become available/,
+  );
+  await assert.rejects(readFile(marker), { code: "ENOENT" });
+});
+
 test("busy ports fail without starting a child or browser", async (t) => {
   const root = await workspace(t);
   const occupied = createServer();
@@ -661,16 +666,11 @@ test("busy ports fail without starting a child or browser", async (t) => {
 
 test("stopping a started website exits with 130 and releases its port", async (t) => {
   const root = await workspace(t);
-  await mkdir(path.join(root, "apps/jodaris"));
-  await writeFile(path.join(root, "apps/jodaris/index.html"), "site");
-  await writeFile(
-    path.join(root, "apps/jodaris/publisher.config.json"),
-    JSON.stringify({ schemaVersion: 1, staticHosting: true }),
-  );
+  const siteRoot = await website(t);
   const port = await freePort();
   const child = spawn(
     process.execPath,
-    [bin, "start", "website", "jodaris", `--port=${port}`, "--no-open"],
+    [bin, "start", "website", "jodaris", `--site-root=${siteRoot}`, `--port=${port}`, "--no-open"],
     {
       cwd: path.join(root, "packages/core/src"),
       stdio: ["ignore", "pipe", "pipe"],

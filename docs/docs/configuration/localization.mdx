@@ -2,6 +2,18 @@
 title: Localization and direction
 description: Configure languages and register route-scoped application translations using the request lifecycle.
 sidebar_position: 2
+sidebar_label: "Localization and RTL"
+learning:
+  prerequisites:
+    - topic: "Request resolution and page bootstrap"
+      href: "/docs/architecture/request-lifecycle"
+    - topic: "Application folders and ownership"
+      href: "/docs/architecture/application-structure"
+  questions:
+    - question: "How are application message files registered and selected for a resolved route?"
+      answer: "Add JSON files under src/custom/locales/<locale> and register them in src/custom/locales/index.ts for every supported locale. The resolved route namespace selects its message chain; core messages load first, then custom messages override matching keys."
+    - question: "Why must the server and browser agree on initial locale and document direction?"
+      answer: "The root document and providers render from the server-resolved locale and direction. Using different initial browser values can produce hydration mismatches, incorrect text, or an RTL layout jump. Share the initial inputs and use explicit locale and time-zone choices for formatting."
 ---
 
 # Localization and direction

@@ -5,7 +5,7 @@ Use this reference for broad architecture, dependency direction, and the templat
 ## System model
 
 ```text
-apps/template
+apps/templates/cloudigniter-next-aws-v1
     application composition, configuration, routes, framework entry points
                          │
                          ▼
@@ -42,14 +42,14 @@ The diagram describes responsibility. Confirm actual package dependencies before
 - Keep framework-independent code out of `packages/next`.
 - Keep Next.js request and response behavior out of `packages/core` and `packages/emberguard`.
 - Keep provider selection and provider-specific structures out of generic packages.
-- Never make a package depend on `apps/template`.
+- Never make a package depend on `apps/templates/cloudigniter-next-aws-v1`.
 - Keep reusable UI out of the template and application-specific content out of reusable UI.
 - Treat runtime boundaries as architecture: browser code must not transitively import server-only modules, credentials, filesystem APIs, or server SDKs.
 - Keep CLI workers provider-neutral by resolving provider capabilities from the target application; do not create a dependency cycle between `packages/cli` and runtime/provider packages.
 
 ## Template boundary
 
-`apps/template` may contain:
+`apps/templates/cloudigniter-next-aws-v1` may contain:
 
 - `next.config.ts` and other framework composition;
 - the application `proxy.ts` entry point and matcher;
@@ -110,7 +110,7 @@ also consumed before request bootstrap, including by the proxy.
 
 Reconsider the design when you find:
 
-- generic helpers under `apps/template`;
+- generic helpers under `apps/templates/cloudigniter-next-aws-v1`;
 - equivalent types in multiple packages;
 - deep imports into another package's `src` tree;
 - generic EmberGuard imports from `packages/emberguard` in application code;

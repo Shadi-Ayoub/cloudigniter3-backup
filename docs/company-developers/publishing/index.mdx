@@ -1,12 +1,13 @@
 ---
 title: Publishing overview
-description: How company developers review the full workspace and deliver packages, templates and websites through cloudigniter-io.
+description: How company developers review the full workspace and deliver packages, templates and websites through their configured GitHub owners.
 sidebar_label: Overview
 sidebar_position: 1
 slug: /tooling/github-npm-publishing
+learning: false
 ---
 
-This section is the working handbook for company developers and approvers who maintain CloudIgniter. Company repositories belong to the **`cloudigniter-io` GitHub organization**. People sign in with their own accounts: the configured developer is `Shadi-Ayoub`, and the configured approver is `jodaris`. The organization is the repository owner; it is not a login.
+This section is the working handbook for company developers and approvers who maintain CloudIgniter. Company repositories belong to the **`cloudigniter-io` GitHub organization**. The independent JODARIS website source/build repositories belong to `jodaris`; both formal websites are outside the monorepo and are cloned only when explicitly selected. People sign in with their own accounts: the configured developer is `Shadi-Ayoub`, and the configured approver is `jodaris`. The organization is the repository owner; it is not a login.
 
 A normal change starts in the complete private monorepo, where packages, the template, the guide and shared configuration can be tested together. A pull request (PR) lets another developer inspect that change before it enters `main`. Publishing adds separate review of the source snapshot and the actual files distributed to customers.
 

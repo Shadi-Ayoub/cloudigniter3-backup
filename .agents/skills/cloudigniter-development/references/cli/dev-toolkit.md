@@ -72,7 +72,7 @@ Paths below are relative to the repository root:
 | `packages/dev/src/cli.mjs` | Strict Meow parsing, help and command dispatch. |
 | `packages/dev/src/maintainer-cli.mjs` | Maintainer catalog, per-command flags, prompts and dispatch. |
 | `packages/dev/src/workspace-commands.mjs` | Convenience catalog, workspace-only target resolution and launch plans. |
-| `packages/dev/src/workspace-runtime.mjs` and `workspace-static.mjs` | Website lifecycle, browser/terminal adapters and confined static previews. |
+| `packages/dev/src/workspace-runtime.mjs`, `workspace-restart.mjs` and `workspace-static.mjs` | Website lifecycle, verified default-port restart, browser/terminal adapters and confined static previews. |
 | `packages/dev/src/maintainer-runtime.mjs` | Private-workspace guard and local worker/process execution. |
 | `packages/dev/src/package-config.mjs` | Validate company package cwd and `ci-dev.config.json`. |
 | `packages/dev/src/package-workflows.mjs` | Common test runner, command descriptions, tools and ordered recipes. |
@@ -137,16 +137,24 @@ or the developer's home. Help/version remain bootstrap exceptions.
 Use explicit repository sourcePath mappings, with conventional docs/apps roots as
 fallback. Require target manifests and package scripts; preserve Next preparation
 hooks and Docs prestart checks/clear. `--mode=prod` selects existing-build
-serve/start, without building. JODARIS's current staticHosting metadata permits a
-confined public-file preview; Next dependencies take precedence after conversion.
-CloudIgniter Website is the manifest-less static page at apps/cloudigniter.io,
-registered to cloudigniter-website with workspaceName cloudigniter. Both sites
-provide source checks and static-release builds; Next dependencies take precedence
-after conversion. Preserve mappings and aliases while revising their build contracts.
-Use existing Publisher path/metadata validation instead of a second permissive schema.
+serve/start, without building. Independent JODARIS and CloudIgniter sites require explicit `--site-root` outside the monorepo for start/terminal commands, with matching website project metadata. Their staticHosting metadata permits source or prepared dist preview; a Next dependency activates the framework adapter. Never derive their checkout path from inventory null source paths or download them implicitly. Workspace Publisher excludes them. Templates are discovered under apps/templates/* with distinct package identities.
 
 Validate port/host and command-specific options before processes. Explicit ports
-never fall back silently. Keep server output streamed in the foreground, open the
+never fall back silently. Docs/template plans enable restartOnBusy only on their
+default ports (3010/3000), including an explicit default. Check IPv4/IPv6 even
+when the requested bind address would be free. Verify every listener's framework
+CLI and project using process ancestry and the project-local framework
+path or cwd. Use ps/lsof on macOS/Linux and PowerShell process inspection on Windows;
+refuse an unrelated checkout, unknown listener or failed inspection without signals.
+Recheck listener ownership and process birth identity before stopping the verified
+CLI/descendants. Wait for shutdown, escalate only those verified surviving processes
+after three seconds. After shutdown, poll bind availability for up to five seconds
+before launching the requested mode on the same port; log once while waiting.
+Persistent occupation fails before launch/browser opening. Do not signal new
+listeners during this wait or inherit ownership from the stopped process tree.
+Never increment ports. Custom-port and website collisions
+retain their errors. Dry-run performs no inspection, stop or launch.
+Keep server output streamed in the foreground, open the
 browser once connections are accepted, and terminate only the launched process
 tree on Ctrl+C/SIGTERM. Preserve child failures; cancellation uses 130. `--no-open`
 keeps browser navigation manual. `--dry-run --json` previews without any launch;
@@ -180,6 +188,15 @@ Do not claim success after an inactive-helper timeout; guide the developer to Tr
 Enable and Reload Window. New terminals inherit the invoking-window endpoint;
 refuse ambiguous old-window discovery rather than choosing a random window.
 
+Parent-folder VS Code startup tasks first resolve the bundled helper command
+cloudigniter.workspaceTerminals.closeAll. Require a trusted local workspace and
+close every integrated terminal in that window through the VS Code terminal API;
+await onDidCloseTerminal for all existing terminals before returning a string for
+the task command variable. Resolution happens before a cleanup task terminal is
+created. Empty windows succeed; incomplete closure stops startup. Keep this explicit
+startup cleanup outside the HTTP bridge and ordinary dev open terminal calls.
+Contribute the command for activation and keep the VSIX/bridge version tied to the
+bundled manifest. Sequence cleanup before the parallel site/package launch group.
 Parent-folder VS Code tasks set cwd to the child monorepo and use these commands.
 Package launcher panels close after successful completion; the helper creates the
 persistent terminals. Set CLOUDIGNITER_TERMINAL_PRESERVE_FOCUS=1 for these background
@@ -188,7 +205,8 @@ files are outside monorepo Git and must be shared separately when needed.
 Update `company-developers/tooling/dev/workspace-tools.mdx`, the five workspace
 command manuals, the command catalog checker and README with contract changes.
 Cover nested cwd, outside guards, invalid input, build selection, script retention,
-readiness, failed startup, public-file confinement and owned-process shutdown.
+readiness, failed startup, public-file confinement, matched-server restart,
+unrelated-listener refusal and owned-process shutdown.
 
 ## Publisher implementation
 
@@ -256,7 +274,7 @@ Navigation uses Packages, Websites and Templates dropdowns, followed by a direct
 Docs control. Alphabetize detected choices by display label and omit empty groups;
 never invent an entry for an absent future project. `kind` metadata determines the
 group (`app` and `template` share Templates); `label` supplies display names such
-as JODARIS Website and template-next-aws without renaming package identities.
+as JODARIS Website and cloudigniter-next-aws-v1 without renaming package identities.
 Keep the selected target authoritative for actions and destinations. Preserve
 keyboard menu navigation, focus restoration and selection across workspace refreshes.
 The browser grouping helper lives in `src/publisher/assets/navigation.mjs`.
@@ -397,7 +415,7 @@ request and approval-checked delivery; see [publishing](publishing.md).
 - Resolve `--policy` from the workspace root, defaulting to
   `.cloudigniter/template-policy.json`, schema 1. `--source` overrides that policy's
   source and is always workspace-relative. Any folder name/nesting below `apps` is
-  supported, including quoted spaces; never hardcode `apps/template` in dispatch.
+  supported, including quoted spaces; never hardcode `apps/templates/cloudigniter-next-aws-v1` in dispatch.
   Require an actual source `package.json`, reject bare `apps`, traversal, absolute
   source paths and symlinks, even if policy overlays supply all exported files.
 - `--name` overrides the exported package name independently of source/output folder
@@ -541,3 +559,7 @@ isolated consumer and exercise its entry point. Maintain the Node 22/24 quality
 matrix until the supported runtime policy changes. No test may create live PRs
 or publish packages. For documentation-only changes, validate the skill and guide;
 package tests are unnecessary unless an unresolved behavior claim needs checking.
+
+An independent website terminal also requires `--external`; the bundled VS Code
+terminal helper stays confined to the integration workspace. Workspace startup
+launches Docs/templates/packages only; website tasks require explicit manual selection.

@@ -2,6 +2,20 @@
 title: Build your first application page
 description: Register a logical route and render a scoped page with the CloudIgniter context and layout.
 sidebar_position: 1
+sidebar_label: "Your first page"
+learning:
+  prerequisites:
+    - topic: "Application folders and ownership"
+      href: "/docs/architecture/application-structure"
+    - topic: "Logical routes and configuration"
+      href: "/docs/configuration/routes"
+    - topic: "Request resolution and page bootstrap"
+      href: "/docs/architecture/request-lifecycle"
+  questions:
+    - question: "Which route registration and scoped file path expose the example application page?"
+      answer: "Register /dashboard/notes in manualCustomRoutes with namespace dashboard, protected: true, and tenantScopes: [global]. Create src/app/(ci-global)/ci-global/(ci-custom)/dashboard/notes/page.tsx and use the existing server bootstrap and CiPage composition."
+    - question: "How would you verify that its public URL resolves the intended Tenant and logical route?"
+      answer: "In the example's slug routing, visit /t/global/dashboard/notes after sign-in. Verify that the proxy resolves GLOBAL, matches /dashboard/notes, and rewrites to the global custom page tree. Check direct navigation, navigation from another page, and rejection of unsupported Tenant scopes."
 ---
 
 # Build your first application page

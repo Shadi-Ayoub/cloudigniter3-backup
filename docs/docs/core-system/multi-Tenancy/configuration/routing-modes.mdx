@@ -1,6 +1,18 @@
 ---
 title: Routing Modes
 sidebar_position: 2
+sidebar_label: "Tenant routing"
+learning:
+  prerequisites:
+    - topic: "Tenant identity and Org Unit trees"
+      href: "/docs/core-system/multi-Tenancy/core-concepts"
+    - topic: "Logical routes and configuration"
+      href: "/docs/configuration/routes"
+  questions:
+    - question: "How do slug routing and subdomain routing map a public URL to a logical feature?"
+      answer: "Slug routing takes Tenant selection from a path such as /t/acme/dashboard/books; subdomain routing takes it from the host. Both resolve the canonical Tenant and match the remaining logical feature /dashboard/books before selecting the internal rewrite target."
+    - question: "Why do both routing modes still need scope-specific physical route trees?"
+      answer: "The public transport differs, but global and Tenant pages still render in their corresponding internal ci-global and ci-tenant trees. Register tenantScopes to match implemented page trees; changing routing mode does not create pages or authorize data access."
 ---
 
 # Routing modes

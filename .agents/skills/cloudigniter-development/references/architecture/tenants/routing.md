@@ -2,7 +2,7 @@
 
 Use this reference for Next.js configuration, proxy composition, locale normalization, Tenant and Org Unit resolution, logical route matching, redirects, and rewrites.
 
-## 2. Role of `apps/template/next.config.ts`
+## 2. Role of `apps/templates/cloudigniter-next-aws-v1/next.config.ts`
 
 `next.config.ts` is the application-level Next.js composition entry point. In the template it currently owns:
 
@@ -33,7 +33,7 @@ Rules:
 - Put reusable Next.js helpers invoked by the configured entry points in `packages/next`.
 - Validate both configuration loading and the downstream runtime consumer after changing this file.
 
-## 3. Role of `apps/template/src/proxy.ts`
+## 3. Role of `apps/templates/cloudigniter-next-aws-v1/src/proxy.ts`
 
 `proxy.ts` is the application request entry point. It should remain thin:
 
@@ -102,7 +102,7 @@ continues to use the logical feature pathname:
 src/custom/routes key      → /dashboard/books
 ```
 
-`apps/template/src/kernel/server/routes.ts` combines custom registrations with the package-owned core routes.
+`apps/templates/cloudigniter-next-aws-v1/src/kernel/server/routes.ts` combines custom registrations with the package-owned core routes.
 `cloudigniter.config.ts` imports that static composition module directly.
 
 The parenthesized App Router groups `(ci-global)` and `(ci-tenant)` do not add

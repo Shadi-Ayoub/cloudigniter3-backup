@@ -2,15 +2,27 @@
 title: Repositories and configuration
 description: The organization repository map, paired publication and the maintained .cloudigniter directory.
 sidebar_position: 2
+sidebar_label: "Repositories and config"
+learning:
+  prerequisites:
+    - topic: "GitHub branches, commits, and pull requests"
+      href: "https://docs.github.com/en/get-started/using-github/github-flow"
+    - topic: "DEV workspace setup and project selection"
+      href: "/company-developers/tooling/dev/workspace"
+  questions:
+    - question: "How does repository configuration map one workspace to source and build destinations?"
+      answer: "repositories.json maps project IDs and local roots to source/build destinations, visibility, and delivery type. release-policy.json adds package, registry, access, reviewers, and branch rules; github-policy.json separately names the canonical full-workspace and template authorities. One integrated checkout can therefore feed distinct reviewed destinations."
+    - question: "Why does a local backup remote not establish canonical company delivery authority?"
+      answer: "A backup remote preserves local integration history but is not the configured company workspace or product release destination. Delivery authority comes from explicit policy and verified canonical repository identity, approval, and branch checks, so tools must not infer it from whichever origin the checkout happens to use."
 ---
 
 ## One workspace, several delivery destinations
 
-The **integration workspace** is the complete private CloudIgniter monorepo. It contains `packages/`, `apps/template/`, `docs/`, shared configuration, the lockfile and Changesets. It is the normal place to develop and validate changes.
+The **integration workspace** is the complete private CloudIgniter monorepo. It contains `packages/`, `apps/templates/cloudigniter-next-aws-v1/`, `docs/`, shared configuration, the lockfile and Changesets. It is the normal place to develop and validate changes.
 
-The publication layout uses a **pair of repositories per product**. A private source repository holds the package or website source selected from the workspace. Its build repository holds reviewed output ready for delivery. The release policy calls this layout `topology: "paired"`: “topology” means repository arrangement, and “paired” means a separate source and build destination. It does not mean that developers work inside nested Git repositories.
+The publication layout uses a **pair of repositories per product**. A private source repository holds the package/template/Docs source selected from the workspace, or independent website source maintained directly in its own checkout. Its build repository holds reviewed output ready for delivery. The release policy calls this layout `topology: "paired"`: “topology” means repository arrangement, and “paired” means a separate source and build destination. It does not mean that developers work inside nested Git repositories.
 
-All names in this table are under `cloudigniter-io/`. Every source and `build-*` repository is private. Only the exported application template is public.
+All unqualified names in this table are under `cloudigniter-io/`. JODARIS uses the explicit `jodaris/` owner. Every source and build repository is private; only the exported application template is public.
 
 | Project | Private source | Build or export | Delivery |
 | --- | --- | --- | --- |
@@ -23,8 +35,8 @@ All names in this table are under `cloudigniter-io/`. Every source and `build-*`
 | `@cloudigniter/ui` | `cloudigniter-ui` | `build-cloudigniter-ui` | Public npm |
 | CloudIgniter Docs | `cloudigniter-docs` | `build-cloudigniter-docs` | AWS website |
 | Next/AWS template | `source-cloudigniter-next-aws-v1` | `cloudigniter-next-aws-v1` | Public GitHub template |
-| CloudIgniter website | `cloudigniter-website` | `build-cloudigniter-website` | AWS website |
-| Jodaris website | `jodaris-website` | `build-jodaris-website` | AWS website |
+| CloudIgniter website | `cloudigniter-website` | `build-cloudigniter-website` | Independent AWS website |
+| JODARIS website | `jodaris/jodaris-website` | `jodaris/build-jodaris-website` | Independent AWS website |
 
 The canonical full-workspace repository is `cloudigniter-io/cloudigniter`, configured separately as `workspaceRepository` in `github-policy.json`. Company `main` enforces the reviewed integration workflow. This name can be changed there without renaming the local folder or altering the package pairs. See the [monorepo PR strategy](./monorepo-pull-requests).
 
@@ -52,7 +64,7 @@ Administrators edit these JSON files through reviewed monorepo PRs. The toolkit 
 | `template/` | Those standalone overlay files, including the README, TypeScript configuration, pnpm configuration and example data. These are reviewed inputs, not a build cache. |
 
 :::note Repository inventory
-`.cloudigniter/repositories.json` is the routing inventory. Packages map to their current `packages/*` directories, the guide to `docs`, and the template to `apps/template`. Template export still accepts any configured source below `apps`. The two formal websites have `sourcePath: null` until their applications exist; repository names alone do not create website source or select its runtime.
+`.cloudigniter/repositories.json` is the routing inventory. Packages map to their current `packages/*` directories, the guide to `docs`, and the template to `apps/templates/cloudigniter-next-aws-v1`. Template export still accepts any configured source below `apps`. The two independent websites have `sourcePath: null` because their source is outside the monorepo. They have their own checkouts, review, CI and AWS delivery. Workspace cloning and source mirroring never download or synchronize them. GitHub repository permissions determine which developers can clone each website.
 
 Docs uses the project ID `cloudigniter-docs` in DEV commands and Publisher metadata. Its local folder and pnpm package are `docs`; the GitHub destinations are `cloudigniter-io/cloudigniter-docs` and `cloudigniter-io/build-cloudigniter-docs`.
 :::
@@ -72,4 +84,28 @@ Generated files appear in explicitly selected output directories, such as `../bu
 
 ## Downstream source updates
 
-Approved monorepo merges synchronize [mapped private source roots](./strategy/source-mirroring#which-repositories-receive-source). JODARIS maps to `apps/jodaris`; CloudIgniter Website maps to `apps/cloudigniter.io`. Config TS remains shared monorepo source. Source mirrors preserve independent history and require their own App access; the backup remote and build/public destinations are outside this synchronization.
+Approved monorepo merges synchronize [mapped private source roots](./strategy/source-mirroring#which-repositories-receive-source). JODARIS and CloudIgniter Website are excluded because they have no workspace source path. Config TS remains shared monorepo source. Source mirrors preserve independent history and require their own App access; the backup remote and build/public destinations are outside this synchronization.
+
+## Independent website access
+
+Clone/pull the complete monorepo for connected packages, templates, Docs and shared
+policy. Grant the two websites separately; access to the workspace grants neither
+website source access nor production access. From the workspace root, explicitly
+select a website with `dev github clone <project> --output=<external-checkout>` or
+update its clean base branch with `dev github pull`. Build checkouts are selected
+separately with `--repository-kind=build`. These commands never fetch both sites as
+a side effect. See [website delivery](./websites).
+
+## Existing history and first imports
+
+Removing the website directories changes the current monorepo tree. Earlier
+monorepo commits still contain their source, and readers with access to that
+history can retrieve it. If website access must also exclude historical source,
+use an owner-reviewed clean-history migration before granting new developer
+access. Rewriting shared history or replacing the canonical repository is a
+separate operation; deleting the current folders does not perform it.
+
+Relocated local website sources are preserved for an initial source-repository
+import. Review their complete source tree and CI in a source PR; do not copy the
+monorepo Git history into either website. The standalone build scaffolds are
+reviewable local setup files until committed and pushed to their build repos.

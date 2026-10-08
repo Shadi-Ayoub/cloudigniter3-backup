@@ -10,7 +10,7 @@ Read the [resources overview](../resources/overview.md) for generated managers a
 - Keep reusable table primitives, action layout, feedback components, and presentation behavior in
   `packages/ui`.
 - Keep Next.js refresh orchestration in `packages/next` and trusted mutations in the server/application adapter.
-- Keep `apps/template` limited to page composition, authoritative options, and application callbacks.
+- Keep `apps/templates/cloudigniter-next-aws-v1` limited to page composition, authoritative options, and application callbacks.
 - Use `ciDefineDataTable()` and separate data/source, definition, and configuration. Do not build page-local
   table clones or duplicate action renderers.
 - Supply `getRowId` from a stable domain identifier. Never use an array index for mutable, selectable, or

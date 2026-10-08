@@ -2,13 +2,86 @@
 title: Approved monorepo delivery
 description: Implemented source mirroring and the remaining roadmap from integrated PR approval to verified builds and npm staging.
 sidebar_position: 4.5
+sidebar_label: "Approved delivery"
+learning:
+  prerequisites:
+    - topic: "GitHub branches, commits, and pull requests"
+      href: "https://docs.github.com/en/get-started/using-github/github-flow"
+    - topic: "npm packages and the registry"
+      href: "https://docs.npmjs.com/about-npm/"
+    - topic: "GitHub Actions workflows, jobs, and runners"
+      href: "https://docs.github.com/en/actions/get-started/understand-github-actions"
+    - topic: "CI/CD principles and release approval"
+      href: "/dictionary/c#continuous-delivery"
+    - topic: "Integrated development and independent review"
+      href: "/company-developers/publishing/strategy/development-and-review"
+    - topic: "Release archives, manifests, and checksums"
+      href: "/company-developers/tooling/dev/release-artifacts"
+  questions:
+    - question: "Why must delivery retain both the approved feature head and the resulting merged commit?"
+      answer: "Independent review approves an exact PR head, while delivery must validate the commit actually merged into the canonical base. Squash or merge strategies can produce a different SHA, so retaining both connects review authorization to the tested source snapshot that is delivered."
+    - question: "How does a separately reviewed release PR authorize versions independently of feature approval?"
+      answer: "In the proposed coordinated pipeline, feature approval authorizes the implementation, while a separately reviewed release PR approves versions, changelogs, and lockfile changes. Its merged release commit becomes the build source; a feature review alone does not authorize arbitrary release versions."
+    - question: "Why must a delivery job transfer the verified archive instead of rebuilding with staging credentials?"
+      answer: "Build and verify candidate bytes from the exact release commit without delivery credentials. A delivery job transfers that same archive and its checksum evidence; rebuilding with staging credentials would create different, unreviewed bytes and break the identity between verification, approval, and publication."
+    - question: "When can independent Docs output proceed, and when must a template wait for npm availability?"
+      answer: "Independent Docs output can proceed when its own approval and output checks pass without a package-release dependency. A template that consumes newly released npm packages must wait until every required version is actually available, rather than treating staging or approval as publication."
 ---
 
 :::note Implementation status
 The [source-mirroring workflow](./strategy/source-mirroring) implements post-merge private source synchronization after approval and merged-commit validation. It requires an installed and configured company App. The remaining sections describe the target architecture for automated release delivery. The generated release PR, delivery coordinator, automated staging authorization and Publisher tracking described here still require implementation. The [current package release workflow](./release-packages) continues to use separate source/build requests and reviewer-triggered staging.
 :::
 
+## Delivery at a glance {#delivery-overview}
+
+Use **Figure 1** as a map while reading this tutorial. Follow **A → B → C** for
+an approved feature and its source mirrors. When packages need a release, follow
+**D → E → F → G → H**. A change with no npm release goes directly to the output
+gate at **H**. **I** observes the delivery; it does not authorize publication.
+
+<figure>
+  <img
+    src="/img/publishing/approved-delivery-infographic.png"
+    alt="CloudIgniter approved delivery: illustrated stages A–I"
+    width="1086"
+    height="1448"
+    decoding="async"
+    aria-describedby="delivery-visual-key"
+  />
+  <figcaption>
+    Figure 1. From an integrated feature PR to source mirrors, reviewed releases
+    and verified outputs. Click the image, or focus it and press Enter, to enlarge
+    and zoom. Solid panels show development and source mirroring; dashed panels
+    describe the remaining automation and remote tracking roadmap.
+  </figcaption>
+</figure>
+
+### Visual key {#delivery-visual-key}
+
+The letters in the image and the section references below describe the same
+stages. They also provide a text alternative to the illustration.
+
+| Label | Stage and section | What to remember |
+| --- | --- | --- |
+| **A** | [Workspace and responsibilities](#authority-and-responsibilities) | The private monorepo contains the complete integrated change. Local builds are previews. |
+| **B** | [Feature approval](#feature-approval-and-release-approval) | Independent review approves the PR head; delivery validates the resulting merged commit. |
+| **C** | [Source mirrors](#source-mirror-strategy) | The configured company App synchronizes approved snapshots into separate private repositories. This service is implemented and requires App setup. |
+| **D** | [Release approval](#feature-approval-and-release-approval) | A planned Changesets release PR reviews versions, changelogs and the lockfile before creating the release commit. |
+| **E** | [Build and verify](#build-repository-strategy) | Build from the exact release commit in dependency order, without delivery credentials. |
+| **F** | [Build repositories](#build-repository-strategy) | A separate delivery job transfers immutable archives and evidence; destinations do not rebuild them. |
+| **G** | [npm staging and publication](#npm-staging-and-final-publication) | Stage an unpublished candidate, obtain maintainer approval with 2FA, then confirm required versions are available. |
+| **H** | [Template, Docs and websites](#template-docs-and-website-delivery) | Deliver the intended audience's verified output. Package-dependent outputs wait for available versions; independent outputs need only their own gates. |
+| **I** | [Publisher and release record](#publisher-presentation) | The planned remote progress view shows authoritative receipts, checks and recovery while CI continues independently. |
+
+The **No npm release** path does not skip output checks or dependency checks.
+It skips package versioning and staging only when no package release is needed.
+The [migration order](#implementation-and-migration-order) explains which parts
+already exist and how to introduce the remaining automation.
+
 ## Authority and responsibilities
+
+**Figure 1 — [A: Workspace](#delivery-overview).** Start with the complete
+monorepo; the repositories at **C** and **F** are downstream destinations.
 
 The private integration monorepo is the authoritative development repository. A developer clones the complete workspace, creates a feature branch, and changes the template, packages and documentation together. One feature PR reviews that complete behavior. Individual source repositories become managed downstream mirrors; changes originate in the monorepo and are synchronized after its approved PR merges.
 
@@ -25,6 +98,11 @@ The configured canonical destination is `cloudigniter-io/cloudigniter`. The comp
 Execution after merge belongs to CI and must continue when the developer closes Publisher or goes offline. Private DEV owns the shared implementation; local CLI, Publisher and CI call the same domain services. Public `ci` remains application tooling.
 
 ## Feature approval and release approval
+
+**Figure 1 — [B: Feature PR and D: Release PR](#delivery-overview).** These are
+two separate review decisions. **B** approves the integrated behavior; **D**
+approves the versions and release contents. The decision between them lets
+independent Docs or site changes proceed toward **H** without an npm release.
 
 Approval is attached to a PR's exact head. Delivery starts only after merge into the protected canonical base and successful validation of the resulting merge commit. Record both the reviewed head and merged SHA: a squash merge produces a different commit identifier.
 
@@ -60,6 +138,10 @@ Sources can advance ahead of their most recent published version. Each release r
 
 ## Source mirror strategy
 
+**Figure 1 — [C: Source mirrors](#delivery-overview).** The App carries approved
+source snapshots into independent histories. The versioned-source note at **D**
+means an approved release merge also synchronizes versioned source.
+
 Reuse `.cloudigniter/repositories.json` to map monorepo paths to private source and build destinations. A null source path remains unmapped. A configured source root must exist in the reviewed commit; otherwise preparation stops until the inventory is corrected. Determine changes against a persisted previous successful synchronization commit, including deletions and renames. Reconcile any intervening merged PRs when a previous synchronization failed.
 
 Each synchronization creates a normal destination commit whose parent is that repository's current base. Copy only the reviewed project inventory. Reuse the existing confined snapshot and managed-file checks; preserve destination governance and delete stale files only when the previous managed inventory proves ownership. Preserve independent destination history and attach the monorepo repository, PR, reviewed head, merged commit and snapshot digest.
@@ -70,11 +152,16 @@ The source mirrors are development snapshots. Their `workspace:*` dependencies a
 
 ## Build repository strategy
 
+**Figure 1 — [E: Build & verify and F: Build repositories](#delivery-overview).**
+The separation matters: **E** produces and validates the archive without delivery
+credentials; **F** verifies the evidence and transfers those exact bytes with
+scoped credentials.
+
 Build release packages once in a disposable checkout of the exact release SHA, using the committed lockfile, pinned tools and package-owned quality gates. Build prerequisites in dependency order. Select released packages through Changesets; dependent package or template checks can be necessary even when those consumers are not themselves released. Preserve Next's `release:check` archive and checksum requirements.
 
 The build job has no destination write token, npm staging identity or AWS deployment identity. A separate delivery job uses trusted, reviewed coordinator code to verify the build run, canonical commit, approval evidence, policy, archive inventory and hashes before acquiring scoped write credentials. Arbitrary code from an artifact or PR does not become the delivery verifier.
 
-Keep the existing immutable package layout:
+Keep the existing immutable [package layout](/developer-dictionary/p#package-layout), organized as this release folder structure:
 
 ```text
 releases/<version>/
@@ -90,6 +177,11 @@ Delivery can use generated artifact PRs for an audit trail. Under the target aut
 
 ## npm staging and final publication
 
+**Figure 1 — [G: npm staging & approval](#delivery-overview).** Read this stage
+from the unpublished candidate, through the maintainer's digest check and 2FA
+approval, to confirmed registry availability. An upload alone does not open the
+package dependency gate at **H**.
+
 After successful artifact delivery, dispatch the build repository's staging workflow for the exact version and build commit. Prefer explicit dispatch from the coordinator so one committed batch cannot accidentally stage unrelated versions. The dispatch API selects a branch or tag: use an immutable protected release tag whose commit belongs to the protected base history, or require the selected base still to resolve to the recorded commit. Validate that binding inside the workflow and serialize staging per package. A retry must account for any previously staged candidate. Tag dispatch requires an explicit new verifier policy; the current human workflow permits only the configured base branch.
 
 Use an npm trusted publisher restricted to **staging**, bound to the build repository, workflow and environment. npm staging uploads an unpublished candidate; maintainer approval with 2FA makes it available. A public `beta` or `staging` dist-tag is a different mechanism. See [native staging](https://docs.npmjs.com/staged-publishing/) and [trusted publishers](https://docs.npmjs.com/trusted-publishers/).
@@ -101,6 +193,11 @@ Record the staging response and candidate identity. A successful upload is `awai
 The current CloudIgniter preflight requires an existing npm package. npm now supports staging a new package with a public placeholder, but configuring trusted publishing still needs an existing package; define a separate owner-controlled bootstrap path. Do not silently remove the current bootstrap guard. npm read access for restricted DEV remains separate from staging OIDC, and private source repositories retain the current provenance limitation.
 
 ## Template, docs and website delivery
+
+**Figure 1 — [H: Dependent outputs](#delivery-overview).** Both the package
+release route and the **No npm release** route reach the same output gates.
+An output that needs new package versions waits for **G**; an independent Docs
+or website change can proceed after its own validation and hosting checks.
 
 | Target | Verified output | Delivery gate |
 | --- | --- | --- |
@@ -115,6 +212,10 @@ Docs builds need an explicit audience/export boundary before public delivery. Th
 
 ## Publisher presentation
 
+**Figure 1 — [I: Publisher & release record](#delivery-overview).** This side
+panel observes the process. Closing the local interface does not stop CI, and
+displaying a success state requires evidence from the remote delivery record.
+
 Retain Packages, Websites, Templates and Docs navigation. Add a workspace-level change/release view because one PR can affect several selected projects. Before submission, show the complete affected targets, tests, Changesets, destinations and release dependencies. Per-target tabs show the related workspace PRs, mirror snapshot, candidate/build run, staging status and final destination.
 
 Keep these three identities distinct and visible: the developer's verified GitHub profile, the configured canonical workspace repository, and the selected target's source/build destinations. Show when the local checkout is a backup or differs from the canonical reviewed commit. Local builds remain developer previews; delivery links to CI evidence.
@@ -122,6 +223,12 @@ Keep these three identities distinct and visible: the developer's verified GitHu
 Persist progress remotely and load it when Publisher opens. Represent waiting for review, queued, building, delivering, staged, awaiting npm approval, published, failed and blocked-by-dependency explicitly. Provide logs, hashes, PR/run links and a recovery action for each target. Browser shutdown must not cancel an accepted CI delivery run. A local cancelled preview and a remote running release need separate status.
 
 ## Implementation and migration order
+
+Use the implementation labels in [Figure 1](#delivery-overview) when planning
+setup: **A–B** establish integrated development and review; **C** is the
+implemented source-mirroring service; **D–I** describe the remaining automated
+release and tracking work. Existing source/build request commands remain the
+operational release path during migration.
 
 | Stage | Work | Completion evidence |
 | --- | --- | --- |

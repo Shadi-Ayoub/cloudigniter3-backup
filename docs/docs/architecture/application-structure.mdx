@@ -2,6 +2,18 @@
 title: Application structure and ownership
 description: Find configuration and supported customization points without editing CloudIgniter internals.
 sidebar_position: 2
+sidebar_label: "Application structure"
+learning:
+  prerequisites:
+    - topic: "Logical routes and configuration"
+      href: "/docs/configuration/routes"
+    - topic: "Amplify backend folders and custom resources"
+      href: "/docs/aws-amplify-setup/folder-structure"
+  questions:
+    - question: "Where would you add an application-owned page without changing upgrade-managed core code?"
+      answer: "Add the page beneath src/app/(ci-global)/ci-global/(ci-custom) or src/app/(ci-tenant)/ci-tenant/(ci-custom), matching its supported scope. Register its logical route in src/custom/routes/routes.ts and keep it out of the managed kernel and system page tree."
+    - question: "How do you distinguish a generated resource from a manual customization?"
+      answer: "Check the resource's registration and generated-file inventory. Resource Studio owns its registered generated files and registries; hand-written custom code and manual registries remain application-owned. Resolve collisions explicitly instead of changing merge order or editing generated output."
 ---
 
 # Application structure and ownership
@@ -11,7 +23,7 @@ features in the custom areas makes their ownership clear during upgrades and res
 
 ## Find the right file
 
-Paths below are relative to `apps/template`.
+Paths below are relative to `apps/templates/cloudigniter-next-aws-v1`.
 
 | Path | Purpose |
 | --- | --- |

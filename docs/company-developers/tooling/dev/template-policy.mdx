@@ -2,6 +2,18 @@
 title: Template export policy
 description: Review the file inventory, dependency pins, overlays and transformations used for standalone templates.
 sidebar_position: 8
+sidebar_label: "Template export policy"
+learning:
+  prerequisites:
+    - topic: "Standalone template export workflow"
+      href: "/company-developers/tooling/template-export"
+    - topic: "Package ownership and core/custom boundaries"
+      href: "/company-developers/architecture/core-custom-ownership"
+  questions:
+    - question: "How does the export policy distinguish public template files from private workspace material?"
+      answer: "The policy explicitly lists source files, overlay replacements, scripts, allowed dependency versions, and text transformations. Unlisted files stay excluded; missing inputs, duplicate paths, escapes, and symlinks fail validation. This is reviewed selection, so a digest or successful export alone does not prove the content is suitable for public release."
+    - question: "Which dependency versions and generated files must be validated after applying the policy?"
+      answer: "Verify exact public CloudIgniter and permitted third-party versions, removal of workspace/private dependencies, and availability of required packages. Check standalone TypeScript configuration, scripts, generated module and form inputs, and the pristine file inventory with the same source and policy before application installation and build validation."
 ---
 
 Template policy defines which private-workspace files may become a public

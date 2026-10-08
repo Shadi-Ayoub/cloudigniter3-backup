@@ -2,6 +2,18 @@
 sidebar_position: 2
 title: Confirmation dialogs
 description: Confirm destructive or consequential actions with CloudIgniter's accessible alert dialog.
+sidebar_label: "Confirmation dialogs"
+learning:
+  prerequisites:
+    - topic: "API operations, errors, and feedback"
+      href: "/docs/building-features/api-and-feedback"
+    - topic: "Authorization concepts and default deny"
+      href: "/docs/core-system/authorization/overview"
+  questions:
+    - question: "When does a destructive operation need explicit confirmation before it runs?"
+      answer: "Use CiAlertDialog before a destructive, irreversible, or otherwise consequential action. Name the target and consequence, require explicit acknowledgement, support keyboard cancellation, and block duplicate confirmation or dismissal while asynchronous work is pending."
+    - question: "How do confirmation dialogs differ from notifications shown after an operation?"
+      answer: "A confirmation asks the user to authorize a consequential action before execution. A notification reports the actual outcome afterward. Keep the two stages separate: acknowledging a prompt is not evidence of success, and an outcome alert cannot replace prior confirmation."
 ---
 
 # Confirmation dialogs

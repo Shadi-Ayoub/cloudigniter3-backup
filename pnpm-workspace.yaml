@@ -1,6 +1,7 @@
 packages:
   - "docs"
   - "apps/*"
+  - "apps/templates/*"
   - "packages/*"
 patchedDependencies:
   next@16.2.2: patches/next@16.2.2.patch

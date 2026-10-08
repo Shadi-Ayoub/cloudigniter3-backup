@@ -1,6 +1,6 @@
 ---
 name: cloudigniter-development
-description: Apply CloudIgniter architecture, package ownership, public API and runtime boundaries, TDD, and release gates. Covers modules, developer-role gates and JSON seeding, reversible deletion and Trash, Resource Studio and Data Entity generation, collision-safe transactions, Studio security, AWS SSO/STS and Amplify deployment, AppleDouble safety, DynamoDB keys, hydration-safe routing/rendering, semantic theming, access control, CiDataTable, and the private DEV company toolkit and release requests. Use when implementing, debugging, refactoring, reviewing, or documenting packages/cli, packages/dev, packages/core, packages/emberguard, packages/next, packages/aws, packages/ui, apps/template, or the developer guide.
+description: Apply CloudIgniter architecture, package ownership, public API and runtime boundaries, TDD, and release gates. Covers modules, developer-role gates and JSON seeding, reversible deletion and Trash, Resource Studio and Data Entity generation, collision-safe transactions, Studio security, AWS SSO/STS and Amplify deployment, AppleDouble safety, DynamoDB keys, hydration-safe routing/rendering, semantic theming, access control, CiDataTable, and the private DEV company toolkit and release requests. Use when implementing, debugging, refactoring, reviewing, or documenting packages/cli, packages/dev, packages/core, packages/emberguard, packages/next, packages/aws, packages/ui, apps/templates/cloudigniter-next-aws-v1, or the developer guide.
 ---
 
 # CloudIgniter Development Workflow
@@ -46,10 +46,14 @@ The references are grouped by reading level: `architecture` for system and domai
 
 Do not load every reference by default. Select the smallest set that fully covers the task.
 
+## Workspace and repository boundaries
+
+Keep connected packages, templates and Docs in the monorepo. Versioned templates live under `apps/templates/<template-id>`; the current reference is `cloudigniter-next-aws-v1`. Keep both formal websites in separate, explicitly selected external checkouts with null inventory source paths and independent permissions. Their source/build pairs are `cloudigniter-io/cloudigniter-website` / `cloudigniter-io/build-cloudigniter-website` and `jodaris/jodaris-website` / `jodaris/build-jodaris-website`. Never source-mirror them; read the publishing reference for their independent CI and AWS delivery workflow.
+
 ## Core principles
 
 1. Do not equate the requested file with the implementation owner.
-2. Treat `apps/template` as application composition and configuration, not a hidden platform package.
+2. Treat `apps/templates/cloudigniter-next-aws-v1` as application composition and configuration, not a hidden platform package.
 3. Put reusable Next.js request/runtime behavior in `packages/next` and keep the template integration thin.
 4. Preserve the actual request lifecycle. Do not modify `next.config.ts`, `proxy.ts`, request context, or i18n in isolation when they form one execution chain.
 5. Keep serialized request context minimal and request-specific. Never embed route registries, full configuration, message catalogs, provider clients, or other application-wide data.
@@ -108,7 +112,7 @@ Search for:
 - request-time wiring such as `proxy.ts` and next-intl request configuration.
 - existing `CiDataTable` definitions, configuration, mutation adapters, semantic feedback, and confirmation flows when the task touches a management table.
 - active infrastructure registration, generated model/table binding, IAM grants, indexes, capacity mode, backup/TTL/stream behavior, and every call site when the task touches DynamoDB.
-- the ownership lane of every affected template path, all manual and generated custom registries, and core/manual/generated key or path collisions when the task touches `apps/template` or generation.
+- the ownership lane of every affected template path, all manual and generated custom registries, and core/manual/generated key or path collisions when the task touches `apps/templates/cloudigniter-next-aws-v1` or generation.
 - before any Codex or CloudIgniter create/generate operation on a macOS-capable filesystem, the exact intended output manifest and an `lstat`-based snapshot of existing candidate `._*` companions so later cleanup can prove current-operation provenance.
 
 For request/i18n work, trace at least:
@@ -118,7 +122,7 @@ next.config.ts
     → proxy.ts
     → packages/next request pipeline
     → request-context header/cookie
-    → apps/template/src/kernel/server/i18n/request.ts
+    → apps/templates/cloudigniter-next-aws-v1/src/kernel/server/i18n/request.ts
     → message loader
     → app bootstrap/providers/components
 ```
@@ -135,7 +139,7 @@ public generic API and types     → packages/core
 Next.js runtime integration      → packages/next
 provider implementation          → packages/aws or another provider
 reusable presentation            → packages/ui
-application composition/config   → apps/template
+application composition/config   → apps/templates/cloudigniter-next-aws-v1
 ```
 
 When a template file must remain an application entry point, move reusable implementation behind an intentional package API and leave configuration or delegation in the template.
@@ -184,7 +188,7 @@ When behavior is reusable:
 2. Add or update canonical public types when needed.
 3. Export only the stable API through `/client`, `/server`, `/lib`, or `/types`.
 4. Integrate it into higher layers.
-5. Update `apps/template` last with thin composition.
+5. Update `apps/templates/cloudigniter-next-aws-v1` last with thin composition.
 
 Do not build a complete template-local implementation and wrap it afterward.
 

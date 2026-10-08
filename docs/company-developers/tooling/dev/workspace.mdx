@@ -2,6 +2,18 @@
 title: Workspace setup and migration
 description: Prepare the private workspace, select a package and migrate former ci-dev integrations.
 sidebar_position: 2
+sidebar_label: "Workspace setup"
+learning:
+  prerequisites:
+    - topic: "GitHub branches, commits, and pull requests"
+      href: "https://docs.github.com/en/get-started/using-github/github-flow"
+    - topic: "npm packages and the registry"
+      href: "https://docs.npmjs.com/about-npm/"
+  questions:
+    - question: "Why should setup verify the selected working directory and GitHub identity?"
+      answer: "The working directory determines the validated Workspace and package or application target. Verified GitHub identity determines the configured requester or approver authority. Checking both prevents a correct command from operating in the wrong checkout or using an unintended account and destination."
+    - question: "How can a maintainer migrate former ci-dev integrations while preserving application ci commands?"
+      answer: "Install or link @cloudigniter/dev as a development dependency and replace ci-dev invocations and former build exports with supported dev tooling paths. Keep application ci commands on @cloudigniter/cli; retired executable names have no aliases, so update their actual script and automation consumers together."
 ---
 
 Use Node 22.14 or newer and the pnpm version pinned in the workspace's `package.json`.

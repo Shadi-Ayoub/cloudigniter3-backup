@@ -2,9 +2,23 @@
 title: CI coverage and branch protection
 description: What CloudIgniter's required jobs validate and how an administrator enables and verifies protected main.
 sidebar_position: 5
+sidebar_label: "CI and branch protection"
+learning:
+  prerequisites:
+    - topic: "GitHub Actions workflows, jobs, and runners"
+      href: "https://docs.github.com/en/actions/get-started/understand-github-actions"
+    - topic: "Continuous Integration and delivery gates"
+      href: "/dictionary/c#continuous-integration"
+    - topic: "GitHub branches, commits, and pull requests"
+      href: "https://docs.github.com/en/get-started/using-github/github-flow"
+  questions:
+    - question: "Why must required-check names be selected from actual workflow jobs?"
+      answer: "GitHub requires reported job-check contexts, including matrix-specific names, rather than a workflow's display title. Run the workflows and select their actual successful names, keeping names unique and protection settings synchronized when a job is renamed."
+    - question: "What distinguishes successful validation evidence from an enabled branch-protection rule?"
+      answer: "A successful run proves that a particular revision passed validation. An enabled effective branch rule determines whether GitHub blocks merging without those checks and independent approval. Committed workflow YAML or a green local run proves neither that the rule exists nor that bypasses are restricted."
 ---
 
-CloudIgniter validates the integrated workspace on every PR and every push to `main`. Its four quality workflows cover all active platform packages, the company toolkit, shared TypeScript presets, the reference template, Docs, JODARIS and CloudIgniter Website. Archived future-package folders are outside the active pnpm workspace. Both temporary static websites have their own source checks and public artifact builds.
+CloudIgniter validates the integrated workspace on every PR and every push to `main`. Its four quality workflows cover all active platform packages, the company toolkit, shared TypeScript presets, the reference templates and Docs. Archived future-package folders are outside the active pnpm workspace. Each independent website runs source checks and artifact builds in its own source repository; its build repository owns AWS deployment.
 
 ## Understand the coverage
 
@@ -13,7 +27,7 @@ CloudIgniter validates the integrated workspace on every PR and every push to `m
 | `dev-quality.yml` | DEV on Node 22 and 24 | Toolkit checks, behavior tests and package inventory; Node 24 additionally exports/checks the public template and retains the toolkit archive. |
 | `next-quality.yml` | Next tests on Node 22 and 24; one build job | Full Next quality gate, test typing, per-file coverage policy, production build, archive validation and a publish-request report with a checksum. |
 | `packages-quality.yml` | Six targets on Node 22 and 24 | Existing Core, AWS, UI, EmberGuard and CLI checks/tests and inventory checks; Config TS validates every exported preset and its inclusion in npm files. Node 24 builds runtime packages, packs all six targets and verifies their advertised archive entries. |
-| `workspace-quality.yml` | Template on Node 22 and 24; Docs; JODARIS; CloudIgniter Website | Full workspace typecheck, template tests; Node 24 builds the template including optional-module and form generation. Docs validates metadata, linking/search behavior, types and production output. Both websites validate their single-page sources and stage only their public static output. |
+| `workspace-quality.yml` | Template on Node 22 and 24; Docs | Full workspace typecheck, template tests; Node 24 builds the template including optional-module and form generation. Docs validates metadata, linking/search behavior, types and production output. Website checks are separate and are not required monorepo jobs. |
 
 Next's strict coverage rollout remains package-specific. Running other packages' existing tests does not give them Next's coverage thresholds or identical archive checks. Raise those gates deliberately as each package's release contract evolves.
 
@@ -41,8 +55,6 @@ Run the quality workflows in the company repository first, confirm each job succ
 | UI | `Package ui (Node 22)`; `Package ui (Node 24)` |
 | Template | `Template integration (Node 22)`; `Template integration (Node 24)` |
 | Docs | `Developer guide` |
-| JODARIS | `JODARIS website` |
-| CloudIgniter Website | `CloudIgniter website` |
 
 Do not require a workflow title such as `Platform packages quality`; require its job checks. When GitHub offers a source selector, bind the check to GitHub Actions. Keep names unique across workflows. Renaming a job requires updating the protection setting too.
 

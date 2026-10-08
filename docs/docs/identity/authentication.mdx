@@ -2,6 +2,18 @@
 title: Authentication and identity
 description: Connect sign-in, the current user, route protection, and scoped authorization.
 sidebar_position: 1
+sidebar_label: "Authentication"
+learning:
+  prerequisites:
+    - topic: "CloudIgniter application configuration"
+      href: "/docs/core-system/configurations/cloudigniter.config.ts"
+    - topic: "Tenant identity and Org Unit trees"
+      href: "/docs/core-system/multi-Tenancy/core-concepts"
+  questions:
+    - question: "What does a resolved authenticated current user establish before authorization is evaluated?"
+      answer: "A trusted authenticated current user establishes who is making the request, with the provider's verified identity and application projection. Authorization then checks the relevant scoped assignments and privileges; sign-in or a displayed role name alone does not establish access to every operation."
+    - question: "Why must protected operations check identity even when the page route already requires sign-in?"
+      answer: "Operations can be called directly, after the session changes, or through another entry point. Resolve fresh authenticated identity and canonical scope at the operation boundary, then check its specific resource/action before reading or mutating protected data."
 ---
 
 # Authentication and identity

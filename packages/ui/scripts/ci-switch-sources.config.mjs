@@ -4,13 +4,13 @@ export default {
 
   sourceAlias: {
     alias: "@ci-ui/*",
-    appPath: "../../packages/ui/src/*",
+    appPath: "../../../packages/ui/src/*",
   },
 
   appTemplate: {
-    folderName: "template",
-    tsconfigPath: "../../apps/template/tsconfig.json",
-    globalsCssPath: "../../apps/template/src/app/globals.css",
+    folderName: "cloudigniter-next-aws-v1",
+    tsconfigPath: "../../apps/templates/cloudigniter-next-aws-v1/tsconfig.json",
+    globalsCssPath: "../../apps/templates/cloudigniter-next-aws-v1/src/app/globals.css",
   },
 
   currentPackageAliases: [

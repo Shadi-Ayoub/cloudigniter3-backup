@@ -2,6 +2,20 @@
 title: Resource Deletion Lifecycle
 description: Implement reversible deletion, Trash, restoration, and conditional purge across CloudIgniter providers.
 sidebar_position: 3
+sidebar_label: "Deletion lifecycle"
+learning:
+  prerequisites:
+    - topic: "Tenant identity and Org Unit trees"
+      href: "/docs/core-system/multi-Tenancy/core-concepts"
+    - topic: "Development tool gates and seeders"
+      href: "/docs/environment-modes/development-tools-and-seeding"
+    - topic: "Package ownership and core/custom boundaries"
+      href: "/company-developers/architecture/core-custom-ownership"
+  questions:
+    - question: "How are resource-deletion participants planned and ordered across services?"
+      answer: "Inventory the primary record, projections, relationships, counters, caches, grants, identity, files, and external resources, marking each reversible, purge-only, asynchronous, or not applicable. Order dependent steps explicitly; use a shared transaction where possible or an idempotent operation with persisted participant progress across services."
+    - question: "Which recorded invariants make a partially completed Tenant deletion resumable?"
+      answer: "Retain the canonical target, stable operation ID, trusted actor/time/reason, expected state or revision, and participant completion results. Retries must reconcile those results before advancing; required failures remain visible. Preserve operational status separately from deletion, and never report success while required lookup or participant changes are incomplete."
 ---
 
 # Resource deletion lifecycle

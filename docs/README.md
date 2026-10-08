@@ -40,7 +40,8 @@ Docusaurus theme. Shared tokens and documentation styles live in
 - Body: locally hosted Inter, 16px with a 28px line height.
 - Headings: locally hosted Averia Serif Libre; 32px page titles, 28px section
   headings, and 20px subsections. Mobile page titles use 28px.
-- Layout: a 272px desktop sidebar and a reading column capped at 688px.
+- Layout: an animated, closed-by-default navigation drawer sized to its widest
+  single-line label and a reading column capped at 688px.
 - Colors: blue accents, neutral surfaces, and corresponding dark-mode tokens.
 - Fonts and their SIL Open Font Licenses live in `static/fonts`. Inter's Latin
   variable subset comes from the reference site's font asset; Averia Serif Libre
@@ -48,6 +49,55 @@ Docusaurus theme. Shared tokens and documentation styles live in
 
 Keep native Docusaurus navigation, keyboard controls, code copying, and mobile
 menus intact. Check light/dark and desktop/mobile views after changing the theme.
+
+The sticky **Navigation** button opens and closes the drawer on every docs route,
+including on mobile. Choosing a linked title, clicking outside, or pressing Escape
+closes it. Category carets expand their children without dismissing navigation.
+Drawer labels use concise `sidebar_label` frontmatter; page titles and URLs stay
+independent. The drawer measures all labels, including collapsed children, so
+expansion does not change its width. On narrow screens its width is bounded by the
+viewport and unusually long reference names can scroll inside the drawer.
+
+**Full screen** opens the current page in element fullscreen where supported,
+with an equivalent reading view as a fallback. The view hides breadcrumbs, keeps
+reading controls, **On this page**, and the bottom **Previous / Next** links available,
+and retains readable line lengths and the reader's article position. After scrolling
+more than 300 pixels in full screen, the **Scroll back to top** arrow returns the
+reading view to the top while keeping full screen active. It scrolls smoothly unless
+the reader prefers reduced motion. **Exit full screen** or Escape
+restores ordinary reading at the position reached in the fullscreen view. Choosing
+another page from the drawer or the Previous / Next links keeps full screen active, closes the drawer, and starts
+the new page at the top with its learning sections collapsed. External page controls become inert while the
+reading view is open; existing Dictionary, search, and media dialogs keep their
+own dismissal behavior.
+
+### Tutorial learning sections
+
+Active Users and Developers lessons declare `learning` in frontmatter:
+
+```yaml
+learning:
+  prerequisites:
+    - topic: GitHub branches and pull requests
+      href: https://docs.github.com/en/get-started/using-github/github-flow
+  questions:
+    - question: Why must delivery retain the reviewed head and the merged commit?
+      answer: Review approves the exact PR head, while delivery validates the resulting merged commit. Retain both to connect the approval to the delivered source.
+```
+
+The shared article theme puts **Prerequisite knowledge** directly after either a
+Markdown or frontmatter title and **Review Questions** at the end of the content,
+before the Updated footer. Both start collapsed and reset on page navigation.
+Each question includes a **See answer** disclosure containing its authored key
+answer. Answers start collapsed, open independently, support keyboard activation,
+and reset on page navigation. On wider screens, **On this page** stays visible on
+the right in full screen; smaller screens retain its collapsible inline control.
+Use actual prerequisite reading links and questions with accurate key answers specific to that lesson;
+avoid repeating questions from other pages. Mark path indexes and summaries with
+`learning: false`. API contracts, command manuals, dictionaries, historical pages,
+and rendered agent Skills are reference surfaces, rather than Academy tutorials.
+`guide:check` validates all current Users and Developers pages, their prerequisite
+destinations, explicit exclusions, question uniqueness, and required key answers.
 
 ### Build
 
@@ -73,6 +123,12 @@ The starter blog is disabled and its sample posts are removed. **Resources**
 contains the maintained Skills documentation.
 
 ### Guide media viewer
+
+Image captions use semantic `figure`/`figcaption` markup and shared styles in
+`src/css/custom.css`: 14px italic secondary text on a subtle themed surface, with
+a 6px image-to-caption gap and a fine logical-start border. `ImageWrapper` uses
+the same treatment. Keep captions inside their figure instead of placing them
+in an ordinary body paragraph; avoid page-specific caption styles.
 
 The root-mounted `src/components/MediaViewer` adds click/Enter enlargement to
 Markdown images, `ImageWrapper` images and Mermaid SVG diagrams across guide
@@ -165,6 +221,12 @@ use a fourth tuple item, `{ autoLinkLabel: false }`, to keep ambiguous bare labe
 searchable without automatically linking them. Qualified aliases still link;
 authors can explicitly link a bare term when its technical meaning is clear.
 Claim uses this policy so publishing assertions do not open token definitions.
+Layout also requires a qualified UI/route alias or an explicit contextual link;
+Package Layout has its own Developer Dictionary definition for folder structure.
+CI means Continuous Integration, and CI/CD has a separate definition. These
+abbreviations match case-sensitively to preserve the lowercase `ci` executable.
+Write the platform's name as CloudIgniter; preserve literal public identifiers,
+commands, historical import paths, and persisted `CI#` key syntax.
 
 The planned Users edition is the default; the Developers edition extends it.
 This phase keeps both tools in the existing maintainer preview. The preview

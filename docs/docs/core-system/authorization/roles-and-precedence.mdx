@@ -2,6 +2,18 @@
 title: 4. Roles, Inheritance, and Precedence
 description: Build reusable groups, inherit privileges, and choose a deterministic conflict strategy.
 sidebar_position: 4
+sidebar_label: "Roles and precedence"
+learning:
+  prerequisites:
+    - topic: "Catalogs, resources, and permissions"
+      href: "/docs/core-system/authorization/catalog-and-permissions"
+    - topic: "Authorization concepts and default deny"
+      href: "/docs/core-system/authorization/overview"
+  questions:
+    - question: "How can inheritance and an explicit deny affect a user's combined roles?"
+      answer: "Inheritance contributes privileges from included roles, subject to valid catalog and scope rules. With deny-overrides, any applicable explicit deny defeats matching allows, including those inherited or supplied by another assigned role. Unknown or unmatched operations still deny."
+    - question: "When would highest-precedence produce a different result from deny-overrides?"
+      answer: "Highest-precedence considers matching direct privileges first; otherwise it selects the numerically lowest role-precedence tier and applies deny-overrides within that tier. An allow in a stronger tier can therefore beat a deny in a weaker tier, whereas deny-overrides would deny across all matching tiers."
 ---
 
 # Roles, Inheritance, and Precedence

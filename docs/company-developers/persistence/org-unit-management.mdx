@@ -2,6 +2,20 @@
 title: Org Unit tree persistence
 description: Canonical shared nodes, tenant attachments, transactions, access patterns, and seeder cleanup.
 sidebar_position: 3
+sidebar_label: "Org Unit persistence"
+learning:
+  prerequisites:
+    - topic: "Tenant identity and Org Unit trees"
+      href: "/docs/core-system/multi-Tenancy/core-concepts"
+    - topic: "Access scopes and assignments"
+      href: "/docs/core-system/authorization/scopes-and-assignments"
+    - topic: "DynamoDB keys and access patterns"
+      href: "/docs/library/dynamodb/table-key-convention"
+  questions:
+    - question: "Which access patterns require authoritative ancestry or strongly consistent tree reads?"
+      answer: "Tenant/path routing needs a strongly consistent attachment GetItem. Mutations strongly read the base parent/child graph for version, Tenant containment, and cycle checks; descendant authorization uses stored canonical ancestry. The management GSI is suitable for browsing, not proof of current hierarchy invariants."
+    - question: "How do IAM and conditional writes protect canonical nodes and Tenant attachments?"
+      answer: "Grant handlers only their required System-table and index actions. Use expected-version conditions and transactions to update canonical records, parent child lists, and Tenant attachments together; cleanup also checks provenance and surviving children so stale requests or ownership drift cannot partially corrupt the tree."
 ---
 
 # Org Unit tree persistence

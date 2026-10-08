@@ -2,6 +2,20 @@
 title: 7. Enforcing Access
 description: Create authorizers, evaluate decisions, build guards, and enforce one or many requirements.
 sidebar_position: 7
+sidebar_label: "Enforce access"
+learning:
+  prerequisites:
+    - topic: "Catalogs, resources, and permissions"
+      href: "/docs/core-system/authorization/catalog-and-permissions"
+    - topic: "Authorization subjects and provider adapters"
+      href: "/docs/core-system/authorization/subjects-and-providers"
+    - topic: "Access scopes and assignments"
+      href: "/docs/core-system/authorization/scopes-and-assignments"
+  questions:
+    - question: "When should you reuse a compiled authorizer instead of performing one-shot checks?"
+      answer: "Reuse a compiled authorizer when repeatedly evaluating the same validated catalog: construction validates definitions and compiles inheritance once. Create a fresh instance when the policy version changes; use a one-shot helper for isolated checks where that reuse is unnecessary."
+    - question: "How does an application guard translate a structured authorization decision into operation behavior?"
+      answer: "Inspect the decision's allowed flag and structured reason before executing the operation. On denial, stop the mutation or data read and return the page's access boundary or operation's structured failure. A core decision alone does not enforce access until the application guard acts on it."
 ---
 
 # Enforcing Access

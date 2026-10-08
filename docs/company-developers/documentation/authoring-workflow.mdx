@@ -2,6 +2,18 @@
 title: Developer Guide Authoring Workflow
 description: Keep user guidance, contributor architecture, and public API reference synchronized with CloudIgniter changes.
 sidebar_position: 1
+sidebar_label: "Guide authoring"
+learning:
+  prerequisites:
+    - topic: "Package ownership and core/custom boundaries"
+      href: "/company-developers/architecture/core-custom-ownership"
+    - topic: "Dictionary audiences and contextual links"
+      href: "/company-developers/documentation/dictionaries"
+  questions:
+    - question: "How would you route one public behavior change to Users, Developers, and API Reference?"
+      answer: "Update the Users task workflow, API Reference for the exact public contract, and Developers guidance for affected architecture or contributor operations. Cross-link them, verify examples against exports and types, and update the owning architecture skill when its implementation rules change."
+    - question: "Why do guide validation and page-date maintenance belong in the same implementation change?"
+      answer: "The guide is part of the delivered behavior, so stale examples or broken links make an otherwise working change incomplete. Refresh timestamps only for actual edited content while preserving creation dates, then validate dates, types, and the production build in the same implementation change."
 ---
 
 # Developer guide authoring workflow
@@ -52,9 +64,9 @@ Typical routing:
 
 ## Link Dictionary terms in prose
 
-Every term cataloged in `docs/dictionary-sidebars.ts` is an identified
-Dictionary term. Make each prose occurrence clickable with its canonical
-definition URL, for example `[proxy](/dictionary/p#proxy)`. The guide intercepts
+The catalogs in `docs/dictionary-terms.ts` and `docs/developer-dictionary-terms.ts`
+identify Dictionary terms. Link prose only when its meaning matches the definition,
+using a canonical URL such as `[proxy](/dictionary/p#proxy)`. The guide intercepts
 these links outside the Dictionary tab and opens the searchable Dictionary
 Viewer over the current page. Normal URL navigation remains available without
 JavaScript and from inside the Dictionary tab. Readers can also select the book
@@ -63,14 +75,36 @@ current page.
 
 Add links in paragraphs, lists, callouts, and table cells. Skip headings, code,
 diagrams, existing links, and the term's own definition. Add or rename the entry
-in both its letter MDX file and `dictionary-sidebars.ts`; that shared catalog
+in both its letter MDX file and the matching term catalog; that shared catalog
 drives the sidebar, viewer search, alphabet availability, and canonical link.
+
+Use an explicit contextual link for ambiguous bare words such as Layout or Claim.
+Package Layout means a folder structure; UI/route Layout means the shared rendered
+page structure. CI means Continuous Integration, while the lowercase `ci` executable
+keeps its separate command identity. Spell the platform name CloudIgniter in prose.
 
 The `plugins/remark-dictionary-terms.ts` build transform provides a coverage
 backstop for CloudIgniter Users, CloudIgniter Developers, and API Reference. It
-matches cataloged terms case-insensitively, prefers the longest term when names
+matches unambiguous terms and qualified aliases, supports case-sensitive abbreviation
+policies, and prefers the longest term when names
 overlap, and produces the same canonical links without changing headings, code,
 diagrams, existing links, Dictionary definitions, or generated Skills content.
+
+## Tutorial learning sections
+
+Each active Users or Developers tutorial declares linked prerequisite topics and
+page-specific review questions in its `learning` frontmatter. The shared reading
+theme displays **Prerequisite knowledge** directly below the main title and
+**Review Questions** after the article content, before the Updated footer. Both
+are collapsed when the reader opens a page.
+
+Choose background topics that the reader needs to understand the lesson, linking
+to earlier guide lessons or authoritative external introductions. Ask questions
+about the lesson's decisions, constraints, and dependencies; each question belongs
+to one page. Indexes, reading paths, and summaries declare `learning: false`.
+Reference manuals, dictionaries, generated categories, historical pages, and
+rendered agent Skills do not receive tutorial exercises. `guide:check` validates
+coverage, linked destinations, and duplicate questions before start or build.
 
 ## Verify source before writing
 

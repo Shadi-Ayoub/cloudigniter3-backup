@@ -2,6 +2,18 @@
 title: "Before you start: AWS preparation"
 description: Prepare an AWS development account, Developer 1 SSO access, deployment permissions, and a local AWS profile.
 sidebar_position: 1
+sidebar_label: "AWS preparation"
+learning:
+  prerequisites:
+    - topic: "Cloud computing and AWS resources"
+      href: "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/what-is-cloud-computing.html"
+    - topic: "AWS IAM identities and permissions"
+      href: "https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html"
+  questions:
+    - question: "How do an AWS SSO identity, a local profile, and a CloudIgniter application user differ?"
+      answer: "An AWS SSO identity is a human identity used to access an AWS account. A local AWS profile selects its account, role, and Region for CLI credentials. A CloudIgniter application user signs in through the application's identity provider and has separate application roles and profile data."
+    - question: "Why must deployment permissions and application bootstrap permissions be checked separately?"
+      answer: "Deploying the sandbox and initializing its application state require different permissions. The deployment role does not automatically receive the Cognito administration, profile writes, or bootstrap-function invocation needed to initialize the catalog and Root User; verify those grants against the generated resource identifiers."
 ---
 
 # Before you start: AWS preparation

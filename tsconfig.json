@@ -7,7 +7,7 @@
     { "path": "./packages/emberguard" },
     { "path": "./packages/next" },
     { "path": "./packages/ui" },
-    { "path": "./apps/template" },
+    { "path": "./apps/templates/cloudigniter-next-aws-v1" },
     
   ]
 }

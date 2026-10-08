@@ -2,6 +2,18 @@
 title: Best practices
 description: Safety rules for environment modes and developer-only operations.
 sidebar_position: 6
+sidebar_label: "Environment practices"
+learning:
+  prerequisites:
+    - topic: "Environment modes and tool access"
+      href: "/docs/environment-modes/intro"
+    - topic: "Focused, integration, and cleanup tests"
+      href: "/docs/testing-strategy/"
+  questions:
+    - question: "Why should environment gates be checked at the trusted operation boundary?"
+      answer: "A hidden button or browser mode label does not protect an operation. Each server action and provider handler must independently require development mode, an authenticated actor, and exact developer membership before executing a development capability."
+    - question: "How can fixtures and explicit configuration prevent staging data from being treated as disposable development data?"
+      answer: "Use separate resources for each environment and explicit trusted mode configuration. Seed disposable fixtures with atomic provenance markers and clean up only records whose ownership matches; staging and production deny deployed developer tools even if a fixture-like record exists."
 ---
 
 - Keep Next.js and Amplify `CI_ENV_MODE` values aligned.

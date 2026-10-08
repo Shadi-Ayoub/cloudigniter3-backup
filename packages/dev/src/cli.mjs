@@ -164,6 +164,7 @@ export async function ciRunDevCli(argv = process.argv.slice(2)) {
             choices: ["public", "private", "restricted"],
           },
           workspaceRoot: { type: "string" },
+          siteRoot: { type: "string" },
           port: { type: "number" },
           host: { type: "string" },
           external: { type: "boolean" },

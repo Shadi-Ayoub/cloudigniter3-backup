@@ -2,6 +2,18 @@
 sidebar_position: 1
 title: Data table
 description: Define, configure, and connect CloudIgniter's TanStack-based object-management table.
+sidebar_label: "Data tables"
+learning:
+  prerequisites:
+    - topic: "API operations, errors, and feedback"
+      href: "/docs/building-features/api-and-feedback"
+    - topic: "Tenant identity and Org Unit trees"
+      href: "/docs/core-system/multi-Tenancy/core-concepts"
+  questions:
+    - question: "How do provider-backed sorting and pagination differ from processing a local row array?"
+      answer: "With a local array, the table processes the supplied rows in the browser. With a provider-backed source, query state carries sorting, filters, page size, and cursor or page information to the provider, which returns the corresponding result; configure the mode to match that source."
+    - question: "What should the table show for loading, empty, and failed data responses?"
+      answer: "Show a clear pending state without unnecessarily discarding existing rows, distinguish an empty dataset from a filtered-empty result, and display load failures as failures rather than no results. Use page-specific labels and an empty-state filter reset or recovery action where useful."
 ---
 
 # Data table

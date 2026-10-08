@@ -3,6 +3,7 @@ import { useDoc } from "@docusaurus/plugin-content-docs/client";
 import OriginalFooter from "@theme-original/DocItem/Footer";
 import PageDates from "../../../components/PageDates";
 import DocFeedback from "../../../components/DocFeedback";
+import LearningSections from "../../../components/LearningSections";
 
 export default function DocItemFooter(): React.JSX.Element {
   const { metadata } = useDoc();
@@ -12,6 +13,7 @@ export default function DocItemFooter(): React.JSX.Element {
     : `docs/${source}`;
   return (
     <>
+      <LearningSections section="review" />
       <OriginalFooter />
       <PageDates sourceKey={sourceKey} />
       {!source.startsWith("dictionary/") &&

@@ -2,6 +2,16 @@
 title: 3. Catalog and Permission Design
 description: Design stable domains, resources, actions, privileges, wildcards, and validation rules.
 sidebar_position: 3
+sidebar_label: "Catalog and permissions"
+learning:
+  prerequisites:
+    - topic: "Authorization concepts and default deny"
+      href: "/docs/core-system/authorization/overview"
+  questions:
+    - question: "How would you design resource and action names before introducing wildcard permissions?"
+      answer: "Define stable domain-qualified resources and explicit registered actions that reflect real operations and supported scopes. Introduce narrow wildcards only after those boundaries are clear; a wildcard must not authorize unknown resources, unsupported actions, or arbitrary scope combinations."
+    - question: "Why are catalog validation and ownership checks necessary before compiling an authorizer?"
+      answer: "Validation rejects duplicate or unknown IDs, invalid statuses or scope combinations, inheritance cycles, and prohibited broad wildcards. Ownership checks prevent custom additions from replacing managed core definitions. Compile only the successfully merged, validated catalog so permissions have unambiguous meaning."
 ---
 
 # Catalog and Permission Design

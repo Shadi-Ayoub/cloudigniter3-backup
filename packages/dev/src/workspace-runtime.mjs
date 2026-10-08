@@ -4,6 +4,7 @@ import { setTimeout as delay } from "node:timers/promises";
 import path from "node:path";
 import { CiDevUsageError, CiDevWorkerError } from "./runtime.mjs";
 import { ciOpenVSCodeTerminal } from "./workspace-vscode.mjs";
+import { ciRestartWorkspaceServer } from "./workspace-restart.mjs";
 
 /** @param {string} url */
 export async function ciOpenWorkspaceBrowser(url) {
@@ -27,19 +28,22 @@ export async function ciOpenWorkspaceBrowser(url) {
 }
 
 /** @param {string} host @param {number} port */
-async function assertAvailable(host, port) {
+async function portAvailable(host, port) {
   const probe = createServer();
-  await new Promise((resolve, reject) => {
-    probe.once("error", reject);
-    probe.listen({ host, port, exclusive: true }, () => resolve(undefined));
-  }).catch(() => {
-    throw new CiDevUsageError(
-      `Cannot bind ${host}:${port}. The port may already be in use; choose --port=<another-port>.`,
-    );
-  });
+  try {
+    await new Promise((resolve, reject) => {
+      probe.once("error", reject);
+      probe.listen({ host, port, exclusive: true }, () => resolve(undefined));
+    });
+  } catch (error) {
+    if (error instanceof Error && "code" in error && error.code === "EADDRINUSE")
+      return false;
+    throw new CiDevUsageError(`Cannot bind ${host}:${port}: ${error instanceof Error ? error.message : String(error)}`);
+  }
   await new Promise((resolve, reject) =>
     probe.close((error) => (error ? reject(error) : resolve(undefined))),
   );
+  return true;
 }
 
 /** @param {string} url */
@@ -62,11 +66,31 @@ async function acceptingConnections(url) {
 }
 
 /** @param {import('./workspace-commands.mjs').WorkspaceStartPlan} plan
- * @param {{open?:(url:string)=>Promise<void>,ready?:(url:string)=>Promise<unknown>,log?:(text:string)=>void}} [services]
+ * @param {{open?:(url:string)=>Promise<void>,ready?:(url:string)=>Promise<unknown>,log?:(text:string)=>void,portAvailable?:typeof portAvailable,portReleaseTimeoutMs?:number}} [services]
  */
 export async function ciRunWorkspaceServer(plan, services = {}) {
-  await assertAvailable(plan.host, plan.port);
   const log = services.log ?? console.log;
+  const checkPort = services.portAvailable ?? portAvailable;
+  const available = await checkPort(plan.host, plan.port);
+  if (plan.restartOnBusy) {
+    // Inspect every listener on the default port, including another interface or
+    // address family that would not conflict with the requested bind address.
+    await ciRestartWorkspaceServer(plan, log, available);
+    // Process exit and socket release can complete at different times. Only
+    // probe here: a new listener must never inherit the old server's ownership.
+    const deadline = Date.now() + (services.portReleaseTimeoutMs ?? 5000);
+    let waiting = false;
+    while (!(await checkPort(plan.host, plan.port))) {
+      if (Date.now() >= deadline)
+        throw new CiDevUsageError(`Cannot bind ${plan.host}:${plan.port}: the port did not become available after stopping the previous server. Choose --port=<another-port>.`);
+      if (!waiting) {
+        log(`Waiting for ${plan.target}: port ${plan.port} to be released…`);
+        waiting = true;
+      }
+      await delay(Math.min(150, Math.max(0, deadline - Date.now())));
+    }
+  } else if (!available)
+    throw new CiDevUsageError(`Cannot bind ${plan.host}:${plan.port}. The port may already be in use; choose --port=<another-port>.`);
   log(
     `CloudIgniter Workspace — ${plan.target} (${plan.mode})\n${plan.url}\nDirectory: ${plan.cwd}\nPress Ctrl+C to stop.`,
   );

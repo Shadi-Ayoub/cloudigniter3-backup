@@ -2,6 +2,20 @@
 title: User administration
 description: Manage CloudIgniter users, administrators, identities, profiles, roles, assignments, and deletion lifecycle from the dashboard.
 sidebar_position: 1
+sidebar_label: "User administration"
+learning:
+  prerequisites:
+    - topic: "Authentication and identity"
+      href: "/docs/identity/authentication"
+    - topic: "Authorization concepts and default deny"
+      href: "/docs/core-system/authorization/overview"
+    - topic: "Amplify backend folders and custom resources"
+      href: "/docs/aws-amplify-setup/folder-structure"
+  questions:
+    - question: "Why are identity-provider account data and application profile fields managed separately?"
+      answer: "The identity provider owns sign-in credentials and account state, while CloudIgniter's profile stores application information and extensions. Administration joins these sources through trusted operations; keeping ownership separate avoids exposing credentials or confusing editable profile fields with authentication and authorization evidence."
+    - question: "How does administrator hierarchy constrain account and deletion actions?"
+      answer: "Authority follows admin < super-admin < system-admin < system-super-admin: non-Root actors manage peers and lower ranks, subject to action permissions and special assignment rules. Self-suspension and self-deletion are blocked. Root's roles, assignments, status, and deletion state are protected, and permanent deletion requires separate confirmation."
 ---
 
 # User administration

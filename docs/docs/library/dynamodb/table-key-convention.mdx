@@ -1,7 +1,17 @@
 ---
 title: CloudIgniter table-key convention
-description: Build traceable PK, SK, and secondary-index values with the canonical CI namespace and core helpers.
+description: Build traceable PK, SK, and secondary-index values with the canonical CloudIgniter namespace and core helpers.
 sidebar_position: 1
+sidebar_label: "Table-key convention"
+learning:
+  prerequisites:
+    - topic: "Tenant identity and Org Unit trees"
+      href: "/docs/core-system/multi-Tenancy/core-concepts"
+  questions:
+    - question: "Why should all key segments pass through the canonical Core helpers?"
+      answer: "ciBuildTableKey and ciBuildTableKeys inject the CI# namespace and validate nonempty segments, whitespace, and the reserved delimiter. Using the same helpers keeps structural names consistent while preserving opaque IDs and prevents incompatible handwritten key variants."
+    - question: "What migration work is required when changing a deployed primary-key convention?"
+      answer: "Inventory stored records and every dependent reader, writer, index, and IAM condition. Plan and test data migration, compatibility reads or dual writes where necessary, and the coordinated cutover; changing helper output alone does not move deployed items or make old keys discoverable."
 ---
 
 # CloudIgniter table-key convention

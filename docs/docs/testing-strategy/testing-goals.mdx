@@ -2,6 +2,18 @@
 title: Testing goals
 description: Cover success, denial, scope isolation, user feedback, and cleanup behavior.
 sidebar_position: 2
+sidebar_label: "Testing goals"
+learning:
+  prerequisites:
+    - topic: "Environment modes and tool access"
+      href: "/docs/environment-modes/intro"
+    - topic: "Authorization concepts and default deny"
+      href: "/docs/core-system/authorization/overview"
+  questions:
+    - question: "Which failure and isolation guarantees should guide the selection of test cases?"
+      answer: "Cover intended success, missing identity, wrong permission, another Tenant's data, malformed input, provider failure, and misleading success feedback. Include fixture ownership, retry and cleanup behavior, plus navigation, translation, accessibility, and narrow-screen behavior where relevant."
+    - question: "How would you decide whether a behavior needs a focused test or an integration test?"
+      answer: "Use focused tests for a deterministic helper or decision with explicit inputs. Use integration tests when the guarantee depends on connected boundaries, such as request scope reaching a provider mutation, persistence conditions, or the UI reflecting a server result. Choose the smallest test that proves the behavior."
 ---
 
 # Testing goals

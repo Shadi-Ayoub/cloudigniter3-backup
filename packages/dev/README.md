@@ -16,8 +16,8 @@ From any directory inside the private CloudIgniter monorepo:
 ```bash
 pnpm exec dev start docs
 pnpm exec dev start template
-pnpm exec dev start website jodaris
-pnpm exec dev start website cloudigniter
+pnpm exec dev start website jodaris --site-root=../websites/jodaris-website
+pnpm exec dev start website cloudigniter --site-root=../websites/cloudigniter-website
 pnpm exec dev start template --mode=prod --port=4000
 pnpm exec dev open terminal core
 pnpm exec dev open terminal @cloudigniter/ui
@@ -31,11 +31,21 @@ Ctrl+C. Use `--mode=prod` for an existing build, `--no-open` to suppress the bro
 `--host=<IP|localhost>` to change the loopback default and `--port=<1..65535>` to
 choose a port. `--dry-run --json` previews the resolved directory and launch.
 
-The current JODARIS static site is supported through its explicit Publisher
-metadata; a Next.js manifest switches it to its `dev`/`start` scripts. CloudIgniter
-Website is the temporary static page at `apps/cloudigniter.io`, with the same
-source/build preview modes and a future Next.js adapter. Source paths come from
-repository mappings with conventional Docs/application paths as fallback.
+Running `dev start docs` or `dev start template` again restarts the matching
+server in this workspace when its default port (3010 or 3000) is busy, including
+an explicit `--port` with that default value. DEV verifies the framework and
+project, stops its process tree, waits for shutdown and starts the requested mode
+on the same port. After shutdown it retries binding for up to five seconds, with
+a progress message while waiting for port release. A still-occupied port fails
+before launch without further termination signals. Unrelated listeners, custom-port collisions and website
+collisions still fail. Preview never stops a server. Process inspection uses
+`ps`/`lsof` on macOS/Linux and PowerShell on Windows.
+
+The independent JODARIS and CloudIgniter static sites require explicit
+`--site-root=<external-checkout>` for website preview and terminal commands.
+Their project metadata must match the selected alias. Workspace Publisher and
+source mirroring exclude them; clone/pull each website only when explicitly selected.
+Templates remain in `apps/templates/*` with distinct package identities.
 
 Terminal selection searches registered packages, apps and Docs. Accept a short
 name (`core`, `docs`, `jodaris`, `cloudigniter`, `template`), a CloudIgniter manifest
@@ -47,6 +57,12 @@ integrated terminal at the selected directory using the configured terminal prof
 then returns immediately. The invoking terminal stays available and its cwd does
 not change. DEV installs its bundled local helper extension on first use; open a
 trusted local workspace in desktop VS Code and make its `code` CLI available.
+The parent workspace's automatic VS Code startup closes existing integrated
+terminals first, waits for their closure, then starts the sites and package shells
+in parallel. This cleanup uses the bundled helper's
+`cloudigniter.workspaceTerminals.closeAll` command (helper version `0.1.1` or later)
+before the first task terminal is created. It applies to the current local VS Code
+window; ordinary `dev open terminal` calls keep existing terminals open.
 If the helper is disabled or not activated yet, enable it and reload the VS Code
 window before retrying. Use `--external` for macOS Terminal, Windows Terminal or
 Linux `x-terminal-emulator`. The previous `--in-place` option is removed. An outside
@@ -64,7 +80,7 @@ available port, and `--profile=<name>` as needed. The default port is 4310.
 Publisher discovers packages, applications, Docs and explicit metadata projects.
 Navigation groups them into alphabetical Packages, Websites and Templates dropdowns,
 with a direct Docs control. Only detected projects appear; metadata supplies labels
-such as JODARIS Website and template-next-aws.
+such as JODARIS Website and cloudigniter-next-aws-v1.
 It provides build/test/check actions, source/distribution switches, live command
 output and cancellation, release/template review requests, GitHub repository/run
 inspection, a publishing flowchart, a linked configuration editor, and a build
@@ -80,7 +96,7 @@ operations; website artifact delivery remains a reviewed build-repository workfl
 
 Optional `publisher.config.json` describes project labels, repository mappings,
 output folders, asset information, explicit static hosting and reviewed local
-script commands. JODARIS uses it without requiring a package manifest. Ordinary
+script commands. Manifest-less workspace websites can use it. External formal websites use explicit checkout preview instead. Ordinary
 packages use inferred scripts. Package builds also support
 `--obfuscation=configured|on|off`, preserving their existing quality gate and order.
 
@@ -453,7 +469,7 @@ pnpm exec dev github scaffold cloudigniter-docs \
 Static website scaffolds deploy reviewed files committed under `site/` to S3 and
 invalidate CloudFront through AWS OIDC. They need explicit AWS environment values
 and role trust. They do not create resources or deploy server-rendered Next.js
-output. JODARIS source maps to `apps/jodaris`; CloudIgniter Website maps to `apps/cloudigniter.io`.
+output. Independent websites have null source paths. CloudIgniter uses `cloudigniter-io/cloudigniter-website` and `cloudigniter-io/build-cloudigniter-website`; JODARIS uses `jodaris/jodaris-website` and `jodaris/build-jodaris-website`.
 
 Follow the complete [GitHub, npm and AWS setup guide](../../docs/company-developers/publishing/index.mdx)
 for repository protections, account permissions, npm organization setup, bootstrap,

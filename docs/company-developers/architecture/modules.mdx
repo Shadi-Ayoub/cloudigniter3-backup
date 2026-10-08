@@ -2,6 +2,20 @@
 title: Module architecture and provider lifecycle
 description: Package ownership, local module discovery, CloudFormation operations, and the To-Do reference implementation.
 sidebar_position: 8
+sidebar_label: "Module architecture"
+learning:
+  prerequisites:
+    - topic: "Module installation and lifecycle"
+      href: "/docs/building-features/modules"
+    - topic: "Package ownership and core/custom boundaries"
+      href: "/company-developers/architecture/core-custom-ownership"
+    - topic: "DynamoDB keys and access patterns"
+      href: "/docs/library/dynamodb/table-key-convention"
+  questions:
+    - question: "How do package contracts and provider lifecycle participants coordinate module installation?"
+      answer: "Core owns module contracts, dependency checks, and lifecycle decisions; AWS owns registry persistence, resource provisioning, and provider participants. Next.js supplies authenticated adapters and discovery, UI supplies management, and the template composes trusted local modules. Completion records actual provider bindings instead of assuming infrastructure succeeded."
+    - question: "Which revision and ownership checks keep a resumed module mutation safe?"
+      answer: "Reconcile the stored lifecycle operation and resource ownership against fresh registry state before resuming. Mutations require authorization and their own item revision conditions, plus the atomic registry revision check from ciAwsExtensionWriteGuard, so concurrent disablement or uninstallation cannot admit a stale write."
 ---
 
 # Module architecture and provider lifecycle
@@ -16,7 +30,7 @@ Core capabilities are protected independently of the optional catalogue.
 | `packages/aws` | Registry persistence, CloudFormation lifecycle, fresh policy evaluation, To-Do provider factory and IAM plans |
 | `packages/next` | Authenticated server-action adapter and build-time module registry generator |
 | `packages/ui` | Module management and To-Do components using existing themes, feedback, and dialogs |
-| `apps/template` | Trusted local module folders, generated imports, core dashboard slots, thin Amplify and server-action composition |
+| `apps/templates/cloudigniter-next-aws-v1` | Trusted local module folders, generated imports, core dashboard slots, thin Amplify and server-action composition |
 
 ## Package and folder contract
 

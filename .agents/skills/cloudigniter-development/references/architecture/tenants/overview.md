@@ -15,12 +15,12 @@ Treat these files as one execution chain even though Next.js invokes them at dif
 
 ```text
 Next.js build/startup
-    apps/template/next.config.ts
+    apps/templates/cloudigniter-next-aws-v1/next.config.ts
         registers next-intl request configuration
         configures monorepo package transpilation and Turbopack root
 
 Incoming application request
-    apps/template/src/proxy.ts matcher
+    apps/templates/cloudigniter-next-aws-v1/src/proxy.ts matcher
         → appGetCoreConfig()
         → @cloudigniter/next ciNextProxyResponse()
             → normalize public pathname
@@ -35,7 +35,7 @@ Incoming application request
             → rewrite tenant-aware URL to feature route
 
 Server rendering / next-intl
-    apps/template/src/kernel/server/i18n/request.ts
+    apps/templates/cloudigniter-next-aws-v1/src/kernel/server/i18n/request.ts
         → resolve locale
         → read proxy-generated request-context header
         → read resolved route namespace/pathname

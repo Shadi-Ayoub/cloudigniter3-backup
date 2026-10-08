@@ -2,6 +2,20 @@
 title: 5. Scopes and Assignments
 description: Apply roles safely at system, global, tenant, and Org Unit boundaries.
 sidebar_position: 5
+sidebar_label: "Scopes and assignments"
+learning:
+  prerequisites:
+    - topic: "Authorization concepts and default deny"
+      href: "/docs/core-system/authorization/overview"
+    - topic: "Roles, inheritance, and precedence"
+      href: "/docs/core-system/authorization/roles-and-precedence"
+    - topic: "Tenant identity and Org Unit trees"
+      href: "/docs/core-system/multi-Tenancy/core-concepts"
+  questions:
+    - question: "How does descendant propagation differ from an exact Org Unit assignment?"
+      answer: "An exact Org Unit assignment applies only to that node. Descendants propagation can also reach nodes whose trusted root-to-parent ancestry contains the assigned node, but it remains within the assignment's Tenant and the privilege's supported scope kinds."
+    - question: "Which authoritative ancestry and time-window inputs determine whether an assignment applies?"
+      answer: "Use the resolved Tenant ID, target Org Unit ID, and authoritatively stored ancestorOrgUnitIds together with the assignment's scope and propagation. Evaluate validFrom and expiresAt against an explicit decision time; client-supplied ancestry and expired or not-yet-active grants do not establish access."
 ---
 
 # Scopes and Assignments

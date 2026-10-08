@@ -2,6 +2,20 @@
 title: Resource Studio lifecycle
 description: Local resource generation, transaction rollback, session protection and verified deployment.
 sidebar_position: 3
+sidebar_label: "Resource Studio lifecycle"
+learning:
+  prerequisites:
+    - topic: "Resource Studio and generated ownership"
+      href: "/docs/resource-studio/overview"
+    - topic: "Package ownership and core/custom boundaries"
+      href: "/company-developers/architecture/core-custom-ownership"
+    - topic: "Amplify backend folders and custom resources"
+      href: "/docs/aws-amplify-setup/folder-structure"
+  questions:
+    - question: "How do generation and deployment responsibilities cross CLI, framework, and provider layers?"
+      answer: "The CLI owns the secured loopback session, subprocess policy, and file transactions. AWS plans Data Entities, Next.js plans framework artifacts, and UI supplies generated management components. Generation is local; deployment separately verifies the plan and AWS identity/Region before an explicit one-shot sandbox operation."
+    - question: "Why must Studio preserve custom ownership during regeneration and rollback?"
+      answer: "Studio owns only registered generated folders and registries inside custom seams. Regeneration must reject unowned collisions, and rollback must verify every recorded after-image before restoring tracked files. Preserving that boundary prevents a generation or undo operation from overwriting hand-written work or unrelated later edits."
 ---
 
 Resource Studio combines a local browser editor with application-owned resource

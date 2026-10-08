@@ -2,6 +2,20 @@
 title: 10. DynamoDB Persistence
 description: Store catalogs, privileges, assignments, search indexes, and policy versions safely in DynamoDB.
 sidebar_position: 10
+sidebar_label: "Authorization persistence"
+learning:
+  prerequisites:
+    - topic: "Catalogs, resources, and permissions"
+      href: "/docs/core-system/authorization/catalog-and-permissions"
+    - topic: "Access scopes and assignments"
+      href: "/docs/core-system/authorization/scopes-and-assignments"
+    - topic: "DynamoDB keys and access patterns"
+      href: "/docs/library/dynamodb/table-key-convention"
+  questions:
+    - question: "Which keys and read paths isolate persisted authorization data by owner and Tenant?"
+      answer: "Use the canonical CI#EMBERGUARD active-definition address, the subject's role-assignment partition, and the Tenant-qualified administration collection keys. Keep assignment scopes authoritative and use base-table reads for runtime decisions; administration indexes do not prove that a grant currently applies to a Tenant."
+    - question: "Why must expiration be evaluated during authorization even when a TTL cleanup exists?"
+      answer: "DynamoDB TTL deletion is asynchronous, so an expired record can remain readable. The evaluator must check validFrom and expiresAt against the decision time on every request and deny grants outside their window regardless of whether storage cleanup has occurred."
 ---
 
 # DynamoDB Persistence

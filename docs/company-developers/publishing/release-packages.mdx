@@ -2,6 +2,20 @@
 title: Release packages
 description: Propose versions, review source, build exact archives and approve their final npm publication.
 sidebar_position: 8
+sidebar_label: "Release packages"
+learning:
+  prerequisites:
+    - topic: "Paired source and build release approvals"
+      href: "/company-developers/publishing/strategy/release-and-delivery"
+    - topic: "Quality gates and release verification"
+      href: "/company-developers/tooling/testing-and-release"
+    - topic: "npm access and trusted staging publishers"
+      href: "/company-developers/publishing/npm-setup"
+  questions:
+    - question: "Why must the complete source batch be approved before versions are applied and archives built?"
+      answer: "All packages in the release batch must share an approved version plan and source evidence before local versions are applied and clean candidate archives are built. Applying an incomplete plan can produce dependency combinations or bytes that were never reviewed as the intended batch."
+    - question: "How would you recover when only part of an approved package batch reaches npm?"
+      answer: "Inspect the release request, each source/build PR, staging results, and actual registry versions before retrying. Preserve successful immutable releases, reconcile the unfinished packages with their original approved evidence, and never replace published bytes or silently select new versions; changed candidates require a new review path."
 ---
 
 Use this workflow after a change has been reviewed and merged into the complete workspace. The developer requests review and prepares artifacts; the approver reviews them and dispatches staging; an npm maintainer gives final registry approval.

@@ -1,6 +1,6 @@
 # Template Core and Custom Boundary
 
-Use this reference whenever work adds, moves, generates, updates, deletes, or reviews code in `apps/template`, or designs an application-facing generator. The boundary is mandatory for new work even while older template-local platform implementation is being migrated.
+Use this reference whenever work adds, moves, generates, updates, deletes, or reviews code in `apps/templates/cloudigniter-next-aws-v1`, or designs an application-facing generator. The boundary is mandatory for new work even while older template-local platform implementation is being migrated.
 
 Read [package ownership](ownership.md) for the package/application split and the [resources overview](../resources/overview.md) for Resource Studio generation and deletion lifecycles.
 
@@ -11,7 +11,7 @@ Classify every affected file before editing it:
 | Lane | Owner | Rule |
 | --- | --- | --- |
 | Package core | CloudIgniter maintainers | Reusable behavior belongs in its owning package (`core`, `next`, provider, `ui`, or `cli`), never copied into the template. |
-| Template core | CloudIgniter maintainers | Framework entry points, default composition, provider selection, and other thin bindings may remain in `apps/template`; upgrades may replace them. |
+| Template core | CloudIgniter maintainers | Framework entry points, default composition, provider selection, and other thin bindings may remain in `apps/templates/cloudigniter-next-aws-v1`; upgrades may replace them. |
 | Manual application custom | Application developer | New application implementation belongs only in `amplify/custom/**`, `src/custom/**`, or a scoped `(ci-custom)` App Router tree. |
 | Generated application custom | A registered generator | Output is confined to generated-owned entity folders and generated registries within the manual custom seams. |
 | Machine-local tooling | Local operator/tool | Credentials, session state, and transaction journals stay under ignored local state and are never imported by the application. |
@@ -19,8 +19,8 @@ Classify every affected file before editing it:
 The only supported application-owned page roots are:
 
 ```text
-apps/template/src/app/(ci-global)/ci-global/(ci-custom)/**
-apps/template/src/app/(ci-tenant)/ci-tenant/(ci-custom)/**
+apps/templates/cloudigniter-next-aws-v1/src/app/(ci-global)/ci-global/(ci-custom)/**
+apps/templates/cloudigniter-next-aws-v1/src/app/(ci-tenant)/ci-tenant/(ci-custom)/**
 ```
 
 Do not put application-owned pages under `(system)`. Do not add new application/provider code beside core schemas, core functions, kernel implementation, or core route definitions merely because older examples exist there.

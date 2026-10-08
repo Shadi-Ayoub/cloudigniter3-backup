@@ -2,6 +2,18 @@
 title: CloudIgniter testing strategy
 description: Validate production behavior with isolated deployments, canonical keys, and explicit disposable data ownership.
 sidebar_position: 5
+sidebar_label: "Testing strategy"
+learning:
+  prerequisites:
+    - topic: "Environment modes and tool access"
+      href: "/docs/environment-modes/intro"
+    - topic: "Tenant identity and Org Unit trees"
+      href: "/docs/core-system/multi-Tenancy/core-concepts"
+  questions:
+    - question: "How do focused, integration, and cleanup tests establish different guarantees?"
+      answer: "Focused tests verify validation and decisions with controlled inputs. Integration tests verify that runtime, provider, authorization, and persistence boundaries cooperate. Cleanup tests prove fixture retries and removal are bounded, ownership-safe, and resilient to partial failure or malformed markers."
+    - question: "Why must test data cleanup prove ownership before deleting records?"
+      answer: "Matching an ID or environment label does not prove a record belongs to the test. Require explicit seeder provenance and conditional ownership checks before deleting; preserve records on mismatch so cleanup cannot remove another actor's data or a resource whose ownership changed."
 ---
 
 CloudIgniter testing follows four rules:

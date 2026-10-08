@@ -2,6 +2,20 @@
 title: 6. Subjects and Identity Providers
 description: Adapt CloudIgniter users, provider groups, persisted assignments, and direct privileges.
 sidebar_position: 6
+sidebar_label: "Subjects and providers"
+learning:
+  prerequisites:
+    - topic: "Authentication and identity"
+      href: "/docs/identity/authentication"
+    - topic: "Access scopes and assignments"
+      href: "/docs/core-system/authorization/scopes-and-assignments"
+    - topic: "Roles, inheritance, and precedence"
+      href: "/docs/core-system/authorization/roles-and-precedence"
+  questions:
+    - question: "Why should a provider adapter resolve trusted group data rather than accept client-claimed roles?"
+      answer: "The adapter must establish authenticated identity and obtain authoritative provider groups or persisted assignments. Map only known catalog roles and validate their scopes. Accepting browser-claimed roles or Tenant IDs would let a caller invent privileges or cross another Tenant's boundary."
+    - question: "How do direct subject privileges combine with privileges obtained through assignments?"
+      answer: "With deny-overrides, matching direct and role privileges participate together and any deny wins. With highest-precedence, matching direct privileges form the highest tier, with denies winning within that tier; when none match, the evaluator uses the strongest applicable role tier."
 ---
 
 # Subjects and Identity Providers

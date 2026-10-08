@@ -40,6 +40,8 @@ export const dictionaryTermsByLetter = {
       { autoLinkLabel: false },
     ],
     ["Client Component", "client-component"],
+    ["CI", "continuous-integration", ["Continuous Integration"], { caseSensitive: true }],
+    ["CI/CD", "continuous-delivery", ["Continuous Delivery", "Continuous Deployment"], { caseSensitive: true }],
     ["CloudIgniter", "cloudigniter"],
     ["CloudIgniter CLI", "cloudigniter-cli"],
     ["CloudIgniter Core", "cloudigniter-core"],
@@ -90,7 +92,7 @@ export const dictionaryTermsByLetter = {
   K: [["Kernel", "kernel"]],
   L: [
     ["Lambda", "lambda"],
-    ["Layout", "layout"],
+    ["Layout", "layout", ["UI Layout", "Route Layout", "Route Layouts"], { autoLinkLabel: false }],
     ["Locale", "locale"],
   ],
   M: [

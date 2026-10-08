@@ -41,15 +41,15 @@ Do not generalize this diagnostic cookie strategy into authentication or authori
 
 | Concern                                              | Owner                                                  |
 | ---------------------------------------------------- | ------------------------------------------------------ |
-| Next.js plugin/build composition                     | `apps/template/next.config.ts`                         |
-| Application proxy entry and matcher                  | `apps/template/src/proxy.ts`                           |
+| Next.js plugin/build composition                     | `apps/templates/cloudigniter-next-aws-v1/next.config.ts`                         |
+| Application proxy entry and matcher                  | `apps/templates/cloudigniter-next-aws-v1/src/proxy.ts`                           |
 | Reusable Next.js proxy/context algorithms            | `packages/next`                                        |
 | Generic request-context contracts/serialization      | `packages/core`                                        |
-| Application route registry                           | manual/generated definitions under `apps/template/src/custom/routes`; thin composition in `apps/template/src/kernel/server/routes.ts` |
+| Application route registry                           | manual/generated definitions under `apps/templates/cloudigniter-next-aws-v1/src/custom/routes`; thin composition in `apps/templates/cloudigniter-next-aws-v1/src/kernel/server/routes.ts` |
 | Route Tenant-scope contract and public-path building | `packages/core`                                        |
 | Generic namespace resolution                         | `packages/core` when runtime-neutral                   |
 | Reusable Next.js i18n integration                    | `packages/next`                                        |
-| Application locale registry and overrides            | `apps/template`                                        |
+| Application locale registry and overrides            | `apps/templates/cloudigniter-next-aws-v1`                                        |
 
 When a task starts in a template entry point, retain only application selection/configuration there and extract reusable logic to its owner.
 

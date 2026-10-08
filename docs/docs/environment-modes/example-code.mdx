@@ -2,6 +2,18 @@
 title: Environment-mode recipes
 description: Use the public developer-tools access gate correctly.
 sidebar_position: 7
+sidebar_label: "Environment recipes"
+learning:
+  prerequisites:
+    - topic: "Environment modes and tool access"
+      href: "/docs/environment-modes/intro"
+    - topic: "Development tool gates and seeders"
+      href: "/docs/environment-modes/development-tools-and-seeding"
+  questions:
+    - question: "How do the mode recipes keep development behavior outside production operations?"
+      answer: "Use ciCanAccessDeveloperTools with the resolved mode and authenticated actor's exact roles, then repeat the check at mutation and provider boundaries. Ordinary production behavior continues without those capabilities; UI visibility alone never enables development operations."
+    - question: "Where should an example resolve server environment values before exposing safe client behavior?"
+      answer: "Resolve the mode and authenticated identity during server bootstrap or the operation's trusted context resolution. Pass only the resulting safe presentation state to the browser, and resolve fresh server/provider inputs again when the user invokes a mutation."
 ---
 
 ```ts

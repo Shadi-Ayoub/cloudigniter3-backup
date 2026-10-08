@@ -3,7 +3,7 @@ import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 const root = fileURLToPath(new URL("../", import.meta.url));
-const files = ["package.json", "tsconfig.json", "../../apps/template/tsconfig.json", "../../apps/template/src/app/globals.css"];
+const files = ["package.json", "tsconfig.json", "../../apps/templates/cloudigniter-next-aws-v1/tsconfig.json", "../../apps/templates/cloudigniter-next-aws-v1/src/app/globals.css"];
 const before = new Map(files.map((file) => [path.resolve(root, file), readFileSync(path.resolve(root, file))]));
 const requestPath = path.join(root, "coverage/release/publish-request.md");
 rmSync(requestPath, { force: true });

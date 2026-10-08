@@ -27,7 +27,7 @@ const ImageWrapper = ({
   const sizeClass = size ? sizeClassMap[size] : "";
 
   return (
-    <div
+    <figure
       className={styles.imageCaptionWrapper}
       onClick={onClick}
       style={{ cursor: onClick ? "pointer" : "default" }}
@@ -37,8 +37,8 @@ const ImageWrapper = ({
         className={`${styles.image} ${sizeClass}`}
         alt={caption ?? "image"}
       />
-      {caption && <p className={styles.imageCaptionText}>{caption}</p>}
-    </div>
+      {caption && <figcaption>{caption}</figcaption>}
+    </figure>
   );
 };
 

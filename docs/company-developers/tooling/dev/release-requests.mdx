@@ -3,6 +3,20 @@ title: Release requests
 description: Connect offline version planning, source review, verified candidates and build-repository approval.
 sidebar_position: 9
 slug: /tooling/release-requests
+sidebar_label: "Release requests"
+learning:
+  prerequisites:
+    - topic: "DEV workspace setup and project selection"
+      href: "/company-developers/tooling/dev/workspace"
+    - topic: "Release archives, manifests, and checksums"
+      href: "/company-developers/tooling/dev/release-artifacts"
+    - topic: "GitHub branches, commits, and pull requests"
+      href: "https://docs.github.com/en/get-started/using-github/github-flow"
+  questions:
+    - question: "How does a version plan become an independently reviewed release request?"
+      answer: "Changesets combines the requested intent, pending changes, and dependency propagation into a concrete package/version batch. From a clean integration base, submit versioned source snapshots linked by a common release request ID, then obtain independent exact-head approval before applying versions and preparing candidates."
+    - question: "Which request IDs and remote states should be inspected before retrying a failed release action?"
+      answer: "Distinguish the common release request ID from repository-local PR numbers, commit SHAs, and archive hashes. Inspect each source/build PR's head, approval and merge state, recorded candidate evidence, staging results, and actual npm versions so a retry reconciles completed remote work instead of duplicating or replacing it."
 ---
 
 DEV coordinates package releases through version proposals, source review and

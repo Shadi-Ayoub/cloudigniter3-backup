@@ -1,9 +1,9 @@
 {
   "name": "workspace-terminals",
   "displayName": "CloudIgniter Workspace Terminals",
-  "description": "Opens a new integrated terminal for the private CloudIgniter Developer Toolkit.",
+  "description": "Manages local integrated terminals for the private CloudIgniter Developer Toolkit.",
   "publisher": "cloudigniter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "UNLICENSED",
   "engines": {
     "vscode": "^1.90.0"
@@ -15,6 +15,15 @@
   "activationEvents": [
     "onStartupFinished"
   ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "cloudigniter.workspaceTerminals.closeAll",
+        "title": "Close All Local Terminals",
+        "category": "CloudIgniter"
+      }
+    ]
+  },
   "capabilities": {
     "untrustedWorkspaces": {
       "supported": false

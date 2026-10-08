@@ -45,8 +45,8 @@ async function fixture(t) {
   });
   await put("pnpm-workspace.yaml", "packages:\n  - packages/*\n");
   await put("packages/dev/package.json", { name: "@cloudigniter/dev" });
-  await put("apps/template/package.json", {
-    name: "@cloudigniter/template",
+  await put("apps/templates/cloudigniter-next-aws-v1/package.json", {
+    name: "@cloudigniter/cloudigniter-next-aws-v1",
     private: true,
     scripts: { dev: "next dev", test: "node ../../internal-test.mjs" },
     dependencies: { next: "^16.2.1" },
@@ -57,21 +57,21 @@ async function fixture(t) {
     },
   });
   await put(
-    "apps/template/src/index.ts",
+    "apps/templates/cloudigniter-next-aws-v1/src/index.ts",
     'export { ciExample } from "@cloudigniter/core/lib";\n',
   );
   await put(
-    "apps/template/next.config.ts",
+    "apps/templates/cloudigniter-next-aws-v1/next.config.ts",
     'export default { turbopack: { root: "../.." } };\n',
   );
-  await put("apps/template/.env.local", "SECRET=never-export\n");
-  await put("apps/template/amplify_outputs.json", '{"deployment":"private"}');
+  await put("apps/templates/cloudigniter-next-aws-v1/.env.local", "SECRET=never-export\n");
+  await put("apps/templates/cloudigniter-next-aws-v1/amplify_outputs.json", '{"deployment":"private"}');
   await put(".cloudigniter/template/tsconfig.json", {
     compilerOptions: { strict: true },
   });
   const policy = {
     schemaVersion: 1,
-    source: "apps/template",
+    source: "apps/templates/cloudigniter-next-aws-v1",
     name: "cloudigniter-app",
     files: ["package.json", "src/index.ts", "next.config.ts"],
     overlays: { "tsconfig.json": ".cloudigniter/template/tsconfig.json" },
@@ -136,7 +136,7 @@ test("template export refuses existing destinations and never edits the source",
     "user content",
   );
   assert.match(
-    await readFile(path.join(root, "apps/template/package.json"), "utf8"),
+    await readFile(path.join(root, "apps/templates/cloudigniter-next-aws-v1/package.json"), "utf8"),
     /workspace:/,
   );
 });
@@ -174,7 +174,7 @@ test("template overwrite previews without changes and replaces the complete prev
   assert.equal(JSON.parse(initial.stdout).replaced, false);
   await mkdir(path.join(output, "old"));
   await writeFile(path.join(output, "old/.keep"), "previous content");
-  await put("apps/template/src/index.ts", "export const updated = true;\n");
+  await put("apps/templates/cloudigniter-next-aws-v1/src/index.ts", "export const updated = true;\n");
   const before = await readFile(path.join(output, "src/index.ts"));
   const preview = invoke(root, [...args, "--dry-run"]);
   assert.equal(preview.status, 0, preview.stderr);
@@ -201,7 +201,7 @@ test("template overwrite preserves the destination when source validation fails"
   const { root, output, put } = await fixture(t);
   await mkdir(output);
   await writeFile(path.join(output, "keep"), "user content");
-  await put("apps/template/src/index.ts", 'import "@cloudigniter/dev";');
+  await put("apps/templates/cloudigniter-next-aws-v1/src/index.ts", 'import "@cloudigniter/dev";');
   const result = invoke(root, ["export", "--output", output, "--overwrite"]);
   assert.equal(result.status, 2, result.stderr);
   assert.match(result.stderr, /Private|private/);
@@ -220,13 +220,13 @@ test("template overwrite rejects files, linked destinations and protected direct
   assert.match(file.stderr, /regular.*directory/);
   assert.equal(await readFile(output, "utf8"), "keep file");
   await rm(output);
-  await symlink(path.join(root, "apps/template"), output);
+  await symlink(path.join(root, "apps/templates/cloudigniter-next-aws-v1"), output);
   const link = invoke(root, ["export", "--output", output, "--overwrite"]);
   assert.equal(link.status, 2);
   assert.match(link.stderr, /regular.*directory/);
   for (const target of [
     root,
-    path.join(root, "apps/template"),
+    path.join(root, "apps/templates/cloudigniter-next-aws-v1"),
     path.dirname(root),
     path.parse(root).root,
     homedir(),
@@ -242,7 +242,7 @@ test("template overwrite rejects files, linked destinations and protected direct
     assert.match(result.stderr, /workspace|protected/);
   }
   assert.match(
-    await readFile(path.join(root, "apps/template/package.json"), "utf8"),
+    await readFile(path.join(root, "apps/templates/cloudigniter-next-aws-v1/package.json"), "utf8"),
     /workspace:/,
   );
 });
@@ -285,7 +285,7 @@ test("template overwrite unlinks nested symlinks without modifying their targets
   const { root, output } = await fixture(t);
   await mkdir(output);
   await symlink(
-    path.join(root, "apps/template"),
+    path.join(root, "apps/templates/cloudigniter-next-aws-v1"),
     path.join(output, "linked-source"),
   );
   const check = invoke(root, ["check", "--output", output, "--overwrite"]);
@@ -295,7 +295,7 @@ test("template overwrite unlinks nested symlinks without modifying their targets
   assert.equal(result.status, 0, result.stderr);
   await assert.rejects(access(path.join(output, "linked-source")));
   assert.match(
-    await readFile(path.join(root, "apps/template/package.json"), "utf8"),
+    await readFile(path.join(root, "apps/templates/cloudigniter-next-aws-v1/package.json"), "utf8"),
     /workspace:/,
   );
 });
@@ -304,7 +304,7 @@ test("template source can be any named application nested under apps, independen
   const { root, output, put } = await fixture(t);
   const source = "apps/starters/Next AWS Starter.v2";
   await mkdir(path.join(root, "apps/starters"));
-  await rename(path.join(root, "apps/template"), path.join(root, source));
+  await rename(path.join(root, "apps/templates/cloudigniter-next-aws-v1"), path.join(root, source));
   await put(
     `${source}/src/index.ts`,
     "export const selectedTemplate = true;\n",
@@ -356,7 +356,7 @@ test("templates can select independent export policies without changing the work
   );
   const source = "apps/products/storefront";
   await mkdir(path.join(root, "apps/products"));
-  await rename(path.join(root, "apps/template"), path.join(root, source));
+  await rename(path.join(root, "apps/templates/cloudigniter-next-aws-v1"), path.join(root, source));
   const policyFile = ".cloudigniter/templates/storefront.json";
   await put(`${source}/public/about.txt`, "Storefront application\n");
   await put(policyFile, {
@@ -393,16 +393,16 @@ test("templates can select independent export policies without changing the work
 test("source selection rejects paths outside apps, traversal and directory symlinks before export", async (t) => {
   const { root, output } = await fixture(t);
   await symlink(
-    path.join(root, "apps/template"),
+    path.join(root, "apps/templates/cloudigniter-next-aws-v1"),
     path.join(root, "apps/linked"),
   );
   await symlink(path.join(root, "apps"), path.join(root, "apps/aliased"));
   for (const source of [
     "apps",
     "packages/dev",
-    "../apps/template",
+    "../apps/templates/cloudigniter-next-aws-v1",
     "apps/../packages/dev",
-    path.join(root, "apps/template"),
+    path.join(root, "apps/templates/cloudigniter-next-aws-v1"),
     "apps/linked",
     "apps/aliased/template",
   ]) {
@@ -430,7 +430,7 @@ test("source selection rejects paths outside apps, traversal and directory symli
   }
   const inside = invoke(root, [
     "export",
-    "--source=apps/template",
+    "--source=apps/templates/cloudigniter-next-aws-v1",
     "--output",
     path.join(root, "apps/public-candidate"),
   ]);
@@ -441,7 +441,7 @@ test("source selection rejects paths outside apps, traversal and directory symli
 test("policy source defaults accept renamed applications and enforce apps confinement", async (t) => {
   const { root, output, policy, save } = await fixture(t);
   await rename(
-    path.join(root, "apps/template"),
+    path.join(root, "apps/templates/cloudigniter-next-aws-v1"),
     path.join(root, "apps/my-starter"),
   );
   policy.source = "apps/my-starter";
@@ -461,7 +461,7 @@ test("policy source defaults accept renamed applications and enforce apps confin
 test("template selection requires a real application even when every file is overlaid", async (t) => {
   const { root, output, policy, save } = await fixture(t);
   for (const file of policy.files)
-    policy.overlays[file] = `apps/template/${file}`;
+    policy.overlays[file] = `apps/templates/cloudigniter-next-aws-v1/${file}`;
   policy.files = [];
   policy.source = "apps/empty";
   await mkdir(path.join(root, policy.source));
@@ -472,7 +472,7 @@ test("template selection requires a real application even when every file is ove
   await assert.rejects(access(output));
   await rmdir(path.join(root, policy.source));
   await symlink(
-    path.join(root, "apps/template"),
+    path.join(root, "apps/templates/cloudigniter-next-aws-v1"),
     path.join(root, policy.source),
   );
   const linked = invoke(root, ["export", "--output", output]);
@@ -492,20 +492,20 @@ test("template export rejects source links, private dependencies, escaping paths
   ]) {
     const { root, output, put, policy, save } = await fixture(t);
     if (kind === "symlink") {
-      await rm(path.join(root, "apps/template/src/index.ts"));
+      await rm(path.join(root, "apps/templates/cloudigniter-next-aws-v1/src/index.ts"));
       await symlink(
         path.join(root, "package.json"),
-        path.join(root, "apps/template/src/index.ts"),
+        path.join(root, "apps/templates/cloudigniter-next-aws-v1/src/index.ts"),
       );
     }
     if (kind === "escape") policy.files.push("../company.json");
     if (kind === "private")
-      await put("apps/template/src/index.ts", 'import "@cloudigniter/dev";');
+      await put("apps/templates/cloudigniter-next-aws-v1/src/index.ts", 'import "@cloudigniter/dev";');
     if (kind === "rewrite")
       policy.replacements["next.config.ts"][0].from = "stale-pattern";
     if (kind === "secret") policy.files.push(".env.local");
     if (kind === "local-dependency")
-      await put("apps/template/package.json", {
+      await put("apps/templates/cloudigniter-next-aws-v1/package.json", {
         dependencies: { example: "file:../../secret" },
       });
     await save();
@@ -606,23 +606,23 @@ test("export rejects symlinked source directories, overlay escapes, case and fil
     if (kind === "directory-link") {
       await mkdir(path.join(root, "outside"));
       await put("outside/index.ts", "export {};\n");
-      await rm(path.join(root, "apps/template/src"), { recursive: true });
+      await rm(path.join(root, "apps/templates/cloudigniter-next-aws-v1/src"), { recursive: true });
       await symlink(
         path.join(root, "outside"),
-        path.join(root, "apps/template/src"),
+        path.join(root, "apps/templates/cloudigniter-next-aws-v1/src"),
       );
     }
     if (kind === "overlay-escape")
       policy.overlays["tsconfig.json"] = "../company.json";
     if (kind === "case") {
       policy.files.push("SRC/index.ts");
-      await put("apps/template/SRC/index.ts", "export {};\n");
+      await put("apps/templates/cloudigniter-next-aws-v1/SRC/index.ts", "export {};\n");
     }
     if (kind === "parent-file")
       policy.overlays.src = ".cloudigniter/template/tsconfig.json";
     if (kind === "credential")
       await put(
-        "apps/template/src/index.ts",
+        "apps/templates/cloudigniter-next-aws-v1/src/index.ts",
         'const key = "AKIA' + "A".repeat(16) + '";',
       );
     await save();

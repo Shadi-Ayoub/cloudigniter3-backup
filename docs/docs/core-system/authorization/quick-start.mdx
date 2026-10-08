@@ -2,6 +2,18 @@
 title: 2. Quick Start
 description: Define a tenant role, adapt a user, and make the first authorization decision.
 sidebar_position: 2
+sidebar_label: "Authorization quick start"
+learning:
+  prerequisites:
+    - topic: "Authorization concepts and default deny"
+      href: "/docs/core-system/authorization/overview"
+    - topic: "Catalogs, resources, and permissions"
+      href: "/docs/core-system/authorization/catalog-and-permissions"
+  questions:
+    - question: "Which catalog, assignment, subject, and authorizer objects are needed for the first decision?"
+      answer: "Define and validate a catalog containing the resource, actions, role, and privilege; create a scoped role assignment; adapt an authenticated user into a subject with that assignment; and create an authorizer from the catalog. Submit the subject, resource, action, and target scope for the first decision."
+    - question: "How would you demonstrate that an unmatched operation remains denied?"
+      answer: "Ask the example authorizer for a registered action that the assigned role does not grant, such as deleting users when it only permits reading them. Verify allowed is false with reason no-matching-privilege, and confirm the guarded operation does not run."
 ---
 
 # Quick Start

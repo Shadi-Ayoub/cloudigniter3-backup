@@ -2,6 +2,20 @@
 title: Settings and runtime values
 description: Manage public, private, and personal settings, extend their forms, and load only the groups each route needs.
 sidebar_position: 4
+sidebar_label: "Settings"
+learning:
+  prerequisites:
+    - topic: "CloudIgniter application configuration"
+      href: "/docs/core-system/configurations/cloudigniter.config.ts"
+    - topic: "Tenant identity and Org Unit trees"
+      href: "/docs/core-system/multi-Tenancy/core-concepts"
+    - topic: "Authorization concepts and default deny"
+      href: "/docs/core-system/authorization/overview"
+  questions:
+    - question: "How do enforced System settings differ from overwriting tenant copies?"
+      answer: "Enforcement makes the System rule control the effective setting and prevents a tenant from overriding it. Overwrite copies selected saved System values into existing GLOBAL or Tenant groups; without enforcement, those copies remain independent and later System edits do not automatically update them."
+    - question: "Why should a page load only the settings groups it needs?"
+      answer: "Select the feature's registered group IDs in route settings and reserve alwaysLoad for shared needs. Loading only necessary groups keeps the context smaller, avoids unnecessary persistence reads, and respects the authentication restrictions on Private and Personal settings."
 ---
 
 # Settings and runtime values

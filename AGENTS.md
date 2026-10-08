@@ -6,13 +6,15 @@ CloudIgniter is a reusable application platform composed of public API packages,
 
 Changes must preserve package ownership, dependency direction, public API boundaries, runtime separation, extensibility, and maintainability.
 
+Versioned reference applications live under `apps/templates/<template-id>`. The default is `cloudigniter-next-aws-v1`; future framework/provider versions get sibling directories and distinct package identities. The CloudIgniter and JODARIS websites are independent external repositories, excluded from pnpm workspace membership, source mirroring and monorepo CI. Repository access and website AWS delivery are managed separately.
+
 ## 1. Architecture First
 
 Before implementing any non-trivial change, determine where the functionality belongs.
 
 Do not assume that the file shown in the task is the correct implementation location.
 
-In particular, when a requested change originates in `apps/template`, first determine whether the requested behavior is reusable CloudIgniter functionality that belongs in a package.
+In particular, when a requested change originates in `apps/templates/cloudigniter-next-aws-v1`, first determine whether the requested behavior is reusable CloudIgniter functionality that belongs in a package.
 
 Use this default ownership model:
 
@@ -51,7 +53,7 @@ Use this default ownership model:
   - Generic client-side UI utilities.
   - Shared design-system extensions.
 
-- `apps/template`
+- `apps/templates/cloudigniter-next-aws-v1`
   - Application composition.
   - Application configuration.
   - Application-specific wiring.
@@ -79,7 +81,7 @@ packages/next
             ↓ uses provider implementation from
 packages/aws or another provider package
             ↓ consumed by
-apps/template
+apps/templates/cloudigniter-next-aws-v1
 ```
 
 ### Public API rule
@@ -117,7 +119,7 @@ Generic EmberGuard contracts must not become AWS-specific merely because AWS is 
 
 Reusable platform functionality must normally be implemented in the appropriate package.
 
-Do not place reusable logic in `apps/template` merely because:
+Do not place reusable logic in `apps/templates/cloudigniter-next-aws-v1` merely because:
 
 - the task references a template file;
 - the current caller is in the template;
@@ -130,7 +132,7 @@ Ask instead:
 
 If yes, it probably belongs in a package.
 
-Keep only application-specific composition, configuration, and customization in `apps/template`.
+Keep only application-specific composition, configuration, and customization in `apps/templates/cloudigniter-next-aws-v1`.
 
 ## 4. Determine Ownership Before Coding
 
@@ -144,7 +146,7 @@ For every significant change:
 6. Check whether an existing abstraction can be reused or extended.
 7. Implement the reusable capability in the owning package.
 8. Expose it through the intended public package entry point.
-9. Integrate it into `apps/template` only where application composition is required.
+9. Integrate it into `apps/templates/cloudigniter-next-aws-v1` only where application composition is required.
 10. Validate all affected package consumers.
 
 Do not implement first and decide ownership afterward unless the task is explicitly exploratory.
@@ -344,7 +346,7 @@ General principles:
 - `packages/core` may expose EmberGuard's generic public API but must not select or bind a provider.
 - `packages/next` may depend on generic contracts and provider adapters to perform runtime integration.
 - Provider packages such as `packages/aws` must implement provider-specific behavior without redefining generic platform contracts.
-- Reusable packages must never depend on `apps/template`.
+- Reusable packages must never depend on `apps/templates/cloudigniter-next-aws-v1`.
 - Generic UI must not depend on application-specific code.
 - Lower-level contracts should not depend on higher-level implementations.
 
@@ -368,7 +370,7 @@ Prefer:
 
 over application-specific hardcoding.
 
-Do not encode assumptions from `apps/template` into reusable packages unless those assumptions are part of the CloudIgniter platform contract.
+Do not encode assumptions from `apps/templates/cloudigniter-next-aws-v1` into reusable packages unless those assumptions are part of the CloudIgniter platform contract.
 
 Default UI content, branding, text, imagery, and behavior intended for application developers must remain generic and replaceable.
 
@@ -487,7 +489,7 @@ Maintain:
 - dark-mode compatibility;
 - established visual conventions.
 
-Do not duplicate a reusable component inside `apps/template`.
+Do not duplicate a reusable component inside `apps/templates/cloudigniter-next-aws-v1`.
 
 ## 18. Keep Configuration Generic
 
@@ -589,7 +591,7 @@ When package exports change, validate both the package and at least the relevant
 When EmberGuard-related layering changes, validate the affected chain as applicable:
 
 ```text
-emberguard → core → next → provider → apps/template
+emberguard → core → next → provider → apps/templates/cloudigniter-next-aws-v1
 ```
 
 Do not consider successful compilation of one changed file sufficient validation for a change affecting package APIs.
@@ -598,7 +600,7 @@ Do not consider successful compilation of one changed file sufficient validation
 
 Before finishing a significant implementation, inspect the resulting changes and ask:
 
-- Did reusable logic accidentally remain in `apps/template`?
+- Did reusable logic accidentally remain in `apps/templates/cloudigniter-next-aws-v1`?
 - Is every new public type owned by the correct public API package?
 - Are generic EmberGuard public types exposed through `@cloudigniter/core/types`?
 - Are generic EmberGuard helpers exposed through an intentional `@cloudigniter/core` entry point?
@@ -624,7 +626,7 @@ For significant changes, briefly report:
 - whether EmberGuard internals, the `core` API facade, `next` integration, or a provider package is involved;
 - why that package owns it;
 - which public entry point exposes it;
-- what remains in `apps/template`;
+- what remains in `apps/templates/cloudigniter-next-aws-v1`;
 - whether public APIs changed;
 - what validation was performed.
 
@@ -686,10 +688,10 @@ When guide work exposes a recurring gap, suggest a focused improvement to the `c
 Treat the following as one connected application lifecycle:
 
 ```text
-apps/template/next.config.ts
-    → apps/template/src/proxy.ts
+apps/templates/cloudigniter-next-aws-v1/next.config.ts
+    → apps/templates/cloudigniter-next-aws-v1/src/proxy.ts
     → packages/next proxy and request-context handling
-    → apps/template/src/kernel/server/i18n/request.ts
+    → apps/templates/cloudigniter-next-aws-v1/src/kernel/server/i18n/request.ts
     → route message loading
     → application bootstrap and providers
 ```
@@ -698,7 +700,7 @@ Before modifying any stage, read the `cloudigniter-development` skill's `referen
 
 ### `next.config.ts`
 
-`apps/template/next.config.ts` is the application-level Next.js build and plugin composition entry point. It registers integrations that may invoke files without normal application imports. In particular, the next-intl plugin registers `apps/template/src/kernel/server/i18n/request.ts`, which supplies locale and messages to next-intl server APIs.
+`apps/templates/cloudigniter-next-aws-v1/next.config.ts` is the application-level Next.js build and plugin composition entry point. It registers integrations that may invoke files without normal application imports. In particular, the next-intl plugin registers `apps/templates/cloudigniter-next-aws-v1/src/kernel/server/i18n/request.ts`, which supplies locale and messages to next-intl server APIs.
 
 When changing `next.config.ts`:
 
@@ -711,7 +713,7 @@ Do not classify a registered file as unused merely because no application source
 
 ### `proxy.ts`
 
-`apps/template/src/proxy.ts` is the thin application request entry point and matcher. Reusable Next.js processing belongs in `packages/next`.
+`apps/templates/cloudigniter-next-aws-v1/src/proxy.ts` is the thin application request entry point and matcher. Reusable Next.js processing belongs in `packages/next`.
 
 Preserve this strategy:
 
@@ -742,7 +744,7 @@ Keep request context minimal and request-specific. Do not serialize route regist
 
 ### i18n request resolution
 
-`apps/template/src/kernel/server/i18n/request.ts` is invoked through the next-intl registration in `next.config.ts`. For a normal proxied page it must:
+`apps/templates/cloudigniter-next-aws-v1/src/kernel/server/i18n/request.ts` is invoked through the next-intl registration in `next.config.ts`. For a normal proxied page it must:
 
 1. Resolve the configured locale.
 2. Read and validate the proxy-generated request-context header.
@@ -774,7 +776,7 @@ Rules:
 - Apply its recommendations within CloudIgniter’s existing architecture and component boundaries:
   - `packages/ui` for reusable UI primitives and shared components.
   - `packages/next` for Next.js-specific UI integrations.
-  - `apps/template` for application composition and product-specific screens.
+  - `apps/templates/cloudigniter-next-aws-v1` for application composition and product-specific screens.
 - Preserve the existing CloudIgniter design language, tokens, theming, localization, RTL support, and accessibility requirements. Do not introduce a competing design system or duplicate an existing shared component.
 - Before creating a new UI component, search for and reuse or extend an existing CloudIgniter component when suitable.
 - For visual changes, verify desktop and mobile layouts, keyboard interaction, focus states, semantic HTML, contrast, loading/empty/error states, and RTL behavior where direction-aware UI is involved.

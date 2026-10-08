@@ -2,13 +2,27 @@
 title: Develop and review an integrated change
 description: A CloudIgniter Developer's workflow from a cross-package task to an approved monorepo commit.
 sidebar_position: 3
+sidebar_label: "Integrated development"
+learning:
+  prerequisites:
+    - topic: "GitHub branches, commits, and pull requests"
+      href: "https://docs.github.com/en/get-started/using-github/github-flow"
+    - topic: "Package ownership and core/custom boundaries"
+      href: "/company-developers/architecture/core-custom-ownership"
+    - topic: "Continuous Integration and delivery gates"
+      href: "/dictionary/c#continuous-integration"
+  questions:
+    - question: "How can package ownership and distribution impact change the scope of an integrated PR?"
+      answer: "Place reusable behavior in its owning package and include affected consumers, tests, and guide content in the integrated PR. Release impact may include dependency-version propagation into otherwise unchanged packages or a later template delivery; Changesets plans distribution, while integration CI checks compatibility."
+    - question: "Why does pushing a new PR head require renewed independent review?"
+      answer: "Approval is evidence for a specific head SHA. New commits change the reviewed candidate, so stale approval cannot authorize the new bytes; address feedback, rerun applicable checks, and obtain independent review of the current head before merging."
 ---
 
 Use the complete private company workspace for a task. Standalone package source repositories are release snapshots; they do not contain the shared lockfile, all consumers, publishing policy and integration configuration needed for this workflow. Clone `cloudigniter-io/cloudigniter`, install its pinned dependencies, and start a feature branch from current `main`.
 
 ## Plan the complete change
 
-Suppose a task adds a feature in `apps/template`, needs a public contract in Core, a provider implementation in AWS and a new guide page. The feature belongs in one monorepo PR. A reviewer can follow its contract through the implementation to the application and documentation without reconciling several unrelated package PRs.
+Suppose a task adds a feature in `apps/templates/cloudigniter-next-aws-v1`, needs a public contract in Core, a provider implementation in AWS and a new guide page. The feature belongs in one monorepo PR. A reviewer can follow its contract through the implementation to the application and documentation without reconciling several unrelated package PRs.
 
 Determine ownership before coding. Core owns provider-independent public contracts; EmberGuard owns its internal capability; Next owns framework integration; AWS owns provider behavior; UI owns shared components. The template composes those pieces. Consult `AGENTS.md` and the [development skill](/skills/agents/skills/cloudigniter-development/SKILL) for the complete rules.
 

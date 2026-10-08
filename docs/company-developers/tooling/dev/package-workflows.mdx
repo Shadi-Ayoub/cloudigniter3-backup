@@ -3,6 +3,20 @@ title: Package workflows
 description: Build, check and maintain company packages while preserving their local ownership.
 sidebar_position: 3
 slug: /tooling/package-workflows
+sidebar_label: "Package workflows"
+learning:
+  prerequisites:
+    - topic: "DEV workspace setup and project selection"
+      href: "/company-developers/tooling/dev/workspace"
+    - topic: "Quality gates and release verification"
+      href: "/company-developers/tooling/testing-and-release"
+    - topic: "Release archives, manifests, and checksums"
+      href: "/company-developers/tooling/dev/release-artifacts"
+  questions:
+    - question: "Which steps take a package change from local checks to a verified release candidate?"
+      answer: "Develop against source with focused tests, run quick checks and the complete suite, then the package's configured quality gate and build. Apply artifact and release validation to the exact packed output and retain commit, version, manifest, checksum, and successful check evidence for candidate review."
+    - question: "How does package comparison retain ownership while reconciling generated or built output?"
+      answer: "The package comparison records each owner's actual test selection, quick-check scope, generation hooks, assets, and artifact validators. Shared DEV orchestration applies those configured responsibilities; it does not impose Next's coverage policy on every package or move provider behavior and generated output ownership into a generic workflow."
 ---
 
 DEV owns tool execution and check ordering. Each package supplies its test

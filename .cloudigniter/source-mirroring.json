@@ -5,7 +5,10 @@
   "qualityWorkflows": [
     {
       "path": ".github/workflows/dev-quality.yml",
-      "checks": ["Dev toolkit (Node 22)", "Dev toolkit (Node 24)"]
+      "checks": [
+        "Dev toolkit (Node 22)",
+        "Dev toolkit (Node 24)"
+      ]
     },
     {
       "path": ".github/workflows/next-quality.yml",
@@ -37,9 +40,7 @@
       "checks": [
         "Template integration (Node 22)",
         "Template integration (Node 24)",
-        "Developer guide",
-        "JODARIS website",
-        "CloudIgniter website"
+        "Developer guide"
       ]
     }
   ]

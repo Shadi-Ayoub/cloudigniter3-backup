@@ -2,6 +2,20 @@
 title: How configuration is resolved
 description: Follow configuration files, generated Amplify outputs, request values, settings, and theme overrides through application bootstrap.
 sidebar_position: 5
+sidebar_label: "Configuration resolution"
+learning:
+  prerequisites:
+    - topic: "CloudIgniter application configuration"
+      href: "/docs/core-system/configurations/cloudigniter.config.ts"
+    - topic: "Settings categories and runtime values"
+      href: "/docs/configuration/settings"
+    - topic: "Request resolution and page bootstrap"
+      href: "/docs/architecture/request-lifecycle"
+  questions:
+    - question: "Which inputs would you trace to explain an unexpected effective configuration value?"
+      answer: "Trace cloudigniter.config.ts, imported amplify_outputs.json, custom locale registrations, appThemeProviderProps, runtime environment values, and appGetSettings(). Check the actual resolver: imported Amplify outputs override that provider property, while request-specific identity, language, and settings are resolved during bootstrap."
+    - question: "How does resolved request context determine the messages and settings available to a page?"
+      answer: "The proxy's resolved Tenant, Org Unit, and logical route identify the page scope and namespace. Bootstrap loads that namespace's messages and the route-selected plus always-loaded settings groups, applying the current identity and settings scope before supplying the page context."
 ---
 
 # How configuration is resolved

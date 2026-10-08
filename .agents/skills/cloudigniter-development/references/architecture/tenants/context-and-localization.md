@@ -43,7 +43,7 @@ The i18n request file is registered by `next.config.ts` and executed by next-int
 ```text
 getLocale()/getMessages()/getTranslations()
     → next-intl plugin
-    → apps/template/src/kernel/server/i18n/request.ts
+    → apps/templates/cloudigniter-next-aws-v1/src/kernel/server/i18n/request.ts
 ```
 
 `request.ts` performs these steps:

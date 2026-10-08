@@ -2,6 +2,20 @@
 title: 12. API Reference and Production Checklist
 description: Find ARBAC helpers and types quickly, then review the production-readiness checklist.
 sidebar_position: 12
+sidebar_label: "Production checklist"
+learning:
+  prerequisites:
+    - topic: "Server-side authorization enforcement"
+      href: "/docs/core-system/authorization/enforcing-access"
+    - topic: "Authorization subjects and provider adapters"
+      href: "/docs/core-system/authorization/subjects-and-providers"
+    - topic: "DynamoDB keys and access patterns"
+      href: "/docs/library/dynamodb/table-key-convention"
+  questions:
+    - question: "Which runtime, persistence, and adapter checks must pass before production authorization is enabled?"
+      answer: "Validate the catalog and runtime guards, trusted identity adaptation, scope and time-window enforcement, owner isolation, base-table reads, policy versions, revocation-aware caches, and conditional or transactional writes. Include negative tests for unknown operations, expired grants, cross-Tenant requests, and denied mutations."
+    - question: "How would you migrate flat identity groups into scoped assignments without expanding access?"
+      answer: "Map trusted provider groups to known catalog roles, then create assignments with explicitly reviewed scopes, propagation, and validity windows. Preserve the previous effective access, reject unknown mappings, and test other Tenants and destructive actions before enabling the migrated policy."
 ---
 
 # API Reference and Production Checklist

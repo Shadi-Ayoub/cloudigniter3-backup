@@ -2,6 +2,20 @@
 title: Smart Forms
 description: Build, extend, validate, and precompile CloudIgniter forms from serializable specifications and layouts.
 sidebar_position: 4
+sidebar_label: "Smart Forms"
+learning:
+  prerequisites:
+    - topic: "Application folders and ownership"
+      href: "/docs/architecture/application-structure"
+    - topic: "Settings categories and runtime values"
+      href: "/docs/configuration/settings"
+    - topic: "API operations, errors, and feedback"
+      href: "/docs/building-features/api-and-feedback"
+  questions:
+    - question: "How do field definitions, views, validation, and actions compose a Smart Form?"
+      answer: "A serializable specification declares fields, groups, validation, and action buttons; an optional template places fields into rows. Compilation produces the definition, and CiSmartForm renders field views, binds record state and callbacks, validates input, and displays normalized feedback."
+    - question: "Why must store-record mapping and generated-form caching be handled explicitly?"
+      answer: "ciMapSmartFormData projects only explicitly mapped fields and does not perform persistence or AWSJSON serialization. Definition caching uses specification/template identity and stores no record data, permissions, or callbacks; change immutable inputs and regenerate published definitions when their configuration changes."
 ---
 
 # Smart Forms
@@ -81,7 +95,7 @@ Custom renderers receive the field, id, value, all values, disabled/read-only st
 ## Extend a core form
 
 The user and administrator create/edit dialogs already consume generated Smart Forms. Application-owned
-specifications and templates live in `apps/template/src/custom/user/smart-form.ts`. The supplied Department and
+specifications and templates live in `apps/templates/cloudigniter-next-aws-v1/src/custom/user/smart-form.ts`. The supplied Department and
 Job title example stores values in the same-name keys of `profile.extensions`, preserving unrelated extension data.
 The core-managed route pages import `appUserForms` and pass it into `CiUserManagementPage`.
 
@@ -162,7 +176,7 @@ callbacks, permissions, or option-source results.
 For published applications, use generated definitions:
 
 ```bash
-# From apps/template; also runs automatically before dev and build
+# From apps/templates/cloudigniter-next-aws-v1; also runs automatically before dev and build
 pnpm forms:generate
 ```
 

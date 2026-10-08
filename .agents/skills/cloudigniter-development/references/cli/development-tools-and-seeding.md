@@ -32,9 +32,9 @@ packages/next
     server/client wrapper propagation for development UI capabilities
 packages/ui
     reusable pending, feedback, and confirmation controls
-apps/template/src/custom/dev/seeder
+apps/templates/cloudigniter-next-aws-v1/src/custom/dev/seeder
     application-owned manifest and JSON fixture data
-apps/template
+apps/templates/cloudigniter-next-aws-v1
     thin server actions and provider-operation composition
 ```
 

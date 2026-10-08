@@ -12,6 +12,10 @@ customProps:
 
 An intentional import path exposed by a package, such as `@cloudigniter/core/types` or `@cloudigniter/next/server`. Each entry should expose a coherent public surface and preserve its runtime boundary. A file’s presence in `src` does not make it a supported entry point.
 
+## Package Layout {#package-layout}
+
+The folder and file structure of a package or its stored release artifacts. For example, CloudIgniter's build repositories store an archive and manifest beneath `releases/<version>/`. This describes filesystem organization; [Layout](/dictionary/l#layout) describes a route's UI structure. See [the immutable release folder structure](/company-developers/publishing/approved-delivery#build-repository-strategy).
+
 ## Package Ownership {#package-ownership}
 
 The assignment of reusable behavior, contracts, and implementation to the appropriate CloudIgniter layer. Generic public APIs belong in `core`, internal EmberGuard behavior in `emberguard`, Next.js integration in `next`, AWS implementations in `aws`, shared UI in `ui`, and company tooling in `dev`. See [core and custom ownership](/company-developers/architecture/core-custom-ownership).

@@ -47,7 +47,7 @@ Own reusable Next.js-specific CloudIgniter behavior:
 
 Expose stable server behavior through `@cloudigniter/next/server`, browser behavior through `/client`, framework-neutral helpers through `/lib`, and public Next.js-specific types through `/types`.
 
-Application entry files such as `apps/template/src/proxy.ts` can remain in the template, but they should delegate reusable processing to this package.
+Application entry files such as `apps/templates/cloudigniter-next-aws-v1/src/proxy.ts` can remain in the template, but they should delegate reusable processing to this package.
 
 ### Provider packages
 
@@ -70,7 +70,7 @@ Own reusable presentation primitives and shared UI behavior:
 
 Use `packages/next` when a component intrinsically depends on Next.js navigation or request state. Keep application branding and route-specific content in the template.
 
-### `apps/template`
+### `apps/templates/cloudigniter-next-aws-v1`
 
 Own application composition:
 
@@ -124,7 +124,7 @@ workers live in DEV; package-local build configuration stays with each package.
 | Uses Next.js request, response, headers, cookies, navigation, or runtime? | `packages/next`       |
 | Uses AWS/Cognito/Amplify-specific APIs or structures?                     | `packages/aws`        |
 | Reusable presentation with no application knowledge?                      | `packages/ui`         |
-| Selects, configures, or composes capabilities for this application?       | `apps/template`       |
+| Selects, configures, or composes capabilities for this application?       | `apps/templates/cloudigniter-next-aws-v1`       |
 | Public application commands or shared application module validation? | `packages/cli` |
 | Private build/quality/module tooling, build exports or release requests? | `packages/dev` |
 
@@ -138,9 +138,9 @@ If a feature spans rows, split it across layers rather than assigning the entire
 route metadata contract        → packages/core/types
 generic matching               → packages/core/lib
 Next.js request adaptation     → packages/next/server
-application route composition  → apps/template/src/kernel/server/routes.ts
-custom route definitions       → apps/template/src/custom/routes
-route entry/composition        → apps/template
+application route composition  → apps/templates/cloudigniter-next-aws-v1/src/kernel/server/routes.ts
+custom route definitions       → apps/templates/cloudigniter-next-aws-v1/src/custom/routes
+route entry/composition        → apps/templates/cloudigniter-next-aws-v1
 ```
 
 ### Reusable development diagnostic
@@ -149,7 +149,7 @@ route entry/composition        → apps/template
 generic diagnostic types       → packages/core/types
 Next.js request inspection     → packages/next/server
 reusable diagnostic UI         → packages/ui or packages/next
-endpoint activation/config     → apps/template
+endpoint activation/config     → apps/templates/cloudigniter-next-aws-v1
 ```
 
 ### Authentication roles from Cognito
@@ -159,5 +159,5 @@ generic roles/contracts        → packages/core
 internal authorization logic   → packages/emberguard
 Cognito group adapter          → packages/aws
 request/session orchestration  → packages/next
-provider selection             → apps/template
+provider selection             → apps/templates/cloudigniter-next-aws-v1
 ```

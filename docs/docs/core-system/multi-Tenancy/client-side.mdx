@@ -1,6 +1,18 @@
 ---
 title: Client-Side Tenant Awareness
 sidebar_position: 8
+sidebar_label: "Client Tenant context"
+learning:
+  prerequisites:
+    - topic: "Tenant identity and Org Unit trees"
+      href: "/docs/core-system/multi-Tenancy/core-concepts"
+    - topic: "Request resolution and page bootstrap"
+      href: "/docs/architecture/request-lifecycle"
+  questions:
+    - question: "What Tenant context may the client use to present the current scope?"
+      answer: "The client may use serialized canonical Tenant context to display the current workspace and build browser-visible navigation with ciBuildTenantPublicPathname. That context is a presentation input, not proof of authorization or authority to choose a data partition."
+    - question: "Why must the server re-resolve Tenant access when the client submits an operation?"
+      answer: "Browser inputs and serialized context can be stale or modified. Each server action must resolve the current request's canonical Tenant, authenticate the actor, and enforce access before deriving persistence keys or invoking a provider operation."
 ---
 
 # Client-Side Tenant Awareness

@@ -2,6 +2,18 @@
 title: 1. Concepts and Strategy
 description: Understand CloudIgniter's provider-neutral, scoped ARBAC model before writing policies.
 sidebar_position: 1
+sidebar_label: "Authorization concepts"
+learning:
+  prerequisites:
+    - topic: "Authentication and identity"
+      href: "/docs/identity/authentication"
+    - topic: "Tenant identity and Org Unit trees"
+      href: "/docs/core-system/multi-Tenancy/core-concepts"
+  questions:
+    - question: "How do subject, action, resource, context, and scope form an authorization request?"
+      answer: "A request identifies the authenticated subject, a registered resource, a supported action, the target access scope, and any relevant evaluation context such as time. The evaluator collects active matching privileges and combines them into an allow or deny decision."
+    - question: "Why does granting a role without an applicable scope fail to establish access?"
+      answer: "A role describes possible privileges, while an assignment determines where and when they apply. A grant outside the requested Tenant or Org Unit, outside its time window, or without the required propagation produces no applicable privilege and remains denied."
 ---
 
 # Concepts and Strategy

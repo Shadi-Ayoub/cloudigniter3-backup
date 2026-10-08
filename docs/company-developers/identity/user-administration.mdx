@@ -2,6 +2,20 @@
 title: User administration architecture
 description: Ownership, projections, Cognito binding, persistence, assignments, and lifecycle invariants for CloudIgniter users.
 sidebar_position: 1
+sidebar_label: "User administration internals"
+learning:
+  prerequisites:
+    - topic: "Authentication and identity"
+      href: "/docs/identity/authentication"
+    - topic: "Package ownership and core/custom boundaries"
+      href: "/company-developers/architecture/core-custom-ownership"
+    - topic: "DynamoDB keys and access patterns"
+      href: "/docs/library/dynamodb/table-key-convention"
+  questions:
+    - question: "Which participants own provider identity, profile data, and account lifecycle mutations?"
+      answer: "AWS owns Cognito normalization and identity lifecycle services; User Profile is a separate application-data boundary; EmberGuard manages assignments behind the Core facade. Trusted template composition joins them into CIUser and sequences lifecycle actions, while UI consumes provider-neutral inputs and actual operation results."
+    - question: "How does the minimum-information strategy constrain the user administration contract?"
+      answer: "CIUser defaults to a summary projection for tables and authorization. Fetch and attach full profile and provider objects only for detailLevel full; avoid sending address, birth date, raw provider attributes, or other unneeded private fields on ordinary listing and decision paths."
 ---
 
 # User administration architecture

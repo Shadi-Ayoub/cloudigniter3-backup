@@ -2,6 +2,20 @@
 title: Publisher
 description: Build, verify, inspect and request publication from a local developer interface.
 sidebar_position: 3
+sidebar_label: "Publisher"
+learning:
+  prerequisites:
+    - topic: "DEV workspace setup and project selection"
+      href: "/company-developers/tooling/dev/workspace"
+    - topic: "Paired source and build release approvals"
+      href: "/company-developers/publishing/strategy/release-and-delivery"
+    - topic: "Release archives, manifests, and checksums"
+      href: "/company-developers/tooling/dev/release-artifacts"
+  questions:
+    - question: "How do workspace identity and the selected source/build destinations affect Publisher actions?"
+      answer: "Publisher verifies the configured operation identity and takes each selected target's source/build destinations from the repository mapping. Its branch and commit describe the local integration checkout; selecting a package does not switch that checkout or make its backup origin the target's publication authority."
+    - question: "Why must an operation's displayed result come from its recorded evidence rather than an optimistic UI state?"
+      answer: "Requests, pushes, staging, and publication can fail or complete only partly. Display recorded operation results, remote states, manifests, and receipts so prepared, reviewed, staged, and published remain distinct. An optimistic success flag cannot prove that the intended remote mutation or registry publication actually happened."
 ---
 
 **Publisher** is the browser interface for the private [CloudIgniter Developer Toolkit](./index.mdx). It brings package maintenance and reviewed release workflows into one local workspace. Start it with `dev publisher`; the [command manual](/commands/dev/publisher) documents startup options and troubleshooting.
@@ -11,8 +25,8 @@ sidebar_position: 3
 Publisher organizes detected projects into four navigation groups:
 
 - **Packages:** an alphabetical dropdown of detected packages.
-- **Websites:** an alphabetical dropdown, currently containing **JODARIS Website**. **CloudIgniter Website** appears when its project is added and detected.
-- **Templates:** an alphabetical dropdown of application templates, currently **template-next-aws**. Application targets also belong to this group.
+- **Websites:** an alphabetical dropdown for website applications registered inside this workspace. The independent JODARIS and CloudIgniter websites are excluded.
+- **Templates:** an alphabetical dropdown of application templates, currently **cloudigniter-next-aws-v1**. Application targets also belong to this group.
 - **Docs:** opens the CloudIgniter guide directly.
 
 Discovery uses pnpm workspace packages, explicit repository source paths, and optional root metadata. Empty groups are omitted. The reserved `apps/docs` folder has no executable project and does not appear. Display labels come from `publisher.config.json` without renaming package manifests or project directories. Each dropdown remembers its last selected project for the current page session; the active selection also survives a workspace refresh when the project remains present.
@@ -75,14 +89,13 @@ Closing the configuration dialog or choosing another file with unsaved edits ope
 
 ## Optional project metadata
 
-Place `publisher.config.json` at a project root when a capability cannot be inferred. It is optional for ordinary workspace packages. Metadata roots are discovered at `apps/*`, `packages/*`, and top-level project folders; deeper projects must be workspace members or have an explicit repository source path.
+Place `publisher.config.json` at a project root when a capability cannot be inferred. It is optional for ordinary workspace packages. Metadata roots are discovered at `apps/*`, `apps/templates/*`, `packages/*`, and top-level project folders; deeper projects must be workspace members or have an explicit repository source path.
 
 ```json
 {
   "schemaVersion": 1,
-  "label": "JODARIS Website",
+  "label": "Example Workspace Website",
   "kind": "website",
-  "project": "jodaris-website",
   "buildDirectories": ["dist"],
   "assets": false,
   "staticHosting": true,
@@ -113,7 +126,7 @@ Place `publisher.config.json` at a project root when a capability cannot be infe
 | `staticHosting` | Explicit eligibility for static delivery workflow scaffolding. |
 | `commands` | Named reviewed commands: `node` or `bash` with a confined local script as the first argument, or `pnpm` with exactly `run` and a package script name. |
 
-Metadata is trusted developer configuration, like `package.json` scripts. Commands use argument arrays rather than a browser-provided shell string. Do not put credentials into metadata, script arguments, or logs. The static JODARIS and CloudIgniter Website metadata delegate to their own check and release-staging scripts; they do not modify the website runtime. The CloudIgniter page is at `apps/cloudigniter.io`, registers `workspaceName: "cloudigniter"`, and appears in the Websites dropdown alongside JODARIS.
+Metadata is trusted developer configuration, like `package.json` scripts. Commands use argument arrays rather than a browser-provided shell string. Do not put credentials into metadata, script arguments, or logs. Independent website metadata supports explicit local preview through `--site-root`, but workspace Publisher does not manage external checkouts. Their checks, source PRs and AWS output review use the [separate website workflow](/company-developers/publishing/websites).
 
 ## Implementation ownership
 

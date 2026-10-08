@@ -40,10 +40,11 @@ honor requested changes, and update this reference and the guide README when the
 | Document headings | Averia Serif Libre; 32px/40px page title, 28px section headings, 20px subsections |
 | Small-screen document title | 28px at widths up to 576px |
 | Code | System monospace stack, 14px block text, about 1.7 line height |
-| Desktop navigation | 64px header, 272px sidebar, approximately 14px link text; compact search and one Dictionary dropdown with 44px viewer controls |
+| Image captions | 14px italic secondary text, 21px line height, subtle themed surface and logical-start border; 6px below the image |
+| Desktop navigation | 64px header; sticky Navigation and Full screen controls; animated drawer sized to its widest single-line label; compact search and one Dictionary dropdown with 44px viewer controls |
 | Navbar brand | CloudIgniter Docs; muted Docs token, one 8px logo gap, color light-mode logo and Dev Beacon outline in dark mode |
 | Desktop reading column | Maximum 688px; responsive gutters and a separate table of contents |
-| Mobile navigation | Native Docusaurus menu at widths up to 996px; menu controls at least 44px tall |
+| Mobile navigation | Native Docusaurus navbar menu plus the same tutorial drawer, bounded by the viewport; controls at least 44px tall |
 | Colors | Neutral surfaces, blue links, blue-gray headings, corresponding dark-mode tokens |
 
 The homepage has its own responsive heading scale. Do not let document-title rules override it.
@@ -54,6 +55,10 @@ should not need Google Fonts or another third-party font service.
 
 - Use semantic Markdown headings, native admonitions, fenced code blocks, and tables so shared styles apply consistently.
   Avoid inline fonts, fixed content widths, or independent palettes in individual MDX pages.
+- Put image captions in a semantic `figcaption` inside the image's `figure`, or use the existing `ImageWrapper`
+  caption prop. Both inherit the shared caption style in `src/css/custom.css`; do not author captions as ordinary
+  body paragraphs or add page-specific overrides. Keep the image block-level and remove image-paragraph margins
+  inside a figure so the caption stays close to its image. Retain descriptive alt text and the shared media viewer.
 - Use existing `--ifm-*` and `--ci-doc-*` tokens in shared CSS and component CSS modules. Keep light and dark variants
   together; check text and syntax-comment contrast against the actual rendered surface.
 - Preserve the intentional cascade: base tokens use `html:root`, dark overrides use `html:root[data-theme="dark"]`.
@@ -86,6 +91,30 @@ should not need Google Fonts or another third-party font service.
   access control is introduced. Preserve the Dictionary's separate term search.
 - Article and generated-category footers include **Was this Doc helpful?** except in either dictionary. The current
   Yes/No handler displays an alert and saves nothing; feedback is available to all readers pending host integration.
+- Keep the Navigation button visible while reading. The drawer starts closed, uses a transform slide with reduced-motion
+  support, and closes on its toggle, a linked title, backdrop, focus departure, or Escape. Category carets only expand
+  children. Use concise `sidebar_label` values without changing page titles or routes. Measure collapsed descendants
+  as well as visible labels so the drawer does not resize during exploration; bound it to the viewport and allow
+  internal scrolling for unusually long reference names. Preserve single-line labels, keyboard focus, and RTL direction.
+- Full screen uses the native element API with a CSS reading-view fallback. Keep an explicit exit button and Escape
+  dismissal, readable line lengths, preserved reading position, and restored page scrolling/focus. Drawer and Previous / Next navigation
+  keeps full screen active, closes the drawer, and starts the new page at the top with its learning sections collapsed.
+  Restore ordinary reading at the current page's position when the reader exits. Hide surrounding navigation
+  chrome while keeping the reading controls, existing dialogs, and article ToC usable. Preserve the right-hand
+  On this page panel on desktop and the inline collapsible ToC on smaller screens, including in full screen.
+  Keep the native bottom Previous / Next links visible in full screen whenever the page's normal pagination supplies them.
+  Show the back-to-top arrow after the fullscreen reading container scrolls more than 300 pixels. Track and scroll
+  that container rather than the window, retain full screen, respect reduced motion, and return focus to the top
+  reading controls on activation. Keep the ordinary Docusaurus back-to-top behavior outside full screen.
+- Active Users and Developers tutorial pages declare linked `learning.prerequisites` and distinct `learning.questions`
+  in frontmatter. The shared theme renders collapsed Prerequisite knowledge immediately below either title format
+  and collapsed Review Questions before the Updated footer. Each question is an object with `question` and `answer`
+  strings. Render its authored key answer in a nested, initially collapsed See answer disclosure with native keyboard
+  interaction; all disclosures reset on page navigation. Validate answers against the lesson and relevant dependencies.
+  Use `learning: false` for index/path/summary pages;
+  dictionaries, generated categories, command/API references, archived pages and generated Skills are excluded.
+  `guide:check` checks lesson coverage, prerequisite URLs, duplicate questions, and required key answers. Keep questions specific to each
+  lesson and teach relevant background through actual links rather than generated heading-based prompts.
 
 ## Visual verification
 

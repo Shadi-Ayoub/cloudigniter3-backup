@@ -131,7 +131,7 @@ This removes ambiguity and keeps the system consistent.
 ## Configuration Model (Sonner-Aligned)
 
 CloudIgniter aligns its persisted config with [Sonner](https://sonner.emilkowal.ski/) primitives, while adding
-a small CI convenience layer: toneTokens.
+a small CloudIgniter convenience layer: toneTokens.
 
 ```ts title="Extending Sonner System" showLineNumbers
 export type CiFeedbackSonnerConfig = {
@@ -142,7 +142,7 @@ export type CiFeedbackSonnerConfig = {
   toastDefaults?: Partial<ExternalToast>;
 
   /**
-   * CI convenience: maps semantic levels to class tokens.
+   * CloudIgniter convenience: maps semantic levels to class tokens.
    * - Used to populate Toaster.toastOptions.classNames
    * - Optionally applied to per-toast className if caller didn't provide one
    */
@@ -354,13 +354,13 @@ notify(
 CloudIgniter follows predictable precedence rules.
 
 ```ts title="Provider (Toaster) precedence"
-CI defaults
+CloudIgniter defaults
 → persisted config
 → runtime overrides (if used)
 ```
 
 ```ts title="Toast call precedence"
-CI per-level presets
+CloudIgniter per-level presets
 → resolved runtime toastDefaults
 → notify() toast options (wins)
 

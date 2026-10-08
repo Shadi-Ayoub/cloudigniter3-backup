@@ -2,6 +2,18 @@
 title: Supported modes
 description: The canonical CiEnvMode values and their intended use.
 sidebar_position: 2
+sidebar_label: "Supported modes"
+learning:
+  prerequisites:
+    - topic: "Environment modes and tool access"
+      href: "/docs/environment-modes/intro"
+    - topic: "Authentication and identity"
+      href: "/docs/identity/authentication"
+  questions:
+    - question: "Why does test mode deny deployed developer tools even when tests need fixtures?"
+      answer: "Test mode supports controlled automated execution, not access to deployed development mutations. Supply explicit fixtures to focused tests or use an authorized development deployment for those integration operations; deployed developer tools still require development mode and the trusted actor checks."
+    - question: "Does naming a deployment sandbox introduce another accepted CiEnvMode value?"
+      answer: "No. CiEnvMode accepts only development, test, staging, and production. Sandbox names a deployment or resource target, so configure that target with an accepted runtime mode and continue enforcing the corresponding capability rules."
 ---
 
 ```ts

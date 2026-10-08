@@ -53,12 +53,12 @@ Examples:
 
 ## Standalone application onboarding
 
-The Users guide targets applications downloaded from `cloudigniter/template-next-aws`, with CloudIgniter
+The Users guide targets applications downloaded from `cloudigniter/cloudigniter-next-aws-v1`, with CloudIgniter
 packages installed from npm. Treat that distribution model as the application-facing contract. Use repository
 source to verify behavior without exposing the maintainer checkout as the user's installation environment.
 
 - Write paths relative to the downloaded application root, such as `.env.local`, `amplify/.env`, and `src/custom`.
-  Do not instruct users to enter `apps/template` or install/build the CloudIgniter monorepo.
+  Do not instruct users to enter `apps/templates/cloudigniter-next-aws-v1` or install/build the CloudIgniter monorepo.
 - Use application commands such as `pnpm install`, `pnpm sso`, `pnpm sandbox`, and `pnpm dev`. Keep workspace
   filters, workspace dependencies, package-build steps, and `dev` workflows in CloudIgniter Developers.
 - Put AWS account, IAM Identity Center, permission-set, local profile, and account/Region bootstrap preparation

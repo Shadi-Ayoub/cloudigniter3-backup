@@ -2,6 +2,20 @@
 title: Testing helpers and seeders
 description: Use CloudIgniter gates, key builders, fixture loaders, and garbage collectors.
 sidebar_position: 4
+sidebar_label: "Test helpers and seeders"
+learning:
+  prerequisites:
+    - topic: "Focused, integration, and cleanup tests"
+      href: "/docs/testing-strategy/"
+    - topic: "Development tool gates and seeders"
+      href: "/docs/environment-modes/development-tools-and-seeding"
+    - topic: "DynamoDB keys and access patterns"
+      href: "/docs/library/dynamodb/table-key-convention"
+  questions:
+    - question: "Which public helpers resolve mode, load fixtures, and build canonical keys?"
+      answer: "Use ciGetEnvMode from @cloudigniter/next/server, ciReadJsonSeederData from @cloudigniter/core/server, and ciBuildTableKey or ciBuildTableKeys from @cloudigniter/core/lib. ciCanAccessDeveloperTools from the Core lib entry point supplies the separate trusted developer-capability gate."
+    - question: "Why does seeder garbage collection require a bounded query and conditional ownership checks?"
+      answer: "A bounded marker-partition Query finds only the seeder's candidate records, and conditional transactions recheck ownership before deletion. This prevents scans, stale markers, ID collisions, or ownership drift from removing unrelated Tenant or capability data during garbage collection."
 ---
 
 Use these APIs to gate developer tools, load fixtures, and build table keys:

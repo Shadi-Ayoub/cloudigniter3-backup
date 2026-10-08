@@ -2,6 +2,18 @@
 title: CloudIgniter command-line toolkit
 description: Run Resource Studio, application validation, and AWS Amplify operations through the supported CloudIgniter CLI.
 sidebar_position: 1
+sidebar_label: "CloudIgniter CLI"
+learning:
+  prerequisites:
+    - topic: "Resource Studio and generated ownership"
+      href: "/docs/resource-studio/overview"
+    - topic: "AWS accounts, SSO profiles, and deployment permissions"
+      href: "/docs/getting-started/before-you-start"
+  questions:
+    - question: "Why should automated ci invocations name the complete command and disable interactive prompts?"
+      answer: "A bare ci command opens an interactive menu. A complete command with --no-interactive gives automation a deterministic operation and avoids waiting for prompts; provide required inputs such as the AWS profile and sandbox identifier explicitly."
+    - question: "How do module validation and sandbox bootstrap serve different application operations?"
+      answer: "Module validation checks trusted module definitions and their compatibility before use. Sandbox bootstrap initializes application state in an already deployed backend, including its access-control definition and initial administrator; it does not replace module validation or local registry generation."
 ---
 
 The `@cloudigniter/cli` package provides the supported `ci` executable for application developers and system operators. It replaces application-local utility scripts with stable commands, shared help, consistent errors, and automation-safe flags.
@@ -102,7 +114,7 @@ These commands can change AWS resources. Review the application configuration an
 - `--clear` clears only an interactive terminal and is never implied.
 - Usage errors return exit code `2`; operational failures return `1`; a cancelled prompt returns `130`.
 
-Package scripts in `apps/template/package.json` provide short aliases such as `pnpm bootstrap:root` and `pnpm sandbox:bootstrap`.
+Package scripts in `apps/templates/cloudigniter-next-aws-v1/package.json` provide short aliases such as `pnpm bootstrap:root` and `pnpm sandbox:bootstrap`.
 
 ## Module discovery
 

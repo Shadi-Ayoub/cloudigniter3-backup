@@ -2,6 +2,20 @@
 title: Extending user profiles
 description: Add application-specific profile fields through the extensions object and the template's user-form customization.
 sidebar_position: 5
+sidebar_label: "Extend user profiles"
+learning:
+  prerequisites:
+    - topic: "Authentication and identity"
+      href: "/docs/identity/authentication"
+    - topic: "Amplify backend folders and custom resources"
+      href: "/docs/aws-amplify-setup/folder-structure"
+    - topic: "Application folders and ownership"
+      href: "/docs/architecture/application-structure"
+  questions:
+    - question: "Which schema, validation, and consuming-code changes accompany a new profile field?"
+      answer: "Place additional data in profile.extensions, define its application validation, and update appUserFormSpecifications, appUserFormTemplate, and appUserExtensionFields. Update server-side accepting adapters and consumers together, preserve unrelated extension keys, and keep credentials and grants outside profile data."
+    - question: "Why should an application extension preserve the core user's identity contract?"
+      answer: "Core identity fields are shared by authentication, user administration, and provider adapters. Use the supported extensions object instead of redefining identity or treating editable profile values as grants; preserving the core contract keeps those integrations and upgrades consistent."
 ---
 
 # Extending user profiles

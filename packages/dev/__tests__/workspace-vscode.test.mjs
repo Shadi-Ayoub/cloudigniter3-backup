@@ -28,7 +28,7 @@ async function fixture(t, shell = Promise.resolve(4321)) {
   t.after(() => rm(root, { recursive: true, force: true }));
   await mkdir(path.join(root, "packages/dev"), { recursive: true });
   await mkdir(path.join(root, "docs"));
-  await mkdir(path.join(root, "apps/jodaris"), { recursive: true });
+  await mkdir(path.join(root, "apps/templates/cloudigniter-next-aws-v1"), { recursive: true });
   await writeFile(
     path.join(root, "package.json"),
     JSON.stringify({ name: "cloudigniter", private: true }),
@@ -84,7 +84,7 @@ test("each DEV invocation creates a separate terminal and returns after its shel
   });
   await ciOpenVSCodeTerminal(plan, { env });
   await ciOpenVSCodeTerminal(
-    { ...plan, cwd: path.join(root, "apps/jodaris"), target: "jodaris" },
+    { ...plan, cwd: path.join(root, "apps/templates/cloudigniter-next-aws-v1"), target: "template" },
     { env: { ...env, CLOUDIGNITER_TERMINAL_PRESERVE_FOCUS: "1" } },
   );
   assert.equal(created.length, 3);
@@ -223,6 +223,6 @@ test("first use installs only the bundled VSIX and waits for the terminal host",
   );
   assert.equal(installed, true);
   const archive = path.join(root, "test.vsix");
-  assert.equal(await ciWriteTerminalVSIX(archive), "0.1.0");
+  assert.equal(await ciWriteTerminalVSIX(archive), "0.1.1");
   await assert.rejects(ciWriteTerminalVSIX(archive), { code: "EEXIST" });
 });

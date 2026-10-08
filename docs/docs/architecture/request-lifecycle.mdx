@@ -2,6 +2,20 @@
 title: How a request becomes a page
 description: Follow proxy routing, context transport, localization, bootstrap, layouts, and page rendering.
 sidebar_position: 3
+sidebar_label: "Request lifecycle"
+learning:
+  prerequisites:
+    - topic: "Application folders and ownership"
+      href: "/docs/architecture/application-structure"
+    - topic: "Logical routes and configuration"
+      href: "/docs/configuration/routes"
+    - topic: "Authentication and identity"
+      href: "/docs/identity/authentication"
+  questions:
+    - question: "Why can a redirect require cross-request transport while a rewrite uses the same request's context?"
+      answer: "A rewrite continues the same server request, so the proxy's forwarded header carries its resolved context. A redirect causes a new request that cannot inherit that header; any cookie used as a bridge must be validated against the new pathname before its context is trusted."
+    - question: "Which resolution stage would you inspect first when a page loads the wrong messages?"
+      answer: "Trace public pathname normalization, Tenant and Org Unit resolution, and logical route matching first. Confirm the resolved route namespace, then inspect its registered locale files, message-chain expansion, merge order, and the messages passed to the page provider."
 ---
 
 # How a request becomes a page

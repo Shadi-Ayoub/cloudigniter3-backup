@@ -2,6 +2,18 @@
 title: Theme architecture
 sidebar_position: 4
 description: Ownership, configuration transport, token selection, and widget synchronization across CloudIgniter UI.
+sidebar_label: "Theme architecture"
+learning:
+  prerequisites:
+    - topic: "Package ownership and core/custom boundaries"
+      href: "/company-developers/architecture/core-custom-ownership"
+    - topic: "Settings categories and runtime values"
+      href: "/docs/configuration/settings"
+  questions:
+    - question: "How does theme ownership flow from configuration through CSS and component rendering?"
+      answer: "Core defines provider-neutral theme configuration, Next.js resolves it and publishes the effective document theme, and semantic CSS tokens drive shared UI. AWS builds provider styling from an explicit mode. The template supplies custom configuration, CSS, and thin layout composition through the existing provider stack."
+    - question: "Why must imperative widget initialization preserve hydration consistency?"
+      answer: "Server markup and the first browser render must agree. useCiColorMode begins with a consistent light value and synchronizes after mount; initialize or update imperative widgets from that synchronized mode instead of reading divergent browser-only values during the initial render."
 ---
 
 # Theme architecture
@@ -17,7 +29,7 @@ Keep configuration transport and CSS selection aligned so a single user choice p
 | `packages/next` | Configuration mapping/resolution, `CiThemeProvider`, switcher, layout styles, semantic token definitions, and framework/provider bridges |
 | `packages/ui` | Semantic component classes and `useCiColorMode` for widgets needing a concrete mode |
 | `packages/aws` | Building the Amplify theme from an explicit mode and provider tokens |
-| `apps/template` | Generic configuration, `appThemeProviderProps`, custom CSS, and thin layout composition |
+| `apps/templates/cloudigniter-next-aws-v1` | Generic configuration, `appThemeProviderProps`, custom CSS, and thin layout composition |
 
 ```text
 appBootstrap().config
@@ -73,7 +85,7 @@ render or compare a logical theme name directly to `dark` when forced or mapped 
 ## Validation
 
 Run theme configuration regressions in `packages/next/__tests__/theme/theme-config.test.ts`, compiled application
-CSS regressions in `apps/template/__tests__/theme-styles.test.ts`, and affected package/consumer type checks.
+CSS regressions in `apps/templates/cloudigniter-next-aws-v1/__tests__/theme-styles.test.ts`, and affected package/consumer type checks.
 Review Light/Dark/System, forced appearance, both attribute strategies, persistence, and OS-opposite manual choices.
 Include application, control-panel, and login layouts, portals, editors, loading/error states, mobile widths,
 keyboard focus, and RTL. Compilation does not replace browser verification; report any unavailable visual checks.

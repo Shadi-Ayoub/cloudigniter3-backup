@@ -2,6 +2,18 @@
 title: Core Tenant concepts
 description: Distinguish Tenant identity, routing, operational status, deletion, and shared organizational structure.
 sidebar_position: 2
+sidebar_label: "Tenant concepts"
+learning:
+  prerequisites:
+    - topic: "Authentication and identity"
+      href: "/docs/identity/authentication"
+    - topic: "Authorization concepts and default deny"
+      href: "/docs/core-system/authorization/overview"
+  questions:
+    - question: "Why should a Tenant's stable identity be distinct from its public slug?"
+      answer: "The stable Tenant ID is the durable reference used by domain data and authorization. The public slug is a routing name. Resolving a slug to canonical identity keeps storage and grants tied to the actual Tenant rather than a user-entered pathname segment."
+    - question: "How can several Tenants reference one canonical Org Unit without duplicating its identity?"
+      answer: "Store one canonical Org Unit with its parent, path, ancestor IDs, and attached tenantIds, then maintain per-Tenant routing attachments. Children can use only Tenants attached to their parent; authorization checks both the canonical ancestry and the current Tenant, so shared identity does not merge access."
 ---
 
 # Core Tenant concepts

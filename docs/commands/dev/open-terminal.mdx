@@ -35,7 +35,8 @@ Window**, then retry. No interactive TTY is required for the request transport.
 
 | Parameter    | Meaning                                                                                                                                                                               |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `<target>`   | Registered name such as `core`, `docs`, `template`, `jodaris` or `cloudigniter`; full CloudIgniter manifest name or explicit `packages/core` / `apps/cloudigniter.io` path. Optional. |
+| `<target>`   | Registered name such as `core`, `docs`, `template`, `jodaris` or `cloudigniter`; full CloudIgniter manifest name or explicit `packages/core` / `apps/templates/cloudigniter-next-aws-v1` path. Optional. |
+| `--site-root=<path>` | Required only for an independent cloudigniter or jodaris website checkout. |
 | `--external` | Open a separate system terminal window instead of creating a new VS Code integrated terminal.                                                                                         |
 | `--dry-run`  | Preview the resolved directory without opening a terminal or starting a shell.                                                                                                        |
 | `--json`     | Structured preview output; requires `--dry-run`.                                                                                                                                      |
@@ -66,7 +67,7 @@ See [Workspace convenience](/company-developers/tooling/dev/workspace-tools)
 for detection rules and editor integration.
 
 A project can set `workspaceName` in `publisher.config.json` for a stable short
-name independent of its folder. `apps/cloudigniter.io` registers `cloudigniter`.
+name independent of its folder. Independent website aliases require `--site-root=<external-checkout>` and matching project metadata.
 Otherwise folder and manifest names are inferred. Matching repository source
 paths and project IDs are also recognized, so known website names follow reviewed
 relocations. A name matching multiple roots is refused; use a qualified target.
@@ -78,8 +79,8 @@ Arbitrary paths and unregistered directories are never opened.
 pnpm exec dev open terminal core
 pnpm exec dev open terminal @cloudigniter/ui
 pnpm exec dev open terminal docs
-pnpm exec dev open terminal jodaris
-pnpm exec dev open terminal cloudigniter
+pnpm exec dev open terminal jodaris --site-root=../websites/jodaris-website --external
+pnpm exec dev open terminal cloudigniter --site-root=../websites/cloudigniter-website --external
 pnpm exec dev open terminal packages/next --external
 pnpm exec dev open terminal
 pnpm exec dev open terminal core --dry-run --json
@@ -104,3 +105,7 @@ Use `dev open terminal` directly when DEV is already on `PATH`.
 Usage and workspace errors use exit status `2`. Terminal launch failures use a
 nonzero operational status. Success is reported once the new terminal starts;
 its later shell exit status belongs to that separate terminal.
+
+Independent website terminals require both `--site-root=<external-checkout>` and
+`--external`. The bundled VS Code helper accepts only integration-workspace paths;
+this command opens the selected website in a system terminal instead.

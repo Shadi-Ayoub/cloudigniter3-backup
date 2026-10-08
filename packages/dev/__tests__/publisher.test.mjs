@@ -223,8 +223,8 @@ test("local editor bundles, fonts and workers are served from an exact asset inv
 test("Publisher groups detected projects into ordered categories with alphabetical choices", () => {
   const targets = [
     { id: "packages/ui", label: "ui", kind: "package" },
-    { id: "apps/template", label: "template-next-aws", kind: "template" },
-    { id: "apps/jodaris", label: "JODARIS Website", kind: "website" },
+    { id: "apps/templates/cloudigniter-next-aws-v1", label: "cloudigniter-next-aws-v1", kind: "template" },
+    { id: "apps/example-site", label: "JODARIS Website", kind: "website" },
     { id: "docs", label: "Docs", kind: "docs" },
     { id: "packages/aws", label: "AWS", kind: "package" },
     { id: "packages/core", label: "core", kind: "package" },
@@ -245,7 +245,7 @@ test("Publisher groups detected projects into ordered categories with alphabetic
   );
   assert.deepEqual(
     groups[2].targets.map((t) => t.label),
-    ["template-next-aws"],
+    ["cloudigniter-next-aws-v1"],
   );
   assert.equal(groups[3].targets[0].id, "docs");
   assert.deepEqual(targets, original);
@@ -265,7 +265,7 @@ test("Publisher groups detected projects into ordered categories with alphabetic
   );
   assert.deepEqual(
     expanded[2].targets.map((t) => t.label),
-    ["another-template", "template-next-aws"],
+    ["another-template", "cloudigniter-next-aws-v1"],
   );
 });
 
@@ -511,9 +511,16 @@ test("discovery includes a static metadata project and omits placeholders and ab
   });
   await mkdir(path.join(root, "apps/docs"), { recursive: true });
   await writeFile(path.join(root, "apps/docs/README.md"), "Reserved");
+  for (const provider of ["aws", "azure"])
+    await json(`apps/templates/cloudigniter-next-${provider}-v1/publisher.config.json`, {
+      schemaVersion: 1,
+      label: `cloudigniter-next-${provider}-v1`,
+      kind: "template",
+    });
   const state = await ciPublisherWorkspace(root);
   assert.ok(state.targets.some((t) => t.id === "apps/site"));
   assert.ok(!state.targets.some((t) => t.id === "apps/docs"));
+  assert.equal(state.targets.filter((t) => t.id.startsWith("apps/templates/")).length, 2);
   const core = state.targets.find((t) => t.id === "packages/core");
   assert.equal(core.exportMode, "src");
   assert.ok(ciPublisherActions(core).some((a) => a.id === "npm:publish"));

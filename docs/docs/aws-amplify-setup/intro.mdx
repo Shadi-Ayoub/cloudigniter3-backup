@@ -1,6 +1,18 @@
 ---
 title: AWS Amplify setup
 sidebar_position: 1
+sidebar_label: "Amplify setup"
+learning:
+  prerequisites:
+    - topic: "AWS accounts, SSO profiles, and deployment permissions"
+      href: "/docs/getting-started/before-you-start"
+    - topic: "Application folders and ownership"
+      href: "/docs/architecture/application-structure"
+  questions:
+    - question: "Which parts of the backend are provider-managed and which remain application-owned?"
+      answer: "The AWS provider supplies CloudIgniter's platform resource definitions and managed composition. Application-specific infrastructure and schema extensions remain under amplify/custom and connect through the documented backend and schema registries."
+    - question: "How do local backend generation and an actual AWS sandbox deployment differ?"
+      answer: "Local generation writes definitions and registries in the application checkout. Sandbox deployment sends the composed Amplify backend to AWS, creates or updates actual resources, and produces connection outputs; generated local files alone do not prove that infrastructure exists."
 ---
 
 The CloudIgniter application template uses AWS Amplify Gen 2 to define authentication, data models, and backend

@@ -3,6 +3,20 @@ pagination_next: null
 title: Deployment, drop, and rollback
 description: Refresh AWS SSO, run an explicit one-shot Amplify sandbox, reverse local generation safely, and understand what cannot be restored.
 sidebar_position: 3
+sidebar_label: "Deploy and roll back"
+learning:
+  prerequisites:
+    - topic: "Resource Studio and generated ownership"
+      href: "/docs/resource-studio/overview"
+    - topic: "AWS accounts, SSO profiles, and deployment permissions"
+      href: "/docs/getting-started/before-you-start"
+    - topic: "DynamoDB keys and access patterns"
+      href: "/docs/library/dynamodb/table-key-convention"
+  questions:
+    - question: "How does undoing a local generated change differ from rolling back after deployment?"
+      answer: "Local undo restores recorded before-images only when all tracked files still match their expected after-images. After deployment, inspect the restored plan and explicitly deploy it again to reconcile infrastructure; this compensating deployment does not recover records lost by a deleted or replaced table."
+    - question: "Which AWS target, data-loss, and access checks are required before dropping a Data Entity?"
+      answer: "Confirm the entity ID, scope, route, generated plan, AWS profile, sandbox identifier, caller account, and Region. Review required access and a data-retention or backup plan before explicitly deploying the dropped state, since local drop changes files but deployment may delete the table and its records."
 ---
 
 Resource Studio separates deterministic local generation from AWS deployment. Creating, updating, dropping, or rolling back a Data Entity first changes application files only. The Studio never deploys merely because a generation form was submitted.

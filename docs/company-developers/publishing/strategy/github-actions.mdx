@@ -2,6 +2,18 @@
 title: GitHub Actions and review
 description: Learn the GitHub concepts that run CloudIgniter CI and enforce review before a merge.
 sidebar_position: 2
+sidebar_label: "GitHub Actions"
+learning:
+  prerequisites:
+    - topic: "GitHub branches, commits, and pull requests"
+      href: "https://docs.github.com/en/get-started/using-github/github-flow"
+    - topic: "Continuous Integration and delivery gates"
+      href: "/dictionary/c#continuous-integration"
+  questions:
+    - question: "How do workflow triggers, jobs, steps, and runners relate to a check result?"
+      answer: "An event starts the workflow, which schedules jobs on runners. Each job executes steps and reports its result; a matrix creates separate job combinations. Artifacts retain output for review, while branch protection separately decides which reported checks must pass for merge."
+    - question: "Where would you look for evidence that a failed check evaluated the intended revision?"
+      answer: "Open the PR's Checks tab and inspect the first failed step's actual command and diagnostics. Compare the Actions run's branch and commit with the PR's current head; a result for an earlier revision does not validate the latest push."
 ---
 
 GitHub Actions executes CloudIgniter's automated checks on GitHub-hosted machines. You define that work in committed YAML files under `.github/workflows/`. Actions runs those definitions when an event matches; GitHub then shows their results beside the PR. Read GitHub's [Actions introduction](https://docs.github.com/en/actions/get-started/understand-github-actions) alongside the CloudIgniter examples below.

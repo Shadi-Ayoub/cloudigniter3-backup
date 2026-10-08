@@ -11,20 +11,21 @@ Start JODARIS as a static preview now, or a Next.js application after conversion
 ## Syntax
 
 ```text
-dev start website jodaris [--mode=dev|prod] [--port=3001] [--host=127.0.0.1] [--no-open] [--dry-run] [--json]
+dev start website jodaris --site-root=<external-checkout> [--mode=dev|prod] [--port=3001] [--host=127.0.0.1] [--no-open] [--dry-run] [--json]
 ```
 
 ## Prerequisites
 
 Install the workspace dependencies and invoke inside the private CloudIgniter
 pnpm monorepo containing `packages/dev`. Any nested directory is valid. The target
-must exist and have the required framework scripts or explicit static metadata.
+must be an explicitly downloaded independent checkout outside the monorepo, with matching website metadata and framework scripts or static metadata.
 GitHub login is unnecessary. Production requires an existing build.
 
 ## Parameters
 
 | Parameter                | Meaning                                                                  |
 | ------------------------ | ------------------------------------------------------------------------ |
+| `--site-root=<path>` | Required external checkout, resolved from the invoking directory. |
 | `--mode=dev\|prod`       | Development by default; production serves an existing build.             |
 | `--port=<number>`        | Integer from `1` through `65535`; an occupied port fails.                |
 | `--host=<IP\|localhost>` | Bind address, default `127.0.0.1`. Wildcards use a loopback browser URL. |
@@ -38,11 +39,15 @@ Workspace convenience commands: the invoking directory must be inside the monore
 
 ## Remarks and effects
 
-JODARIS currently uses explicit static Publisher metadata: development previews its source `index.html`, and production previews `dist/index.html`. Use its Publisher static build action first. Once `next` is declared in its application manifest, DEV uses its `dev` and `start` scripts instead.
+Select the independent `jodaris-website` checkout with `--site-root`. Its
+`publisher.config.json` must contain `kind: "website"` and
+`project: "jodaris-website"`. The directory must be outside the monorepo, and
+symlinks are rejected. No clone, pull or source mirroring happens during preview.
 
-Resolve the target through its repository inventory `sourcePath`, falling back
-to the conventional location described in
-[Workspace convenience](/company-developers/tooling/dev/workspace-tools).
+Both current sites use static hosting metadata. Development previews source
+`index.html`; production previews `dist/index.html` after running the checkout's
+release-staging script. A manifest declaring `next` activates the Next.js adapter.
+
 Start the package-owned script with the selected port/host. Output streams in the
 foreground; keep the terminal running. The browser opens once the server accepts
 connections. Ctrl+C stops the launched process tree; closing the browser leaves it
@@ -55,12 +60,12 @@ navigation. `--dry-run` reads configuration without processes or writes.
 
 ## Examples
 
-From any monorepo directory:
+From the monorepo root (use an absolute checkout path from nested directories):
 
 ```bash
-pnpm exec dev start website jodaris
-pnpm exec dev start website jodaris --mode=prod --port=4001
-pnpm exec dev start website jodaris --no-open --dry-run --json
+pnpm exec dev start website jodaris --site-root=../websites/jodaris-website
+pnpm exec dev start website jodaris --site-root=../websites/jodaris-website --mode=prod --port=4001
+pnpm exec dev start website jodaris --site-root=../websites/jodaris-website --no-open --dry-run --json
 ```
 
 Use `dev start website jodaris` directly when DEV is already on `PATH`.
@@ -68,11 +73,11 @@ Use `dev start website jodaris` directly when DEV is already on `PATH`.
 ## Errors and recovery
 
 - **Outside Workspace or consumer project:** open the private monorepo or a nested directory; omit `--workspace-root`.
-- **Missing target:** restore the application or configure its inventory `sourcePath`. Preview also requires a real target.
+- **Missing target:** clone the selected website explicitly and pass its external path with `--site-root`.
 - **Missing production build:** build the target first with its existing workflow, then retry `--mode=prod`.
 - **Port unavailable:** stop its known owner yourself or select a different `--port`. DEV never kills it.
 - **Invalid flags, host or port:** use the parameters above; ports must be positive integers and host must be an IP or `localhost`.
-- **Invalid mapping or symlink:** fix the configuration or use a real directory inside the monorepo.
+- **Invalid mapping or symlink:** fix the configuration or use a real external checkout with matching website metadata.
 - **Browser unavailable:** open the printed URL manually; the server remains running.
 - **Next.js development instance already running:** use its existing URL or stop its known owner first. A different port does not bypass its application lock.
 - **Preparation/server failed:** read the streamed error, restore dependencies or application prerequisites, and retry. The subprocess status is preserved.

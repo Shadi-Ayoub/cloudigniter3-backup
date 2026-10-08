@@ -2,6 +2,18 @@
 title: Package configuration
 description: Package-owned test selection, generation hooks and ordered DEV validation recipes.
 sidebar_position: 4
+sidebar_label: "Package configuration"
+learning:
+  prerequisites:
+    - topic: "DEV workspace setup and project selection"
+      href: "/company-developers/tooling/dev/workspace"
+    - topic: "Package ownership and core/custom boundaries"
+      href: "/company-developers/architecture/core-custom-ownership"
+  questions:
+    - question: "Which configuration values define package build and release behavior?"
+      answer: "Package-local ci-dev.config.json selects typecheck scopes, test files and loader, timeouts, skip policy, generation hooks, asset handling, coverage/artifact/release validators, and ordered check recipes. Compiler and bundler configuration stays package-owned, including any qualityScript that gates a build."
+    - question: "Why should package configuration remain explicit instead of depending on the caller's working directory?"
+      answer: "Explicit package-relative configuration and a verified package directory prevent a nested or unrelated caller location from selecting the wrong tests, hooks, or artifacts. Confine hook paths to the owner package and reject missing or recursive recipes rather than treating an empty gate as success."
 ---
 
 `ci-dev.config.json` is the package-owned contract consumed by DEV. The filename is

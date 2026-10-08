@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "label": "cloudigniter-next-aws-v1",
+  "kind": "template",
+  "project": "cloudigniter-next-aws-v1",
+  "buildDirectories": [".next"]
+}

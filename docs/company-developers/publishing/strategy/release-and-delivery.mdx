@@ -2,6 +2,20 @@
 title: Release and deliver reviewed work
 description: The implemented source/build approval process and the separate delivery paths for packages, the template and websites.
 sidebar_position: 4
+sidebar_label: "Release and delivery"
+learning:
+  prerequisites:
+    - topic: "Integrated development and independent review"
+      href: "/company-developers/publishing/strategy/development-and-review"
+    - topic: "npm packages and the registry"
+      href: "https://docs.npmjs.com/about-npm/"
+    - topic: "Release archives, manifests, and checksums"
+      href: "/company-developers/tooling/dev/release-artifacts"
+  questions:
+    - question: "What distinct evidence is approved in the paired source and build review process?"
+      answer: "Source review approves the exact versioned package snapshot, source inventory, and release-plan relationship. Build review approves the candidate tarball, manifest, integration commit, and checksum produced by the verified build. Both remain linked by the release request rather than treating source approval as approval of arbitrary later output."
+    - question: "Why does replacing candidate bytes invalidate earlier archive approval?"
+      answer: "Archive approval identifies exact bytes through their checksum. Replacing or rebuilding them changes the candidate even if its version label is unchanged, so the old evidence no longer authorizes it. Obtain fresh verification and review instead of overwriting an approved version directory."
 ---
 
 Start release preparation from an approved, committed integration revision. An approved monorepo merge triggers [private source synchronization](./source-mirroring) after merged-commit quality passes, using the configured company App. Release preparation still coordinates explicit requests and verifies separate source/build approvals. A source update does not stage npm packages or deploy a website.
