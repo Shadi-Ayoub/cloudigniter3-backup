@@ -11,10 +11,10 @@ learning:
     - question: "How do the user and Developer Dictionary catalogs differ in audience and automatic linking?"
       answer: "The blue user catalog defines public ecosystem concepts; the green Developer Dictionary adds internal technology and contributor terminology. Public guide and API prose auto-link user terms, while contributor pages use both catalogs. Shared definitions remain in their owning catalog rather than being copied."
     - question: "Why must a public docs edition exclude internal pages, catalogs, and definition assets together?"
-      answer: "A navigation filter alone leaves internal content discoverable in routes, search data, or lazy definition assets. A future public edition must exclude internal pages, catalogs, indexes, and definition bundles together; audience metadata in the current maintainer preview does not enforce access control."
+      answer: "A navigation filter alone leaves internal content discoverable in routes, search data, or lazy definition assets. The public build excludes internal pages, catalogs, indexes, and definition bundles together. The extended guide is delivered under a protected prefix only after CloudIgniter authentication and EmberGuard developer authorization; audience metadata alone does not enforce access control."
 ---
 
-CloudIgniter Docs has two intended editions: **Users** is the default, and **Developers** extends it with company contributor material. This phase provides the two dictionaries and their viewers in the existing maintainer preview. The deployment strategy and access controls for the editions are still to be implemented.
+CloudIgniter Docs has a public **Users** surface and an extended **Developers** surface on the same `docs.cloudigniter.io` website. Company pages, the Developer Dictionary, private command manuals and Skills are delivered only to authenticated users with the exact `developer` role and allowed EmberGuard access. The website supplies the CloudIgniter template authentication session; Docs uses no separate account system. Both dictionaries remain visible in the local maintainer preview.
 
 | Dictionary | Audience | Content | Appearance |
 | --- | --- | --- | --- |
@@ -40,7 +40,7 @@ viewer entries; neither definition is included in the user dictionary.
 1. Choose the audience. Internal terminology such as DEV Toolkit, API Facade, and Staged Archive belongs in the developer dictionary.
 2. Add a concise definition beneath a level-two heading in the appropriate letter MDX file in `docs/dictionary` or `docs/developer-dictionary`. Give developer headings explicit stable anchors.
 3. Add the same term and anchor to `dictionary-terms.ts` or `developer-dictionary-terms.ts`. Those catalogs drive the sidebar, viewer search, and automatic linking. An optional third tuple item lists aliases, such as `["CloudIgniter User", "cloudigniter-users", ["CloudIgniter Users"]]`; aliases share one definition and one viewer result.
-4. When adding a previously unused letter, register its lazy page import in `src/components/DictionaryViewer/dictionaries.ts`. Link it from the dictionary index.
+4. When adding a previously unused letter, register its lazy page import in `src/components/DictionaryViewer/developer-dictionaries.ts` (or `dictionaries.ts` for a user term). Link it from the dictionary index.
 5. Link a focused guide for the full workflow. Run the dictionary tests, date update/check, typecheck, and production build.
 
 The shared viewer renders the same MDX definitions as the full pages. Each dictionary keeps its own results and green/blue styling; one dialog handles both tools so following a shared-term link does not stack dialogs.
@@ -85,6 +85,20 @@ the dictionary regression tests before publishing the guide.
 
 ## Publishing boundary
 
-Audience metadata, separate paths, and green styling classify this material; they do not restrict access. The current static preview ships both catalogs and their MDX content. Do not deploy this combined preview as the public Users edition with confidential definitions.
+`pnpm --filter docs build:hosting` builds public and developer bundles. The public
+build omits internal plugins, the Developer Dictionary module/catalog/MDX chunks,
+private command manuals, skill sources, internal search records and private
+page-date metadata. Public navigation offers only its permitted tools. A compiler
+check prevents company source from entering its bundle.
 
-The later publishing phase must keep internal documents, term catalogs, lazy definition chunks, search records, and navigation out of the public build, and protect delivery of the extended Developers edition. A hidden link or client-side audience switch cannot enforce that boundary.
+The extended guide keeps both dictionaries under `/developers/`, including its
+HTML, JavaScript, search and static assets. CloudFront validates a short-lived
+delivery grant before serving any of those bytes. The CloudIgniter website issues
+the grant only after verifying its authenticated identity, exact developer role
+and EmberGuard `documentation.company/read` decision. Hidden links and browser
+role flags are presentation, never authorization evidence.
+
+The local preview includes both audiences without production enforcement. The
+website runtime integration and AWS setup are still required; the combined
+preview is not a deployable public payload. Follow
+[Publish CloudIgniter Docs](/company-developers/publishing/docs).

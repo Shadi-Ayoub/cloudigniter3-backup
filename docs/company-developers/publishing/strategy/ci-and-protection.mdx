@@ -37,7 +37,7 @@ The template integration job runs the root `pnpm typecheck` command on both Node
 
 The workspace pins one `@types/react` version through `pnpm-workspace.yaml` and declares it at the root so shared library declarations can resolve it consistently. Shared React declarations must use one type identity across package and guide dependencies; mixed versions can produce non-portable inferred declaration errors that depend on the installation layout. Review the override and lockfile together when updating React types.
 
-The frozen lockfile prevents unreviewed dependency resolution during CI. All checks use explicit build/test steps after installation with lifecycle scripts disabled. Quality jobs have read-only repository permissions and perform no npm publication or AWS deployment. Node 24 package archives, Next review evidence, the DEV template export and both website outputs are retained for 14 days. Docs and template builds are validation outputs, with no production deployment in these jobs.
+The frozen lockfile prevents unreviewed dependency resolution during CI. All checks use explicit build/test steps after installation with lifecycle scripts disabled. Quality jobs have read-only repository permissions and perform no npm publication or AWS deployment. Node 24 package archives, Next review evidence, the DEV template export and both website outputs are retained for 14 days. Docs builds both public and protected editions and tests the server authorization adapter. Docs and template builds are validation outputs, with no production deployment in these jobs.
 
 ## Select actual required job names
 

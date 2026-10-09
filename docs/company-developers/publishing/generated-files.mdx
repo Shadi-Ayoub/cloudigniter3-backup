@@ -142,7 +142,7 @@ Treat a merged version directory as immutable. If bytes change, prepare and revi
 ## Website scaffold files
 
 ```bash
-dev github scaffold cloudigniter-docs --hosting=static --output=../build-guide-setup
+dev github scaffold cloudigniter-website --hosting=static --output=../build-cloudigniter-setup
 ```
 
 `--hosting=static` explicitly selects a website contract: a folder of files containing `index.html` that S3/CloudFront can serve. It is required for websites and rejected for package scaffolds.
@@ -160,6 +160,18 @@ The generated website setup contains `README.md`, `.github/CODEOWNERS` and `.git
 
 `site/` is supplied later by a reviewed website build PR. The scaffold creates no bucket, distribution, certificate, DNS record or AWS role. See [Publish websites](./websites) for their relationship.
 
+### Protected Docs scaffold
+
+`dev github scaffold cloudigniter-docs --hosting=static --output=../build-docs-setup`
+selects **Deploy reviewed mixed-access Docs** instead of the marketing-site uploader.
+It adds `.github/scripts/docs-site.mjs` and `verify-docs-site.mjs` to the README,
+Code Owners and deployment workflow. The scripts validate `site/public/`,
+`site/developer/` and `site/manifest.json`, then inspect the actual AWS distribution,
+trusted key group, private origins and uncached website-auth callback behavior
+before upload. An ordinary combined `site/index.html` preview is rejected.
+The scaffold does not provision AWS or wire the website's authentication backend.
+See [Publish CloudIgniter Docs](./docs) for variables and setup requirements.
+
 ## The full monorepo’s existing .github files
 
 These files belong in the complete workspace. They serve a different purpose from the small scaffold copied to each build repository.
@@ -171,7 +183,7 @@ These files belong in the complete workspace. They serve a different purpose fro
 | `workflows/dev-quality.yml` | Runs toolkit checks and package validation on Node 22/24. On Node 24 it exports/checks a template candidate, and it retains packed toolkit archives for inspection. No publication occurs. |
 | `workflows/next-quality.yml` | Runs Next quality on Node 22/24, then a production build and archive validation. Artifacts provide review evidence; their existence is not release approval. |
 | `workflows/packages-quality.yml` | Runs the existing Core, AWS, UI, EmberGuard and CLI checks/tests and validates Config TS presets on Node 22/24. Node 24 builds runtime packages, packs all six targets and verifies advertised archive entries. |
-| `workflows/workspace-quality.yml` | Typechecks the complete workspace and tests the template on Node 22/24 and builds it on Node 24, including its module and form generators. Separate jobs check/build Docs and validate/stage JODARIS static output. |
+| `workflows/workspace-quality.yml` | Typechecks the complete workspace and tests the template on Node 22/24 and builds it on Node 24, including its module and form generators. The guide job checks the authorization adapter and builds both Docs editions. Independent marketing websites run their own source CI. |
 | `workflows/npm-stage.yml` | Legacy single-repository staging, guarded by explicit topology/repository variables. The active paired layout uses each build repository’s generated workflow instead. Leave the legacy route inactive for paired publishing. |
 
 When changing the scaffolding implementation, regenerate into a **new** directory, compare with the existing build repository, and submit the differences for review. Regeneration does not overwrite existing output or roll out workflow changes remotely.

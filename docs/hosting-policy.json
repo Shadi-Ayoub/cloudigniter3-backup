@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "url": "https://docs.cloudigniter.io",
+  "publicBaseUrl": "/",
+  "developerBaseUrl": "/developers/",
+  "authentication": "cloudigniter-template",
+  "authorization": "emberguard",
+  "requiredRole": "developer",
+  "resource": "documentation.company",
+  "action": "read",
+  "sessionMaxAgeSeconds": 300
+}

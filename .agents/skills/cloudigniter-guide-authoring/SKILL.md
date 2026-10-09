@@ -100,10 +100,17 @@ manuals auto-link both catalogs; public guides auto-link only user terms. Both
 the Developer Dictionary, including their plural aliases. Keep them out of the
 user catalog even though one profile is named User. Both
 viewers share one dialog and render their own MDX definitions. Keep new letter
-imports in `src/components/DictionaryViewer/dictionaries.ts` synchronized. Run
+imports in `src/components/DictionaryViewer/dictionaries.ts` (user) and
+`developer-dictionaries.ts` (company) synchronized. Run
 `pnpm --filter docs test:dictionary` when changing catalogs or linking.
-The current maintainer preview includes both; audience markers are not access
-control. Public/developer build and delivery separation is a later phase.
+The local maintainer preview includes both; audience markers are not access
+control. Production is one mixed-access site: public at `docs.cloudigniter.io/`,
+company material and all its assets under `/developers/`. Use template authentication
+from the CloudIgniter website and EmberGuard's exact developer-role gate, never a
+separate Docs login system. `build:hosting` partitions bundles; the protected
+scaffold checks delivery. Website session/cookie-signer wiring and AWS setup remain
+required. Validate both editions for changes to audience, imports, links, search,
+dictionaries or publishing policy; never publish the combined preview.
 
 ## Command references
 

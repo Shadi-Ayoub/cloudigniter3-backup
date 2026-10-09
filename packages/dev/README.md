@@ -530,3 +530,17 @@ Configure the App's selected-repository Contents write permission,
 explains setup, source branch rules, status artifacts, recovery and compatibility
 with existing paired releases. Generated release PRs and automatic staging remain
 later phases.
+
+## Protected CloudIgniter Docs delivery
+
+Docs source remains in the integrated workspace. `cloudigniter-docs` selects
+`staticAccess: "cloudigniter-developer"` and a dedicated scaffold. Run the Docs
+`build:hosting` command and review `site/public/`, `site/developer/` and their
+manifest in the private build repository. The workflow validates output and actual
+private S3/CloudFront protection before uploading. It does not publish the combined
+maintainer preview or implement a separate Docs account system.
+
+Company content uses the CloudIgniter website's template authentication and
+EmberGuard, requiring authenticated exact developer membership and allowed access.
+The website's server session/cookie-signer integration and AWS resources still
+need setup. See [Docs publishing](../../docs/company-developers/publishing/docs.mdx).

@@ -1,0 +1,46 @@
+Use case: infographic-diagram.
+Asset type: one abstract editorial infographic for the CloudIgniter company developer guide, explaining publishing strategy. Create a polished, high-resolution portrait poster, approximately 3:4 ratio. This must be an explanatory infographic image with accurate, crisply rendered text, not a screenshot or a generic decorative illustration.
+
+Art direction: clean off-white background, dark navy typography, restrained blue, teal, amber and violet accents; abstract geometric repository blocks, stacked artifact cubes, thin directional connectors, book and browser silhouettes, lock and approval symbols. Refined flat architectural illustration with subtle dimensional depth and spacious alignment. Use big readable type and generous negative space. No photos, mascots, official service logos, noisy gradients, or tiny annotations. Match a calm technical documentation aesthetic.
+
+Main title, exactly:
+"CloudIgniter"
+"Publishing strategy"
+
+Organize four numbered horizontal lanes vertically. Use consistent left-to-right arrows meaning SOURCE → REVIEW → DELIVERY. The first three lanes are enclosed together in a clearly labeled large boundary "WORKSPACE". Above them show a compact monorepo symbol labelled "Packages + templates + Docs". The fourth lane is in its own separate boundary labelled "INDEPENDENT WEBSITES". It must be unmistakable that neither website is inside the workspace.
+
+LANE 1, blue:
+Heading "01  PACKAGES".
+Source: abstract stacked package cubes labelled "packages/".
+Review: two small repository / archive blocks labelled "Source + build review", with a small "Source mirror" tag.
+Delivery: registry artifact cubes labelled "npm staging" followed by a small approval seal labelled "2FA approval".
+No claim that every package is public.
+
+LANE 2, amber:
+Heading "02  TEMPLATE".
+Source: abstract reusable application frame labelled "cloudigniter-next-aws-v1", with a small folder tag "apps/templates/".
+Review: labelled "Source mirror + export review".
+Delivery: reusable repository cards labelled "Public GitHub template". Put a small outlined "Planned delivery" badge on this delivery card.
+Show a source export, never a package archive.
+
+LANE 3, teal:
+Heading "03  DOCS".
+Source: an abstract documentation book labelled "docs/".
+Review: labelled "Source mirror + static build review".
+Delivery: a cloud/CDN boundary labelled "docs.cloudigniter.io", containing two separate content cards: "Public /" and locked "Developer /developers/". Below the locked card put "developer + EmberGuard". Every protected document and asset stays in the locked card. Do not depict an unprotected copy.
+
+LANE 4, violet, inside only the independent websites boundary:
+Heading "04  WEBSITES".
+Source: TWO separate browser/project silhouettes labelled "CloudIgniter" and "JODARIS". Small ownership labels respectively "cloudigniter-io" and "jodaris".
+Review: labelled "Own CI + build review".
+Delivery: two separate website/cloud shapes labelled "AWS websites".
+Small source-side note "No source mirroring".
+Their source/review/delivery arrows must be wholly independent of the workspace lanes.
+
+A single thin dashed connector runs FROM ONLY the CloudIgniter website's runtime TO the Docs developer access card. Label it "Shared authentication". This connector represents the CloudIgniter application template's authentication and EmberGuard checks; it does NOT transfer source files or merge website/Docs build outputs. Draw no shared authentication link from JODARIS. Fit this connector along the outer right margin, with clear arrow direction and no confusing line crossings.
+
+Footer text, exactly:
+"Solid arrows: publishing   ·   Dashed arrow: authentication"
+"AWS hosting setup remains pending"
+
+Constraints: all wording above must be spelled correctly. Use only the specified text; no extra prose. Keep the four output types and their ownership boundaries accurate. Avoid repository names so long that labels become tiny. No arrow from websites to workspace source mirrors, no arrow merging Docs into website output, no AWS credential/key imagery, no private source shown in the public template. Make the visual abstract, elegant and genuinely useful for teaching the architecture.

@@ -40,3 +40,10 @@ dev github clone jodaris-website --output=../websites/jodaris-website --profile=
 
 See [website delivery](docs/company-developers/publishing/websites.mdx) for independent
 source review, static artifact review, and the future AWS deployment setup.
+
+CloudIgniter Docs stays in this workspace and publishes at `docs.cloudigniter.io`.
+Public documentation and company developer material have separate static bundles;
+the company section uses the CloudIgniter website's template authentication and
+EmberGuard developer-role authorization. See
+[Docs publishing](docs/company-developers/publishing/docs.mdx) for the protected
+AWS workflow, output contract and remaining website/hosting setup.

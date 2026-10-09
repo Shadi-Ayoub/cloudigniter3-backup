@@ -6,9 +6,49 @@ sidebar_position: 1
 learning: false
 ---
 
+import publishingInfographic from "./assets/publishing-strategy-infographic.png";
+
 CloudIgniter development starts in the complete private **`cloudigniter-io/cloudigniter` monorepo**. A task may require changes to the application template, several packages and Docs. Keep those changes together so another developer can review the complete feature and CI can check its consumers. Company access to this private workspace is an onboarding prerequisite.
 
 This reading path explains the publishing system before you learn its command syntax or use [Publisher](/company-developers/tooling/dev/publisher). Git manages branches and commits; GitHub hosts review and CI; the [Developer Toolkit](/company-developers/tooling/dev-toolkit) prepares release requests and verified artifacts. Publisher is a local interface to that toolkit. Closing its browser or server does not cancel a GitHub PR or an Actions run.
+
+## Publishing map {#publishing-map}
+
+<figure>
+  <img
+    src={publishingInfographic}
+    alt="Four publishing paths: workspace packages, template and Docs, plus independent CloudIgniter and JODARIS websites. A dashed connection links CloudIgniter authentication to protected Docs."
+    width="1086"
+    height="1448"
+    loading="lazy"
+    decoding="async"
+    aria-describedby="publishing-map-key"
+  />
+  <figcaption>
+    Figure 1. Source ownership, reviewed outputs and publication targets. Solid
+    arrows follow publishing; the dashed connection shares authentication between
+    separately deployed CloudIgniter and Docs projects. Click the image, or focus
+    it and press Enter, to enlarge and zoom.
+  </figcaption>
+</figure>
+
+### Read the four paths {#publishing-map-key}
+
+| Path | Source boundary | Review and delivery |
+| --- | --- | --- |
+| **01 Packages** | Workspace `packages/` and managed private source mirrors | Approve versioned source and exact archives in their private build repositories, then stage npm candidates and obtain maintainer approval with 2FA. Product packages are public; the company toolkit remains restricted. |
+| **02 Template** | Workspace `apps/templates/cloudigniter-next-aws-v1` and private `source-cloudigniter-next-aws-v1` | Review the standalone export and deliver approved files to public `cloudigniter-next-aws-v1`. Required npm versions must already be available. The image marks the pending public delivery. |
+| **03 Docs** | Workspace `docs/` and its private source mirror | Review the separate public/developer static bundles and manifest in `build-cloudigniter-docs`, then deploy to `docs.cloudigniter.io`. Company pages and every related asset use `/developers/` and require authenticated developer-role access through EmberGuard. |
+| **04 Websites** | Separate `cloudigniter-io/cloudigniter-website` and `jodaris/jodaris-website` repositories | Each website runs its own CI and source/build review, then deploys its approved output to AWS. A workspace clone includes neither website; their sources are not mirrored. |
+
+Docs and the CloudIgniter website keep independent source, builds and deployments.
+The website's template authentication and EmberGuard authorize access to protected
+Docs through server endpoints routed by the Docs host. The dashed connection does
+not copy source or merge build output. JODARIS has its own publication path.
+AWS infrastructure and the website's Docs authentication endpoints still require
+setup; the separate Docs builds and protected workflow scaffold are implemented
+locally. See [Docs publishing](../docs) for the integration contract and
+[approved delivery](../approved-delivery) for the remaining automation roadmap.
 
 ## Follow the learning path
 
@@ -18,7 +58,7 @@ This reading path explains the publishing system before you learn its command sy
 4. [Release and deliver reviewed work](./release-and-delivery): distinguish source synchronization, release review, build review, npm staging and website delivery.
 5. [CI coverage and branch protection](./ci-and-protection): use the actual checks, inspect failures and configure enforcement.
 
-Then follow the operational pages for [account setup](../github-setup), [package releases](../release-packages), [template delivery](../template) or [website delivery](../websites). The [delivery roadmap](../approved-delivery) separates implemented source mirroring from later release and staging automation.
+Then follow the operational pages for [account setup](../github-setup), [package releases](../release-packages), [template delivery](../template), [Docs publishing](../docs) or [website delivery](../websites). The [delivery roadmap](../approved-delivery) separates implemented source mirroring from later release and staging automation.
 
 ## Know which repository does what
 
@@ -28,23 +68,10 @@ Then follow the operational pages for [account setup](../github-setup), [package
 | Package source repository, such as `cloudigniter-io/cloudigniter-core` | Managed downstream package source | The mirrored snapshot is tied to approved monorepo source; release approval remains separate. |
 | Package build repository, such as `cloudigniter-io/build-cloudigniter-core` | Immutable npm archives and their manifests | The exact distribution files have completed build review; they are eligible for staging. |
 | Template request and public template repositories | Private approval evidence and the public exported application | Approved template files can be delivered without exposing private monorepo history. |
-| Website source/build repositories | Website source and reviewed static output | A reviewed build is eligible for an authorized deployment. |
+| Docs source mirror and build repository | Workspace documentation source and reviewed public/protected static output | A reviewed build is eligible for deployment after its access and hosting checks pass. |
+| Independent website source/build repositories | Separately maintained website source and reviewed output | A reviewed build is eligible for an authorized deployment. |
 
 The [repository inventory](../repositories) gives every destination. `.cloudigniter/repositories.json` determines source/build routing; a local backup remote does not select a publishing destination.
-
-```mermaid
-flowchart TD
-  A[Developer changes the complete monorepo] --> B[Feature PR: CI and independent review]
-  B --> C[Protected main]
-  C --> M[Validate merged commit and synchronize private source mirrors]
-  M --> D{Delivery needed?}
-  D -->|Packages| E[Source review then verified build review]
-  E --> F[Native npm staging]
-  F --> G[npm maintainer approval with 2FA]
-  D -->|Template| H[Export, private review, public delivery]
-  D -->|Docs or website| I[Static build review then authorized deployment]
-  D -->|No distributable change| J[No publishing action]
-```
 
 ## Keep the approvals distinct
 

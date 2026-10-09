@@ -1,3 +1,4 @@
+import { useCompanyDocs } from "../../utils/docs-edition";
 import React, {
   useDeferredValue,
   useEffect,
@@ -21,6 +22,7 @@ import { GUIDE_SEARCH_OPEN_EVENT } from "./events";
 import styles from "./styles.module.css";
 
 export default function GuideSearchModal(): React.JSX.Element {
+  const companyDocs = useCompanyDocs();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const location = useLocation();
@@ -217,7 +219,7 @@ export default function GuideSearchModal(): React.JSX.Element {
               value={scope}
               onChange={(event) => setScope(event.target.value as SearchScope)}
             >
-              {Object.entries(searchScopes).map(([key, label]) => (
+              {Object.entries(searchScopes).filter(([key]) => companyDocs || !["developers", "dev", "skills", "commands"].includes(key)).map(([key, label]) => (
                 <option key={key} value={key}>
                   {label}
                 </option>

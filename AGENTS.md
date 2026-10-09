@@ -6,7 +6,7 @@ CloudIgniter is a reusable application platform composed of public API packages,
 
 Changes must preserve package ownership, dependency direction, public API boundaries, runtime separation, extensibility, and maintainability.
 
-Versioned reference applications live under `apps/templates/<template-id>`. The default is `cloudigniter-next-aws-v1`; future framework/provider versions get sibling directories and distinct package identities. The CloudIgniter and JODARIS websites are independent external repositories, excluded from pnpm workspace membership, source mirroring and monorepo CI. Repository access and website AWS delivery are managed separately.
+Versioned reference applications live under `apps/templates/<template-id>`. The default is `cloudigniter-next-aws-v1`; future framework/provider versions get sibling directories and distinct package identities. The CloudIgniter and JODARIS websites are independent external repositories, excluded from pnpm workspace membership, source mirroring and monorepo CI. Repository access and website AWS delivery are managed separately. CloudIgniter Docs remains in the monorepo and is one mixed-access site at docs.cloudigniter.io: company material requires shared template authentication and EmberGuard developer-role authorization. Publish separated public/protected bundles with the Docs hosting workflow; never expose the combined maintainer preview.
 
 ## 1. Architecture First
 

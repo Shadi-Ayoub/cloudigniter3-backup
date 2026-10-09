@@ -20,6 +20,26 @@ The navbar labels CloudIgniter Users as **User guide** and CloudIgniter Develope
 The live Skills section is available under **Resources → Skills**. These labels do not change the audience,
 source folders, plugin IDs, or routes above.
 
+## Production audience boundary
+
+Docs remains in the monorepo but shares the CloudIgniter website's template
+identity session and EmberGuard access control. Public user/API/`ci` material is
+served at `docs.cloudigniter.io/`; company developer pages, `dev` manuals,
+Developer Dictionary, Skills, private search data and all related assets use the
+protected `/developers/` namespace. Require authenticated exact developer-role
+membership and an allowed server authorization decision before delivery.
+Navigation filters and audience metadata are not access controls.
+
+Use `pnpm --filter docs build:hosting` when changing audience-sensitive configuration,
+plugins, imports, navigation, search, dictionaries or publishing. It emits two
+bundles and a manifest. Verify public output contains no private modules/metadata
+and developer links/assets remain below the gated base. Shared `docs/static/`
+files are public by definition; import company-only images and attachments from
+their private content trees so only the protected bundle emits them. Preserve the combined
+local preview for maintainers; ordinary `build` is not production payload. The
+website runtime must integrate the tested server adapter and delivery-cookie
+signer before AWS publication. Keep setup status distinct from local code checks.
+
 ## Package references by audience
 
 The internal CloudIgniter developer toolkit (`@cloudigniter/dev`, executable `dev`)

@@ -66,6 +66,8 @@ Administrators edit these JSON files through reviewed monorepo PRs. The toolkit 
 :::note Repository inventory
 `.cloudigniter/repositories.json` is the routing inventory. Packages map to their current `packages/*` directories, the guide to `docs`, and the template to `apps/templates/cloudigniter-next-aws-v1`. Template export still accepts any configured source below `apps`. The two independent websites have `sourcePath: null` because their source is outside the monorepo. They have their own checkouts, review, CI and AWS delivery. Workspace cloning and source mirroring never download or synchronize them. GitHub repository permissions determine which developers can clone each website.
 
+Docs selects `staticAccess: "cloudigniter-developer"`: public documentation and protected company material share `docs.cloudigniter.io`, using template authentication and EmberGuard. Its build repository requires separated static output; see [Docs publishing](./docs).
+
 Docs uses the project ID `cloudigniter-docs` in DEV commands and Publisher metadata. Its local folder and pnpm package are `docs`; the GitHub destinations are `cloudigniter-io/cloudigniter-docs` and `cloudigniter-io/build-cloudigniter-docs`.
 :::
 

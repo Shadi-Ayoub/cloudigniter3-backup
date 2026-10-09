@@ -1,3 +1,4 @@
+import { useCompanyDocs } from "../../utils/docs-edition";
 import React, { useDeferredValue, useEffect, useMemo, useState } from "react";
 import Layout from "@theme/Layout";
 import Link from "@docusaurus/Link";
@@ -17,6 +18,7 @@ export default function GuideSearchPage({
 }: {
   searchIndex: SearchDocument[];
 }): React.JSX.Element {
+  const companyDocs = useCompanyDocs();
   const location = useLocation();
   const history = useHistory();
   const params = new URLSearchParams(location.search);
@@ -89,7 +91,7 @@ export default function GuideSearchPage({
               updateUrl(query, event.target.value as SearchScope)
             }
           >
-            {Object.entries(searchScopes).map(([key, label]) => (
+            {Object.entries(searchScopes).filter(([key]) => companyDocs || !["developers", "dev", "skills", "commands"].includes(key)).map(([key, label]) => (
               <option key={key} value={key}>
                 {label}
               </option>

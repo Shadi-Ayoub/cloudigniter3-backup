@@ -1,0 +1,111 @@
+---
+title: Publish CloudIgniter Docs
+description: Deliver public and developer-role-protected static documentation using the CloudIgniter website's authentication and EmberGuard.
+sidebar_position: 11
+learning: false
+---
+
+CloudIgniter Docs is one website at **https://docs.cloudigniter.io**. Application documentation is public. Company developer documentation is available only to authenticated users with the exact `developer` role and an allowed EmberGuard decision. The CloudIgniter website supplies authentication through its application template; Docs does not create another identity system.
+
+## Source and delivery ownership
+
+Keep authoritative source in the monorepo's `docs/` directory beside the packages, templates and skills it documents. `cloudigniter-io/cloudigniter-docs` remains a private source mirror. Build from an approved full monorepo commit, because documentation preparation reads shared skill sources. Reviewed static output belongs in private `cloudigniter-io/build-cloudigniter-docs`; marketing source and deployment remain independent.
+
+The [publishing map](./strategy/#publishing-map) shows these separate ownership
+boundaries and the authentication connection. Docs CI builds the approved workspace
+commit; website CI builds its independent project using released CloudIgniter
+packages. At hosting time, documentation requests reach the static origins and
+`/auth/docs/*` requests reach the website backend. Publishing does not merge the
+two repositories or their build output. The website implements the authentication
+endpoints in its own project; publishing static Docs does not install the workspace
+authorization adapter into that backend.
+
+| Surface | URL | Access |
+| --- | --- | --- |
+| User guide, API Reference, user Dictionary and `ci` manuals | `docs.cloudigniter.io/` | Public |
+| Extended guide, company pages, `dev` manuals, Developer Dictionary and Skills | `docs.cloudigniter.io/developers/` | Authenticated `developer`, allowed EmberGuard policy and valid delivery grant |
+| Sign-in, callback, session renewal and logout | `docs.cloudigniter.io/auth/docs/…` | CloudIgniter website runtime; never cached |
+
+The protected build extends the public guide. Its pages, dictionaries, search index and every asset use the `/developers/` base. This avoids placing protected JavaScript chunks under the publicly served `/assets/` path. Public references into the company guide link to its protected URL; public navigation does not expose company-only tools.
+
+## Build the two static outputs
+
+Stop the local guide before clearing or rebuilding its generated state. Run:
+
+```bash
+pnpm --filter docs test:hosting
+pnpm --filter docs typecheck
+pnpm --filter docs build:hosting
+```
+
+The build prepares both editions in temporary directories and stages one checked payload:
+
+```text
+docs/build/hosting/
+├── public/
+├── developer/
+└── manifest.json
+```
+
+The manifest records the source commit, source cleanliness, access policy and each file's SHA-256 checksum. A diagnostic build from a dirty checkout is allowed locally; the deployment verifier rejects it. Commit reviewed source and rebuild before requesting production delivery. Ordinary `pnpm --filter docs build` remains a combined maintainer preview and is not deployable output. Publisher's production build uses `build:hosting`.
+
+The public build excludes company plugins, `dev` manuals, internal dictionary imports, internal search records and private page-date metadata. Developer dictionary imports are replaced with an empty module at bundling time; a browser visibility switch is not the security boundary. Shared `docs/static/` assets are public; import company-only diagrams and attachments from the company content tree so only the protected build emits them.
+
+Copy the **contents of `docs/build/hosting/`** into `site/` in the build checkout. Review both editions and the manifest together through a build-repository PR. Do not copy the ordinary `docs/build/` preview, source skills, dependencies or authentication secrets. Docs-only releases do not require npm version changes; documentation for an unreleased API follows that package's availability.
+
+## Share CloudIgniter authentication and EmberGuard
+
+The CloudIgniter marketing application will use the exported application template and released packages. Its trusted server integrates the Docs session endpoints with the template's normal authentication context and EmberGuard authorizer:
+
+1. Start the existing website sign-in flow, preserving a validated return path under the Docs developer prefix. A host-only marketing session cookie does not automatically reach the Docs subdomain; reuse the verified session through a server-validated, short-lived, single-use callback exchange rather than trusting a browser role or copying authentication tokens into URLs.
+2. Resolve the authenticated identity and active role membership on the server. Browser role flags, request JSON, unsigned cookies and email-domain checks do not establish company-developer access.
+3. Require exact `developer` membership and an allowed EmberGuard `documentation.company` / `read` decision at the authoritative company scope. Register this application-owned resource and an application role such as `docs-developer` inheriting the eligible core `developer` role, with the narrow read privilege. Map verified company developer membership to that application role while retaining the exact `developer` identity role. Do not redefine the immutable core role. Admin, system-admin and root status alone do not grant access.
+4. Issue CloudFront signed cookies limited to `https://docs.cloudigniter.io/developers/*`. Use the protected trusted key group and a server-held signing key. The grant lasts at most five minutes and never outlives the verified website session.
+5. Redirect to the protected guide. Renewal repeats authentication, active-role resolution and authorization; logout clears the Docs delivery cookies and follows the shared website session policy.
+
+`docs/hosting/authorize-session.mjs` implements the server authorization adapter. Its callbacks must close over the verified website request context: `resolveUser` returns that identity, `authorize` invokes the configured EmberGuard authorizer, and `issueAccess` signs and sets the delivery cookies. It denies anonymous/non-developer users, denied or inactive-developer decisions and invalid session lifetimes before issuing access. The adapter is server source, excluded from static bundles; it still needs wiring into the future website runtime.
+
+Serve the callback through the same Docs hostname so it can set host-only `Secure`, `HttpOnly` cookies with `Path=/developers/` and an appropriate `SameSite` policy. Prevent open redirects and login CSRF, and never cache callback, role/session status, renewal or logout responses. CloudFront validates delivery grants before serving protected HTML or assets, including cache hits. Grant expiry bounds stale access after role removal to five minutes; immediate revocation would require an additional live session check.
+
+This is production documentation access. Do not reuse the development-only tools gate or relax its environment requirement to make Docs available in production.
+
+## Provision protected static hosting
+
+Use a CloudFront distribution with three origins and these explicit behaviors:
+
+| Behavior | Origin | Required protection |
+| --- | --- | --- |
+| Default | Public-edition S3 bucket | Private bucket, signed Origin Access Control |
+| `/developers*` | Separate developer-edition S3 bucket | Trusted-key-group signed cookies, HTTPS, GET/HEAD only, signed Origin Access Control |
+| `/auth/docs/*` | CloudIgniter website runtime | HTTPS, zero caching, forwarded session cookies and callback query parameters |
+
+Upload public files at their bucket root and developer files under the second bucket's `developers/` prefix. Keep both buckets private and enable all four S3 public-access blocks. A regular S3 origin supports OAC; an S3 website endpoint does not. Configure DNS, TLS, clean-URL-to-index routing and correct 404 handling without rewriting protected requests into a public fallback. Keep developer objects browser-private with `no-store` and ensure their cache policy does not override it.
+
+CloudFront signed cookies protect a group of static files while the website server decides who may receive the grant. See [AWS signed-cookie guidance](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-signed-cookies.html) and [S3 origin protection](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html).
+
+## Generate and configure the build repository
+
+```bash
+dev github scaffold cloudigniter-docs --hosting=static --output=../build-docs-setup
+```
+
+Docs selects its own protected workflow rather than the unrestricted marketing-site uploader. Install the reviewed scaffold through a PR and configure the build repository's protected `main` and `production` environment:
+
+| Variable | Purpose |
+| --- | --- |
+| `AWS_ROLE_ARN`, `AWS_REGION` | Scoped GitHub OIDC deployment role and AWS Region |
+| `PUBLIC_SITE_BUCKET` | Public-edition private S3 bucket |
+| `DEVELOPER_SITE_BUCKET` | Separate protected-edition private S3 bucket |
+| `CLOUDFRONT_DISTRIBUTION_ID` | Docs distribution |
+| `DOCS_TRUSTED_KEY_GROUP_ID` | Key group used by the website's delivery-cookie signer |
+| `DOCS_AUTH_ORIGIN` | Hostname of the CloudIgniter website runtime origin |
+
+The role needs upload/list permissions for the two selected prefixes, invalidation for this distribution, and read access to the distribution, OAC, cache/origin-request policies and S3 public-access/policy-status settings. Signing keys belong to the website's server secret store, never static output, repository variables or browser bundles.
+
+After the output PR is approved and merged, the configured approver dispatches **Deploy reviewed mixed-access Docs** on `main`. Before uploading, the verifier checks exact output checksums, source cleanliness, role policy, separate private origins, protected behavior, trusted key group and uncached authentication forwarding. Missing or weaker protection fails. Deployment uploads the reviewed files without rebuilding with AWS credentials.
+
+## Setup status and release checks
+
+Edition builds, the access policy, authorization adapter, output verifier and protected deployment scaffold are implemented locally. Automated build-repository PR delivery, the website's server endpoint/cookie-signer integration, CloudFront resources, TLS/DNS, OIDC and remote branch/environment protections still require setup. Neither source metadata nor successful local tests proves that a deployed authentication service enforces this policy.
+
+Before the first production release, test anonymous denial, authenticated non-developer denial, developer success, expired/tampered-grant denial, logout and role removal. Check direct HTML, JavaScript chunks, dictionary definitions, search data, images and warmed CloudFront cache hits. Confirm public documentation remains accessible and direct S3 access is blocked. Retain and rehearse redeployment of the previous reviewed payload; the generated sync is not atomic and does not delete retired objects. Any previous combined preview requires an explicit private-content cleanup before public delivery.

@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { docsEdition } from "../scripts/docs-edition";
 
 type CommandReference = { name: string; url: string; source: string };
 export type CommandNode = {
@@ -14,7 +15,7 @@ export type CommandNode = {
 
 // Read the authored catalog instead of maintaining another list of commands.
 const commandsDirectory = path.resolve(__dirname, "../commands");
-const references: CommandReference[] = ["ci", "dev"]
+const references: CommandReference[] = (docsEdition() === "public" ? ["ci"] : ["ci", "dev"])
   .flatMap((family) =>
     fs
       .readdirSync(path.join(commandsDirectory, family))

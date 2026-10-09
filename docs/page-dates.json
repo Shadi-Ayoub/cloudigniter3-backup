@@ -78,8 +78,8 @@
     },
     ".agents/skills/cloudigniter-development/SKILL.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-10-08T11:36:57.159Z",
-      "contentHash": "a1b4cb32c4200195c396a429d6de6d425b89e136fb444531c41850b63eb6c23c"
+      "updatedAt": "2026-10-09T08:08:14.489Z",
+      "contentHash": "7b0bf4ca7ac69ae51c3bd6cb8a733ad093d8ef8580372af3d9cbe11b70e8eb65"
     },
     ".agents/skills/cloudigniter-development/references/architecture/access-control/administration.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -253,8 +253,8 @@
     },
     ".agents/skills/cloudigniter-development/references/authoring/testing-and-release.md": {
       "createdAt": "2026-09-21T04:55:15.915Z",
-      "updatedAt": "2026-10-05T07:50:12.694Z",
-      "contentHash": "213a7250877f0894b60b62143e0229d97872ab260cd3ff4575143a12074e4ee1"
+      "updatedAt": "2026-10-09T08:08:14.489Z",
+      "contentHash": "77591f3bf6d26235cb14881af9653d2a719625a133b7d815b5a2b841c72b53a9"
     },
     ".agents/skills/cloudigniter-development/references/authoring/validation.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -263,8 +263,8 @@
     },
     ".agents/skills/cloudigniter-development/references/cli/dev-toolkit.md": {
       "createdAt": "2026-09-21T09:00:32.398Z",
-      "updatedAt": "2026-10-08T11:36:57.159Z",
-      "contentHash": "e81668797ab8029233202a89d62b3c70b3125e7f79cb1bbfad36127129d17751"
+      "updatedAt": "2026-10-09T08:08:14.489Z",
+      "contentHash": "a66d1d763b11d4e8995b6339a239999da56f6fb336397b77ebea9411c822ecbe"
     },
     ".agents/skills/cloudigniter-development/references/cli/development-tools-and-seeding.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -278,13 +278,13 @@
     },
     ".agents/skills/cloudigniter-development/references/cli/publishing.md": {
       "createdAt": "2026-09-23T04:26:18.003Z",
-      "updatedAt": "2026-10-08T11:36:57.159Z",
-      "contentHash": "3701a4ac21aff3f9eb553f123a5b39074474e4603f2ecf27c7a75266c94b7ebf"
+      "updatedAt": "2026-10-09T08:13:38.574Z",
+      "contentHash": "557f788e2beaa556acf3de7d965c8d3f4287b4d8b976cdd0904c29f2e38c1185"
     },
     ".agents/skills/cloudigniter-guide-authoring/SKILL.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-10-05T10:16:35.491Z",
-      "contentHash": "983993568539f5e8f335fedf80b4a46656c0f8397fb647326405176394ced712"
+      "updatedAt": "2026-10-09T08:08:14.489Z",
+      "contentHash": "98ef535415ce32a78671047a861a083c1725ff0e5deabdaf7e4699ea4a7208dd"
     },
     ".agents/skills/cloudigniter-guide-authoring/references/api-reference.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -308,8 +308,8 @@
     },
     ".agents/skills/cloudigniter-guide-authoring/references/workflow-and-validation.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
-      "updatedAt": "2026-10-03T13:08:44.017Z",
-      "contentHash": "043f2d75a7064d1349f1b802a1f799d0fb1fb6845ef868d8c890abc00030af8a"
+      "updatedAt": "2026-10-09T08:16:34.284Z",
+      "contentHash": "e7effcec48a22b53cfe292835b235cea1126503ff61e54cdec93e6480ee3147c"
     },
     ".agents/skills/design-system/SKILL.md": {
       "createdAt": "2026-09-09T15:54:15.343Z",
@@ -698,8 +698,8 @@
     },
     "docs/commands/dev/github-scaffold.mdx": {
       "createdAt": "2026-09-26T15:56:48.274Z",
-      "updatedAt": "2026-09-30T10:15:00.732Z",
-      "contentHash": "22ff8ee2b0c59d18caefbab934637eb6ee9a708fbaf6c19af1d276083808e14d"
+      "updatedAt": "2026-10-09T08:08:14.489Z",
+      "contentHash": "92df4c2f718d6f6adb7cf407337264b87fe82eb87ea2e11316779efabe2d0cd3"
     },
     "docs/commands/dev/github-setup.mdx": {
       "createdAt": "2026-09-30T10:15:00.732Z",
@@ -1003,8 +1003,8 @@
     },
     "docs/company-developers/documentation/dictionaries.mdx": {
       "createdAt": "2026-09-28T04:46:15.973Z",
-      "updatedAt": "2026-10-08T06:05:45.481Z",
-      "contentHash": "f20679c0d33185051442e54d9b8d718370a7c2a5fabf239a0408d9fbac42da96"
+      "updatedAt": "2026-10-09T08:08:14.489Z",
+      "contentHash": "21a8de5f1f387ee613e4cf54da0afa90fda21fc3fb8bd42fa3eca070234b2442"
     },
     "docs/company-developers/documentation/users-guide-structure.mdx": {
       "createdAt": "2026-09-09T16:26:08.097Z",
@@ -1068,13 +1068,18 @@
     },
     "docs/company-developers/publishing/approved-delivery.mdx": {
       "createdAt": "2026-10-02T12:37:32.611Z",
-      "updatedAt": "2026-10-08T06:05:45.481Z",
-      "contentHash": "16a4bc5e2d3813b7638d54a9165aae8a2c8436ff3cc32f54256582c917cd8c4c"
+      "updatedAt": "2026-10-09T08:56:25.181Z",
+      "contentHash": "8e6bee83b7ee4b27a1f8e80e745e11380173a47aa98627c4f48c0d9297ccbf90"
+    },
+    "docs/company-developers/publishing/docs.mdx": {
+      "createdAt": "2026-10-09T08:08:14.489Z",
+      "updatedAt": "2026-10-09T08:56:25.181Z",
+      "contentHash": "1ecab5279a4a54dea94ee3c280bac453c1a76f25ce273ae34d260dbe414e050d"
     },
     "docs/company-developers/publishing/generated-files.mdx": {
       "createdAt": "2026-09-26T11:19:05.066Z",
-      "updatedAt": "2026-10-08T06:05:45.481Z",
-      "contentHash": "f239a6c96fc44a05d30459d67c501fe17e09a15b9bc59ca6f8a1266d94dbf761"
+      "updatedAt": "2026-10-09T08:08:14.489Z",
+      "contentHash": "f6b9130c1295939cded91a61521f2390d24573a441cc4704e8c8229772821a24"
     },
     "docs/company-developers/publishing/github-commands.mdx": {
       "createdAt": "2026-09-26T11:19:05.066Z",
@@ -1088,8 +1093,8 @@
     },
     "docs/company-developers/publishing/index.mdx": {
       "createdAt": "2026-09-23T04:26:18.003Z",
-      "updatedAt": "2026-10-08T11:36:57.159Z",
-      "contentHash": "ca8a43607ea4c4ade45c8bc8c9644d864395442f919618aa156ea820d55a54da"
+      "updatedAt": "2026-10-09T08:56:25.181Z",
+      "contentHash": "c5861c20bffdbbfc8a6dda6ac71fd6f70ad738de37f425b6a2af93df906ed45d"
     },
     "docs/company-developers/publishing/monorepo-pull-requests.mdx": {
       "createdAt": "2026-09-26T11:19:05.066Z",
@@ -1103,13 +1108,13 @@
     },
     "docs/company-developers/publishing/release-packages.mdx": {
       "createdAt": "2026-09-26T11:19:05.066Z",
-      "updatedAt": "2026-10-08T06:05:45.481Z",
-      "contentHash": "60c7cd6b58ac4700d1165c33d3e95bfcbf5a7b24cca457bf2b27fd5289e7eba2"
+      "updatedAt": "2026-10-09T08:56:25.181Z",
+      "contentHash": "492eebfe8605dcc9214ceded55075977f1bcbea6ff93ebaf551a9687ed320606"
     },
     "docs/company-developers/publishing/repositories.mdx": {
       "createdAt": "2026-09-26T11:19:05.066Z",
-      "updatedAt": "2026-10-08T11:36:57.159Z",
-      "contentHash": "39bdf77afc937fcace36a8c42285dfd70b778f47cbc78121caf4b5566ca9a467"
+      "updatedAt": "2026-10-09T08:08:14.489Z",
+      "contentHash": "c0735994521a6dc43a9a94b53ad3911c44beccd488c8a0f7115ee23e7b51ee9e"
     },
     "docs/company-developers/publishing/strategy/_category_.json": {
       "createdAt": "2026-10-04T14:20:12.341Z",
@@ -1118,8 +1123,8 @@
     },
     "docs/company-developers/publishing/strategy/ci-and-protection.mdx": {
       "createdAt": "2026-10-04T14:20:12.341Z",
-      "updatedAt": "2026-10-08T11:36:57.159Z",
-      "contentHash": "a67fad0270fefca7b90a6b1e27cce3f3ab2312734822b8aa41ad6d395254ca37"
+      "updatedAt": "2026-10-09T08:08:14.489Z",
+      "contentHash": "a002435b2a487bb90768e9c5cd2715a7aa003439192f67e8cabf43d3d9de1236"
     },
     "docs/company-developers/publishing/strategy/development-and-review.mdx": {
       "createdAt": "2026-10-04T14:20:12.341Z",
@@ -1133,13 +1138,13 @@
     },
     "docs/company-developers/publishing/strategy/index.mdx": {
       "createdAt": "2026-10-04T14:20:12.341Z",
-      "updatedAt": "2026-10-08T04:48:10.343Z",
-      "contentHash": "ad15427b1a2ddecf12daa536a0263bc0777f2be1b3e4996c9aa858438a4173b4"
+      "updatedAt": "2026-10-09T08:56:25.181Z",
+      "contentHash": "d2ea8dcb4e6b85d338e1534eb207577667cdcce5edaacf16a506a1e7de74ee7b"
     },
     "docs/company-developers/publishing/strategy/release-and-delivery.mdx": {
       "createdAt": "2026-10-04T14:20:12.341Z",
-      "updatedAt": "2026-10-08T06:05:45.481Z",
-      "contentHash": "25945205407352318670eb219c5981ffeb6796d5f3ef8abcb7bf41b8bdcf37cb"
+      "updatedAt": "2026-10-09T08:56:25.181Z",
+      "contentHash": "1fe62a85e31e970e4a053fb9007aaabb0192d0e3b87366610cf77b78bd56590a"
     },
     "docs/company-developers/publishing/strategy/source-mirroring.mdx": {
       "createdAt": "2026-10-04T16:18:12.482Z",
@@ -1148,13 +1153,13 @@
     },
     "docs/company-developers/publishing/template.mdx": {
       "createdAt": "2026-09-26T11:19:05.066Z",
-      "updatedAt": "2026-10-08T11:36:57.159Z",
-      "contentHash": "0995d99a17f005408469b17d6e56fd3caa7f07f7888c6d5d7e12928f7c054c77"
+      "updatedAt": "2026-10-09T08:56:25.181Z",
+      "contentHash": "18430ab3f86c90fa9668d6bd1d8978cbf6c9005e438f3f3e747338afadf482b9"
     },
     "docs/company-developers/publishing/websites.mdx": {
       "createdAt": "2026-09-26T11:19:05.066Z",
-      "updatedAt": "2026-10-08T11:36:57.159Z",
-      "contentHash": "063466752d2c5532f161730c424b9b8ab62a35e8de06a15533af64ecbfe4add8"
+      "updatedAt": "2026-10-09T08:56:25.181Z",
+      "contentHash": "0966716509779f7a53d71c05751d773f48bcb5da5ef5096b99dd828d60dd5ab9"
     },
     "docs/company-developers/routing/_category_.json": {
       "createdAt": "2026-09-09T15:54:15.343Z",

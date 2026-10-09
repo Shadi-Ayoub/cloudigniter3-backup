@@ -277,7 +277,7 @@ test("viewer links respect audience, hosted base paths, origins and invalid hash
 test("each developer catalog entry has one MDX definition and a registered viewer page", () => {
   const catalog = dictionaries[1].terms;
   const viewer = readFileSync(
-    path.join(siteDir, "src/components/DictionaryViewer/dictionaries.ts"),
+    path.join(siteDir, "src/components/DictionaryViewer/developer-dictionaries.ts"),
     "utf8"
   );
   const labels = new Set<string>();

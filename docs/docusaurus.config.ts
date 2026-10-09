@@ -6,12 +6,19 @@ import remarkCommandReferences from "./plugins/remark-command-references";
 import sidebarPageDates from "./plugins/sidebar-page-dates";
 import { prepareSkillsDocs } from "./scripts/prepare-skills-docs";
 import guideSearch from "./plugins/guide-search";
+import docsEditionPlugin from "./plugins/docs-edition";
+import { docsEdition, includesCompanyDocs } from "./scripts/docs-edition";
+import remarkProtectedLinks from "./plugins/remark-protected-links";
+import hostingPolicy from "./hosting-policy.json";
+
+const edition = docsEdition();
+const companyDocs = includesCompanyDocs(edition);
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 // Materialize a disposable view so the skills plugin never scans the rest of
 // the monorepo; the authoritative files remain outside this site.
-prepareSkillsDocs(__dirname);
+if (companyDocs) prepareSkillsDocs(__dirname);
 
 const config: Config = {
   title: "CloudIgniter Docs",
@@ -19,10 +26,14 @@ const config: Config = {
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
-  url: "https://docs.cloudigniter.io",
+  url: hostingPolicy.url,
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: "/",
+  baseUrl:
+    edition === "developer"
+      ? hostingPolicy.developerBaseUrl
+      : hostingPolicy.publicBaseUrl,
+  customFields: { docsEdition: edition },
 
   organizationName: "cloudigniter-io",
   projectName: "cloudigniter-docs",
@@ -46,7 +57,11 @@ const config: Config = {
         docs: {
           sidebarPath: "./sidebars.ts",
           sidebarItemsGenerator: sidebarPageDates,
-          remarkPlugins: [remarkCommandReferences, remarkDictionaryTerms],
+          remarkPlugins: [
+            remarkCommandReferences,
+            remarkDictionaryTerms,
+            remarkProtectedLinks,
+          ],
         },
         blog: false,
         theme: {
@@ -57,18 +72,21 @@ const config: Config = {
   ],
 
   plugins: [
+    docsEditionPlugin,
     guideSearch,
     [
       "@docusaurus/plugin-content-docs",
       {
         id: "commands",
         path: "commands",
+        ...(companyDocs ? {} : { include: ["ci/**/*.mdx"] }),
         routeBasePath: "commands",
         sidebarPath: "./commands-sidebars.ts",
         sidebarItemsGenerator: sidebarPageDates,
         remarkPlugins: [
           remarkCommandReferences,
           [remarkDictionaryTerms, { audience: "commands" }],
+          remarkProtectedLinks,
         ],
       },
     ],
@@ -79,45 +97,49 @@ const config: Config = {
         path: "dictionary",
         routeBasePath: "dictionary",
         sidebarPath: "./dictionary-sidebars.ts",
-        remarkPlugins: [remarkCommandReferences],
+        remarkPlugins: [remarkCommandReferences, remarkProtectedLinks],
       },
     ],
-    [
-      "@docusaurus/plugin-content-docs",
-      {
-        id: "developerDictionary",
-        path: "developer-dictionary",
-        routeBasePath: "developer-dictionary",
-        sidebarPath: "./developer-dictionary-sidebars.ts",
-        remarkPlugins: [remarkCommandReferences],
-      },
-    ],
-    [
-      "@docusaurus/plugin-content-docs",
-      {
-        id: "companyDevelopers",
-        path: "company-developers",
-        routeBasePath: "company-developers",
-        sidebarPath: "./company-sidebars.ts",
-        sidebarItemsGenerator: sidebarPageDates,
-        remarkPlugins: [
-          remarkCommandReferences,
-          [remarkDictionaryTerms, { audience: "developer" }],
-        ],
-      },
-    ],
-    [
-      "@docusaurus/plugin-content-docs",
-      {
-        id: "skills",
-        // This directory contains symlinks to the authoritative skill sources.
-        path: ".generated/skills",
-        routeBasePath: "skills",
-        sidebarPath: "./skills-sidebars.ts",
-        include: ["**/*.md"],
-        remarkPlugins: [remarkCommandReferences],
-      },
-    ],
+    ...(companyDocs
+      ? ([
+          [
+            "@docusaurus/plugin-content-docs",
+            {
+              id: "developerDictionary",
+              path: "developer-dictionary",
+              routeBasePath: "developer-dictionary",
+              sidebarPath: "./developer-dictionary-sidebars.ts",
+              remarkPlugins: [remarkCommandReferences, remarkProtectedLinks],
+            },
+          ],
+          [
+            "@docusaurus/plugin-content-docs",
+            {
+              id: "companyDevelopers",
+              path: "company-developers",
+              routeBasePath: "company-developers",
+              sidebarPath: "./company-sidebars.ts",
+              sidebarItemsGenerator: sidebarPageDates,
+              remarkPlugins: [
+                remarkCommandReferences,
+                [remarkDictionaryTerms, { audience: "developer" }],
+              ],
+            },
+          ],
+          [
+            "@docusaurus/plugin-content-docs",
+            {
+              id: "skills",
+              // This directory contains symlinks to the authoritative skill sources.
+              path: ".generated/skills",
+              routeBasePath: "skills",
+              sidebarPath: "./skills-sidebars.ts",
+              include: ["**/*.md"],
+              remarkPlugins: [remarkCommandReferences, remarkProtectedLinks],
+            },
+          ],
+        ] satisfies NonNullable<Config["plugins"]>)
+      : []),
   ],
 
   themeConfig: {
@@ -133,34 +155,56 @@ const config: Config = {
         {
           type: "docSidebar",
           sidebarId: "userGuideSidebar",
-          position: "left",
+          position: "left" as const,
           label: "User guide",
         },
-        {
-          type: "docSidebar",
-          docsPluginId: "companyDevelopers",
-          sidebarId: "cloudIgniterDevelopersSidebar",
-          position: "left",
-          label: "Developer guide",
-        },
+        ...(companyDocs
+          ? [
+              {
+                type: "docSidebar",
+                docsPluginId: "companyDevelopers",
+                sidebarId: "cloudIgniterDevelopersSidebar",
+                position: "left" as const,
+                label: "Developer guide",
+              },
+            ]
+          : []),
         {
           type: "docSidebar",
           sidebarId: "apiReferenceSidebar",
-          position: "left",
+          position: "left" as const,
           label: "API Reference",
         },
         {
           type: "docSidebar",
           docsPluginId: "commands",
           sidebarId: "commandsSidebar",
-          position: "left",
+          position: "left" as const,
           label: "CloudIgniter Commands",
         },
         { type: "search", position: "right" },
+        ...(edition === "public"
+          ? [
+              {
+                label: "Sign in",
+                href: `${hostingPolicy.url}/auth/docs/login`,
+                position: "right" as const,
+              },
+            ]
+          : []),
+        ...(edition === "developer"
+          ? [
+              {
+                label: "Sign out",
+                href: `${hostingPolicy.url}/auth/docs/logout`,
+                position: "right" as const,
+              },
+            ]
+          : []),
         {
           type: "dropdown",
           label: "Dictionary",
-          position: "right",
+          position: "right" as const,
           items: [
             {
               type: "custom-dictionaryViewer",
@@ -168,27 +212,35 @@ const config: Config = {
               label: "Dictionary",
               to: "/dictionary",
             },
-            {
-              type: "custom-dictionaryViewer",
-              dictionary: "developer",
-              label: "Developer Dictionary",
-              to: "/developer-dictionary",
-            },
+            ...(companyDocs
+              ? [
+                  {
+                    type: "custom-dictionaryViewer",
+                    dictionary: "developer",
+                    label: "Developer Dictionary",
+                    to: "/developer-dictionary",
+                  },
+                ]
+              : []),
           ],
         },
-        {
-          type: "dropdown",
-          label: "Resources",
-          position: "right",
-          items: [
-            {
-              type: "doc",
-              docsPluginId: "skills",
-              docId: "agents/skills/banner-design/SKILL",
-              label: "Skills",
-            },
-          ],
-        },
+        ...(companyDocs
+          ? [
+              {
+                type: "dropdown",
+                label: "Resources",
+                position: "right" as const,
+                items: [
+                  {
+                    type: "doc",
+                    docsPluginId: "skills",
+                    docId: "agents/skills/banner-design/SKILL",
+                    label: "Skills",
+                  },
+                ],
+              },
+            ]
+          : []),
       ],
     },
     footer: {
@@ -198,30 +250,43 @@ const config: Config = {
           title: "Guides",
           items: [
             { label: "CloudIgniter Users", to: "/docs/intro" },
-            {
-              label: "CloudIgniter Developers",
-              to: "/company-developers/architecture/core-custom-ownership",
-            },
+            ...(companyDocs
+              ? [
+                  {
+                    label: "CloudIgniter Developers",
+                    to: "/company-developers/architecture/core-custom-ownership",
+                  },
+                ]
+              : []),
           ],
         },
         {
           title: "Reference",
           items: [
             { label: "API Reference", to: "/docs/api-reference/overview" },
-            { label: "CloudIgniter Commands", to: "/commands" },
-            { label: "Dictionary", to: "/dictionary" },
-            { label: "Developer Dictionary", to: "/developer-dictionary" },
-          ],
-        },
-        {
-          title: "Resources",
-          items: [
             {
-              label: "Skills",
-              to: "/skills/agents/skills/banner-design/SKILL",
+              label: "CloudIgniter Commands",
+              to: companyDocs ? "/commands" : "/commands/ci",
             },
+            { label: "Dictionary", to: "/dictionary" },
+            ...(companyDocs
+              ? [{ label: "Developer Dictionary", to: "/developer-dictionary" }]
+              : []),
           ],
         },
+        ...(companyDocs
+          ? [
+              {
+                title: "Resources",
+                items: [
+                  {
+                    label: "Skills",
+                    to: "/skills/agents/skills/banner-design/SKILL",
+                  },
+                ],
+              },
+            ]
+          : []),
       ],
       copyright: `© ${new Date().getFullYear()} CloudIgniter. Documentation for builders and maintainers.`,
     },

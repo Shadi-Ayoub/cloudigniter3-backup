@@ -50,6 +50,20 @@ Do not load every reference by default. Select the smallest set that fully cover
 
 Keep connected packages, templates and Docs in the monorepo. Versioned templates live under `apps/templates/<template-id>`; the current reference is `cloudigniter-next-aws-v1`. Keep both formal websites in separate, explicitly selected external checkouts with null inventory source paths and independent permissions. Their source/build pairs are `cloudigniter-io/cloudigniter-website` / `cloudigniter-io/build-cloudigniter-website` and `jodaris/jodaris-website` / `jodaris/build-jodaris-website`. Never source-mirror them; read the publishing reference for their independent CI and AWS delivery workflow.
 
+## Docs access and static publication
+
+CloudIgniter Docs stays in the integrated monorepo but is one mixed-access website
+at `docs.cloudigniter.io`. Use the CloudIgniter website's template authentication
+and EmberGuard; do not introduce a separate Docs identity provider. Company pages,
+`dev` manuals, Developer Dictionary and Skills require an authenticated identity,
+exact `developer` membership and allowed `documentation.company/read` access.
+The public build excludes those modules and assets; the extended static build uses
+`/developers/` for every page and asset. Use `build:hosting` and its manifest with
+the protected scaffold, never the combined maintainer preview. Read the publishing
+reference for the website session adapter, signed-cookie delivery, setup status and
+live hosting verifier. Production Docs access does not relax development-only
+platform tooling gates.
+
 ## Core principles
 
 1. Do not equate the requested file with the implementation owner.

@@ -71,7 +71,8 @@
       "sourceRepository": "cloudigniter-io/cloudigniter-docs",
       "buildRepository": "cloudigniter-io/build-cloudigniter-docs",
       "buildVisibility": "private",
-      "delivery": "aws"
+      "delivery": "aws",
+      "staticAccess": "cloudigniter-developer"
     },
     "cloudigniter-next-aws-v1": {
       "type": "template",

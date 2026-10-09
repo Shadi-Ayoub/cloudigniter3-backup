@@ -105,7 +105,7 @@ destinations, explicit exclusions, question uniqueness, and required key answers
 $ pnpm build
 ```
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
+This command generates a combined local maintainer preview in `build/`. It includes company-only content and is not the production publishing payload. Run `pnpm build:hosting` for separated public/protected output in `build/hosting/`; `build:prod` and Publisher production builds use that workflow.
 
 ### Deployment
 
@@ -113,10 +113,11 @@ The configured production/canonical host is `https://docs.cloudigniter.io` for
 the upcoming docs site. Navbar home links stay relative to this guide. Setting
 this URL does not provision DNS or publish the site.
 
-The source repository is `cloudigniter-io/cloudigniter-docs`; reviewed build
-artifacts target `cloudigniter-io/build-cloudigniter-docs`. Follow the
-[website publishing workflow](company-developers/publishing/websites.mdx) for
-review requests and AWS hosting. Docusaurus's generic `deploy` command is not the
+Authoritative source stays in this monorepo; `cloudigniter-io/cloudigniter-docs`
+is its private source mirror. Reviewed build artifacts target
+`cloudigniter-io/build-cloudigniter-docs`. Follow the
+[Docs publishing workflow](company-developers/publishing/docs.mdx) for output
+review, shared CloudIgniter authentication, EmberGuard authorization and AWS hosting. Docusaurus's generic `deploy` command is not the
 CloudIgniter publishing workflow.
 
 The starter blog is disabled and its sample posts are removed. **Resources**
@@ -196,7 +197,7 @@ navigation. Hiding links alone cannot protect a statically shipped document or
 search record. Decide whether public feedback remains anonymous at that point;
 the alert-only preview does not require authentication.
 
-### Two dictionaries and the future Docs editions
+### Docs audiences and protected delivery
 
 The blue user **Dictionary** remains at `/dictionary`. The green **Developer
 Dictionary** at `/developer-dictionary` covers company-only terminology and the
@@ -210,7 +211,8 @@ the page's previous scrolling styles and scrollbar gutter.
 
 `dictionary-terms.ts` and `developer-dictionary-terms.ts` own the term
 catalogs. Letter content lives in `dictionary/` and `developer-dictionary/`;
-register new letter imports in `src/components/DictionaryViewer/dictionaries.ts`.
+register user letter imports in `src/components/DictionaryViewer/dictionaries.ts`
+and company letter imports in `developer-dictionaries.ts`.
 `dictionary-catalog.ts` shares sorting and sidebar construction. Contributor pages
 and dev command manuals auto-link internal terms; public pages use only the user
 catalog. Both dictionaries are excluded from general search and feedback and
@@ -228,9 +230,23 @@ abbreviations match case-sensitively to preserve the lowercase `ci` executable.
 Write the platform's name as CloudIgniter; preserve literal public identifiers,
 commands, historical import paths, and persisted `CI#` key syntax.
 
-The planned Users edition is the default; the Developers edition extends it.
-This phase keeps both tools in the existing maintainer preview. The preview
-ships developer routes, catalogs, and lazy definition chunks without access
-control. Audience metadata is classification only. The later publishing strategy
-must exclude all internal content/assets from public output and protect delivery
-of the developer edition. See `company-developers/documentation/dictionaries.mdx`.
+The public edition is the default production surface at `docs.cloudigniter.io`.
+The extended developer edition lives under `/developers/` on that same hostname.
+Company pages, `dev` manuals, Developer Dictionary and Skills require a verified
+CloudIgniter template session, exact `developer` membership and an allowed
+EmberGuard `documentation.company/read` decision. There is no separate Docs
+identity system. See `hosting-policy.json` and the Docs publishing guide.
+
+`build:hosting` creates two static bundles and a checksum manifest. Public output
+excludes internal routes, catalog/definition imports, search entries and page-date
+metadata; a compiler boundary rejects company modules in the public graph.
+The developer bundle includes the user material, with all assets under its gated
+base path. Source audience markers classify content; CloudFront signed cookies
+protect its delivery before HTML or assets are served.
+
+The local maintainer preview intentionally includes everything without production
+authentication. Keep it on loopback. The server-only authorization adapter and
+protected deployment scaffold are implemented; the future CloudIgniter website
+must wire session endpoints and cookie signing, and AWS resources remain to be
+configured. Do not deploy the combined preview. See
+`company-developers/documentation/dictionaries.mdx`.

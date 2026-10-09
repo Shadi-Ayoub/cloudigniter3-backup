@@ -22,6 +22,9 @@ learning:
 
 Private template source and review requests use `cloudigniter-io/source-cloudigniter-next-aws-v1`. Approved public output goes to `cloudigniter-io/cloudigniter-next-aws-v1`. The public repository’s **Template repository** setting lets customers create their own repository from it.
 
+The [publishing map](./strategy/#publishing-map) shows this workspace-owned export
+alongside package releases, Docs and the independent website projects.
+
 The developer requests approval; the approver delivers reviewed bytes. Both repositories need an initialized `main` branch. Grant the approver the required publication access. Public branch rules must permit this approved direct fast-forward delivery; a rule requiring a PR for every public update would block this implementation.
 
 ## Prepare the export
@@ -68,4 +71,3 @@ Delivery preserves public `.github` governance and files not owned by the export
 If you used `--policy`, `--name` or `--package-version` during export, repeat the same selections when checking and requesting publication. Those selections are recorded for delivery. A new file selection or byte change needs new review.
 
 This publication updates the public branch. It creates neither an npm version nor a GitHub Release object.
-

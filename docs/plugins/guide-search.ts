@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import type { LoadContext, Plugin } from "@docusaurus/types";
 import type { LoadedContent } from "@docusaurus/plugin-content-docs";
+import { docsEdition } from "../scripts/docs-edition";
 import { searchableText, type SearchDocument } from "../src/utils/guide-search";
 
 /** Use Docusaurus permalinks so slugs and a future host baseUrl stay correct. */
@@ -39,6 +40,7 @@ export default function guideSearch(
                     : doc.id.startsWith("api-reference/")
                       ? "api"
                       : "users";
+            if (docsEdition() === "public" && ["developers", "dev", "skills"].includes(scope)) continue;
             documents.push({
               title: doc.title,
               description: doc.description,

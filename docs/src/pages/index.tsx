@@ -3,10 +3,12 @@ import Layout from "@theme/Layout";
 import Heading from "@theme/Heading";
 import { ArrowRight, BookOpen, Braces } from "lucide-react";
 import type { ReactElement } from "react";
+import { useCompanyDocs } from "../utils/docs-edition";
 import HomepageFeatures from "../components/HomepageFeatures";
 import styles from "./index.module.css";
 
 export default function Home(): ReactElement {
+  const companyDocs = useCompanyDocs();
   return (
     <Layout
       title="Documentation"
@@ -57,14 +59,21 @@ export default function Home(): ReactElement {
               <BookOpen size={18} aria-hidden="true" /> Dictionary{" "}
               <ArrowRight size={16} aria-hidden="true" />
             </Link>
-            <Link to="/developer-dictionary" className="developer-dictionary-link">
-              <BookOpen size={18} aria-hidden="true" /> Developer Dictionary{" "}
-              <ArrowRight size={16} aria-hidden="true" />
-            </Link>
-            <Link to="/skills/agents/skills/banner-design/SKILL">
-              <Braces size={18} aria-hidden="true" /> Skills{" "}
-              <ArrowRight size={16} aria-hidden="true" />
-            </Link>
+            {companyDocs && (
+              <>
+                <Link
+                  to="/developer-dictionary"
+                  className="developer-dictionary-link"
+                >
+                  <BookOpen size={18} aria-hidden="true" /> Developer Dictionary{" "}
+                  <ArrowRight size={16} aria-hidden="true" />
+                </Link>
+                <Link to="/skills/agents/skills/banner-design/SKILL">
+                  <Braces size={18} aria-hidden="true" /> Skills{" "}
+                  <ArrowRight size={16} aria-hidden="true" />
+                </Link>
+              </>
+            )}
           </div>
         </section>
       </main>

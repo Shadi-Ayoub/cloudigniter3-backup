@@ -91,7 +91,7 @@ Paths below are relative to the repository root:
 | `packages/dev/src/source-mirror.mjs` and `source-mirror-git.mjs` | Exact merged-PR/check verification and inventory-based private source synchronization. |
 | `packages/dev/src/paired-releases.mjs` | Versioned source snapshots and approval/hash verification. |
 | `packages/dev/src/build-repositories.mjs` | Immutable archive PRs and workflow scaffolding. |
-| `packages/dev/src/ci/` | Standalone npm verifier and static AWS workflow template. |
+| `packages/dev/src/ci/` | Standalone npm verifier, marketing AWS workflow and protected Docs artifact/hosting verifier and workflow. |
 | `packages/dev/src/github-policy.mjs` | Non-secret repository routing and account allowlists. |
 | `packages/dev/src/template-publish.mjs` | Private template requests, independent approval verification and public-only delivery. |
 | `packages/dev/src/npm-staging.mjs` | Reviewed versions, verified archives and native npm staging. |

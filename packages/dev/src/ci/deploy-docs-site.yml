@@ -1,0 +1,43 @@
+name: Deploy reviewed mixed-access Docs
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: docs-production
+  cancel-in-progress: false
+jobs:
+  deploy:
+    if: github.repository == '__REPOSITORY__' && github.ref == 'refs/heads/__BASE__' && (__APPROVERS__)
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      PUBLIC_SITE_BUCKET: ${{ vars.PUBLIC_SITE_BUCKET }}
+      DEVELOPER_SITE_BUCKET: ${{ vars.DEVELOPER_SITE_BUCKET }}
+      DOCS_TRUSTED_KEY_GROUP_ID: ${{ vars.DOCS_TRUSTED_KEY_GROUP_ID }}
+      DOCS_AUTH_ORIGIN: ${{ vars.DOCS_AUTH_ORIGIN }}
+      CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify both reviewed editions and access manifest
+        run: node .github/scripts/verify-docs-site.mjs --files
+      - uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Verify live private origins and protected CloudFront behavior
+        run: node .github/scripts/verify-docs-site.mjs --hosting
+      - name: Upload reviewed public and developer files to separate origins
+        run: |
+          aws s3 sync site/public/ "s3://$PUBLIC_SITE_BUCKET/" --no-follow-symlinks
+          aws s3 sync site/developer/ "s3://$DEVELOPER_SITE_BUCKET/developers/" --no-follow-symlinks --cache-control 'private, no-store'
+          aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" --paths '/*'

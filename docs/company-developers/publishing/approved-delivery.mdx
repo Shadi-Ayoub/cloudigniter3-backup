@@ -28,11 +28,17 @@ learning:
       answer: "Independent Docs output can proceed when its own approval and output checks pass without a package-release dependency. A template that consumes newly released npm packages must wait until every required version is actually available, rather than treating staging or approval as publication."
 ---
 
+import deliveryInfographic from "./assets/approved-delivery-infographic.png";
+
 :::note Implementation status
 The [source-mirroring workflow](./strategy/source-mirroring) implements post-merge private source synchronization after approval and merged-commit validation. It requires an installed and configured company App. The remaining sections describe the target architecture for automated release delivery. The generated release PR, delivery coordinator, automated staging authorization and Publisher tracking described here still require implementation. The [current package release workflow](./release-packages) continues to use separate source/build requests and reviewer-triggered staging.
 :::
 
 ## Delivery at a glance {#delivery-overview}
+
+The [publishing map](./strategy/#publishing-map) compares package, template, Docs
+and independent website outputs. The illustration below expands the monorepo
+automation roadmap and its approval stages.
 
 Use **Figure 1** as a map while reading this tutorial. Follow **A → B → C** for
 an approved feature and its source mirrors. When packages need a release, follow
@@ -41,7 +47,7 @@ gate at **H**. **I** observes the delivery; it does not authorize publication.
 
 <figure>
   <img
-    src="/img/publishing/approved-delivery-infographic.png"
+    src={deliveryInfographic}
     alt="CloudIgniter approved delivery: illustrated stages A–I"
     width="1086"
     height="1448"
@@ -208,7 +214,7 @@ or website change can proceed after its own validation and hosting checks.
 
 A template's public repository is a usable application source export, not an npm package or a `.next` build folder. Update approved per-package versions in template export policy and validate the standalone dependency/lockfile result. Preserve the public repository's independent history and exclude private DEV, credentials and internal workspace files.
 
-Docs builds need an explicit audience/export boundary before public delivery. The current maintainer guide includes company-developer and rendered skill content; an ordinary full guide build is not proof that its contents are intended for public hosting. Deploy the selected audience's verified output. Independent doc changes need no artificial npm bump, while documentation that requires a new package API should follow that release.
+Docs uses `build:hosting` to prepare public and developer static output together. The company section, dictionaries, search and assets live under a protected prefix on `docs.cloudigniter.io`; the CloudIgniter website supplies template authentication and EmberGuard developer-role authorization. Review both bundles and their manifest, then use the protected deployment scaffold. The combined maintainer preview is not deployable output. Automated artifact handoff, website session integration and remote AWS setup remain separate work. Independent doc changes need no artificial npm bump, while documentation for a new package API follows that release. See [Docs publishing](./docs).
 
 ## Publisher presentation
 

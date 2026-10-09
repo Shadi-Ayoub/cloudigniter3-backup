@@ -3,6 +3,18 @@
   "label": "Docs",
   "kind": "docs",
   "project": "cloudigniter-docs",
-  "buildDirectories": ["build"],
-  "staticHosting": true
+  "buildDirectories": [
+    "build/hosting"
+  ],
+  "staticHosting": true,
+  "commands": {
+    "build": {
+      "label": "Build public and protected Docs",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "build:hosting"
+      ]
+    }
+  }
 }

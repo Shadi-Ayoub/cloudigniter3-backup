@@ -127,8 +127,9 @@ commands retain their existing approval contracts.
   per-target receipts and partial states; serialize release preparation/delivery,
   reconcile uncertain staging and never overwrite immutable versions on retry.
 - Public template export waits for required registry versions and preserves
-  public-only history. Docs/sites need verified hosting-specific artifacts; define
-  public versus internal guide audience before deploying the full maintainer build.
+  public-only history. Docs uses separated public/developer output and shared
+  website template authentication plus EmberGuard; formal sites retain independent
+  hosting contracts. Never deploy the combined maintainer guide as public output.
 - Publisher remains a local interface to shared DEV services. Proposed integrated
   change/release tracking loads remote evidence and continues after browser closure.
 - Version policy/metadata explicitly for the new approval model. Preserve legacy
@@ -225,6 +226,66 @@ remain explicit setup requirements. Verify official docs when these contracts ch
 - Identical delivery can reuse the existing tree. Races/partial failures need
   inspection and retry, not force pushes or guessed success. This updates a branch;
   it does not create GitHub Release objects or npm versions.
+
+## CloudIgniter Docs: mixed-access static delivery
+
+Docs is one website at `https://docs.cloudigniter.io`, with public user/API/`ci`
+material at `/` and extended company material at `/developers/`. Authentication
+comes from the CloudIgniter website's application template and authorization from
+EmberGuard. Never add a parallel Docs account system or use a Cognito group alone
+as the complete authorization policy.
+
+Require the server-resolved authenticated identity, exact active `developer`
+membership and allowed `documentation.company/read` decision. Admin/root roles
+alone do not substitute. Register the resource and a narrow application role inheriting core `developer`
+in the website's custom catalog at the company scope. Map verified developer
+membership to it while retaining exact developer identity membership; never
+redefine the immutable core role. This works in
+production; do not relax or reuse development-only tool gates.
+
+`docs/hosting-policy.json` defines this contract. `build:hosting` uses the full
+monorepo to stage `build/hosting/public`, `developer` and `manifest.json`.
+`build:prod`/Publisher production builds use it. Ordinary `build` remains a local
+combined preview. Exclude internal plugin routes, `dev` manuals, private dictionary
+imports/chunks, search and page-date metadata from the public graph; compiler
+checks must reject private sources even if no private route exists. Keep every
+extended-page/asset URL below the gated base. Never copy a combined preview to a
+public bucket.
+
+`docs/hosting/authorize-session.mjs` is the tested server integration adapter,
+excluded from browser bundles. Its injected callbacks use the website's verified
+request identity and EmberGuard authorizer, then sign host-only Secure/HttpOnly
+CloudFront cookies limited to the Docs developer prefix. Grants are capped at
+five minutes and the actual template session expiry; renewal repeats authority
+checks. Logout clears delivery cookies. Signed-cookie expiry bounds stale access;
+it is not immediate role/session revocation. Client role flags are presentation.
+
+Inventory `staticAccess: "cloudigniter-developer"` selects the protected Docs
+scaffold; the canonical Docs project cannot downgrade to public website delivery.
+Review both bundles and their checksums in `build-cloudigniter-docs/site/`.
+Verifier code uses Node built-ins and performs no installs/rebuilds. It rejects
+source-dirty artifacts, altered/extra files, symlinks, shared/public S3 origins,
+missing signed-cookie key groups, insecure methods and cached auth responses.
+It reads actual AWS distribution/OAC/cache/origin-request/S3 protection settings
+before upload. The supported distribution has separate public/developer S3
+origins and a CloudIgniter runtime origin for `/auth/docs/*` callbacks; all
+`/developers*` requests require the trusted key group, HTTPS and GET/HEAD only.
+
+Configure AWS_ROLE_ARN, AWS_REGION, PUBLIC_SITE_BUCKET, DEVELOPER_SITE_BUCKET,
+CLOUDFRONT_DISTRIBUTION_ID, DOCS_TRUSTED_KEY_GROUP_ID and DOCS_AUTH_ORIGIN. Both
+buckets are private with all public-access blocks; developer objects upload under
+`developers/` with browser no-store. Auth callbacks must disable caching and
+forward authoritative session inputs. Keep signing keys only in website server
+secrets. Do not let routing, error fallback, earlier behaviors or alternate
+origins bypass protection. Old combined output requires explicit cleanup.
+
+Build partitioning, adapter and deployment verification are implemented locally.
+The future website still needs its server endpoints, signer/role-resource wiring,
+and AWS/OIDC/DNS/TLS resources. Scaffold generation does not implement that backend
+or provision hosting. Automated build-repository artifact handoff remains planned.
+Verify anonymous/non-developer denial, allowed developer access, expiry/tampering,
+logout, role removal and cached/direct assets after setup. No local result proves
+live enforcement. See the owning guide `publishing/docs.mdx`.
 
 ## Website build repositories
 

@@ -20,7 +20,10 @@ learning:
 
 ## The website delivery contract
 
-The developer guide is a static Docusaurus website. Its private source destination is `cloudigniter-io/cloudigniter-docs`, and its reviewed build destination is `cloudigniter-io/build-cloudigniter-docs`. Build output is committed under `site/` in that build repository, then deployed to S3 and served through CloudFront.
+CloudIgniter Docs is a static website with public and authenticated company-developer material at `docs.cloudigniter.io`. It stays in the monorepo, uses CloudIgniter template authentication and EmberGuard, and has its own protected output workflow. Follow [Publish CloudIgniter Docs](./docs) for its build, access policy and AWS configuration. The unrestricted `site/index.html` workflow below applies to the two marketing websites.
+
+The [publishing map](./strategy/#publishing-map) shows the independent website
+path and the shared-authentication connection between CloudIgniter and Docs.
 
 The formal websites are independent private source/build pairs:
 
@@ -61,7 +64,6 @@ The static scaffold supports both formal websites because they currently stage `
 ## Generate and install the deployment scaffold
 
 ```bash
-dev github scaffold cloudigniter-docs --hosting=static --output=../build-guide-setup
 dev github scaffold cloudigniter-website --hosting=static --output=../build-cloudigniter-setup
 dev github scaffold jodaris-website --hosting=static --output=../build-jodaris-setup
 ```
@@ -70,24 +72,22 @@ The project ID selects the guide’s configured source/build pair. `--hosting=st
 
 The approver reviews and commits those files at the build repository root, then configures its protected `main` branch and `production` environment. The scaffold itself creates no GitHub or AWS resources.
 
-## Build and request output review
+## Request website output review
+
+Build and check the selected marketing website in its independent source checkout,
+then copy its `dist/` contents into `site/` of the matching build checkout. Record
+the exact source commit, CI results and artifact hash. Commit a feature branch,
+push it and request output review with that website's project ID:
 
 ```bash
-pnpm --filter docs typecheck
-pnpm --filter docs build
+dev github pr create --project=cloudigniter-website --repository-kind=build \
+  --head=website/update --title="Update the CloudIgniter website" \
+  --body-file=/tmp/website-build-pr.md --profile=developer
 ```
 
-The guide currently retains its package-owned commands; `dev package` targets company npm packages and does not wrap Docusaurus. `typecheck` checks the guide’s TypeScript. `build` runs the guide/date checks, clears generated metadata and builds the static website. Follow the guide’s authoring lifecycle and stop its development server before these cache-clearing operations.
-
-Copy the **contents** of `docs/build/` into `site/` in a separate build-repository checkout. Do not copy source secrets, dependencies or private local data. Commit the output to a feature branch and push it with Git. Record the source integration commit, build command/results and relevant content changes in the PR description.
-
-```bash
-dev github pr create --project=cloudigniter-docs --repository-kind=build \
-  --head=website/guide-update --title="Update the developer guide" \
-  --body-file=/tmp/guide-build-pr.md --profile=developer
-```
-
-The head branch must already exist remotely and the description file must exist locally. This opens the output-review PR and requests the configured reviewer. Review and merge through the [standard PR commands](./github-commands), retaining `--repository-kind=build`.
+The branch and description file must already exist. Review and merge through the
+[standard PR commands](./github-commands), retaining `--repository-kind=build`.
+For Docs, use the separated `build:hosting` payload and [protected workflow](./docs).
 
 ## Configure AWS once per website
 
@@ -115,8 +115,8 @@ As `jodaris`, open **Actions → Deploy reviewed static website → Run workflow
 The job checks the exact repository, protected branch, original/rerun approver, required settings and `site/index.html`. It rejects symlinks, assumes the AWS role, syncs the committed static files and invalidates CloudFront. It does not rebuild with production credentials.
 
 ```bash
-dev github run list --project=cloudigniter-docs --repository-kind=build --profile=approver
-dev github run view --project=cloudigniter-docs --repository-kind=build \
+dev github run list --project=cloudigniter-website --repository-kind=build --profile=approver
+dev github run view --project=cloudigniter-website --repository-kind=build \
   --run-id=123456789 --profile=approver
 ```
 

@@ -13,6 +13,10 @@ A normal change starts in the complete private monorepo, where packages, the tem
 
 **Start with [Understand the publishing strategy](/company-developers/publishing/strategy).** Its learning path explains GitHub Actions, integrated development and review, source/build approvals, delivery scenarios, CI coverage and branch protection before the command and Publisher instructions.
 
+Its [publishing map](/company-developers/publishing/strategy#publishing-map)
+illustrates the four delivery paths and the source boundaries between the
+workspace and the independently maintained websites.
+
 The [approved monorepo delivery design](../publishing/approved-delivery) defines the next workflow: approved integrated changes authorize source mirrors, a generated release PR establishes versions, and CI delivers verified builds to native npm staging. That automation is proposed; the operational pages below describe the current source/build review commands.
 
 ## Read this section by responsibility
@@ -29,6 +33,7 @@ The [approved monorepo delivery design](../publishing/approved-delivery) defines
 | [npm setup and access](../publishing/npm-setup) | Organization access, restricted tooling, first publication and stage-only trusted publishers. |
 | [Release packages](../publishing/release-packages) | From a version proposal to approved source, verified archives, build review and final npm approval. |
 | [Publish the template](../publishing/template) | Export, private approval and delivery of reviewed files to the public template repository. |
+| [Publish CloudIgniter Docs](../publishing/docs) | Public and protected static builds, shared template authentication, EmberGuard and AWS delivery. |
 | [Publish websites](../publishing/websites) | Static builds, generated deployment files and the AWS environment required to host them. |
 
 ## Use dev as the entry point

@@ -3,7 +3,7 @@ export function ciIsRecord(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-/** @typedef {{type: 'package'|'website'|'template', package?: string, sourcePath: string|null, sourceRepository: string|null, buildRepository: string, buildVisibility: 'public'|'private', delivery: 'npm'|'aws'|'github'}} CiRepositoryProject */
+/** @typedef {{type: 'package'|'website'|'template', package?: string, sourcePath: string|null, sourceRepository: string|null, buildRepository: string, buildVisibility: 'public'|'private', delivery: 'npm'|'aws'|'github', staticAccess?: 'public'|'cloudigniter-developer'}} CiRepositoryProject */
 
 /** @param {unknown} raw */
 export function ciValidateRepositories(raw) {
@@ -37,6 +37,7 @@ export function ciValidateRepositories(raw) {
             "buildRepository",
             "buildVisibility",
             "delivery",
+            "staticAccess",
           ].includes(key),
       ) ||
       !["package", "website", "template"].includes(String(item.type))
@@ -97,6 +98,10 @@ export function ciValidateRepositories(raw) {
       throw new Error(
         "Website and template delivery/visibility settings are inconsistent.",
       );
+    if (item.staticAccess !== undefined && (item.type !== "website" || !["public", "cloudigniter-developer"].includes(String(item.staticAccess)))) {
+      throw new Error("staticAccess must select public or CloudIgniter developer-gated website delivery.");
+    }
+    if (id === "cloudigniter-docs" && item.staticAccess === "public") throw new Error("CloudIgniter Docs cannot use unrestricted website delivery.");
     // Values above are validated together; construct the discriminants explicitly.
     projects[id] = {
       type:
@@ -112,6 +117,7 @@ export function ciValidateRepositories(raw) {
           ? item.sourceRepository
           : null,
       buildRepository: String(item.buildRepository),
+      ...(item.staticAccess === "public" || item.staticAccess === "cloudigniter-developer" ? { staticAccess: item.staticAccess } : {}),
       buildVisibility: item.buildVisibility === "public" ? "public" : "private",
       delivery:
         item.delivery === "npm"

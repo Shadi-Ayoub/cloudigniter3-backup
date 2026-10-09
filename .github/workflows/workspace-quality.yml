@@ -54,5 +54,6 @@ jobs:
       - run: pnpm --filter docs test:dictionary
       - run: pnpm --filter docs test:command-references
       - run: pnpm --filter docs test:search
+      - run: pnpm --filter docs test:hosting
       - run: pnpm --filter docs typecheck
-      - run: pnpm --filter docs build
+      - run: pnpm --filter docs build:hosting

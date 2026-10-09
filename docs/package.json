@@ -21,7 +21,10 @@
     "guide:check": "node scripts/check-user-guide.mjs && node scripts/check-commands.mjs && node scripts/check-learning-content.mjs",
     "test:search": "node --import tsx --test scripts/guide-search.test.ts",
     "test:command-references": "node --import tsx --test scripts/command-references.test.ts",
-    "test:dictionary": "node --import tsx --test scripts/dictionary.test.ts"
+    "test:dictionary": "node --import tsx --test scripts/dictionary.test.ts",
+    "build:hosting": "pnpm guide:check && pnpm dates:check && node scripts/build-hosting.mjs",
+    "build:prod": "pnpm build:hosting",
+    "test:hosting": "node --test scripts/hosting.test.mjs && node --import tsx --test scripts/editions.test.ts"
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.2",

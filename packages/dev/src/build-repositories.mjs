@@ -272,8 +272,9 @@ export async function ciScaffoldBuildRepository(
   )
     throw new CiDevUsageError("Scaffold outside the integration workspace.");
   if (project.type === "website") {
+    const protectedDocs = id === "cloudigniter-docs" || project.staticAccess === "cloudigniter-developer";
     const template = await readFile(
-      fileURLToPath(new URL("./ci/deploy-static-site.yml", import.meta.url)),
+      fileURLToPath(new URL(protectedDocs ? "./ci/deploy-docs-site.yml" : "./ci/deploy-static-site.yml", import.meta.url)),
       "utf8"
     );
     const approvers = policy.reviewers.filter((name) => !name.includes("/"));
@@ -301,6 +302,14 @@ export async function ciScaffoldBuildRepository(
       path.join(output, ".github/CODEOWNERS"),
       `* ${approvers.map((name) => `@${name}`).join(" ")}\n`
     );
+    if (protectedDocs) {
+      await mkdir(path.join(output, ".github/scripts"));
+      for (const name of ["docs-site.mjs", "verify-docs-site.mjs"]) {
+        await writeFile(path.join(output, ".github/scripts", name), await readFile(fileURLToPath(new URL(`./ci/${name}`, import.meta.url))));
+      }
+      await writeFile(path.join(output, "README.md"), `# CloudIgniter Docs build repository\n\nAuthoritative source: the monorepo docs/ directory. Source mirror: https://github.com/${project.sourceRepository}.\n\nRun pnpm --filter docs build:hosting in an approved, committed monorepo checkout. Copy docs/build/hosting contents to site/ and review public/, developer/ and manifest.json together. Never copy the combined local preview at docs/build/.\n\nProduction is https://docs.cloudigniter.io. Public files use the default private S3 origin. Every /developers* request, including HTML, JS, dictionaries, search and assets, uses a separate private origin and CloudFront trusted-key-group signed-cookie validation. The /auth/docs/* behavior forwards to the CloudIgniter website runtime; it uses template authentication and EmberGuard. Only an authenticated identity with exact developer membership and an allowed documentation.company/read decision may receive short-lived access. Admin roles alone do not grant it. Do not create a separate Docs identity system.\n\nConfigure production variables AWS_ROLE_ARN, AWS_REGION, PUBLIC_SITE_BUCKET, DEVELOPER_SITE_BUCKET, CLOUDFRONT_DISTRIBUTION_ID, DOCS_TRUSTED_KEY_GROUP_ID and DOCS_AUTH_ORIGIN (website runtime origin hostname). The role needs upload permissions plus CloudFront distribution/OAC reads and S3 public-access/policy-status reads for the verifier. The auth behavior must disable caching and forward the website session inputs. Use GET/HEAD only and HTTPS for protected static delivery.\n\nThe sign-in callback, signed-cookie issuer, CloudIgniter/EmberGuard resource policy and AWS resources must be configured and tested before production dispatch. This scaffold provisions none of them and does not implement a sign-in backend. Protect main and production, review this workflow, then dispatch deploy-aws.yml as the configured approver. The verifier rejects dirty-source artifacts, altered output, shared buckets, public S3 access or missing CloudFront protection before upload. No dependency install or rebuild happens with AWS credentials.\n`);
+      return { status: "scaffolded", repository: project.buildRepository, hosting: "static", access: "cloudigniter-developer", output, pushed: false };
+    }
     await writeFile(
       path.join(output, "README.md"),
       `# ${id} static build repository\n\nSource: https://github.com/${project.sourceRepository}.\n\nCommit the reviewed static build under site/ through a PR. It must contain index.html. Do not commit source credentials, node_modules or server-rendered Next.js .next output. Configure production environment variables AWS_ROLE_ARN, AWS_REGION, SITE_BUCKET and CLOUDFRONT_DISTRIBUTION_ID, plus GitHub OIDC trust in AWS. Protect main and require the configured approver's review. Run deploy-aws.yml after merge; it uploads the exact committed site without rebuilding. No AWS resources are created by this scaffold.\n`

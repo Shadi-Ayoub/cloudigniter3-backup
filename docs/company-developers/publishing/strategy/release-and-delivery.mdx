@@ -20,6 +20,9 @@ learning:
 
 Start release preparation from an approved, committed integration revision. An approved monorepo merge triggers [private source synchronization](./source-mirroring) after merged-commit quality passes, using the configured company App. Release preparation still coordinates explicit requests and verifies separate source/build approvals. A source update does not stage npm packages or deploy a website.
 
+Use the [publishing map](./#publishing-map) to compare the workspace's package,
+template and Docs deliveries with the separately reviewed website projects.
+
 ## Packages: follow the paired review process
 
 Each npm package has a private source repository and a private build repository. Product packages publish publicly under `@cloudigniter/`; the company toolkit `@cloudigniter/dev` has restricted npm access. Repository privacy and npm access are separate choices.
@@ -69,7 +72,7 @@ Retain the monorepo PR and commit, release request ID, source/build PR links, CI
 
 For a failed or uncertain remote operation, inspect its recorded result and the actual GitHub/npm state before retrying. Recovery must not overwrite an edited branch or an already delivered version. A red CI result, missing approval, wrong account or mismatched hash is a reason to correct the evidence, not to skip a gate.
 
-## Template and website delivery use different outputs
+## Template, Docs and website delivery use different outputs
 
 ```mermaid
 flowchart TD
@@ -78,7 +81,9 @@ flowchart TD
   C --> D[Validate files and available package versions]
   D --> E[Private approval request bound to export digest]
   E --> F[Approver delivers reviewed files to public template]
-  B -->|Docs or static website| G[Build selected website output]
+  B -->|Docs| G[Build separate public and developer Docs bundles]
+  W[Independent website source PR and its own CI] --> V[Build the selected website output]
+  V --> H
   G --> H[Build repository PR with reviewed site files]
   H --> I[Independent approval and merge]
   I --> J[Approver dispatches AWS deployment]
@@ -87,9 +92,14 @@ flowchart TD
 
 The [template export policy](../template) selects explicitly managed files and registry dependency versions. Delivery preserves public-only Git history and repository governance. The application template is not an npm package, and a GitHub template update does not create an npm release.
 
-[Website delivery](../websites) stages reviewed static output in `site/`. Docs builds with its guide command; JODARIS stages its static website with its own script. The generated AWS workflow uploads reviewed files using an explicitly configured S3/CloudFront role. It does not rebuild with production credentials or provision hosting resources. A Next.js server build is not automatically static website output.
+[Website delivery](../websites) stages reviewed marketing output in `site/`. [Docs publishing](../docs) instead builds `site/public/` and `site/developer/` with a reviewed manifest, using the CloudIgniter website's template authentication and EmberGuard to grant developer access. Its AWS workflow verifies protected delivery before upload. Deployment uses reviewed bytes without rebuilding with production credentials or provisioning hosting resources. A Next.js server build is not automatically static website output.
 
-The current full guide includes company documentation and rendered internal skills. Audience labels are not access control. Define and verify the intended public or internal edition before deploying it; the public/developer edition separation remains a later phase.
+The combined maintainer preview includes company documentation and rendered
+internal skills. Publish the separated Docs bundles and protect company content,
+search data and assets under `/developers/`. The CloudIgniter website authorizes
+access through its template authentication and EmberGuard; Docs remains in the
+workspace and deploys independently. Website server integration and AWS hosting
+still require setup.
 
 ## Future automation
 

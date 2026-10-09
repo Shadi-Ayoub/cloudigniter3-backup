@@ -1,6 +1,6 @@
 import React from "react";
 import { Clock3 } from "lucide-react";
-import registry from "../../../page-dates.json";
+import registry from "@docs-page-dates";
 import styles from "./styles.module.css";
 
 const pages: Record<string, { updatedAt: string }> = registry.pages;
